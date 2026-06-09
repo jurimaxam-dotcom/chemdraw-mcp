@@ -128,3 +128,38 @@ def test_resolve_falls_back_to_name_on_invalid_smiles_parse(mock_get):
     smiles, mol = resolve("(R)-Limonene")
     assert mol is not None
     assert "C" in smiles
+
+
+# --- Kurze valide SMILES ohne Sonderzeichen (Regression: Screenshot 2026-06-10) ---
+# "O" ging als NAME an PubChem → molekularer Sauerstoff O=O statt Wasser;
+# "CO" → Cobalt [Co] statt Methanol. Der Tool-Docstring verspricht
+# "SMILES strings are always safe" → resolve() muss parse-first arbeiten.
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+def test_resolve_water_smiles_offline(mock_pubchem):
+    """'O' ist valides SMILES (Wasser) und darf NIE ins Netz gehen."""
+    smiles, mol = resolve("O")
+    mock_pubchem.assert_not_called()
+    assert smiles == "O"
+    assert mol.GetNumAtoms() == 1
+    assert mol.GetAtomWithIdx(0).GetSymbol() == "O"
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+def test_resolve_methanol_smiles_offline(mock_pubchem):
+    """'CO' ist valides SMILES (Methanol), nicht der Name von Cobalt."""
+    smiles, mol = resolve("CO")
+    mock_pubchem.assert_not_called()
+    assert smiles == "CO"
+    symbols = sorted(a.GetSymbol() for a in mol.GetAtoms())
+    assert symbols == ["C", "O"]
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+def test_resolve_name_path_still_works_for_real_names(mock_pubchem):
+    """'Aspirin' parsed nicht als SMILES → Namens-Pfad bleibt intakt."""
+    mock_pubchem.return_value = "CC(=O)Oc1ccccc1C(=O)O"
+    smiles, mol = resolve("Aspirin")
+    mock_pubchem.assert_called_once()
+    assert mol.GetNumAtoms() == 13

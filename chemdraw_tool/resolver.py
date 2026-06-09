@@ -3,9 +3,15 @@ import re
 from urllib.parse import quote
 
 import requests
-from rdkit import Chem
+from rdkit import Chem, RDLogger
 
 logger = logging.getLogger(__name__)
+
+# resolve() now attempts a SMILES parse on every input (parse-first), so real
+# names like "Aspirin" would emit a "SMILES Parse Error" to stderr on every
+# lookup. We handle parse failures via None checks everywhere; silence RDKit's
+# error stream to keep the MCP server logs readable.
+RDLogger.DisableLog("rdApp.error")
 
 _SMILES_CHARS = re.compile(r"[=()[\]#@/\\]")
 _SMILES_RING = re.compile(r"[a-z]\d")
@@ -104,14 +110,23 @@ def resolve_name(name: str) -> str:
 
 
 def resolve(input_str: str) -> tuple[str, Chem.Mol]:
-    if is_smiles(input_str):
-        mol = validate_smiles(input_str)
+    # Parse-first: anything that RDKit accepts as SMILES IS treated as SMILES.
+    # The character heuristic (is_smiles) misses short valid SMILES without
+    # special characters — "O" (water) and "CO" (methanol) went down the NAME
+    # path, where PubChem's index resolves them to molecular oxygen and COBALT
+    # respectively. The tool docstrings promise "SMILES strings are always
+    # safe", so SMILES must win for ambiguous short inputs. Real names
+    # ("Aspirin") don't parse as SMILES and still take the name path.
+    candidate = input_str.strip()
+    if " " not in candidate and not _STEREO_PREFIX.match(candidate):
+        mol = validate_smiles(candidate)
         if mol is not None:
-            return input_str, mol
-        logger.info(
-            "Looked like SMILES but failed to parse, trying name resolution: %r",
-            input_str,
-        )
+            return candidate, mol
+        if is_smiles(candidate):
+            logger.info(
+                "Looked like SMILES but failed to parse, trying name resolution: %r",
+                input_str,
+            )
 
     smiles = resolve_name(input_str)
     mol = validate_smiles(smiles)

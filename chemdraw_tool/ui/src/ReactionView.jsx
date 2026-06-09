@@ -132,28 +132,43 @@ function ScaledRow({ children }) {
   const outerRef = useRef(null);
   const innerRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const [naturalH, setNaturalH] = useState(0);
 
   const measure = useCallback(() => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (!outer || !inner) return;
     const containerW = outer.clientWidth - 32;
+    // Restore the actual value afterwards — setting "" here clears React's
+    // inline style, and a state bailout (same scale) would never re-render
+    // to put it back, leaving the row permanently unscaled.
+    const prevTransform = inner.style.transform;
     inner.style.transform = "none";
     const naturalW = inner.scrollWidth;
-    inner.style.transform = "";
+    const naturalHeight = inner.scrollHeight;
+    inner.style.transform = prevTransform;
     if (naturalW <= 0) return;
-    const ratio = containerW / naturalW;
-    setScale(Math.max(MIN_SCALE, ratio));
+    // Cap at 1: never blow small reactions up beyond their chemical scale —
+    // only shrink-to-fit. Below MIN_SCALE we fall back to scrolling.
+    setScale(Math.min(1, Math.max(MIN_SCALE, containerW / naturalW)));
+    setNaturalH(naturalHeight);
   }, []);
 
   useLayoutEffect(() => {
     measure();
     const ro = new ResizeObserver(measure);
+    // Observe BOTH: outer for panel resizes, inner for content swaps
+    // (a new payload in the same view never resizes the outer container).
     if (outerRef.current) ro.observe(outerRef.current);
+    if (innerRef.current) ro.observe(innerRef.current);
     return () => ro.disconnect();
   }, [measure]);
 
   const needsScroll = scale <= MIN_SCALE;
+  // transform: scale() shrinks visually but keeps the un-scaled layout
+  // height — compensate so the card hugs the drawing instead of leaving a
+  // big empty band underneath.
+  const scaledH = !needsScroll && naturalH > 0 ? naturalH * scale : undefined;
 
   return (
     <div
@@ -161,6 +176,7 @@ function ScaledRow({ children }) {
       style={{
         overflow: needsScroll ? "auto" : "hidden",
         padding: 16,
+        height: scaledH !== undefined ? scaledH + 32 : undefined,
       }}
     >
       <div
