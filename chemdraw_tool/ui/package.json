@@ -1,0 +1,26 @@
+{
+  "name": "chem-mcp-ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test:unit": "node src/utils/svgToPng.test.mjs",
+    "test:e2e": "node src/utils/svgToPng.e2e.mjs",
+    "test:e2e:update": "UPDATE_SNAPSHOTS=1 node src/utils/svgToPng.e2e.mjs",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:watch": "node --test --watch src/utils/*.test.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^0.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "playwright": "1.60.0",
+    "vite": "^6.3.0",
+    "vite-plugin-singlefile": "^2.0.0"
+  }
+}

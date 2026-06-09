@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+package-lock.json
+
+# OS / IDE / local agent config
+.DS_Store
+.idea/
+.ai/
+.claude/settings.local.json
+CLAUDE.local.md

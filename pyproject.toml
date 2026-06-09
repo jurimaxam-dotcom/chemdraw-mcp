@@ -1,0 +1,41 @@
+[project]
+name = "chemdraw-tool"
+version = "0.1.0"
+description = "ChemDraw automation tool - generates CDXML files from molecule names/SMILES"
+requires-python = ">=3.11"
+dependencies = [
+    "rdkit",
+    "lxml",
+    "requests",
+    "mcp",
+    "Pillow",
+]
+
+[project.scripts]
+chemdraw-tool-server = "chemdraw_tool.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+# "scripts" mit drin, damit dortige test_*.py automatisch vom Gate erfasst werden;
+# die gen_*-Helfer selbst bleiben unberührt.
+testpaths = ["tests", "scripts"]
+
+[dependency-groups]
+dev = [
+    "playwright>=1.60.0",
+    "pytest",
+    "ruff>=0.15.16",
+]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# Sanfter Start: Pyflakes (F) + pycodestyle (E) + Import-Sortierung (I).
+# Aggressive Auto-Fixes (z.B. unused-import-Entfernung) bewusst NICHT automatisch,
+# weil RDKit-Imports teils nur wegen Seiteneffekten existieren.
+select = ["E", "F", "I"]
+ignore = ["E501"]  # Zeilenlänge nicht erzwingen

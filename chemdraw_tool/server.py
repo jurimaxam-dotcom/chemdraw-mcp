@@ -1,0 +1,1199 @@
+import re
+from pathlib import Path
+
+from mcp.server.fastmcp import FastMCP
+
+from chemdraw_tool.cdxml_writer import write_cdxml
+from chemdraw_tool.chemdraw import find_chemdraw, open_in_chemdraw
+from chemdraw_tool.databases import (
+    _get_cid,
+    chebi_lookup,
+    kegg_compound,
+    kegg_find,
+    pubchem_physical_properties,
+    pubchem_properties,
+    pubchem_properties_by_smiles,
+    pubchem_safety,
+    pubchem_synonyms,
+    pubchem_synonyms_by_smiles,
+    uniprot_search,
+)
+from chemdraw_tool.generator import generate_2d
+from chemdraw_tool.image_export import (
+    render_molecule_png,
+    render_molecule_svg,
+    render_reaction_png,
+    render_reaction_svg,
+    write_files,
+)
+from chemdraw_tool.layout import write_reaction_cdxml
+from chemdraw_tool.payloads import (
+    BatchPayload,
+    CalculationStep,
+    DatabasePayload,
+    DatabaseRow,
+    DatabaseSource,
+    FunctionalGroup,
+    LipinskiData,
+    MechanismPayload,
+    MechanismStepPayload,
+    MethodComparison,
+    MethodResult,
+    MoleculePayload,
+    ReactionPayload,
+    ValidationPayload,
+)
+from chemdraw_tool.resolver import resolve
+from chemdraw_tool.validator import Severity, validate_input, validate_roundtrip
+from chemdraw_tool.vault import is_enabled as vault_enabled
+from chemdraw_tool.vault import list_entries, read_entry, search
+
+OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
+REACTION_DIR = Path.home() / "ChemDraw-Output"
+
+# PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
+# optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
+VALID_FORMATS = ("png", "svg", "cdxml")
+DEFAULT_FORMATS = ("png", "svg")
+
+
+def _normalize_formats(formats: list[str] | None) -> list[str]:
+    fmts = [f.lower().strip() for f in (formats or DEFAULT_FORMATS)]
+    unknown = sorted(set(fmts) - set(VALID_FORMATS))
+    if unknown:
+        raise ValueError(
+            f"Unbekannte Formate: {unknown} — erlaubt sind {list(VALID_FORMATS)}"
+        )
+    return fmts
+
+
+def _write_structure_files(
+    mol, slug: str, display_name: str, formats: list[str]
+) -> tuple[dict[str, str], str]:
+    """Schreibt die angeforderten Dateiformate für ein Einzelmolekül.
+
+    Returns ({format: pfad}, cdxml_path) — cdxml_path ist "" wenn kein CDXML
+    angefordert wurde. Die CDXML-Roundtrip-Validierung läuft nur, wenn CDXML
+    tatsächlich erzeugt wird.
+    """
+    import logging
+
+    artifacts: dict[str, bytes | str] = {}
+    if "png" in formats:
+        artifacts["png"] = render_molecule_png(mol, legend=display_name)
+    if "svg" in formats:
+        artifacts["svg"] = render_molecule_svg(mol, legend=display_name)
+    files = write_files(OUTPUT_DIR / slug, artifacts)
+
+    cdxml_path = ""
+    if "cdxml" in formats:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        filepath = OUTPUT_DIR / f"{slug}.cdxml"
+        cdxml_content = write_cdxml(mol, str(filepath), name=display_name)
+        rt_report = validate_roundtrip(mol, cdxml_content)
+        if not rt_report.valid:
+            for issue in rt_report.issues:
+                logging.getLogger(__name__).warning(
+                    "CDXML validation [%s]: %s", issue.check, issue.message
+                )
+        cdxml_path = str(filepath)
+        files["cdxml"] = cdxml_path
+    return files, cdxml_path
+
+
+mcp = FastMCP("ChemDraw Tool")
+
+# ---------------------------------------------------------------------------
+# UI resource — serves the built MCP App HTML to the client iframe
+# ---------------------------------------------------------------------------
+_UI_DIST = Path(__file__).parent / "ui" / "dist" / "index.html"
+_RESOURCE_URI = "ui://chem-app/index.html"
+
+
+_UI_META = {"ui": {"resourceUri": _RESOURCE_URI}}
+
+
+@mcp.resource(
+    _RESOURCE_URI,
+    mime_type="text/html;profile=mcp-app",
+    meta={"ui": {"permissions": {"clipboardWrite": {}}}},
+)
+def chem_app_ui() -> str:
+    """Serve the MCP App UI (single-page React app)."""
+    return _UI_DIST.read_text(encoding="utf-8")
+
+
+def _enrich_properties(smiles: str) -> dict[str, str]:
+    """Build properties dict from PubChem using canonical SMILES.
+
+    SMILES-based lookup is deterministic and language-independent —
+    works for German names, raw SMILES input, or any other input
+    as long as resolve() returned a valid canonical SMILES.
+    """
+    props_raw = pubchem_properties_by_smiles(smiles) or {}
+    cas, _ = pubchem_synonyms_by_smiles(smiles)
+
+    properties: dict[str, str] = {}
+    if v := props_raw.get("MolecularFormula"):
+        properties["formula"] = v
+    if v := props_raw.get("MolecularWeight"):
+        properties["mw"] = f"{v} g/mol"
+    if v := props_raw.get("XLogP"):
+        properties["logP"] = str(v)
+    if v := props_raw.get("TPSA"):
+        properties["tpsa"] = f"{v} Å²"
+    if v := props_raw.get("HBondDonorCount"):
+        properties["hbd"] = str(v)
+    if v := props_raw.get("HBondAcceptorCount"):
+        properties["hba"] = str(v)
+    if v := props_raw.get("CanonicalSMILES"):
+        properties["smiles"] = v
+    if cas:
+        properties["cas"] = cas
+    return properties
+
+
+def _build_lipinski(props: dict[str, str]) -> LipinskiData | None:
+    """Build Lipinski Rule of 5 data from enriched properties."""
+    try:
+        mw = float(props["mw"].replace(" g/mol", "")) if "mw" in props else None
+        logP = float(props["logP"]) if "logP" in props else None
+        hbd = int(props["hbd"]) if "hbd" in props else None
+        hba = int(props["hba"]) if "hba" in props else None
+    except (ValueError, TypeError):
+        return None
+
+    if all(v is None for v in (mw, logP, hbd, hba)):
+        return None
+
+    violations = 0
+    if mw is not None and mw > 500:
+        violations += 1
+    if logP is not None and logP > 5:
+        violations += 1
+    if hbd is not None and hbd > 5:
+        violations += 1
+    if hba is not None and hba > 10:
+        violations += 1
+
+    return LipinskiData(
+        mw=mw,
+        logP=logP,
+        hbd=hbd,
+        hba=hba,
+        passes=violations == 0,
+        violations=violations,
+    )
+
+
+def _slugify(text: str) -> str:
+    text = text.lower().strip()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[\s_]+", "-", text)
+    return text or "molecule"
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_molecule(
+    name_or_smiles: str, label: str = "", formats: list[str] | None = None
+) -> MoleculePayload:
+    """Generate a 2D molecular structure drawing from a name or SMILES string.
+
+    Writes print-ready image files (PNG and/or SVG, default both) to the
+    output folder and returns a structured payload with an SVG preview,
+    properties and functional groups. Works fully standalone — no ChemDraw
+    installation required.
+
+    Use this tool when the user mentions structural formulas, molecular
+    structures, or chemical drawings.
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
+    not 'Coffein', 'Ascorbic acid' not 'Ascorbinsäure'. SMILES strings are
+    always safe. Use the label parameter for the localized display name.
+
+    Args:
+        name_or_smiles: English/IUPAC compound name or SMILES string.
+        label: Optional display name (can be localized, shown below structure).
+        formats: Output file formats, any of "png", "svg", "cdxml"
+            (default: ["png", "svg"]). Include "cdxml" ONLY when the user
+            wants to edit the structure in ChemDraw or asks to open it there.
+    """
+    from chemdraw_tool.svg_renderer import (
+        extract_atom_data,
+        extract_functional_groups,
+        render_svg,
+    )
+
+    fmts = _normalize_formats(formats)
+
+    smiles, mol = resolve(name_or_smiles)
+    mol = generate_2d(mol)
+
+    input_issues = validate_input(mol)
+    for issue in input_issues:
+        if issue.severity == Severity.ERROR:
+            raise ValueError(f"Input validation failed: {issue.message}")
+
+    display_name = label or name_or_smiles
+    slug = _slugify(display_name)
+
+    files, cdxml_path = _write_structure_files(mol, slug, display_name, fmts)
+
+    properties = _enrich_properties(smiles)
+    fg_raw = extract_functional_groups(mol)
+    groups = [FunctionalGroup(**g) for g in fg_raw]
+    lipinski = _build_lipinski(properties)
+
+    return MoleculePayload(
+        type="molecule",
+        svg=render_svg(mol, fill_container=True),
+        atoms=extract_atom_data(mol),
+        name=display_name,
+        properties=properties,
+        functionalGroups=groups,
+        lipinski=lipinski,
+        files=files,
+        cdxml_path=cdxml_path,
+    )
+
+
+@mcp.tool()
+def lookup_compound(name: str) -> str:
+    """Look up chemical compound properties from PubChem.
+
+    Use this when the user asks about properties, molecular weight,
+    formula, CAS number, or general information about a chemical compound.
+    Returns verified data from PubChem with source citation.
+
+    Args:
+        name: Compound name (e.g. 'Aspirin', 'Sulfanilsäure', 'Histidin').
+    """
+    lines = [f"## {name} — PubChem-Daten\n"]
+    cid = "?"
+
+    props = pubchem_properties(name)
+    if props:
+        cid = props.get("CID", "?")
+        lines.append("| Eigenschaft | Wert |")
+        lines.append("|------------|------|")
+        lines.append(f"| **CID** | {cid} |")
+        if v := props.get("IUPACName"):
+            lines.append(f"| **IUPAC-Name** | {v} |")
+        if v := props.get("MolecularFormula"):
+            lines.append(f"| **Summenformel** | {v} |")
+        if v := props.get("MolecularWeight"):
+            lines.append(f"| **Molmasse** | {v} g/mol |")
+        if v := props.get("ExactMass"):
+            lines.append(f"| **Exakte Masse** | {v} |")
+        if v := props.get("XLogP"):
+            lines.append(f"| **LogP** | {v} |")
+        if v := props.get("TPSA"):
+            lines.append(f"| **Polare Oberfläche** | {v} Å² |")
+        if v := props.get("HBondDonorCount"):
+            lines.append(f"| **H-Brücken-Donoren** | {v} |")
+        if v := props.get("HBondAcceptorCount"):
+            lines.append(f"| **H-Brücken-Akzeptoren** | {v} |")
+        if v := props.get("InChIKey"):
+            lines.append(f"| **InChIKey** | {v} |")
+        charge = props.get("Charge")
+        if charge and charge != 0:
+            lines.append(f"| **Ladung** | {charge} |")
+    else:
+        lines.append("Eigenschaften konnten nicht abgerufen werden.")
+
+    cas, synonyms = pubchem_synonyms(name)
+    if cas:
+        lines.append(f"| **CAS-Nr.** | {cas} |")
+    if synonyms:
+        filtered = [s for s in synonyms if s.lower() != name.lower()][:5]
+        if filtered:
+            lines.append(f"\n**Synonyme:** {', '.join(filtered)}")
+
+    lines.append(
+        f"\n*Quelle: [PubChem CID {cid}]"
+        f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid})*"
+    )
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def lookup_safety(name: str) -> str:
+    """Look up GHS safety data for a chemical compound.
+
+    Use this when the user asks about safety, hazards, H-Sätze, P-Sätze,
+    GHS pictograms, or needs safety info for a lab protocol.
+
+    Args:
+        name: Compound name.
+    """
+    cid = _get_cid(name)
+    if cid is None:
+        return f"Verbindung '{name}' nicht in PubChem gefunden."
+
+    safety = pubchem_safety(cid)
+    if not safety:
+        return f"Keine GHS-Sicherheitsdaten für '{name}' in PubChem."
+
+    lines = [f"## {name} — Sicherheitsdaten (GHS)\n"]
+    lines.append("| Kategorie | Information |")
+    lines.append("|-----------|------------|")
+
+    for entry in safety:
+        n = entry.get("name", "")
+        v = entry.get("value", "")
+        if v:
+            lines.append(f"| **{n}** | {v} |")
+
+    lines.append(
+        f"\n*Quelle: [PubChem CID {cid}]"
+        f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid}#section=Safety-and-Hazards)*"
+    )
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def lookup_physical(name: str) -> str:
+    """Look up physical properties of a compound (melting point, boiling point,
+    solubility, density).
+
+    Use this when the user asks about physical properties, aggregation state,
+    or needs data for substance identification.
+
+    Args:
+        name: Compound name.
+    """
+    cid = _get_cid(name)
+    if cid is None:
+        return f"Verbindung '{name}' nicht in PubChem gefunden."
+
+    props = pubchem_physical_properties(cid)
+    if not props:
+        return f"Keine experimentellen Daten für '{name}' in PubChem."
+
+    lines = [f"## {name} — Physikalische Eigenschaften\n"]
+    lines.append("| Eigenschaft | Wert |")
+    lines.append("|------------|------|")
+
+    seen = set()
+    for entry in props:
+        n = entry.get("name", "")
+        v = entry.get("value", "")
+        if v and n not in seen:
+            seen.add(n)
+            lines.append(f"| **{n}** | {v} |")
+
+    lines.append(
+        f"\n*Quelle: [PubChem CID {cid}]"
+        f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid}#section=Experimental-Properties)*"
+    )
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def lookup_biochem(name: str) -> str:
+    """Look up biochemical classification from ChEBI and related enzyme/protein
+    info from UniProt.
+
+    Use this when the user asks what type of compound something is, its
+    biological role, or related enzymes.
+
+    Args:
+        name: Compound or enzyme name.
+    """
+    lines = [f"## {name} — Biochemische Einordnung\n"]
+
+    chebi = chebi_lookup(name)
+    if chebi:
+        lines.append("### ChEBI (Chemical Entities of Biological Interest)\n")
+        lines.append(f"- **ID:** {chebi['obo_id']}")
+        lines.append(f"- **Name:** {chebi['label']}")
+        if chebi["description"]:
+            lines.append(f"- **Beschreibung:** {chebi['description']}")
+        lines.append(
+            f"- *Quelle: [ChEBI {chebi['obo_id']}]"
+            f"(https://www.ebi.ac.uk/chebi/searchId.do?chebiId={chebi['id']})*"
+        )
+    else:
+        lines.append("Kein ChEBI-Eintrag gefunden.\n")
+
+    proteins = uniprot_search(name)
+    if proteins:
+        lines.append("\n### UniProt (Proteine/Enzyme, Mensch)\n")
+        for p in proteins[:3]:
+            acc = p["accession"]
+            lines.append(f"- **{p['name']}** ({acc})")
+            if p["genes"]:
+                lines.append(f"  - Gene: {', '.join(p['genes'])}")
+            if p["ec"]:
+                lines.append(f"  - EC: {', '.join(p['ec'])}")
+            lines.append(
+                f"  - *[UniProt {acc}](https://www.uniprot.org/uniprotkb/{acc})*"
+            )
+
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def lookup_pathway(name: str) -> str:
+    """Look up metabolic pathways for a compound from KEGG.
+
+    Use this when the user asks where a compound appears in metabolism,
+    which pathways it belongs to, or its biological context.
+
+    Args:
+        name: Compound name.
+    """
+    kegg_id = kegg_find(name)
+    if kegg_id is None:
+        return f"'{name}' nicht in KEGG gefunden."
+
+    data = kegg_compound(kegg_id)
+    lines = [f"## {name} — KEGG Stoffwechseldaten\n"]
+    lines.append(f"- **KEGG-ID:** {data['id']}")
+    if data["names"]:
+        lines.append(f"- **Namen:** {', '.join(data['names'][:5])}")
+    if data["formula"]:
+        lines.append(f"- **Formel:** {data['formula']}")
+
+    if data["pathways"]:
+        lines.append(f"\n### Stoffwechselwege ({len(data['pathways'])})\n")
+        for pw in data["pathways"][:10]:
+            pw_id = pw.replace("path:", "")
+            lines.append(f"- [{pw_id}](https://www.kegg.jp/pathway/{pw_id})")
+        if len(data["pathways"]) > 10:
+            lines.append(f"- ... und {len(data['pathways']) - 10} weitere")
+    else:
+        lines.append("\nKeine Stoffwechselwege verknüpft.")
+
+    lines.append(
+        f"\n*Quelle: [KEGG {data['id']}](https://www.kegg.jp/entry/{data['id']})*"
+    )
+    return "\n".join(lines)
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def lookup_molecule_data(name: str) -> DatabasePayload:
+    """Look up aggregated molecule data (PubChem + GHS safety) for the DatabaseView UI.
+
+    Use this when the user wants a structured overview of a compound's properties
+    and safety information in the UI panel. Returns SVG structure plus all relevant
+    database rows grouped by source.
+
+    Args:
+        name: Compound name or SMILES string (e.g. 'Aspirin', 'Paracetamol').
+    """
+    from chemdraw_tool.svg_renderer import render_svg
+
+    # Resolve & render SVG (thumbnail size for DatabaseView sidebar)
+    _, mol = resolve(name)
+    mol = generate_2d(mol)
+    svg = render_svg(mol, width=150, height=120, fill_container=True)
+
+    sources: list[DatabaseSource] = []
+
+    # --- PubChem properties source ---
+    props = pubchem_properties(name) or {}
+    cid_raw = props.get("CID")
+    try:
+        cid_int = int(cid_raw) if cid_raw else None
+    except (ValueError, TypeError):
+        cid_int = None
+    cid_str = str(cid_int) if cid_int else ""
+
+    pubchem_rows: list[DatabaseRow] = []
+    if cid_str:
+        pubchem_rows.append(DatabaseRow(key="CID", val=cid_str))
+    if (v := props.get("IUPACName")) is not None:
+        pubchem_rows.append(DatabaseRow(key="IUPAC-Name", val=v))
+    if (v := props.get("MolecularFormula")) is not None:
+        pubchem_rows.append(DatabaseRow(key="Summenformel", val=v))
+    if (v := props.get("MolecularWeight")) is not None:
+        pubchem_rows.append(DatabaseRow(key="Molmasse", val=f"{v} g/mol"))
+    if (v := props.get("XLogP")) is not None:
+        pubchem_rows.append(DatabaseRow(key="LogP", val=str(v)))
+    if (v := props.get("TPSA")) is not None:
+        pubchem_rows.append(DatabaseRow(key="TPSA", val=f"{v} Å²"))
+    if (v := props.get("HBondDonorCount")) is not None:
+        pubchem_rows.append(DatabaseRow(key="H-Brücken-Donoren", val=str(v)))
+    if (v := props.get("HBondAcceptorCount")) is not None:
+        pubchem_rows.append(DatabaseRow(key="H-Brücken-Akzeptoren", val=str(v)))
+    if (v := props.get("InChIKey")) is not None:
+        pubchem_rows.append(DatabaseRow(key="InChIKey", val=v))
+    cas_nr, _ = pubchem_synonyms(name)
+    if cas_nr:
+        pubchem_rows.append(DatabaseRow(key="CAS-Nr.", val=cas_nr))
+
+    sources.append(
+        DatabaseSource(
+            type="PubChem",
+            source=f"PubChem CID {cid_str}" if cid_str else "PubChem",
+            url=f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid_str}"
+            if cid_str
+            else "https://pubchem.ncbi.nlm.nih.gov",
+            rows=pubchem_rows,
+        )
+    )
+
+    # --- GHS safety source (reuses CID from properties, no extra network call) ---
+    if cid_int:
+        safety = pubchem_safety(cid_int)
+        if safety:
+            safety_rows = [
+                DatabaseRow(key=e["name"], val=e["value"])
+                for e in safety
+                if e.get("value")
+            ]
+            sources.append(
+                DatabaseSource(
+                    type="GHS",
+                    source=f"PubChem CID {cid_int} — Safety",
+                    url=f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid_int}#section=Safety-and-Hazards",
+                    rows=safety_rows,
+                )
+            )
+
+    return DatabasePayload(
+        type="database",
+        molecule_svg=svg,
+        sources=sources,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_reaction(
+    reactants: list[str],
+    products: list[str],
+    conditions: str = "",
+    name: str = "",
+    formats: list[str] | None = None,
+) -> ReactionPayload:
+    """Generate a reaction scheme (educts → products) as image files.
+
+    Writes the scheme as PNG and/or SVG (default both) to the output folder —
+    no ChemDraw required. Conditions appear above the arrow in the UI preview.
+
+    Use this when the user describes a chemical reaction with educts and products.
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
+    not 'Coffein'. SMILES strings are always safe.
+
+    Args:
+        reactants: List of English/IUPAC reactant names or SMILES strings.
+        products: List of English/IUPAC product names or SMILES strings.
+        conditions: Reaction conditions shown above the arrow (e.g. 'HCl, 0-5 °C').
+        name: Display name for the reaction step (can be localized).
+        formats: Output file formats, any of "png", "svg", "cdxml"
+            (default: ["png", "svg"]). Include "cdxml" ONLY when the user
+            wants to edit the scheme in ChemDraw or asks to open it there.
+    """
+    from rdkit import Chem
+
+    from chemdraw_tool.svg_renderer import render_svg
+
+    fmts = _normalize_formats(formats)
+
+    reactant_mols = []
+    for r in reactants:
+        _, mol = resolve(r)
+        mol = generate_2d(mol)
+        input_issues = validate_input(mol)
+        for issue in input_issues:
+            if issue.severity == Severity.ERROR:
+                raise ValueError(f"Reactant '{r}' validation failed: {issue.message}")
+        reactant_mols.append(mol)
+
+    product_mols = []
+    for p in products:
+        _, mol = resolve(p)
+        mol = generate_2d(mol)
+        input_issues = validate_input(mol)
+        for issue in input_issues:
+            if issue.severity == Severity.ERROR:
+                raise ValueError(f"Product '{p}' validation failed: {issue.message}")
+        product_mols.append(mol)
+
+    slug = _slugify(name or "reaktion")
+    out_dir = REACTION_DIR / slug
+
+    artifacts: dict[str, bytes | str] = {}
+    if "png" in fmts or "svg" in fmts:
+        rxn_smiles = (
+            ".".join(Chem.MolToSmiles(m) for m in reactant_mols)
+            + ">>"
+            + ".".join(Chem.MolToSmiles(m) for m in product_mols)
+        )
+        if "png" in fmts:
+            artifacts["png"] = render_reaction_png(rxn_smiles)
+        if "svg" in fmts:
+            artifacts["svg"] = render_reaction_svg(rxn_smiles)
+    files = write_files(out_dir / slug, artifacts)
+
+    cdxml_path = ""
+    if "cdxml" in fmts:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        filepath = out_dir / f"{slug}.cdxml"
+        write_reaction_cdxml(
+            reactant_mols,
+            product_mols,
+            str(filepath),
+            conditions=conditions,
+            name=name,
+            reactant_names=reactants,
+            product_names=products,
+        )
+        cdxml_path = str(filepath)
+        files["cdxml"] = cdxml_path
+
+    r_w, r_h = 250, 200
+    from chemdraw_tool.payloads import MolEntry
+
+    return ReactionPayload(
+        type="reaction",
+        name=name,
+        conditions=conditions,
+        reactants=[
+            MolEntry(svg=render_svg(m, r_w, r_h), name=n)
+            for m, n in zip(reactant_mols, reactants)
+        ],
+        products=[
+            MolEntry(svg=render_svg(m, r_w, r_h), name=n)
+            for m, n in zip(product_mols, products)
+        ],
+        files=files,
+        cdxml_path=cdxml_path,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def batch_generate(
+    molecules: list[str], formats: list[str] | None = None
+) -> BatchPayload:
+    """Generate multiple molecule structure drawings at once.
+
+    Writes image files (PNG and/or SVG, default both) per molecule — no
+    ChemDraw required. Failed names are skipped and reported in `failed`.
+
+    Use this when the user wants several individual structures generated
+    in one step (e.g. 'Draw Aspirin, Paracetamol and Ibuprofen').
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
+    not 'Coffein', 'Ascorbic acid' not 'Ascorbinsäure'. SMILES strings are
+    always safe.
+
+    Args:
+        molecules: List of English/IUPAC compound names or SMILES strings.
+        formats: Output file formats, any of "png", "svg", "cdxml"
+            (default: ["png", "svg"]). Include "cdxml" ONLY when the user
+            wants to edit the structures in ChemDraw.
+    """
+    import logging
+
+    from chemdraw_tool.svg_renderer import (
+        extract_atom_data,
+        extract_functional_groups,
+        render_svg,
+    )
+
+    fmts = _normalize_formats(formats)
+
+    mol_payloads = []
+    cdxml_paths = []
+    failed = []
+
+    for name_or_smiles in molecules:
+        try:
+            smiles, mol = resolve(name_or_smiles)
+        except Exception:
+            logging.getLogger(__name__).warning(
+                "Could not resolve %r, skipping", name_or_smiles
+            )
+            failed.append(name_or_smiles)
+            continue
+
+        mol = generate_2d(mol)
+
+        input_issues = validate_input(mol)
+        if any(i.severity == Severity.ERROR for i in input_issues):
+            logging.getLogger(__name__).warning(
+                "Input validation failed for %r, skipping", name_or_smiles
+            )
+            failed.append(name_or_smiles)
+            continue
+
+        display_name = name_or_smiles
+        slug = _slugify(display_name)
+
+        files, cdxml_path = _write_structure_files(mol, slug, display_name, fmts)
+        if cdxml_path:
+            cdxml_paths.append(cdxml_path)
+
+        properties = _enrich_properties(smiles)
+        fg_raw = extract_functional_groups(mol)
+        groups = [FunctionalGroup(**g) for g in fg_raw]
+        lipinski = _build_lipinski(properties)
+
+        mol_payloads.append(
+            MoleculePayload(
+                type="molecule",
+                svg=render_svg(mol, fill_container=True),
+                atoms=extract_atom_data(mol),
+                name=display_name,
+                properties=properties,
+                functionalGroups=groups,
+                lipinski=lipinski,
+                files=files,
+                cdxml_path=cdxml_path,
+            )
+        )
+
+    return BatchPayload(
+        type="batch",
+        molecules=mol_payloads,
+        cdxml_paths=cdxml_paths,
+        failed=failed,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_mechanism(
+    reaction_type: str,
+    substrates: list[str],
+    current_step: int = 0,
+) -> MechanismPayload:
+    """Generate a step-by-step reaction mechanism visualization.
+
+    Use this when the user asks about a reaction mechanism, electron-flow
+    arrows, or wants to see how a reaction proceeds step by step.
+
+    Args:
+        reaction_type: Mechanism type (e.g. "sn2", "sn1", "fischer_ester").
+        substrates: List of substrate SMILES or names.
+        current_step: 0 = overview (all steps), 1-N = specific step.
+    """
+    from chemdraw_tool.mechanism import validate_substrates
+    from chemdraw_tool.mechanism_coords import stabilize_sequence
+    from chemdraw_tool.mechanism_renderer import render_step_svg
+    from chemdraw_tool.templates import get_template, list_templates
+
+    template = get_template(reaction_type)
+    if template is None:
+        available = ", ".join(list_templates())
+        raise ValueError(
+            f"Reaktionstyp '{reaction_type}' nicht gefunden. "
+            f"Verfügbare Typen: {available}"
+        )
+
+    resolved = []
+    for s in substrates:
+        try:
+            smi, _mol = resolve(s)
+            resolved.append(smi)
+        except Exception:
+            resolved.append(s)
+
+    if not validate_substrates(template, resolved):
+        raise ValueError(
+            f"Substrate passen nicht zum Reaktionstyp '{reaction_type}'. "
+            f"Erwartet: Substrat-Pattern '{template.substrate_pattern}'"
+            + (
+                f", Nucleophil-Pattern '{template.nucleophile_pattern}'"
+                if template.nucleophile_pattern
+                else ""
+            )
+        )
+
+    steps_smiles = [step.molecules for step in template.steps]
+    stabilized = stabilize_sequence(steps_smiles)
+
+    if not stabilized:
+        raise ValueError(
+            f"Reaktionstyp '{reaction_type}' hat keine Schritte definiert."
+        )
+
+    step_payloads = []
+    for step, mols in zip(template.steps, stabilized):
+        svg = render_step_svg(step, mols)
+        step_payloads.append(
+            MechanismStepPayload(
+                svg=svg,
+                label=step.label,
+                is_transition_state=step.is_transition_state,
+            )
+        )
+
+    substrate_names = " + ".join(resolved[:2])
+    display_name = f"{template.name}: {substrate_names}"
+
+    clamped_step = max(0, min(current_step, len(step_payloads)))
+
+    return MechanismPayload(
+        type="mechanism",
+        name=display_name,
+        reaction_type=reaction_type,
+        steps=step_payloads,
+        current_step=clamped_step,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def calculate_validation(
+    variante: str,
+    wahrer_wert: float,
+    acid_einwaagen: list[float],
+    acid_volumina: list[float],
+    acid_referenz_einwaagen: list[float],
+    acid_referenz_volumina: list[float],
+    acid_blindwert: float,
+    uv_einwaagen: list[float] | None = None,
+    uv_absorptionen: list[float] | None = None,
+    uv_verduennungsfaktor: float = 100.0,
+    uv_kolbenvolumen_ml: float = 100.0,
+) -> ValidationPayload:
+    """Calculate the complete Rechenweg for a validation experiment (Analyse 5).
+
+    Compares two analytical methods (UV/HPLC vs. Acidimetry) using
+    F-test and Welch t-test. Returns structured results with step-by-step
+    calculations and explanations.
+
+    Use this when the user provides measurement data for a validation
+    experiment and wants the Rechenweg, statistics, and method comparison.
+
+    Args:
+        variante: "A" (HPLC/Ibuprofen) or "B" (UV/Ascorbinsäure).
+        wahrer_wert: True value in % (given by the lab).
+        acid_einwaagen: Weighings for analyses 1-6 in mg (Acidimetry).
+        acid_volumina: Titration volumes for analyses 1-6 in mL.
+        acid_referenz_einwaagen: Weighings for references 1+2 in mg.
+        acid_referenz_volumina: Titration volumes for references 1+2 in mL.
+        acid_blindwert: Blank titration volume in mL.
+        uv_einwaagen: (Variante B) Weighings in mg for UV measurements.
+        uv_absorptionen: (Variante B) Measured absorptions.
+        uv_verduennungsfaktor: Total dilution factor for UV measurement (default 100).
+        uv_kolbenvolumen_ml: Volumetric flask volume in mL (default 100).
+    """
+    from chemdraw_tool.calculator.stats import (
+        descriptive_stats,
+        f_test,
+        one_sample_t_test,
+        welch_t_test,
+    )
+    from chemdraw_tool.calculator.titration import (
+        SUBSTANCE_FACTORS,
+        calculate_gehalt_titration,
+        calculate_titer,
+    )
+
+    variante = variante.upper()
+    if variante == "B":
+        substance = "Ascorbinsäure"
+        substance_key = "ascorbinsaeure"
+    elif variante == "A":
+        raise ValueError(
+            "Variante A (HPLC/Ibuprofen) ist noch nicht implementiert. "
+            "Aktuell wird nur Variante B (UV/Ascorbinsäure) unterstützt."
+        )
+    else:
+        raise ValueError(
+            f"Unbekannte Variante '{variante}'. Aktuell nur 'B' unterstützt."
+        )
+
+    # --- Method A: UV-Photometrie (Variante B) ---
+    if variante == "B":
+        if not uv_einwaagen or not uv_absorptionen:
+            raise ValueError(
+                "UV-Daten (uv_einwaagen, uv_absorptionen) sind für "
+                "Variante B erforderlich."
+            )
+        from chemdraw_tool.calculator.photometry import calculate_gehalt_uv
+
+        uv_raw = calculate_gehalt_uv(
+            einwaagen=uv_einwaagen,
+            absorptionen=uv_absorptionen,
+            substance=substance_key,
+            verduennungsfaktor=uv_verduennungsfaktor,
+            kolbenvolumen_ml=uv_kolbenvolumen_ml,
+        )
+        uv_gehalte = [r["gehalt"] for r in uv_raw]
+        uv_steps = [
+            CalculationStep(
+                label=r["label"],
+                formula=r["formula"],
+                substitution=r["substitution"],
+                result=r["result"],
+                explanation=r["explanation"],
+            )
+            for r in uv_raw
+        ]
+        uv_stats = descriptive_stats(uv_gehalte, true_value=wahrer_wert)
+        uv_t = one_sample_t_test(uv_gehalte, mu=wahrer_wert)
+        method_a = MethodResult(
+            name="UV-Photometrie",
+            gehalt_steps=uv_steps,
+            mean=uv_stats["mean"],
+            std_abs=uv_stats["std_abs"],
+            std_rel=uv_stats["std_rel"],
+            variance=uv_stats["variance"],
+            recovery=uv_stats.get("recovery", 0.0),
+            rel_deviation=uv_stats.get("rel_deviation", 0.0),
+            t_test_value=uv_t["t_value"],
+            t_test_critical=uv_t["t_critical"],
+            t_test_passed=uv_t["passed"],
+            t_test_explanation=(
+                f"Einstichproben-t-Test: t = |x̄ − µ| / (s / √n) = "
+                f"{uv_t['t_value']:.3f}. "
+                f"t_krit({uv_t['df']} FG, α=0,05) = {uv_t['t_critical']:.3f}. "
+                f"{'Bestanden' if uv_t['passed'] else 'Nicht bestanden'}: "
+                f"{'t < t_krit → kein signifikanter Unterschied zum wahren Wert.' if uv_t['passed'] else 't ≥ t_krit → signifikanter Unterschied zum wahren Wert.'}"
+            ),
+        )
+    else:  # unreachable: nur Variante B erreicht diesen Block
+        raise ValueError(f"Interner Fehler: unerwartete Variante '{variante}'.")
+
+    # --- Method B: Acidimetrie ---
+    faktor = SUBSTANCE_FACTORS[substance_key]
+    titer = calculate_titer(
+        acid_referenz_einwaagen,
+        acid_referenz_volumina,
+        acid_blindwert,
+        faktor,
+    )
+    acid_raw = calculate_gehalt_titration(
+        einwaagen=acid_einwaagen,
+        volumina=acid_volumina,
+        blindwert=acid_blindwert,
+        faktor=faktor,
+        titer=titer,
+    )
+    acid_gehalte = [r["gehalt"] for r in acid_raw]
+    acid_steps = [
+        CalculationStep(
+            label=r["label"],
+            formula=r["formula"],
+            substitution=r["substitution"],
+            result=r["result"],
+            explanation=r["explanation"],
+        )
+        for r in acid_raw
+    ]
+    acid_stats = descriptive_stats(acid_gehalte, true_value=wahrer_wert)
+    acid_t = one_sample_t_test(acid_gehalte, mu=wahrer_wert)
+    method_b = MethodResult(
+        name="Acidimetrie",
+        gehalt_steps=acid_steps,
+        mean=acid_stats["mean"],
+        std_abs=acid_stats["std_abs"],
+        std_rel=acid_stats["std_rel"],
+        variance=acid_stats["variance"],
+        recovery=acid_stats.get("recovery", 0.0),
+        rel_deviation=acid_stats.get("rel_deviation", 0.0),
+        t_test_value=acid_t["t_value"],
+        t_test_critical=acid_t["t_critical"],
+        t_test_passed=acid_t["passed"],
+        t_test_explanation=(
+            f"Einstichproben-t-Test: t = |x̄ − µ| / (s / √n) = "
+            f"{acid_t['t_value']:.3f}. "
+            f"t_krit({acid_t['df']} FG, α=0,05) = {acid_t['t_critical']:.3f}. "
+            f"{'Bestanden' if acid_t['passed'] else 'Nicht bestanden'}."
+        ),
+    )
+
+    # --- Method Comparison ---
+    f_result = f_test(uv_gehalte, acid_gehalte)
+    welch_result = welch_t_test(uv_gehalte, acid_gehalte)
+
+    if f_result["passed"] and welch_result["passed"]:
+        result_text = "Methoden sind gleichwertig (F-Test und t-Test bestanden)."
+    elif not f_result["passed"]:
+        result_text = (
+            "Methoden sind NICHT gleichwertig — die Präzision "
+            "unterscheidet sich signifikant (F-Test nicht bestanden)."
+        )
+    else:
+        result_text = (
+            "Methoden sind NICHT gleichwertig — die Mittelwerte "
+            "unterscheiden sich signifikant (t-Test nicht bestanden)."
+        )
+
+    comparison = MethodComparison(
+        f_test_value=f_result["f_value"],
+        f_test_critical=f_result["f_critical"],
+        f_test_passed=f_result["passed"],
+        f_test_explanation=(
+            f"F-Test: F = s₁²/s₂² = {f_result['f_value']:.3f}. "
+            f"F_krit = {f_result['f_critical']:.3f}. "
+            f"{'Varianzen gleichwertig.' if f_result['passed'] else 'Varianzen unterschiedlich.'}"
+        ),
+        t_test_value=welch_result["t_value"],
+        t_test_critical=welch_result["t_critical"],
+        t_test_passed=welch_result["passed"],
+        t_test_explanation=(
+            f"Welch-t-Test: t = {welch_result['t_value']:.3f}. "
+            f"t_krit({welch_result['df']} FG) = {welch_result['t_critical']:.3f}. "
+            f"{'Mittelwerte gleichwertig.' if welch_result['passed'] else 'Mittelwerte unterschiedlich.'}"
+        ),
+        result_text=result_text,
+    )
+
+    # --- Summary ---
+    summary = (
+        f"Validierung {substance} (Variante {variante}): "
+        f"UV-Photometrie Gehalt = {method_a.mean:.2f} ± {method_a.std_abs:.2f} % "
+        f"(WFR {method_a.recovery:.1f} %), "
+        f"Acidimetrie Gehalt = {method_b.mean:.2f} ± {method_b.std_abs:.2f} % "
+        f"(WFR {method_b.recovery:.1f} %). "
+        f"Methodenvergleich: {result_text}"
+    )
+
+    return ValidationPayload(
+        type="validation",
+        variante=variante,
+        substance=substance,
+        wahrer_wert=wahrer_wert,
+        method_a=method_a,
+        method_b=method_b,
+        comparison=comparison,
+        summary=summary,
+    )
+
+
+@mcp.tool()
+def save_png(png_base64: str, filename: str) -> str:
+    """Persist a client-rendered PNG to ~/ChemDraw-Output/png/ and return its path.
+
+    Fallback path for the UI: used when the app's image-clipboard write is
+    blocked by the sandbox. Expects a base64 PNG (with or without a
+    `data:image/png;base64,` prefix).
+    """
+    from chemdraw_tool.png_writer import save_png_bytes
+
+    png_dir = Path.home() / "ChemDraw-Output" / "png"
+    try:
+        path = save_png_bytes(png_base64, filename, png_dir)
+    except (ValueError, OSError) as exc:
+        return f"Fehler: {exc}"
+    return str(path)
+
+
+@mcp.tool()
+def open_chemdraw_file(
+    file_path: str = "", name_or_smiles: str = "", cleanup: bool = True
+) -> str:
+    """Open a structure in ChemDraw for review or editing (macOS only).
+
+    Provide EITHER file_path (an existing .cdxml/.cdx file, e.g. from a
+    generate_* call with formats=["cdxml"]) OR name_or_smiles — then the
+    structure is generated as CDXML on demand and opened directly; no prior
+    generate_molecule call needed. By default runs Clean Up Structure to
+    standardize bond geometry.
+
+    Args:
+        file_path: Absolute path to an existing .cdxml file.
+        name_or_smiles: English/IUPAC name or SMILES to generate & open.
+        cleanup: Run Clean Up Structure after opening (default: True).
+    """
+    if not file_path and not name_or_smiles:
+        return (
+            "Bitte entweder file_path (vorhandene .cdxml-Datei) oder "
+            "name_or_smiles (Struktur wird dann direkt erzeugt) angeben."
+        )
+
+    if not file_path:
+        smiles, mol = resolve(name_or_smiles)
+        mol = generate_2d(mol)
+        input_issues = validate_input(mol)
+        for issue in input_issues:
+            if issue.severity == Severity.ERROR:
+                raise ValueError(f"Input validation failed: {issue.message}")
+        slug = _slugify(name_or_smiles)
+        _, file_path = _write_structure_files(mol, slug, name_or_smiles, ["cdxml"])
+
+    if Path(file_path).suffix.lower() not in (".cdxml", ".cdx"):
+        return f"Nur ChemDraw-Dateien (.cdxml/.cdx) werden geöffnet, nicht: {file_path}"
+
+    if not Path(file_path).exists():
+        return f"Datei nicht gefunden: {file_path}"
+
+    if find_chemdraw() is None:
+        return "ChemDraw ist auf diesem Mac nicht installiert."
+
+    success = open_in_chemdraw(file_path, cleanup=cleanup)
+    if success:
+        msg = f"Geöffnet in ChemDraw: {file_path}"
+        if cleanup:
+            msg += " (Clean Up Structure ausgeführt)"
+        return msg
+    return f"Fehler beim Öffnen: {file_path}"
+
+
+if vault_enabled():
+
+    @mcp.tool()
+    def search_vault(query: str) -> str:
+        """Search the configured local knowledge vault.
+
+        Optional, opt-in feature. Enabled via CHEMDRAW_VAULT_PATH env var.
+        For most users, materials live in Claude Projects instead.
+
+        Args:
+            query: Search term.
+        """
+        results = search(query)
+        if not results:
+            entries = list_entries()
+            lines = [f"Keine Treffer für '{query}'.\n"]
+            lines.append("**Verfügbare Einträge:**\n")
+            for cat, names in sorted(entries.items()):
+                lines.append(f"### {cat}")
+                for name in names:
+                    lines.append(f"- {name}")
+                lines.append("")
+            return "\n".join(lines)
+
+        lines = [f"## Suchergebnisse für '{query}'\n"]
+        for r in results:
+            lines.append(f"### {r['name']} ({r['category']})")
+            lines.append(f"*Pfad: {r['path']}*")
+            if r["snippet"]:
+                lines.append(f"\n> {r['snippet']}\n")
+            lines.append(
+                f'→ `read_vault_entry("{r["name"]}")` für vollständigen Inhalt\n'
+            )
+        return "\n".join(lines)
+
+    @mcp.tool()
+    def read_vault_entry(name: str) -> str:
+        """Read a specific entry from the configured local vault.
+
+        Args:
+            name: Entry name.
+        """
+        entry_name, content = read_entry(name)
+        if content is None:
+            entries = list_entries()
+            lines = [f"Eintrag '{name}' nicht gefunden.\n"]
+            lines.append("**Verfügbare Einträge:**\n")
+            for cat, names in sorted(entries.items()):
+                lines.append(f"### {cat}")
+                for name in names:
+                    lines.append(f"- {name}")
+                lines.append("")
+            return "\n".join(lines)
+
+        return f"# {entry_name}\n\n{content}"
+
+
+def main():
+    import logging
+
+    log_path = Path.home() / "ChemDraw-Output" / "server.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    fh = logging.FileHandler(str(log_path))
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
+    logging.getLogger().addHandler(fh)
+    logging.getLogger().setLevel(logging.DEBUG)
+    logging.getLogger(__name__).info("MCP server starting")
+    mcp.run(transport="stdio")
