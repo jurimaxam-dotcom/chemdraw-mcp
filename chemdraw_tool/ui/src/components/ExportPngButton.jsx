@@ -41,7 +41,7 @@ export default function ExportPngButton({ svg, filename, size }) {
       }
       // 2. Fallback: backend writes the file.
       try {
-        if (!app?.callServerTool) throw new Error("Keine App-Bridge");
+        if (!app?.callServerTool) throw new Error("No app bridge");
         const b64 = await blobToBase64(blob);
         const result = await app.callServerTool({
           name: "save_png",
@@ -52,7 +52,7 @@ export default function ExportPngButton({ svg, filename, size }) {
         // text won't start with "Fehler:"); check it so they don't flash a false
         // green "Gespeichert". The "Fehler:" prefix covers the backend's own soft errors.
         if (result?.isError || !text || text.startsWith("Fehler:")) {
-          throw new Error(text || "Kein Pfad");
+          throw new Error(text || "No path");
         }
         setSavedPath(text);
         flash("saved");
@@ -66,12 +66,12 @@ export default function ExportPngButton({ svg, filename, size }) {
 
   const title =
     status === "copied"
-      ? "Als Bild kopiert"
+      ? "Copied as image"
       : status === "saved"
-      ? `Gespeichert: ${savedPath}`
+      ? `Saved: ${savedPath}`
       : status === "error"
-      ? "Export fehlgeschlagen"
-      : "Als PNG exportieren";
+      ? "Export failed"
+      : "Export as PNG";
 
   const borderColor = ok
     ? "var(--copy-success)"

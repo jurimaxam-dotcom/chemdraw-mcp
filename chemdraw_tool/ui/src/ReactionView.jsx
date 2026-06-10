@@ -39,7 +39,7 @@ function ConditionsCaption({ conditions }) {
         lineHeight: 1.4,
       }}
     >
-      <span style={{ color: "var(--fg-muted)", marginRight: 6, fontSize: 9, letterSpacing: "0.04em", textTransform: "uppercase" }}>Bedingungen</span>
+      <span style={{ color: "var(--fg-muted)", marginRight: 6, fontSize: 9, letterSpacing: "0.04em", textTransform: "uppercase" }}>Conditions</span>
       <span style={{ color: "var(--fg)" }}>{conditions}</span>
     </div>
   );

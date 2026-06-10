@@ -77,7 +77,7 @@ function SourcePanel({ source, moleculeSvg }) {
               textDecoration: "none",
             }}
           >
-            {source.source || "Quelle öffnen"} →
+            {source.source || "View source"} →
           </a>
         </div>
       )}
@@ -131,7 +131,7 @@ export default function DatabaseView({ data }) {
         </div>
       ) : (
         <div style={{ color: "var(--fg-muted)", fontSize: 11 }}>
-          Keine Daten verfügbar
+          No data available
         </div>
       )}
     </div>

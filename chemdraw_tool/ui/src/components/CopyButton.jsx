@@ -34,7 +34,7 @@ export default function CopyButton({ text, size }) {
   return (
     <button
       onClick={handleCopy}
-      title="Kopieren"
+      title="Copy"
       style={{
         width: dim,
         height: dim,

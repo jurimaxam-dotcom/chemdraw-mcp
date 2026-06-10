@@ -77,7 +77,7 @@ export default function MoleculeView({ data }) {
       >
         <div>
           <div style={{ fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>
-            {data.name || "Molekül"}
+            {data.name || "Molecule"}
           </div>
           {data.subtitle && (
             <div style={{ fontSize: 10, color: "var(--fg-muted)", marginTop: 1 }}>
@@ -147,15 +147,15 @@ export default function MoleculeView({ data }) {
           {/* Steckbrief */}
           <div>
             <SectionLabel>Steckbrief</SectionLabel>
-            <PropRow label="Formel" value={data.formula ?? props.formula} copyable mono={false} />
-            <PropRow label="Masse" value={props.mw} copyable={false} mono={false} />
+            <PropRow label="Formula" value={data.formula ?? props.formula} copyable mono={false} />
+            <PropRow label="Mass" value={props.mw} copyable={false} mono={false} />
             <PropRow label="CAS" value={props.cas} copyable mono={false} />
           </div>
 
-          {/* Funktionelle Gruppen */}
+          {/* Functional groups */}
           {groups.length > 0 && (
             <div>
-              <SectionLabel>Funktionelle Gruppen</SectionLabel>
+              <SectionLabel>Functional groups</SectionLabel>
               <FunctionalGroupList
                 groups={groups}
                 hoveredGroup={hoveredGroup}

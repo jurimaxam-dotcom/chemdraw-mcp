@@ -1,15 +1,15 @@
 import React from "react";
 
-const ELEMENT_NAMES_DE = {
-  C: "Kohlenstoff",
-  O: "Sauerstoff",
-  N: "Stickstoff",
-  S: "Schwefel",
-  H: "Wasserstoff",
-  Cl: "Chlor",
-  F: "Fluor",
-  Br: "Brom",
-  P: "Phosphor",
+const ELEMENT_NAMES = {
+  C: "Carbon",
+  O: "Oxygen",
+  N: "Nitrogen",
+  S: "Sulfur",
+  H: "Hydrogen",
+  Cl: "Chlorine",
+  F: "Fluorine",
+  Br: "Bromine",
+  P: "Phosphorus",
 };
 
 const ELEMENT_COLORS = {
@@ -25,7 +25,7 @@ const ELEMENT_COLORS = {
 export default function AtomTooltip({ atom, position }) {
   if (!atom) return null;
 
-  const name = ELEMENT_NAMES_DE[atom.el] || atom.el;
+  const name = ELEMENT_NAMES[atom.el] || atom.el;
   const color = ELEMENT_COLORS[atom.el] || "var(--fg)";
 
   let chargeStr = "";

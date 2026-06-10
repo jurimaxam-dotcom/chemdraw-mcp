@@ -33,8 +33,8 @@ export default function LipinskiBadge({ lipinski }) {
         </span>
         <span style={{ fontSize: 9, color: "var(--fg-muted)" }}>
           {lipinski.violations === 0
-            ? "0 Verletzungen"
-            : `${lipinski.violations} Verletzung${lipinski.violations > 1 ? "en" : ""}`}
+            ? "0 violations"
+            : `${lipinski.violations} violation${lipinski.violations > 1 ? "s" : ""}`}
         </span>
       </div>
       <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>

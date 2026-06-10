@@ -128,10 +128,10 @@ function StepMode({ steps, currentStep, setCurrentStep }) {
             fontFamily: "var(--font)",
           }}
         >
-          ← Zurück
+          ← Back
         </button>
         <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>
-          Schritt {currentStep + 1} / {total}
+          Step {currentStep + 1} / {total}
         </div>
         <button
           onClick={() => setCurrentStep(Math.min(total - 1, currentStep + 1))}
@@ -147,7 +147,7 @@ function StepMode({ steps, currentStep, setCurrentStep }) {
             fontFamily: "var(--font)",
           }}
         >
-          Weiter →
+          Next →
         </button>
       </div>
 
@@ -190,7 +190,7 @@ export default function MechanismView({ data }) {
   if (steps.length === 0) {
     return (
       <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        Keine Schritte vorhanden.
+        No steps available.
       </div>
     );
   }
@@ -230,7 +230,7 @@ export default function MechanismView({ data }) {
               transition: "all 0.15s",
             }}
           >
-            {m === "overview" ? "Übersicht" : "Schritt für Schritt"}
+            {m === "overview" ? "Overview" : "Step by step"}
           </button>
         ))}
       </div>

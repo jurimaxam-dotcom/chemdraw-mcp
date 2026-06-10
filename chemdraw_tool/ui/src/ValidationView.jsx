@@ -46,7 +46,7 @@ function CalcStep({ step }) {
       </div>
       {open && (
         <div style={{ marginTop: 8, fontSize: 11 }}>
-          <div style={{ color: "var(--fg-muted)", marginBottom: 2 }}>Formel:</div>
+          <div style={{ color: "var(--fg-muted)", marginBottom: 2 }}>Formula:</div>
           <div style={{ fontFamily: "var(--font-mono)", marginBottom: 6 }}>
             {step.formula}
           </div>
@@ -153,9 +153,9 @@ function MethodSection({ method }) {
               marginTop: 4,
             }}
           >
-            <StatBox label="Mittelwert" value={method.mean} unit="%" />
+            <StatBox label="Mean" value={method.mean} unit="%" />
             <StatBox label="s_rel" value={method.std_rel} unit="%" />
-            <StatBox label="WFR" value={method.recovery} unit="%" />
+            <StatBox label="Recovery" value={method.recovery} unit="%" />
           </div>
           <div
             style={{
@@ -166,11 +166,11 @@ function MethodSection({ method }) {
             }}
           >
             <StatBox label="s_abs" value={method.std_abs} unit="%" />
-            <StatBox label="Varianz" value={method.variance} unit="%²" />
-            <StatBox label="rel. Abw." value={method.rel_deviation} unit="%" />
+            <StatBox label="Variance" value={method.variance} unit="%²" />
+            <StatBox label="Rel. dev." value={method.rel_deviation} unit="%" />
           </div>
           <TestResult
-            label="Einstichproben-t-Test"
+            label="One-sample t-test"
             value={method.t_test_value}
             critical={method.t_test_critical}
             passed={method.t_test_passed}
@@ -197,14 +197,14 @@ export default function ValidationView({ data }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <TestResult
-            label="F-Test (Varianzen)"
+            label="F-test (variances)"
             value={data.comparison.f_test_value}
             critical={data.comparison.f_test_critical}
             passed={data.comparison.f_test_passed}
             explanation={data.comparison.f_test_explanation}
           />
           <TestResult
-            label="Welch-t-Test (Mittelwerte)"
+            label="Welch's t-test (means)"
             value={data.comparison.t_test_value}
             critical={data.comparison.t_test_critical}
             passed={data.comparison.t_test_passed}
