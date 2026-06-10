@@ -67,6 +67,21 @@ class BatchPayload(BaseModel):
     failed: list[str] = []
 
 
+class SpectrumPeak(BaseModel):
+    position: float
+    intensity: float = 1.0
+    width: float | None = None
+    label: str = ""
+
+
+class SpectrumPayload(BaseModel):
+    type: str = "spectrum"
+    spectrum_type: str
+    name: str = ""
+    svg: str = ""
+    files: dict[str, str] = {}
+
+
 class DatabaseRow(BaseModel):
     key: str
     val: str

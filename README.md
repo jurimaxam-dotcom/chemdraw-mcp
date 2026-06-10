@@ -34,6 +34,9 @@ with an interactive preview panel rendered inline.
 - **`batch_generate`** — a whole list of structures in one call
 - **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
   esterification) step by step
+- **`generate_spectrum`** — schematic spectra from peak lists (IR, NIR,
+  Raman, UV/Vis, fluorescence, ORD, CD, ¹H/¹³C NMR, MS) with per-type axis
+  conventions — draws given peaks, does not predict spectra
 - **`lookup_*`** — substance data from PubChem, ChEBI, KEGG and UniProt
   (properties, GHS safety, pathways)
 - **`calculate_validation`** — Ph.Eur.-style content determination with full

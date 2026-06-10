@@ -9,6 +9,7 @@ dependencies = [
     "requests",
     "mcp",
     "Pillow",
+    "matplotlib>=3.10.9",
 ]
 
 [project.scripts]

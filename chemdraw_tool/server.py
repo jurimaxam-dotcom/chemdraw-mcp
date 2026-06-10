@@ -41,15 +41,23 @@ from chemdraw_tool.payloads import (
     MethodResult,
     MoleculePayload,
     ReactionPayload,
+    SpectrumPayload,
+    SpectrumPeak,
     ValidationPayload,
 )
 from chemdraw_tool.resolver import resolve
+from chemdraw_tool.spectrum import (
+    SPECTRUM_TYPES,
+    render_spectrum_png,
+    render_spectrum_svg,
+)
 from chemdraw_tool.validator import Severity, validate_input, validate_roundtrip
 from chemdraw_tool.vault import is_enabled as vault_enabled
 from chemdraw_tool.vault import list_entries, read_entry, search
 
 OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
 REACTION_DIR = Path.home() / "ChemDraw-Output"
+SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -255,6 +263,72 @@ def generate_molecule(
         lipinski=lipinski,
         files=files,
         cdxml_path=cdxml_path,
+    )
+
+
+@mcp.tool(structured_output=True)
+def generate_spectrum(
+    spectrum_type: str,
+    peaks: list[SpectrumPeak],
+    title: str = "",
+    formats: list[str] | None = None,
+) -> SpectrumPayload:
+    """Draw a schematic spectrum from a peak list as print-ready PNG/SVG files.
+
+    Supported spectrum types: "ir", "nir", "raman", "uv_vis", "fluorescence",
+    "ord", "cd", "nmr_1h", "nmr_13c", "ms". Axis conventions are handled
+    automatically (IR: inverted wavenumber axis with transmission dips;
+    NMR: ppm axis right-to-left; MS: bar plot; ORD: Cotton-effect curve;
+    CD: signed bands around zero).
+
+    The tool draws exactly the peaks it is given — it does not predict
+    spectra. Pass literature values or measured peak positions.
+
+    Args:
+        spectrum_type: One of "ir", "nir", "raman", "uv_vis", "fluorescence",
+            "ord", "cd", "nmr_1h", "nmr_13c", "ms".
+        peaks: Peak list. position uses the type's natural unit (cm⁻¹ for
+            ir/nir/raman, nm for uv_vis/fluorescence/ord/cd, ppm for NMR,
+            m/z for ms). intensity is relative on any scale (negative values
+            only for ord/cd). width (optional) is the half-width in x-units;
+            label (optional) annotates the peak in the plot (e.g. "C=O").
+        title: Display name shown in the plot title, also used for the
+            filename (can be localized, e.g. "Aspirin IR").
+        formats: Output file formats, any of "png", "svg" (default: both).
+            CDXML is not available for spectra.
+    """
+    fmts = _normalize_formats(formats)
+    if "cdxml" in fmts:
+        raise ValueError(
+            "Spektren unterstützen nur png/svg — CDXML ist ein Strukturformat"
+        )
+
+    cfg = SPECTRUM_TYPES.get(spectrum_type)
+    if cfg is None:
+        raise ValueError(
+            f"Unbekannter Spektrentyp {spectrum_type!r} — "
+            f"erlaubt sind {sorted(SPECTRUM_TYPES)}"
+        )
+
+    peak_dicts = [SpectrumPeak.model_validate(p).model_dump() for p in peaks]
+
+    artifacts: dict[str, bytes | str] = {}
+    if "png" in fmts:
+        artifacts["png"] = render_spectrum_png(spectrum_type, peak_dicts, title=title)
+    if "svg" in fmts:
+        artifacts["svg"] = render_spectrum_svg(spectrum_type, peak_dicts, title=title)
+    slug = _slugify(title or cfg.title)
+    files = write_files(SPECTRUM_DIR / slug, artifacts)
+
+    svg_preview = artifacts.get("svg") or render_spectrum_svg(
+        spectrum_type, peak_dicts, title=title
+    )
+
+    return SpectrumPayload(
+        spectrum_type=spectrum_type,
+        name=title,
+        svg=svg_preview,
+        files=files,
     )
 
 

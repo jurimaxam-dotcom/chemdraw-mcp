@@ -43,6 +43,7 @@ chemdraw_tool/
 ├── generator.py           — RDKit 2D coordinates
 ├── image_export.py        — PNG/SVG file rendering (primary output path)
 ├── svg_renderer.py        — SVG for the embedded UI preview (shared BOND_LINE_WIDTH)
+├── spectrum.py            — schematic spectra from peak lists (matplotlib → PNG/SVG)
 ├── cdxml_writer.py        — RDKit mol → ChemDraw CDXML (optional format)
 ├── layout.py              — reaction scheme layout (arrows, +, conditions)
 ├── mechanism*.py           — reaction mechanism definitions/coords/rendering
@@ -67,4 +68,4 @@ default `["png","svg"]`. CDXML only on explicit request.
 - Tests: pytest, TDD (red first — no production code without a failing test)
 - UI preview and exported files must stay visually consistent
   (shared constants like `BOND_LINE_WIDTH`; parity is test-enforced)
-- Dependencies: rdkit, lxml, requests, mcp, Pillow
+- Dependencies: rdkit, lxml, requests, mcp, Pillow, matplotlib
