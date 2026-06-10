@@ -1,0 +1,35 @@
+name: Publish to PyPI
+
+# Trusted Publishing (OIDC) — no API token stored anywhere.
+# One-time setup on pypi.org: Account → Publishing → Add pending publisher
+#   PyPI project name: chemdraw-mcp
+#   Owner: jurimaxam-dotcom   Repository: chemdraw-mcp
+#   Workflow name: publish.yml   Environment: (leave empty)
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.2.0
+      - run: uv build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
