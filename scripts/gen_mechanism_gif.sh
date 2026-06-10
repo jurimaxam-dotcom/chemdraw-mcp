@@ -12,7 +12,7 @@ with open('/tmp/mech_payload.json', 'w') as f:
     json.dump(m.model_dump(), f)
 "
 
-(cd chemdraw_tool/ui && node gen_mechanism_frames.mjs "file://$(pwd)/chemdraw_tool/ui/dist/index.html")
+(cd chemdraw_tool/ui && node gen_mechanism_frames.mjs "file://$(pwd)/dist/index.html")
 
 ffmpeg -y -framerate 0.75 -i /tmp/mech_frame_%02d.png \
   -vf "fps=10,scale=720:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
