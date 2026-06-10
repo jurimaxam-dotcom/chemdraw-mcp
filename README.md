@@ -58,13 +58,18 @@ if missing, resolves Python + RDKit, and registers the server in Claude
 Desktop's config (idempotent, with backup — existing MCP servers are left
 untouched). Restart Claude Desktop, then ask: *"draw caffeine"*.
 
+Optional: with a Java runtime installed (e.g. `brew install openjdk`),
+systematic IUPAC names — including ones no database indexes — are parsed
+offline via [OPSIN](https://github.com/dan2097/opsin). Without Java the
+server falls back to the PubChem/NCI online lookup.
+
 ## How it works
 
 ```
 name / SMILES
    │
    ▼
-resolver ──► PubChem / NCI (names)  ·  direct parse (SMILES)
+resolver ──► OPSIN (systematic IUPAC names, offline) ──► PubChem / NCI (names)  ·  direct parse (SMILES)
    │
    ▼
 RDKit 2D coordinates ──► validation (sanity, round-trip)

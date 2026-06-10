@@ -39,7 +39,9 @@ regenerate it just to make a diff disappear.
 
 ```
 chemdraw_tool/
-├── resolver.py            — SMILES detection + PubChem/NCI name→SMILES
+├── resolver.py            — SMILES detection + name→SMILES cascade:
+│                            OPSIN (offline, needs Java; degrades gracefully)
+│                            → PubChem → NCI
 ├── generator.py           — RDKit 2D coordinates
 ├── image_export.py        — PNG/SVG file rendering (primary output path)
 ├── svg_renderer.py        — SVG for the embedded UI preview (shared BOND_LINE_WIDTH)
@@ -68,4 +70,6 @@ default `["png","svg"]`. CDXML only on explicit request.
 - Tests: pytest, TDD (red first — no production code without a failing test)
 - UI preview and exported files must stay visually consistent
   (shared constants like `BOND_LINE_WIDTH`; parity is test-enforced)
-- Dependencies: rdkit, lxml, requests, mcp, Pillow, matplotlib
+- Dependencies: rdkit, lxml, requests, mcp, Pillow, matplotlib, py2opsin
+  (OPSIN needs a JRE at runtime; without one the resolver degrades to
+  PubChem/NCI — never make Java a hard requirement)

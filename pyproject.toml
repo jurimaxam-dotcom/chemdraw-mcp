@@ -10,6 +10,7 @@ dependencies = [
     "mcp",
     "Pillow",
     "matplotlib>=3.10.9",
+    "py2opsin>=1.2.0",
 ]
 
 [project.scripts]

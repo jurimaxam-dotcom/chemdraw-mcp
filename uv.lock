@@ -210,6 +210,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "mcp" },
     { name = "pillow" },
+    { name = "py2opsin" },
     { name = "rdkit" },
     { name = "requests" },
 ]
@@ -227,6 +228,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "mcp" },
     { name = "pillow" },
+    { name = "py2opsin", specifier = ">=1.2.0" },
     { name = "rdkit" },
     { name = "requests" },
 ]
@@ -1124,6 +1126,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
+]
+
+[[package]]
+name = "py2opsin"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5b/dd/fbd0583551e53b32fad093367422d722117d55d06d813acfa2f071c57d00/py2opsin-1.2.0.tar.gz", hash = "sha256:6e1fb22cc7ecaf9622dd770811ccaaced0348a011d6cb6e847dc3c82fd346147", size = 13382561, upload-time = "2026-03-16T13:08:34.732Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/7a/18e4043d62ec93d4062c3ad489103a5f71698b8230102d16320a6332d3b8/py2opsin-1.2.0-py3-none-any.whl", hash = "sha256:56c925f211b6a90979da2c322bbf70edbe0d33a9b977ec8a12747c06847bd2e9", size = 13377795, upload-time = "2026-03-16T13:08:32.327Z" },
 ]
 
 [[package]]

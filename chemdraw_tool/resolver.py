@@ -1,5 +1,11 @@
+import functools
 import logging
+import os
 import re
+import shutil
+import subprocess
+import tempfile
+import warnings
 from urllib.parse import quote
 
 import requests
@@ -76,6 +82,70 @@ def _nci_cir_lookup(name: str) -> str | None:
         return None
 
 
+# macOS ships a /usr/bin/java stub that exists but fails without a JRE, and
+# Homebrew's openjdk is keg-only (not on PATH). Probe known locations and, on
+# success, prepend the bin dir to PATH so py2opsin's bare "java" call works —
+# the MCP server is launched by Claude Desktop with a minimal GUI PATH.
+_JAVA_CANDIDATES = (
+    "/opt/homebrew/opt/openjdk/bin/java",
+    "/usr/local/opt/openjdk/bin/java",
+)
+
+
+@functools.cache
+def _java_runtime_available() -> bool:
+    for java in (shutil.which("java"), *_JAVA_CANDIDATES):
+        if not java or not os.path.exists(java):
+            continue
+        try:
+            ok = (
+                subprocess.run(
+                    [java, "-version"], capture_output=True, timeout=10
+                ).returncode
+                == 0
+            )
+        except Exception:
+            continue
+        if ok:
+            bin_dir = os.path.dirname(java)
+            path = os.environ.get("PATH", "")
+            if bin_dir not in path.split(os.pathsep):
+                os.environ["PATH"] = bin_dir + os.pathsep + path
+            return True
+    return False
+
+
+def _opsin_lookup(name: str) -> str | None:
+    """Parse systematic IUPAC nomenclature offline via OPSIN (rule-based).
+
+    Returns None when no JRE is reachable (graceful degradation to the
+    network cascade) or when OPSIN can't parse the name (trivial names).
+    """
+    if not _java_runtime_available():
+        return None
+    # Import after the PATH fix above; py2opsin probes `java -version` at
+    # import time and warns on every unparseable name — keep logs clean.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        from py2opsin import py2opsin
+
+        # py2opsin writes its input file to CWD by default; the server's CWD
+        # under Claude Desktop is / (not writable).
+        tmp_fpath = os.path.join(
+            tempfile.gettempdir(), f"py2opsin_input_{os.getpid()}.txt"
+        )
+        try:
+            smiles = py2opsin(name, output_format="SMILES", tmp_fpath=tmp_fpath)
+        except Exception:
+            # py2opsin's error path is buggy (str + Exception raises TypeError)
+            return None
+    if not isinstance(smiles, str) or not smiles:
+        return None
+    if validate_smiles(smiles) is None:
+        return None
+    return smiles
+
+
 def _transliterate(name: str) -> str | None:
     """Replace umlauts with ASCII equivalents. Returns None if no change."""
     result = name.translate(_UMLAUT_MAP)
@@ -85,10 +155,14 @@ def _transliterate(name: str) -> str | None:
 def resolve_name(name: str) -> str:
     """Resolve a compound name to SMILES via fallback cascade.
 
-    1. PubChem direct (handles English names + many synonyms)
-    2. PubChem with umlaut transliteration (ä→ae etc.)
-    3. NCI CIR with transliteration
+    1. OPSIN (offline, rule-based — systematic IUPAC names, no DB index needed)
+    2. PubChem direct (handles English names + many synonyms)
+    3. PubChem with umlaut transliteration (ä→ae etc.)
+    4. NCI CIR with transliteration
     """
+    if smiles := _opsin_lookup(name):
+        return smiles
+
     if smiles := _pubchem_lookup(name):
         return smiles
 

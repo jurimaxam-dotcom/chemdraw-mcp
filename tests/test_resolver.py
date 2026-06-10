@@ -1,8 +1,15 @@
 from unittest.mock import Mock, patch
 
 import pytest
+from rdkit import Chem
 
-from chemdraw_tool.resolver import is_smiles, resolve, resolve_name, validate_smiles
+from chemdraw_tool.resolver import (
+    _opsin_lookup,
+    is_smiles,
+    resolve,
+    resolve_name,
+    validate_smiles,
+)
 
 
 def test_is_smiles_recognizes_smiles_with_parens():
@@ -60,15 +67,17 @@ def test_resolve_name_returns_smiles(mock_get):
 
 @patch("chemdraw_tool.resolver.requests.get")
 def test_resolve_name_calls_pubchem(mock_get):
+    # "Aspirin", nicht "Water": OPSIN kennt water und löst es offline,
+    # bevor der PubChem-Pfad (den dieser Test prüft) erreicht wird.
     mock_resp = Mock()
     mock_resp.json.return_value = {
-        "PropertyTable": {"Properties": [{"CID": 1, "SMILES": "O"}]}
+        "PropertyTable": {"Properties": [{"CID": 2244, "SMILES": "O"}]}
     }
     mock_resp.raise_for_status = Mock()
     mock_get.return_value = mock_resp
-    resolve_name("Water")
+    resolve_name("Aspirin")
     url = mock_get.call_args[0][0]
-    assert "Water" in url
+    assert "Aspirin" in url
     assert "pubchem" in url
 
 
@@ -163,3 +172,46 @@ def test_resolve_name_path_still_works_for_real_names(mock_pubchem):
     smiles, mol = resolve("Aspirin")
     mock_pubchem.assert_called_once()
     assert mol.GetNumAtoms() == 13
+
+
+# --- OPSIN: systematische IUPAC-Namen offline (py2opsin; braucht eine JRE) ---
+# PubChem/NCI sind index-basiert und scheitern an systematischen Namen, die in
+# keiner DB stehen. OPSIN parst Nomenklatur regelbasiert und offline — er steht
+# deshalb VOR den Netz-Lookups in der Kaskade.
+
+
+def test_opsin_lookup_parses_systematic_name():
+    smiles = _opsin_lookup("propan-2-ol")
+    assert smiles is not None
+    assert Chem.CanonSmiles(smiles) == Chem.CanonSmiles("CC(C)O")
+
+
+def test_opsin_lookup_trivial_name_returns_none():
+    """Markennamen kennt OPSIN nicht → None, Kaskade geht weiter."""
+    assert _opsin_lookup("Tylenol") is None
+
+
+@patch("chemdraw_tool.resolver._java_runtime_available", return_value=False)
+def test_opsin_lookup_without_java_returns_none(mock_java):
+    """Ohne JRE degradiert OPSIN still — kein Crash, Netz-Kaskade übernimmt."""
+    assert _opsin_lookup("propan-2-ol") is None
+
+
+@patch("chemdraw_tool.resolver._nci_cir_lookup")
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+def test_resolve_systematic_iupac_name_offline(mock_pubchem, mock_nci):
+    """Systematische Namen dürfen NIE ins Netz gehen — OPSIN löst offline."""
+    smiles, mol = resolve("2-methylbutan-2-ol")
+    mock_pubchem.assert_not_called()
+    mock_nci.assert_not_called()
+    symbols = sorted(a.GetSymbol() for a in mol.GetAtoms())
+    assert symbols == ["C", "C", "C", "C", "C", "O"]
+
+
+@patch("chemdraw_tool.resolver._nci_cir_lookup")
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+def test_resolve_systematic_stereo_name_offline(mock_pubchem, mock_nci):
+    """(2S)-Stereodeskriptor übersteht OPSIN→RDKit: L-Tryptophan per InChIKey."""
+    smiles, mol = resolve("(2S)-2-amino-3-(1H-indol-3-yl)propanoic acid")
+    mock_pubchem.assert_not_called()
+    assert Chem.MolToInchiKey(mol) == "QIVBCDIJIAJPQS-VIFPVBQESA-N"
