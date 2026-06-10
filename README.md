@@ -1,5 +1,7 @@
 # chemdraw-mcp
 
+<!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->
+
 [![CI](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml)
 
 **Chat → chemical structure.** An MCP server for Claude Desktop that turns
