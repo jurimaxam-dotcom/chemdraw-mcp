@@ -1,5 +1,7 @@
 # chemdraw-mcp
 
+[![CI](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml)
+
 **Chat → chemical structure.** An MCP server for Claude Desktop that turns
 molecule names or SMILES into publication-style 2D structure drawings —
 *"draw aspirin"* produces a print-ready PNG/SVG, rendered fully offline with

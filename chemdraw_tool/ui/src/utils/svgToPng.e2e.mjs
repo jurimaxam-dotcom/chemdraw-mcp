@@ -37,7 +37,13 @@ const SVG = readFileSync(
   "utf8",
 );
 const MODULE_SRC = readFileSync(join(__dirname, "svgToPng.js"), "utf8");
-const SNAPSHOT = join(__dirname, "__fixtures__", "aspirin.expected.png");
+// Rasterization is only deterministic per platform (anti-aliasing differs
+// across OS/arch), so each platform gets its own golden file. darwin keeps
+// the original un-suffixed reference from before multi-platform CI.
+const SNAPSHOT =
+  process.platform === "darwin"
+    ? join(__dirname, "__fixtures__", "aspirin.expected.png")
+    : join(__dirname, "__fixtures__", `aspirin.expected.${process.platform}.png`);
 const UPDATE = process.env.UPDATE_SNAPSHOTS === "1";
 const SCALE = 3;
 const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
