@@ -13,10 +13,12 @@ druckfertig fürs Protokoll.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
-from rdkit.Chem import rdChemReactions
+from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Geometry import Point2D, Point3D
 
 from chemdraw_tool.svg_renderer import BOND_LINE_WIDTH
 
@@ -28,6 +30,17 @@ MOL_SVG_SIZE = (500, 400)
 # Reaktionen sind breit (Edukte + Pfeil + Produkte).
 RXN_PNG_SIZE = (1600, 480)
 RXN_SVG_SIZE = (900, 270)
+
+# Reaktions-Layout in Mol-Koordinaten (RDKit-Bondlänge ≈ 1.5 Einheiten).
+# Atomlabels (OH, H2O) werden um die Atom-KOORDINATE herum gezeichnet und
+# ragen darüber hinaus — LABEL_PAD reserviert diesen Überhang, damit '+'
+# und Pfeil nie mit Labels kollidieren (RDKits DrawReaction tat genau das).
+LABEL_PAD = 0.9
+PLUS_GAP = 1.2
+ARROW_LENGTH = 4.0
+ARROW_PAD = 0.9
+# Texthöhe der Conditions-Zeile in Mol-Koordinaten (Atomlabels sind ~0.7).
+CONDITIONS_FONT = 0.55
 
 
 def _draw_molecule(drawer, mol, legend: str) -> None:
@@ -56,29 +69,158 @@ def render_molecule_svg(
     return drawer.GetDrawingText()
 
 
-def _reaction_from_smiles(reaction_smiles: str):
-    rxn = rdChemReactions.ReactionFromSmarts(reaction_smiles, useSmiles=True)
-    if rxn is None:
-        raise ValueError(f"Ungültiges Reaktions-SMILES: {reaction_smiles!r}")
-    return rxn
+@dataclass(frozen=True)
+class ReactionLayout:
+    """Alle Komponenten als EIN Mol mit nebeneinander verschobenen Conformern
+    plus die Positionen der Schema-Glyphen (Mol-Koordinaten)."""
+
+    mol: Chem.Mol
+    plus_positions: list[tuple[float, float]]
+    arrow: tuple[tuple[float, float], tuple[float, float]]
+
+
+def _shifted_copy(mol: Chem.Mol, dx: float, dy: float) -> Chem.Mol:
+    copy = Chem.Mol(mol)
+    conf = copy.GetConformer()
+    for i in range(copy.GetNumAtoms()):
+        p = conf.GetAtomPosition(i)
+        conf.SetAtomPosition(i, Point3D(p.x + dx, p.y + dy, 0.0))
+    return copy
+
+
+def _compose_reaction(
+    reactants: list[Chem.Mol], products: list[Chem.Mol]
+) -> ReactionLayout:
+    """Layoutet Edukte + Produkte auf einer Mittellinie (y=0).
+
+    Eigenes Compositing statt RDKit DrawReaction: das verlor Ein-Atom-
+    Moleküle (H₂O) und setzte '+' kollidierend in Atomlabels. Ein
+    kombiniertes Mol garantiert zudem eine einheitliche Bindungslänge
+    über alle Komponenten.
+    """
+    placed: list[Chem.Mol] = []
+    plus_positions: list[tuple[float, float]] = []
+    cursor = 0.0
+
+    def place(mol: Chem.Mol) -> None:
+        nonlocal cursor
+        conf = mol.GetConformer()
+        xs = [conf.GetAtomPosition(i).x for i in range(mol.GetNumAtoms())]
+        ys = [conf.GetAtomPosition(i).y for i in range(mol.GetNumAtoms())]
+        dx = cursor + LABEL_PAD - min(xs)
+        dy = -(min(ys) + max(ys)) / 2
+        placed.append(_shifted_copy(mol, dx, dy))
+        cursor += LABEL_PAD + (max(xs) - min(xs)) + LABEL_PAD
+
+    for i, mol in enumerate(reactants):
+        if i > 0:
+            plus_positions.append((cursor + PLUS_GAP / 2, 0.0))
+            cursor += PLUS_GAP
+        place(mol)
+
+    arrow_tail = cursor + ARROW_PAD
+    arrow_head = arrow_tail + ARROW_LENGTH
+    cursor = arrow_head + ARROW_PAD
+
+    for i, mol in enumerate(products):
+        if i > 0:
+            plus_positions.append((cursor + PLUS_GAP / 2, 0.0))
+            cursor += PLUS_GAP
+        place(mol)
+
+    combined = placed[0]
+    for m in placed[1:]:
+        combined = Chem.CombineMols(combined, m)
+    return ReactionLayout(
+        combined, plus_positions, ((arrow_tail, 0.0), (arrow_head, 0.0))
+    )
+
+
+def _draw_reaction(drawer, reactants, products) -> tuple[tuple[float, float], float]:
+    """Zeichnet das Schema (ohne Conditions) und liefert die Pixel-Position
+    der Pfeilmitte plus die Skala (Pixel pro Mol-Koordinaten-Einheit).
+
+    Conditions-Text geht NICHT über drawer.DrawString: das rendert Strings
+    mit der Atomlabel-Engine, die 'H2SO4 (cat.)' als chemische Formel parst
+    und mehrzeilig um ein Anker-Atom stapelt. Die Backends overlayen den
+    Text selbst (SVG: <text>, PNG: Pillow).
+    """
+    layout = _compose_reaction(reactants, products)
+    drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    rdMolDraw2D.PrepareAndDrawMolecule(drawer, layout.mol)
+    drawer.SetColour((0.0, 0.0, 0.0))
+    for px, py in layout.plus_positions:
+        drawer.DrawString("+", Point2D(px, py))
+    (tx, ty), (hx, hy) = layout.arrow
+    drawer.DrawArrow(Point2D(tx, ty), Point2D(hx, hy), True, 0.12)
+
+    mid = drawer.GetDrawCoords(Point2D((tx + hx) / 2, 0.0))
+    origin = drawer.GetDrawCoords(Point2D(0.0, 0.0))
+    unit = drawer.GetDrawCoords(Point2D(1.0, 0.0))
+    scale = abs(unit.x - origin.x)
+    return (mid.x, mid.y), scale
 
 
 def render_reaction_png(
-    reaction_smiles: str, size: tuple[int, int] = RXN_PNG_SIZE
+    reactants: list[Chem.Mol],
+    products: list[Chem.Mol],
+    conditions: str = "",
+    size: tuple[int, int] = RXN_PNG_SIZE,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    drawer.DrawReaction(_reaction_from_smiles(reaction_smiles))
+    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products)
     drawer.FinishDrawing()
-    return drawer.GetDrawingText()
+    png = drawer.GetDrawingText()
+    if not conditions:
+        return png
+
+    import io
+
+    from matplotlib import font_manager
+    from PIL import Image, ImageDraw, ImageFont
+
+    image = Image.open(io.BytesIO(png)).convert("RGB")
+    draw = ImageDraw.Draw(image)
+    # Pillows Default-Font fehlen ₂/₄/Δ (Tofu-Boxen). matplotlib (ohnehin
+    # Dependency) bündelt DejaVu Sans mit vollem Glyphen-Satz auf allen OS.
+    font = ImageFont.truetype(
+        font_manager.findfont("DejaVu Sans"),
+        size=max(10, round(CONDITIONS_FONT * scale)),
+    )
+    draw.text(
+        (mid_x, mid_y - 0.35 * scale),
+        conditions,
+        fill=(0, 0, 0),
+        font=font,
+        anchor="ms",  # zentriert über dem Pfeil, Baseline oberhalb
+    )
+    out = io.BytesIO()
+    image.save(out, format="PNG")
+    return out.getvalue()
 
 
 def render_reaction_svg(
-    reaction_smiles: str, size: tuple[int, int] = RXN_SVG_SIZE
+    reactants: list[Chem.Mol],
+    products: list[Chem.Mol],
+    conditions: str = "",
+    size: tuple[int, int] = RXN_SVG_SIZE,
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    drawer.DrawReaction(_reaction_from_smiles(reaction_smiles))
+    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products)
     drawer.FinishDrawing()
-    return drawer.GetDrawingText()
+    svg = drawer.GetDrawingText()
+    if not conditions:
+        return svg
+
+    from xml.sax.saxutils import escape
+
+    text_el = (
+        f"<text x='{mid_x:.1f}' y='{mid_y - 0.35 * scale:.1f}' "
+        f"text-anchor='middle' font-family='sans-serif' "
+        f"font-size='{CONDITIONS_FONT * scale:.1f}px' fill='#000000'>"
+        f"{escape(conditions)}</text>\n"
+    )
+    return svg.replace("</svg>", text_el + "</svg>")
 
 
 def write_files(base: Path, artifacts: dict[str, bytes | str]) -> dict[str, str]:

@@ -664,8 +664,6 @@ def generate_reaction(
             (default: ["png", "svg"]). Include "cdxml" ONLY when the user
             wants to edit the scheme in ChemDraw or asks to open it there.
     """
-    from rdkit import Chem
-
     from chemdraw_tool.svg_renderer import render_svg
 
     fmts = _normalize_formats(formats)
@@ -694,16 +692,10 @@ def generate_reaction(
     out_dir = REACTION_DIR / slug
 
     artifacts: dict[str, bytes | str] = {}
-    if "png" in fmts or "svg" in fmts:
-        rxn_smiles = (
-            ".".join(Chem.MolToSmiles(m) for m in reactant_mols)
-            + ">>"
-            + ".".join(Chem.MolToSmiles(m) for m in product_mols)
-        )
-        if "png" in fmts:
-            artifacts["png"] = render_reaction_png(rxn_smiles)
-        if "svg" in fmts:
-            artifacts["svg"] = render_reaction_svg(rxn_smiles)
+    if "png" in fmts:
+        artifacts["png"] = render_reaction_png(reactant_mols, product_mols, conditions)
+    if "svg" in fmts:
+        artifacts["svg"] = render_reaction_svg(reactant_mols, product_mols, conditions)
     files = write_files(out_dir / slug, artifacts)
 
     cdxml_path = ""
