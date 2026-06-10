@@ -5,18 +5,18 @@ from chemdraw_tool.templates import register
 
 FISCHER_ESTER_TEMPLATE = MechanismTemplate(
     id="fischer_ester",
-    name="Fischer-Veresterung",
+    name="Fischer esterification",
     category="ester",
     substrate_pattern="[CX3:1](=[OX1:2])[OX2H1:3]",
     nucleophile_pattern="[OX2H1:4][#6]",
     steps=[
         MechanismStep(
-            label="Edukte",
+            label="Reactants",
             molecules=["[CH3:5][C:1](=[O:2])[OH:3]", "[OH:4][CH3:6]", "[H+]"],
             arrows=[],
         ),
         MechanismStep(
-            label="Protonierung der Carbonylgruppe",
+            label="Protonation of the carbonyl group",
             molecules=["[CH3:5][C:1](=[O:2])[OH:3]", "[H+:7]"],
             arrows=[
                 CurvedArrow(
@@ -27,7 +27,7 @@ FISCHER_ESTER_TEMPLATE = MechanismTemplate(
             ],
         ),
         MechanismStep(
-            label="Nucleophiler Angriff des Alkohols",
+            label="Nucleophilic attack of the alcohol",
             molecules=["[CH3:5][C+:1]([OH:2])([OH:3])", "[OH:4][CH3:6]"],
             arrows=[
                 CurvedArrow(
@@ -38,12 +38,12 @@ FISCHER_ESTER_TEMPLATE = MechanismTemplate(
             ],
         ),
         MechanismStep(
-            label="Tetraedrisches Intermediat",
+            label="Tetrahedral intermediate",
             molecules=["[CH3:5][C:1]([OH:2])([OH:3])([O:4][CH3:6])"],
             arrows=[],
         ),
         MechanismStep(
-            label="Wasserabspaltung",
+            label="Loss of water",
             molecules=["[CH3:5][C:1]([OH:2])([OH:3])([O:4][CH3:6])"],
             arrows=[
                 CurvedArrow(
@@ -54,7 +54,7 @@ FISCHER_ESTER_TEMPLATE = MechanismTemplate(
             ],
         ),
         MechanismStep(
-            label="Produkte",
+            label="Products",
             molecules=["[CH3:5][C:1](=[O:2])[O:4][CH3:6]", "[OH2:3]"],
             arrows=[],
         ),

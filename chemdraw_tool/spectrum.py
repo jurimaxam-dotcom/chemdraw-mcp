@@ -44,46 +44,48 @@ class SpectrumConfig:
     default_width: float
 
 
+# Englische Default-Beschriftung (internationales Tool); der freie
+# title-Parameter der Tools bleibt lokalisierbar.
 SPECTRUM_TYPES: dict[str, SpectrumConfig] = {
     "ir": SpectrumConfig(
-        "IR-Spektrum", "Wellenzahl [cm⁻¹]", "Transmission [%]",
+        "IR spectrum", "Wavenumber [cm⁻¹]", "Transmission [%]",
         (400, 4000), True, "transmission", "lorentz", 30,
     ),
     "nir": SpectrumConfig(
-        "NIR-Spektrum", "Wellenzahl [cm⁻¹]", "Absorption",
+        "NIR spectrum", "Wavenumber [cm⁻¹]", "Absorbance",
         (4000, 10000), True, "absorption", "gauss", 150,
     ),
     "raman": SpectrumConfig(
-        "Raman-Spektrum", "Raman-Verschiebung [cm⁻¹]", "Intensität",
+        "Raman spectrum", "Raman shift [cm⁻¹]", "Intensity",
         (200, 3600), False, "absorption", "lorentz", 20,
     ),
     "uv_vis": SpectrumConfig(
-        "UV/Vis-Spektrum", "Wellenlänge λ [nm]", "Absorption",
+        "UV/Vis spectrum", "Wavelength λ [nm]", "Absorbance",
         (200, 800), False, "absorption", "gauss", 20,
     ),
     "fluorescence": SpectrumConfig(
-        "Fluoreszenzspektrum", "Wellenlänge λ [nm]", "Relative Intensität",
+        "Fluorescence spectrum", "Wavelength λ [nm]", "Relative intensity",
         (300, 800), False, "absorption", "gauss", 25,
     ),
     "ord": SpectrumConfig(
-        "ORD-Spektrum", "Wellenlänge λ [nm]", "Spezifische Drehung [α]",
+        "ORD spectrum", "Wavelength λ [nm]", "Specific rotation [α]",
         (200, 600), False, "cotton", "gauss", 25,
     ),
     "cd": SpectrumConfig(
-        "CD-Spektrum", "Wellenlänge λ [nm]", "Δε",
+        "CD spectrum", "Wavelength λ [nm]", "Δε",
         (200, 600), False, "signed", "gauss", 20,
     ),
     "nmr_1h": SpectrumConfig(
         # Bis 12 ppm, damit COOH/CHO-Signale nicht an der Achsenkante kleben.
-        "¹H-NMR-Spektrum", "δ [ppm]", "Intensität",
+        "¹H NMR spectrum", "δ [ppm]", "Intensity",
         (0, 12), True, "absorption", "lorentz", 0.03,
     ),
     "nmr_13c": SpectrumConfig(
-        "¹³C-NMR-Spektrum", "δ [ppm]", "Intensität",
+        "¹³C NMR spectrum", "δ [ppm]", "Intensity",
         (0, 220), True, "absorption", "lorentz", 0.5,
     ),
     "ms": SpectrumConfig(
-        "Massenspektrum", "m/z", "Relative Intensität [%]",
+        "Mass spectrum", "m/z", "Relative intensity [%]",
         (0, 0), False, "bars", "", 0,
     ),
 }

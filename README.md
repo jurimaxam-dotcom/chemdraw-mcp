@@ -23,7 +23,12 @@ with an interactive preview panel rendered inline.
 
 *"Show the Fischer esterification of ethanol with acetic acid"* — `generate_reaction`:
 
-<p align="center"><img src="assets/fischer-esterification.png" alt="Fischer esterification reaction scheme" width="640"></p>
+<p align="center"><img src="assets/fischer-esterification.png" alt="Fischer esterification reaction scheme with conditions above the arrow" width="640"></p>
+
+*"Sketch the IR spectrum of ethyl acetate"* — `generate_spectrum` (draws the
+peaks it is given, with per-type axis conventions):
+
+<p align="center"><img src="assets/ethyl-acetate-ir.png" alt="Schematic IR spectrum of ethyl acetate with labeled bands" width="560"></p>
 
 ## Features
 

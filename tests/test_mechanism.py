@@ -159,3 +159,23 @@ def test_validate_substrates_invalid_nucleophile_pattern_raises():
     )
     with pytest.raises(ValueError, match="SMARTS"):
         validate_substrates(bad, ["CCBr"])
+
+
+def test_template_labels_are_english():
+    """Sichtbare UI-Strings (Step-Labels, Template-Namen) sind englisch —
+    internationales Tool; exakt geprüft am SN2, Marker-Check für den Rest."""
+    from chemdraw_tool.templates import get_template, list_templates
+
+    sn2 = get_template("sn2")
+    assert sn2.name == "Nucleophilic Substitution (SN2)"
+    assert [s.label for s in sn2.steps] == [
+        "Reactants",
+        "Backside attack (transition state)",
+        "Products",
+    ]
+    german_markers = ("Edukte", "Produkt", "Angriff", "Veresterung", "ierung")
+    for name in list_templates():
+        t = get_template(name)
+        visible = t.name + " " + " ".join(s.label for s in t.steps)
+        for marker in german_markers:
+            assert marker not in visible, f"{name}: deutscher Marker {marker!r}"

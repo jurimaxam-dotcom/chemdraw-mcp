@@ -63,4 +63,4 @@ def test_filename_uses_title_slug(tmp_path):
 
 def test_filename_falls_back_to_type(tmp_path):
     payload = generate_spectrum("cd", [{"position": 280, "intensity": -1}])
-    assert Path(payload.files["png"]).name == "cd-spektrum.png"
+    assert Path(payload.files["png"]).name == "cd-spectrum.png"

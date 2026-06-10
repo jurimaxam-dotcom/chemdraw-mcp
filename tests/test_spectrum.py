@@ -174,9 +174,11 @@ def _typical_position(spectrum_type: str) -> float:
     }[spectrum_type]
 
 
-def test_svg_contains_german_axis_labels_and_title():
+def test_svg_contains_english_axis_labels_and_title():
+    """Englische Default-Labels (internationales Tool); der freie title-Param
+    bleibt lokalisierbar."""
     svg = render_spectrum_svg("ir", [{"position": 1700, "intensity": 1}], title="Aspirin")
-    assert "Wellenzahl" in svg
+    assert "Wavenumber" in svg
     assert "Transmission" in svg
     assert "Aspirin" in svg
 
