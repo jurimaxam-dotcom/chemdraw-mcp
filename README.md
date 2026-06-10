@@ -25,6 +25,12 @@ with an interactive preview panel rendered inline.
 
 <p align="center"><img src="assets/fischer-esterification.png" alt="Fischer esterification reaction scheme with conditions above the arrow" width="640"></p>
 
+*"Show the Fischer esterification mechanism step by step"* —
+`generate_mechanism` renders curved electron-flow arrows in the interactive
+panel:
+
+<p align="center"><img src="assets/mechanism-demo.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
+
 *"Sketch the IR spectrum of ethyl acetate"* — `generate_spectrum` (draws the
 peaks it is given, with per-type axis conventions):
 
