@@ -275,14 +275,16 @@ def generate_spectrum(
 ) -> SpectrumPayload:
     """Draw a schematic spectrum from a peak list as print-ready PNG/SVG files.
 
-    Supported spectrum types: "ir", "nir", "raman", "uv_vis", "fluorescence",
-    "ord", "cd", "nmr_1h", "nmr_13c", "ms". Axis conventions are handled
-    automatically (IR: inverted wavenumber axis with transmission dips;
-    NMR: ppm axis right-to-left; MS: bar plot; ORD: Cotton-effect curve;
-    CD: signed bands around zero).
+    Use this tool whenever the user asks for a spectrum drawing of any kind:
+    IR, NIR, Raman, UV/Vis, fluorescence, ORD, CD, 1H/13C NMR or mass
+    spectrum (MS). If the user only names a compound without peak values,
+    supply typical literature peak positions yourself (e.g. aspirin IR:
+    C=O stretch ~1750 cm⁻¹, broad O-H ~2500-3300 cm⁻¹) — the tool then
+    draws exactly the peaks it is given; it does not predict spectra.
 
-    The tool draws exactly the peaks it is given — it does not predict
-    spectra. Pass literature values or measured peak positions.
+    Axis conventions are handled automatically (IR: inverted wavenumber
+    axis with transmission dips; NMR: ppm axis right-to-left; MS: bar plot;
+    ORD: Cotton-effect curve; CD: signed bands around zero).
 
     Args:
         spectrum_type: One of "ir", "nir", "raman", "uv_vis", "fluorescence",
