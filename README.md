@@ -42,10 +42,10 @@ peaks it is given, with per-type axis conventions):
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/ethyl-acetate-ir.png" alt="Schematic IR spectrum of ethyl acetate with labeled bands" width="560"></p>
 
-*"Show morphine in 3D"* — `generate_3d` embeds the molecule (ETKDG + force
+*"Show caffeine in 3D"* — `generate_3d` embeds the molecule (ETKDG + force
 field) and opens a drag-to-rotate ball-and-stick viewer in the chat panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/3d-demo.gif" alt="Rotating 3D ball-and-stick conformer of morphine in the chat panel" width="560"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/3d-demo.gif" alt="Rotating 3D ball-and-stick caffeine model inside the concave viewer" width="560"></p>
 
 *"What distinguishes ibuprofen from naproxen and ketoprofen?"* —
 `compare_molecules` keeps the shared scaffold (MCS) neutral and highlights
