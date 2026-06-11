@@ -69,7 +69,7 @@ export default function Molecule3DView({ data }) {
   }
 
   const size = 480;
-  const scale = (size / 2 - 60) / maxExtent;  // Margin, damit das Molekül in der Kuhle sitzt
+  const scale = (size / 2 - 30) / maxExtent;
   const sin = { x: Math.sin(rot.x), y: Math.sin(rot.y) };
   const cos = { x: Math.cos(rot.x), y: Math.cos(rot.y) };
 
@@ -134,7 +134,8 @@ export default function Molecule3DView({ data }) {
             flex: 1,
             width: "100%",
             height: "100%",
-            background: "#f4f5f8",
+            background:
+              "radial-gradient(circle at 50% 40%, #ffffff 60%, #f0f2f6 100%)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-md)",
             cursor: "grab",
@@ -145,19 +146,6 @@ export default function Molecule3DView({ data }) {
           onPointerUp={onPointerUp}
         >
           <defs>
-            {/* Konkave Mulde: Lichtpunkt unterhalb der Mitte, obere
-                Innenwand dunkler — so liest das Auge "Kuhle" statt Kugel. */}
-            <radialGradient id="bowl" cx="50%" cy="50%" r="50%" fx="50%" fy="63%">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="55%" stopColor="#eef1f5" />
-              <stop offset="85%" stopColor="#d9dee7" />
-              <stop offset="100%" stopColor="#c3cad6" />
-            </radialGradient>
-            <radialGradient id="contact-shadow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(30,35,50,0.25)" />
-              <stop offset="70%" stopColor="rgba(30,35,50,0.10)" />
-              <stop offset="100%" stopColor="rgba(30,35,50,0)" />
-            </radialGradient>
             {elements.map((el) => {
               const base = ELEMENT_COLORS[el] || "#888888";
               return (
@@ -169,21 +157,6 @@ export default function Molecule3DView({ data }) {
               );
             })}
           </defs>
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={size / 2 - 12}
-            fill="url(#bowl)"
-            stroke="rgba(20,25,40,0.08)"
-            strokeWidth="1.5"
-          />
-          <ellipse
-            cx={size / 2}
-            cy={size * 0.74}
-            rx={size * 0.26}
-            ry={size * 0.055}
-            fill="url(#contact-shadow)"
-          />
           {items.map((item, i) => {
             if (item.kind === "bond") {
               const width = item.order >= 2 ? 6 : 4;
