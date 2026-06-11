@@ -211,7 +211,7 @@ export default function MechanismView({ data }) {
   return (
     <div
       style={{
-        height: "calc(100vh - 16px)",
+        height: 540,  // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",

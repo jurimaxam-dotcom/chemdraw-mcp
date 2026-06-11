@@ -29,7 +29,7 @@ export default function SpectrumView({ data }) {
   return (
     <div
       style={{
-        height: "calc(100vh - 16px)",
+        height: 480,  // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",

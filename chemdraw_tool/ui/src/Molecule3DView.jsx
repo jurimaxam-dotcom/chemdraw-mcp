@@ -114,7 +114,7 @@ export default function Molecule3DView({ data }) {
   return (
     <div
       style={{
-        height: "calc(100vh - 16px)",
+        height: 500,  // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
