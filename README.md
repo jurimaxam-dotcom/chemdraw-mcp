@@ -25,9 +25,11 @@ with an interactive preview panel rendered inline.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/caffeine.png" alt="Caffeine structure, rendered by generate_molecule" width="420"></p>
 
-*"Show the Fischer esterification of ethanol with acetic acid"* — `generate_reaction`:
+*"Show the Fischer esterification of ethanol with acetic acid"* —
+`generate_reaction` renders the scheme with conditions above the arrow,
+live in the chat panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/fischer-esterification.png" alt="Fischer esterification reaction scheme with conditions above the arrow" width="640"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/reaction-demo.gif" alt="Reaction scheme with conditions appearing live in the chat panel" width="640"></p>
 
 *"Show the Fischer esterification mechanism step by step"* —
 `generate_mechanism` renders curved electron-flow arrows in the interactive
@@ -62,12 +64,12 @@ species dominates at every pH:
   <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/species-phosphoric.png" alt="Species distribution of phosphoric acid over pH with pKa crossovers" width="420">
 </p>
 
-*"Make me a starter deck for the Ph.Eur. identity reactions"* —
-`export_curated_deck` / `export_anki_deck` build a ready-to-import Anki deck
-(`.apkg`) with rendered structures embedded — or deliver it straight into a
-running Anki via AnkiConnect:
+*"Create an Anki deck with important molecules and open it in Anki"* —
+`export_anki_deck` / `export_curated_deck` build a ready-to-import `.apkg`
+with rendered structures embedded; with the optional AnkiConnect add-on the
+cards land straight in the running Anki, no clicks:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-deck-panel.png" alt="In-chat summary panel of the exported Ph.Eur. identity reactions Anki deck" width="560"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-demo.gif" alt="Split screen: asking Claude for an Anki deck, cards appear in Anki via AnkiConnect" width="760"></p>
 
 ## Features
 
