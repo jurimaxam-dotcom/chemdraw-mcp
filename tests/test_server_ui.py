@@ -112,3 +112,26 @@ def test_batch_generate_returns_payload(mock_resolve):
     assert all(m.type == "molecule" for m in result.molecules)
     assert all(set(m.files) == {"png", "svg"} for m in result.molecules)
     assert result.cdxml_paths == []
+
+
+def test_every_panel_tool_carries_the_ui_meta():
+    """Ohne meta=_UI_META öffnet Claude Desktop KEIN App-Panel — das Tool
+    'funktioniert' dann scheinbar nicht, obwohl Dateien geschrieben werden
+    (generate_spectrum-Bug, 2026-06-11). Jedes Tool mit eigener View in
+    App.jsx muss das Meta tragen."""
+    from chemdraw_tool.server import mcp
+
+    panel_tools = (
+        "generate_molecule",
+        "generate_reaction",
+        "batch_generate",
+        "generate_mechanism",
+        "generate_spectrum",
+        "calculate_validation",
+        "lookup_molecule_data",
+    )
+    for name in panel_tools:
+        tool = mcp._tool_manager.get_tool(name)
+        assert tool.meta == {"ui": {"resourceUri": _RESOURCE_URI}}, (
+            f"{name} ist ohne UI-Meta registriert — Panel bleibt zu"
+        )

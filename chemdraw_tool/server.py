@@ -266,7 +266,7 @@ def generate_molecule(
     )
 
 
-@mcp.tool(structured_output=True)
+@mcp.tool(structured_output=True, meta=_UI_META)
 def generate_spectrum(
     spectrum_type: str,
     peaks: list[SpectrumPeak],
