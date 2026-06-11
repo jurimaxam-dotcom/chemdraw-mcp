@@ -5,6 +5,7 @@ import DatabaseView from "./DatabaseView";
 import MechanismView from "./MechanismView";
 import ValidationView from "./ValidationView";
 import SpectrumView from "./SpectrumView";
+import AnkiDeckView from "./AnkiDeckView";
 
 export default function App({ data }) {
   switch (data.type) {
@@ -30,6 +31,8 @@ export default function App({ data }) {
       return <ValidationView data={data} />;
     case "spectrum":
       return <SpectrumView data={data} />;
+    case "anki_deck":
+      return <AnkiDeckView data={data} />;
     default:
       return <div style={{ color: "#8b949e", padding: 16 }}>Unbekannter Typ: {data.type}</div>;
   }

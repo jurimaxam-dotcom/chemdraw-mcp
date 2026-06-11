@@ -52,6 +52,10 @@ peaks it is given, with per-type axis conventions):
 - **`generate_spectrum`** — schematic spectra from peak lists (IR, NIR,
   Raman, UV/Vis, fluorescence, ORD, CD, ¹H/¹³C NMR, MS) with per-type axis
   conventions — draws given peaks, does not predict spectra
+- **`export_anki_deck`** — exam-prep flashcards as a ready-to-import
+  Anki `.apkg`: structure↔name drills, identity/detection reactions,
+  spectrum band assignment — with rendered images embedded; re-exporting
+  a deck updates cards instead of duplicating them
 - **`lookup_*`** — substance data from PubChem, ChEBI, KEGG and UniProt
   (properties, GHS safety, pathways)
 - **`calculate_validation`** — Ph.Eur.-style content determination with full

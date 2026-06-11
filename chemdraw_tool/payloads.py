@@ -159,3 +159,43 @@ class ValidationPayload(BaseModel):
     method_b: MethodResult
     comparison: MethodComparison
     summary: str = ""
+
+
+class ReactionSpec(BaseModel):
+    """Reaction visual on an Anki card side (names or SMILES)."""
+
+    reactants: list[str]
+    products: list[str]
+    conditions: str = ""
+
+
+class SpectrumSpec(BaseModel):
+    """Spectrum visual on an Anki card side."""
+
+    spectrum_type: str
+    peaks: list[SpectrumPeak]
+    title: str = ""
+
+
+class CardSide(BaseModel):
+    """One side of an Anki card: text plus at most one rendered visual."""
+
+    text: str = ""
+    structure: str = ""  # compound name or SMILES
+    reaction: ReactionSpec | None = None
+    spectrum: SpectrumSpec | None = None
+
+
+class AnkiCard(BaseModel):
+    front: CardSide
+    back: CardSide
+    tags: list[str] = []
+
+
+class AnkiDeckPayload(BaseModel):
+    type: str = "anki_deck"
+    name: str
+    cards: int
+    media: int
+    fronts: list[str] = []
+    file: str = ""

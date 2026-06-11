@@ -28,6 +28,8 @@ from chemdraw_tool.image_export import (
 )
 from chemdraw_tool.layout import write_reaction_cdxml
 from chemdraw_tool.payloads import (
+    AnkiCard,
+    AnkiDeckPayload,
     BatchPayload,
     CalculationStep,
     DatabasePayload,
@@ -58,6 +60,7 @@ from chemdraw_tool.vault import list_entries, read_entry, search
 OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
 REACTION_DIR = Path.home() / "ChemDraw-Output"
 SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
+ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -331,6 +334,52 @@ def generate_spectrum(
         name=title,
         svg=svg_preview,
         files=files,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
+    """Export an Anki flashcard deck (.apkg) with rendered chemistry images.
+
+    Use this whenever the user wants flashcards, Anki cards or a study deck
+    for molecules, reactions (e.g. pharmacopoeia identity tests) or spectra.
+
+    The tool renders the images reliably — YOU supply the card content from
+    your knowledge, like with generate_spectrum. Each card side carries text
+    plus at most ONE visual: structure (compound name or SMILES), reaction
+    ({reactants, products, conditions}) or spectrum ({spectrum_type, peaks,
+    title}). Proven card types: structure↔name in either direction,
+    identity/detection reactions (question on the front, scheme on the
+    back), functional-group recognition, spectrum band assignment,
+    trivial↔IUPAC name drills.
+
+    Re-exporting a deck under the SAME name updates existing cards in Anki
+    instead of duplicating them — card fronts identify the cards, so
+    corrected backs replace the old answers.
+
+    IMPORTANT: structures take English/IUPAC names or SMILES; the card
+    TEXTS can be localized freely (e.g. German).
+
+    Args:
+        deck_name: Anki deck name, also used for the filename. Re-use the
+            exact same name to update a previously exported deck.
+        cards: The flashcards. Keep fronts unambiguous; explanations belong
+            on the back. tags are optional Anki tags per card.
+    """
+    from chemdraw_tool.anki_export import write_deck
+
+    if not cards:
+        raise ValueError("Das Deck braucht mindestens eine Karte.")
+
+    card_models = [AnkiCard.model_validate(c) for c in cards]
+    out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
+    stats = write_deck(deck_name, card_models, out_path)
+    return AnkiDeckPayload(
+        name=deck_name,
+        cards=stats["cards"],
+        media=stats["media"],
+        fronts=[c.front.text or c.front.structure for c in card_models],
+        file=str(out_path),
     )
 
 

@@ -21,6 +21,7 @@ dependencies = [
     "Pillow",
     "matplotlib>=3.10.9",
     "py2opsin>=1.2.0",
+    "genanki>=0.13.1",
 ]
 
 [project.urls]

@@ -129,6 +129,7 @@ def test_every_panel_tool_carries_the_ui_meta():
         "generate_spectrum",
         "calculate_validation",
         "lookup_molecule_data",
+        "export_anki_deck",
     )
     for name in panel_tools:
         tool = mcp._tool_manager.get_tool(name)
