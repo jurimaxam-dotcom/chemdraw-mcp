@@ -3,6 +3,8 @@
 <!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->
 
 [![CI](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jurimaxam-dotcom/chemdraw-mcp)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 **Chat → chemical structure.** An MCP server for Claude Desktop that turns
 molecule names or SMILES into publication-style 2D structure drawings —
@@ -100,7 +102,7 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium  # fronten
 ./test.sh                    # the gate: pytest + JS unit + headless-Chromium e2e
 ```
 
-~290 tests, written test-first. The e2e test rasters a real RDKit SVG in
+~340 tests, written test-first. The e2e test rasters a real RDKit SVG in
 headless Chromium and compares it against an exact pixel snapshot.
 
 ## License
