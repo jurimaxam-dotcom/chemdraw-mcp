@@ -51,7 +51,8 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.sdist]
-exclude = ["chemdraw_tool/ui/node_modules"]
+# assets/ sind reine README-Medien (GIFs!) — im Paket nur Ballast.
+exclude = ["chemdraw_tool/ui/node_modules", "assets"]
 
 [tool.pytest.ini_options]
 # "scripts" mit drin, damit dortige test_*.py automatisch vom Gate erfasst werden;
