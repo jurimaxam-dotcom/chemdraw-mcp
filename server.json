@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jurimaxam-dotcom/chemdraw-mcp",
   "title": "ChemDraw MCP (unofficial)",
-  "description": "Turn molecule names or SMILES into publication-style 2D structure drawings, reaction schemes, mechanisms and schematic spectra — offline via RDKit.",
+  "description": "Molecule names or SMILES to 2D structures, reactions, mechanisms, spectra - offline via RDKit.",
   "version": "0.2.0",
   "repository": {
     "url": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
