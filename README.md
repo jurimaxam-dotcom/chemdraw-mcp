@@ -113,15 +113,27 @@ cards land straight in the running Anki, no clicks:
 
 ## Installation
 
+**Option 1 — straight from PyPI** (needs [uv](https://docs.astral.sh/uv/)):
+add this to your Claude Desktop config (`claude_desktop_config.json` →
+`mcpServers`):
+
+```json
+"chemdraw": {
+  "command": "uvx",
+  "args": ["chemdraw-mcp"]
+}
+```
+
+**Option 2 — one-command installer** (clones the repo and registers the
+server in Claude Desktop automatically):
+
 ```bash
 git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
 cd chemdraw-mcp && ./install.sh
 ```
 
-The installer sets up everything: installs [uv](https://docs.astral.sh/uv/)
-if missing, resolves Python + RDKit, and registers the server in Claude
-Desktop's config (idempotent, with backup — existing MCP servers are left
-untouched). Restart Claude Desktop, then ask: *"draw caffeine"*.
+Both are idempotent and leave existing MCP servers untouched. Restart
+Claude Desktop, then ask: *"draw caffeine"*.
 
 Optional: with a Java runtime installed (e.g. `brew install openjdk`),
 systematic IUPAC names — including ones no database indexes — are parsed
