@@ -7,6 +7,7 @@ import ValidationView from "./ValidationView";
 import SpectrumView from "./SpectrumView";
 import AnkiDeckView from "./AnkiDeckView";
 import PlotView from "./PlotView";
+import Molecule3DView from "./Molecule3DView";
 
 export default function App({ data }) {
   switch (data.type) {
@@ -36,6 +37,8 @@ export default function App({ data }) {
       return <AnkiDeckView data={data} />;
     case "plot":
       return <PlotView data={data} />;
+    case "molecule3d":
+      return <Molecule3DView data={data} />;
     default:
       return <div style={{ color: "#8b949e", padding: 16 }}>Unbekannter Typ: {data.type}</div>;
   }

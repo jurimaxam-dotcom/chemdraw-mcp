@@ -41,6 +41,7 @@ from chemdraw_tool.payloads import (
     MechanismStepPayload,
     MethodComparison,
     MethodResult,
+    Molecule3DPayload,
     MoleculePayload,
     PlotPayload,
     ReactionPayload,
@@ -63,6 +64,7 @@ REACTION_DIR = Path.home() / "ChemDraw-Output"
 SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
 ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
 PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
+THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -541,6 +543,45 @@ def compare_molecules(
         subtitle="Structure comparison — differences highlighted, shared scaffold neutral",
         svg=svg,
         files=files,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
+    """Generate a 3D conformer shown as an interactive, rotatable model.
+
+    Embeds the molecule in 3D (ETKDGv3 + force-field optimization, explicit
+    hydrogens) and opens a drag-to-rotate ball-and-stick viewer in the chat
+    panel. Also writes an SDF file for molecular modelling tools.
+
+    Use this when the user asks about 3D structure, molecular geometry
+    (tetrahedral, planar...), conformation or spatial arrangement.
+
+    IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
+    localized display name.
+
+    Args:
+        name_or_smiles: English/IUPAC compound name or SMILES string.
+        label: Optional display name (localizable).
+    """
+    from chemdraw_tool.structure3d import atoms_and_bonds, embed_3d
+
+    _, mol = resolve(name_or_smiles)
+    mol3d = embed_3d(mol)
+    atoms, bonds = atoms_and_bonds(mol3d)
+
+    display_name = label or name_or_smiles
+    THREED_DIR.mkdir(parents=True, exist_ok=True)
+    sdf_path = THREED_DIR / f"{_slugify(display_name)}.sdf"
+    from rdkit import Chem as _Chem
+
+    sdf_path.write_text(_Chem.MolToMolBlock(mol3d), encoding="utf-8")
+
+    return Molecule3DPayload(
+        name=display_name,
+        atoms=atoms,
+        bonds=bonds,
+        files={"sdf": str(sdf_path)},
     )
 
 

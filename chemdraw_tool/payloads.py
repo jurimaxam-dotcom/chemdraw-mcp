@@ -209,3 +209,13 @@ class PlotPayload(BaseModel):
     subtitle: str = ""
     svg: str = ""
     files: dict[str, str] = {}
+
+
+class Molecule3DPayload(BaseModel):
+    """3D conformer for the interactive panel viewer (ball-and-stick)."""
+
+    type: str = "molecule3d"
+    name: str
+    atoms: list[dict] = []
+    bonds: list[dict] = []
+    files: dict[str, str] = {}
