@@ -248,3 +248,73 @@ def write_files(base: Path, artifacts: dict[str, bytes | str]) -> dict[str, str]
             path.write_text(content, encoding="utf-8")
         written[fmt] = str(path)
     return written
+
+
+# ---------------------------------------------------------------------------
+# Molekül-Vergleich: Panel-Grid mit MCS-Differenz-Highlights
+# ---------------------------------------------------------------------------
+
+CMP_PANEL = (500, 450)
+
+
+def _mcs_diff_highlights(
+    mols: list[Chem.Mol],
+) -> tuple[list[list[int]], list[list[int]]]:
+    """Atome/Bindungen je Molekül, die NICHT zum gemeinsamen Gerüst gehören.
+
+    Das MCS bleibt neutral, die Differenz wird hervorgehoben — sie ist beim
+    Vergleichen das Lernziel. Ohne jedes gemeinsame Gerüst ist alles Differenz.
+    """
+    from rdkit.Chem import rdFMCS
+
+    mcs = rdFMCS.FindMCS(mols, timeout=10)
+    query = Chem.MolFromSmarts(mcs.smartsString) if mcs.smartsString else None
+
+    atom_highlights: list[list[int]] = []
+    bond_highlights: list[list[int]] = []
+    for mol in mols:
+        match = set(mol.GetSubstructMatch(query)) if query is not None else set()
+        atom_highlights.append(
+            [a.GetIdx() for a in mol.GetAtoms() if a.GetIdx() not in match]
+        )
+        bond_highlights.append(
+            [
+                b.GetIdx()
+                for b in mol.GetBonds()
+                if b.GetBeginAtomIdx() not in match or b.GetEndAtomIdx() not in match
+            ]
+        )
+    return atom_highlights, bond_highlights
+
+
+def _draw_comparison(drawer, mols, labels) -> None:
+    atom_hl, bond_hl = _mcs_diff_highlights(mols)
+    drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    prepared = [rdMolDraw2D.PrepareMolForDrawing(m) for m in mols]
+    drawer.DrawMolecules(
+        prepared,
+        highlightAtoms=atom_hl,
+        highlightBonds=bond_hl,
+        legends=list(labels or [""] * len(mols)),
+    )
+    drawer.FinishDrawing()
+
+
+def render_comparison_png(
+    mols: list[Chem.Mol],
+    labels: list[str] | None = None,
+    panel: tuple[int, int] = CMP_PANEL,
+) -> bytes:
+    drawer = rdMolDraw2D.MolDraw2DCairo(panel[0] * len(mols), panel[1], *panel)
+    _draw_comparison(drawer, mols, labels)
+    return drawer.GetDrawingText()
+
+
+def render_comparison_svg(
+    mols: list[Chem.Mol],
+    labels: list[str] | None = None,
+    panel: tuple[int, int] = CMP_PANEL,
+) -> str:
+    drawer = rdMolDraw2D.MolDraw2DSVG(panel[0] * len(mols), panel[1], *panel)
+    _draw_comparison(drawer, mols, labels)
+    return drawer.GetDrawingText()

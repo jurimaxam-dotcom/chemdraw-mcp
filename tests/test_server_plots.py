@@ -53,3 +53,30 @@ def test_titration_requires_positive_inputs(tmp_path, monkeypatch):
         generate_titration_curve(
             substance="x", pka_values=[4.76], c_acid=-1, v_acid_ml=25.0, c_titrant=0.1
         )
+
+
+def test_compare_molecules_returns_plot_payload(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    from chemdraw_tool.server import compare_molecules
+
+    payload = compare_molecules(
+        structures=["Cc1ccccc1", "Clc1ccccc1"],
+        labels=["Toluene", "Chlorobenzene"],
+        title="Benzene derivatives",
+    )
+    assert payload.type == "plot"
+    assert payload.name == "Benzene derivatives"
+    assert "<svg" in payload.svg
+    assert Path(payload.files["png"]).exists()
+
+
+def test_compare_molecules_needs_two_to_four(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    import pytest
+
+    from chemdraw_tool.server import compare_molecules
+
+    with pytest.raises(ValueError):
+        compare_molecules(structures=["CCO"])
+    with pytest.raises(ValueError):
+        compare_molecules(structures=["C", "CC", "CCC", "CCCC", "CCCCC"])

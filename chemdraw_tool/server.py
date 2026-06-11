@@ -495,6 +495,55 @@ def generate_species_distribution(
     )
 
 
+@mcp.tool(structured_output=True, meta=_UI_META)
+def compare_molecules(
+    structures: list[str],
+    labels: list[str] | None = None,
+    title: str = "",
+) -> PlotPayload:
+    """Compare 2-4 molecules side by side with their DIFFERENCES highlighted.
+
+    Computes the maximum common substructure (MCS): the shared scaffold
+    stays neutral, everything outside it is highlighted — ideal for
+    teaching drug classes ("what distinguishes ibuprofen from naproxen?"),
+    homologous series or derivatives.
+
+    Use this when the user wants to compare structures, see differences
+    between compounds, or study a drug class.
+
+    Args:
+        structures: 2-4 English/IUPAC names or SMILES strings.
+        labels: Optional display names under each panel (localizable).
+        title: Optional heading for the comparison (localizable).
+    """
+    from chemdraw_tool.image_export import (
+        render_comparison_png,
+        render_comparison_svg,
+    )
+
+    if not 2 <= len(structures) <= 4:
+        raise ValueError("compare_molecules braucht 2 bis 4 Strukturen.")
+
+    mols = []
+    for s in structures:
+        _, mol = resolve(s)
+        mols.append(generate_2d(mol))
+
+    display = title or " vs. ".join(labels or structures)
+    panel_labels = labels or structures
+    svg = render_comparison_svg(mols, panel_labels)
+    files = write_files(
+        PLOT_DIR / f"compare-{_slugify(display)}",
+        {"png": render_comparison_png(mols, panel_labels), "svg": svg},
+    )
+    return PlotPayload(
+        name=display,
+        subtitle="Structure comparison — differences highlighted, shared scaffold neutral",
+        svg=svg,
+        files=files,
+    )
+
+
 @mcp.tool()
 def lookup_compound(name: str) -> str:
     """Look up chemical compound properties from PubChem.
