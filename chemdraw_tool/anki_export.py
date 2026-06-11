@@ -18,12 +18,17 @@ import tempfile
 from pathlib import Path
 
 import genanki
+import requests
 
 from chemdraw_tool.payloads import AnkiCard, CardSide
 
 # Fix — niemals ändern: eine neue model_id würde in bestehenden
 # Anki-Sammlungen einen zweiten Notiztyp anlegen.
 MODEL_ID = 1716400001
+REVERSED_MODEL_ID = 1716400002
+CLOZE_MODEL_ID = 1716400003
+
+ANKICONNECT_URL = "http://127.0.0.1:8765"
 
 _CSS = """\
 .card {
@@ -51,6 +56,40 @@ _MODEL = genanki.Model(
             "name": "Card 1",
             "qfmt": "{{Front}}",
             "afmt": "{{FrontSide}}<hr id=answer>{{Back}}",
+        }
+    ],
+    css=_CSS,
+)
+
+_MODEL_REVERSED = genanki.Model(
+    REVERSED_MODEL_ID,
+    "chemdraw-mcp card (and reversed)",
+    fields=[{"name": "Front"}, {"name": "Back"}],
+    templates=[
+        {
+            "name": "Card 1",
+            "qfmt": "{{Front}}",
+            "afmt": "{{FrontSide}}<hr id=answer>{{Back}}",
+        },
+        {
+            "name": "Card 2",
+            "qfmt": "{{Back}}",
+            "afmt": "{{FrontSide}}<hr id=answer>{{Front}}",
+        },
+    ],
+    css=_CSS,
+)
+
+_MODEL_CLOZE = genanki.Model(
+    CLOZE_MODEL_ID,
+    "chemdraw-mcp cloze",
+    model_type=genanki.Model.CLOZE,
+    fields=[{"name": "Text"}, {"name": "Back Extra"}],
+    templates=[
+        {
+            "name": "Cloze",
+            "qfmt": "{{cloze:Text}}",
+            "afmt": "{{cloze:Text}}<br>{{Back Extra}}",
         }
     ],
     css=_CSS,
@@ -121,16 +160,28 @@ def _side_html(side: CardSide, media_dir: Path, media: dict[str, Path]) -> str:
     return "\n".join(parts)
 
 
+def _model_for(card: AnkiCard) -> genanki.Model:
+    if card.cloze and card.reversed:
+        raise ValueError("Eine Karte kann nicht cloze UND reversed sein.")
+    if card.cloze:
+        return _MODEL_CLOZE
+    return _MODEL_REVERSED if card.reversed else _MODEL
+
+
 def build_package(
-    deck_name: str, cards: list[AnkiCard], media_dir: Path
+    deck_name: str,
+    cards: list[AnkiCard],
+    media_dir: Path,
+    default_tags: list[str] | None = None,
 ) -> genanki.Package:
     deck = genanki.Deck(deck_id_for(deck_name), deck_name)
     media: dict[str, Path] = {}
     for card in cards:
+        model = _model_for(card)
         front_html = _side_html(card.front, media_dir, media)
         back_html = _side_html(card.back, media_dir, media)
         note = genanki.Note(
-            model=_MODEL,
+            model=model,
             fields=[front_html, back_html],
             # GUID nur aus Deck + Vorderseite: korrigierte Rückseiten
             # AKTUALISIEREN die Karte beim Re-Import.
@@ -142,7 +193,10 @@ def build_package(
                 repr(card.front.spectrum),
             ),
             # Anki verbietet Leerzeichen in Tags — Modell-Input normalisieren.
-            tags=[t.replace(" ", "_") for t in card.tags],
+            tags=[
+                t.replace(" ", "_")
+                for t in [*card.tags, *(default_tags or [])]
+            ],
         )
         deck.add_note(note)
     package = genanki.Package(deck)
@@ -150,11 +204,39 @@ def build_package(
     return package
 
 
-def write_deck(deck_name: str, cards: list[AnkiCard], out_path: Path) -> dict:
+def push_via_ankiconnect(apkg_path: Path) -> str:
+    """Lässt das laufende Anki die .apkg selbst importieren (AnkiConnect-
+    Add-on, Action importPackage) — so greift dieselbe GUID-Update-Semantik
+    wie beim manuellen Import. Kein Anki/Add-on erreichbar ⇒ degradiert
+    still, die Datei bleibt der Weg."""
+    try:
+        resp = requests.post(
+            ANKICONNECT_URL,
+            json={
+                "action": "importPackage",
+                "version": 6,
+                "params": {"path": str(apkg_path)},
+            },
+            timeout=5,
+        )
+        result = resp.json()
+    except Exception:
+        return "ankiconnect-unreachable"
+    if result.get("error"):
+        return f"ankiconnect-error: {result['error']}"
+    return "ankiconnect"
+
+
+def write_deck(
+    deck_name: str,
+    cards: list[AnkiCard],
+    out_path: Path,
+    default_tags: list[str] | None = None,
+) -> dict:
     """Schreibt das Deck als .apkg. Returns {"cards": n, "media": m}."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="chemdraw_anki_") as tmp:
-        package = build_package(deck_name, cards, Path(tmp))
+        package = build_package(deck_name, cards, Path(tmp), default_tags)
         package.write_to_file(str(out_path))
         return {
             "cards": len(package.decks[0].notes),

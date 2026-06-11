@@ -353,7 +353,12 @@ def generate_spectrum(
 
 
 @mcp.tool(structured_output=True, meta=_UI_META)
-def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
+def export_anki_deck(
+    deck_name: str,
+    cards: list[AnkiCard],
+    default_tags: list[str] | None = None,
+    deliver: str = "apkg",
+) -> AnkiDeckPayload:
     """Export an Anki flashcard deck (.apkg) with rendered chemistry images.
 
     Use this whenever the user wants flashcards, Anki cards or a study deck
@@ -372,14 +377,24 @@ def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
     instead of duplicating them — card fronts identify the cards, so
     corrected backs replace the old answers.
 
+    Card options: set reversed=true on a card to also drill the opposite
+    direction (one note, two cards); set cloze=true for fill-in-the-blank
+    cards (front.text carries {{c1::...}} gaps, back.text becomes the
+    extra note). Use "Parent::Child" deck names for Anki subdecks.
+
     IMPORTANT: structures take English/IUPAC names or SMILES; the card
-    TEXTS can be localized freely (e.g. German).
+    TEXTS can be localized freely (e.g. German). Never deliver via
+    AnkiConnect unless the user explicitly asked for it.
 
     Args:
-        deck_name: Anki deck name, also used for the filename. Re-use the
-            exact same name to update a previously exported deck.
+        deck_name: Anki deck name, also used for the filename. "::" nests
+            subdecks. Re-use the exact same name to update a deck.
         cards: The flashcards. Keep fronts unambiguous; explanations belong
-            on the back. tags are optional Anki tags per card.
+            on the back. tags/reversed/cloze are per-card options.
+        default_tags: Tags added to every card in the deck.
+        deliver: "apkg" (default — file only) or "ankiconnect" (additionally
+            imports into the RUNNING Anki via the AnkiConnect add-on;
+            requires the user to have it installed).
     """
     from chemdraw_tool.anki_export import write_deck
 
@@ -388,13 +403,20 @@ def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
 
     card_models = [AnkiCard.model_validate(c) for c in cards]
     out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
-    stats = write_deck(deck_name, card_models, out_path)
+
+    import chemdraw_tool.anki_export as _anki
+
+    stats = _anki.write_deck(deck_name, card_models, out_path, default_tags)
+    delivery = "apkg"
+    if deliver == "ankiconnect":
+        delivery = _anki.push_via_ankiconnect(out_path)
     return AnkiDeckPayload(
         name=deck_name,
         cards=stats["cards"],
         media=stats["media"],
         fronts=[c.front.text or c.front.structure for c in card_models],
         file=str(out_path),
+        delivery=delivery,
     )
 
 

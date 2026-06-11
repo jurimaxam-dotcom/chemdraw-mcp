@@ -53,9 +53,12 @@ peaks it is given, with per-type axis conventions):
   Raman, UV/Vis, fluorescence, ORD, CD, ¹H/¹³C NMR, MS) with per-type axis
   conventions — draws given peaks, does not predict spectra
 - **`export_anki_deck`** — exam-prep flashcards as a ready-to-import
-  Anki `.apkg`: structure↔name drills, identity/detection reactions,
-  spectrum band assignment — with rendered images embedded; re-exporting
-  a deck updates cards instead of duplicating them
+  Anki `.apkg`: structure↔name drills (optionally reversed: one note,
+  both directions), cloze/fill-in-the-blank cards, identity/detection
+  reactions, spectrum band assignment — with rendered images embedded,
+  per-card tags, `Parent::Child` subdecks; re-exporting a deck updates
+  cards instead of duplicating them. Optional delivery straight into the
+  running Anki via the AnkiConnect add-on
 - **`export_curated_deck`** — small, formula-verified starter decks
   (classic analgesics, Ph.Eur. identity reactions)
 - **`generate_titration_curve`** — pH vs. titrant volume from the exact

@@ -15,7 +15,13 @@ Offline: Strukturen in Tests sind SMILES (parse-first, kein Netz).
 
 import zipfile
 
-from chemdraw_tool.anki_export import build_package, deck_id_for, write_deck
+from chemdraw_tool.anki_export import (
+    CLOZE_MODEL_ID,
+    MODEL_ID,
+    build_package,
+    deck_id_for,
+    write_deck,
+)
 from chemdraw_tool.payloads import AnkiCard, CardSide, ReactionSpec
 
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
@@ -138,3 +144,96 @@ def test_write_deck_produces_an_apkg_archive(tmp_path):
         names = z.namelist()
         assert "media" in names
         assert any(n.startswith("collection.anki2") for n in names)
+
+
+# ---------------------------------------------------------------------------
+# Optionen-Paket (2026-06-11): reversed, Cloze, default_tags, AnkiConnect
+# ---------------------------------------------------------------------------
+
+
+def test_reversed_card_uses_the_two_template_model(tmp_path):
+    card = AnkiCard(
+        front=CardSide(text="Ibuprofen?", structure="CC(C)Cc1ccc(cc1)C(C)C(=O)O"),
+        back=CardSide(text="Ibuprofen"),
+        reversed=True,
+    )
+    pkg = build_package("Deck", [card], tmp_path / "m")
+    note = pkg.decks[0].notes[0]
+    assert len(note.model.templates) == 2  # Front→Back UND Back→Front
+    assert note.model.model_id != MODEL_ID  # eigenes, festes Modell
+
+
+def test_cloze_card_uses_the_cloze_model(tmp_path):
+    card = AnkiCard(
+        front=CardSide(text="Die Ester-C=O-Bande liegt bei {{c1::~1740 cm⁻¹}}."),
+        back=CardSide(text="Typisch für Ethylacetat."),
+        cloze=True,
+    )
+    pkg = build_package("Deck", [card], tmp_path / "m")
+    note = pkg.decks[0].notes[0]
+    assert note.model.model_id == CLOZE_MODEL_ID
+    assert "{{c1::" in note.fields[0]
+    assert "Typisch für Ethylacetat." in note.fields[1]  # im Styling-<div>
+
+
+def test_cloze_and_reversed_are_mutually_exclusive(tmp_path):
+    import pytest
+
+    card = AnkiCard(
+        front=CardSide(text="{{c1::x}}"),
+        back=CardSide(text=""),
+        cloze=True,
+        reversed=True,
+    )
+    with pytest.raises(ValueError, match="[Cc]loze"):
+        build_package("Deck", [card], tmp_path / "m")
+
+
+def test_default_tags_are_added_and_normalized(tmp_path):
+    pkg = build_package(
+        "Deck",
+        [_text_card()],
+        tmp_path / "m",
+        default_tags=["klausur 2026", "pharma"],
+    )
+    tags = list(pkg.decks[0].notes[0].tags)
+    assert "klausur_2026" in tags
+    assert "pharma" in tags
+
+
+def test_guids_stay_stable_for_all_card_types(tmp_path):
+    cards = [
+        AnkiCard(front=CardSide(text="A?"), back=CardSide(text="a"), reversed=True),
+        AnkiCard(front=CardSide(text="{{c1::b}}"), back=CardSide(text=""), cloze=True),
+    ]
+    g1 = [n.guid for n in build_package("D", cards, tmp_path / "m1").decks[0].notes]
+    g2 = [n.guid for n in build_package("D", cards, tmp_path / "m2").decks[0].notes]
+    assert g1 == g2
+
+
+def test_ankiconnect_import_calls_the_local_api(tmp_path, monkeypatch):
+    from unittest.mock import MagicMock
+
+    from chemdraw_tool import anki_export
+
+    fake = MagicMock()
+    fake.return_value.json.return_value = {"result": True, "error": None}
+    monkeypatch.setattr(anki_export.requests, "post", fake)
+    out = tmp_path / "deck.apkg"
+    out.write_bytes(b"x")
+    status = anki_export.push_via_ankiconnect(out)
+    assert status == "ankiconnect"
+    payload = fake.call_args.kwargs.get("json") or fake.call_args.args[1]
+    assert payload["action"] == "importPackage"
+    assert payload["params"]["path"] == str(out)
+
+
+def test_ankiconnect_unreachable_degrades_gracefully(tmp_path, monkeypatch):
+    from chemdraw_tool import anki_export
+
+    def boom(*a, **k):
+        raise anki_export.requests.ConnectionError("no anki")
+
+    monkeypatch.setattr(anki_export.requests, "post", boom)
+    status = anki_export.push_via_ankiconnect(tmp_path / "x.apkg")
+    assert status == "ankiconnect-unreachable"

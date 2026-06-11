@@ -78,3 +78,37 @@ def test_export_curated_deck_unknown_id(tmp_path, monkeypatch):
 
     with pytest.raises(ValueError, match="pheur-identity-basics"):
         export_curated_deck("nope")
+
+
+def test_export_anki_deck_with_ankiconnect_delivery(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    calls = []
+    monkeypatch.setattr(
+        "chemdraw_tool.anki_export.push_via_ankiconnect",
+        lambda path: calls.append(path) or "ankiconnect",
+    )
+    payload = export_anki_deck("Direct", _cards(), deliver="ankiconnect")
+    assert payload.delivery == "ankiconnect"
+    assert calls and str(calls[0]).endswith(".apkg")
+
+
+def test_export_anki_deck_default_delivery_is_apkg(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    payload = export_anki_deck("File", _cards())
+    assert payload.delivery == "apkg"
+
+
+def test_export_anki_deck_passes_default_tags(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    seen = {}
+    import chemdraw_tool.anki_export as ax
+
+    original = ax.write_deck
+
+    def spy(deck_name, cards, out_path, default_tags=None):
+        seen["tags"] = default_tags
+        return original(deck_name, cards, out_path, default_tags)
+
+    monkeypatch.setattr("chemdraw_tool.anki_export.write_deck", spy)
+    export_anki_deck("Tagged", _cards(), default_tags=["klausur"])
+    assert seen["tags"] == ["klausur"]

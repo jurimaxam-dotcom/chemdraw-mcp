@@ -190,10 +190,17 @@ class AnkiCard(BaseModel):
     front: CardSide
     back: CardSide
     tags: list[str] = []
+    # Basic-and-Reversed: EINE Notiz erzeugt BEIDE Richtungen (Front→Back
+    # und Back→Front). Schließt cloze aus.
+    reversed: bool = False
+    # Cloze/Lückentext: front.text trägt die {{c1::...}}-Lücken, back.text
+    # wird Ankis "Back Extra"-Feld. Schließt reversed aus.
+    cloze: bool = False
 
 
 class AnkiDeckPayload(BaseModel):
     type: str = "anki_deck"
+    delivery: str = "apkg"
     name: str
     cards: int
     media: int
