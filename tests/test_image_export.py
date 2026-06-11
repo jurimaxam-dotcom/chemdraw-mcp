@@ -170,3 +170,12 @@ def test_write_files_overwrites_idempotently(tmp_path):
     assert (tmp_path / "mol.svg").read_text() == "<svg>neu</svg>"
     assert len(list(tmp_path.iterdir())) == 1, "kein -2-Suffix: Regenerieren = Update"
     assert paths["svg"].endswith("mol.svg")
+
+
+def test_render_molecule_svg_with_stereo_annotation():
+    """annotate_stereo=True schreibt CIP-Labels (R/S) ins Bild — RDKit
+    annotiert sie mit class='CIP_Code'."""
+    mol = Chem.MolFromSmiles("C[C@H](N)C(=O)O")  # L-Alanin, (S)
+    AllChem.Compute2DCoords(mol)
+    assert "CIP_Code" in render_molecule_svg(mol, annotate_stereo=True)
+    assert "CIP_Code" not in render_molecule_svg(mol)

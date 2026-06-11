@@ -136,3 +136,12 @@ def test_every_panel_tool_carries_the_ui_meta():
         assert tool.meta == {"ui": {"resourceUri": _RESOURCE_URI}}, (
             f"{name} ist ohne UI-Meta registriert — Panel bleibt zu"
         )
+
+
+def test_generate_molecule_with_stereo_annotation(tmp_path, monkeypatch):
+    """annotate_stereo annotiert Datei-Export UND Chat-Vorschau (Parität)."""
+    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path)
+    payload = generate_molecule("C[C@H](N)C(=O)O", annotate_stereo=True)
+    assert "CIP_Code" in payload.svg
+    svg_file = Path(payload.files["svg"]).read_text()
+    assert "CIP_Code" in svg_file

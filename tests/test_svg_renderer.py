@@ -184,3 +184,16 @@ def test_svg_has_absolute_dimensions():
     assert re.search(r"\bwidth=['\"]\d+(\.\d+)?(px)?['\"]", svg), (
         f"SVG should have absolute pixel width, got: {svg[:300]}"
     )
+
+
+def test_ui_preview_supports_stereo_annotation():
+    """Datei-Export und UI-Vorschau müssen dieselbe Annotation zeigen."""
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+
+    from chemdraw_tool.svg_renderer import render_svg
+
+    mol = Chem.MolFromSmiles("C[C@H](N)C(=O)O")
+    AllChem.Compute2DCoords(mol)
+    assert "CIP_Code" in render_svg(mol, annotate_stereo=True)
+    assert "CIP_Code" not in render_svg(mol)

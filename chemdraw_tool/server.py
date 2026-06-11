@@ -79,7 +79,7 @@ def _normalize_formats(formats: list[str] | None) -> list[str]:
 
 
 def _write_structure_files(
-    mol, slug: str, display_name: str, formats: list[str]
+    mol, slug: str, display_name: str, formats: list[str], annotate_stereo: bool = False
 ) -> tuple[dict[str, str], str]:
     """Schreibt die angeforderten Dateiformate für ein Einzelmolekül.
 
@@ -91,9 +91,13 @@ def _write_structure_files(
 
     artifacts: dict[str, bytes | str] = {}
     if "png" in formats:
-        artifacts["png"] = render_molecule_png(mol, legend=display_name)
+        artifacts["png"] = render_molecule_png(
+            mol, legend=display_name, annotate_stereo=annotate_stereo
+        )
     if "svg" in formats:
-        artifacts["svg"] = render_molecule_svg(mol, legend=display_name)
+        artifacts["svg"] = render_molecule_svg(
+            mol, legend=display_name, annotate_stereo=annotate_stereo
+        )
     files = write_files(OUTPUT_DIR / slug, artifacts)
 
     cdxml_path = ""
@@ -206,7 +210,10 @@ def _slugify(text: str) -> str:
 
 @mcp.tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
-    name_or_smiles: str, label: str = "", formats: list[str] | None = None
+    name_or_smiles: str,
+    label: str = "",
+    formats: list[str] | None = None,
+    annotate_stereo: bool = False,
 ) -> MoleculePayload:
     """Generate a 2D molecular structure drawing from a name or SMILES string.
 
@@ -229,6 +236,8 @@ def generate_molecule(
         formats: Output file formats, any of "png", "svg", "cdxml"
             (default: ["png", "svg"]). Include "cdxml" ONLY when the user
             wants to edit the structure in ChemDraw or asks to open it there.
+        annotate_stereo: Set True to print CIP stereo descriptors (R/S, E/Z)
+            at each stereocenter — useful for stereochemistry teaching.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -249,7 +258,9 @@ def generate_molecule(
     display_name = label or name_or_smiles
     slug = _slugify(display_name)
 
-    files, cdxml_path = _write_structure_files(mol, slug, display_name, fmts)
+    files, cdxml_path = _write_structure_files(
+        mol, slug, display_name, fmts, annotate_stereo=annotate_stereo
+    )
 
     properties = _enrich_properties(smiles)
     fg_raw = extract_functional_groups(mol)
@@ -258,7 +269,7 @@ def generate_molecule(
 
     return MoleculePayload(
         type="molecule",
-        svg=render_svg(mol, fill_container=True),
+        svg=render_svg(mol, fill_container=True, annotate_stereo=annotate_stereo),
         atoms=extract_atom_data(mol),
         name=display_name,
         properties=properties,
@@ -785,7 +796,9 @@ def generate_reaction(
 
 @mcp.tool(structured_output=True, meta=_UI_META)
 def batch_generate(
-    molecules: list[str], formats: list[str] | None = None
+    molecules: list[str],
+    formats: list[str] | None = None,
+    annotate_stereo: bool = False,
 ) -> BatchPayload:
     """Generate multiple molecule structure drawings at once.
 
@@ -843,7 +856,9 @@ def batch_generate(
         display_name = name_or_smiles
         slug = _slugify(display_name)
 
-        files, cdxml_path = _write_structure_files(mol, slug, display_name, fmts)
+        files, cdxml_path = _write_structure_files(
+        mol, slug, display_name, fmts, annotate_stereo=annotate_stereo
+    )
         if cdxml_path:
             cdxml_paths.append(cdxml_path)
 
@@ -855,7 +870,7 @@ def batch_generate(
         mol_payloads.append(
             MoleculePayload(
                 type="molecule",
-                svg=render_svg(mol, fill_container=True),
+                svg=render_svg(mol, fill_container=True, annotate_stereo=annotate_stereo),
                 atoms=extract_atom_data(mol),
                 name=display_name,
                 properties=properties,

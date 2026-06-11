@@ -72,6 +72,7 @@ def render_svg(
     width: int = SVG_WIDTH,
     height: int = SVG_HEIGHT,
     fill_container: bool = False,
+    annotate_stereo: bool = False,
 ) -> str:
     """Render a molecule to an SVG string with consistent pixel bond length.
 
@@ -89,6 +90,8 @@ def render_svg(
     opts.clearBackground = False
     opts.bondLineWidth = BOND_LINE_WIDTH
     opts.useDefaultAtomPalette()
+    if annotate_stereo:
+        opts.addStereoAnnotation = True
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()

@@ -43,29 +43,37 @@ ARROW_PAD = 0.9
 CONDITIONS_FONT = 0.55
 
 
-def _draw_molecule(drawer, mol, legend: str) -> None:
+def _draw_molecule(drawer, mol, legend: str, annotate_stereo: bool = False) -> None:
     # Gleiche Strichstärke wie die UI-Vorschau (gemeinsame Konstante) — die Datei
     # darf nicht anders aussehen als das, was der Nutzer im Chat gesehen hat.
     # Bewusst NICHT übernommen: fixedBondLength (Datei soll die Canvas füllen)
     # und clearBackground=False (Datei braucht weißen Hintergrund).
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    if annotate_stereo:
+        drawer.drawOptions().addStereoAnnotation = True
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol, legend=legend)
     drawer.FinishDrawing()
 
 
 def render_molecule_png(
-    mol, legend: str = "", size: tuple[int, int] = MOL_PNG_SIZE
+    mol,
+    legend: str = "",
+    size: tuple[int, int] = MOL_PNG_SIZE,
+    annotate_stereo: bool = False,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    _draw_molecule(drawer, mol, legend)
+    _draw_molecule(drawer, mol, legend, annotate_stereo)
     return drawer.GetDrawingText()
 
 
 def render_molecule_svg(
-    mol, legend: str = "", size: tuple[int, int] = MOL_SVG_SIZE
+    mol,
+    legend: str = "",
+    size: tuple[int, int] = MOL_SVG_SIZE,
+    annotate_stereo: bool = False,
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    _draw_molecule(drawer, mol, legend)
+    _draw_molecule(drawer, mol, legend, annotate_stereo)
     return drawer.GetDrawingText()
 
 
