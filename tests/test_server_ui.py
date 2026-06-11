@@ -130,6 +130,8 @@ def test_every_panel_tool_carries_the_ui_meta():
         "calculate_validation",
         "lookup_molecule_data",
         "export_anki_deck",
+        "generate_titration_curve",
+        "generate_species_distribution",
     )
     for name in panel_tools:
         tool = mcp._tool_manager.get_tool(name)

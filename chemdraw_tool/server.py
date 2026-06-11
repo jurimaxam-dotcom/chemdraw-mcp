@@ -42,6 +42,7 @@ from chemdraw_tool.payloads import (
     MethodComparison,
     MethodResult,
     MoleculePayload,
+    PlotPayload,
     ReactionPayload,
     SpectrumPayload,
     SpectrumPeak,
@@ -61,6 +62,7 @@ OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
 REACTION_DIR = Path.home() / "ChemDraw-Output"
 SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
 ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
+PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -391,6 +393,105 @@ def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
         media=stats["media"],
         fronts=[c.front.text or c.front.structure for c in card_models],
         file=str(out_path),
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_titration_curve(
+    substance: str,
+    pka_values: list[float],
+    c_acid: float,
+    v_acid_ml: float,
+    c_titrant: float,
+    indicator: dict | None = None,
+) -> PlotPayload:
+    """Draw a titration curve: weak (or polyprotic) acid vs. strong base.
+
+    Computes pH against titrant volume from the exact charge balance and
+    marks equivalence points (per protolysis step), the buffer points
+    (pH = pKa at half-equivalence) and optionally the indicator transition
+    range as a shaded band.
+
+    Use this when the user asks about titrations, equivalence points,
+    buffer regions or indicator choice. YOU supply the substance data from
+    your knowledge (like with generate_spectrum): pKa values, sensible
+    concentrations (0.1 M is the classic teaching case) and the indicator's
+    transition range.
+
+    Args:
+        substance: Display name, e.g. "Acetic acid with NaOH" (localizable).
+        pka_values: pKa per protolysis step, ascending (1-3 values).
+        c_acid: Acid concentration in mol/L.
+        v_acid_ml: Initial acid volume in mL.
+        c_titrant: Titrant (strong base) concentration in mol/L.
+        indicator: Optional {"name": "...", "ph_range": [low, high]}.
+    """
+    from chemdraw_tool.ph_plots import render_titration_png, render_titration_svg
+
+    if not pka_values:
+        raise ValueError("Mindestens ein pKa-Wert wird benötigt.")
+    if min(c_acid, v_acid_ml, c_titrant) <= 0:
+        raise ValueError("Konzentrationen und Volumen müssen positiv sein.")
+
+    kwargs = dict(
+        pka_values=pka_values,
+        c_acid=c_acid,
+        v_acid_ml=v_acid_ml,
+        c_titrant=c_titrant,
+        title=substance,
+        indicator=indicator,
+    )
+    svg = render_titration_svg(**kwargs)
+    files = write_files(
+        PLOT_DIR / f"titration-{_slugify(substance)}",
+        {"png": render_titration_png(**kwargs), "svg": svg},
+    )
+    return PlotPayload(
+        name=substance,
+        subtitle="Titration curve — equivalence points, buffer points, indicator",
+        svg=svg,
+        files=files,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_species_distribution(
+    substance: str,
+    pka_values: list[float],
+    labels: list[str] | None = None,
+) -> PlotPayload:
+    """Draw the species distribution of an acid over pH (Henderson-Hasselbalch).
+
+    Plots the fraction α of every protonation species against pH with the
+    pKa values marked — the standard diagram for absorption/distribution
+    reasoning in pharmacy.
+
+    Use this when the user asks which species dominates at a given pH, about
+    degree of ionization, or absorption across membranes. YOU supply pKa
+    values from your knowledge; pass species labels (formulas like "H₂PO₄⁻")
+    for a readable legend.
+
+    Args:
+        substance: Display name, e.g. "Phosphoric acid" (localizable).
+        pka_values: pKa per protolysis step, ascending.
+        labels: Optional species labels, most protonated first
+            (len = len(pka_values) + 1).
+    """
+    from chemdraw_tool.ph_plots import render_species_png, render_species_svg
+
+    if not pka_values:
+        raise ValueError("Mindestens ein pKa-Wert wird benötigt.")
+
+    svg = render_species_svg(pka_values, labels, substance)
+    files = write_files(
+        PLOT_DIR / f"species-{_slugify(substance)}",
+        {"png": render_species_png(pka_values, labels, substance), "svg": svg},
+    )
+    return PlotPayload(
+        name=substance,
+        subtitle="Species distribution over pH",
+        svg=svg,
+        files=files,
     )
 
 

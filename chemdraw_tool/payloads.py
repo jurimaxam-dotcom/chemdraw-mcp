@@ -199,3 +199,13 @@ class AnkiDeckPayload(BaseModel):
     media: int
     fronts: list[str] = []
     file: str = ""
+
+
+class PlotPayload(BaseModel):
+    """Generic rendered diagram (titration curve, species distribution, …)."""
+
+    type: str = "plot"
+    name: str
+    subtitle: str = ""
+    svg: str = ""
+    files: dict[str, str] = {}
