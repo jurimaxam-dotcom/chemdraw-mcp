@@ -57,3 +57,24 @@ def test_generate_3d_writes_sdf_and_payload(tmp_path, monkeypatch):
     sdf = Path(payload.files["sdf"])
     assert sdf.exists()
     assert "V2000" in sdf.read_text()
+
+
+def test_export_curated_deck(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    from chemdraw_tool.server import export_curated_deck
+
+    payload = export_curated_deck("analgesics-structures")
+    assert payload.type == "anki_deck"
+    assert payload.name == "Common Analgesics — Structures"
+    assert payload.cards == 8
+    assert Path(payload.file).exists()
+
+
+def test_export_curated_deck_unknown_id(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    import pytest
+
+    from chemdraw_tool.server import export_curated_deck
+
+    with pytest.raises(ValueError, match="pheur-identity-basics"):
+        export_curated_deck("nope")

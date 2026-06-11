@@ -399,6 +399,37 @@ def export_anki_deck(deck_name: str, cards: list[AnkiCard]) -> AnkiDeckPayload:
 
 
 @mcp.tool(structured_output=True, meta=_UI_META)
+def export_curated_deck(deck_id: str) -> AnkiDeckPayload:
+    """Export one of the small, curated Anki starter decks (.apkg).
+
+    Curated and formula-verified content (textbook classics only):
+    - "analgesics-structures": structure → name drills for 8 classic
+      analgesics (NSAIDs, paracetamol, morphine, celecoxib).
+    - "pheur-identity-basics": classic Ph.Eur. identity tests — reagent,
+      observation and reaction scheme where it helps.
+
+    Use this when the user wants a ready-made starter deck. For custom
+    content, build cards yourself and call export_anki_deck instead.
+
+    Args:
+        deck_id: "analgesics-structures" or "pheur-identity-basics".
+    """
+    from chemdraw_tool.anki_export import write_deck
+    from chemdraw_tool.curated_decks import get_curated_deck
+
+    deck_name, cards = get_curated_deck(deck_id)
+    out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
+    stats = write_deck(deck_name, cards, out_path)
+    return AnkiDeckPayload(
+        name=deck_name,
+        cards=stats["cards"],
+        media=stats["media"],
+        fronts=[c.front.text or c.front.structure for c in cards],
+        file=str(out_path),
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
 def generate_titration_curve(
     substance: str,
     pka_values: list[float],

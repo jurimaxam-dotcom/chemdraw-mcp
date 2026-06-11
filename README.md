@@ -56,6 +56,18 @@ peaks it is given, with per-type axis conventions):
   Anki `.apkg`: structure↔name drills, identity/detection reactions,
   spectrum band assignment — with rendered images embedded; re-exporting
   a deck updates cards instead of duplicating them
+- **`export_curated_deck`** — small, formula-verified starter decks
+  (classic analgesics, Ph.Eur. identity reactions)
+- **`generate_titration_curve`** — pH vs. titrant volume from the exact
+  charge balance, with equivalence points, buffer points (pH = pKa) and
+  indicator transition band
+- **`generate_species_distribution`** — protonation species fractions
+  over pH (Henderson-Hasselbalch) with pKa crossovers marked
+- **`compare_molecules`** — 2-4 structures side by side, differences
+  highlighted, shared scaffold (MCS) neutral
+- **`generate_3d`** — rotatable 3D ball-and-stick conformer in the chat
+  panel (ETKDG + force field) plus SDF export; stereo descriptors (R/S,
+  E/Z) available on 2D drawings via `annotate_stereo`
 - **`lookup_*`** — substance data from PubChem, ChEBI, KEGG and UniProt
   (properties, GHS safety, pathways)
 - **`calculate_validation`** — Ph.Eur.-style content determination with full
@@ -106,7 +118,7 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium  # fronten
 ./test.sh                    # the gate: pytest + JS unit + headless-Chromium e2e
 ```
 
-~340 tests, written test-first. The e2e test rasters a real RDKit SVG in
+~400 tests, written test-first. The e2e test rasters a real RDKit SVG in
 headless Chromium and compares it against an exact pixel snapshot.
 
 ## License
