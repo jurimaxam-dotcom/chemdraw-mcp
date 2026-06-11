@@ -90,6 +90,14 @@ SPECTRUM_TYPES: dict[str, SpectrumConfig] = {
     ),
 }
 
+# Label-Layout (Offsets in Punkten): Basis-Versatz über/unter dem Apex plus
+# Staffelungs-Schritt für x-nahe Nachbarn (näher als LABEL_NEAR_FRAC der
+# x-Spannweite).
+LABEL_BASE_ABOVE = 8
+LABEL_BASE_BELOW = -14
+LABEL_STACK_STEP = 12
+LABEL_NEAR_FRAC = 0.06
+
 # Tiefster IR-Einbruch: Transmission fällt bei s=1 auf 5 % (nie ganz auf 0,
 # wie bei realen Spektren).
 _TRANSMISSION_DEPTH = 95.0
@@ -241,28 +249,59 @@ def _build_figure(
     elif cfg.kind == "absorption":
         ax.set_ylim(0, 1.18)
 
-    ax.set_xlim(*_x_range(cfg, parsed))
+    x_lo, x_hi = _x_range(cfg, parsed)
+    ax.set_xlim(x_lo, x_hi)
     if cfg.invert_x:
         ax.invert_xaxis()
-
-    for p in parsed:
-        if not p.label:
-            continue
-        lx, ly, above = _apex(cfg, p)
-        ax.annotate(
-            p.label,
-            xy=(lx, ly),
-            xytext=(0, 8 if above else -14),
-            textcoords="offset points",
-            ha="center",
-            fontsize=9,
-        )
 
     ax.set_xlabel(cfg.x_label)
     ax.set_ylabel(cfg.y_label)
     ax.set_title(f"{cfg.title}: {title}" if title else cfg.title)
     ax.spines[["top", "right"]].set_visible(False)
+    # Layout VOR den Labels fixieren — der Floor-Clamp unten rechnet über
+    # transData in Pixel, und tight_layout würde die Achsen-Box verschieben.
     fig.tight_layout()
+
+    # Labels x-sortiert annotieren; x-nahe Nachbarn gleicher Richtung werden
+    # über 3 Ebenen rotierend gestaffelt, sonst schreiben sie ineinander
+    # (z.B. die Aromaten-Banden 750/700 cm⁻¹ in einem 12-Peak-IR).
+    span = abs(x_hi - x_lo)
+    y_lo = ax.get_ylim()[0]
+    y_span = ax.get_ylim()[1] - y_lo
+    px_per_pt = fig.dpi / 72.0
+    labeled = sorted(
+        ((_apex(cfg, p), p) for p in parsed if p.label),
+        key=lambda item: item[0][0],
+    )
+    prev_x: float | None = None
+    prev_above: bool | None = None
+    stack = 0
+    for (lx, ly, above), p in labeled:
+        near = prev_x is not None and abs(lx - prev_x) < LABEL_NEAR_FRAC * span
+        stack = (stack + 1) % 3 if (near and above == prev_above) else 0
+        offset = (
+            LABEL_BASE_ABOVE + stack * LABEL_STACK_STEP
+            if above
+            else LABEL_BASE_BELOW - stack * LABEL_STACK_STEP
+        )
+        if not above:
+            # Floor-Clamp: tiefe Apexe (C=O-Dip bei 3 %) dürfen ihr Label
+            # nicht unter die Plot-Unterkante schieben — Baseline bleibt
+            # oberhalb von y_lo + 4 % Spannweite.
+            anchor_px = ax.transData.transform((lx, ly))[1]
+            floor_px = ax.transData.transform((lx, y_lo + 0.04 * y_span))[1]
+            min_offset = (floor_px - anchor_px) / px_per_pt
+            offset = max(offset, min_offset)
+        ax.annotate(
+            p.label,
+            xy=(lx, ly),
+            xytext=(0, offset),
+            textcoords="offset points",
+            ha="center",
+            fontsize=9,
+        )
+        prev_x, prev_above = lx, above
+
     return fig
 
 
