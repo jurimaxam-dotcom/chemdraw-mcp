@@ -106,12 +106,21 @@ function StepMode({ steps, currentStep, setCurrentStep }) {
   const total = steps.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        flex: 1,
+        minHeight: 0,
+      }}
+    >
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexShrink: 0,
         }}
       >
         <button
@@ -163,13 +172,17 @@ function StepMode({ steps, currentStep, setCurrentStep }) {
       </div>
 
       <div
+        className="mech-step-svg"
         dangerouslySetInnerHTML={{ __html: step.svg }}
         style={{
           display: "flex",
           justifyContent: "center",
-          minHeight: 200,
+          alignItems: "center",
+          flex: 1,
+          minHeight: 0,
         }}
       />
+      <style>{`.mech-step-svg svg { width: 100%; height: 100%; max-width: 100%; max-height: 100%; }`}</style>
 
       <StepIndicator
         current={currentStep}
@@ -196,7 +209,16 @@ export default function MechanismView({ data }) {
   }
 
   return (
-    <div style={{ padding: "8px 0" }}>
+    <div
+      style={{
+        height: "calc(100vh - 16px)",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        padding: "8px 12px",
+      }}
+    >
       <SectionHeader
         title={data.name || "Mechanismus"}
         subtitle={data.reaction_type}
@@ -241,6 +263,13 @@ export default function MechanismView({ data }) {
           borderRadius: "var(--radius, 10px)",
           boxShadow: "var(--shadow)",
           padding: 12,
+          flex: 1,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          // Step-Modus füllt die Fläche ohne Scroll; die Overview-Liste
+          // scrollt INNERHALB der Karte, nie das ganze Panel.
+          overflow: mode === "step" ? "hidden" : "auto",
         }}
       >
         {mode === "overview" ? (

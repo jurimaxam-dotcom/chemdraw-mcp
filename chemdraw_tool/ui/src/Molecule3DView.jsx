@@ -4,24 +4,35 @@ import SectionHeader from "./components/SectionHeader";
 // Leichtgewichtiger Ball-and-Stick-Viewer: Rotationsmatrix + Painter's
 // Algorithm in purem SVG. Bewusst kein WebGL/3Dmol — die Single-File-App
 // bliebe sonst nicht klein, und WebGL ist im Panel-iframe nicht garantiert.
+// Layout-Vertrag: füllt IMMER den Panel-Viewport (100vh, kein Scrollen);
+// das Modell skaliert proportional in die verfügbare Fläche.
 
 const ELEMENT_COLORS = {
-  H: "#b8b8b8",
-  C: "#3a3a3a",
-  N: "#4a9eff",
-  O: "#ff6b6b",
-  S: "#c8c800",
-  Cl: "#2e9e2e",
-  F: "#2e9e2e",
-  Br: "#8B4513",
-  I: "#7728a8",
-  P: "#FFA500",
+  H: "#d8d8d8",
+  C: "#4a4a4a",
+  N: "#3b7fff",
+  O: "#ff4d4d",
+  S: "#e6c200",
+  Cl: "#33cc33",
+  F: "#66d9a8",
+  Br: "#a0522d",
+  I: "#8a2be2",
+  P: "#ff8c1a",
 };
 
-const ATOM_RADIUS = { H: 0.36, default: 0.6 };
+const ATOM_RADIUS = { H: 0.34, default: 0.58 };
+
+function shade(hex, factor) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (shiftedColor) =>
+    Math.max(0, Math.min(255, Math.round(shiftedColor)));
+  const r = ch(((n >> 16) & 255) * factor);
+  const g = ch(((n >> 8) & 255) * factor);
+  const b = ch((n & 255) * factor);
+  return `rgb(${r},${g},${b})`;
+}
 
 function rotate(atom, sin, cos) {
-  // erst um y (horizontaler Drag), dann um x (vertikaler Drag)
   const x1 = atom.x * cos.y + atom.z * sin.y;
   const z1 = -atom.x * sin.y + atom.z * cos.y;
   const y2 = atom.y * cos.x - z1 * sin.x;
@@ -43,6 +54,11 @@ export default function Molecule3DView({ data }) {
     }
     return m;
   }, [atoms]);
+
+  const elements = useMemo(
+    () => [...new Set(atoms.map((a) => a.symbol))],
+    [atoms]
+  );
 
   if (!atoms.length) {
     return (
@@ -67,7 +83,6 @@ export default function Molecule3DView({ data }) {
     };
   });
 
-  // Painter's Algorithm: Bindungen und Atome gemeinsam nach Tiefe sortieren.
   const items = [];
   for (const b of bonds) {
     const p = projected[b.a];
@@ -97,62 +112,85 @@ export default function Molecule3DView({ data }) {
   };
 
   return (
-    <div style={{ padding: 16 }}>
+    <div
+      style={{
+        height: "calc(100vh - 16px)",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        padding: "12px 16px",
+      }}
+    >
       <SectionHeader
         title={data.name}
         subtitle="3D conformer (ETKDG + force field) · drag to rotate"
       />
-      <svg
-        viewBox={`0 0 ${size} ${size}`}
-        style={{
-          width: "100%",
-          maxWidth: size,
-          display: "block",
-          margin: "0 auto",
-          background: "#ffffff",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-md)",
-          cursor: "grab",
-          touchAction: "none",
-        }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-      >
-        {items.map((item, i) => {
-          if (item.kind === "bond") {
-            const width = item.order >= 2 ? 5 : 3;
+      <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+        <svg
+          viewBox={`0 0 ${size} ${size}`}
+          preserveAspectRatio="xMidYMid meet"
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+            background:
+              "radial-gradient(circle at 50% 40%, #ffffff 60%, #f0f2f6 100%)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-md)",
+            cursor: "grab",
+            touchAction: "none",
+          }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+        >
+          <defs>
+            {elements.map((el) => {
+              const base = ELEMENT_COLORS[el] || "#888888";
+              return (
+                <radialGradient key={el} id={`atom-${el}`} cx="32%" cy="30%" r="75%">
+                  <stop offset="0%" stopColor={shade(base, 1.65)} />
+                  <stop offset="45%" stopColor={base} />
+                  <stop offset="100%" stopColor={shade(base, 0.55)} />
+                </radialGradient>
+              );
+            })}
+          </defs>
+          {items.map((item, i) => {
+            if (item.kind === "bond") {
+              const width = item.order >= 2 ? 6 : 4;
+              return (
+                <line
+                  key={i}
+                  x1={item.p.sx}
+                  y1={item.p.sy}
+                  x2={item.q.sx}
+                  y2={item.q.sy}
+                  stroke="#5a5a5a"
+                  strokeWidth={width}
+                  strokeLinecap="round"
+                />
+              );
+            }
+            const r =
+              (ATOM_RADIUS[item.p.symbol] ?? ATOM_RADIUS.default) *
+              scale *
+              0.55;
+            const depth = (item.p.z / maxExtent + 1) / 2; // 0 hinten … 1 vorn
             return (
-              <line
+              <circle
                 key={i}
-                x1={item.p.sx}
-                y1={item.p.sy}
-                x2={item.q.sx}
-                y2={item.q.sy}
-                stroke="#777777"
-                strokeWidth={width}
-                strokeLinecap="round"
+                cx={item.p.sx}
+                cy={item.p.sy}
+                r={r * (0.78 + 0.22 * depth)}
+                fill={`url(#atom-${item.p.symbol})`}
+                opacity={0.78 + 0.22 * depth}
               />
             );
-          }
-          const r =
-            (ATOM_RADIUS[item.p.symbol] ?? ATOM_RADIUS.default) * scale * 0.55;
-          // Tiefenhinweis: hintere Atome etwas kleiner und blasser
-          const depth = (item.p.z / maxExtent + 1) / 2; // 0 hinten … 1 vorn
-          return (
-            <circle
-              key={i}
-              cx={item.p.sx}
-              cy={item.p.sy}
-              r={r * (0.75 + 0.25 * depth)}
-              fill={ELEMENT_COLORS[item.p.symbol] || "#888888"}
-              opacity={0.65 + 0.35 * depth}
-              stroke="#ffffff"
-              strokeWidth="1"
-            />
-          );
-        })}
-      </svg>
+          })}
+        </svg>
+      </div>
       {data.files?.sdf && (
         <div
           style={{
@@ -160,7 +198,10 @@ export default function Molecule3DView({ data }) {
             color: "var(--fg-muted)",
             marginTop: 8,
             fontFamily: "ui-monospace, monospace",
-            wordBreak: "break-all",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            flexShrink: 0,
           }}
         >
           SDF: {data.files.sdf}
