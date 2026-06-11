@@ -62,6 +62,13 @@ species dominates at every pH:
   <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/species-phosphoric.png" alt="Species distribution of phosphoric acid over pH with pKa crossovers" width="420">
 </p>
 
+*"Make me a starter deck for the Ph.Eur. identity reactions"* —
+`export_curated_deck` / `export_anki_deck` build a ready-to-import Anki deck
+(`.apkg`) with rendered structures embedded — or deliver it straight into a
+running Anki via AnkiConnect:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-deck-panel.png" alt="In-chat summary panel of the exported Ph.Eur. identity reactions Anki deck" width="560"></p>
+
 ## Features
 
 - **`generate_molecule`** — name/SMILES → 2D structure as PNG + SVG
