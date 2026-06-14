@@ -3,6 +3,13 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
+from chemdraw_tool.auth import (
+    verify_jwt_token,
+    verify_api_key,
+    optional_auth,
+    get_valid_api_keys,
+)
+from chemdraw_tool.auth.config import validate_config, CONFIG_DIR
 from chemdraw_tool.cdxml_writer import write_cdxml
 from chemdraw_tool.chemdraw import find_chemdraw, open_in_chemdraw
 from chemdraw_tool.databases import (
@@ -123,6 +130,22 @@ def _write_structure_files(
 mcp = FastMCP("ChemDraw Tool")
 
 # ---------------------------------------------------------------------------
+# Authentication Configuration
+# ---------------------------------------------------------------------------
+
+# Try to validate authentication configuration
+# If CHEMDRAW_SECRET_KEY is not set, authentication will be disabled
+_AUTH_ENABLED = False
+try:
+    validate_config()
+    _AUTH_ENABLED = True
+    logger = __import__('logging').getLogger(__name__)
+    logger.info("Authentication is ENABLED")
+except (ValueError, RuntimeError) as e:
+    logger = __import__('logging').getLogger(__name__)
+    logger.warning("Authentication is DISABLED: %s", e)
+
+# ---------------------------------------------------------------------------
 # UI resource — serves the built MCP App HTML to the client iframe
 # ---------------------------------------------------------------------------
 _UI_DIST = Path(__file__).parent / "ui" / "dist" / "index.html"
@@ -140,6 +163,137 @@ _UI_META = {"ui": {"resourceUri": _RESOURCE_URI}}
 def chem_app_ui() -> str:
     """Serve the MCP App UI (single-page React app)."""
     return _UI_DIST.read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Authentication Tools (only available when auth is enabled)
+# ---------------------------------------------------------------------------
+
+if _AUTH_ENABLED:
+    from chemdraw_tool.auth.tokens import create_access_token, create_refresh_token
+    from chemdraw_tool.auth.config import add_api_key, get_valid_api_keys, remove_api_key
+    from pydantic import BaseModel
+    from typing import Optional
+    
+    class TokenRequest(BaseModel):
+        """Request model for token creation."""
+        subject: str
+        username: Optional[str] = None
+        role: Optional[str] = None
+        
+    class TokenResponse(BaseModel):
+        """Response model for token creation."""
+        access_token: str
+        refresh_token: Optional[str] = None
+        token_type: str = "bearer"
+        expires_in: int
+        
+    class APIKeyRequest(BaseModel):
+        """Request model for API key management."""
+        key: str
+        
+    class APIKeyListResponse(BaseModel):
+        """Response model for API key list."""
+        api_keys: list[str]
+        count: int
+    
+    @mcp.tool()
+    def create_auth_token(
+        subject: str,
+        username: Optional[str] = None,
+        role: Optional[str] = None,
+        expires_in: Optional[int] = None,
+    ) -> TokenResponse:
+        """Create a new authentication token for API access.
+        
+        This tool creates JWT tokens that can be used to authenticate
+        requests to the ChemDraw MCP server when running with Mistral AI Vibe.
+        
+        Args:
+            subject: Unique identifier for the token holder (e.g., user ID or username).
+            username: Optional display name for the user.
+            role: Optional role for the user (e.g., 'admin', 'user').
+            expires_in: Optional expiration time in minutes. Defaults to 30 minutes.
+        
+        Returns:
+            TokenResponse: Contains the access token and optional refresh token.
+        
+        Example:
+            create_auth_token(subject="user123", role="admin")
+        """
+        data = {"sub": subject}
+        if username:
+            data["username"] = username
+        if role:
+            data["role"] = role
+        
+        access_token = create_access_token(data, expires_delta=expires_in)
+        refresh_token = create_refresh_token(data)
+        
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            token_type="bearer",
+            expires_in=expires_in or 30,
+        )
+    
+    @mcp.tool()
+    def add_api_key(key: str) -> dict:
+        """Add a new API key for authentication.
+        
+        API keys can be used as an alternative to JWT tokens for authentication.
+        Once added, the key can be used in the Authorization header as:
+        Authorization: Bearer <api-key>
+        
+        Args:
+            key: The API key to add.
+        
+        Returns:
+            dict: Confirmation message.
+        """
+        add_api_key(key)
+        return {"status": "success", "message": "API key added", "key": key[:8] + "..."}
+    
+    @mcp.tool()
+    def list_api_keys() -> APIKeyListResponse:
+        """List all configured API keys.
+        
+        Returns:
+            APIKeyListResponse: List of API keys (only first 8 characters shown for security).
+        """
+        keys = get_valid_api_keys()
+        # Only show first 8 characters for security
+        masked_keys = [k[:8] + "..." if len(k) > 8 else k for k in keys]
+        return APIKeyListResponse(api_keys=masked_keys, count=len(keys))
+    
+    @mcp.tool()
+    def remove_api_key(key: str) -> dict:
+        """Remove an API key.
+        
+        Args:
+            key: The API key to remove.
+        
+        Returns:
+            dict: Confirmation message.
+        """
+        if remove_api_key(key):
+            return {"status": "success", "message": "API key removed"}
+        else:
+            return {"status": "error", "message": "API key not found"}
+    
+    @mcp.tool()
+    def get_auth_status() -> dict:
+        """Get the current authentication status.
+        
+        Returns:
+            dict: Authentication configuration status.
+        """
+        return {
+            "auth_enabled": _AUTH_ENABLED,
+            "api_keys_count": len(get_valid_api_keys()),
+            "algorithm": "HS256",
+            "token_expiration_minutes": 30,
+        }
 
 
 def _enrich_properties(smiles: str) -> dict[str, str]:

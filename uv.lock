@@ -3,6 +3,15 @@ revision = 3
 requires-python = ">=3.11"
 
 [[package]]
+name = "annotated-doc"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/57/ba/046ceea27344560984e26a590f90bc7f4a75b06701f653222458922b558c/annotated_doc-0.0.4.tar.gz", hash = "sha256:fbcda96e87e9c92ad167c2e53839e57503ecfda18804ea28102353485033faa4", size = 7288, upload-time = "2025-11-10T22:07:42.062Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/d3/26bf1008eb3d2daa8ef4cacc7f3bfdc11818d111f7e2d0201bc6e3b49d45/annotated_doc-0.0.4-py3-none-any.whl", hash = "sha256:571ac1dc6991c450b25a9c2d84a3705e2ae7a53467b5d111c24fa8baabbed320", size = 5303, upload-time = "2025-11-10T22:07:40.673Z" },
+]
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -212,17 +221,21 @@ wheels = [
 
 [[package]]
 name = "chemdraw-mcp"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "fastapi" },
     { name = "genanki" },
     { name = "lxml" },
     { name = "matplotlib" },
     { name = "mcp" },
     { name = "pillow" },
     { name = "py2opsin" },
+    { name = "pyjwt" },
+    { name = "python-dotenv" },
     { name = "rdkit" },
     { name = "requests" },
+    { name = "starlette" },
 ]
 
 [package.dev-dependencies]
@@ -234,14 +247,18 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi", specifier = ">=0.109.0" },
     { name = "genanki", specifier = ">=0.13.1" },
     { name = "lxml" },
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "mcp" },
     { name = "pillow" },
     { name = "py2opsin", specifier = ">=1.2.0" },
+    { name = "pyjwt", specifier = ">=2.8.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "rdkit" },
     { name = "requests" },
+    { name = "starlette", specifier = ">=0.35.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -429,6 +446,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a9/95/a3dbbb5028f35eafb79008e7522a75244477d2838f38cbb722248dabc2a8/cycler-0.12.1.tar.gz", hash = "sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c", size = 7615, upload-time = "2023-10-07T05:32:18.335Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl", hash = "sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30", size = 8321, upload-time = "2023-10-07T05:32:16.783Z" },
+]
+
+[[package]]
+name = "fastapi"
+version = "0.137.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-doc" },
+    { name = "pydantic" },
+    { name = "starlette" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/da/fe/fb25c287ff7e0f79fc6acf2e8b812725dad28d2a1446c0410bab1422ac90/fastapi-0.137.0.tar.gz", hash = "sha256:d0565d551f65a803ecff245390840867186f456ef98971f750724eed16e1541c", size = 408023, upload-time = "2026-06-14T12:51:30.672Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e7/f1/b38481428e50131e5345b535414d11d196f14990122fe69c9020c64e5683/fastapi-0.137.0-py3-none-any.whl", hash = "sha256:6dcbde8d464f92117c1accb9e42720f8e423fa9b86cb563b1f5862f785a06498", size = 121777, upload-time = "2026-06-14T12:51:29.067Z" },
 ]
 
 [[package]]

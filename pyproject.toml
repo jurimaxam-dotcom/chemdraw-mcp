@@ -22,6 +22,10 @@ dependencies = [
     "matplotlib>=3.10.9",
     "py2opsin>=1.2.0",
     "genanki>=0.13.1",
+    "pyjwt>=2.8.0",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.109.0",
+    "starlette>=0.35.0",
 ]
 
 [project.urls]
