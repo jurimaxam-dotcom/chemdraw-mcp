@@ -1,0 +1,121 @@
+<meta charset="utf-8">
+<title>chemdraw-mcp — System-Karte</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --card: #ffffff; --ink: #1a2233; --muted: #5b6678;
+    --line: #d8dee9; --accent: #2563eb; --anki: #0d9488;
+    --neu: #16a34a; --offen: #d97706; --vorschlag: #7c3aed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #10141c; --card: #1a2130; --ink: #e6eaf2; --muted: #93a0b4;
+            --line: #2c3547; --accent: #60a5fa; --anki: #2dd4bf;
+            --neu: #4ade80; --offen: #fbbf24; --vorschlag: #a78bfa; }
+  }
+  :root[data-theme="dark"] { --bg: #10141c; --card: #1a2130; --ink: #e6eaf2; --muted: #93a0b4;
+            --line: #2c3547; --accent: #60a5fa; --anki: #2dd4bf;
+            --neu: #4ade80; --offen: #fbbf24; --vorschlag: #a78bfa; }
+  :root[data-theme="light"] { --bg: #f7f8fa; --card: #ffffff; --ink: #1a2233; --muted: #5b6678;
+            --line: #d8dee9; --accent: #2563eb; --anki: #0d9488;
+            --neu: #16a34a; --offen: #d97706; --vorschlag: #7c3aed; }
+  body { background: var(--bg); color: var(--ink); font: 15px/1.5 -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 24px; }
+  h1 { font-size: 1.3em; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin-bottom: 20px; font-size: .92em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h2 { font-size: .95em; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+  .card.anki { border-color: var(--anki); border-width: 2px; }
+  .card.vorschlag { border: 2px dashed var(--vorschlag); }
+  ul { margin: 0; padding-left: 18px; }
+  li { margin: 3px 0; }
+  code { font-family: ui-monospace, monospace; font-size: .88em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: 1px 5px; border-radius: 4px; }
+  .badge { font-size: .68em; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 999px; color: #fff; }
+  .b-neu { background: var(--neu); } .b-offen { background: var(--offen); } .b-vorschlag { background: var(--vorschlag); }
+  .flow { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin: 14px 0 18px; overflow-x: auto; }
+  .flow pre { margin: 0; font: 12.5px/1.45 ui-monospace, monospace; color: var(--muted); }
+  .meta { margin-top: 18px; font-size: .85em; color: var(--muted); }
+  .why { color: var(--muted); font-size: .88em; margin: 6px 0 0; }
+</style>
+
+<h1>chemdraw-mcp — System-Karte</h1>
+<div class="sub">MCP-Server für Claude Desktop · RDKit offline · PyPI <code>uvx chemdraw-mcp</code> · v0.2.0 · Stand 17.07.2026</div>
+
+<div class="flow"><pre>
+Chat-Eingabe (Name / SMILES)
+   └─► resolver: OPSIN (offline, IUPAC) ─► PubChem ─► NCI
+        └─► RDKit 2D/3D ─► Validierung (Sanity, Round-Trip)
+             ├─► PNG + SVG nach ~/ChemDraw-Output/        (primär)
+             ├─► interaktives Chat-Panel (MCP App, React)  (hover, PNG-Export)
+             ├─► .apkg / AnkiConnect                       (Lernkarten)
+             └─► CDXML                                     (optional, nur auf Wunsch)
+</pre></div>
+
+<div class="grid">
+
+  <div class="card anki">
+    <h2>🎴 Klausur-Lernen (Anki) <span class="badge b-offen">OFFEN</span></h2>
+    <ul>
+      <li><code>export_anki_deck</code> — Struktur↔Name-Drills (beide Richtungen aus einer Note), Cloze/Lückentext, Identitäts-/Nachweisreaktionen, Spektren-Bandenzuordnung; gerenderte Bilder eingebettet, Tags, <code>Parent::Child</code>-Subdecks; Re-Export aktualisiert statt dupliziert</li>
+      <li><code>export_curated_deck</code> — formelgeprüfte Starter-Decks (klassische Analgetika, Ph.Eur.-Identitätsreaktionen)</li>
+      <li>Lieferung direkt in laufendes Anki via AnkiConnect (optional)</li>
+    </ul>
+    <p class="why">OFFEN: Distributionsexperiment läuft — dieser Block ist laut Studenten-Gesprächen der Haupthebel.</p>
+  </div>
+
+  <div class="card">
+    <h2>✏️ Zeichnen &amp; Verstehen</h2>
+    <ul>
+      <li><code>generate_molecule</code> — Name/SMILES → 2D-Struktur (PNG+SVG), Eigenschaften, funktionelle Gruppen, Lipinski-Check</li>
+      <li><code>generate_reaction</code> — Edukte + Produkte + Bedingungen → Reaktionsschema</li>
+      <li><code>generate_mechanism</code> — Mechanismen Schritt für Schritt mit gebogenen Elektronenpfeilen (SN1, SN2, Fischer-Veresterung)</li>
+      <li><code>compare_molecules</code> — 2–4 Strukturen nebeneinander, gemeinsames Gerüst neutral, Unterschiede markiert</li>
+      <li><code>generate_3d</code> — drehbares Kugel-Stab-Modell im Chat (ETKDG) + SDF; R/S- und E/Z-Deskriptoren via <code>annotate_stereo</code></li>
+      <li><code>batch_generate</code> — ganze Stoffliste in einem Aufruf</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📈 Analytik &amp; Ph.Eur.</h2>
+    <ul>
+      <li><code>generate_spectrum</code> — schematische Spektren aus Peak-Listen (IR, NIR, Raman, UV/Vis, Fluoreszenz, ORD, CD, ¹H/¹³C-NMR, MS) — zeichnet Gegebenes, sagt nichts voraus</li>
+      <li><code>generate_titration_curve</code> — pH-Kurve aus exakter Ladungsbilanz, Äquivalenz- und Pufferpunkte (pH = pKa), Indikator-Umschlagsband</li>
+      <li><code>generate_species_distribution</code> — Protolyse-Speziesverteilung über pH mit pKa-Schnittpunkten</li>
+      <li><code>calculate_validation</code> — Ph.Eur.-Gehaltsbestimmung mit vollständigem Rechenweg, t-Test/F-Test</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🔎 Nachschlagen (online)</h2>
+    <ul>
+      <li><code>lookup_molecule_data</code> — Stoffdatenblatt im Chat-Panel (PubChem, ChEBI, KEGG, UniProt)</li>
+      <li><code>lookup_compound</code> / <code>lookup_physical</code> — Eigenschaften, physikalische Daten</li>
+      <li><code>lookup_safety</code> — GHS-Sicherheitsdaten</li>
+      <li><code>lookup_biochem</code> / <code>lookup_pathway</code> — Biochemie, Stoffwechselwege</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📦 Export &amp; Integration</h2>
+    <ul>
+      <li><code>save_png</code> — Panel-Render als Datei sichern</li>
+      <li><code>open_chemdraw_file</code> — macOS-Bridge: Struktur direkt in ChemDraw öffnen (optional)</li>
+      <li>CDXML-Export als optionales Format (nie Pflicht)</li>
+      <li><code>search_vault</code> / <code>read_vault_entry</code> — Notiz-Vault-Anbindung (nur wenn konfiguriert)</li>
+    </ul>
+  </div>
+
+  <div class="card vorschlag">
+    <h2>🎯 Positionierung „Klausur-Lernflow" <span class="badge b-vorschlag">VORSCHLAG</span></h2>
+    <ul>
+      <li><b>Pitch drehen, nicht Produkt umbauen:</b> Posts führen mit dem Anki-/Lern-Winkel („Claude baut dir Lernkarten mit echten Strukturen"), Zeichnen wird Unterstützungs-Feature</li>
+      <li><b>Erst Evidenz, dann Features:</b> aus den 5 Studenten-Gesprächen konkrete Deck-Wünsche einsammeln (welches Fach, welche Klausur, welcher Kartentyp) → Backlog, gebaut wird nach Nachfrage</li>
+      <li>Kandidaten aus bisherigen Gesprächen: fachspezifische kuratierte Decks (z.B. Klausurstoff Instrumentelle Analytik), Falschantwort-Distraktoren, Lernstands-Flow</li>
+      <li>Umsetzung dann via Codex (Rollenteilung 17.07.), Claude spec't &amp; nimmt ab</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="meta">
+  <b>Distribution</b> <span class="badge b-offen">OFFEN</span> — Ziel: 5 Posts, 5 Pharma-Gespräche. Entwürfe: <code>docs/distribution/posts-2026-07.md</code> · Baseline 17.07.: 5 Stars, 385 PyPI-Downloads gesamt (ohne Mirrors), 32 unique Repo-Besucher/14 T.<br>
+  <b>Gate:</b> <code>./test.sh</code> (pytest + JS-Unit + Chromium-e2e, Pixel-Snapshot) — grün am 17.07.2026 · <b>Qualität:</b> ~400 Tests, test-first · Apache-2.0
+</div>
