@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:unit": "node src/utils/svgToPng.test.mjs",
+    "test:unit": "node --test src/utils/*.test.mjs",
     "test:e2e": "node src/utils/svgToPng.e2e.mjs",
     "test:e2e:update": "UPDATE_SNAPSHOTS=1 node src/utils/svgToPng.e2e.mjs",
     "test": "npm run test:unit && npm run test:e2e",

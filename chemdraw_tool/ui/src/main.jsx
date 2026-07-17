@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import App from "./App";
 import { AppContext } from "./AppContext";
+import { extractToolData } from "./utils/toolData";
 import "./styles.css";
 
 function Root() {
@@ -12,11 +13,10 @@ function Root() {
     appInfo: { name: "Chem-MCP", version: "0.1.0" },
     capabilities: {},
     onAppCreated: (app) => {
-      app.ontoolresult = (params) => {
-        if (params?.structuredContent) {
-          setData(params.structuredContent);
-        }
-      };
+      app.addEventListener("toolresult", (params) => {
+        const payload = extractToolData(params);
+        if (payload) setData(payload);
+      });
     },
   });
 
