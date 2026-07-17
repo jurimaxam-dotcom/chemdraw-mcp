@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import App from "./App";
@@ -12,24 +12,13 @@ function Root() {
     appInfo: { name: "Chem-MCP", version: "0.1.0" },
     capabilities: {},
     onAppCreated: (app) => {
-      app.ontoolresult = (result) => {
-        if (result?.structuredContent) {
-          setData(result.structuredContent);
+      app.ontoolresult = (params) => {
+        if (params?.structuredContent) {
+          setData(params.structuredContent);
         }
       };
     },
   });
-
-  useEffect(() => {
-    function handleMessage(e) {
-      const msg = e.data;
-      if (msg?.method === "ontoolresult" && msg?.params?.structuredContent) {
-        setData(msg.params.structuredContent);
-      }
-    }
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
 
   if (data)
     return (
