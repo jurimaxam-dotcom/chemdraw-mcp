@@ -1,6 +1,6 @@
 [project]
 name = "chemdraw-mcp"
-version = "0.2.0"
+version = "0.2.1"
 description = "MCP server that turns molecule names or SMILES into publication-style 2D structure drawings (PNG/SVG via RDKit) — reaction schemes, mechanisms, spectra. Unofficial, not affiliated with Revvity."
 readme = "README.md"
 license = "Apache-2.0"
