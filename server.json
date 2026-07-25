@@ -3,7 +3,7 @@
   "name": "io.github.jurimaxam-dotcom/chemdraw-mcp",
   "title": "ChemDraw MCP (unofficial)",
   "description": "Molecule names or SMILES to 2D structures, reactions, mechanisms, spectra - offline via RDKit.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "repository": {
     "url": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
     "source": "github"
@@ -12,7 +12,7 @@
     {
       "registryType": "pypi",
       "identifier": "chemdraw-mcp",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "transport": {
         "type": "stdio"
       }
