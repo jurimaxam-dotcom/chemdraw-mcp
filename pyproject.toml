@@ -61,7 +61,19 @@ testpaths = ["tests", "scripts"]
 
 [dependency-groups]
 dev = [
-    "playwright>=1.60.0",
+    # EXAKT dieselbe Version wie chemdraw_tool/ui/package.json — nicht lockern.
+    # Beide Playwright-Pakete (Python + JS) benutzen denselben Browser-Cache
+    # (~/Library/Caches/ms-playwright) und laden je Version eine ANDERE
+    # Build-Revision (z.B. chromium_headless_shell-1223 vs. -1228). Driftete das
+    # ">=" auf eine neuere Version, lagen zwei Builds im Cache und der e2e-Test
+    # startete gegen einen, den `npx playwright install` nie geholt hatte —
+    # Gate falsch-rot mit Playwright-Stacktrace (Vorfall 14.08.2026).
+    # Der Python-Playwright wird ausschließlich vom Hilfsskript
+    # tests/screenshot_ui.py benutzt (kein Test, nicht im Gate); ihn ganz zu
+    # entfernen wäre die Alternative — dafür müsste screenshot_ui.py aber sauber
+    # degradieren, und ein Pin kostet nichts. Version hier ändern ⇒ package.json
+    # mitziehen.
+    "playwright==1.60.0",
     "pytest",
     "ruff>=0.15.16",
 ]

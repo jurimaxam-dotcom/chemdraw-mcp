@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "//playwright": "Playwright bleibt exakt gepinnt (kein Caret): die Version bestimmt die Chromium-Build-Revision, gegen die der e2e-Pixel-Snapshot gilt. pyproject.toml pinnt dieselbe Version — beide teilen sich einen Browser-Cache; hier ändern heißt dort mitziehen.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
