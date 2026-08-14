@@ -49,6 +49,7 @@ from chemdraw_tool.payloads import (
     SpectrumPeak,
     ValidationPayload,
 )
+from chemdraw_tool.render_style import condense_groups, get_style
 from chemdraw_tool.resolver import resolve
 from chemdraw_tool.spectrum import (
     SPECTRUM_TYPES,
@@ -83,24 +84,37 @@ def _normalize_formats(formats: list[str] | None) -> list[str]:
 
 
 def _write_structure_files(
-    mol, slug: str, display_name: str, formats: list[str], annotate_stereo: bool = False
+    mol,
+    slug: str,
+    display_name: str,
+    formats: list[str],
+    annotate_stereo: bool = False,
+    render_mol=None,
+    style: str = "",
 ) -> tuple[dict[str, str], str]:
     """Schreibt die angeforderten Dateiformate für ein Einzelmolekül.
 
     Returns ({format: pfad}, cdxml_path) — cdxml_path ist "" wenn kein CDXML
     angefordert wurde. Die CDXML-Roundtrip-Validierung läuft nur, wenn CDXML
     tatsächlich erzeugt wird.
+
+    render_mol: Molekül für die Bilddateien (z.B. die abgekürzte Variante);
+    None = `mol`. CDXML entsteht IMMER aus `mol`: die Datei geht zum
+    Weiterbearbeiten nach ChemDraw und soll dort die volle Struktur zeigen,
+    keine Dummy-Atome mit Textlabel.
     """
     import logging
+
+    drawn = mol if render_mol is None else render_mol
 
     artifacts: dict[str, bytes | str] = {}
     if "png" in formats:
         artifacts["png"] = render_molecule_png(
-            mol, legend=display_name, annotate_stereo=annotate_stereo
+            drawn, legend=display_name, annotate_stereo=annotate_stereo, style=style
         )
     if "svg" in formats:
         artifacts["svg"] = render_molecule_svg(
-            mol, legend=display_name, annotate_stereo=annotate_stereo
+            drawn, legend=display_name, annotate_stereo=annotate_stereo, style=style
         )
     files = write_files(OUTPUT_DIR / slug, artifacts)
 
@@ -218,6 +232,8 @@ def generate_molecule(
     label: str = "",
     formats: list[str] | None = None,
     annotate_stereo: bool = False,
+    abbreviate_groups: bool = False,
+    render_style: str = "",
 ) -> MoleculePayload:
     """Generate a 2D molecular structure drawing from a name or SMILES string.
 
@@ -242,6 +258,19 @@ def generate_molecule(
             wants to edit the structure in ChemDraw or asks to open it there.
         annotate_stereo: Set True to print CIP stereo descriptors (R/S, E/Z)
             at each stereocenter — useful for stereochemistry teaching.
+        abbreviate_groups: Set True to draw common substituents as the short
+            labels chemists write by hand — Ph, Bn, OAc, OMe, CO2H, NO2, tBu,
+            Boc, Ts, TMS — instead of spelling out every ring and chain.
+            Makes crowded structures readable and looks like a paper figure.
+            The chemistry is unchanged: properties, functional groups and any
+            CDXML export still describe the full molecule. Note that hover
+            tooltips in the panel are switched off for abbreviated drawings.
+        render_style: Named look for the drawing. Leave empty for the standard
+            style. "compact" = thin bonds, small labels, tight margins, for a
+            figure that will be printed small (two-column layout, lab report).
+            "presentation" = thick bonds and large labels, readable from the
+            back of a lecture hall. "grayscale" = standard geometry but a
+            black-and-white atom palette, for grayscale printing.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -250,6 +279,7 @@ def generate_molecule(
     )
 
     fmts = _normalize_formats(formats)
+    get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
     smiles, mol = resolve(name_or_smiles)
     mol = generate_2d(mol)
@@ -261,9 +291,18 @@ def generate_molecule(
 
     display_name = label or name_or_smiles
     slug = _slugify(display_name)
+    # Abgekürzt wird nur die Zeichnung. Analyse (funktionelle Gruppen,
+    # Properties, Validierung) und CDXML laufen weiter am vollen Molekül.
+    drawn = condense_groups(mol) if abbreviate_groups else mol
 
     files, cdxml_path = _write_structure_files(
-        mol, slug, display_name, fmts, annotate_stereo=annotate_stereo
+        mol,
+        slug,
+        display_name,
+        fmts,
+        annotate_stereo=annotate_stereo,
+        render_mol=drawn,
+        style=render_style,
     )
 
     properties = _enrich_properties(smiles)
@@ -273,8 +312,16 @@ def generate_molecule(
 
     return MoleculePayload(
         type="molecule",
-        svg=render_svg(mol, fill_container=True, annotate_stereo=annotate_stereo),
-        atoms=extract_atom_data(mol),
+        svg=render_svg(
+            drawn,
+            fill_container=True,
+            annotate_stereo=annotate_stereo,
+            style=render_style,
+        ),
+        # Die Atomliste positioniert Tooltip und Gruppen-Highlight über dem SVG.
+        # Nach dem Abkürzen zeigt das SVG andere Atome als das analysierte
+        # Molekül — falsch platzierte Overlays wären schlimmer als keine.
+        atoms=[] if abbreviate_groups else extract_atom_data(mol),
         name=display_name,
         properties=properties,
         functionalGroups=groups,
@@ -949,6 +996,8 @@ def generate_reaction(
     conditions: str = "",
     name: str = "",
     formats: list[str] | None = None,
+    abbreviate_groups: bool = False,
+    render_style: str = "",
 ) -> ReactionPayload:
     """Generate a reaction scheme (educts → products) as image files.
 
@@ -969,10 +1018,19 @@ def generate_reaction(
         formats: Output file formats, any of "png", "svg", "cdxml"
             (default: ["png", "svg"]). Include "cdxml" ONLY when the user
             wants to edit the scheme in ChemDraw or asks to open it there.
+        abbreviate_groups: Set True to draw common substituents as short labels
+            (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.
+            Keeps a multi-step scheme narrow enough to stay readable. The
+            CDXML export still contains the full structures.
+        render_style: Named look for the scheme. Empty = standard style.
+            "compact" = thin bonds and tight margins for a small printed
+            figure, "presentation" = thick bonds and large labels for slides,
+            "grayscale" = black-and-white atom palette for grayscale printing.
     """
     from chemdraw_tool.svg_renderer import render_svg
 
     fmts = _normalize_formats(formats)
+    get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
     reactant_mols = []
     for r in reactants:
@@ -997,11 +1055,23 @@ def generate_reaction(
     slug = _slugify(name or "reaktion")
     out_dir = REACTION_DIR / slug
 
+    # Abkürzen betrifft nur die Zeichnung — das CDXML unten wird aus den
+    # vollen Molekülen geschrieben.
+    if abbreviate_groups:
+        drawn_reactants = [condense_groups(m) for m in reactant_mols]
+        drawn_products = [condense_groups(m) for m in product_mols]
+    else:
+        drawn_reactants, drawn_products = reactant_mols, product_mols
+
     artifacts: dict[str, bytes | str] = {}
     if "png" in fmts:
-        artifacts["png"] = render_reaction_png(reactant_mols, product_mols, conditions)
+        artifacts["png"] = render_reaction_png(
+            drawn_reactants, drawn_products, conditions, style=render_style
+        )
     if "svg" in fmts:
-        artifacts["svg"] = render_reaction_svg(reactant_mols, product_mols, conditions)
+        artifacts["svg"] = render_reaction_svg(
+            drawn_reactants, drawn_products, conditions, style=render_style
+        )
     files = write_files(out_dir / slug, artifacts)
 
     cdxml_path = ""
@@ -1028,12 +1098,12 @@ def generate_reaction(
         name=name,
         conditions=conditions,
         reactants=[
-            MolEntry(svg=render_svg(m, r_w, r_h), name=n)
-            for m, n in zip(reactant_mols, reactants)
+            MolEntry(svg=render_svg(m, r_w, r_h, style=render_style), name=n)
+            for m, n in zip(drawn_reactants, reactants)
         ],
         products=[
-            MolEntry(svg=render_svg(m, r_w, r_h), name=n)
-            for m, n in zip(product_mols, products)
+            MolEntry(svg=render_svg(m, r_w, r_h, style=render_style), name=n)
+            for m, n in zip(drawn_products, products)
         ],
         files=files,
         cdxml_path=cdxml_path,
@@ -1045,6 +1115,8 @@ def batch_generate(
     molecules: list[str],
     formats: list[str] | None = None,
     annotate_stereo: bool = False,
+    abbreviate_groups: bool = False,
+    render_style: str = "",
 ) -> BatchPayload:
     """Generate multiple molecule structure drawings at once.
 
@@ -1064,6 +1136,13 @@ def batch_generate(
         formats: Output file formats, any of "png", "svg", "cdxml"
             (default: ["png", "svg"]). Include "cdxml" ONLY when the user
             wants to edit the structures in ChemDraw.
+        abbreviate_groups: Set True to draw common substituents as short labels
+            (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.
+            Applies to every molecule in the batch, so a series of structures
+            stays visually consistent.
+        render_style: Named look applied to every molecule in the batch. Empty
+            = standard style. "compact" for small printed figures,
+            "presentation" for slides, "grayscale" for grayscale printing.
     """
     import logging
 
@@ -1074,6 +1153,7 @@ def batch_generate(
     )
 
     fmts = _normalize_formats(formats)
+    get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
     mol_payloads = []
     cdxml_paths = []
@@ -1101,10 +1181,17 @@ def batch_generate(
 
         display_name = name_or_smiles
         slug = _slugify(display_name)
+        drawn = condense_groups(mol) if abbreviate_groups else mol
 
         files, cdxml_path = _write_structure_files(
-        mol, slug, display_name, fmts, annotate_stereo=annotate_stereo
-    )
+            mol,
+            slug,
+            display_name,
+            fmts,
+            annotate_stereo=annotate_stereo,
+            render_mol=drawn,
+            style=render_style,
+        )
         if cdxml_path:
             cdxml_paths.append(cdxml_path)
 
@@ -1116,8 +1203,13 @@ def batch_generate(
         mol_payloads.append(
             MoleculePayload(
                 type="molecule",
-                svg=render_svg(mol, fill_container=True, annotate_stereo=annotate_stereo),
-                atoms=extract_atom_data(mol),
+                svg=render_svg(
+                    drawn,
+                    fill_container=True,
+                    annotate_stereo=annotate_stereo,
+                    style=render_style,
+                ),
+                atoms=[] if abbreviate_groups else extract_atom_data(mol),
                 name=display_name,
                 properties=properties,
                 functionalGroups=groups,

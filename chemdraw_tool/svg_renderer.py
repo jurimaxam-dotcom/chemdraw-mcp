@@ -7,6 +7,8 @@ import re
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
+from chemdraw_tool.render_style import apply_style
+
 SVG_WIDTH = 900
 SVG_HEIGHT = 700
 FIXED_BOND_LENGTH = 25
@@ -14,6 +16,9 @@ SVG_PADDING = 22
 # Strichstärke der Bindungen — feiner, ACS-naher Stil. Single source of truth:
 # image_export.py importiert diesen Wert, damit Export-Datei und UI-Vorschau nie
 # auseinanderdriften (Review-Finding 2026-06-10).
+# Stil-Presets (render_style.py) definieren diese Konstante NICHT um: sie
+# überschreiben die Strichstärke pro Zeichenvorgang, nachdem beide Pfade sie
+# hier gesetzt haben. Die Parität gilt dadurch je Stil statt nur im Default.
 BOND_LINE_WIDTH = 1.5
 
 
@@ -73,6 +78,7 @@ def render_svg(
     height: int = SVG_HEIGHT,
     fill_container: bool = False,
     annotate_stereo: bool = False,
+    style: str = "",
 ) -> str:
     """Render a molecule to an SVG string with consistent pixel bond length.
 
@@ -83,6 +89,8 @@ def render_svg(
     fill_container=True: SVG scales to wrapper via width/height=100% +
     viewBox aspect — use for single-molecule cards where the SVG should fill
     its container responsively.
+
+    style: named preset from render_style.STYLES; "" keeps today's look.
     """
     drawer = rdMolDraw2D.MolDraw2DSVG(width, height)
     opts = drawer.drawOptions()
@@ -92,6 +100,7 @@ def render_svg(
     opts.useDefaultAtomPalette()
     if annotate_stereo:
         opts.addStereoAnnotation = True
+    apply_style(opts, style)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()

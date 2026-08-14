@@ -20,6 +20,7 @@ from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Geometry import Point2D, Point3D
 
+from chemdraw_tool.render_style import apply_style, get_style
 from chemdraw_tool.svg_renderer import BOND_LINE_WIDTH
 
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
@@ -43,7 +44,23 @@ ARROW_PAD = 0.9
 CONDITIONS_FONT = 0.55
 
 
-def _draw_molecule(drawer, mol, legend: str, annotate_stereo: bool = False) -> None:
+def _reaction_metrics(style: str) -> tuple[float, float]:
+    """(Pfeillänge, Conditions-Schriftgröße) in Mol-Koordinaten für einen Stil.
+
+    Beide skalieren mit demselben Faktor: der Text sitzt mittig über dem Pfeil,
+    der Zwischenraum zwischen Edukten und Produkten ist aber fest. Würde nur
+    die Schrift wachsen, schöbe sich der Text in die Strukturen (bei
+    'presentation' reproduziert). Gemeinsam skaliert bleibt das
+    Kollisionsverhalten exakt das des Standardstils.
+    """
+    preset = get_style(style)
+    factor = preset.conditions_font_scale if preset else 1.0
+    return ARROW_LENGTH * factor, CONDITIONS_FONT * factor
+
+
+def _draw_molecule(
+    drawer, mol, legend: str, annotate_stereo: bool = False, style: str = ""
+) -> None:
     # Gleiche Strichstärke wie die UI-Vorschau (gemeinsame Konstante) — die Datei
     # darf nicht anders aussehen als das, was der Nutzer im Chat gesehen hat.
     # Bewusst NICHT übernommen: fixedBondLength (Datei soll die Canvas füllen)
@@ -51,6 +68,10 @@ def _draw_molecule(drawer, mol, legend: str, annotate_stereo: bool = False) -> N
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
     if annotate_stereo:
         drawer.drawOptions().addStereoAnnotation = True
+    # Nach der Basis, damit ein Preset die Strichstärke überschreiben kann,
+    # ohne BOND_LINE_WIDTH umzudefinieren — svg_renderer.render_svg wendet das
+    # Preset an derselben Stelle an, deshalb bleibt die Parität je Stil erhalten.
+    apply_style(drawer.drawOptions(), style)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol, legend=legend)
     drawer.FinishDrawing()
 
@@ -60,9 +81,10 @@ def render_molecule_png(
     legend: str = "",
     size: tuple[int, int] = MOL_PNG_SIZE,
     annotate_stereo: bool = False,
+    style: str = "",
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    _draw_molecule(drawer, mol, legend, annotate_stereo)
+    _draw_molecule(drawer, mol, legend, annotate_stereo, style)
     return drawer.GetDrawingText()
 
 
@@ -71,9 +93,10 @@ def render_molecule_svg(
     legend: str = "",
     size: tuple[int, int] = MOL_SVG_SIZE,
     annotate_stereo: bool = False,
+    style: str = "",
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    _draw_molecule(drawer, mol, legend, annotate_stereo)
+    _draw_molecule(drawer, mol, legend, annotate_stereo, style)
     return drawer.GetDrawingText()
 
 
@@ -97,7 +120,9 @@ def _shifted_copy(mol: Chem.Mol, dx: float, dy: float) -> Chem.Mol:
 
 
 def _compose_reaction(
-    reactants: list[Chem.Mol], products: list[Chem.Mol]
+    reactants: list[Chem.Mol],
+    products: list[Chem.Mol],
+    arrow_length: float = ARROW_LENGTH,
 ) -> ReactionLayout:
     """Layoutet Edukte + Produkte auf einer Mittellinie (y=0).
 
@@ -127,7 +152,7 @@ def _compose_reaction(
         place(mol)
 
     arrow_tail = cursor + ARROW_PAD
-    arrow_head = arrow_tail + ARROW_LENGTH
+    arrow_head = arrow_tail + arrow_length
     cursor = arrow_head + ARROW_PAD
 
     for i, mol in enumerate(products):
@@ -144,7 +169,9 @@ def _compose_reaction(
     )
 
 
-def _draw_reaction(drawer, reactants, products) -> tuple[tuple[float, float], float]:
+def _draw_reaction(
+    drawer, reactants, products, style: str = ""
+) -> tuple[tuple[float, float], float]:
     """Zeichnet das Schema (ohne Conditions) und liefert die Pixel-Position
     der Pfeilmitte plus die Skala (Pixel pro Mol-Koordinaten-Einheit).
 
@@ -153,8 +180,10 @@ def _draw_reaction(drawer, reactants, products) -> tuple[tuple[float, float], fl
     und mehrzeilig um ein Anker-Atom stapelt. Die Backends overlayen den
     Text selbst (SVG: <text>, PNG: Pillow).
     """
-    layout = _compose_reaction(reactants, products)
+    arrow_length, _ = _reaction_metrics(style)
+    layout = _compose_reaction(reactants, products, arrow_length)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    apply_style(drawer.drawOptions(), style)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, layout.mol)
     drawer.SetColour((0.0, 0.0, 0.0))
     for px, py in layout.plus_positions:
@@ -174,9 +203,10 @@ def render_reaction_png(
     products: list[Chem.Mol],
     conditions: str = "",
     size: tuple[int, int] = RXN_PNG_SIZE,
+    style: str = "",
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products)
+    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products, style)
     drawer.FinishDrawing()
     png = drawer.GetDrawingText()
     if not conditions:
@@ -193,7 +223,7 @@ def render_reaction_png(
     # Dependency) bündelt DejaVu Sans mit vollem Glyphen-Satz auf allen OS.
     font = ImageFont.truetype(
         font_manager.findfont("DejaVu Sans"),
-        size=max(10, round(CONDITIONS_FONT * scale)),
+        size=max(10, round(_reaction_metrics(style)[1] * scale)),
     )
     draw.text(
         (mid_x, mid_y - 0.35 * scale),
@@ -212,9 +242,10 @@ def render_reaction_svg(
     products: list[Chem.Mol],
     conditions: str = "",
     size: tuple[int, int] = RXN_SVG_SIZE,
+    style: str = "",
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products)
+    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products, style)
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()
     if not conditions:
@@ -225,7 +256,7 @@ def render_reaction_svg(
     text_el = (
         f"<text x='{mid_x:.1f}' y='{mid_y - 0.35 * scale:.1f}' "
         f"text-anchor='middle' font-family='sans-serif' "
-        f"font-size='{CONDITIONS_FONT * scale:.1f}px' fill='#000000'>"
+        f"font-size='{_reaction_metrics(style)[1] * scale:.1f}px' fill='#000000'>"
         f"{escape(conditions)}</text>\n"
     )
     return svg.replace("</svg>", text_el + "</svg>")
