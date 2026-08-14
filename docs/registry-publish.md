@@ -9,7 +9,19 @@ Version 0.2.0 mit dem Panel-Bug aus, obwohl PyPI längst 0.2.1 hatte und
 ## Von Hand (Stand heute)
 
 ```bash
-mcp-publisher login github      # Device-Flow, interaktiv, Token ~1 h gültig
+./scripts/publish-registry.sh   # Login + Publish + Verifikation in einem Lauf
+```
+
+Das Skript prüft vorher, ob die Version überhaupt auf PyPI liegt (sonst lehnt
+die Registry ab), und meldet am Ende, ob der Eintrag wirklich steht — die
+Erfolgsmeldung von `publish` allein ist kein Beweis.
+
+Einzelschritte, falls etwas hakt:
+
+```bash
+mcp-publisher login github      # Device-Flow, interaktiv; der Code läuft nach
+                                # wenigen Minuten ab — erst starten, wenn man
+                                # den Browser wirklich gleich bedient
 mcp-publisher publish           # liest server.json aus dem CWD
 ```
 
