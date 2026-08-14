@@ -1,15 +1,27 @@
 from unittest.mock import Mock, patch
 
 import pytest
+import requests
 from rdkit import Chem
 
+from chemdraw_tool import resolver
 from chemdraw_tool.resolver import (
+    NameResolutionError,
     _opsin_lookup,
     is_smiles,
     resolve,
     resolve_name,
     validate_smiles,
 )
+
+
+@pytest.fixture(autouse=True)
+def _clear_resolution_cache():
+    """resolve_name() cacht Erfolge prozessweit — zwischen Tests leeren,
+    sonst sieht ein Test den gemockten Treffer des vorherigen."""
+    resolve_name.cache_clear()
+    yield
+    resolve_name.cache_clear()
 
 
 def test_is_smiles_recognizes_smiles_with_parens():
@@ -215,3 +227,186 @@ def test_resolve_systematic_stereo_name_offline(mock_pubchem, mock_nci):
     smiles, mol = resolve("(2S)-2-amino-3-(1H-indol-3-yl)propanoic acid")
     mock_pubchem.assert_not_called()
     assert Chem.MolToInchiKey(mol) == "QIVBCDIJIAJPQS-VIFPVBQESA-N"
+
+
+# --- Fehler-Diagnose: nicht gefunden vs. Netzproblem vs. Mischform ----------
+# Vorher warf JEDER Kaskaden-Ausfall dieselbe Meldung ("Use an English/IUPAC
+# name…") — bei Netzausfall schickt das den Nutzer auf eine aussichtslose
+# Fehlersuche am Namen. Die Ursache muss durch die Kaskade nach oben.
+
+
+def _http_resp(status: int):
+    """Antwort mit HTTP-Fehlerstatus (raise_for_status wirft wie im Ernstfall)."""
+    resp = Mock()
+    resp.status_code = status
+    err = requests.exceptions.HTTPError(f"HTTP {status}")
+    err.response = Mock(status_code=status)
+    resp.raise_for_status = Mock(side_effect=err)
+    return resp
+
+
+def _ok_pubchem_resp(smiles: str = "CC(=O)Oc1ccccc1C(=O)O"):
+    resp = Mock()
+    resp.status_code = 200
+    resp.raise_for_status = Mock()
+    resp.json = Mock(
+        return_value={"PropertyTable": {"Properties": [{"SMILES": smiles}]}}
+    )
+    return resp
+
+
+def test_resolution_error_is_valueerror_for_callers():
+    """server.py fängt ValueError — die neue Fehlerklasse muss darunter fallen."""
+    assert issubclass(NameResolutionError, ValueError)
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_all_sources_answer_unknown_name_says_not_found(mock_get, _opsin):
+    mock_get.return_value = _http_resp(404)
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Blahzorbium")
+    assert exc.value.kind == "not_found"
+    msg = str(exc.value)
+    assert msg.startswith("Could not resolve 'Blahzorbium'")
+    assert "IUPAC" in msg
+    assert "SMILES" in msg
+
+
+@patch("chemdraw_tool.resolver._java_runtime_available", return_value=True)
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_connection_error_reports_network_not_bad_name(mock_get, _opsin, _java):
+    mock_get.side_effect = requests.exceptions.ConnectionError("no route to host")
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Aspirin")
+    assert exc.value.kind == "offline"
+    msg = str(exc.value)
+    assert "network" in msg.lower()
+    # Der irreführende Rat von früher darf hier NICHT stehen:
+    assert "Use an English/IUPAC name" not in msg
+    # Stattdessen: was offline noch geht.
+    assert "SMILES" in msg
+    assert "OPSIN" in msg
+
+
+@patch("chemdraw_tool.resolver._java_runtime_available", return_value=False)
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_offline_without_java_points_to_smiles_and_jre(mock_get, _opsin, _java):
+    mock_get.side_effect = requests.exceptions.ConnectionError("down")
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Aspirin")
+    msg = str(exc.value)
+    assert exc.value.kind == "offline"
+    assert "SMILES" in msg
+    assert "Java" in msg
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_timeout_counts_as_network_problem(mock_get, _opsin):
+    mock_get.side_effect = requests.exceptions.ReadTimeout("too slow")
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Aspirin")
+    assert exc.value.kind == "offline"
+    assert "timed out" in str(exc.value)
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_http_503_is_reported_as_source_outage(mock_get, _opsin):
+    mock_get.return_value = _http_resp(503)
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Aspirin")
+    assert exc.value.kind == "sources_down"
+    msg = str(exc.value)
+    assert "503" in msg
+    assert "Use an English/IUPAC name" not in msg
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_mixed_outcome_is_reported_as_partial(mock_get, _opsin):
+    """PubChem antwortet (kennt den Namen nicht), NCI ist nicht erreichbar."""
+    mock_get.side_effect = [
+        _http_resp(404),
+        requests.exceptions.ConnectionError("down"),
+    ]
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Aspirin")
+    assert exc.value.kind == "partial"
+    msg = str(exc.value)
+    assert "PubChem" in msg and "NCI CIR" in msg
+    assert "retry" in msg.lower()
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_error_message_names_the_sources_and_their_outcome(mock_get, _opsin):
+    mock_get.return_value = _http_resp(404)
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Blahzorbium")
+    msg = str(exc.value)
+    assert "PubChem" in msg
+    assert "NCI CIR" in msg
+
+
+# --- Latenz: getrennte connect/read-Timeouts + kein Retry auf toten Host ----
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_lookups_use_split_connect_read_timeout(mock_get, _opsin):
+    mock_get.return_value = _ok_pubchem_resp()
+    resolve_name("Aspirin")
+    assert mock_get.call_args.kwargs["timeout"] == (3, 10)
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_unreachable_host_is_not_dialed_twice(mock_get, _opsin):
+    """Umlaut-Name = 4 Calls (2× PubChem, 2× NCI). Ist ein Host tot, darf er
+    nicht ein zweites Mal ins Connect-Timeout laufen."""
+    mock_get.side_effect = requests.exceptions.ConnectionError("down")
+    with pytest.raises(NameResolutionError):
+        resolve_name("Sulfanilsäure")
+    assert mock_get.call_count == 2
+
+
+# --- Cache: Erfolge ja, Fehlschläge nie ------------------------------------
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_successful_resolution_is_cached(mock_get, _opsin):
+    mock_get.return_value = _ok_pubchem_resp()
+    first = resolve_name("Aspirin")
+    second = resolve_name("Aspirin")
+    assert first == second
+    assert mock_get.call_count == 1
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_failed_resolution_is_not_cached(mock_get, _opsin):
+    """Wer offline war und wieder online geht, darf nicht auf dem Fehler sitzen
+    bleiben — Fehlschläge gehören NICHT in den Cache."""
+    mock_get.side_effect = [
+        requests.exceptions.ConnectionError("down"),
+        requests.exceptions.ConnectionError("down"),
+        _ok_pubchem_resp(),
+    ]
+    with pytest.raises(NameResolutionError):
+        resolve_name("Aspirin")
+    assert resolve_name("Aspirin") == "CC(=O)Oc1ccccc1C(=O)O"
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_cache_is_clearable(mock_get, _opsin):
+    mock_get.return_value = _ok_pubchem_resp()
+    resolve_name("Aspirin")
+    resolver.resolve_name.cache_clear()
+    resolve_name("Aspirin")
+    assert mock_get.call_count == 2

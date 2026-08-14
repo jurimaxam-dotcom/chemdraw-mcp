@@ -298,3 +298,55 @@ def test_uniprot_search_returns_empty_on_error():
         "chemdraw_tool.databases.requests.get", side_effect=Exception("down")
     ):
         assert databases.uniprot_search("EGFR") == []
+
+
+# --- Timeouts ---------------------------------------------------------------
+# Ein einziger Sekundenwert lässt einen NICHT erreichbaren Host volle 10 s
+# hängen; in Panel-Tools werden mehrere Calls verkettet → der Server wirkt
+# eingefroren. (connect, read) trennt "Host antwortet gar nicht" (3 s) von
+# "Host rechnet lange" (10 s).
+
+
+def test_timeout_is_connect_read_tuple():
+    assert databases._TIMEOUT == (3, 10)
+
+
+def test_get_cid_passes_split_timeout():
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        return_value=_resp({"IdentifierList": {"CID": [2244]}}),
+    ) as mock_get:
+        databases._get_cid("aspirin")
+    assert mock_get.call_args.kwargs["timeout"] == (3, 10)
+
+
+def test_pubchem_properties_passes_split_timeout():
+    payload = {"PropertyTable": {"Properties": [{"MolecularFormula": "C9H8O4"}]}}
+    with patch(
+        "chemdraw_tool.databases.requests.get", return_value=_resp(payload)
+    ) as mock_get:
+        databases.pubchem_properties("aspirin")
+    assert mock_get.call_args.kwargs["timeout"] == (3, 10)
+
+
+def test_pubchem_properties_by_smiles_passes_split_timeout():
+    payload = {"PropertyTable": {"Properties": [{"InChIKey": "ABC"}]}}
+    with patch(
+        "chemdraw_tool.databases.requests.post", return_value=_resp(payload)
+    ) as mock_post:
+        databases.pubchem_properties_by_smiles("CC(=O)O")
+    assert mock_post.call_args.kwargs["timeout"] == (3, 10)
+
+
+def test_kegg_and_uniprot_pass_split_timeout():
+    with patch(
+        "chemdraw_tool.databases.requests.get", return_value=_resp(text="")
+    ) as mock_get:
+        databases.kegg_find("glucose")
+    assert mock_get.call_args.kwargs["timeout"] == (3, 10)
+
+    with patch(
+        "chemdraw_tool.databases.requests.get", return_value=_resp({"results": []})
+    ) as mock_get:
+        databases.uniprot_search("EGFR")
+    assert mock_get.call_args.kwargs["timeout"] == (3, 10)

@@ -6,7 +6,11 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-_TIMEOUT = 10
+# (connect, read): ein toter Host scheitert nach 3 s statt nach 10 s. Die
+# Panel-Tools ketten mehrere Calls (_get_cid → properties → synonyms → safety);
+# mit einem einzigen 10-s-Wert summiert sich das auf einen scheinbar
+# eingefrorenen MCP-Server. Read bleibt großzügig — PubChem pug_view rechnet.
+_TIMEOUT = (3, 10)
 
 # --- PubChem ---
 
