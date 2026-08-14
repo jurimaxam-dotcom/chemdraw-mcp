@@ -1,4 +1,5 @@
 import re
+from importlib.metadata import version as _pkg_version
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -143,6 +144,11 @@ def _write_structure_files(
 
 
 mcp = FastMCP("ChemDraw Tool")
+# FastMCP nimmt keine Version entgegen, der Low-Level-Server trägt sie aber in
+# serverInfo — und genau das zeigt jeder Host an. Ohne diese Zeile meldet sich
+# der Server mit der SDK-Version (gemessen: "1.27.1"), und der Nutzer kann nicht
+# erkennen, welche chemdraw-mcp-Version bei ihm läuft.
+mcp._mcp_server.version = _pkg_version("chemdraw-mcp")
 
 # ---------------------------------------------------------------------------
 # UI resource — serves the built MCP App HTML to the client iframe

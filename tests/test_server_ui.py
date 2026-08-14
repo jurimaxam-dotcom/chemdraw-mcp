@@ -217,3 +217,18 @@ def test_generate_molecule_with_stereo_annotation(tmp_path, monkeypatch):
     assert "CIP_Code" in payload.svg
     svg_file = Path(payload.files["svg"]).read_text()
     assert "CIP_Code" in svg_file
+
+
+def test_server_reports_its_own_version_not_the_sdk_version():
+    """Jeder MCP-Host zeigt serverInfo.version an.
+
+    Ohne explizite Angabe meldet FastMCP die SDK-Version (gemessen: 1.27.1) und
+    der Nutzer kann nicht erkennen, welche chemdraw-mcp-Version läuft —
+    ausgerechnet die Frage, die nach einem Registry-Eintrag mit veralteter
+    Version zählt.
+    """
+    from importlib.metadata import version
+
+    from chemdraw_tool.server import mcp
+
+    assert mcp._mcp_server.version == version("chemdraw-mcp")
