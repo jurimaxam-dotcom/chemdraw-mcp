@@ -33,11 +33,14 @@ Leitplanken für ALLE Wellen:
       9 npm-Schwachstellen zu, Lockfile versioniert, CI auf npm ci
 
 ## Welle 2 — Features (sequenziell, gleiche heiße Dateien)
-- [ ] **Gruppen-Kontraktion** via RDKit `rdAbbreviations` (opt-in)
-- [ ] **Journal-Stil-Presets** (benannte Render-Profile statt loser Parameter)
-- [ ] **TLC-Platten** aus Rf-Listen (Gattung wie `spectrum.py`)
-- [ ] **Substrate-Scope-Tabellen** (Journal-Figur pro Call)
-- [ ] **`chemdraw-doctor`** Diagnose-Kommando (JRE, Pfade, Desktop-Config)
+- [x] **Gruppen-Kontraktion** via RDKit `rdAbbreviations` (opt-in)
+- [x] **Journal-Stil-Presets** (benannte Render-Profile statt loser Parameter)
+- [x] **TLC-Platten** aus Rf-Listen (Gattung wie `spectrum.py`)
+- [x] **Substrate-Scope-Tabellen** (Journal-Figur pro Call)
+- [x] **`chemdraw-doctor`** Diagnose-Kommando (JRE, Pfade, Desktop-Config)
+
+- [x] Bonus: Golden-Test für den Python-Renderer, `chemdraw-install` für
+      PyPI-Nutzer, serverInfo meldet die eigene Version
 
 ## Welle 3 — Endspiel
 - [ ] README neu (zeigt die neuen Features, UX-First)
