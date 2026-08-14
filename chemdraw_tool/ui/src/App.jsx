@@ -6,6 +6,7 @@ import MechanismView from "./MechanismView";
 import ValidationView from "./ValidationView";
 import SpectrumView from "./SpectrumView";
 import TlcView from "./TlcView";
+import ScopeView from "./ScopeView";
 import AnkiDeckView from "./AnkiDeckView";
 import PlotView from "./PlotView";
 import Molecule3DView from "./Molecule3DView";
@@ -36,6 +37,8 @@ export default function App({ data }) {
       return <SpectrumView data={data} />;
     case "tlc":
       return <TlcView data={data} />;
+    case "scope":
+      return <ScopeView data={data} />;
     case "anki_deck":
       return <AnkiDeckView data={data} />;
     case "plot":

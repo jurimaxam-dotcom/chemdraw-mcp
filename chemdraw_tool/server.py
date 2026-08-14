@@ -45,6 +45,9 @@ from chemdraw_tool.payloads import (
     MoleculePayload,
     PlotPayload,
     ReactionPayload,
+    ReactionSpec,
+    ScopeEntry,
+    ScopePayload,
     SpectrumPayload,
     SpectrumPeak,
     TlcLane,
@@ -67,6 +70,7 @@ OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
 REACTION_DIR = Path.home() / "ChemDraw-Output"
 SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
 TLC_DIR = Path.home() / "ChemDraw-Output" / "dc-platten"
+SCOPE_DIR = Path.home() / "ChemDraw-Output" / "scope"
 ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
 PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
 THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
@@ -475,6 +479,173 @@ def generate_tlc(
         solvent=solvent,
         detection=detection,
         lanes=lane_models,
+        svg=svg_preview,
+        files=files,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_scope_table(
+    entries: list[ScopeEntry],
+    title: str = "",
+    reaction: ReactionSpec | None = None,
+    columns: int = 0,
+    formats: list[str] | None = None,
+    abbreviate_groups: bool = False,
+    render_style: str = "",
+) -> ScopePayload:
+    """Draw a substrate-scope figure: one reaction, many products in a grid.
+
+    This is the standard figure of the methodology literature — the general
+    equation with its conditions on top, below it a grid of product
+    structures, each with its identifier ("1a") and yield ("78%"), often
+    with extra data (ee, dr, time). Use this whenever several products of
+    the SAME reaction are to be shown side by side ("draw the scope of my
+    Suzuki couplings", "make a figure of these five products with yields",
+    a table of derivatives with yields).
+
+    Not this tool for: a single equation (generate_reaction) or unrelated
+    structures as separate files (batch_generate).
+
+    All structures share ONE bond length, the captions share one baseline
+    and every cell is the same size — the figure looks composed, not
+    assembled. An entry that cannot be resolved is skipped and reported in
+    `failed`; the figure is drawn from the rest.
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.
+
+    Args:
+        entries: The products, in reading order. Each entry is
+            {"structure": name or SMILES, "label": "1a", "yield_text": "78%",
+            "notes": "ee 94%"}. label may be left out — the entries are then
+            numbered 1a, 1b, 1c … as in a paper. yield_text takes free text
+            too ("quant.", "traces"); a bare number gets its % sign. notes
+            carries what the figure adds beyond the yield (ee, dr, time,
+            temperature) and is wrapped below the yield.
+        title: Heading above the figure, e.g. "Substrate scope" or
+            "Aryl bromide scope" (free text, can be localized).
+        reaction: Optional general equation shown above the grid:
+            {"reactants": [...], "products": [...], "conditions": "..."} with
+            names or SMILES. Pass ONE representative example of the reaction;
+            the conditions are printed as their own line under the equation.
+        columns: Grid columns (1-6). Leave at 0 to derive it from the number
+            of entries (3 or 4, whichever leaves the fewest empty cells).
+        formats: Output file formats, any of "png", "svg" (default: both).
+            CDXML is not available for figures.
+        abbreviate_groups: Set True to draw common substituents as short
+            labels (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …). Recommended for
+            scope figures: the cells are small, and contracted groups keep
+            the differences between the substrates visible.
+        render_style: Named look. Empty = standard style. "compact" (thin
+            bonds, tight margins) is the natural choice for a scope figure
+            that will be printed small, "presentation" for slides,
+            "grayscale" for grayscale printing.
+    """
+    import logging
+
+    from chemdraw_tool.scope import (
+        ReactionHeader,
+        ScopeItem,
+        auto_label,
+        build_grid,
+        format_yield,
+        render_scope_png,
+        render_scope_svg,
+    )
+
+    fmts = _normalize_formats(formats)
+    if "cdxml" in fmts:
+        raise ValueError(
+            "Scope-Figuren unterstützen nur png/svg — CDXML ist ein "
+            "Strukturformat für einzelne Moleküle, keine Abbildung"
+        )
+    get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
+
+    log = logging.getLogger(__name__)
+    failed: list[str] = []
+
+    def _drawable(text: str):
+        """Auflösen → 2D → (optional) Gruppen kontrahieren, wie generate_molecule."""
+        _, mol = resolve(text)
+        mol = generate_2d(mol)
+        if any(i.severity == Severity.ERROR for i in validate_input(mol)):
+            raise ValueError(f"Input validation failed for {text!r}")
+        return condense_groups(mol) if abbreviate_groups else mol
+
+    items: list = []
+    echo: list[ScopeEntry] = []
+    for entry in (ScopeEntry.model_validate(e) for e in entries):
+        try:
+            mol = _drawable(entry.structure)
+        except Exception:
+            # Wie batch_generate: der einzelne Ausfall wird gemeldet, nicht
+            # geworfen — sonst kostet ein Tippfehler die ganze Figur.
+            log.warning("Scope entry %r could not be drawn, skipping", entry.structure)
+            failed.append(entry.structure)
+            continue
+        label = entry.label.strip() or auto_label(len(items))
+        items.append(
+            ScopeItem(
+                mol=mol,
+                label=label,
+                yield_text=entry.yield_text,
+                notes=entry.notes,
+            )
+        )
+        echo.append(
+            ScopeEntry(
+                structure=entry.structure,
+                label=label,
+                yield_text=format_yield(entry.yield_text),
+                notes=entry.notes,
+            )
+        )
+
+    if not items:
+        raise ValueError(
+            "Kein einziger Eintrag ließ sich zeichnen — ohne Struktur gibt es "
+            f"keine Figur. Nicht auflösbar: {failed}"
+        )
+
+    header = None
+    conditions = ""
+    if reaction is not None:
+        spec = ReactionSpec.model_validate(reaction)
+        sides: list[list] = [[], []]
+        broken: list[str] = []
+        for target, names in zip(sides, (spec.reactants, spec.products), strict=True):
+            for name in names:
+                try:
+                    target.append(_drawable(name))
+                except Exception:
+                    broken.append(name)
+        if broken or not sides[0] or not sides[1]:
+            # Eine Gleichung mit fehlender Komponente wäre fachlich falsch —
+            # dann lieber nur das Raster, mit Meldung.
+            log.warning("Scope header incomplete (%s), drawing grid only", broken)
+            failed.extend(broken)
+        else:
+            header = ReactionHeader(sides[0], sides[1], spec.conditions)
+            conditions = spec.conditions
+
+    figure = dict(columns=columns, title=title, header=header, style=render_style)
+    artifacts: dict[str, bytes | str] = {}
+    if "png" in fmts:
+        artifacts["png"] = render_scope_png(items, **figure)
+    if "svg" in fmts:
+        artifacts["svg"] = render_scope_svg(items, **figure)
+    slug = _slugify(title or "substrate-scope")
+    files = write_files(SCOPE_DIR / slug, artifacts)
+
+    svg_preview = artifacts.get("svg") or render_scope_svg(items, **figure)
+
+    return ScopePayload(
+        name=title,
+        conditions=conditions,
+        columns=build_grid(len(items), columns).columns,
+        entries=echo,
+        failed=failed,
         svg=svg_preview,
         files=files,
     )

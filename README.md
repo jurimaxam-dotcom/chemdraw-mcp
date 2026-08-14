@@ -78,6 +78,11 @@ cards land straight in the running Anki, no clicks:
   Lipinski rule-of-five check
 - **`generate_reaction`** — educts + products + conditions → reaction scheme
 - **`batch_generate`** — a whole list of structures in one call
+- **`generate_scope_table`** — the substrate-scope figure of the methodology
+  literature: the general equation with its conditions on top, below it a
+  grid of products, each with identifier ("1a") and yield ("78%") plus
+  optional ee/dr/time. All structures share one bond length, all captions one
+  baseline; an entry that cannot be resolved is reported, not fatal
 - **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
   esterification) step by step
 - **`generate_spectrum`** — schematic spectra from peak lists (IR, NIR,

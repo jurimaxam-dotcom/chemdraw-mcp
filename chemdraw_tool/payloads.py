@@ -108,6 +108,32 @@ class TlcPayload(BaseModel):
     files: dict[str, str] = {}
 
 
+class ScopeEntry(BaseModel):
+    """One product in a substrate-scope figure (the grid's cells)."""
+
+    structure: str
+    # Identifier printed under the structure, e.g. "1a". Left empty the tool
+    # numbers the entries itself (1a, 1b, 1c …), as papers do.
+    label: str = ""
+    # Yield as printed: "78%", "78" (a % is added) or free text ("quant.").
+    yield_text: str = ""
+    # Anything extra the figure carries: "ee 94%", "dr 10:1", "12 h, 60 °C".
+    notes: str = ""
+
+
+class ScopePayload(BaseModel):
+    type: str = "scope"
+    name: str = ""
+    conditions: str = ""
+    columns: int = 0
+    entries: list[ScopeEntry] = []
+    # Entries (or header components) that could not be resolved — the figure
+    # is drawn from the rest, like batch_generate does.
+    failed: list[str] = []
+    svg: str = ""
+    files: dict[str, str] = {}
+
+
 class DatabaseRow(BaseModel):
     key: str
     val: str
