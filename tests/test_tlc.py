@@ -17,6 +17,7 @@ import pytest
 from chemdraw_tool.tlc import (
     FRONT_Y,
     START_Y,
+    _plate_title,
     build_plate,
     default_figsize,
     render_tlc_png,
@@ -233,3 +234,16 @@ def test_english_axis_label_like_the_spectrum_module():
     detection bleiben frei lokalisierbar."""
     svg = render_tlc_svg(ESTER_LANES)
     assert "TLC" in svg
+
+
+def test_title_is_not_prefixed_twice():
+    """Wer 'TLC: Veresterung' als Titel übergibt, meint das auch so.
+
+    Der Renderer stellt 'TLC: ' voran — ohne Prüfung stand über der Platte
+    'TLC: TLC: Veresterung'. Der Nutzer kann nicht wissen, dass das Präfix
+    schon da ist.
+    """
+    assert _plate_title("TLC: Veresterung") == "TLC: Veresterung"
+    assert _plate_title("tlc: veresterung") == "tlc: veresterung"
+    assert _plate_title("Veresterung") == "TLC: Veresterung"
+    assert _plate_title("") == "TLC plate"

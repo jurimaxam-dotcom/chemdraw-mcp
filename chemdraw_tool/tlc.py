@@ -189,6 +189,17 @@ def build_plate(lanes: Sequence[Mapping]) -> PlateGeometry:
     return PlateGeometry(lanes=names, lane_x=lane_x, spots=spots)
 
 
+def _plate_title(title: str) -> str:
+    """Stellt "TLC: " voran — außer der Nutzer hat es schon selbst getan.
+
+    Ohne die Prüfung stand "TLC: TLC: Veresterung" über der Platte; dass das
+    Präfix automatisch kommt, kann der Aufrufer nicht wissen.
+    """
+    if not title:
+        return "TLC plate"
+    return title if title.lower().startswith("tlc:") else f"TLC: {title}"
+
+
 def _caption(solvent: str, detection: str) -> str:
     parts = []
     if solvent:
@@ -284,7 +295,7 @@ def build_figure(
     ax.spines["left"].set_bounds(START_Y, FRONT_Y)
     ax.set_ylabel("Rf value")
     ax.set_xlabel(_caption(solvent, detection), fontsize=9, color="#444444", labelpad=10)
-    ax.set_title(f"TLC: {title}" if title else "TLC plate")
+    ax.set_title(_plate_title(title))
     ax.spines[["top", "right", "bottom"]].set_visible(False)
     fig.tight_layout()
     return fig

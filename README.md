@@ -6,16 +6,24 @@
 [![Release](https://img.shields.io/github/v/release/jurimaxam-dotcom/chemdraw-mcp)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-**Chat → chemical structure.** An MCP server for Claude Desktop that turns
-molecule names or SMILES into publication-style 2D structure drawings —
-*"draw aspirin"* produces a print-ready PNG/SVG, rendered fully offline with
-RDKit. No ChemDraw required; ChemDraw CDXML is available as an optional extra
-format for users who want to keep editing there.
+**Chat → chemical structure.** An MCP server for Claude Desktop: you describe
+a molecule, a reaction or a lab result in plain words, and it draws the
+figure — a print-ready PNG/SVG rendered locally with RDKit, plus an
+interactive preview inside the chat. *"Draw aspirin"* is already a complete
+command.
 
-Built for pharmacy/chemistry students who spend too much time clicking
-hexagons: structures, full reaction schemes, step-by-step mechanisms,
-substance data sheets and Ph.Eur. assay calculations — straight from the chat,
-with an interactive preview panel rendered inline.
+Built for pharmacy and chemistry students who spend too much time clicking
+hexagons. 22 tools cover the figures a report or a slide actually needs:
+structures, reaction schemes, step-by-step mechanisms, substrate-scope
+figures, TLC plates, titration curves, schematic spectra, substance data
+sheets, Ph.Eur. assay calculations and Anki decks.
+
+What it costs you: one install command. Apache-2.0, no API key, no sign-up
+for the server, no ChemDraw licence — you need Claude Desktop and
+[uv](https://docs.astral.sh/uv/), everything else is fetched once.
+Rendering runs entirely on your machine; only name resolution and the
+database lookups reach the internet. ChemDraw CDXML is an optional extra
+format for people who want to keep editing there, never a requirement.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo.gif" alt="Live demo: 'Draw Caffein' renders an interactive structure panel in Claude Desktop" width="560"></p>
 
@@ -37,10 +45,23 @@ panel:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-demo.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
 
+*"Make a scope figure of my Suzuki couplings: 3a 92%, 3b 88% after 12 h,
+3c 64% with ee 94% and dr 10:1, 3d 71%"* — `generate_scope_table` sets the
+general equation with its conditions on top and the products below it, on a
+shared bond length and a shared caption baseline:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/scope-suzuki.png" alt="Substrate scope figure: Suzuki coupling equation with conditions on top, below it four biphenyl products labeled 3a to 3d with yields and ee/dr notes" width="760"></p>
+
 *"Sketch the IR spectrum of ethyl acetate"* — `generate_spectrum` (draws the
 peaks it is given, with per-type axis conventions):
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/ethyl-acetate-ir.png" alt="Schematic IR spectrum of ethyl acetate with labeled bands" width="560"></p>
+
+*"TLC of my esterification: educt at 0.30, product at 0.65, the co-spot shows
+both, some educt left"* — `generate_tlc` draws the plate the lab report asks
+for, with mobile phase and detection as its caption:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-esterification.png" alt="TLC plate sketch with four lanes: educt at Rf 0.30, reaction lane with a faint educt spot and the ester at 0.65, co-spot lane with both, reference lane at 0.65" width="520"></p>
 
 *"Show caffeine in 3D"* — `generate_3d` embeds the molecule (ETKDG + force
 field) and opens a drag-to-rotate ball-and-stick viewer in the chat panel:
@@ -73,18 +94,31 @@ cards land straight in the running Anki, no clicks:
 
 ## Features
 
+All 22 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+every drawing tool also returns a live preview for the in-chat panel.
+
+**Structures and schemes**
+
 - **`generate_molecule`** — name/SMILES → 2D structure as PNG + SVG
   (optionally CDXML), with properties, functional-group detection and a
   Lipinski rule-of-five check
-- **`generate_reaction`** — educts + products + conditions → reaction scheme
 - **`batch_generate`** — a whole list of structures in one call
+- **`generate_reaction`** — educts + products + conditions → reaction scheme
+  with the conditions set above the arrow
+- **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
+  esterification) step by step
 - **`generate_scope_table`** — the substrate-scope figure of the methodology
   literature: the general equation with its conditions on top, below it a
   grid of products, each with identifier ("1a") and yield ("78%") plus
   optional ee/dr/time. All structures share one bond length, all captions one
   baseline; an entry that cannot be resolved is reported, not fatal
-- **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
-  esterification) step by step
+- **`compare_molecules`** — 2–4 structures side by side, differences
+  highlighted, shared scaffold (MCS) neutral
+- **`generate_3d`** — rotatable 3D ball-and-stick conformer in the chat
+  panel (ETKDGv3 + force field) plus SDF export
+
+**Lab results and analysis**
+
 - **`generate_spectrum`** — schematic spectra from peak lists (IR, NIR,
   Raman, UV/Vis, fluorescence, ORD, CD, ¹H/¹³C NMR, MS) with per-type axis
   conventions — draws given peaks, does not predict spectra
@@ -92,86 +126,166 @@ cards land straight in the running Anki, no clicks:
   bottom, solvent front at the top, one captioned lane per application
   point (educt / reaction / co-spot), Rf annotated at every spot, mobile
   phase and detection printed as a caption — the sketch a lab report asks for
-- **`export_anki_deck`** — exam-prep flashcards as a ready-to-import
-  Anki `.apkg`: structure↔name drills (optionally reversed: one note,
-  both directions), cloze/fill-in-the-blank cards, identity/detection
-  reactions, spectrum band assignment — with rendered images embedded,
-  per-card tags, `Parent::Child` subdecks; re-exporting a deck updates
-  cards instead of duplicating them. Optional delivery straight into the
-  running Anki via the AnkiConnect add-on
-- **`export_curated_deck`** — small, formula-verified starter decks
-  (classic analgesics, Ph.Eur. identity reactions)
 - **`generate_titration_curve`** — pH vs. titrant volume from the exact
   charge balance, with equivalence points, buffer points (pH = pKa) and
   indicator transition band
 - **`generate_species_distribution`** — protonation species fractions
-  over pH (Henderson-Hasselbalch) with pKa crossovers marked
-- **`compare_molecules`** — 2-4 structures side by side, differences
-  highlighted, shared scaffold (MCS) neutral
-- **`generate_3d`** — rotatable 3D ball-and-stick conformer in the chat
-  panel (ETKDG + force field) plus SDF export; stereo descriptors (R/S,
-  E/Z) available on 2D drawings via `annotate_stereo`
-- **`lookup_*`** — substance data from PubChem, ChEBI, KEGG and UniProt
-  (properties, GHS safety, pathways)
+  over pH (Henderson–Hasselbalch) with pKa crossovers marked
 - **`calculate_validation`** — Ph.Eur.-style content determination with full
   calculation steps, t-test/F-test statistics
-- **Interactive in-chat UI** (MCP App): hover atoms, inspect functional
-  groups, export PNG with one click
-- **macOS ChemDraw bridge** (optional): open any generated structure directly
-  in ChemDraw via `open_chemdraw_file`
+
+**Substance data** (online lookups)
+
+- **`lookup_compound`** — compound properties from PubChem
+- **`lookup_safety`** — GHS hazard statements, pictograms, signal word
+- **`lookup_physical`** — melting/boiling point, solubility, density
+- **`lookup_biochem`** — ChEBI classification plus related UniProt entries
+- **`lookup_pathway`** — metabolic pathways from KEGG
+- **`lookup_molecule_data`** — PubChem + GHS combined into one data sheet
+  for the in-chat panel
+
+**Exam prep**
+
+- **`export_anki_deck`** — flashcards as a ready-to-import Anki `.apkg`:
+  structure↔name drills (optionally reversed: one note, both directions),
+  cloze/fill-in-the-blank cards, identity/detection reactions, spectrum
+  band assignment — with rendered images embedded, per-card tags,
+  `Parent::Child` subdecks; re-exporting a deck updates cards instead of
+  duplicating them. Optional delivery straight into the running Anki via
+  the AnkiConnect add-on
+- **`export_curated_deck`** — small, formula-verified starter decks
+  (classic analgesics, Ph.Eur. identity reactions)
+
+**Files and apps**
+
+- **`save_png`** — persist a PNG the chat panel rendered (e.g. after the
+  one-click export) to `~/ChemDraw-Output/png/`
+- **`open_chemdraw_file`** — macOS only, optional: open a generated
+  `.cdxml`/`.cdx` in ChemDraw for further editing
+
+Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
+when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
+22 tools above.
+
+### Options on the drawing tools
+
+- **`formats`** — `["png","svg"]` by default; `"cdxml"` on top of that for
+  `generate_molecule`, `generate_reaction` and `batch_generate`. The figure
+  tools (`generate_scope_table`, `generate_tlc`, `generate_spectrum`) reject
+  CDXML with a clear error instead of writing something meaningless.
+- **`abbreviate_groups=True`** — draws common substituents as the labels
+  chemists actually write: Ph, Bn, OMe, OAc, tBu, CO₂H, Boc, Ts, TBS.
+  Worth it whenever cells get small — a scope figure stays readable because
+  only what differs between the substrates remains spelled out. Available on
+  `generate_molecule`, `generate_reaction`, `generate_scope_table`,
+  `batch_generate`.
+- **`render_style`** — a named look instead of a pile of render parameters,
+  on the same four tools. `"compact"` (thin bonds, capped label size, tight
+  margins) for a small figure in a two-column layout, `"presentation"`
+  (double bond width, minimum font size, more padding) for a lecture slide,
+  `"grayscale"` for black-and-white printing, where red and blue would
+  otherwise become two indistinguishable greys. Empty means the default
+  look, untouched.
+- **`annotate_stereo=True`** — prints CIP descriptors (R/S, E/Z) on the 2D
+  drawing (`generate_molecule`, `batch_generate`).
 
 ## Installation
 
-**Option 1 — straight from PyPI** (needs [uv](https://docs.astral.sh/uv/)):
-add this to your Claude Desktop config (`claude_desktop_config.json` →
-`mcpServers`):
+Three ways in; pick one. Options 1 and 2 merge into the config idempotently,
+back it up first and leave every other MCP server you have configured
+untouched. Afterwards restart Claude Desktop and ask: *"draw caffeine"*.
 
-```json
-"chemdraw": {
-  "command": "/opt/homebrew/bin/uvx",
-  "args": ["chemdraw-mcp"]
-}
-```
-
-Use the **absolute** path that `which uvx` prints on your machine — Claude
-Desktop launches MCP servers with the minimal GUI PATH, so a bare `"uvx"`
-often cannot be resolved and the server silently fails to start.
-
-**Option 2 — one-command installer** (clones the repo and registers the
-server in Claude Desktop automatically):
+**Option 1 — clone the repo** (recommended if you want to read or change the
+code; installs uv if missing, syncs dependencies, registers the server):
 
 ```bash
 git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
 cd chemdraw-mcp && ./install.sh
 ```
 
-Both are idempotent and leave existing MCP servers untouched. The installer
-resolves the absolute `uv` path for you and prints the start command it
-registered (`✓ Startet mit: /opt/homebrew/bin/uv`). Restart Claude Desktop,
-then ask: *"draw caffeine"*.
+**Option 2 — from PyPI, no clone** (needs [uv](https://docs.astral.sh/uv/)):
+
+```bash
+uv tool install chemdraw-mcp
+chemdraw-install
+```
+
+`chemdraw-install` writes the Claude Desktop entry for you, using the
+absolute path of the installed launcher, and prints the start command it
+registered.
+
+**Option 3 — edit the config by hand.** Add this to
+`claude_desktop_config.json` under `mcpServers` (macOS:
+`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+"chemdraw-tool": {
+  "command": "/opt/homebrew/bin/uvx",
+  "args": ["chemdraw-mcp"]
+}
+```
+
+> **The one pitfall that breaks every manual install:** Claude Desktop does
+> not start MCP servers from a login shell — it uses the minimal GUI PATH.
+> A bare `"uvx"` or `"uv"` cannot be resolved there, and the server fails to
+> start without saying so. Always put the **absolute** path that
+> `which uvx` prints on *your* machine into `command`. Options 1 and 2 do
+> this for you.
+
+### Optional extras
+
+- **A Java runtime** (e.g. `brew install openjdk`) lets
+  [OPSIN](https://github.com/dan2097/opsin) parse systematic IUPAC names
+  offline — including ones no database indexes. Without Java the resolver
+  simply continues with the PubChem/NCI online lookup.
+- **The AnkiConnect add-on** lets `export_anki_deck` push cards straight
+  into a running Anki. Without it you get the `.apkg` file and import it
+  yourself.
+- **ChemDraw** (macOS) enables `open_chemdraw_file`. Nothing else needs it.
 
 ### Something not working? Run the doctor
 
 ```bash
-uv run chemdraw-doctor          # in the cloned repo
-uvx --from chemdraw-mcp chemdraw-doctor   # PyPI install
+chemdraw-doctor                            # after "uv tool install chemdraw-mcp"
+uv run chemdraw-doctor                     # in the cloned repo
+uvx --from chemdraw-mcp chemdraw-doctor    # without installing anything
 ```
 
-It checks the six things that make the server look dead in the chat — RDKit
-rendering, the Java/OPSIN runtime, the `uv` path, the Claude Desktop entry,
-the name databases and the output directory — and prints, for every problem,
-the exact command that fixes it. Three levels are distinguished: `[OK]`,
-`[LIMITED]` (works, but restricted) and `[FAIL]` (broken); `[NOTE]` marks
-things that simply do not apply, such as not having Claude Desktop installed.
-The exit code is 0 as long as the server is usable, so it can be used in
-scripts. (From a PyPI install the `uv` and Claude Desktop checks report
-`[NOTE]` and are skipped — they rely on the installer script, which ships with
-the repository only.)
+This is the first thing to try — it turns "the server does nothing" into a
+named cause. It checks the six things that make the server look dead in the
+chat (RDKit rendering, the Java/OPSIN runtime, the `uv` path, the Claude
+Desktop entry, the name databases, the output directory) and prints, for
+every problem, the exact command that fixes it. Three levels are
+distinguished: `[OK]`, `[LIMITED]` (works, but restricted) and `[FAIL]`
+(broken); `[NOTE]` marks checks that simply do not apply, such as not having
+Claude Desktop installed. The exit code stays 0 as long as the server is
+usable, so it can run in scripts. (From a PyPI install the `uv` and Claude
+Desktop checks report `[NOTE]` — they relate to the repo installer.)
 
-Optional: with a Java runtime installed (e.g. `brew install openjdk`),
-systematic IUPAC names — including ones no database indexes — are parsed
-offline via [OPSIN](https://github.com/dan2097/opsin). Without Java the
-server falls back to the PubChem/NCI online lookup.
+## Limitations
+
+Stated up front, so nothing surprises you in a report:
+
+- **Java is optional, and that has a price.** Without a JRE, OPSIN is
+  skipped and names are resolved online via PubChem/NCI — so name lookups
+  need an internet connection and only work for names those databases index.
+  SMILES input never touches the network.
+- **Spectra are schematic.** `generate_spectrum` draws the peaks it is
+  handed, with the right axis conventions for the spectrum type. It measures
+  nothing and predicts nothing — if the peak values came from the chat rather
+  than from your instrument, verify them before they go into a report.
+- **TLC intensity is a drawing hint.** The optional `intensity` (0…1) makes
+  a spot fainter on the sketch. It is not densitometry and carries no
+  quantitative meaning.
+- **CDXML is a side path.** It is written from the RDKit molecule and
+  round-trip validated, but PNG/SVG are the primary outputs and the ones the
+  pixel tests cover. CDXML is off by default and limited to structures and
+  reaction schemes — TLC plates, scope figures and spectra reject it.
+- **3D is one conformer.** `generate_3d` embeds with ETKDGv3 and optimizes
+  with MMFF (UFF as fallback). That is a plausible geometry for looking at,
+  not a conformational search and not an energy statement.
+- **The ChemDraw bridge is macOS-only** and needs a locally installed
+  ChemDraw. Everything else works without it.
 
 ## How it works
 
@@ -191,14 +305,17 @@ RDKit 2D coordinates ──► validation (sanity, round-trip)
 
 ## Development
 
+Python 3.11+, package manager `uv`.
+
 ```bash
 uv sync                      # backend deps
 cd chemdraw_tool/ui && npm install && npx playwright install chromium  # frontend, once
 ./test.sh                    # the gate: pytest + JS unit + headless-Chromium e2e
 ```
 
-~400 tests, written test-first. The e2e test rasters a real RDKit SVG in
-headless Chromium and compares it against an exact pixel snapshot.
+600+ tests, written test-first. The e2e test rasters a real RDKit SVG in
+headless Chromium and compares it against an exact pixel snapshot — the
+export path and the in-chat preview are held to the same drawing constants.
 
 ## License
 
