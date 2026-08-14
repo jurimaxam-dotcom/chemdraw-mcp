@@ -18,17 +18,19 @@ Leitplanken für ALLE Wellen:
 - [x] **A2 Installer** erledigt (siehe Welle 1)
 
 ## Welle 1 — Fundament (Audit-Befunde #1–#5)
-- [ ] **A1 Gate-Härtung**: Guard prüft konkreten Chromium-Executable statt
+- [x] **A1 Gate-Härtung**: Guard prüft konkreten Chromium-Executable statt
       Cache-Ordner · Python-Playwright pinnen/aussortieren · ruff ins Gate
       + 9 Fehler fixen · `npm run build`-Diff-Check gegen `dist`
-- [ ] **A2 Installer**: `shutil.which("uv")` → Absolutpfad in Desktop-Config
+- [x] **A2 Installer**: `shutil.which("uv")` → Absolutpfad in Desktop-Config
       (Fallback `"uv"`), README-`uvx` gleiche Klasse, Tests nachziehen
-- [ ] **B1 Resolver-UX**: Fehlertaxonomie (Netzfehler ≠ nicht gefunden),
+- [x] **B1 Resolver-UX**: Fehlertaxonomie (Netzfehler ≠ nicht gefunden),
       `(connect=3, read=10)`-Timeouts, `lru_cache` auf Namensauflösung
-- [ ] **B2 Testlücken**: 5 `lookup_*`-Tools mit eingefrorenen Mock-Responses ·
+- [x] **B2 Testlücken**: 5 `lookup_*`-Tools mit eingefrorenen Mock-Responses ·
       Panel-Liste aus Tool-Manager statt 13er-Konstante · Payload-`type` ↔
       `App.jsx`-Case-Paritätstest
-- [ ] Gate grün + Commits pro Workstream
+- [x] Gate grün (446 Tests) + 6 Commits pro Workstream
+- [x] Bonus: 2 Produktionsbugs gefixt (Nullwerte, kaputtes Markdown),
+      9 npm-Schwachstellen zu, Lockfile versioniert, CI auf npm ci
 
 ## Welle 2 — Features (sequenziell, gleiche heiße Dateien)
 - [ ] **Gruppen-Kontraktion** via RDKit `rdAbbreviations` (opt-in)
