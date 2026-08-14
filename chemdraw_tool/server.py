@@ -47,6 +47,8 @@ from chemdraw_tool.payloads import (
     ReactionPayload,
     SpectrumPayload,
     SpectrumPeak,
+    TlcLane,
+    TlcPayload,
     ValidationPayload,
 )
 from chemdraw_tool.render_style import condense_groups, get_style
@@ -56,6 +58,7 @@ from chemdraw_tool.spectrum import (
     render_spectrum_png,
     render_spectrum_svg,
 )
+from chemdraw_tool.tlc import render_tlc_png, render_tlc_svg
 from chemdraw_tool.validator import Severity, validate_input, validate_roundtrip
 from chemdraw_tool.vault import is_enabled as vault_enabled
 from chemdraw_tool.vault import list_entries, read_entry, search
@@ -63,6 +66,7 @@ from chemdraw_tool.vault import list_entries, read_entry, search
 OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
 REACTION_DIR = Path.home() / "ChemDraw-Output"
 SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
+TLC_DIR = Path.home() / "ChemDraw-Output" / "dc-platten"
 ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
 PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
 THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
@@ -394,6 +398,83 @@ def generate_spectrum(
     return SpectrumPayload(
         spectrum_type=spectrum_type,
         name=title,
+        svg=svg_preview,
+        files=files,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
+def generate_tlc(
+    lanes: list[TlcLane],
+    title: str = "",
+    solvent: str = "",
+    detection: str = "",
+    formats: list[str] | None = None,
+) -> TlcPayload:
+    """Draw a TLC plate sketch from Rf values as print-ready PNG/SVG files.
+
+    Use this whenever the user reports a thin-layer chromatography result
+    ("TLC of my esterification: educt at 0.3, product at 0.65, the co-spot
+    shows both") or asks for the plate sketch a lab report requires. The
+    tool draws exactly the Rf values it is given — it predicts nothing.
+
+    The plate is read from the bottom: start line at Rf 0, solvent front at
+    Rf 1, so a spot at Rf 0.8 sits near the top. One lane = one application
+    point with its own caption; a lane can carry several spots, so a co-spot
+    lane showing educt AND product is simply two spots on one lane. Every
+    spot is annotated with its Rf value so the sketch can be read off.
+
+    Args:
+        lanes: The lanes from left to right, e.g.
+            [{"name": "Edukt", "spots": [{"rf": 0.30, "label": "Säure"}]},
+             {"name": "Reaktion", "spots": [{"rf": 0.65, "label": "Ester"}]},
+             {"name": "Co-Spot", "spots": [{"rf": 0.30}, {"rf": 0.65}]}]
+            rf must lie between 0 and 1 — it is a ratio (distance travelled
+            by the substance / distance travelled by the front), so values
+            outside that range are rejected instead of silently clipped.
+            label (optional) names the substance at that spot; intensity
+            (optional, 0…1, default 1) draws a faint spot fainter.
+        title: Shown in the plot title and used for the filename, e.g.
+            "Veresterung Ansatz 2" (free text, can be localized).
+        solvent: Mobile phase / eluent as it goes into the report, e.g.
+            "Toluol/Ethylacetat 8:2" — printed as a caption on the sketch.
+        detection: How the spots were visualized, e.g. "UV 254 nm", "Iod",
+            "Ninhydrin" — printed next to the mobile phase.
+        formats: Output file formats, any of "png", "svg" (default: both).
+            CDXML is not available for plates.
+    """
+    fmts = _normalize_formats(formats)
+    if "cdxml" in fmts:
+        raise ValueError(
+            "DC-Platten unterstützen nur png/svg — CDXML ist ein Strukturformat"
+        )
+
+    lane_models = [TlcLane.model_validate(lane) for lane in lanes]
+    lane_dicts = [lane.model_dump() for lane in lane_models]
+
+    # Rf-/Intensitätsprüfung passiert in tlc.build_plate — der Fehler kommt
+    # damit aus einer Quelle, egal ob Datei oder Vorschau gerendert wird.
+    artifacts: dict[str, bytes | str] = {}
+    if "png" in fmts:
+        artifacts["png"] = render_tlc_png(
+            lane_dicts, title=title, solvent=solvent, detection=detection
+        )
+    if "svg" in fmts:
+        artifacts["svg"] = render_tlc_svg(
+            lane_dicts, title=title, solvent=solvent, detection=detection
+        )
+    slug = _slugify(title or "TLC plate")
+    files = write_files(TLC_DIR / slug, artifacts)
+
+    svg_preview = artifacts.get("svg") or render_tlc_svg(
+        lane_dicts, title=title, solvent=solvent, detection=detection
+    )
+
+    return TlcPayload(
+        name=title,
+        solvent=solvent,
+        detection=detection,
+        lanes=lane_models,
         svg=svg_preview,
         files=files,
     )

@@ -82,6 +82,32 @@ class SpectrumPayload(BaseModel):
     files: dict[str, str] = {}
 
 
+class TlcSpot(BaseModel):
+    """One spot on a TLC lane. rf is the ratio substance/front (0…1)."""
+
+    rf: float
+    label: str = ""
+    # 1.0 = strong spot, ~0.3 = faint — only affects how solid it is drawn.
+    intensity: float = 1.0
+
+
+class TlcLane(BaseModel):
+    """One application point on the plate, e.g. "Edukt" or "Co-Spot"."""
+
+    name: str
+    spots: list[TlcSpot] = []
+
+
+class TlcPayload(BaseModel):
+    type: str = "tlc"
+    name: str = ""
+    solvent: str = ""
+    detection: str = ""
+    lanes: list[TlcLane] = []
+    svg: str = ""
+    files: dict[str, str] = {}
+
+
 class DatabaseRow(BaseModel):
     key: str
     val: str

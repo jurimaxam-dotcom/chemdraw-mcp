@@ -83,6 +83,10 @@ cards land straight in the running Anki, no clicks:
 - **`generate_spectrum`** — schematic spectra from peak lists (IR, NIR,
   Raman, UV/Vis, fluorescence, ORD, CD, ¹H/¹³C NMR, MS) with per-type axis
   conventions — draws given peaks, does not predict spectra
+- **`generate_tlc`** — TLC plate sketch from Rf values: start line at the
+  bottom, solvent front at the top, one captioned lane per application
+  point (educt / reaction / co-spot), Rf annotated at every spot, mobile
+  phase and detection printed as a caption — the sketch a lab report asks for
 - **`export_anki_deck`** — exam-prep flashcards as a ready-to-import
   Anki `.apkg`: structure↔name drills (optionally reversed: one note,
   both directions), cloze/fill-in-the-blank cards, identity/detection
