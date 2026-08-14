@@ -43,10 +43,13 @@ Leitplanken für ALLE Wellen:
       PyPI-Nutzer, serverInfo meldet die eigene Version
 
 ## Welle 3 — Endspiel
-- [ ] README neu (zeigt die neuen Features, UX-First)
-- [ ] CLAUDE.md-Architekturblock in EINEM Pass (fehlende Module,
-      5-Stufen-Kaskade, parse-first)
-- [ ] CHANGELOG + Version 0.3.0 (pyproject + server.json + Tag)
-- [ ] Release: PyPI + `mcp-publisher publish` + `isLatest`-Check
-- [ ] Smoke-Test als Beweis: echter MCP-stdio-Handshake (Claude Desktop ist
-      auf dieser Maschine NICHT installiert — Befund 14.08., Memory korrigieren)
+- [x] README neu (Einstieg geschärft, Galerie erweitert, Limitations ehrlich)
+- [x] CLAUDE.md-Architekturblock in EINEM Pass (7 fehlende Module,
+      5-Stufen-Kaskade, parse-first, Panel-Kette, Gate-Philosophie)
+- [x] CHANGELOG + Version 0.3.0 (pyproject + server.json + Tag v0.3.0)
+- [x] Release: GitHub-Release -> PyPI 0.3.0 live (verifiziert)
+- [ ] **OFFEN (braucht Jay):** `mcp-publisher login github` + `publish`
+      — Token abgelaufen, Login ist interaktiv. Dauerhafte Lösung als
+      Workflow-Vorlage in `docs/registry-publish.md`
+- [x] Smoke-Test: stdio-Handshake (22 Tools, 15 Panel, Aspirin gezeichnet,
+      Bundle ausgeliefert) + Doctor aus frischer PyPI-Installation grün
