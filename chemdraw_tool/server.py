@@ -396,8 +396,6 @@ def export_anki_deck(
             imports into the RUNNING Anki via the AnkiConnect add-on;
             requires the user to have it installed).
     """
-    from chemdraw_tool.anki_export import write_deck
-
     if not cards:
         raise ValueError("Das Deck braucht mindestens eine Karte.")
 
@@ -653,38 +651,42 @@ def lookup_compound(name: str) -> str:
     cid = "?"
 
     props = pubchem_properties(name)
+    have_table = bool(props)
     if props:
         cid = props.get("CID", "?")
         lines.append("| Eigenschaft | Wert |")
         lines.append("|------------|------|")
         lines.append(f"| **CID** | {cid} |")
-        if v := props.get("IUPACName"):
-            lines.append(f"| **IUPAC-Name** | {v} |")
-        if v := props.get("MolecularFormula"):
-            lines.append(f"| **Summenformel** | {v} |")
-        if v := props.get("MolecularWeight"):
-            lines.append(f"| **Molmasse** | {v} g/mol |")
-        if v := props.get("ExactMass"):
-            lines.append(f"| **Exakte Masse** | {v} |")
-        if v := props.get("XLogP"):
-            lines.append(f"| **LogP** | {v} |")
-        if v := props.get("TPSA"):
-            lines.append(f"| **Polare Oberfläche** | {v} Å² |")
-        if v := props.get("HBondDonorCount"):
-            lines.append(f"| **H-Brücken-Donoren** | {v} |")
-        if v := props.get("HBondAcceptorCount"):
-            lines.append(f"| **H-Brücken-Akzeptoren** | {v} |")
-        if v := props.get("InChIKey"):
-            lines.append(f"| **InChIKey** | {v} |")
+        # Numerische Felder auf Existenz prüfen, nicht auf Wahrheit: Benzol hat
+        # echt TPSA 0 und null H-Brücken — eine `if v :=`-Prüfung verschluckt
+        # genau diese Messwerte und der Nutzer hält sie für unbekannt.
+        for key, label, unit in (
+            ("IUPACName", "IUPAC-Name", ""),
+            ("MolecularFormula", "Summenformel", ""),
+            ("MolecularWeight", "Molmasse", " g/mol"),
+            ("ExactMass", "Exakte Masse", ""),
+            ("XLogP", "LogP", ""),
+            ("TPSA", "Polare Oberfläche", " Å²"),
+            ("HBondDonorCount", "H-Brücken-Donoren", ""),
+            ("HBondAcceptorCount", "H-Brücken-Akzeptoren", ""),
+            ("InChIKey", "InChIKey", ""),
+        ):
+            v = props.get(key)
+            if v is not None and v != "":
+                lines.append(f"| **{label}** | {v}{unit} |")
         charge = props.get("Charge")
-        if charge and charge != 0:
+        if charge:
             lines.append(f"| **Ladung** | {charge} |")
     else:
         lines.append("Eigenschaften konnten nicht abgerufen werden.")
 
     cas, synonyms = pubchem_synonyms(name)
     if cas:
-        lines.append(f"| **CAS-Nr.** | {cas} |")
+        # Ohne Tabellenkopf wäre eine Pipe-Zeile roher Text im Chat.
+        if have_table:
+            lines.append(f"| **CAS-Nr.** | {cas} |")
+        else:
+            lines.append(f"\n**CAS-Nr.:** {cas}")
     if synonyms:
         filtered = [s for s in synonyms if s.lower() != name.lower()][:5]
         if filtered:

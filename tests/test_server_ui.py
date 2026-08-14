@@ -1,9 +1,11 @@
 """Tests for UI resource registration and structured tool payloads."""
 
 from pathlib import Path
+from typing import get_type_hints
 from unittest.mock import patch
 
 import pytest
+from pydantic import BaseModel
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
@@ -114,14 +116,13 @@ def test_batch_generate_returns_payload(mock_resolve):
     assert result.cdxml_paths == []
 
 
-def test_every_panel_tool_carries_the_ui_meta():
-    """Ohne meta=_UI_META öffnet Claude Desktop KEIN App-Panel — das Tool
-    'funktioniert' dann scheinbar nicht, obwohl Dateien geschrieben werden
-    (generate_spectrum-Bug, 2026-06-11). Jedes Tool mit eigener View in
-    App.jsx muss das Meta tragen."""
-    from chemdraw_tool.server import mcp
+_UI_META_EXPECTED = {"ui": {"resourceUri": _RESOURCE_URI}}
 
-    panel_tools = (
+# Untergrenze, KEINE Sollmenge: geprüft wird die aus der Registrierung
+# abgeleitete Menge (siehe _panel_payload_type). Diese Liste schlägt nur an,
+# wenn die Ableitung selbst blind wird — etwa nach einem FastMCP-Update.
+_KNOWN_PANEL_TOOLS = frozenset(
+    {
         "generate_molecule",
         "generate_reaction",
         "batch_generate",
@@ -135,12 +136,78 @@ def test_every_panel_tool_carries_the_ui_meta():
         "compare_molecules",
         "generate_3d",
         "export_curated_deck",
+    }
+)
+
+
+def _panel_payload_type(tool) -> str | None:
+    """Diskriminator-`type` des Rückgabe-Payloads, sonst None.
+
+    Bewusst OHNE Blick auf `tool.meta`: würde die Panel-Erkennung am Meta
+    hängen, prüfte sich der Test selbst — ein Tool ohne Meta gälte einfach
+    als Nicht-Panel-Tool und bliebe unsichtbar. Kriterium ist deshalb die
+    Rückgabe-Annotation: ein Payload-Modell mit `type`-Default ist genau
+    das, was App.jsx per switch auswertet.
+    """
+    try:
+        ret = get_type_hints(tool.fn).get("return")
+    except Exception:  # pragma: no cover — kaputte Annotation
+        return None
+    if not (isinstance(ret, type) and issubclass(ret, BaseModel)):
+        return None
+    field = ret.model_fields.get("type")
+    default = getattr(field, "default", None)
+    return default if isinstance(default, str) and default else None
+
+
+def _panel_tools_without_meta(manager) -> list[str]:
+    """Namen aller Panel-Tools, denen das UI-Meta fehlt."""
+    return sorted(
+        tool.name
+        for tool in manager.list_tools()
+        if _panel_payload_type(tool) and tool.meta != _UI_META_EXPECTED
     )
-    for name in panel_tools:
-        tool = mcp._tool_manager.get_tool(name)
-        assert tool.meta == {"ui": {"resourceUri": _RESOURCE_URI}}, (
-            f"{name} ist ohne UI-Meta registriert — Panel bleibt zu"
-        )
+
+
+def test_every_panel_tool_carries_the_ui_meta():
+    """Ohne meta=_UI_META öffnet Claude Desktop KEIN App-Panel — das Tool
+    'funktioniert' dann scheinbar nicht, obwohl Dateien geschrieben werden
+    (generate_spectrum-Bug, 2026-06-11). Die Menge der Panel-Tools kommt aus
+    der FastMCP-Registrierung, nicht aus einer gepflegten Konstante: ein neu
+    hinzugefügtes Panel-Tool ohne Meta fällt so von selbst auf."""
+    from chemdraw_tool.server import mcp
+
+    manager = mcp._tool_manager
+    detected = {t.name for t in manager.list_tools() if _panel_payload_type(t)}
+    assert _KNOWN_PANEL_TOOLS <= detected, (
+        "Panel-Erkennung greift nicht mehr für "
+        f"{sorted(_KNOWN_PANEL_TOOLS - detected)} — der Test prüfte sonst ins Leere"
+    )
+    assert not _panel_tools_without_meta(manager), (
+        f"{_panel_tools_without_meta(manager)} sind ohne UI-Meta registriert — "
+        "Panel bleibt zu"
+    )
+
+
+def test_panel_meta_check_notices_a_newly_registered_tool():
+    """Schärfebeweis für den Test darüber: ein NEU registriertes Panel-Tool
+    ohne Meta muss auffallen, ohne dass jemand eine Liste pflegt."""
+    from chemdraw_tool.server import mcp
+
+    manager = mcp._tool_manager
+
+    def brandneues_panel_tool() -> MoleculePayload:
+        """Attrappe — registriert ohne meta=_UI_META."""
+        return MoleculePayload()
+
+    manager.add_tool(brandneues_panel_tool, structured_output=True)
+    try:
+        assert "brandneues_panel_tool" in _panel_tools_without_meta(manager)
+    finally:
+        manager._tools.pop("brandneues_panel_tool", None)
+
+    # Aufräumen bewiesen: ohne die Attrappe ist die Registrierung wieder sauber
+    assert not _panel_tools_without_meta(manager)
 
 
 def test_generate_molecule_with_stereo_annotation(tmp_path, monkeypatch):
