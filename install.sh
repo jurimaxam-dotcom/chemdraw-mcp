@@ -29,7 +29,11 @@ if ! command -v uv >/dev/null 2>&1; then
     exit 1
   fi
 fi
-echo "✓ uv: $(command -v uv)"
+# Absolutpfad merken: der PATH-Export oben gilt nur für diese Shell — Claude
+# Desktop startet MCP-Server mit minimalem GUI-PATH und fände ein blankes "uv"
+# nicht. Der Config-Schreiber bekommt deshalb genau dieses Binary.
+UV_BIN="$(command -v uv)"
+echo "✓ uv: $UV_BIN"
 
 # --- 2. Dependencies ---------------------------------------------------------
 echo ""
@@ -40,7 +44,8 @@ echo "✓ Dependencies bereit."
 # --- 3. Claude-Desktop-Config ------------------------------------------------
 echo ""
 echo "→ Server in Claude Desktop registrieren …"
-uv run python scripts/install_claude_config.py --project-dir "$PROJECT_DIR"
+uv run python scripts/install_claude_config.py \
+  --project-dir "$PROJECT_DIR" --uv-command "$UV_BIN"
 
 # --- 4. Smoke-Test -----------------------------------------------------------
 echo ""

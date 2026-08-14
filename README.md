@@ -119,10 +119,14 @@ add this to your Claude Desktop config (`claude_desktop_config.json` →
 
 ```json
 "chemdraw": {
-  "command": "uvx",
+  "command": "/opt/homebrew/bin/uvx",
   "args": ["chemdraw-mcp"]
 }
 ```
+
+Use the **absolute** path that `which uvx` prints on your machine — Claude
+Desktop launches MCP servers with the minimal GUI PATH, so a bare `"uvx"`
+often cannot be resolved and the server silently fails to start.
 
 **Option 2 — one-command installer** (clones the repo and registers the
 server in Claude Desktop automatically):
@@ -132,8 +136,10 @@ git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
 cd chemdraw-mcp && ./install.sh
 ```
 
-Both are idempotent and leave existing MCP servers untouched. Restart
-Claude Desktop, then ask: *"draw caffeine"*.
+Both are idempotent and leave existing MCP servers untouched. The installer
+resolves the absolute `uv` path for you and prints the start command it
+registered (`✓ Startet mit: /opt/homebrew/bin/uv`). Restart Claude Desktop,
+then ask: *"draw caffeine"*.
 
 Optional: with a Java runtime installed (e.g. `brew install openjdk`),
 systematic IUPAC names — including ones no database indexes — are parsed
