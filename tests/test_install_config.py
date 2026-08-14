@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.install_claude_config import (
+from chemdraw_tool.desktop_config import (
     build_server_entry,
     install,
     merge_server_config,

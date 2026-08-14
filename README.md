@@ -141,6 +141,24 @@ resolves the absolute `uv` path for you and prints the start command it
 registered (`✓ Startet mit: /opt/homebrew/bin/uv`). Restart Claude Desktop,
 then ask: *"draw caffeine"*.
 
+### Something not working? Run the doctor
+
+```bash
+uv run chemdraw-doctor          # in the cloned repo
+uvx --from chemdraw-mcp chemdraw-doctor   # PyPI install
+```
+
+It checks the six things that make the server look dead in the chat — RDKit
+rendering, the Java/OPSIN runtime, the `uv` path, the Claude Desktop entry,
+the name databases and the output directory — and prints, for every problem,
+the exact command that fixes it. Three levels are distinguished: `[OK]`,
+`[LIMITED]` (works, but restricted) and `[FAIL]` (broken); `[NOTE]` marks
+things that simply do not apply, such as not having Claude Desktop installed.
+The exit code is 0 as long as the server is usable, so it can be used in
+scripts. (From a PyPI install the `uv` and Claude Desktop checks report
+`[NOTE]` and are skipped — they rely on the installer script, which ships with
+the repository only.)
+
 Optional: with a Java runtime installed (e.g. `brew install openjdk`),
 systematic IUPAC names — including ones no database indexes — are parsed
 offline via [OPSIN](https://github.com/dan2097/opsin). Without Java the

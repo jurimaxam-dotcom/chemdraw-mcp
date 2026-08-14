@@ -32,6 +32,12 @@ Issues = "https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues"
 chemdraw-mcp = "chemdraw_tool.server:main"
 # Alias: existing Claude Desktop configs from install.sh point at this name.
 chemdraw-tool-server = "chemdraw_tool.server:main"
+# Installations-Diagnose: macht die stillen Ausfälle sichtbar, bevor sie im
+# Chat als "der Server tut nichts" ankommen.
+chemdraw-doctor = "chemdraw_tool.doctor:main"
+# Eintragen in Claude Desktop ohne Repo-Clone — der Weg, den PyPI-/Registry-
+# Nutzer gehen (install.sh gibt es dort nicht).
+chemdraw-install = "chemdraw_tool.desktop_config:main"
 
 [build-system]
 requires = ["hatchling"]
