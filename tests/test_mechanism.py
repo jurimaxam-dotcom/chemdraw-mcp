@@ -2,7 +2,14 @@
 
 import pytest
 
+from chemdraw_tool.mechanism import (
+    CurvedArrow,
+    MechanismStep,
+    MechanismTemplate,
+    validate_substrates,
+)
 from chemdraw_tool.payloads import MechanismPayload, MechanismStepPayload
+from chemdraw_tool.templates import get_template, list_templates
 
 
 def test_mechanism_step_payload_defaults():
@@ -22,15 +29,6 @@ def test_mechanism_payload_defaults():
     assert payload.type == "mechanism"
     assert payload.current_step == 0
     assert len(payload.steps) == 1
-
-
-from chemdraw_tool.mechanism import (
-    CurvedArrow,
-    MechanismStep,
-    MechanismTemplate,
-    validate_substrates,
-)
-from chemdraw_tool.templates import get_template, list_templates
 
 
 def test_curved_arrow_creation():

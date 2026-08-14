@@ -2,7 +2,13 @@ from lxml import etree
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.cdxml_writer import mol_to_cdxml
+from chemdraw_tool.cdxml_writer import (
+    ACS_SETTINGS,
+    ELEMENT_COLORS,
+    _create_fragment,
+    mol_to_cdxml,
+    write_cdxml,
+)
 
 
 def _make_mol(smiles: str) -> Chem.Mol:
@@ -83,7 +89,6 @@ def test_atoms_have_positions():
 
 
 # --- 4b tests ---
-from chemdraw_tool.cdxml_writer import write_cdxml
 
 
 def test_write_cdxml_creates_file(tmp_path):
@@ -119,7 +124,6 @@ def test_no_label_when_name_empty():
 
 
 # --- _create_fragment tests ---
-from chemdraw_tool.cdxml_writer import _create_fragment
 
 
 def test_create_fragment_returns_element_and_metadata():
@@ -150,7 +154,6 @@ def test_create_fragment_centers_at_position():
 
 
 # --- ACS settings & colortable tests ---
-from chemdraw_tool.cdxml_writer import ACS_SETTINGS, ELEMENT_COLORS
 
 
 def test_acs_settings_in_root():

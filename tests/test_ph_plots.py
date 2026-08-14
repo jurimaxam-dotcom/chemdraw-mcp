@@ -129,7 +129,9 @@ def test_render_species_png_and_svg():
 def test_species_figure_has_one_curve_per_species():
     fig = build_species_figure([2.15, 7.2, 12.35])
     # Nur Kurven mit Legenden-Label zählen — die pKa-axvlines sind auch lines.
-    curves = [l for l in fig.axes[0].lines if not l.get_label().startswith("_")]
+    curves = [
+        line for line in fig.axes[0].lines if not line.get_label().startswith("_")
+    ]
     assert len(curves) == 4  # n pKa ⇒ n+1 Spezies
 
 

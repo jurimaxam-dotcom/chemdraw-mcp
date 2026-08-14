@@ -15,8 +15,8 @@ Klausur- und Arzneibuch-Standardfall.
 from __future__ import annotations
 
 import io
-from dataclasses import dataclass
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 import matplotlib
 

@@ -1,3 +1,5 @@
+import re
+
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
@@ -136,8 +138,6 @@ def test_database_payload_structure():
 
 
 # --- consistent scale tests ---
-
-import re
 
 
 def _viewbox_size(svg: str) -> tuple[float, float]:
