@@ -48,8 +48,15 @@ Leitplanken für ALLE Wellen:
       5-Stufen-Kaskade, parse-first, Panel-Kette, Gate-Philosophie)
 - [x] CHANGELOG + Version 0.3.0 (pyproject + server.json + Tag v0.3.0)
 - [x] Release: GitHub-Release -> PyPI 0.3.0 live (verifiziert)
-- [ ] **OFFEN (braucht Jay):** `mcp-publisher login github` + `publish`
-      — Token abgelaufen, Login ist interaktiv. Dauerhafte Lösung als
-      Workflow-Vorlage in `docs/registry-publish.md`
+- [x] Registry-Publish 0.3.0 (Jay 15.08., `scripts/publish-registry.sh`) —
+      `isLatest: True` unabhängig verifiziert. Dauerhafte Automatisierung
+      als OIDC-Job in `docs/registry-publish.md` hinterlegt
 - [x] Smoke-Test: stdio-Handshake (22 Tools, 15 Panel, Aspirin gezeichnet,
       Bundle ausgeliefert) + Doctor aus frischer PyPI-Installation grün
+
+## Ergebnis
+
+Alles erledigt. v0.3.0 auf PyPI **und** in der Registry (`isLatest: True`),
+623 Tests, 22 Commits. Offen bleibt nur, was schon vorher auf Jays Go wartete:
+die awesome-mcp-PR — und optional `gh auth refresh -s workflow`, damit der
+Registry-Publish künftig ohne Handgriff läuft.
