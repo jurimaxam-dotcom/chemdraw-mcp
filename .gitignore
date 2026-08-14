@@ -5,7 +5,9 @@ __pycache__/
 
 # Node
 node_modules/
-package-lock.json
+# package-lock.json wird BEWUSST versioniert: das Gate vergleicht die gebauten
+# dist-Bytes: ohne Lockfile installiert CI andere Patch-Versionen und der
+# Vergleich wird aus Toolchain- statt aus Staleness-Gründen rot.
 
 # OS / IDE / local agent config
 .DS_Store

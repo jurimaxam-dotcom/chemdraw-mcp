@@ -23,8 +23,12 @@ jobs:
       - name: Install backend dependencies
         run: uv sync
 
+      # npm ci (nicht install): installiert exakt die Versionen aus dem
+      # Lockfile. Das Gate vergleicht gebaute dist-Bytes — mit Caret-Ranges
+      # würde ein Patch-Update der Toolchain den Vergleich rot färben, ohne
+      # dass jemand src/ angefasst hat.
       - name: Install frontend dependencies
-        run: npm --prefix chemdraw_tool/ui install
+        run: npm --prefix chemdraw_tool/ui ci
 
       - name: Install Playwright Chromium
         working-directory: chemdraw_tool/ui
