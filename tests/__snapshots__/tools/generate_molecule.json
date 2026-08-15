@@ -1,0 +1,256 @@
+{
+  "description": "Draw one compound as a 2D structure — the default for a single substance.\n\nWrites print-ready PNG/SVG to the output folder and returns a panel with\nthe drawing, properties and functional groups. No ChemDraw needed.\n\nUse this tool when the request names structural formulas, molecular\nstructures or chemical drawings — \"draw aspirin\", \"structure of caffeine\".\nA bare compound name with no further request (\"caffeine\", \"aspirin\")\nalso means this tool: show the substance, and the panel carries its data.\n\nNot this tool for: several products of one reaction with yields (use\ngenerate_scope_table); several unrelated structures at once (use\nbatch_generate); differences between structures (use compare_molecules);\nan equation with an arrow (use generate_reaction); a named single value\nsuch as melting point, CAS number or GHS hazards (use lookup).\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.\nSMILES are always safe; use `label` for the localized display name.\n\nArgs:\n    name_or_smiles: English/IUPAC compound name or SMILES string.\n    label: Display name shown below the structure (may be localized).\n    formats: Any of \"png\", \"svg\", \"cdxml\" (default: png + svg). Add\n        \"cdxml\" only when the structure is to be edited in ChemDraw.\n    annotate_stereo: True prints CIP descriptors (R/S, E/Z) at each\n        stereocenter.\n    abbreviate_groups: True draws common substituents as the short labels\n        chemists write by hand (Ph, Bn, OAc, OMe, CO2H, NO2, tBu, Boc, Ts,\n        TMS). The chemistry is unchanged; hover tooltips in the panel are\n        switched off for abbreviated drawings.\n    render_style: \"\" standard · \"compact\" thin bonds for small print ·\n        \"presentation\" thick bonds for slides · \"grayscale\" b/w palette.\n",
+  "inputSchema": {
+    "properties": {
+      "abbreviate_groups": {
+        "default": false,
+        "title": "Abbreviate Groups",
+        "type": "boolean"
+      },
+      "annotate_stereo": {
+        "default": false,
+        "title": "Annotate Stereo",
+        "type": "boolean"
+      },
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "label": {
+        "default": "",
+        "title": "Label",
+        "type": "string"
+      },
+      "name_or_smiles": {
+        "title": "Name Or Smiles",
+        "type": "string"
+      },
+      "render_style": {
+        "default": "",
+        "title": "Render Style",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name_or_smiles"
+    ],
+    "title": "generate_moleculeArguments",
+    "type": "object"
+  },
+  "name": "generate_molecule",
+  "outputSchema": {
+    "$defs": {
+      "AtomData": {
+        "properties": {
+          "charge": {
+            "default": 0,
+            "title": "Charge",
+            "type": "integer"
+          },
+          "el": {
+            "title": "El",
+            "type": "string"
+          },
+          "hCount": {
+            "default": 0,
+            "title": "Hcount",
+            "type": "integer"
+          },
+          "idx": {
+            "title": "Idx",
+            "type": "integer"
+          },
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "idx",
+          "el",
+          "x",
+          "y"
+        ],
+        "title": "AtomData",
+        "type": "object"
+      },
+      "FunctionalGroup": {
+        "properties": {
+          "atomIndices": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atomindices",
+            "type": "array"
+          },
+          "color": {
+            "default": "#999999",
+            "title": "Color",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "FunctionalGroup",
+        "type": "object"
+      },
+      "LipinskiData": {
+        "properties": {
+          "hba": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hba"
+          },
+          "hbd": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hbd"
+          },
+          "logP": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Logp"
+          },
+          "mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mw"
+          },
+          "passes": {
+            "default": false,
+            "title": "Passes",
+            "type": "boolean"
+          },
+          "violations": {
+            "default": 0,
+            "title": "Violations",
+            "type": "integer"
+          }
+        },
+        "title": "LipinskiData",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "atoms": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AtomData"
+        },
+        "title": "Atoms",
+        "type": "array"
+      },
+      "cdxml_path": {
+        "default": "",
+        "title": "Cdxml Path",
+        "type": "string"
+      },
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "functionalGroups": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/FunctionalGroup"
+        },
+        "title": "Functionalgroups",
+        "type": "array"
+      },
+      "lipinski": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/LipinskiData"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "properties": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Properties",
+        "type": "object"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "molecule",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "title": "MoleculePayload",
+    "type": "object"
+  }
+}

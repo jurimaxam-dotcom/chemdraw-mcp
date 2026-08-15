@@ -1,0 +1,35 @@
+{
+  "description": "Internal helper for the panel UI — never call this directly.\n\nThe panel's export button calls it when the image clipboard is blocked\nby the sandbox; saving a picture is the user's click, not yours. The\ngenerate_* tools already write their PNG and SVG files themselves.\n\nExpects a base64 PNG (with or without a `data:image/png;base64,`\nprefix) and returns the path it was written to.\n",
+  "inputSchema": {
+    "properties": {
+      "filename": {
+        "title": "Filename",
+        "type": "string"
+      },
+      "png_base64": {
+        "title": "Png Base64",
+        "type": "string"
+      }
+    },
+    "required": [
+      "png_base64",
+      "filename"
+    ],
+    "title": "save_pngArguments",
+    "type": "object"
+  },
+  "name": "save_png",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "save_pngOutput",
+    "type": "object"
+  }
+}

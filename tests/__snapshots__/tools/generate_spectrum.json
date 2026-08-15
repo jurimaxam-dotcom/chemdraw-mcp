@@ -1,0 +1,118 @@
+{
+  "description": "Draw a schematic spectrum from a peak list as print-ready PNG/SVG files.\n\nUse this tool whenever the user asks for a spectrum drawing of any kind:\nIR, NIR, Raman, UV/Vis, fluorescence, ORD, CD, 1H/13C NMR or mass\nspectrum (MS). If the user only names a compound without peak values,\nsupply typical literature peak positions yourself (e.g. aspirin IR:\nC=O stretch ~1750 cm⁻¹, broad O-H ~2500-3300 cm⁻¹) — the tool then\ndraws exactly the peaks it is given; it does not predict spectra.\n\nNot this tool for: working out WHICH bands to expect, or what a measured\nwavenumber belongs to — that is predict_spectrum, whose band list can\nthen be handed to this tool for the drawing.\n\nAxis conventions are handled automatically (IR: inverted wavenumber\naxis with transmission dips; NMR: ppm axis right-to-left; MS: bar plot;\nORD: Cotton-effect curve; CD: signed bands around zero).\n\nArgs:\n    spectrum_type: One of \"ir\", \"nir\", \"raman\", \"uv_vis\", \"fluorescence\",\n        \"ord\", \"cd\", \"nmr_1h\", \"nmr_13c\", \"ms\".\n    peaks: Peak list. position uses the type's natural unit (cm⁻¹ for\n        ir/nir/raman, nm for uv_vis/fluorescence/ord/cd, ppm for NMR,\n        m/z for ms). intensity is relative on any scale (negative values\n        only for ord/cd). width (optional) is the half-width in x-units;\n        label (optional) annotates the peak in the plot (e.g. \"C=O\").\n    title: Display name shown in the plot title, also used for the\n        filename (can be localized, e.g. \"Aspirin IR\").\n    formats: Output file formats, any of \"png\", \"svg\" (default: both).\n        CDXML is not available for spectra.\n",
+  "inputSchema": {
+    "$defs": {
+      "SpectrumPeak": {
+        "properties": {
+          "intensity": {
+            "default": 1.0,
+            "title": "Intensity",
+            "type": "number"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "number"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Width"
+          }
+        },
+        "required": [
+          "position"
+        ],
+        "title": "SpectrumPeak",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "peaks": {
+        "items": {
+          "$ref": "#/$defs/SpectrumPeak"
+        },
+        "title": "Peaks",
+        "type": "array"
+      },
+      "spectrum_type": {
+        "title": "Spectrum Type",
+        "type": "string"
+      },
+      "title": {
+        "default": "",
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "required": [
+      "spectrum_type",
+      "peaks"
+    ],
+    "title": "generate_spectrumArguments",
+    "type": "object"
+  },
+  "name": "generate_spectrum",
+  "outputSchema": {
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "spectrum_type": {
+        "title": "Spectrum Type",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "spectrum",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "spectrum_type"
+    ],
+    "title": "SpectrumPayload",
+    "type": "object"
+  }
+}

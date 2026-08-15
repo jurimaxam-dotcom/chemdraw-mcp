@@ -1,0 +1,139 @@
+{
+  "description": "Work out a content determination the way a lab report wants it.\n\nRuns the chain in protocol order: content per measurement → Grubbs\noutlier check → mean and spread → t-test against the declared content,\neach step with formula, substituted numbers and result.\n\nMethods — content of a substance:\n\n- \"titration\": weights_mg, measurements (mL), factor_mg_per_ml; a\n  reference titration determines the titer first.\n- \"photometry\": weights_mg, measurements (absorbance), a1_1cm,\n  flask_volume_ml, dilution_factor.\n\nFat characteristics and water, same input shape, all needing\ntitrant_concentration (the short formulas hold only for the standard\nvolumetric solution):\n\n- \"acid_value\": free acids, mg KOH/g.\n- \"saponification_value\" (mg KOH/g) and \"iodine_value\" (g I₂/100 g) are\n  back titrations — blank_ml is the REFERENCE reading.\n- \"water_kf\": Karl Fischer, %; blank_ml is the drift.\n\nweights_mg is ALWAYS mg, also for fat values.\n\nNot this tool for: preparing or diluting a solution (use\ncalculate_solution); drawing the titration curve (use\ngenerate_titration_curve); quantifying against a measured series of\nstandards (use generate_calibration_curve — this one needs none).\n\nArgs:\n    method: One of the seven above.\n    weights_mg: Weighed portions, mg, one per measurement.\n    measurements: mL titrant or absorbance, order of weights_mg.\n    factor_mg_per_ml: Titration factor from the monograph.\n    titer: Titer of the volumetric solution; 1.0 if exact.\n    blank_ml: Blank, mL (reference reading for back titrations).\n    a1_1cm: Specific absorbance A(1%,1cm).\n    path_length_cm: Cuvette path length, normally 1.\n    dilution_factor: Dilution of the measured solution.\n    flask_volume_ml: Volumetric flask, mL.\n    reference_weights_mg, reference_volumes_ml: Reference titration.\n    declared_content: Declared content, %; the t-test uses it.\n    titrant_concentration: mol/L, for fat characteristics.\n    titer_mg_per_ml: Karl Fischer titer, mg water/mL.\n    known_acid_value: Adds the ester value to saponification.\n",
+  "inputSchema": {
+    "properties": {
+      "a1_1cm": {
+        "default": 0.0,
+        "title": "A1 1Cm",
+        "type": "number"
+      },
+      "blank_ml": {
+        "default": 0.0,
+        "title": "Blank Ml",
+        "type": "number"
+      },
+      "declared_content": {
+        "default": 100.0,
+        "title": "Declared Content",
+        "type": "number"
+      },
+      "dilution_factor": {
+        "default": 1.0,
+        "title": "Dilution Factor",
+        "type": "number"
+      },
+      "factor_mg_per_ml": {
+        "default": 0.0,
+        "title": "Factor Mg Per Ml",
+        "type": "number"
+      },
+      "flask_volume_ml": {
+        "default": 0.0,
+        "title": "Flask Volume Ml",
+        "type": "number"
+      },
+      "known_acid_value": {
+        "default": 0.0,
+        "title": "Known Acid Value",
+        "type": "number"
+      },
+      "measurements": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Measurements",
+        "type": "array"
+      },
+      "method": {
+        "enum": [
+          "titration",
+          "photometry",
+          "acid_value",
+          "saponification_value",
+          "iodine_value",
+          "water_kf"
+        ],
+        "title": "Method",
+        "type": "string"
+      },
+      "path_length_cm": {
+        "default": 1.0,
+        "title": "Path Length Cm",
+        "type": "number"
+      },
+      "reference_volumes_ml": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reference Volumes Ml"
+      },
+      "reference_weights_mg": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reference Weights Mg"
+      },
+      "titer": {
+        "default": 1.0,
+        "title": "Titer",
+        "type": "number"
+      },
+      "titer_mg_per_ml": {
+        "default": 0.0,
+        "title": "Titer Mg Per Ml",
+        "type": "number"
+      },
+      "titrant_concentration": {
+        "default": 0.0,
+        "title": "Titrant Concentration",
+        "type": "number"
+      },
+      "weights_mg": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Weights Mg",
+        "type": "array"
+      }
+    },
+    "required": [
+      "method",
+      "weights_mg",
+      "measurements"
+    ],
+    "title": "calculate_contentArguments",
+    "type": "object"
+  },
+  "name": "calculate_content",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "calculate_contentOutput",
+    "type": "object"
+  }
+}

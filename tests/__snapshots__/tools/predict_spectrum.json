@@ -1,0 +1,45 @@
+{
+  "description": "Say what a spectrum of this structure should show — or read a band.\n\nThree questions, all of them exam material:\n\n- \"ir_bands\": which IR bands to expect for a structure, with range,\n  intensity and band shape, ordered as you read a spectrum (high\n  wavenumber first). Needs `structure`.\n- \"assign_wavenumber\": you measured a band — which groups absorb there?\n  Ordered by how centrally the value sits in each range. Needs\n  `wavenumber` in cm⁻¹.\n- \"nmr_signals\": how many ¹H signals the structure gives and in what\n  integral ratio. Needs `structure`.\n\nDeterministic on purpose, and therefore honestly limited: band positions\ncome from a curated table matched to the structure, signals from the\ntopological equivalence of the protons. It does NOT predict chemical\nshifts in ppm — that would take a model and would be guesswork.\n\nThe band list is ready to hand to generate_spectrum if a drawing is\nwanted; this tool only says what to expect.\n\nNot this tool for: drawing a spectrum from peaks you already have\n(generate_spectrum), or looking up measured data for a substance\n(lookup).\n\nArgs:\n    topic: Which question to answer — see the list above.\n    structure: SMILES of the compound (\"ir_bands\", \"nmr_signals\").\n        Resolve a name to SMILES first if needed.\n    wavenumber: Measured band position in cm⁻¹ (\"assign_wavenumber\").\n",
+  "inputSchema": {
+    "properties": {
+      "structure": {
+        "default": "",
+        "title": "Structure",
+        "type": "string"
+      },
+      "topic": {
+        "enum": [
+          "ir_bands",
+          "assign_wavenumber",
+          "nmr_signals"
+        ],
+        "title": "Topic",
+        "type": "string"
+      },
+      "wavenumber": {
+        "default": 0.0,
+        "title": "Wavenumber",
+        "type": "number"
+      }
+    },
+    "required": [
+      "topic"
+    ],
+    "title": "predict_spectrumArguments",
+    "type": "object"
+  },
+  "name": "predict_spectrum",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "predict_spectrumOutput",
+    "type": "object"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "description": "Draw a titration curve: weak (or polyprotic) acid vs. strong base.\n\nComputes pH against titrant volume from the exact charge balance and\nmarks equivalence points (per protolysis step), the buffer points\n(pH = pKa at half-equivalence) and optionally the indicator transition\nrange as a shaded band.\n\nUse this when the user asks about titrations, equivalence points,\nbuffer regions or indicator choice. YOU supply the substance data from\nyour knowledge (like with generate_spectrum): pKa values, sensible\nconcentrations (0.1 M is the classic teaching case) and the indicator's\ntransition range.\n\nNot this tool for: a pH VALUE as a number — that is calculate_ph, which\nsolves the same charge balance and shows the working. This one only\ndraws. Nor for the content from a real titration series\n(calculate_content).\n\nArgs:\n    substance: Display name, e.g. \"Acetic acid with NaOH\" (localizable).\n    pka_values: pKa per protolysis step, ascending (1-3 values).\n    c_acid: Acid concentration in mol/L.\n    v_acid_ml: Initial acid volume in mL.\n    c_titrant: Titrant (strong base) concentration in mol/L.\n    indicator: Optional {\"name\": \"...\", \"ph_range\": [low, high]}.\n",
+  "inputSchema": {
+    "properties": {
+      "c_acid": {
+        "title": "C Acid",
+        "type": "number"
+      },
+      "c_titrant": {
+        "title": "C Titrant",
+        "type": "number"
+      },
+      "indicator": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Indicator"
+      },
+      "pka_values": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Pka Values",
+        "type": "array"
+      },
+      "substance": {
+        "title": "Substance",
+        "type": "string"
+      },
+      "v_acid_ml": {
+        "title": "V Acid Ml",
+        "type": "number"
+      }
+    },
+    "required": [
+      "substance",
+      "pka_values",
+      "c_acid",
+      "v_acid_ml",
+      "c_titrant"
+    ],
+    "title": "generate_titration_curveArguments",
+    "type": "object"
+  },
+  "name": "generate_titration_curve",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}

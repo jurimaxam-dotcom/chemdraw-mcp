@@ -1,0 +1,91 @@
+{
+  "description": "Generate a step-by-step reaction mechanism visualization.\n\nUse this when the user asks about a reaction mechanism, electron-flow\narrows, or wants to see how a reaction proceeds step by step.\n\nNot this tool for: the net equation educt → product without\nintermediates — that is generate_reaction. Only the mechanism types\nlisted in reaction_type exist; for anything else use generate_reaction.\n\nArgs:\n    reaction_type: Mechanism type (e.g. \"sn2\", \"sn1\", \"fischer_ester\").\n    substrates: List of substrate SMILES or names.\n    current_step: 0 = overview (all steps), 1-N = specific step.\n",
+  "inputSchema": {
+    "properties": {
+      "current_step": {
+        "default": 0,
+        "title": "Current Step",
+        "type": "integer"
+      },
+      "reaction_type": {
+        "title": "Reaction Type",
+        "type": "string"
+      },
+      "substrates": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Substrates",
+        "type": "array"
+      }
+    },
+    "required": [
+      "reaction_type",
+      "substrates"
+    ],
+    "title": "generate_mechanismArguments",
+    "type": "object"
+  },
+  "name": "generate_mechanism",
+  "outputSchema": {
+    "$defs": {
+      "MechanismStepPayload": {
+        "properties": {
+          "is_transition_state": {
+            "default": false,
+            "title": "Is Transition State",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "svg": {
+            "title": "Svg",
+            "type": "string"
+          }
+        },
+        "required": [
+          "svg",
+          "label"
+        ],
+        "title": "MechanismStepPayload",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "current_step": {
+        "default": 0,
+        "title": "Current Step",
+        "type": "integer"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "reaction_type": {
+        "title": "Reaction Type",
+        "type": "string"
+      },
+      "steps": {
+        "items": {
+          "$ref": "#/$defs/MechanismStepPayload"
+        },
+        "title": "Steps",
+        "type": "array"
+      },
+      "type": {
+        "default": "mechanism",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "reaction_type",
+      "steps"
+    ],
+    "title": "MechanismPayload",
+    "type": "object"
+  }
+}

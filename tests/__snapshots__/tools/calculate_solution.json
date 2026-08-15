@@ -1,0 +1,102 @@
+{
+  "description": "Do the bench maths before an experiment, with the full working shown.\n\nAnswers the questions that come up in front of the balance and returns\nevery step — formula, substituted numbers, result — because the report\nasks for the working, not just the number.\n\nPick the `topic`:\n\n- \"weigh_in\": how much do I weigh out? substance, concentration (mol/L),\n  volume_ml. The everyday case: \"250 mL of 0.1 M NaOH\" → 1.0 g.\n- \"concentration\": what did I actually get? substance, mass_g,\n  volume_ml; `target` also gives the deviation from what you aimed for.\n- \"dilution\": C₁V₁ = C₂V₂. Give exactly three of stock_concentration,\n  stock_volume_ml, final_concentration, final_volume_ml — the fourth\n  comes back with the amount of solvent to add.\n- \"mixing\": mixing cross. high, low and target contents in the same unit;\n  `total` scales the parts. Diluting with water is low=0.\n- \"molar_mass\": molar mass with element breakdown; handles hydrates.\n\n`substance` takes a chemical FORMULA (\"NaOH\", \"CuSO4·5H2O\"), not a\ntrivial name — without a clean formula pass `molar_mass_g` directly.\n\nNot this tool for: content determination from titration or photometry\n(use calculate_content), pH and buffers (use calculate_ph), or a\nsubstance's tabulated properties (use lookup).\n\nArgs:\n    topic: Which calculation to run — see above.\n    substance: Chemical formula, e.g. \"NaOH\" or \"CuSO4·5H2O\".\n    concentration: Wanted concentration, mol/L (\"weigh_in\").\n    volume_ml: Volume being prepared, mL.\n    mass_g: Mass actually weighed, g (\"concentration\").\n    molar_mass_g: Molar mass in g/mol if there is no usable formula.\n    target: Target concentration (\"concentration\") or content (\"mixing\").\n    stock_concentration: c₁ (\"dilution\").\n    stock_volume_ml: V₁ (\"dilution\").\n    final_concentration: c₂ (\"dilution\").\n    final_volume_ml: V₂ (\"dilution\").\n    high: Content of the stronger component (\"mixing\").\n    low: Content of the weaker component, 0 for water (\"mixing\").\n    total: Total amount wanted (\"mixing\").\n",
+  "inputSchema": {
+    "properties": {
+      "concentration": {
+        "default": 0.0,
+        "title": "Concentration",
+        "type": "number"
+      },
+      "final_concentration": {
+        "default": 0.0,
+        "title": "Final Concentration",
+        "type": "number"
+      },
+      "final_volume_ml": {
+        "default": 0.0,
+        "title": "Final Volume Ml",
+        "type": "number"
+      },
+      "high": {
+        "default": 0.0,
+        "title": "High",
+        "type": "number"
+      },
+      "low": {
+        "default": 0.0,
+        "title": "Low",
+        "type": "number"
+      },
+      "mass_g": {
+        "default": 0.0,
+        "title": "Mass G",
+        "type": "number"
+      },
+      "molar_mass_g": {
+        "default": 0.0,
+        "title": "Molar Mass G",
+        "type": "number"
+      },
+      "stock_concentration": {
+        "default": 0.0,
+        "title": "Stock Concentration",
+        "type": "number"
+      },
+      "stock_volume_ml": {
+        "default": 0.0,
+        "title": "Stock Volume Ml",
+        "type": "number"
+      },
+      "substance": {
+        "default": "",
+        "title": "Substance",
+        "type": "string"
+      },
+      "target": {
+        "default": 0.0,
+        "title": "Target",
+        "type": "number"
+      },
+      "topic": {
+        "enum": [
+          "weigh_in",
+          "concentration",
+          "dilution",
+          "mixing",
+          "molar_mass"
+        ],
+        "title": "Topic",
+        "type": "string"
+      },
+      "total": {
+        "default": 0.0,
+        "title": "Total",
+        "type": "number"
+      },
+      "volume_ml": {
+        "default": 0.0,
+        "title": "Volume Ml",
+        "type": "number"
+      }
+    },
+    "required": [
+      "topic"
+    ],
+    "title": "calculate_solutionArguments",
+    "type": "object"
+  },
+  "name": "calculate_solution",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "calculate_solutionOutput",
+    "type": "object"
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "description": "Draw a substrate-scope figure: one reaction, many products in a grid.\n\nThe standard figure of the methodology literature: the general equation\nwith its conditions on top, below it a grid of product structures, each\nwith its identifier (\"1a\") and yield (\"78%\"), often with extra data (ee,\ndr, time). Use it when several products of the SAME reaction are shown\nside by side — \"the scope of my Suzuki couplings\", \"these five products\nwith yields\", a table of derivatives.\n\nNot this tool for: ONE single molecule — that is generate_molecule, even\nwhen a title or caption is wanted; with one entry this is the wrong\nfigure. Nor for a single equation (use generate_reaction) or unrelated\nstructures as separate files (use batch_generate).\n\nAll structures share one bond length and every cell is the same size. An\nentry that cannot be resolved is skipped and reported in `failed`.\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.\n\nArgs:\n    entries: Products in reading order, each {\"structure\": name or SMILES,\n        \"label\": \"1a\", \"yield_text\": \"78%\", \"notes\": \"ee 94%\"}. Without\n        label the entries are numbered 1a, 1b, 1c … as in a paper.\n        yield_text takes free text (\"quant.\"); a bare number gets its %.\n    title: Heading above the figure (free text, may be localized).\n    reaction: Optional general equation above the grid: {\"reactants\":\n        [...], \"products\": [...], \"conditions\": \"...\"} — ONE\n        representative example, conditions on their own line.\n    columns: Grid columns (1-6); 0 derives it from the entry count.\n    formats: \"png\" and/or \"svg\" (default both). No CDXML for figures.\n    abbreviate_groups: True draws short substituent labels (Ph, OAc,\n        tBu …) — recommended here, the cells are small.\n    render_style: \"\" standard · \"compact\" for small print · \"presentation\"\n        for slides · \"grayscale\" for b/w.\n",
+  "inputSchema": {
+    "$defs": {
+      "ReactionSpec": {
+        "description": "Reaction visual on an Anki card side (names or SMILES).",
+        "properties": {
+          "conditions": {
+            "default": "",
+            "title": "Conditions",
+            "type": "string"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "reactants": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reactants",
+            "type": "array"
+          }
+        },
+        "required": [
+          "reactants",
+          "products"
+        ],
+        "title": "ReactionSpec",
+        "type": "object"
+      },
+      "ScopeEntry": {
+        "description": "One product in a substrate-scope figure (the grid's cells).",
+        "properties": {
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "structure": {
+            "title": "Structure",
+            "type": "string"
+          },
+          "yield_text": {
+            "default": "",
+            "title": "Yield Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "structure"
+        ],
+        "title": "ScopeEntry",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "abbreviate_groups": {
+        "default": false,
+        "title": "Abbreviate Groups",
+        "type": "boolean"
+      },
+      "columns": {
+        "default": 0,
+        "title": "Columns",
+        "type": "integer"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/$defs/ScopeEntry"
+        },
+        "title": "Entries",
+        "type": "array"
+      },
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "reaction": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ReactionSpec"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "render_style": {
+        "default": "",
+        "title": "Render Style",
+        "type": "string"
+      },
+      "title": {
+        "default": "",
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "required": [
+      "entries"
+    ],
+    "title": "generate_scope_tableArguments",
+    "type": "object"
+  },
+  "name": "generate_scope_table",
+  "outputSchema": {
+    "$defs": {
+      "ScopeEntry": {
+        "description": "One product in a substrate-scope figure (the grid's cells).",
+        "properties": {
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "structure": {
+            "title": "Structure",
+            "type": "string"
+          },
+          "yield_text": {
+            "default": "",
+            "title": "Yield Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "structure"
+        ],
+        "title": "ScopeEntry",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "columns": {
+        "default": 0,
+        "title": "Columns",
+        "type": "integer"
+      },
+      "conditions": {
+        "default": "",
+        "title": "Conditions",
+        "type": "string"
+      },
+      "entries": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ScopeEntry"
+        },
+        "title": "Entries",
+        "type": "array"
+      },
+      "failed": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Failed",
+        "type": "array"
+      },
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "scope",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "title": "ScopePayload",
+    "type": "object"
+  }
+}

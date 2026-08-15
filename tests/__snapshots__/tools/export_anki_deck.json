@@ -1,0 +1,268 @@
+{
+  "description": "Export an Anki flashcard deck (.apkg) with rendered chemistry images.\n\nUse this whenever the user wants flashcards, Anki cards or a study deck\nfor molecules, reactions (e.g. pharmacopoeia identity tests) or spectra.\n\nTwo ways to fill the deck. Either pass `cards` you wrote yourself, or\npass `curated_deck_id` for a ready-made, formula-verified starter deck:\n\n- \"analgesics-structures\": structure → name drills for 8 classic\n  analgesics (NSAIDs, paracetamol, morphine, celecoxib).\n- \"pheur-identity-basics\": classic Ph.Eur. identity tests — reagent,\n  observation and reaction scheme where it helps.\n\nThe tool renders the images — YOU supply the card content from your\nknowledge, as with generate_spectrum. Each card side carries text plus at\nmost ONE visual: structure (name or SMILES), reaction ({reactants,\nproducts, conditions}) or spectrum ({spectrum_type, peaks, title}).\nProven types: structure↔name, identity reactions (question front, scheme\nback), functional-group recognition, band assignment, name drills.\n\nRe-exporting under the SAME deck name updates existing cards instead of\nduplicating them — the card front identifies the card.\n\nCard options: reversed=true drills both directions (one note, two cards);\ncloze=true makes fill-in-the-blank cards (front.text carries {{c1::...}},\nback.text becomes the extra note). \"Parent::Child\" nests subdecks.\n\nIMPORTANT: structures take English/IUPAC names or SMILES; card TEXTS may\nbe localized freely. Never deliver via AnkiConnect unless asked.\n\nArgs:\n    deck_name: Deck name, also the filename; re-use it to update a deck.\n        Ignored when curated_deck_id is set.\n    cards: The flashcards. Fronts unambiguous, explanations on the back.\n    default_tags: Tags added to every card.\n    deliver: \"apkg\" (file only) or \"ankiconnect\" (also imports into the\n        RUNNING Anki via the AnkiConnect add-on).\n    curated_deck_id: \"analgesics-structures\" or \"pheur-identity-basics\".\n",
+  "inputSchema": {
+    "$defs": {
+      "AnkiCard": {
+        "properties": {
+          "back": {
+            "$ref": "#/$defs/CardSide"
+          },
+          "cloze": {
+            "default": false,
+            "title": "Cloze",
+            "type": "boolean"
+          },
+          "front": {
+            "$ref": "#/$defs/CardSide"
+          },
+          "reversed": {
+            "default": false,
+            "title": "Reversed",
+            "type": "boolean"
+          },
+          "tags": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "front",
+          "back"
+        ],
+        "title": "AnkiCard",
+        "type": "object"
+      },
+      "CardSide": {
+        "description": "One side of an Anki card: text plus at most one rendered visual.",
+        "properties": {
+          "reaction": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ReactionSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "spectrum": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SpectrumSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "structure": {
+            "default": "",
+            "title": "Structure",
+            "type": "string"
+          },
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "title": "CardSide",
+        "type": "object"
+      },
+      "ReactionSpec": {
+        "description": "Reaction visual on an Anki card side (names or SMILES).",
+        "properties": {
+          "conditions": {
+            "default": "",
+            "title": "Conditions",
+            "type": "string"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "reactants": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reactants",
+            "type": "array"
+          }
+        },
+        "required": [
+          "reactants",
+          "products"
+        ],
+        "title": "ReactionSpec",
+        "type": "object"
+      },
+      "SpectrumPeak": {
+        "properties": {
+          "intensity": {
+            "default": 1.0,
+            "title": "Intensity",
+            "type": "number"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "number"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Width"
+          }
+        },
+        "required": [
+          "position"
+        ],
+        "title": "SpectrumPeak",
+        "type": "object"
+      },
+      "SpectrumSpec": {
+        "description": "Spectrum visual on an Anki card side.",
+        "properties": {
+          "peaks": {
+            "items": {
+              "$ref": "#/$defs/SpectrumPeak"
+            },
+            "title": "Peaks",
+            "type": "array"
+          },
+          "spectrum_type": {
+            "title": "Spectrum Type",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "spectrum_type",
+          "peaks"
+        ],
+        "title": "SpectrumSpec",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "cards": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/$defs/AnkiCard"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Cards"
+      },
+      "curated_deck_id": {
+        "default": "",
+        "title": "Curated Deck Id",
+        "type": "string"
+      },
+      "deck_name": {
+        "default": "",
+        "title": "Deck Name",
+        "type": "string"
+      },
+      "default_tags": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Default Tags"
+      },
+      "deliver": {
+        "default": "apkg",
+        "title": "Deliver",
+        "type": "string"
+      }
+    },
+    "title": "export_anki_deckArguments",
+    "type": "object"
+  },
+  "name": "export_anki_deck",
+  "outputSchema": {
+    "properties": {
+      "cards": {
+        "title": "Cards",
+        "type": "integer"
+      },
+      "delivery": {
+        "default": "apkg",
+        "title": "Delivery",
+        "type": "string"
+      },
+      "file": {
+        "default": "",
+        "title": "File",
+        "type": "string"
+      },
+      "fronts": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Fronts",
+        "type": "array"
+      },
+      "media": {
+        "title": "Media",
+        "type": "integer"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "type": {
+        "default": "anki_deck",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "cards",
+      "media"
+    ],
+    "title": "AnkiDeckPayload",
+    "type": "object"
+  }
+}

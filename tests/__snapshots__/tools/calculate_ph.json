@@ -1,0 +1,103 @@
+{
+  "description": "Calculate pH, buffer composition and buffer recipes, with the working.\n\nSolves the exact charge balance — the same one that draws the titration\ncurve — and puts the textbook approximation next to it. Where the two\ndisagree, the approximation has lost its assumptions and the answer says\nso instead of quietly being wrong.\n\nPick the `topic`:\n\n- \"weak_acid\": concentration and pka (or pka_values for a polyprotic acid).\n- \"weak_base\": concentration and pkb — or pka of the conjugate acid.\n- \"strong_acid\" / \"strong_base\": concentration. Includes the\n  autoprotolysis of water, so 1e-8 M HCl comes out just below 7.\n- \"buffer\": acid_concentration, base_concentration, pka. Also reports\n  ratio and buffer capacity, and warns when the pair is wrong for the pH.\n- \"buffer_recipe\": target_ph, pka, total_concentration, volume_ml;\n  acid_molar_mass and base_molar_mass turn moles into weighable masses.\n\nYou supply the pKa values — they are in the monograph or the table, and\nguessing them would silently change the answer.\n\nNot this tool for: drawing the titration curve or the species\ndistribution (generate_titration_curve, generate_species_distribution —\nthis one computes, those draw), or preparing a solution of a known\nconcentration (calculate_solution).\n\nArgs:\n    topic: Which case to solve — see the list above.\n    concentration: Concentration in mol/L of the acid or base.\n    pka: pKa of the acid, or of the conjugate acid of a base.\n    pkb: pKb of the base.\n    pka_values: All pKa values of a polyprotic acid, in order.\n    acid_concentration: [HA] in mol/L (\"buffer\").\n    base_concentration: [A⁻] in mol/L (\"buffer\").\n    target_ph: pH the buffer should have (\"buffer_recipe\").\n    total_concentration: [HA] + [A⁻] in mol/L (\"buffer_recipe\").\n    volume_ml: Volume of buffer to prepare, in mL.\n    acid_molar_mass: Molar mass of the acid component, in g/mol.\n    base_molar_mass: Molar mass of the base component, in g/mol.\n",
+  "inputSchema": {
+    "properties": {
+      "acid_concentration": {
+        "default": 0.0,
+        "title": "Acid Concentration",
+        "type": "number"
+      },
+      "acid_molar_mass": {
+        "default": 0.0,
+        "title": "Acid Molar Mass",
+        "type": "number"
+      },
+      "base_concentration": {
+        "default": 0.0,
+        "title": "Base Concentration",
+        "type": "number"
+      },
+      "base_molar_mass": {
+        "default": 0.0,
+        "title": "Base Molar Mass",
+        "type": "number"
+      },
+      "concentration": {
+        "default": 0.0,
+        "title": "Concentration",
+        "type": "number"
+      },
+      "pka": {
+        "default": 0.0,
+        "title": "Pka",
+        "type": "number"
+      },
+      "pka_values": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Pka Values"
+      },
+      "pkb": {
+        "default": 0.0,
+        "title": "Pkb",
+        "type": "number"
+      },
+      "target_ph": {
+        "default": 0.0,
+        "title": "Target Ph",
+        "type": "number"
+      },
+      "topic": {
+        "enum": [
+          "weak_acid",
+          "weak_base",
+          "strong_acid",
+          "strong_base",
+          "buffer",
+          "buffer_recipe"
+        ],
+        "title": "Topic",
+        "type": "string"
+      },
+      "total_concentration": {
+        "default": 0.0,
+        "title": "Total Concentration",
+        "type": "number"
+      },
+      "volume_ml": {
+        "default": 0.0,
+        "title": "Volume Ml",
+        "type": "number"
+      }
+    },
+    "required": [
+      "topic"
+    ],
+    "title": "calculate_phArguments",
+    "type": "object"
+  },
+  "name": "calculate_ph",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "calculate_phOutput",
+    "type": "object"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "description": "Draw a calibration line and read unknown samples off it.\n\nLeast-squares fit through the standards, with the equation, R² and the\nresiduals — and, if `unknown_signals` are given, the concentration behind\neach measured signal, marked on the plot the way you would read it off\nwith a ruler.\n\nReading unknowns back is the point of a calibration; slope and R² alone\nanswer no question anyone actually asks. A sample outside the calibrated\nrange is labelled as extrapolated rather than quietly reported — the line\nwas never verified there.\n\nAlso reports the limit of detection and quantitation (DIN 32645, from the\nresidual scatter), which is what a validation question asks for.\n\nNot this tool for: content from a monograph method with a known\nA(1%,1cm) or titration factor — that is calculate_content, which needs no\ncalibration series. Use this one when YOU measured a series of standards.\n\nArgs:\n    concentrations: The standards, in whatever unit you report in.\n    signals: Measured signal per standard — absorbance, peak area,\n        same length and order as concentrations.\n    unknown_signals: Signals of samples to read back off the line.\n    substance: Display name for the title (localizable).\n    x_label: Axis label for the concentration, with its unit.\n    y_label: Axis label for the signal.\n    through_origin: Force the line through zero. Only when the method is\n        known to have no blank — otherwise it hides a systematic error.\n",
+  "inputSchema": {
+    "properties": {
+      "concentrations": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Concentrations",
+        "type": "array"
+      },
+      "signals": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Signals",
+        "type": "array"
+      },
+      "substance": {
+        "default": "",
+        "title": "Substance",
+        "type": "string"
+      },
+      "through_origin": {
+        "default": false,
+        "title": "Through Origin",
+        "type": "boolean"
+      },
+      "unknown_signals": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Unknown Signals"
+      },
+      "x_label": {
+        "default": "Concentration",
+        "title": "X Label",
+        "type": "string"
+      },
+      "y_label": {
+        "default": "Signal",
+        "title": "Y Label",
+        "type": "string"
+      }
+    },
+    "required": [
+      "concentrations",
+      "signals"
+    ],
+    "title": "generate_calibration_curveArguments",
+    "type": "object"
+  },
+  "name": "generate_calibration_curve",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}

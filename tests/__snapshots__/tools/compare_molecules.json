@@ -1,0 +1,85 @@
+{
+  "description": "Compare 2-4 molecules side by side with their DIFFERENCES highlighted.\n\nComputes the maximum common substructure (MCS): the shared scaffold\nstays neutral, everything outside it is highlighted — ideal for\nteaching drug classes (\"what distinguishes ibuprofen from naproxen?\"),\nhomologous series or derivatives.\n\nUse this when the user wants to compare structures, see differences\nbetween compounds, or study a drug class.\n\nNot this tool for: a single structure (generate_molecule), or several\nstructures that are merely to be drawn rather than contrasted\n(batch_generate).\n\nArgs:\n    structures: 2-4 English/IUPAC names or SMILES strings.\n    labels: Optional display names under each panel (localizable).\n    title: Optional heading for the comparison (localizable).\n",
+  "inputSchema": {
+    "properties": {
+      "labels": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Labels"
+      },
+      "structures": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Structures",
+        "type": "array"
+      },
+      "title": {
+        "default": "",
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "required": [
+      "structures"
+    ],
+    "title": "compare_moleculesArguments",
+    "type": "object"
+  },
+  "name": "compare_molecules",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}

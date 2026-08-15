@@ -11,6 +11,14 @@
 #                 Dependency-Guard mit KLARER Meldung statt kryptischem Stacktrace.
 #   falsch-grün — Tests bestehen, ausgeliefert wird trotzdem etwas anderes.
 #                 Deshalb der UI-Bundle-Schritt (der Server liefert dist/, nicht src/).
+#
+# NICHT im Gate, aber es gibt es:  ./scripts/handshake.sh
+# Das ist der einzige ECHTE MCP-Handshake (initialize → tools/list) gegen den in
+# Claude Desktop registrierten Startbefehl. Alles hier läuft in-process und kann
+# deshalb weder den PATH-Fehler (blankes "uv" im minimalen GUI-PATH) noch den
+# Stale-Prozess-Fehler sehen. Es bleibt draußen, weil der erste npx-Lauf den
+# Inspector aus dem Netz holt — von Hand fahren nach Änderungen an server.py,
+# nach neuem/entferntem Tool, nach Dependency-Bumps und nach Neuinstallation.
 set -euo pipefail
 
 cd "$(dirname "$0")"

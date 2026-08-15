@@ -1,0 +1,289 @@
+{
+  "description": "Generate multiple molecule structure drawings at once.\n\nWrites image files (PNG and/or SVG, default both) per molecule — no\nChemDraw required. Failed names are skipped and reported in `failed`.\n\nUse this when the user wants several individual structures generated\nin one step (e.g. 'Draw Aspirin, Paracetamol and Ibuprofen').\n\nNot this tool for: ONE molecule — that is generate_molecule. Also not\nfor products of one reaction with yields (generate_scope_table) or for\ncontrasting structures (compare_molecules).\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'\nnot 'Coffein', 'Ascorbic acid' not 'Ascorbinsäure'. SMILES strings are\nalways safe.\n\nArgs:\n    molecules: List of English/IUPAC compound names or SMILES strings.\n    formats: Output file formats, any of \"png\", \"svg\", \"cdxml\"\n        (default: [\"png\", \"svg\"]). Include \"cdxml\" ONLY when the user\n        wants to edit the structures in ChemDraw.\n    abbreviate_groups: Set True to draw common substituents as short labels\n        (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.\n        Applies to every molecule in the batch, so a series of structures\n        stays visually consistent.\n    render_style: Named look applied to every molecule in the batch. Empty\n        = standard style. \"compact\" for small printed figures,\n        \"presentation\" for slides, \"grayscale\" for grayscale printing.\n",
+  "inputSchema": {
+    "properties": {
+      "abbreviate_groups": {
+        "default": false,
+        "title": "Abbreviate Groups",
+        "type": "boolean"
+      },
+      "annotate_stereo": {
+        "default": false,
+        "title": "Annotate Stereo",
+        "type": "boolean"
+      },
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "molecules": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Molecules",
+        "type": "array"
+      },
+      "render_style": {
+        "default": "",
+        "title": "Render Style",
+        "type": "string"
+      }
+    },
+    "required": [
+      "molecules"
+    ],
+    "title": "batch_generateArguments",
+    "type": "object"
+  },
+  "name": "batch_generate",
+  "outputSchema": {
+    "$defs": {
+      "AtomData": {
+        "properties": {
+          "charge": {
+            "default": 0,
+            "title": "Charge",
+            "type": "integer"
+          },
+          "el": {
+            "title": "El",
+            "type": "string"
+          },
+          "hCount": {
+            "default": 0,
+            "title": "Hcount",
+            "type": "integer"
+          },
+          "idx": {
+            "title": "Idx",
+            "type": "integer"
+          },
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "idx",
+          "el",
+          "x",
+          "y"
+        ],
+        "title": "AtomData",
+        "type": "object"
+      },
+      "FunctionalGroup": {
+        "properties": {
+          "atomIndices": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atomindices",
+            "type": "array"
+          },
+          "color": {
+            "default": "#999999",
+            "title": "Color",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "FunctionalGroup",
+        "type": "object"
+      },
+      "LipinskiData": {
+        "properties": {
+          "hba": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hba"
+          },
+          "hbd": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hbd"
+          },
+          "logP": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Logp"
+          },
+          "mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mw"
+          },
+          "passes": {
+            "default": false,
+            "title": "Passes",
+            "type": "boolean"
+          },
+          "violations": {
+            "default": 0,
+            "title": "Violations",
+            "type": "integer"
+          }
+        },
+        "title": "LipinskiData",
+        "type": "object"
+      },
+      "MoleculePayload": {
+        "properties": {
+          "atoms": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/AtomData"
+            },
+            "title": "Atoms",
+            "type": "array"
+          },
+          "cdxml_path": {
+            "default": "",
+            "title": "Cdxml Path",
+            "type": "string"
+          },
+          "files": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Files",
+            "type": "object"
+          },
+          "functionalGroups": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/FunctionalGroup"
+            },
+            "title": "Functionalgroups",
+            "type": "array"
+          },
+          "lipinski": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/LipinskiData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "properties": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Properties",
+            "type": "object"
+          },
+          "subtitle": {
+            "default": "",
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "svg": {
+            "default": "",
+            "title": "Svg",
+            "type": "string"
+          },
+          "type": {
+            "default": "molecule",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "MoleculePayload",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "cdxml_paths": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Cdxml Paths",
+        "type": "array"
+      },
+      "failed": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Failed",
+        "type": "array"
+      },
+      "molecules": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/MoleculePayload"
+        },
+        "title": "Molecules",
+        "type": "array"
+      },
+      "type": {
+        "default": "batch",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "title": "BatchPayload",
+    "type": "object"
+  }
+}

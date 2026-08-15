@@ -1,0 +1,182 @@
+{
+  "description": "Show a compound's data sheet as a panel: structure plus grouped facts.\n\nAggregates PubChem properties and GHS safety into one panel with the\ndrawn structure beside them, grouped by source. Use it when the request\nasks for a data sheet, an overview or \"all the data\" on a substance.\n\nNot this tool for: a bare compound name with no data asked for — that\nmeans show the substance, use generate_molecule. Nor for a single fact in\ntext form, or the topics this does not cover (physical constants,\nbiochem, pathways) — that is lookup.\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.\n\nArgs:\n    name: English/IUPAC compound name or SMILES (e.g. 'Aspirin').\n",
+  "inputSchema": {
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "lookup_molecule_dataArguments",
+    "type": "object"
+  },
+  "name": "lookup_molecule_data",
+  "outputSchema": {
+    "$defs": {
+      "AtomData": {
+        "properties": {
+          "charge": {
+            "default": 0,
+            "title": "Charge",
+            "type": "integer"
+          },
+          "el": {
+            "title": "El",
+            "type": "string"
+          },
+          "hCount": {
+            "default": 0,
+            "title": "Hcount",
+            "type": "integer"
+          },
+          "idx": {
+            "title": "Idx",
+            "type": "integer"
+          },
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "idx",
+          "el",
+          "x",
+          "y"
+        ],
+        "title": "AtomData",
+        "type": "object"
+      },
+      "DatabaseRow": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "val": {
+            "title": "Val",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "val"
+        ],
+        "title": "DatabaseRow",
+        "type": "object"
+      },
+      "DatabaseSource": {
+        "properties": {
+          "rows": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/DatabaseRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "source",
+          "url"
+        ],
+        "title": "DatabaseSource",
+        "type": "object"
+      },
+      "FunctionalGroup": {
+        "properties": {
+          "atomIndices": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atomindices",
+            "type": "array"
+          },
+          "color": {
+            "default": "#999999",
+            "title": "Color",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "FunctionalGroup",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "atoms": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AtomData"
+        },
+        "title": "Atoms",
+        "type": "array"
+      },
+      "functionalGroups": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/FunctionalGroup"
+        },
+        "title": "Functionalgroups",
+        "type": "array"
+      },
+      "molecule_svg": {
+        "default": "",
+        "title": "Molecule Svg",
+        "type": "string"
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "smiles": {
+        "default": "",
+        "title": "Smiles",
+        "type": "string"
+      },
+      "sources": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/DatabaseSource"
+        },
+        "title": "Sources",
+        "type": "array"
+      },
+      "type": {
+        "default": "database",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "title": "DatabasePayload",
+    "type": "object"
+  }
+}

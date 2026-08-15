@@ -1,0 +1,67 @@
+{
+  "description": "Generate a 3D conformer shown as an interactive, rotatable model.\n\nEmbeds the molecule in 3D (ETKDGv3 + force-field optimization, explicit\nhydrogens) and opens a drag-to-rotate ball-and-stick viewer in the chat\npanel. Also writes an SDF file for molecular modelling tools.\n\nUse this when the user asks about 3D structure, molecular geometry\n(tetrahedral, planar...), conformation or spatial arrangement.\n\nIMPORTANT: Pass English/IUPAC names or SMILES; use label for the\nlocalized display name.\n\nArgs:\n    name_or_smiles: English/IUPAC compound name or SMILES string.\n    label: Optional display name (localizable).\n",
+  "inputSchema": {
+    "properties": {
+      "label": {
+        "default": "",
+        "title": "Label",
+        "type": "string"
+      },
+      "name_or_smiles": {
+        "title": "Name Or Smiles",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name_or_smiles"
+    ],
+    "title": "generate_3dArguments",
+    "type": "object"
+  },
+  "name": "generate_3d",
+  "outputSchema": {
+    "description": "3D conformer for the interactive panel viewer (ball-and-stick).",
+    "properties": {
+      "atoms": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Atoms",
+        "type": "array"
+      },
+      "bonds": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Bonds",
+        "type": "array"
+      },
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "type": {
+        "default": "molecule3d",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "Molecule3DPayload",
+    "type": "object"
+  }
+}

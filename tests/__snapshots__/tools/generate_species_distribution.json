@@ -1,0 +1,85 @@
+{
+  "description": "Draw the species distribution of an acid over pH (Henderson-Hasselbalch).\n\nPlots the fraction α of every protonation species against pH with the\npKa values marked — the standard diagram for absorption/distribution\nreasoning in pharmacy.\n\nUse this when the user asks which species dominates at a given pH, about\ndegree of ionization, or absorption across membranes. YOU supply pKa\nvalues from your knowledge; pass species labels (formulas like \"H₂PO₄⁻\")\nfor a readable legend.\n\nNot this tool for: the pH of a solution or a buffer as a number — that\nis calculate_ph. This one draws the fractions across the whole pH range;\nit answers \"which species when\", not \"what pH do I have\".\n\nArgs:\n    substance: Display name, e.g. \"Phosphoric acid\" (localizable).\n    pka_values: pKa per protolysis step, ascending.\n    labels: Optional species labels, most protonated first\n        (len = len(pka_values) + 1).\n",
+  "inputSchema": {
+    "properties": {
+      "labels": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Labels"
+      },
+      "pka_values": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Pka Values",
+        "type": "array"
+      },
+      "substance": {
+        "title": "Substance",
+        "type": "string"
+      }
+    },
+    "required": [
+      "substance",
+      "pka_values"
+    ],
+    "title": "generate_species_distributionArguments",
+    "type": "object"
+  },
+  "name": "generate_species_distribution",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}

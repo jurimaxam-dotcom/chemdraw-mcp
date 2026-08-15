@@ -1,0 +1,193 @@
+{
+  "description": "Draw a TLC plate sketch from Rf values as print-ready PNG/SVG files.\n\nUse this whenever the user reports a thin-layer chromatography result\n(\"TLC of my esterification: educt at 0.3, product at 0.65, the co-spot\nshows both\") or asks for the plate sketch a lab report requires. The\ntool draws exactly the Rf values it is given — it predicts nothing.\n\nThe plate is read from the bottom: start line at Rf 0, solvent front at\nRf 1, so a spot at Rf 0.8 sits near the top. One lane = one application\npoint with its own caption; a lane can carry several spots, so a co-spot\nlane showing educt AND product is simply two spots on one lane. Every\nspot is annotated with its Rf value so the sketch can be read off.\n\nArgs:\n    lanes: The lanes from left to right, e.g.\n        [{\"name\": \"Edukt\", \"spots\": [{\"rf\": 0.30, \"label\": \"Säure\"}]},\n         {\"name\": \"Reaktion\", \"spots\": [{\"rf\": 0.65, \"label\": \"Ester\"}]},\n         {\"name\": \"Co-Spot\", \"spots\": [{\"rf\": 0.30}, {\"rf\": 0.65}]}]\n        rf must lie between 0 and 1 — it is a ratio (distance travelled\n        by the substance / distance travelled by the front), so values\n        outside that range are rejected instead of silently clipped.\n        label (optional) names the substance at that spot; intensity\n        (optional, 0…1, default 1) draws a faint spot fainter.\n    title: Shown in the plot title and used for the filename, e.g.\n        \"Veresterung Ansatz 2\" (free text, can be localized).\n    solvent: Mobile phase / eluent as it goes into the report, e.g.\n        \"Toluol/Ethylacetat 8:2\" — printed as a caption on the sketch.\n    detection: How the spots were visualized, e.g. \"UV 254 nm\", \"Iod\",\n        \"Ninhydrin\" — printed next to the mobile phase.\n    formats: Output file formats, any of \"png\", \"svg\" (default: both).\n        CDXML is not available for plates.\n",
+  "inputSchema": {
+    "$defs": {
+      "TlcLane": {
+        "description": "One application point on the plate, e.g. \"Edukt\" or \"Co-Spot\".",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "spots": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/TlcSpot"
+            },
+            "title": "Spots",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "TlcLane",
+        "type": "object"
+      },
+      "TlcSpot": {
+        "description": "One spot on a TLC lane. rf is the ratio substance/front (0…1).",
+        "properties": {
+          "intensity": {
+            "default": 1.0,
+            "title": "Intensity",
+            "type": "number"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "rf": {
+            "title": "Rf",
+            "type": "number"
+          }
+        },
+        "required": [
+          "rf"
+        ],
+        "title": "TlcSpot",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "detection": {
+        "default": "",
+        "title": "Detection",
+        "type": "string"
+      },
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "lanes": {
+        "items": {
+          "$ref": "#/$defs/TlcLane"
+        },
+        "title": "Lanes",
+        "type": "array"
+      },
+      "solvent": {
+        "default": "",
+        "title": "Solvent",
+        "type": "string"
+      },
+      "title": {
+        "default": "",
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "required": [
+      "lanes"
+    ],
+    "title": "generate_tlcArguments",
+    "type": "object"
+  },
+  "name": "generate_tlc",
+  "outputSchema": {
+    "$defs": {
+      "TlcLane": {
+        "description": "One application point on the plate, e.g. \"Edukt\" or \"Co-Spot\".",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "spots": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/TlcSpot"
+            },
+            "title": "Spots",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "TlcLane",
+        "type": "object"
+      },
+      "TlcSpot": {
+        "description": "One spot on a TLC lane. rf is the ratio substance/front (0…1).",
+        "properties": {
+          "intensity": {
+            "default": 1.0,
+            "title": "Intensity",
+            "type": "number"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "rf": {
+            "title": "Rf",
+            "type": "number"
+          }
+        },
+        "required": [
+          "rf"
+        ],
+        "title": "TlcSpot",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "detection": {
+        "default": "",
+        "title": "Detection",
+        "type": "string"
+      },
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "lanes": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/TlcLane"
+        },
+        "title": "Lanes",
+        "type": "array"
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "solvent": {
+        "default": "",
+        "title": "Solvent",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "tlc",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "title": "TlcPayload",
+    "type": "object"
+  }
+}

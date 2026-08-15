@@ -1,0 +1,42 @@
+{
+  "description": "Fetch a specific fact or value about a compound as plain text.\n\nUse it when the request asks for a named piece of data — pick the `topic`:\n\n- \"properties\" (default): formula, molecular weight, CAS number,\n  IUPAC name, LogP, InChIKey (PubChem).\n- \"safety\": GHS hazards — H/P statements, pictograms, signal word.\n  For lab protocols and risk assessments.\n- \"physical\": experimental melting point, boiling point, density,\n  solubility.\n- \"biochem\": compound class and biological role (ChEBI), related\n  enzymes and proteins (UniProt).\n- \"pathway\": metabolic pathways the compound appears in (KEGG).\n\nNot this tool for: a bare compound name with no named value asked for —\nthat means show the substance, use generate_molecule. Nor for a visual\ndata sheet with the structure beside the facts — use lookup_molecule_data.\nThis tool draws nothing; it returns text.\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.\n\nArgs:\n    name: English/IUPAC compound name (e.g. 'Aspirin', 'Histidine').\n    topic: Which facts to fetch — see the list above.\n",
+  "inputSchema": {
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "topic": {
+        "default": "properties",
+        "enum": [
+          "properties",
+          "safety",
+          "physical",
+          "biochem",
+          "pathway"
+        ],
+        "title": "Topic",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "lookupArguments",
+    "type": "object"
+  },
+  "name": "lookup",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "lookupOutput",
+    "type": "object"
+  }
+}
