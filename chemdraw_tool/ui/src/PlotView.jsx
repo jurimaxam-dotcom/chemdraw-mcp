@@ -39,6 +39,21 @@ export default function PlotView({ data }) {
         dangerouslySetInnerHTML={{ __html: data.svg }}
       />
       <style>{`.plot-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
+      {data.notes?.length > 0 && (
+        <ul
+          style={{
+            fontSize: 11,
+            color: "var(--fg-muted)",
+            margin: "8px 0 0",
+            paddingLeft: 18,
+            lineHeight: 1.45,
+          }}
+        >
+          {data.notes.map((note, i) => (
+            <li key={i}>{note}</li>
+          ))}
+        </ul>
+      )}
       {data.files?.png && (
         <div
           style={{

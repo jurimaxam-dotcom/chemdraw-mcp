@@ -221,6 +221,10 @@ class PlotPayload(BaseModel):
     subtitle: str = ""
     svg: str = ""
     files: dict[str, str] = {}
+    # Zahlen und Warnungen, die zum Diagramm gehören und nicht in den Untertitel
+    # passen — etwa die zurückgerechneten Proben einer Kalibriergeraden. Leer
+    # bei allen älteren Plots, deshalb rückwärtskompatibel.
+    notes: list[str] = []
 
 
 class Molecule3DPayload(BaseModel):

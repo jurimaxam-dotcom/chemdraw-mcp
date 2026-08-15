@@ -808,6 +808,11 @@ def generate_titration_curve(
     concentrations (0.1 M is the classic teaching case) and the indicator's
     transition range.
 
+    Not this tool for: a pH VALUE as a number — that is calculate_ph, which
+    solves the same charge balance and shows the working. This one only
+    draws. Nor for the content from a real titration series
+    (calculate_content).
+
     Args:
         substance: Display name, e.g. "Acetic acid with NaOH" (localizable).
         pka_values: pKa per protolysis step, ascending (1-3 values).
@@ -845,6 +850,112 @@ def generate_titration_curve(
 
 
 @mcp.tool(structured_output=True, meta=_UI_META)
+def generate_calibration_curve(
+    concentrations: list[float],
+    signals: list[float],
+    unknown_signals: list[float] | None = None,
+    substance: str = "",
+    x_label: str = "Concentration",
+    y_label: str = "Signal",
+    through_origin: bool = False,
+) -> PlotPayload:
+    """Draw a calibration line and read unknown samples off it.
+
+    Least-squares fit through the standards, with the equation, R² and the
+    residuals — and, if `unknown_signals` are given, the concentration behind
+    each measured signal, marked on the plot the way you would read it off
+    with a ruler.
+
+    Reading unknowns back is the point of a calibration; slope and R² alone
+    answer no question anyone actually asks. A sample outside the calibrated
+    range is labelled as extrapolated rather than quietly reported — the line
+    was never verified there.
+
+    Also reports the limit of detection and quantitation (DIN 32645, from the
+    residual scatter), which is what a validation question asks for.
+
+    Not this tool for: content from a monograph method with a known
+    A(1%,1cm) or titration factor — that is calculate_content, which needs no
+    calibration series. Use this one when YOU measured a series of standards.
+
+    Args:
+        concentrations: The standards, in whatever unit you report in.
+        signals: Measured signal per standard — absorbance, peak area,
+            same length and order as concentrations.
+        unknown_signals: Signals of samples to read back off the line.
+        substance: Display name for the title (localizable).
+        x_label: Axis label for the concentration, with its unit.
+        y_label: Axis label for the signal.
+        through_origin: Force the line through zero. Only when the method is
+            known to have no blank — otherwise it hides a systematic error.
+    """
+    from chemdraw_tool import calibration, calibration_plot
+
+    if not concentrations or not signals:
+        raise ValueError(
+            "A calibration needs the standards and their signals — "
+            "concentrations and signals must both be filled."
+        )
+
+    reg = calibration.linear_regression(concentrations, signals, through_origin)
+
+    unknowns = [calibration.interpolate(s, reg) for s in (unknown_signals or [])]
+    limits = calibration.detection_limits(reg)
+
+    notes: list[str] = []
+    for u in unknowns:
+        line = (
+            f"Signal {u['signal']:.6g} → **{u['concentration']:.6g}** "
+            f"({u['formula']}: {u['substitution']})"
+        )
+        if u["extrapolated"]:
+            line += "  ⚠ outside the calibrated range"
+        notes.append(line)
+    for u in unknowns:
+        notes.extend(u["notes"])
+
+    if reg["r_squared"] < 0.99 and not unknowns:
+        notes.append(
+            f"R² = {reg['r_squared']:.5f}. Below about 0.99 the linearity is "
+            "usually considered insufficient for a quantitative method — check "
+            "the standards before reading samples off this line."
+        )
+    if limits["lod"]:
+        notes.append(
+            f"Limit of detection ≈ {limits['lod']:.4g}, limit of quantitation "
+            f"≈ {limits['loq']:.4g} ({limits['formula']})."
+        )
+    notes.extend(limits["notes"])
+
+    title = f"Calibration curve: {substance}" if substance else "Calibration curve"
+    kwargs = {
+        "regression": reg,
+        "unknowns": unknowns,
+        "title": substance,
+        "x_label": x_label,
+        "y_label": y_label,
+    }
+    artifacts = {
+        "png": calibration_plot.render_png(**kwargs),
+        "svg": calibration_plot.render_svg(**kwargs),
+    }
+    files = write_files(
+        PLOT_DIR / _slugify(substance or "calibration curve"), artifacts
+    )
+
+    return PlotPayload(
+        name=title,
+        subtitle=(
+            f"{reg['equation']} · R² = {reg['r_squared']:.5f} · "
+            f"n = {reg['n']} standards"
+        ),
+        svg=artifacts["svg"],
+        files=files,
+        notes=notes,
+    )
+
+
+@mcp.tool(structured_output=True, meta=_UI_META)
 def generate_species_distribution(
     substance: str,
     pka_values: list[float],
@@ -860,6 +971,10 @@ def generate_species_distribution(
     degree of ionization, or absorption across membranes. YOU supply pKa
     values from your knowledge; pass species labels (formulas like "H₂PO₄⁻")
     for a readable legend.
+
+    Not this tool for: the pH of a solution or a buffer as a number — that
+    is calculate_ph. This one draws the fractions across the whole pH range;
+    it answers "which species when", not "what pH do I have".
 
     Args:
         substance: Display name, e.g. "Phosphoric acid" (localizable).
@@ -1296,8 +1411,11 @@ def calculate_content(
     happens here.
 
     Not this tool for: preparing a solution or diluting it (that is
-    calculate_solution), or drawing the titration curve (that is
-    generate_titration_curve — this one computes, that one draws).
+    calculate_solution), drawing the titration curve (that is
+    generate_titration_curve — this one computes, that one draws), or
+    quantifying against a measured series of standards (that is
+    generate_calibration_curve; this one uses the monograph's factor or
+    A(1%,1cm) and needs no calibration).
 
     Args:
         method: "titration" or "photometry".
