@@ -6,10 +6,53 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-The tool set becomes four areas with drawn boundaries. The trigger was a real
-misfire: "draw aspirin" was answered with `generate_scope_table`, a substrate
-grid holding a single cell. The model picks a tool from its name and
-description alone, so 22 tools with fuzzy edges are a precision problem.
+The tool set becomes five areas with drawn boundaries, and gains the maths a
+lab report actually asks for. The trigger was a real misfire: "draw aspirin"
+was answered with `generate_scope_table`, a substrate grid holding a single
+cell. The model picks a tool from its name and description alone, so 22 tools
+with fuzzy edges are a precision problem.
+
+### Added — bench maths
+
+Every calculation returns the working, not just the number: formula, numbers
+substituted, result. That is what the lab report wants, and what makes the
+answer checkable.
+
+- **`calculate_solution`** — what to weigh in, what you actually got,
+  dilutions, the mixing cross, and molar masses. Handles hydrates
+  (`CuSO₄·5H₂O`), which RDKit cannot parse, via the new `molmass` dependency
+  (BSD-3, no dependencies of its own). Denies the impossible instead of
+  computing it: diluting cannot make a solution stronger, and a mixing target
+  outside its components has no solution. Warns when the portion falls below
+  the resolution of an analytical balance.
+- **`calculate_content`** — the content determination in the order the
+  protocol prescribes: content per measurement → Grubbs outlier test → mean
+  and spread → t-test against the declared content. Titration (with titer
+  determination from reference titrations) and photometry; the fat
+  characteristics (acid, saponification, ester, iodine value) and Karl
+  Fischer water content are further methods rather than four more tools.
+  A flagged outlier is reported, never silently dropped from the mean.
+- **`calculate_ph`** — weak and strong acids and bases, buffers, buffer
+  recipes down to weighable masses. Solved through the same exact charge
+  balance that draws the titration curve, with the textbook approximation
+  printed beside it; where the two disagree, the approximation has lost its
+  assumptions and the output says so. 10⁻⁸ M HCl gives pH 6.98, not 8.
+
+### Added — figures and spectra
+
+- **`generate_calibration_curve`** — the least-squares line through your
+  standards, with unknown samples read back off it and marked on the plot.
+  Extrapolation beyond the calibrated range is labelled, not hidden; limits
+  of detection and quantitation follow DIN 32645.
+- **`predict_spectrum`** — expected IR bands for a structure (curated table
+  matched by SMARTS), the possible assignments of a measured wavenumber, and
+  the number of ¹H signals with their integral ratio. Deliberately
+  deterministic, and it names its own limits: no ppm shifts, and
+  diastereotopic protons counted as one signal.
+- **`grubbs_test`** in `calculator/stats.py` — the outlier step the protocol
+  form demands and the statistics module was missing.
+- `PlotPayload` gained an optional `notes` list, rendered by the panel, for
+  numbers that belong to a figure but not in its subtitle.
 
 ### Changed
 
@@ -26,6 +69,13 @@ description alone, so 22 tools with fuzzy edges are a precision problem.
 - **`save_png` is declared internal.** It is the server half of the panel's
   export button and stays registered so the UI can call it, but the model is
   told never to invoke it — saving a picture is the user's click.
+- **Boundaries are drawn in both directions.** The tool that fails to exclude
+  a case is the one that wins it, so `generate_titration_curve` and
+  `generate_species_distribution` now point at `calculate_ph` as explicitly as
+  it points back at them.
+- **User-facing text of the `calculator/` package is English**, matching the
+  rest of the tools now that a tool exposes it. Calculations and German code
+  comments unchanged.
 
 ### Removed
 
@@ -40,7 +90,10 @@ description alone, so 22 tools with fuzzy edges are a precision problem.
   tool belongs to exactly one area, a new one has to be entered here, and the
   count stays reviewable.
 - **`tests/conftest.py`** — guards the real `~/ChemDraw-Output` against tests
-  whose path redirect points nowhere.
+  whose path redirect points nowhere. It is what makes a future split of
+  `server.py` into per-area modules safe: 64 test patches target
+  `chemdraw_tool.server.*`, and a silent miss would write into the user's
+  own output folder.
 
 ## [0.3.0] — 2026-08-15
 

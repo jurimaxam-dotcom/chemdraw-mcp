@@ -58,7 +58,7 @@ regenerated to make a diff disappear**:
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
 
-## The four tool areas (where a new tool goes)
+## The five tool areas (where a new tool goes)
 
 The model picks a tool from its name and description alone, so a fuzzy boundary
 is a precision bug, not cosmetics — "draw aspirin" once landed in
@@ -68,8 +68,9 @@ a tested promise in `tests/test_server_taxonomy.py`:
 | Area | Tools | What belongs here |
 |---|---|---|
 | Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d | structures and reactions |
-| Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution | measured data as a diagram |
-| Look up | lookup · lookup_molecule_data | database queries |
+| Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution · generate_calibration_curve | measured data as a diagram |
+| Look up | lookup · lookup_molecule_data · predict_spectrum | facts about a substance, from a database or derived from its structure |
+| Calculate | calculate_solution · calculate_content · calculate_ph | a number **and** the working behind it |
 | Anki | export_anki_deck | flashcard decks |
 
 Outside the areas sits exactly one tool: `save_png`, the server half of the
@@ -81,11 +82,20 @@ never calls it on its own — saving a picture is the user's click.
 The test fails on an unlisted tool by design. Two more rules keep the set
 selectable: any tool confusable with an existing one must carry a
 `Not this tool for: … — use X` line naming the alternative (also test-enforced),
-and the set stays at 16 or fewer without a deliberate decision.
+and the count has a ceiling that is only ever raised deliberately, with the
+reason written into the test (16 → 18 for the calculating area, → 19 for the
+calibration curve, → 20 for the spectrum prediction).
 
-Prefer a parameter over a new tool when the output is the same kind of thing —
-that is why the five text lookups are one `lookup` with a `topic` literal, and
-the curated decks are a `curated_deck_id` parameter.
+**Delimit in both directions.** The tool that fails to exclude a case is the
+one that wins it. `generate_titration_curve` therefore points at
+`calculate_ph` just as much as the other way round — a one-sided fence
+reproduces the aspirin misfire with new names.
+
+Prefer a parameter over a new tool when the output is the same kind of thing.
+That is why the five text lookups are one `lookup` with a `topic` literal, the
+curated decks are a `curated_deck_id` parameter, and the fat characteristics
+(acid/saponification/iodine value, Karl Fischer) are `method` values of
+`calculate_content` rather than four more tools.
 
 ## Architecture
 
@@ -115,9 +125,17 @@ chemdraw_tool/
 ├── anki_export.py         — .apkg decks with rendered images
 ├── curated_decks.py       — bundled starter decks
 ├── validator.py           — input validation + CDXML round-trip validation
-├── calculator/            — Ph.Eur. content-determination math (pure functions;
-│                            no tool exposes it right now — kept because the
-│                            math is tested and re-wiring it is cheap)
+├── solution.py            — weighing, dilution, mixing cross, molar mass
+│                            (molmass — it parses hydrates, RDKit cannot)
+├── ph_calc.py             — pH/buffer numbers; shares `ph_plots.exact_ph`
+│                            with the curve, so figure and number agree
+├── calibration.py         — least squares, read-back, LOD/LOQ (DIN 32645)
+├── calibration_plot.py    — the calibration figure (reuses ph_plots helpers)
+├── spectro.py             — expected IR bands (curated table × SMARTS) and
+│                            ¹H signal counts; no ppm shifts on purpose
+├── calculator/            — Ph.Eur. content determination + fat characteristics
+│                            (titration, photometry, stats incl. Grubbs,
+│                            fat_values); pure functions behind calculate_content
 ├── payloads.py            — Pydantic models for MCP structured output;
 │                            each `type` needs a matching case in App.jsx
 ├── png_writer.py          — client-rendered PNG → file
@@ -160,5 +178,8 @@ nowhere fails loudly instead of quietly writing into the user's folder.
 - User-facing text (tools, docstrings, README, doctor output) is English;
   code comments and commits are German
 - Dependencies: rdkit, lxml, requests, mcp, Pillow, matplotlib, py2opsin,
-  genanki (OPSIN needs a JRE at runtime; without one the resolver degrades to
-  PubChem/NCI — never make Java a hard requirement)
+  genanki, molmass (OPSIN needs a JRE at runtime; without one the resolver
+  degrades to PubChem/NCI — never make Java a hard requirement). Weigh every
+  new dependency against what it drags in: `molmass` earned its place with
+  zero required dependencies of its own, while `chempy`, `pint` and `mendeleev`
+  were rejected for pulling in scipy/pandas/sympy-sized trees.

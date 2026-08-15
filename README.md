@@ -13,7 +13,7 @@ interactive preview inside the chat. *"Draw aspirin"* is already a complete
 command.
 
 Built for pharmacy and chemistry students who spend too much time clicking
-hexagons. 15 tools cover the figures a report or a slide actually needs:
+hexagons. 20 tools cover what a report or a slide actually needs:
 structures, reaction schemes, step-by-step mechanisms, substrate-scope
 figures, TLC plates, titration curves, schematic spectra, substance data
 sheets, Ph.Eur. assay calculations and Anki decks.
@@ -94,7 +94,7 @@ cards land straight in the running Anki, no clicks:
 
 ## Features
 
-All 15 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+All 20 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
 **Structures and schemes**
@@ -131,6 +131,30 @@ every drawing tool also returns a live preview for the in-chat panel.
   indicator transition band
 - **`generate_species_distribution`** — protonation species fractions
   over pH (Henderson–Hasselbalch) with pKa crossovers marked
+- **`generate_calibration_curve`** — least-squares line through your
+  standards, and the unknowns read back off it the way you would with a
+  ruler. A sample outside the calibrated range is labelled as extrapolated
+  rather than quietly reported; limits of detection and quantitation
+  (DIN 32645) come along for the validation question
+
+**Bench maths** (the number *and* the working — a lab report asks for both)
+
+- **`calculate_solution`** — what to weigh (`m = c · V · M`), what you
+  actually got, dilutions (C₁V₁ = C₂V₂ with the solvent volume spelled out),
+  the mixing cross, and molar masses including hydrates like `CuSO₄·5H₂O`.
+  Warns when the calculated portion falls below what an analytical balance
+  resolves — then diluting a larger portion is the right move
+- **`calculate_content`** — a content determination the way the protocol
+  wants it: one content per measurement → Grubbs outlier test → mean, s, RSD
+  → t-test against the declared content. Titration (with titer determination
+  from reference titrations) and photometry, plus the fat characteristics
+  (acid, saponification, ester and iodine value) and Karl Fischer water
+  content as further `method`s
+- **`calculate_ph`** — weak and strong acids and bases, buffers, and buffer
+  recipes down to weighable masses. Solved through the exact charge balance
+  with the textbook approximation printed beside it: where the two disagree,
+  the approximation has lost its assumptions and says so. 10⁻⁸ M HCl comes
+  out at pH 6.98, not 8
 
 **Substance data** (online lookups)
 
@@ -141,6 +165,11 @@ every drawing tool also returns a live preview for the in-chat panel.
   UniProt entries), `pathway` (metabolic pathways from KEGG)
 - **`lookup_molecule_data`** — PubChem + GHS combined into one data sheet
   for the in-chat panel, structure included
+- **`predict_spectrum`** — which IR bands a structure should show (with
+  intensity and band shape), what a measured wavenumber could belong to, and
+  how many ¹H signals to expect with their integral ratio. Deterministic, so
+  it says what it cannot do: no chemical shifts in ppm, and diastereotopic
+  protons are counted as one signal
 
 **Exam prep**
 
@@ -154,15 +183,16 @@ every drawing tool also returns a live preview for the in-chat panel.
   for a small, formula-verified starter deck (classic analgesics, Ph.Eur.
   identity reactions)
 
-Every tool belongs to one of four areas — draw, lab graphics, look up,
-Anki — and each says what it is *not* for, so "draw aspirin" cannot end up
-in a substrate-scope grid. One tool sits outside them: `save_png` is the
+Every tool belongs to one of five areas — draw, lab graphics, look up,
+calculate, Anki — and each says what it is *not* for, in both directions, so
+"draw aspirin" cannot end up in a substrate-scope grid and "what pH is my
+buffer?" cannot end up in a plotting tool. One tool sits outside them: `save_png` is the
 server half of the panel's export button, called when you click it, never
 on its own.
 
 Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
 when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
-15 tools above.
+20 tools above.
 
 ### Options on the drawing tools
 
