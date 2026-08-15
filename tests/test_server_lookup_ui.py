@@ -150,3 +150,73 @@ def test_no_ghs_when_no_cid_in_props(
     assert len(result.sources) == 1
     assert result.sources[0].type == "PubChem"
     mock_safety.assert_not_called()
+
+
+# --- Umschalter Struktur <-> Daten (15.08.2026) ------------------------------
+#
+# Das Datenblatt-Panel zeichnet die Struktur laengst; ihm fehlten nur die
+# Atomkoordinaten, damit derselbe Hover wie im Molekuel-Panel funktioniert.
+# Die Daten kommen aus dem Mol-Objekt, das hier ohnehin schon vorliegt —
+# kein zusaetzlicher Netzabruf, keine zweite Aufloesung des Namens.
+
+
+@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_synonyms")
+@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.resolve")
+def test_payload_carries_atoms_for_the_hover(
+    mock_resolve, mock_props, mock_synonyms, mock_safety
+):
+    """Ohne Atomliste zeigt das Datenblatt-Panel keinen Tooltip."""
+    mol = _make_mol("CC(=O)Oc1ccccc1C(=O)O")
+    mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
+    mock_props.return_value = {}
+    mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
+    mock_safety.return_value = []
+
+    result = lookup_molecule_data("Aspirin")
+
+    # Aspirin ohne Wasserstoffe: 13 Schweratome.
+    assert len(result.atoms) == 13, "Atomliste fehlt oder ist unvollstaendig"
+    assert {a.el for a in result.atoms} == {"C", "O"}
+    assert any(a.hCount > 0 for a in result.atoms)
+
+
+@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_synonyms")
+@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.resolve")
+def test_payload_carries_functional_groups(
+    mock_resolve, mock_props, mock_synonyms, mock_safety
+):
+    """Gruppen-Highlights teilen sich die Komponente mit dem Molekuel-Panel."""
+    mol = _make_mol("CC(=O)Oc1ccccc1C(=O)O")
+    mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
+    mock_props.return_value = {}
+    mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
+    mock_safety.return_value = []
+
+    result = lookup_molecule_data("Aspirin")
+
+    names = {g.name for g in result.functionalGroups}
+    assert "Ester" in names and "Aromat" in names, f"Gruppen fehlen: {names}"
+
+
+@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_synonyms")
+@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.resolve")
+def test_payload_names_its_compound(
+    mock_resolve, mock_props, mock_synonyms, mock_safety
+):
+    """Der Umschalter zurueck zur Struktur braucht Namen und SMILES."""
+    mol = _make_mol("CC(=O)Oc1ccccc1C(=O)O")
+    mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
+    mock_props.return_value = {}
+    mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
+    mock_safety.return_value = []
+
+    result = lookup_molecule_data("Aspirin")
+
+    assert result.name == "Aspirin"
+    assert result.smiles == "CC(=O)Oc1ccccc1C(=O)O"

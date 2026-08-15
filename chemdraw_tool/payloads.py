@@ -150,6 +150,14 @@ class DatabasePayload(BaseModel):
     type: str = "database"
     molecule_svg: str = ""
     sources: list[DatabaseSource] = []
+    # Dieselben Strukturdaten wie im MoleculePayload — damit das Panel zwischen
+    # Datenblatt und Struktur umschalten kann, ohne dafuer nachzuladen. RDKit
+    # rechnet beides lokal in Millisekunden; teuer ist nur das Netz, und das
+    # steckt in `sources`, die ohnehin schon geholt wurden.
+    atoms: list[AtomData] = []
+    functionalGroups: list[FunctionalGroup] = []
+    name: str = ""
+    smiles: str = ""
 
 
 class MechanismStepPayload(BaseModel):

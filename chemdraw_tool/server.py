@@ -2144,12 +2144,22 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
     Args:
         name: English/IUPAC compound name or SMILES (e.g. 'Aspirin').
     """
-    from chemdraw_tool.svg_renderer import render_svg
+    from chemdraw_tool.svg_renderer import (
+        extract_atom_data,
+        extract_functional_groups,
+        render_svg,
+    )
 
     # Resolve & render SVG (thumbnail size for DatabaseView sidebar)
-    _, mol = resolve(name)
+    smiles, mol = resolve(name)
     mol = generate_2d(mol)
     svg = render_svg(mol, width=150, height=120, fill_container=True)
+
+    # Struktur-Daten fuer den Umschalter im Panel: dieselbe Atomliste und
+    # dieselben Gruppen wie im Molekuel-Panel, aus demselben Mol-Objekt. Das
+    # kostet kein Netz — teuer sind nur die Quellen weiter unten.
+    atoms = extract_atom_data(mol)
+    groups = [FunctionalGroup(**g) for g in extract_functional_groups(mol)]
 
     sources: list[DatabaseSource] = []
 
@@ -2218,6 +2228,10 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
         type="database",
         molecule_svg=svg,
         sources=sources,
+        atoms=atoms,
+        functionalGroups=groups,
+        name=name,
+        smiles=smiles,
     )
 
 
