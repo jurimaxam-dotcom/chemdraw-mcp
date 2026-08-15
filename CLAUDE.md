@@ -203,6 +203,25 @@ registration, payload types are compared against App.jsx cases in both
 directions, the gate checks bundle freshness). Removing one walks the same
 chain backwards — and the bundle rebuild is just as mandatory.
 
+**The panel switches between structure and data sheet**, so which of the two
+tools the model picked matters less. The two directions cost different things
+and are therefore built differently:
+
+- **→ structure is always local.** `MoleculePayload` and `DatabasePayload`
+  both carry `atoms` and `functionalGroups` (same types on purpose — both
+  views feed the same `StructureCanvas`). RDKit computes them from the mol
+  object that is already in hand; no network, no spinner.
+- **→ data is fetched on click**, once, then cached, via
+  `app.callServerTool({name: "lookup_molecule_data", …})` — the same bridge
+  `ExportPngButton` uses. Only successes are cached, so a failure stays
+  retryable, and a user who switches back mid-flight keeps their view (a
+  `wanted` ref decides, not the arriving response).
+
+A component test for an async panel path is worthless outside `act()`: the
+follow-up render never flushes and the test passes while the bug is live.
+`src/__tests__/harness.mjs` wraps clicks; resolving a deferred promise must be
+wrapped too.
+
 Test output paths are redirected with `monkeypatch.setattr` against
 `chemdraw_tool.server.<DIR>`. `tests/conftest.py` compares the real
 `~/ChemDraw-Output` before and after the suite, so a redirect that points

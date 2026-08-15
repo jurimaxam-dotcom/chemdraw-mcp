@@ -20,9 +20,14 @@ hilft nur eine erklärte Default-Regel.
 
 - [x] `DatabasePayload`: `atoms`, `functionalGroups`, `name`, `smiles` (d06a2f6)
 - [x] `lookup_molecule_data` füllt die Felder aus dem vorhandenen Mol (d06a2f6)
-- [ ] `StructureCanvas` aus `MoleculeView` herauslösen (Hover + Highlights)
-- [ ] Segment-Control in beiden Views; „Daten" lädt per `callServerTool` nach
-- [ ] Bundle neu bauen, Frische-Test grün
+- [x] `StructureCanvas` aus `MoleculeView` herauslösen (af9a656) — plus
+      `SourceList`, damit das Datenblatt nicht doppelt existiert
+- [x] Segment-Control in beiden Views (af9a656); „Struktur" lokal, „Daten"
+      per `callServerTool`, einmal geholt und gecacht
+- [x] Bundle neu gebaut, Frische-Test grün
+- [x] Nacharbeit (9f9d898): Reiter auf Englisch (Projektkonvention), und der
+      Rückwechsel während des Ladens gewinnt gegen die eintreffende Antwort.
+      Der Test dafür war erst grün — das Auflösen lief außerhalb von `act()`.
 
 ## Welle 3 — Beweise
 
@@ -43,6 +48,12 @@ hilft nur eine erklärte Default-Regel.
   wäre inhaltlich richtig, ist aber ein Breaking Change gegen die auf PyPI
   liegende 0.3.0 und bräuchte eine Alias-Schicht.
 
-## Gate
+## Gate — abgeschlossen 15.08.2026
 
-`./test.sh` grün, Bundle frisch, Handshake bestätigt 20 Tools / 14 Panels.
+```
+./test.sh              → 948 passed, 16 skipped · Bundle frisch · Exit 0
+./scripts/handshake.sh → 20 Tools, 14 mit Panel (nach Desktop-Neustart)
+```
+
+Claude Desktop wurde nach den Server-Änderungen neu gestartet; der Handshake
+gegen den registrierten absoluten Command ist der Beweis, nicht die Annahme.
