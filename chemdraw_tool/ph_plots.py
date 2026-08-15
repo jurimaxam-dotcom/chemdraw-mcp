@@ -57,11 +57,14 @@ class TitrationCurve:
     eq_volumes_ml: list[float]
 
 
-def _charge_balance_ph(
-    pka_values: Sequence[float], c_acid: float, c_na: float
-) -> float:
+def exact_ph(pka_values: Sequence[float], c_acid: float, c_na: float) -> float:
     """pH aus der Ladungsbilanz [Na+] + [H+] = [OH-] + Σ k·α_k·C_A,
-    gelöst per Bisektion (f ist in pH streng monoton)."""
+    gelöst per Bisektion (f ist in pH streng monoton).
+
+    Öffentlich, weil `ph_calc` dieselbe Bilanz braucht: Die gezeichnete Kurve
+    und die gerechnete Zahl müssen aus einer Quelle kommen, sonst widersprechen
+    sich Bild und Text im selben Protokoll.
+    """
 
     def f(ph: float) -> float:
         h = 10.0 ** (-ph)
@@ -96,7 +99,7 @@ def titration_curve(
     for v_b in volumes:
         total = v_acid_ml + v_b
         phs.append(
-            _charge_balance_ph(
+            exact_ph(
                 pka_values,
                 c_acid=c_acid * v_acid_ml / total,
                 c_na=c_titrant * v_b / total,

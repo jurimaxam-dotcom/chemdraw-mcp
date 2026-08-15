@@ -89,6 +89,11 @@ SolutionTopic = Literal[
 # Bestimmungsmethoden von `calculate_content`.
 ContentMethod = Literal["titration", "photometry"]
 
+# Die Fälle von `calculate_ph`.
+PhTopic = Literal[
+    "weak_acid", "weak_base", "strong_acid", "strong_base", "buffer", "buffer_recipe"
+]
+
 
 def _normalize_formats(formats: list[str] | None) -> list[str]:
     fmts = [f.lower().strip() for f in (formats or DEFAULT_FORMATS)]
@@ -1350,6 +1355,196 @@ def calculate_content(
         )
 
     return "\n".join(lines)
+
+
+@mcp.tool()
+def calculate_ph(
+    topic: PhTopic,
+    concentration: float = 0.0,
+    pka: float = 0.0,
+    pkb: float = 0.0,
+    pka_values: list[float] | None = None,
+    acid_concentration: float = 0.0,
+    base_concentration: float = 0.0,
+    target_ph: float = 0.0,
+    total_concentration: float = 0.0,
+    volume_ml: float = 0.0,
+    acid_molar_mass: float = 0.0,
+    base_molar_mass: float = 0.0,
+) -> str:
+    """Calculate pH, buffer composition and buffer recipes, with the working.
+
+    Solves the exact charge balance — the same one that draws the titration
+    curve — and puts the textbook approximation next to it. Where the two
+    disagree, the approximation has lost its assumptions, and the answer says
+    so instead of quietly being wrong.
+
+    Pick the `topic`:
+
+    - "weak_acid": needs `concentration` and `pka` (or `pka_values` for a
+      polyprotic acid such as phosphoric acid).
+    - "weak_base": needs `concentration` and `pkb` — or `pka` of the
+      conjugate acid, since pKa + pKb = 14.
+    - "strong_acid" / "strong_base": needs `concentration`. Includes the
+      autoprotolysis of water, so 1e-8 M HCl comes out just below 7 rather
+      than alkaline.
+    - "buffer": pH of a mixture. Needs `acid_concentration`,
+      `base_concentration` and `pka`; also reports the ratio and the buffer
+      capacity, and warns when the pair is the wrong one for the pH.
+    - "buffer_recipe": how to make one. Needs `target_ph`, `pka`,
+      `total_concentration` and `volume_ml`; give `acid_molar_mass` and
+      `base_molar_mass` to get weighable masses instead of moles.
+
+    You supply the pKa values — they are in the monograph or the table, and
+    guessing them would silently change the answer.
+
+    Not this tool for: drawing the titration curve or the species
+    distribution (generate_titration_curve, generate_species_distribution —
+    this one computes, those draw), or preparing a solution of a known
+    concentration (calculate_solution).
+
+    Args:
+        topic: Which case to solve — see the list above.
+        concentration: Concentration in mol/L of the acid or base.
+        pka: pKa of the acid, or of the conjugate acid of a base.
+        pkb: pKb of the base.
+        pka_values: All pKa values of a polyprotic acid, in order.
+        acid_concentration: [HA] in mol/L ("buffer").
+        base_concentration: [A⁻] in mol/L ("buffer").
+        target_ph: pH the buffer should have ("buffer_recipe").
+        total_concentration: [HA] + [A⁻] in mol/L ("buffer_recipe").
+        volume_ml: Volume of buffer to prepare, in mL.
+        acid_molar_mass: Molar mass of the acid component, in g/mol.
+        base_molar_mass: Molar mass of the base component, in g/mol.
+    """
+    from chemdraw_tool import ph_calc
+
+    def block(title: str, headline: str, rows: list[str], notes: list[str]) -> str:
+        lines = [f"# {title}", "", f"**{headline}**", ""]
+        lines.extend(rows)
+        if notes:
+            lines.append("\n## Worth knowing")
+            lines.extend(f"- {n}" for n in notes)
+        return "\n".join(lines)
+
+    if topic == "weak_acid":
+        r = ph_calc.weak_acid_ph(
+            concentration=concentration or 0,
+            pka=pka or None,
+            pka_values=pka_values or None,
+        )
+        rows = [
+            f"- Exact (charge balance): **pH = {r['ph']:.2f}**",
+            f"- Textbook approximation: pH = {r['ph_approx']:.2f}",
+            f"  - Formula: `{r['approx_formula']}`",
+            f"  - Substituted: `{r['approx_substitution']}`",
+            f"- pOH = {r['poh']:.2f}",
+            f"- pKa used: {', '.join(f'{p:g}' for p in r['pka_values'])}",
+        ]
+        return block(
+            f"pH of {r['concentration']:g} mol/L weak acid",
+            f"pH = {r['ph']:.2f}",
+            rows,
+            r["notes"],
+        )
+
+    if topic == "weak_base":
+        r = ph_calc.weak_base_ph(
+            concentration=concentration or 0,
+            pkb=pkb or None,
+            pka=pka or None,
+        )
+        rows = [
+            f"- Exact (charge balance): **pH = {r['ph']:.2f}**",
+            f"- Textbook approximation: pH = {r['ph_approx']:.2f}",
+            f"  - Formula: `{r['approx_formula']}`",
+            f"  - Substituted: `{r['approx_substitution']}`",
+            f"- pOH = {r['poh']:.2f}",
+            f"- pKb = {r['pkb']:g}, pKa of the conjugate acid = "
+            f"{r['pka_conjugate']:g}",
+        ]
+        return block(
+            f"pH of {r['concentration']:g} mol/L weak base",
+            f"pH = {r['ph']:.2f}",
+            rows,
+            r["notes"],
+        )
+
+    if topic in ("strong_acid", "strong_base"):
+        fn = ph_calc.strong_acid_ph if topic == "strong_acid" else ph_calc.strong_base_ph
+        r = fn(concentration or 0)
+        rows = [
+            f"- pOH = {r['poh']:.2f}",
+            f"- Formula: `{r['formula']}`",
+            f"- Substituted: `{r['substitution']}`",
+        ]
+        kind = "strong acid" if topic == "strong_acid" else "strong base"
+        return block(
+            f"pH of {r['concentration']:g} mol/L {kind}",
+            f"pH = {r['ph']:.2f}",
+            rows,
+            r["notes"],
+        )
+
+    if topic == "buffer":
+        r = ph_calc.buffer_ph(
+            acid_concentration=acid_concentration or 0,
+            base_concentration=base_concentration or 0,
+            pka=pka or None,
+        )
+        rows = [
+            f"- Exact (charge balance): **pH = {r['ph']:.2f}**",
+            f"- Henderson-Hasselbalch: pH = {r['ph_henderson_hasselbalch']:.2f}",
+            f"  - Formula: `{r['formula']}`",
+            f"  - Substituted: `{r['substitution']}`",
+            f"- Ratio base : acid = {r['ratio']:.3g} : 1",
+            f"- Buffer capacity β = {r['capacity']:.4f} mol/(L·pH)",
+            f"- Total concentration = {r['total_concentration']:g} mol/L",
+        ]
+        return block("Buffer pH", f"pH = {r['ph']:.2f}", rows, r["notes"])
+
+    if topic == "buffer_recipe":
+        r = ph_calc.buffer_recipe(
+            target_ph=target_ph,
+            pka=pka or None,
+            total_concentration=total_concentration or 0,
+            volume_ml=volume_ml or 0,
+            acid_molar_mass=acid_molar_mass or None,
+            base_molar_mass=base_molar_mass or None,
+        )
+        rows = [
+            f"- Ratio base : acid = {r['ratio']:.3g} : 1 "
+            f"(from `ratio = 10^(pH − pKa)`)",
+            f"- Acid: {r['acid_concentration']:.4g} mol/L → "
+            f"**{r['acid_mol']:.4g} mol**"
+            + (
+                f" → **{r['acid_mass_g']:.3f} g**"
+                if "acid_mass_g" in r
+                else " (give acid_molar_mass for the mass)"
+            ),
+            f"- Base: {r['base_concentration']:.4g} mol/L → "
+            f"**{r['base_mol']:.4g} mol**"
+            + (
+                f" → **{r['base_mass_g']:.3f} g**"
+                if "base_mass_g" in r
+                else " (give base_molar_mass for the mass)"
+            ),
+            f"- Dissolve both in water and make up to {r['volume_ml']:g} mL.",
+            "- Check the pH with a meter and correct with a little acid or "
+            "base — the calculated ratio assumes ideal behaviour.",
+        ]
+        return block(
+            f"Buffer recipe for pH {r['target_ph']:g}",
+            f"{r['volume_ml']:g} mL of a {r['total_concentration']:g} mol/L buffer, "
+            f"pKa {r['pka']:g}",
+            rows,
+            r["notes"],
+        )
+
+    raise ValueError(
+        f"Unknown topic '{topic}' — pick one of: weak_acid, weak_base, "
+        "strong_acid, strong_base, buffer, buffer_recipe."
+    )
 
 
 @mcp.tool()

@@ -52,7 +52,7 @@ NACHSCHLAGEN = {"lookup", "lookup_molecule_data"}
 
 # Fünfter Bereich seit 15.08.2026: Rechnungen liefern Zahl UND Rechenweg —
 # eine eigene Art Ausgabe, die weder Bild noch Datenblatt ist.
-RECHNEN = {"calculate_solution", "calculate_content"}
+RECHNEN = {"calculate_solution", "calculate_content", "calculate_ph"}
 
 ANKI = {"export_anki_deck"}
 
@@ -147,6 +147,7 @@ NEEDS_DELIMITATION = {
     "lookup_molecule_data": "lookup",
     "calculate_solution": "calculate_content",
     "calculate_content": "calculate_solution",
+    "calculate_ph": "calculate_solution",
 }
 
 
