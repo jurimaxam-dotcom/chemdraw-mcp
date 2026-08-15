@@ -1,6 +1,10 @@
 version = 1
 revision = 3
 requires-python = ">=3.11"
+resolution-markers = [
+    "python_full_version >= '3.12'",
+    "python_full_version < '3.12'",
+]
 
 [[package]]
 name = "annotated-types"
@@ -219,6 +223,8 @@ dependencies = [
     { name = "lxml" },
     { name = "matplotlib" },
     { name = "mcp" },
+    { name = "molmass", version = "2026.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "molmass", version = "2026.6.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pillow" },
     { name = "py2opsin" },
     { name = "rdkit" },
@@ -238,6 +244,7 @@ requires-dist = [
     { name = "lxml" },
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "mcp" },
+    { name = "molmass", specifier = ">=2026.1.8" },
     { name = "pillow" },
     { name = "py2opsin", specifier = ">=1.2.0" },
     { name = "rdkit" },
@@ -967,6 +974,30 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/38/83/d1efe7c2980d8a3afa476f4e3d42d53dd54c0ab94c27bee5d755b45c8b73/mcp-1.27.1.tar.gz", hash = "sha256:0f47e1820f8f8f941466b39749eb1d1839a04caddca2bc60e9d46e8a99914924", size = 608458, upload-time = "2026-05-08T16:50:12.601Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fd/73/42d9596facebdb533b7f0b86c1b0364ef350d1f8ba78b1052e8a58b48b65/mcp-1.27.1-py3-none-any.whl", hash = "sha256:1af3c4203b329430fde7a87b4fcb6392a041f5cb851fd68fc674016ab4e7c06f", size = 216260, upload-time = "2026-05-08T16:50:10.547Z" },
+]
+
+[[package]]
+name = "molmass"
+version = "2026.1.8"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.12'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/50/b6/a9adb3a4f142d52295aed0194161ffa0b1ee5d5bc986be608c328245e075/molmass-2026.1.8.tar.gz", hash = "sha256:6f677940148f876a6690149956598841f068111cb8ff3c63cf831833e88a5247", size = 83094, upload-time = "2026-01-08T17:13:39.699Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/03/12/b6f548ac321f0239c3523b32bd629ccf8025ff59fbf8dbada22b0de96ce2/molmass-2026.1.8-py3-none-any.whl", hash = "sha256:d7ad83bd542c5bf132a8eca28630ad774c10f0890d9cf51625774838d03d5f8b", size = 73797, upload-time = "2026-01-08T17:13:38.643Z" },
+]
+
+[[package]]
+name = "molmass"
+version = "2026.6.9"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.12'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/44/02/bcd404074781d020a3b2301df7b35afc47b7731dbc9aa0fc796d54e2750a/molmass-2026.6.9.tar.gz", hash = "sha256:61cd66d032379192d898d5b49b821607ccaf4b6f79159a12b5de69b365878982", size = 87586, upload-time = "2026-06-09T22:33:43.989Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/71/9a820b92332e8d40e9aa69c87e2c8d8abc2977092f54307781355ae6a7c9/molmass-2026.6.9-py3-none-any.whl", hash = "sha256:4b5eb275b83270fe9f7aa5e68befcf768563e791da55b12afcdf65ea44dd3537", size = 77109, upload-time = "2026-06-09T22:33:43.033Z" },
 ]
 
 [[package]]

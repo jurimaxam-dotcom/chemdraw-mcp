@@ -81,6 +81,11 @@ DEFAULT_FORMATS = ("png", "svg")
 # Tool-Schema die Auswahl eingrenzt — Prosa im Docstring täte das nicht.
 LookupTopic = Literal["properties", "safety", "physical", "biochem", "pathway"]
 
+# Die Rechenarten von `calculate_solution` — dieselbe Begründung.
+SolutionTopic = Literal[
+    "weigh_in", "concentration", "dilution", "mixing", "molar_mass"
+]
+
 
 def _normalize_formats(formats: list[str] | None) -> list[str]:
     fmts = [f.lower().strip() for f in (formats or DEFAULT_FORMATS)]
@@ -938,6 +943,206 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
         atoms=atoms,
         bonds=bonds,
         files={"sdf": str(sdf_path)},
+    )
+
+
+def _format_calculation(title: str, result_line: str, steps, notes) -> str:
+    """Rechenweg als Markdown — Schritt für Schritt zum Abschreiben.
+
+    Bewusst als Liste statt als Tabelle: Formel, eingesetzte Zahlen und
+    Ergebnis stehen so untereinander wie im Protokollheft, und lange Terme
+    brechen nicht in einer Zelle um.
+    """
+    lines = [f"# {title}", "", f"**{result_line}**", "", "## Calculation"]
+    for i, step in enumerate(steps, 1):
+        lines.append(f"\n**{i}. {step['label']}**")
+        lines.append(f"- Formula: `{step['formula']}`")
+        lines.append(f"- Substituted: `{step['substitution']}`")
+        lines.append(f"- Result: **{step['result']}**")
+        if step.get("explanation"):
+            lines.append(f"- {step['explanation']}")
+    if notes:
+        lines.append("\n## Check before you weigh")
+        lines.extend(f"- {n}" for n in notes)
+    return "\n".join(lines)
+
+
+def _require(value, name: str, topic: str):
+    """Fehlende Pflichtangabe benennen, statt stillschweigend mit 0 zu rechnen."""
+    if not value:
+        raise ValueError(
+            f"topic='{topic}' needs {name}. Nothing was given, and calculating "
+            "with zero would produce a confident wrong answer."
+        )
+    return value
+
+
+@mcp.tool()
+def calculate_solution(
+    topic: SolutionTopic,
+    substance: str = "",
+    concentration: float = 0.0,
+    volume_ml: float = 0.0,
+    mass_g: float = 0.0,
+    molar_mass_g: float = 0.0,
+    target: float = 0.0,
+    stock_concentration: float = 0.0,
+    stock_volume_ml: float = 0.0,
+    final_concentration: float = 0.0,
+    final_volume_ml: float = 0.0,
+    high: float = 0.0,
+    low: float = 0.0,
+    total: float = 0.0,
+) -> str:
+    """Do the bench maths before an experiment, with the full working shown.
+
+    Answers the questions that come up in front of the balance, and returns
+    every step — formula, numbers substituted, result — because a lab report
+    asks for the working, not just the number.
+
+    Pick the `topic`; each one uses a different handful of parameters:
+
+    - "weigh_in": how much do I weigh out? Needs `substance`,
+      `concentration` (mol/L) and `volume_ml`. The everyday case:
+      "250 mL of 0.1 M NaOH" → 1.0 g.
+    - "concentration": what did I actually get? Needs `substance`,
+      `mass_g` and `volume_ml`; pass `target` to also get the deviation
+      from the concentration you were aiming for.
+    - "dilution": C₁V₁ = C₂V₂. Give exactly three of
+      `stock_concentration`, `stock_volume_ml`, `final_concentration`,
+      `final_volume_ml` — the fourth is calculated, along with how much
+      solvent to add.
+    - "mixing": mixing cross. Needs `high`, `low` and `target` contents
+      (same unit for all three, e.g. % or mol/L); `total` scales the parts
+      to a real amount. Diluting ethanol with water is `low=0`.
+    - "molar_mass": molar mass with the element breakdown. Needs
+      `substance`. Handles hydrates such as "CuSO4·5H2O".
+
+    `substance` takes a chemical FORMULA ("NaOH", "C9H8O4", "CuSO4·5H2O"),
+    not a trivial name — for something without a clean formula, pass
+    `molar_mass_g` directly instead.
+
+    Not this tool for: content determination from a titration or photometry
+    (that is calculate_content), pH and buffers (calculate_ph), or looking
+    up a substance's properties (lookup).
+
+    Args:
+        topic: Which calculation to run — see the list above.
+        substance: Chemical formula, e.g. "NaOH" or "CuSO4·5H2O".
+        concentration: Wanted concentration in mol/L ("weigh_in").
+        volume_ml: Volume being prepared, in mL.
+        mass_g: Mass actually weighed, in g ("concentration").
+        molar_mass_g: Molar mass in g/mol, if there is no usable formula.
+        target: Target concentration ("concentration") or target content
+            ("mixing").
+        stock_concentration: c₁ of the stock solution ("dilution").
+        stock_volume_ml: V₁, the portion of stock taken ("dilution").
+        final_concentration: c₂ after dilution ("dilution").
+        final_volume_ml: V₂, the final volume ("dilution").
+        high: Content of the stronger component ("mixing").
+        low: Content of the weaker component, 0 for water ("mixing").
+        total: Total amount wanted ("mixing").
+    """
+    from chemdraw_tool import solution as sol
+
+    if topic == "molar_mass":
+        data = sol.molar_mass(_require(substance, "a substance formula", topic))
+        lines = [
+            f"# Molar mass of {data['formula']}",
+            "",
+            f"**M = {data['mass']:.4f} g/mol**",
+            "",
+            "| Element | Count | Mass share | Fraction |",
+            "|---|---|---|---|",
+        ]
+        for part in data["composition"]:
+            lines.append(
+                f"| {part['symbol']} | {part['count']} | "
+                f"{part['mass']:.4f} g/mol | {part['fraction'] * 100:.2f} % |"
+            )
+        return "\n".join(lines)
+
+    if topic == "weigh_in":
+        if not substance and not molar_mass_g:
+            raise ValueError(
+                "topic='weigh_in' needs a substance formula (or molar_mass_g). "
+                "Without a molar mass there is nothing to convert moles into grams."
+            )
+        r = sol.mass_for_solution(
+            substance or "the substance",
+            concentration=_require(concentration, "a concentration in mol/L", topic),
+            volume_ml=_require(volume_ml, "a volume in mL", topic),
+            molar_mass_g=molar_mass_g or None,
+        )
+        headline = (
+            f"Weigh {r['mass_g']:.4g} g of {substance or 'the substance'} and make "
+            f"up to {r['volume_ml']:.4g} mL to get {r['concentration']:.4g} mol/L."
+        )
+        return _format_calculation(
+            f"Weighing for {r['volume_ml']:.4g} mL of {r['concentration']:.4g} mol/L "
+            f"{substance or 'solution'}",
+            headline,
+            r["steps"],
+            r["notes"],
+        )
+
+    if topic == "concentration":
+        if not substance and not molar_mass_g:
+            raise ValueError(
+                "topic='concentration' needs a substance formula (or molar_mass_g)."
+            )
+        r = sol.concentration_from_mass(
+            substance or "the substance",
+            mass_g=_require(mass_g, "the weighed mass in g", topic),
+            volume_ml=_require(volume_ml, "a volume in mL", topic),
+            molar_mass_g=molar_mass_g or None,
+            target=target or None,
+        )
+        headline = f"c = {r['concentration']:.6g} mol/L"
+        if "deviation_percent" in r:
+            headline += f" ({r['deviation_percent']:+.2f} % off the target)"
+        return _format_calculation(
+            f"Concentration of the {substance or ''} solution".strip(),
+            headline,
+            r["steps"],
+            r["notes"],
+        )
+
+    if topic == "dilution":
+        r = sol.dilution(
+            c1=stock_concentration or None,
+            v1_ml=stock_volume_ml or None,
+            c2=final_concentration or None,
+            v2_ml=final_volume_ml or None,
+        )
+        headline = (
+            f"Take {r['v1_ml']:.4g} mL of the {r['c1']:.4g} mol/L stock and make up "
+            f"to {r['v2_ml']:.4g} mL — that is {r['c2']:.4g} mol/L."
+        )
+        return _format_calculation("Dilution", headline, r["steps"], r["notes"])
+
+    if topic == "mixing":
+        r = sol.mixing_cross(
+            high=_require(high, "the stronger content (high)", topic),
+            low=low,
+            target=_require(target, "the target content", topic),
+            total=total or None,
+        )
+        if "amount_high" in r:
+            headline = (
+                f"Mix {r['amount_high']:.4g} of the {r['high']:.4g} component with "
+                f"{r['amount_low']:.4g} of the {r['low']:.4g} component."
+            )
+        else:
+            headline = (
+                f"Ratio {r['parts_high']:.4g} : {r['parts_low']:.4g} "
+                f"({r['high']:.4g} : {r['low']:.4g} component)"
+            )
+        return _format_calculation("Mixing cross", headline, r["steps"], r["notes"])
+
+    raise ValueError(
+        f"Unknown topic '{topic}' — pick one of: weigh_in, concentration, "
+        "dilution, mixing, molar_mass."
     )
 
 

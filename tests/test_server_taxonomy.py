@@ -49,6 +49,10 @@ LABORGRAFIK = {
 
 NACHSCHLAGEN = {"lookup", "lookup_molecule_data"}
 
+# Fünfter Bereich seit 15.08.2026: Rechnungen liefern Zahl UND Rechenweg —
+# eine eigene Art Ausgabe, die weder Bild noch Datenblatt ist.
+RECHNEN = {"calculate_solution"}
+
 ANKI = {"export_anki_deck"}
 
 # Kein Bereich, sondern Infrastruktur des Panels.
@@ -58,6 +62,7 @@ FAMILIES = {
     "Zeichnen": ZEICHNEN,
     "Laborgrafik": LABORGRAFIK,
     "Nachschlagen": NACHSCHLAGEN,
+    "Rechnen": RECHNEN,
     "Anki": ANKI,
 }
 
@@ -74,9 +79,9 @@ def _registered() -> dict[str, str]:
     }
 
 
-def test_registered_tools_are_exactly_the_four_families_plus_save_png():
+def test_registered_tools_are_exactly_the_families_plus_save_png():
     """Ein neues Tool muss hier eingetragen werden — genau das ist der Zweck."""
-    expected = ZEICHNEN | LABORGRAFIK | NACHSCHLAGEN | ANKI | INTERN
+    expected = ZEICHNEN | LABORGRAFIK | NACHSCHLAGEN | RECHNEN | ANKI | INTERN
     actual = set(_registered())
     assert actual == expected, (
         f"Zusätzlich registriert: {sorted(actual - expected)} · "
@@ -98,9 +103,11 @@ def test_tool_count_stays_reviewable():
     """Obergrenze mit Ansage: jedes Tool ist ein Kandidat bei jeder Anfrage.
 
     Kein Selbstzweck — wächst die Liste wieder Richtung 22, muss das eine
-    bewusste Entscheidung sein und nicht durch Anbauen passieren.
+    bewusste Entscheidung sein und nicht durch Anbauen passieren. Die Grenze
+    wurde am 15.08.2026 von 16 auf 18 gehoben, um den Bereich „Rechnen"
+    aufzunehmen; jede Rechenart ist dort ein `topic`, kein eigenes Tool.
     """
-    assert len(_registered()) <= 16
+    assert len(_registered()) <= 18
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -137,6 +144,7 @@ NEEDS_DELIMITATION = {
     "generate_mechanism": "generate_reaction",
     "lookup": "lookup_molecule_data",
     "lookup_molecule_data": "lookup",
+    "calculate_solution": "lookup",
 }
 
 

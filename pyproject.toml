@@ -22,6 +22,7 @@ dependencies = [
     "matplotlib>=3.10.9",
     "py2opsin>=1.2.0",
     "genanki>=0.13.1",
+    "molmass>=2026.1.8",
 ]
 
 [project.urls]
