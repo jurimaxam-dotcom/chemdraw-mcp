@@ -54,12 +54,26 @@ bewusst 16 → 18.
       Ladungsbilanz neben der Lehrbuchnäherung.
 - [x] **Fettkennzahlen + Karl-Fischer** (5076df0) — als Methoden von
       `calculate_content`, kostet keinen Tool-Platz.
-- [ ] **Kalibriergerade** — lineare Regression + Plot (PlotPayload, billige
-      Zwei-Glieder-Kette), Laborgrafik. Braucht Platz 19.
-- [ ] **IR-Banden + ¹H-Signale** — Zuordnung Wellenzahl → Gruppe, Signalzahl
-      aus der Struktur (RDKit-Bordmittel).
-- [ ] Doku nachziehen (CLAUDE.md-Bereichstabelle, README, CHANGELOG)
-- [ ] Toolkarte-Artifact auf den Endstand bringen
+- [x] **`generate_calibration_curve`** (7f74734) — Regression, Rückrechnung
+      unbekannter Proben, NWG/BG. Dabei die Gegenrichtung der Abgrenzung
+      nachgezogen (pH-Diagramme → `calculate_ph`).
+- [x] **`predict_spectrum`** (e1feb4b) — IR-Banden aus der Struktur,
+      Wellenzahl-Zuordnung, ¹H-Signalzahl. Text, damit die Bandenliste an
+      `generate_spectrum` weitergereicht werden kann.
+- [x] Doku nachziehen (8d31e02) — CLAUDE.md, README, CHANGELOG, Memory
+- [x] Toolkarte-Artifact auf den Endstand gebracht
+- [x] stdio-Handshake: 20 Tools, Claude Desktop neu gestartet
+
+**Bewusst NICHT gemacht:**
+- **Datei-Split von `server.py`** in Bereichs-Module. 64 Testpatches zielen auf
+  `chemdraw_tool.server.*`; ein Split bricht sie still und lässt Tests in Jays
+  echten Ausgabeordner schreiben. Der Wächter in `tests/conftest.py` macht den
+  Umbau nachträglich sicher — nur ist er unsichtbar und riskant, während die
+  Bereiche als getesteter Vertrag schon existieren.
+- **Gleichungen ausgleichen** (Stöchiometrie). Passt in keinen Bereich gut,
+  bräuchte einen eigenen Platz. Nächster Kandidat, falls gewünscht.
+- **Release.** Version steht weiter auf 0.3.0; der Umbau ist ein Breaking
+  Change und wäre 0.4.0 — aber erst auf Jays Ansage.
 
 **Verworfen** (mit Begründung, damit es nicht wiederkommt):
 - pKa-Vorhersage aus der Struktur — nur ML mit Modell-Download; die einzige
