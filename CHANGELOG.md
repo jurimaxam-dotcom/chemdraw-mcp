@@ -4,6 +4,44 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+The tool set becomes four areas with drawn boundaries. The trigger was a real
+misfire: "draw aspirin" was answered with `generate_scope_table`, a substrate
+grid holding a single cell. The model picks a tool from its name and
+description alone, so 22 tools with fuzzy edges are a precision problem.
+
+### Changed
+
+- **Tool descriptions state what they are NOT for** and name the alternative.
+  `generate_scope_table` now rules out the single molecule explicitly; the
+  drawing tools point at each other. Test-enforced for every confusable pair.
+- **`lookup` replaces the five text lookups.** One tool, one `topic` parameter
+  (`properties`, `safety`, `physical`, `biochem`, `pathway`) typed as a literal
+  so the schema itself limits the choice. An unknown topic raises instead of
+  quietly returning the default. `lookup_molecule_data` stays as the visual
+  panel and both now cross-reference each other.
+- **`export_curated_deck` became a parameter.** `export_anki_deck` takes
+  `curated_deck_id`; both paths shared one payload and one panel anyway.
+- **`save_png` is declared internal.** It is the server half of the panel's
+  export button and stays registered so the UI can call it, but the model is
+  told never to invoke it — saving a picture is the user's click.
+
+### Removed
+
+- **`calculate_validation`** (with `ValidationPayload` and its panel view) and
+  **`open_chemdraw_file`**. The Ph.Eur. math in `calculator/` and the AppleScript
+  bridge in `chemdraw.py` remain, tests included, so re-wiring them is cheap.
+  CDXML is untouched as an output format.
+
+### Added
+
+- **`tests/test_server_taxonomy.py`** — the tool set is a promise now: every
+  tool belongs to exactly one area, a new one has to be entered here, and the
+  count stays reviewable.
+- **`tests/conftest.py`** — guards the real `~/ChemDraw-Output` against tests
+  whose path redirect points nowhere.
+
 ## [0.3.0] — 2026-08-15
 
 Two new figure types, publication-style rendering options, and a diagnosis

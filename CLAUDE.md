@@ -58,6 +58,35 @@ regenerated to make a diff disappear**:
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
 
+## The four tool areas (where a new tool goes)
+
+The model picks a tool from its name and description alone, so a fuzzy boundary
+is a precision bug, not cosmetics — "draw aspirin" once landed in
+`generate_scope_table` and produced a one-cell grid. Since then the tool set is
+a tested promise in `tests/test_server_taxonomy.py`:
+
+| Area | Tools | What belongs here |
+|---|---|---|
+| Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d | structures and reactions |
+| Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution | measured data as a diagram |
+| Look up | lookup · lookup_molecule_data | database queries |
+| Anki | export_anki_deck | flashcard decks |
+
+Outside the areas sits exactly one tool: `save_png`, the server half of the
+panel's export button. It stays registered because the UI calls it by name
+(`ExportPngButton.jsx`), and its description marks it internal so the model
+never calls it on its own — saving a picture is the user's click.
+
+**Adding a tool means picking an area and entering it in the taxonomy test.**
+The test fails on an unlisted tool by design. Two more rules keep the set
+selectable: any tool confusable with an existing one must carry a
+`Not this tool for: … — use X` line naming the alternative (also test-enforced),
+and the set stays at 16 or fewer without a deliberate decision.
+
+Prefer a parameter over a new tool when the output is the same kind of thing —
+that is why the five text lookups are one `lookup` with a `topic` literal, and
+the curated decks are a `curated_deck_id` parameter.
+
 ## Architecture
 
 ```
@@ -86,12 +115,15 @@ chemdraw_tool/
 ├── anki_export.py         — .apkg decks with rendered images
 ├── curated_decks.py       — bundled starter decks
 ├── validator.py           — input validation + CDXML round-trip validation
-├── calculator/            — Ph.Eur. content-determination math (pure functions)
+├── calculator/            — Ph.Eur. content-determination math (pure functions;
+│                            no tool exposes it right now — kept because the
+│                            math is tested and re-wiring it is cheap)
 ├── payloads.py            — Pydantic models for MCP structured output;
 │                            each `type` needs a matching case in App.jsx
 ├── png_writer.py          — client-rendered PNG → file
 ├── vault.py               — optional notes lookup (only if CHEMDRAW_VAULT_PATH)
-├── chemdraw.py            — optional macOS AppleScript bridge to ChemDraw
+├── chemdraw.py            — macOS AppleScript bridge (no tool right now; CDXML
+│                            stays available as an output format)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
 ├── doctor.py              — installation diagnosis (chemdraw-doctor)
 ├── server.py              — FastMCP server (stdio) + tool definitions
@@ -110,7 +142,13 @@ shows nothing: renderer → payload model with a `type` default → tool with
 `meta=_UI_META` → View component + `case` in `ui/src/App.jsx` → rebuild the
 bundle. Tests enforce every link (panel tools are derived from the FastMCP
 registration, payload types are compared against App.jsx cases in both
-directions, the gate checks bundle freshness).
+directions, the gate checks bundle freshness). Removing one walks the same
+chain backwards — and the bundle rebuild is just as mandatory.
+
+Test output paths are redirected with `monkeypatch.setattr` against
+`chemdraw_tool.server.<DIR>`. `tests/conftest.py` compares the real
+`~/ChemDraw-Output` before and after the suite, so a redirect that points
+nowhere fails loudly instead of quietly writing into the user's folder.
 
 ## Conventions
 

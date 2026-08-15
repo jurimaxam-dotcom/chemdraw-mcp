@@ -13,7 +13,7 @@ interactive preview inside the chat. *"Draw aspirin"* is already a complete
 command.
 
 Built for pharmacy and chemistry students who spend too much time clicking
-hexagons. 22 tools cover the figures a report or a slide actually needs:
+hexagons. 15 tools cover the figures a report or a slide actually needs:
 structures, reaction schemes, step-by-step mechanisms, substrate-scope
 figures, TLC plates, titration curves, schematic spectra, substance data
 sheets, Ph.Eur. assay calculations and Anki decks.
@@ -86,7 +86,7 @@ species dominates at every pH:
 </p>
 
 *"Create an Anki deck with important molecules and open it in Anki"* —
-`export_anki_deck` / `export_curated_deck` build a ready-to-import `.apkg`
+`export_anki_deck` builds a ready-to-import `.apkg`
 with rendered structures embedded; with the optional AnkiConnect add-on the
 cards land straight in the running Anki, no clicks:
 
@@ -94,7 +94,7 @@ cards land straight in the running Anki, no clicks:
 
 ## Features
 
-All 22 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+All 15 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
 **Structures and schemes**
@@ -131,18 +131,16 @@ every drawing tool also returns a live preview for the in-chat panel.
   indicator transition band
 - **`generate_species_distribution`** — protonation species fractions
   over pH (Henderson–Hasselbalch) with pKa crossovers marked
-- **`calculate_validation`** — Ph.Eur.-style content determination with full
-  calculation steps, t-test/F-test statistics
 
 **Substance data** (online lookups)
 
-- **`lookup_compound`** — compound properties from PubChem
-- **`lookup_safety`** — GHS hazard statements, pictograms, signal word
-- **`lookup_physical`** — melting/boiling point, solubility, density
-- **`lookup_biochem`** — ChEBI classification plus related UniProt entries
-- **`lookup_pathway`** — metabolic pathways from KEGG
+- **`lookup`** — the facts as text, one `topic` per question:
+  `properties` (formula, mass, CAS, InChIKey — the default), `safety` (GHS
+  hazard statements, pictograms, signal word), `physical` (melting/boiling
+  point, solubility, density), `biochem` (ChEBI classification plus related
+  UniProt entries), `pathway` (metabolic pathways from KEGG)
 - **`lookup_molecule_data`** — PubChem + GHS combined into one data sheet
-  for the in-chat panel
+  for the in-chat panel, structure included
 
 **Exam prep**
 
@@ -152,20 +150,19 @@ every drawing tool also returns a live preview for the in-chat panel.
   band assignment — with rendered images embedded, per-card tags,
   `Parent::Child` subdecks; re-exporting a deck updates cards instead of
   duplicating them. Optional delivery straight into the running Anki via
-  the AnkiConnect add-on
-- **`export_curated_deck`** — small, formula-verified starter decks
-  (classic analgesics, Ph.Eur. identity reactions)
+  the AnkiConnect add-on. Pass `curated_deck_id` instead of your own cards
+  for a small, formula-verified starter deck (classic analgesics, Ph.Eur.
+  identity reactions)
 
-**Files and apps**
-
-- **`save_png`** — persist a PNG the chat panel rendered (e.g. after the
-  one-click export) to `~/ChemDraw-Output/png/`
-- **`open_chemdraw_file`** — macOS only, optional: open a generated
-  `.cdxml`/`.cdx` in ChemDraw for further editing
+Every tool belongs to one of four areas — draw, lab graphics, look up,
+Anki — and each says what it is *not* for, so "draw aspirin" cannot end up
+in a substrate-scope grid. One tool sits outside them: `save_png` is the
+server half of the panel's export button, called when you click it, never
+on its own.
 
 Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
 when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
-22 tools above.
+15 tools above.
 
 ### Options on the drawing tools
 
@@ -241,7 +238,8 @@ registered.
 - **The AnkiConnect add-on** lets `export_anki_deck` push cards straight
   into a running Anki. Without it you get the `.apkg` file and import it
   yourself.
-- **ChemDraw** (macOS) enables `open_chemdraw_file`. Nothing else needs it.
+- **ChemDraw** (macOS) is never required: request `formats=["cdxml"]` and
+  open the file yourself if you want to keep editing there.
 
 ### Something not working? Run the doctor
 
