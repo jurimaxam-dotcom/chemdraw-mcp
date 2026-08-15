@@ -86,8 +86,31 @@ SolutionTopic = Literal[
     "weigh_in", "concentration", "dilution", "mixing", "molar_mass"
 ]
 
-# Bestimmungsmethoden von `calculate_content`.
-ContentMethod = Literal["titration", "photometry"]
+# Bestimmungsmethoden von `calculate_content`. Die Fettkennzahlen und Karl
+# Fischer sind Methoden desselben Tools, weil Eingabeform (Einwaage + Ablesung
+# + Blindwert) und Ausgabe (Wert + Streuung) dieselben sind — ein eigenes Tool
+# pro Kennzahl wäre ein Kandidat mehr bei jeder Anfrage, ohne Mehrwert.
+ContentMethod = Literal[
+    "titration",
+    "photometry",
+    "acid_value",
+    "saponification_value",
+    "iodine_value",
+    "water_kf",
+]
+
+# Rückgabewerte-Einheit je Methode, für Überschrift und Statistikblock.
+_CONTENT_UNITS = {
+    "titration": "%",
+    "photometry": "%",
+    "acid_value": "mg KOH/g",
+    "saponification_value": "mg KOH/g",
+    "iodine_value": "g I₂/100 g",
+    "water_kf": "% (m/m)",
+}
+
+# Rücktitrationen: Der Blindwert ist hier die Bezugsablesung, nicht ein Abzug.
+_BACK_TITRATION_METHODS = ("saponification_value", "iodine_value")
 
 # Die Fälle von `calculate_ph`.
 PhTopic = Literal[
@@ -1154,6 +1177,69 @@ def calculate_solution(
     )
 
 
+def _fat_value_rows(
+    method: str,
+    weights_mg: list[float],
+    measurements: list[float],
+    blank_ml: float,
+    titrant_concentration: float,
+    titer_mg_per_ml: float,
+) -> list[dict]:
+    """Fettkennzahl oder Wassergehalt je Messung, im Schema der Titration.
+
+    `weights_mg` ist auch hier in mg — die Kennzahlformeln stehen in Gramm,
+    die Umrechnung passiert an einer Stelle statt in jedem Aufruf.
+    """
+    from chemdraw_tool.calculator import fat_values as fv
+
+    if method == "water_kf":
+        if not titer_mg_per_ml:
+            raise ValueError(
+                "method='water_kf' needs titer_mg_per_ml — the titer of the "
+                "Karl Fischer reagent in mg water per mL. It drifts, so it is "
+                "redetermined before every run."
+            )
+    elif not titrant_concentration:
+        raise ValueError(
+            f"method='{method}' needs titrant_concentration in mol/L. The short "
+            "formulas in the pharmacopoeia assume one particular volumetric "
+            "solution; naming the real one keeps the result right."
+        )
+
+    if method in _BACK_TITRATION_METHODS and not blank_ml:
+        raise ValueError(
+            f"method='{method}' is a back titration and needs blank_ml — the "
+            "reference reading the sample is compared against. Without it the "
+            "result would be the consumption of the blank, not of the sample."
+        )
+
+    rows = []
+    for i, (mass_mg, reading) in enumerate(zip(weights_mg, measurements), start=1):
+        if method == "acid_value":
+            r = fv.acid_value(mass_mg / 1000.0, reading, titrant_concentration)
+        elif method == "saponification_value":
+            r = fv.saponification_value(
+                mass_mg / 1000.0, blank_ml, reading, titrant_concentration
+            )
+        elif method == "iodine_value":
+            r = fv.iodine_value(
+                mass_mg / 1000.0, blank_ml, reading, titrant_concentration
+            )
+        else:
+            r = fv.water_content_kf(mass_mg, reading, titer_mg_per_ml, blank_ml)
+        rows.append(
+            {
+                "label": f"Measurement {i}",
+                "gehalt": r["value"],
+                "formula": r["formula"],
+                "substitution": r["substitution"],
+                "result": r["result"],
+                "explanation": r["explanation"] if i == 1 else "",
+            }
+        )
+    return rows
+
+
 @mcp.tool()
 def calculate_content(
     method: ContentMethod,
@@ -1169,6 +1255,9 @@ def calculate_content(
     reference_weights_mg: list[float] | None = None,
     reference_volumes_ml: list[float] | None = None,
     declared_content: float = 100.0,
+    titrant_concentration: float = 0.0,
+    titer_mg_per_ml: float = 0.0,
+    known_acid_value: float = 0.0,
 ) -> str:
     """Work out a content determination the way a lab report wants it.
 
@@ -1177,7 +1266,7 @@ def calculate_content(
     declared content. Every step comes back with formula, numbers substituted
     and result, so it can be copied into the report and checked by someone else.
 
-    Two methods:
+    Content of a substance:
 
     - "titration": needs `weights_mg`, `measurements` (mL of titrant) and
       `factor_mg_per_ml` (the mg of substance one mL of titrant corresponds
@@ -1188,6 +1277,23 @@ def calculate_content(
     - "photometry": needs `weights_mg`, `measurements` (absorbance),
       `a1_1cm` (the specific absorbance A(1%,1cm) from the monograph),
       `flask_volume_ml` and `dilution_factor`.
+
+    Fat characteristics and water, same input shape, all needing
+    `titrant_concentration` (mol/L of the volumetric solution actually used —
+    the short formulas in the pharmacopoeia only hold for the standard one):
+
+    - "acid_value": free acids, in mg KOH/g. Needs `measurements` (mL of KOH).
+    - "saponification_value": total, in mg KOH/g. Back titration, so
+      `blank_ml` is the REFERENCE reading and the sample must be below it.
+      Give `known_acid_value` to also get the ester value (SV − AV).
+    - "iodine_value": double bonds, in g I₂/100 g. Back titration with
+      thiosulfate, `blank_ml` again the reference.
+    - "water_kf": Karl Fischer water content in %. Needs `titer_mg_per_ml`
+      (mg water per mL of reagent); `blank_ml` is the drift.
+
+    Note that `weights_mg` is ALWAYS in mg, including for the fat
+    characteristics whose formulas are written in grams — the conversion
+    happens here.
 
     Not this tool for: preparing a solution or diluting it (that is
     calculate_solution), or drawing the titration curve (that is
@@ -1208,7 +1314,13 @@ def calculate_content(
         reference_weights_mg: Weighed portions of the reference, in mg.
         reference_volumes_ml: Titrant used for the reference, in mL.
         declared_content: Content the substance is declared with, in %
-            (100 for a pure substance); the t-test is run against it.
+            (100 for a pure substance); the t-test is run against it. Ignored
+            for the fat characteristics, which have no percentage target.
+        titrant_concentration: Concentration of the volumetric solution in
+            mol/L — required for the fat characteristics.
+        titer_mg_per_ml: Titer of the Karl Fischer reagent, mg water per mL.
+        known_acid_value: A separately determined acid value, so that
+            "saponification_value" can also report the ester value.
     """
     from chemdraw_tool.calculator.photometry import calculate_gehalt_uv
     from chemdraw_tool.calculator.stats import (
@@ -1221,9 +1333,10 @@ def calculate_content(
         calculate_titer,
     )
 
-    if method not in ("titration", "photometry"):
+    if method not in _CONTENT_UNITS:
         raise ValueError(
-            f"Unknown method '{method}' — use 'titration' or 'photometry'."
+            f"Unknown method '{method}' — use one of: "
+            f"{', '.join(sorted(_CONTENT_UNITS))}."
         )
     if len(weights_mg) != len(measurements):
         raise ValueError(
@@ -1258,7 +1371,7 @@ def calculate_content(
         rows = calculate_gehalt_titration(
             weights_mg, measurements, blank_ml, factor_mg_per_ml, used_titer
         )
-    else:
+    elif method == "photometry":
         if not a1_1cm:
             raise ValueError(
                 "method='photometry' needs a1_1cm — the specific absorbance "
@@ -1275,11 +1388,24 @@ def calculate_content(
             a1pct1cm=a1_1cm,
             path_length_cm=path_length_cm,
         )
+    else:
+        rows = _fat_value_rows(
+            method,
+            weights_mg,
+            measurements,
+            blank_ml=blank_ml,
+            titrant_concentration=titrant_concentration,
+            titer_mg_per_ml=titer_mg_per_ml,
+        )
 
     contents = [row["gehalt"] for row in rows]
+    unit = _CONTENT_UNITS[method]
+    # Nur die Gehaltsbestimmungen haben einen prozentualen Sollwert. Eine
+    # Iodzahl gegen "100 %" zu testen waere Unsinn mit Nachkommastellen.
+    has_target = method in ("titration", "photometry")
 
     lines = [
-        f"# Content determination ({method})",
+        f"# {method.replace('_', ' ').capitalize()}",
         "",
         "## Individual measurements",
     ]
@@ -1293,6 +1419,16 @@ def calculate_content(
 
     if sections:
         lines.insert(2, "\n".join(sections) + "\n")
+
+    if method == "saponification_value" and known_acid_value:
+        from chemdraw_tool.calculator.fat_values import ester_value
+
+        ev = ester_value(sum(contents) / len(contents), known_acid_value)
+        lines.append("\n## Ester value")
+        lines.append(f"- Formula: `{ev['formula']}`")
+        lines.append(f"- Substituted: `{ev['substitution']}`")
+        lines.append(f"- Result: **{ev['result']}**")
+        lines.append(f"- {ev['explanation']}")
 
     if len(contents) == 1:
         lines.append(
@@ -1322,10 +1458,12 @@ def calculate_content(
         )
         lines.append(f"- {grubbs['explanation']}")
 
-    stats = descriptive_stats(contents, true_value=declared_content)
+    stats = descriptive_stats(
+        contents, true_value=declared_content if has_target else None
+    )
     lines.append("\n## Mean and spread")
-    lines.append(f"- Mean: **{stats['mean']:.2f} %**")
-    lines.append(f"- Standard deviation s: {stats['std_abs']:.3f} %")
+    lines.append(f"- Mean: **{stats['mean']:.2f} {unit}**")
+    lines.append(f"- Standard deviation s: {stats['std_abs']:.3f} {unit}")
     lines.append(f"- RSD: {stats['std_rel']:.2f} %")
     if "recovery" in stats:
         lines.append(
@@ -1333,19 +1471,20 @@ def calculate_content(
             f"{stats['recovery']:.2f} %"
         )
 
-    t = one_sample_t_test(contents, declared_content)
-    verdict = (
-        "no significant difference from the declared content"
-        if t["passed"]
-        else "significantly different from the declared content"
-    )
-    lines.append(f"\n## t-test against {declared_content:.4g} %")
-    lines.append("- Formula: `t = |x̄ − µ| / (s / √n)`")
-    lines.append(
-        f"- Result: **t = {t['t_value']:.3f}**, t_crit = {t['t_critical']:.3f} "
-        f"(df = {t['df']}, α = 0.05)"
-    )
-    lines.append(f"- Verdict: {verdict}.")
+    if has_target:
+        t = one_sample_t_test(contents, declared_content)
+        verdict = (
+            "no significant difference from the declared content"
+            if t["passed"]
+            else "significantly different from the declared content"
+        )
+        lines.append(f"\n## t-test against {declared_content:.4g} %")
+        lines.append("- Formula: `t = |x̄ − µ| / (s / √n)`")
+        lines.append(
+            f"- Result: **t = {t['t_value']:.3f}**, t_crit = {t['t_critical']:.3f} "
+            f"(df = {t['df']}, α = 0.05)"
+        )
+        lines.append(f"- Verdict: {verdict}.")
 
     if grubbs is not None and grubbs["is_outlier"]:
         lines.append(

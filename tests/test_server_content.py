@@ -151,3 +151,85 @@ def test_single_measurement_still_works_but_says_what_is_missing():
     )
     assert "%" in out
     assert "one measurement" in out.lower() or "single" in out.lower()
+
+
+# --- Fettkennzahlen und Karl-Fischer ----------------------------------------
+# Eigene Methoden desselben Tools statt eigener Tools: gleiche Eingabeform
+# (Einwaage + Ablesung + Blindwert), gleiche Ausgabe (Wert + Statistik).
+
+
+def test_acid_value_series_gives_value_and_spread():
+    out = calculate_content(
+        "acid_value",
+        weights_mg=[2000.0, 2010.0, 1995.0],
+        measurements=[1.5, 1.52, 1.48],
+        titrant_concentration=0.1,
+    )
+    assert "mg KOH/g" in out
+    assert "Mean" in out
+
+
+def test_saponification_uses_the_blank_as_the_reference():
+    out = calculate_content(
+        "saponification_value",
+        weights_mg=[2000.0],
+        measurements=[18.0],
+        blank_ml=25.0,
+        titrant_concentration=0.5,
+    )
+    assert "98" in out  # 28.05 * 7 / 2 = 98.2
+
+
+def test_saponification_also_reports_the_ester_value_when_the_acid_value_is_known():
+    out = calculate_content(
+        "saponification_value",
+        weights_mg=[2000.0],
+        measurements=[18.0],
+        blank_ml=25.0,
+        titrant_concentration=0.5,
+        known_acid_value=4.2,
+    )
+    assert "Ester value" in out
+
+
+def test_iodine_value_names_its_unit():
+    out = calculate_content(
+        "iodine_value",
+        weights_mg=[300.0],
+        measurements=[12.0],
+        blank_ml=25.0,
+        titrant_concentration=0.1,
+    )
+    assert "I₂/100" in out or "I2/100" in out
+
+
+def test_karl_fischer_needs_the_titer():
+    with pytest.raises(ValueError, match="titer"):
+        calculate_content("water_kf", weights_mg=[500.0], measurements=[1.5])
+
+
+def test_karl_fischer_reports_percent_water():
+    out = calculate_content(
+        "water_kf",
+        weights_mg=[500.0],
+        measurements=[1.5],
+        titer_mg_per_ml=5.0,
+    )
+    assert "1.50" in out
+
+
+def test_back_titration_methods_need_a_blank():
+    with pytest.raises(ValueError, match="blank"):
+        calculate_content(
+            "saponification_value",
+            weights_mg=[2000.0],
+            measurements=[18.0],
+            titrant_concentration=0.5,
+        )
+
+
+def test_fat_value_methods_need_the_titrant_concentration():
+    with pytest.raises(ValueError, match="titrant_concentration"):
+        calculate_content(
+            "acid_value", weights_mg=[2000.0], measurements=[1.5]
+        )
