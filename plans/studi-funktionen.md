@@ -35,7 +35,9 @@ strukturelle Trennung, an die angebaut wird.
 - [x] Taxonomie-Umbau 22 → 15 Tools (Commit 45ea3a7)
 - [x] Wächter gegen Schreiben in den echten Ausgabeordner (Commit 51d072c)
 - [x] stdio-Handshake: 15 Tools bewiesen, Claude Desktop neu gestartet
-- [ ] Doku nachziehen (CLAUDE.md, README, CHANGELOG)
+- [x] Doku nachziehen (CLAUDE.md, README, CHANGELOG) — Commit d121cb3
+- [x] Gegenprobe: `generate_molecule("Aspirin")` schreibt wieder nach
+      `einzelmolekuele/`, nicht nach `scope/`
 - [ ] Recherche auswerten (Scout + Repo-Analyse)
 
 ### Neue Funktionen
