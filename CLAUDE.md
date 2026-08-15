@@ -25,8 +25,9 @@ it and prints what it wrote.
 **If a host keeps the server process alive (Claude Desktop does), restart it
 after changing server code or dependencies** — a stale process mixes old
 in-memory modules with new files and manifests as confusing RDKit/Boost
-signature errors. Claude Desktop is not installed on this machine (checked
-2026-08-15); prove changes with a real MCP stdio handshake instead.
+signature errors. Restart it yourself after such changes (`osascript -e 'quit
+app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
+(initialize → tools/list) is the hard proof that the registered command works.
 
 ## Auto-Gate (the project's green/red)
 
