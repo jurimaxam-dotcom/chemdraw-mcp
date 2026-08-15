@@ -41,4 +41,33 @@ strukturelle Trennung, an die angebaut wird.
 - [ ] Recherche auswerten (Scout + Repo-Analyse)
 
 ### Neue Funktionen
-_(wird aus der Recherche gefüllt)_
+
+Recherche-Ergebnis (Scout + Repo-Analyse): Der größte Hebel lag im eigenen
+Repo — `calculator/` war verwaist. Neuer Bereich **Rechnen**, Obergrenze
+bewusst 16 → 18.
+
+- [x] **`calculate_solution`** (a0fcb57) — Einwaage, Konzentration, Verdünnung,
+      Mischungskreuz, Molmasse. Neue Abhängigkeit `molmass` für Hydrate.
+- [x] **`calculate_content`** (3ad3716) — Gehaltsbestimmung Titration/Photometrie
+      mit Grubbs-Ausreißertest, Statistik, t-Test. Bringt `calculator/` ans Netz.
+- [x] **`calculate_ph`** (16cd075) — pH, Puffer, Pufferansatz; exakte
+      Ladungsbilanz neben der Lehrbuchnäherung.
+- [x] **Fettkennzahlen + Karl-Fischer** (5076df0) — als Methoden von
+      `calculate_content`, kostet keinen Tool-Platz.
+- [ ] **Kalibriergerade** — lineare Regression + Plot (PlotPayload, billige
+      Zwei-Glieder-Kette), Laborgrafik. Braucht Platz 19.
+- [ ] **IR-Banden + ¹H-Signale** — Zuordnung Wellenzahl → Gruppe, Signalzahl
+      aus der Struktur (RDKit-Bordmittel).
+- [ ] Doku nachziehen (CLAUDE.md-Bereichstabelle, README, CHANGELOG)
+- [ ] Toolkarte-Artifact auf den Endstand bringen
+
+**Verworfen** (mit Begründung, damit es nicht wiederkommt):
+- pKa-Vorhersage aus der Struktur — nur ML mit Modell-Download; die einzige
+  regelbasierte Bibliothek (`dimorphite-dl`) pinnt `rdkit<2026`, das Projekt
+  läuft auf 2026.03.2.
+- NMR-Verschiebungen in ppm — ebenfalls nur ML. Die deterministische
+  Teilmenge (Signalzahl, Integralverhältnis) ist das, was Klausuren fragen.
+- Periodensystem-/Einheiten-Bibliotheken (`mendeleev`, `pint`) — schwere
+  Abhängigkeiten für Wissen, das das Modell ohnehin hat.
+- `chempy` fürs Ausgleichen von Gleichungen — zieht sympy/pyodesys/pulp nach;
+  das Nullraum-Verfahren sind ~50 Zeilen mit `fractions.Fraction`.
