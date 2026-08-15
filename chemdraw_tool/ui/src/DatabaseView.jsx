@@ -1,102 +1,25 @@
-import React, { useState } from "react";
-import NavTabs from "./components/NavTabs";
-import CopyButton from "./components/CopyButton";
+import React, { useId, useState } from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-
-function DataTable({ rows }) {
-  return (
-    <div style={{ flex: 1, minWidth: 0 }}>
-      {rows.map(([key, value], i) => (
-        <div
-          key={key}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-            background: i % 2 === 1 ? "var(--bg-alt)" : "transparent",
-            borderRadius: "var(--radius-sm)",
-            padding: "4px 6px",
-          }}
-        >
-          <span style={{ fontSize: 11, color: "var(--fg-muted)", flexShrink: 0 }}>
-            {key}
-          </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span
-              style={{
-                fontSize: 11,
-                color: "var(--fg)",
-                fontFamily: "var(--font-mono)",
-                wordBreak: "break-all",
-                textAlign: "right",
-              }}
-            >
-              {value != null ? String(value) : "—"}
-            </span>
-            {value != null && <CopyButton text={String(value)} size="sm" />}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function SourcePanel({ source, moleculeSvg }) {
-  const rows = (source.rows || []).map((r) => [r.key, r.val]);
-  const link = source.url || null;
-
-  return (
-    <div>
-      <div style={{ display: "flex", gap: 12 }}>
-        {moleculeSvg && (
-          <div
-            style={{
-              width: 100,
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              pointerEvents: "none",
-            }}
-            dangerouslySetInnerHTML={{ __html: moleculeSvg }}
-          />
-        )}
-        <DataTable rows={rows} />
-      </div>
-      {link && (
-        <div style={{ marginTop: 8 }}>
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: 11,
-              color: "var(--accent)",
-              textDecoration: "none",
-            }}
-          >
-            {source.source || "View source"} →
-          </a>
-        </div>
-      )}
-    </div>
-  );
-}
+import FunctionalGroupList from "./components/FunctionalGroupList";
+import SourceList from "./components/SourceList";
+import StructureCanvas from "./components/StructureCanvas";
+import ViewToggle from "./components/ViewToggle";
 
 export default function DatabaseView({ data }) {
-  const sources = data.sources || [];
-  const tabs = sources.map((s) => s.type || "Unbekannt");
-  const [activeTab, setActiveTab] = useState(tabs[0] || "");
+  const uid = useId();
+  const [view, setView] = useState("data");
+  const [hoveredGroup, setHoveredGroup] = useState(null);
 
-  const activeSource = sources.find(
-    (s) => (s.type || "Unbekannt") === activeTab
-  ) || sources[0];
+  const groups = data.functionalGroups || [];
+  // Der Weg zur Struktur ist IMMER lokal: Atomliste und Gruppen reisen im
+  // Payload mit (DatabasePayload), RDKit hat sie ohnehin gerechnet. Kein
+  // Toolaufruf, kein Ladezustand — deshalb hat dieser View auch keinen.
+  const hasStructure = Boolean(data.molecule_svg);
 
   return (
     <div style={{ padding: "8px 0" }}>
-      {(data.name || data.molecule_svg) && (
+      {(data.name || hasStructure) && (
         <div
           style={{
             display: "flex",
@@ -110,28 +33,72 @@ export default function DatabaseView({ data }) {
           ) : (
             <div />
           )}
-          {data.molecule_svg && (
-            <ExportPngButton svg={data.molecule_svg} filename={data.name || "molekuel"} />
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+            {hasStructure && (
+              <ViewToggle view={view} onChange={setView} idPrefix={uid} />
+            )}
+            {data.molecule_svg && (
+              <ExportPngButton svg={data.molecule_svg} filename={data.name || "molekuel"} />
+            )}
+          </div>
+        </div>
+      )}
+
+      {view === "structure" && hasStructure ? (
+        <div
+          id={`${uid}-structure`}
+          role="tabpanel"
+          aria-labelledby={`${uid}-tab-structure`}
+          data-view="structure"
+          style={{ display: "flex", gap: 10, height: 300, minHeight: 0 }}
+        >
+          <StructureCanvas
+            svg={data.molecule_svg}
+            atoms={data.atoms}
+            groups={groups}
+            hoveredGroup={hoveredGroup}
+            onHoverGroup={setHoveredGroup}
+            style={groups.length > 0 ? undefined : { flex: "1 1 100%" }}
+          />
+          {groups.length > 0 && (
+            <div
+              style={{
+                flex: "0 0 25%",
+                borderLeft: "1px solid var(--border)",
+                padding: "4px 8px",
+                minWidth: 0,
+                minHeight: 0,
+                overflowY: "auto",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  color: "var(--fg-muted)",
+                  marginBottom: 3,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Functional groups
+              </div>
+              <FunctionalGroupList
+                groups={groups}
+                hoveredGroup={hoveredGroup}
+                onHoverGroup={setHoveredGroup}
+              />
+            </div>
           )}
         </div>
-      )}
-      {tabs.length > 1 && (
-        <NavTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-      )}
-      {activeSource ? (
-        <div
-          style={{
-            background: "var(--bg-alt)",
-            borderRadius: "var(--radius-md)",
-            boxShadow: "var(--shadow-card)",
-            padding: "10px 12px",
-          }}
-        >
-          <SourcePanel source={activeSource} moleculeSvg={data.molecule_svg} />
-        </div>
       ) : (
-        <div style={{ color: "var(--fg-muted)", fontSize: 11 }}>
-          No data available
+        <div
+          id={`${uid}-data`}
+          role="tabpanel"
+          aria-labelledby={`${uid}-tab-data`}
+          data-view="data"
+        >
+          <SourceList sources={data.sources} moleculeSvg={data.molecule_svg} />
         </div>
       )}
     </div>

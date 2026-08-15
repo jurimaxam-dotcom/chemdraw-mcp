@@ -8,9 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "test:unit": "node --test src/utils/*.test.mjs",
+    "test:dom": "node --import ./src/test-setup.mjs --test src/__tests__/*.test.mjs",
     "test:e2e": "node src/utils/svgToPng.e2e.mjs",
     "test:e2e:update": "UPDATE_SNAPSHOTS=1 node src/utils/svgToPng.e2e.mjs",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:dom && npm run test:e2e",
     "test:watch": "node --test --watch src/utils/*.test.mjs"
   },
   "dependencies": {
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
+    "esbuild": "0.25.12",
+    "jsdom": "30.0.1",
     "playwright": "1.60.0",
     "vite": "^6.3.0",
     "vite-plugin-singlefile": "^2.0.0"
