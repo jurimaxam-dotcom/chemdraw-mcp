@@ -182,7 +182,37 @@ def _write_structure_files(
     return files, cdxml_path
 
 
-mcp = FastMCP("ChemDraw Tool")
+# Die Bereichskarte gehoert EINMAL hierher statt zwanzigmal in die einzelnen
+# Beschreibungen: `instructions` ist laut MCP-Spec ein „hint to the model", den
+# Clients in den Systemprompt uebernehmen duerfen. Wichtigstes zuerst — Claude
+# Code kappt das Feld bei 2 KB und schneidet hinten ab.
+_INSTRUCTIONS = """\
+Chemistry drawings, lab graphics and bench maths, rendered offline.
+
+A bare compound name with no further request ("caffeine") means: draw it —
+generate_molecule. Only reach for a look-up tool when a named value is asked
+for. Tools fall into five areas:
+
+- Draw — structures and reactions: generate_molecule (one substance, the
+  default), batch_generate, compare_molecules, generate_reaction,
+  generate_mechanism, generate_scope_table, generate_3d.
+- Lab graphic — measured data as a figure: generate_spectrum, generate_tlc,
+  generate_titration_curve, generate_species_distribution,
+  generate_calibration_curve.
+- Look up — a named fact about a substance: lookup (text),
+  lookup_molecule_data (data sheet panel), predict_spectrum (from structure).
+- Calculate — a number and the working behind it: calculate_solution,
+  calculate_content, calculate_ph.
+- Anki — flashcard decks: export_anki_deck.
+
+Do not use these tools for: naming or explaining chemistry in prose, choosing
+a synthesis route, or literature search. Pass English or IUPAC compound names,
+never localized ones ('Aspirin', not 'Acetylsalicylsäure'); SMILES are always
+safe. Every drawing tool writes files itself — never call save_png, that is
+the panel's own export button.
+"""
+
+mcp = FastMCP("ChemDraw Tool", instructions=_INSTRUCTIONS)
 # FastMCP nimmt keine Version entgegen, der Low-Level-Server trägt sie aber in
 # serverInfo — und genau das zeigt jeder Host an. Ohne diese Zeile meldet sich
 # der Server mit der SDK-Version (gemessen: "1.27.1"), und der Nutzer kann nicht
@@ -288,48 +318,39 @@ def generate_molecule(
     abbreviate_groups: bool = False,
     render_style: str = "",
 ) -> MoleculePayload:
-    """Generate a 2D molecular structure drawing from a name or SMILES string.
+    """Draw one compound as a 2D structure — the default for a single substance.
 
-    Writes print-ready image files (PNG and/or SVG, default both) to the
-    output folder and returns a structured payload with an SVG preview,
-    properties and functional groups. Works fully standalone — no ChemDraw
-    installation required.
+    Writes print-ready PNG/SVG to the output folder and returns a panel with
+    the drawing, properties and functional groups. No ChemDraw needed.
 
-    Use this tool when the user mentions structural formulas, molecular
-    structures, or chemical drawings. It is the DEFAULT for a single
-    structure — "draw aspirin", "show me the structure of caffeine".
+    Use this tool when the request names structural formulas, molecular
+    structures or chemical drawings — "draw aspirin", "structure of caffeine".
+    A bare compound name with no further request ("caffeine", "aspirin")
+    also means this tool: show the substance, and the panel carries its data.
 
-    Not this tool for: several products of one reaction with yields
-    (generate_scope_table), several unrelated structures as separate files
-    (batch_generate), highlighting differences between structures
-    (compare_molecules), or an equation with an arrow (generate_reaction).
+    Not this tool for: several products of one reaction with yields (use
+    generate_scope_table); several unrelated structures at once (use
+    batch_generate); differences between structures (use compare_molecules);
+    an equation with an arrow (use generate_reaction); a named single value
+    such as melting point, CAS number or GHS hazards (use lookup).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
-    names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
-    not 'Coffein', 'Ascorbic acid' not 'Ascorbinsäure'. SMILES strings are
-    always safe. Use the label parameter for the localized display name.
+    names — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.
+    SMILES are always safe; use `label` for the localized display name.
 
     Args:
         name_or_smiles: English/IUPAC compound name or SMILES string.
-        label: Optional display name (can be localized, shown below structure).
-        formats: Output file formats, any of "png", "svg", "cdxml"
-            (default: ["png", "svg"]). Include "cdxml" ONLY when the user
-            wants to edit the structure in ChemDraw or asks to open it there.
-        annotate_stereo: Set True to print CIP stereo descriptors (R/S, E/Z)
-            at each stereocenter — useful for stereochemistry teaching.
-        abbreviate_groups: Set True to draw common substituents as the short
-            labels chemists write by hand — Ph, Bn, OAc, OMe, CO2H, NO2, tBu,
-            Boc, Ts, TMS — instead of spelling out every ring and chain.
-            Makes crowded structures readable and looks like a paper figure.
-            The chemistry is unchanged: properties, functional groups and any
-            CDXML export still describe the full molecule. Note that hover
-            tooltips in the panel are switched off for abbreviated drawings.
-        render_style: Named look for the drawing. Leave empty for the standard
-            style. "compact" = thin bonds, small labels, tight margins, for a
-            figure that will be printed small (two-column layout, lab report).
-            "presentation" = thick bonds and large labels, readable from the
-            back of a lecture hall. "grayscale" = standard geometry but a
-            black-and-white atom palette, for grayscale printing.
+        label: Display name shown below the structure (may be localized).
+        formats: Any of "png", "svg", "cdxml" (default: png + svg). Add
+            "cdxml" only when the structure is to be edited in ChemDraw.
+        annotate_stereo: True prints CIP descriptors (R/S, E/Z) at each
+            stereocenter.
+        abbreviate_groups: True draws common substituents as the short labels
+            chemists write by hand (Ph, Bn, OAc, OMe, CO2H, NO2, tBu, Boc, Ts,
+            TMS). The chemistry is unchanged; hover tooltips in the panel are
+            switched off for abbreviated drawings.
+        render_style: "" standard · "compact" thin bonds for small print ·
+            "presentation" thick bonds for slides · "grayscale" b/w palette.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -551,54 +572,39 @@ def generate_scope_table(
 ) -> ScopePayload:
     """Draw a substrate-scope figure: one reaction, many products in a grid.
 
-    This is the standard figure of the methodology literature — the general
-    equation with its conditions on top, below it a grid of product
-    structures, each with its identifier ("1a") and yield ("78%"), often
-    with extra data (ee, dr, time). Use this whenever several products of
-    the SAME reaction are to be shown side by side ("draw the scope of my
-    Suzuki couplings", "make a figure of these five products with yields",
-    a table of derivatives with yields).
+    The standard figure of the methodology literature: the general equation
+    with its conditions on top, below it a grid of product structures, each
+    with its identifier ("1a") and yield ("78%"), often with extra data (ee,
+    dr, time). Use it when several products of the SAME reaction are shown
+    side by side — "the scope of my Suzuki couplings", "these five products
+    with yields", a table of derivatives.
 
     Not this tool for: ONE single molecule — that is generate_molecule, even
-    when a title or a caption is wanted. A scope figure needs several
-    products of the SAME reaction; with one entry it is the wrong figure.
-    Also not for a single equation (generate_reaction) or unrelated
-    structures as separate files (batch_generate).
+    when a title or caption is wanted; with one entry this is the wrong
+    figure. Nor for a single equation (use generate_reaction) or unrelated
+    structures as separate files (use batch_generate).
 
-    All structures share ONE bond length, the captions share one baseline
-    and every cell is the same size — the figure looks composed, not
-    assembled. An entry that cannot be resolved is skipped and reported in
-    `failed`; the figure is drawn from the rest.
+    All structures share one bond length and every cell is the same size. An
+    entry that cannot be resolved is skipped and reported in `failed`.
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.
 
     Args:
-        entries: The products, in reading order. Each entry is
-            {"structure": name or SMILES, "label": "1a", "yield_text": "78%",
-            "notes": "ee 94%"}. label may be left out — the entries are then
-            numbered 1a, 1b, 1c … as in a paper. yield_text takes free text
-            too ("quant.", "traces"); a bare number gets its % sign. notes
-            carries what the figure adds beyond the yield (ee, dr, time,
-            temperature) and is wrapped below the yield.
-        title: Heading above the figure, e.g. "Substrate scope" or
-            "Aryl bromide scope" (free text, can be localized).
-        reaction: Optional general equation shown above the grid:
-            {"reactants": [...], "products": [...], "conditions": "..."} with
-            names or SMILES. Pass ONE representative example of the reaction;
-            the conditions are printed as their own line under the equation.
-        columns: Grid columns (1-6). Leave at 0 to derive it from the number
-            of entries (3 or 4, whichever leaves the fewest empty cells).
-        formats: Output file formats, any of "png", "svg" (default: both).
-            CDXML is not available for figures.
-        abbreviate_groups: Set True to draw common substituents as short
-            labels (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …). Recommended for
-            scope figures: the cells are small, and contracted groups keep
-            the differences between the substrates visible.
-        render_style: Named look. Empty = standard style. "compact" (thin
-            bonds, tight margins) is the natural choice for a scope figure
-            that will be printed small, "presentation" for slides,
-            "grayscale" for grayscale printing.
+        entries: Products in reading order, each {"structure": name or SMILES,
+            "label": "1a", "yield_text": "78%", "notes": "ee 94%"}. Without
+            label the entries are numbered 1a, 1b, 1c … as in a paper.
+            yield_text takes free text ("quant."); a bare number gets its %.
+        title: Heading above the figure (free text, may be localized).
+        reaction: Optional general equation above the grid: {"reactants":
+            [...], "products": [...], "conditions": "..."} — ONE
+            representative example, conditions on their own line.
+        columns: Grid columns (1-6); 0 derives it from the entry count.
+        formats: "png" and/or "svg" (default both). No CDXML for figures.
+        abbreviate_groups: True draws short substituent labels (Ph, OAc,
+            tBu …) — recommended here, the cells are small.
+        render_style: "" standard · "compact" for small print · "presentation"
+            for slides · "grayscale" for b/w.
     """
     import logging
 
@@ -730,40 +736,31 @@ def export_anki_deck(
     - "pheur-identity-basics": classic Ph.Eur. identity tests — reagent,
       observation and reaction scheme where it helps.
 
-    The tool renders the images reliably — YOU supply the card content from
-    your knowledge, like with generate_spectrum. Each card side carries text
-    plus at most ONE visual: structure (compound name or SMILES), reaction
-    ({reactants, products, conditions}) or spectrum ({spectrum_type, peaks,
-    title}). Proven card types: structure↔name in either direction,
-    identity/detection reactions (question on the front, scheme on the
-    back), functional-group recognition, spectrum band assignment,
-    trivial↔IUPAC name drills.
+    The tool renders the images — YOU supply the card content from your
+    knowledge, as with generate_spectrum. Each card side carries text plus at
+    most ONE visual: structure (name or SMILES), reaction ({reactants,
+    products, conditions}) or spectrum ({spectrum_type, peaks, title}).
+    Proven types: structure↔name, identity reactions (question front, scheme
+    back), functional-group recognition, band assignment, name drills.
 
-    Re-exporting a deck under the SAME name updates existing cards in Anki
-    instead of duplicating them — card fronts identify the cards, so
-    corrected backs replace the old answers.
+    Re-exporting under the SAME deck name updates existing cards instead of
+    duplicating them — the card front identifies the card.
 
-    Card options: set reversed=true on a card to also drill the opposite
-    direction (one note, two cards); set cloze=true for fill-in-the-blank
-    cards (front.text carries {{c1::...}} gaps, back.text becomes the
-    extra note). Use "Parent::Child" deck names for Anki subdecks.
+    Card options: reversed=true drills both directions (one note, two cards);
+    cloze=true makes fill-in-the-blank cards (front.text carries {{c1::...}},
+    back.text becomes the extra note). "Parent::Child" nests subdecks.
 
-    IMPORTANT: structures take English/IUPAC names or SMILES; the card
-    TEXTS can be localized freely (e.g. German). Never deliver via
-    AnkiConnect unless the user explicitly asked for it.
+    IMPORTANT: structures take English/IUPAC names or SMILES; card TEXTS may
+    be localized freely. Never deliver via AnkiConnect unless asked.
 
     Args:
-        deck_name: Anki deck name, also used for the filename. "::" nests
-            subdecks. Re-use the exact same name to update a deck. Ignored
-            when curated_deck_id is set — the curated deck brings its name.
-        cards: The flashcards. Keep fronts unambiguous; explanations belong
-            on the back. tags/reversed/cloze are per-card options.
-        default_tags: Tags added to every card in the deck.
-        deliver: "apkg" (default — file only) or "ankiconnect" (additionally
-            imports into the RUNNING Anki via the AnkiConnect add-on;
-            requires the user to have it installed).
-        curated_deck_id: "analgesics-structures" or "pheur-identity-basics"
-            to export a bundled starter deck instead of your own cards.
+        deck_name: Deck name, also the filename; re-use it to update a deck.
+            Ignored when curated_deck_id is set.
+        cards: The flashcards. Fronts unambiguous, explanations on the back.
+        default_tags: Tags added to every card.
+        deliver: "apkg" (file only) or "ankiconnect" (also imports into the
+            RUNNING Anki via the AnkiConnect add-on).
+        curated_deck_id: "analgesics-structures" or "pheur-identity-basics".
     """
     if curated_deck_id:
         from chemdraw_tool.curated_decks import get_curated_deck
@@ -1149,49 +1146,42 @@ def calculate_solution(
 ) -> str:
     """Do the bench maths before an experiment, with the full working shown.
 
-    Answers the questions that come up in front of the balance, and returns
-    every step — formula, numbers substituted, result — because a lab report
+    Answers the questions that come up in front of the balance and returns
+    every step — formula, substituted numbers, result — because the report
     asks for the working, not just the number.
 
-    Pick the `topic`; each one uses a different handful of parameters:
+    Pick the `topic`:
 
-    - "weigh_in": how much do I weigh out? Needs `substance`,
-      `concentration` (mol/L) and `volume_ml`. The everyday case:
-      "250 mL of 0.1 M NaOH" → 1.0 g.
-    - "concentration": what did I actually get? Needs `substance`,
-      `mass_g` and `volume_ml`; pass `target` to also get the deviation
-      from the concentration you were aiming for.
-    - "dilution": C₁V₁ = C₂V₂. Give exactly three of
-      `stock_concentration`, `stock_volume_ml`, `final_concentration`,
-      `final_volume_ml` — the fourth is calculated, along with how much
-      solvent to add.
-    - "mixing": mixing cross. Needs `high`, `low` and `target` contents
-      (same unit for all three, e.g. % or mol/L); `total` scales the parts
-      to a real amount. Diluting ethanol with water is `low=0`.
-    - "molar_mass": molar mass with the element breakdown. Needs
-      `substance`. Handles hydrates such as "CuSO4·5H2O".
+    - "weigh_in": how much do I weigh out? substance, concentration (mol/L),
+      volume_ml. The everyday case: "250 mL of 0.1 M NaOH" → 1.0 g.
+    - "concentration": what did I actually get? substance, mass_g,
+      volume_ml; `target` also gives the deviation from what you aimed for.
+    - "dilution": C₁V₁ = C₂V₂. Give exactly three of stock_concentration,
+      stock_volume_ml, final_concentration, final_volume_ml — the fourth
+      comes back with the amount of solvent to add.
+    - "mixing": mixing cross. high, low and target contents in the same unit;
+      `total` scales the parts. Diluting with water is low=0.
+    - "molar_mass": molar mass with element breakdown; handles hydrates.
 
-    `substance` takes a chemical FORMULA ("NaOH", "C9H8O4", "CuSO4·5H2O"),
-    not a trivial name — for something without a clean formula, pass
-    `molar_mass_g` directly instead.
+    `substance` takes a chemical FORMULA ("NaOH", "CuSO4·5H2O"), not a
+    trivial name — without a clean formula pass `molar_mass_g` directly.
 
-    Not this tool for: content determination from a titration or photometry
-    (that is calculate_content), pH and buffers (calculate_ph), or looking
-    up a substance's properties (lookup).
+    Not this tool for: content determination from titration or photometry
+    (use calculate_content), pH and buffers (use calculate_ph), or a
+    substance's tabulated properties (use lookup).
 
     Args:
-        topic: Which calculation to run — see the list above.
+        topic: Which calculation to run — see above.
         substance: Chemical formula, e.g. "NaOH" or "CuSO4·5H2O".
-        concentration: Wanted concentration in mol/L ("weigh_in").
-        volume_ml: Volume being prepared, in mL.
-        mass_g: Mass actually weighed, in g ("concentration").
-        molar_mass_g: Molar mass in g/mol, if there is no usable formula.
-        target: Target concentration ("concentration") or target content
-            ("mixing").
-        stock_concentration: c₁ of the stock solution ("dilution").
-        stock_volume_ml: V₁, the portion of stock taken ("dilution").
-        final_concentration: c₂ after dilution ("dilution").
-        final_volume_ml: V₂, the final volume ("dilution").
+        concentration: Wanted concentration, mol/L ("weigh_in").
+        volume_ml: Volume being prepared, mL.
+        mass_g: Mass actually weighed, g ("concentration").
+        molar_mass_g: Molar mass in g/mol if there is no usable formula.
+        target: Target concentration ("concentration") or content ("mixing").
+        stock_concentration: c₁ ("dilution").
+        stock_volume_ml: V₁ ("dilution").
+        final_concentration: c₂ ("dilution").
+        final_volume_ml: V₂ ("dilution").
         high: Content of the stronger component ("mixing").
         low: Content of the weaker component, 0 for water ("mixing").
         total: Total amount wanted ("mixing").
@@ -1383,69 +1373,49 @@ def calculate_content(
 ) -> str:
     """Work out a content determination the way a lab report wants it.
 
-    Runs the whole chain in the order the protocol asks for: one content per
-    measurement → Grubbs outlier check → mean and spread → t-test against the
-    declared content. Every step comes back with formula, numbers substituted
-    and result, so it can be copied into the report and checked by someone else.
+    Runs the chain in protocol order: content per measurement → Grubbs
+    outlier check → mean and spread → t-test against the declared content,
+    each step with formula, substituted numbers and result.
 
-    Content of a substance:
+    Methods — content of a substance:
 
-    - "titration": needs `weights_mg`, `measurements` (mL of titrant) and
-      `factor_mg_per_ml` (the mg of substance one mL of titrant corresponds
-      to — it is in the monograph). `blank_ml` is subtracted from every
-      reading. Pass `reference_weights_mg` and `reference_volumes_ml` to
-      determine the titer from reference titrations first and apply it, or
-      pass a known `titer` directly.
-    - "photometry": needs `weights_mg`, `measurements` (absorbance),
-      `a1_1cm` (the specific absorbance A(1%,1cm) from the monograph),
-      `flask_volume_ml` and `dilution_factor`.
+    - "titration": weights_mg, measurements (mL), factor_mg_per_ml; a
+      reference titration determines the titer first.
+    - "photometry": weights_mg, measurements (absorbance), a1_1cm,
+      flask_volume_ml, dilution_factor.
 
     Fat characteristics and water, same input shape, all needing
-    `titrant_concentration` (mol/L of the volumetric solution actually used —
-    the short formulas in the pharmacopoeia only hold for the standard one):
+    titrant_concentration (the short formulas hold only for the standard
+    volumetric solution):
 
-    - "acid_value": free acids, in mg KOH/g. Needs `measurements` (mL of KOH).
-    - "saponification_value": total, in mg KOH/g. Back titration, so
-      `blank_ml` is the REFERENCE reading and the sample must be below it.
-      Give `known_acid_value` to also get the ester value (SV − AV).
-    - "iodine_value": double bonds, in g I₂/100 g. Back titration with
-      thiosulfate, `blank_ml` again the reference.
-    - "water_kf": Karl Fischer water content in %. Needs `titer_mg_per_ml`
-      (mg water per mL of reagent); `blank_ml` is the drift.
+    - "acid_value": free acids, mg KOH/g.
+    - "saponification_value" (mg KOH/g) and "iodine_value" (g I₂/100 g) are
+      back titrations — blank_ml is the REFERENCE reading.
+    - "water_kf": Karl Fischer, %; blank_ml is the drift.
 
-    Note that `weights_mg` is ALWAYS in mg, including for the fat
-    characteristics whose formulas are written in grams — the conversion
-    happens here.
+    weights_mg is ALWAYS mg, also for fat values.
 
-    Not this tool for: preparing a solution or diluting it (that is
-    calculate_solution), drawing the titration curve (that is
-    generate_titration_curve — this one computes, that one draws), or
-    quantifying against a measured series of standards (that is
-    generate_calibration_curve; this one uses the monograph's factor or
-    A(1%,1cm) and needs no calibration).
+    Not this tool for: preparing or diluting a solution (use
+    calculate_solution); drawing the titration curve (use
+    generate_titration_curve); quantifying against a measured series of
+    standards (use generate_calibration_curve — this one needs none).
 
     Args:
-        method: "titration" or "photometry".
-        weights_mg: Weighed portions in mg, one per measurement.
-        measurements: mL of titrant ("titration") or absorbance
-            ("photometry") — same length and order as weights_mg.
-        factor_mg_per_ml: Titration factor in mg/mL, from the monograph.
-        titer: Titer of the volumetric solution; 1.0 if it is exact.
-        blank_ml: Blank value in mL, subtracted from every reading.
-        a1_1cm: Specific absorbance A(1%,1cm) for photometry.
-        path_length_cm: Cuvette path length, normally 1 cm.
-        dilution_factor: Dilution factor of the measured solution.
-        flask_volume_ml: Volumetric flask used for the sample, in mL.
-        reference_weights_mg: Weighed portions of the reference, in mg.
-        reference_volumes_ml: Titrant used for the reference, in mL.
-        declared_content: Content the substance is declared with, in %
-            (100 for a pure substance); the t-test is run against it. Ignored
-            for the fat characteristics, which have no percentage target.
-        titrant_concentration: Concentration of the volumetric solution in
-            mol/L — required for the fat characteristics.
-        titer_mg_per_ml: Titer of the Karl Fischer reagent, mg water per mL.
-        known_acid_value: A separately determined acid value, so that
-            "saponification_value" can also report the ester value.
+        method: One of the seven above.
+        weights_mg: Weighed portions, mg, one per measurement.
+        measurements: mL titrant or absorbance, order of weights_mg.
+        factor_mg_per_ml: Titration factor from the monograph.
+        titer: Titer of the volumetric solution; 1.0 if exact.
+        blank_ml: Blank, mL (reference reading for back titrations).
+        a1_1cm: Specific absorbance A(1%,1cm).
+        path_length_cm: Cuvette path length, normally 1.
+        dilution_factor: Dilution of the measured solution.
+        flask_volume_ml: Volumetric flask, mL.
+        reference_weights_mg, reference_volumes_ml: Reference titration.
+        declared_content: Declared content, %; the t-test uses it.
+        titrant_concentration: mol/L, for fat characteristics.
+        titer_mg_per_ml: Karl Fischer titer, mg water/mL.
+        known_acid_value: Adds the ester value to saponification.
     """
     from chemdraw_tool.calculator.photometry import calculate_gehalt_uv
     from chemdraw_tool.calculator.stats import (
@@ -1640,24 +1610,19 @@ def calculate_ph(
 
     Solves the exact charge balance — the same one that draws the titration
     curve — and puts the textbook approximation next to it. Where the two
-    disagree, the approximation has lost its assumptions, and the answer says
+    disagree, the approximation has lost its assumptions and the answer says
     so instead of quietly being wrong.
 
     Pick the `topic`:
 
-    - "weak_acid": needs `concentration` and `pka` (or `pka_values` for a
-      polyprotic acid such as phosphoric acid).
-    - "weak_base": needs `concentration` and `pkb` — or `pka` of the
-      conjugate acid, since pKa + pKb = 14.
-    - "strong_acid" / "strong_base": needs `concentration`. Includes the
-      autoprotolysis of water, so 1e-8 M HCl comes out just below 7 rather
-      than alkaline.
-    - "buffer": pH of a mixture. Needs `acid_concentration`,
-      `base_concentration` and `pka`; also reports the ratio and the buffer
-      capacity, and warns when the pair is the wrong one for the pH.
-    - "buffer_recipe": how to make one. Needs `target_ph`, `pka`,
-      `total_concentration` and `volume_ml`; give `acid_molar_mass` and
-      `base_molar_mass` to get weighable masses instead of moles.
+    - "weak_acid": concentration and pka (or pka_values for a polyprotic acid).
+    - "weak_base": concentration and pkb — or pka of the conjugate acid.
+    - "strong_acid" / "strong_base": concentration. Includes the
+      autoprotolysis of water, so 1e-8 M HCl comes out just below 7.
+    - "buffer": acid_concentration, base_concentration, pka. Also reports
+      ratio and buffer capacity, and warns when the pair is wrong for the pH.
+    - "buffer_recipe": target_ph, pka, total_concentration, volume_ml;
+      acid_molar_mass and base_molar_mass turn moles into weighable masses.
 
     You supply the pKa values — they are in the monograph or the table, and
     guessing them would silently change the answer.
@@ -1942,13 +1907,12 @@ def predict_spectrum(
 
 @mcp.tool()
 def lookup(name: str, topic: LookupTopic = "properties") -> str:
-    """Look up chemical facts about a compound and return them as text.
+    """Fetch a specific fact or value about a compound as plain text.
 
-    One tool for every database question — pick the `topic`:
+    Use it when the request asks for a named piece of data — pick the `topic`:
 
     - "properties" (default): formula, molecular weight, CAS number,
-      IUPAC name, LogP, InChIKey (PubChem). The right choice whenever the
-      user just asks "what is X" or wants identification data.
+      IUPAC name, LogP, InChIKey (PubChem).
     - "safety": GHS hazards — H/P statements, pictograms, signal word.
       For lab protocols and risk assessments.
     - "physical": experimental melting point, boiling point, density,
@@ -1957,9 +1921,10 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
       enzymes and proteins (UniProt).
     - "pathway": metabolic pathways the compound appears in (KEGG).
 
-    Not this tool for: a visual data panel with the structure next to the
-    facts — use lookup_molecule_data. It draws nothing; to show a structure
-    use generate_molecule.
+    Not this tool for: a bare compound name with no named value asked for —
+    that means show the substance, use generate_molecule. Nor for a visual
+    data sheet with the structure beside the facts — use lookup_molecule_data.
+    This tool draws nothing; it returns text.
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.
@@ -2162,14 +2127,16 @@ def _lookup_pathway(name: str) -> str:
 
 @mcp.tool(structured_output=True, meta=_UI_META)
 def lookup_molecule_data(name: str) -> DatabasePayload:
-    """Show a compound's data as a visual panel: structure plus fact sheet.
+    """Show a compound's data sheet as a panel: structure plus grouped facts.
 
     Aggregates PubChem properties and GHS safety into one panel with the
-    drawn structure beside them, grouped by source. Use it when the user
-    wants an overview or a "data sheet" rather than one specific number.
+    drawn structure beside them, grouped by source. Use it when the request
+    asks for a data sheet, an overview or "all the data" on a substance.
 
-    Not this tool for: a single fact in text form, or the topics this does
-    not cover (physical constants, biochem, pathways) — that is lookup.
+    Not this tool for: a bare compound name with no data asked for — that
+    means show the substance, use generate_molecule. Nor for a single fact in
+    text form, or the topics this does not cover (physical constants,
+    biochem, pathways) — that is lookup.
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.
