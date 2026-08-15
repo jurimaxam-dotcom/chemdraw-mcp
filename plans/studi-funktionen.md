@@ -75,6 +75,17 @@ bewusst 16 → 18.
 - **Release.** Version steht weiter auf 0.3.0; der Umbau ist ein Breaking
   Change und wäre 0.4.0 — aber erst auf Jays Ansage.
 
+**Vertagt** (machbar, aber nicht um 4 Uhr autonom):
+- **Ph.-Eur.-Identitätsreaktionen als Nachschlagewerk** — der Inhalt shippt
+  schon als kuratiertes Deck `pheur-identity-basics`; nur die Lookup-Form
+  fehlt. Arzneibuch-Referenzdaten unbeaufsichtigt zu verfassen hat ein
+  Korrektheitsrisiko, das niemand gegenliest.
+- **Struktur → IUPAC-Name** — `lookup(topic="properties")` liefert den
+  IUPAC-Namen für PubChem-bekannte Stoffe bereits; für selbstgezeichnete
+  Zwischenprodukte gibt es offline nichts Leichtgewichtiges.
+- **Elektrochemie (Nernst) und Gasgesetze** — im Pharmazie-Praktikum nur
+  indirekt; erst bauen, wenn Jay sie wirklich braucht.
+
 **Verworfen** (mit Begründung, damit es nicht wiederkommt):
 - pKa-Vorhersage aus der Struktur — nur ML mit Modell-Download; die einzige
   regelbasierte Bibliothek (`dimorphite-dl`) pinnt `rdkit<2026`, das Projekt
