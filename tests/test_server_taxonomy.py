@@ -49,7 +49,9 @@ LABORGRAFIK = {
     "generate_calibration_curve",
 }
 
-NACHSCHLAGEN = {"lookup", "lookup_molecule_data"}
+# „Nachschlagen" heisst Fakten zu einem Stoff — aus einer Datenbank (lookup,
+# lookup_molecule_data) oder aus seiner Struktur abgeleitet (predict_spectrum).
+NACHSCHLAGEN = {"lookup", "lookup_molecule_data", "predict_spectrum"}
 
 # Fünfter Bereich seit 15.08.2026: Rechnungen liefern Zahl UND Rechenweg —
 # eine eigene Art Ausgabe, die weder Bild noch Datenblatt ist.
@@ -107,10 +109,11 @@ def test_tool_count_stays_reviewable():
     Kein Selbstzweck — wächst die Liste wieder Richtung 22, muss das eine
     bewusste Entscheidung sein und nicht durch Anbauen passieren. Die Grenze
     wurde am 15.08.2026 von 16 auf 18 gehoben, um den Bereich „Rechnen"
-    aufzunehmen, und auf 19 fuer die Kalibriergerade; jede Rechenart ist ein
+    aufzunehmen, auf 19 fuer die Kalibriergerade und auf 20 fuer die
+    Spektren-Vorhersage; jede Rechenart ist ein
     `topic` bzw. eine `method`, kein eigenes Tool.
     """
-    assert len(_registered()) <= 19
+    assert len(_registered()) <= 20
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -157,6 +160,8 @@ NEEDS_DELIMITATION = {
     # Beide machen aus einem Signal einen Gehalt — die eine ueber eine
     # gemessene Reihe, die andere ueber die Monographie-Konstante.
     "generate_calibration_curve": "calculate_content",
+    "predict_spectrum": "generate_spectrum",
+    "generate_spectrum": "predict_spectrum",
 }
 
 

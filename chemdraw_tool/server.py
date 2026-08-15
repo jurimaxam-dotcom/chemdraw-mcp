@@ -112,6 +112,9 @@ _CONTENT_UNITS = {
 # Rücktitrationen: Der Blindwert ist hier die Bezugsablesung, nicht ein Abzug.
 _BACK_TITRATION_METHODS = ("saponification_value", "iodine_value")
 
+# Die Fragen von `predict_spectrum`.
+SpectroTopic = Literal["ir_bands", "assign_wavenumber", "nmr_signals"]
+
 # Die Fälle von `calculate_ph`.
 PhTopic = Literal[
     "weak_acid", "weak_base", "strong_acid", "strong_base", "buffer", "buffer_recipe"
@@ -402,6 +405,10 @@ def generate_spectrum(
     supply typical literature peak positions yourself (e.g. aspirin IR:
     C=O stretch ~1750 cm⁻¹, broad O-H ~2500-3300 cm⁻¹) — the tool then
     draws exactly the peaks it is given; it does not predict spectra.
+
+    Not this tool for: working out WHICH bands to expect, or what a measured
+    wavenumber belongs to — that is predict_spectrum, whose band list can
+    then be handed to this tool for the drawing.
 
     Axis conventions are handled automatically (IR: inverted wavenumber
     axis with transmission dips; NMR: ppm axis right-to-left; MS: bar plot;
@@ -1801,6 +1808,135 @@ def calculate_ph(
     raise ValueError(
         f"Unknown topic '{topic}' — pick one of: weak_acid, weak_base, "
         "strong_acid, strong_base, buffer, buffer_recipe."
+    )
+
+
+@mcp.tool()
+def predict_spectrum(
+    topic: SpectroTopic,
+    structure: str = "",
+    wavenumber: float = 0.0,
+) -> str:
+    """Say what a spectrum of this structure should show — or read a band.
+
+    Three questions, all of them exam material:
+
+    - "ir_bands": which IR bands to expect for a structure, with range,
+      intensity and band shape, ordered as you read a spectrum (high
+      wavenumber first). Needs `structure`.
+    - "assign_wavenumber": you measured a band — which groups absorb there?
+      Ordered by how centrally the value sits in each range. Needs
+      `wavenumber` in cm⁻¹.
+    - "nmr_signals": how many ¹H signals the structure gives and in what
+      integral ratio. Needs `structure`.
+
+    Deterministic on purpose, and therefore honestly limited: band positions
+    come from a curated table matched to the structure, signals from the
+    topological equivalence of the protons. It does NOT predict chemical
+    shifts in ppm — that would take a model and would be guesswork.
+
+    The band list is ready to hand to generate_spectrum if a drawing is
+    wanted; this tool only says what to expect.
+
+    Not this tool for: drawing a spectrum from peaks you already have
+    (generate_spectrum), or looking up measured data for a substance
+    (lookup).
+
+    Args:
+        topic: Which question to answer — see the list above.
+        structure: SMILES of the compound ("ir_bands", "nmr_signals").
+            Resolve a name to SMILES first if needed.
+        wavenumber: Measured band position in cm⁻¹ ("assign_wavenumber").
+    """
+    from chemdraw_tool import spectro
+
+    if topic == "ir_bands":
+        if not structure:
+            raise ValueError("topic='ir_bands' needs a structure (SMILES).")
+        bands = spectro.expected_ir_bands(structure)
+        if not bands:
+            return (
+                f"# Expected IR bands\n\nNo characteristic bands found for "
+                f"`{structure}` — the table covers the common functional "
+                "groups, so an exotic structure can come back empty."
+            )
+        lines = [
+            f"# Expected IR bands for `{structure}`",
+            "",
+            "| Wavenumber [cm⁻¹] | Group | Intensity | Shape |",
+            "|---|---|---|---|",
+        ]
+        for b in bands:
+            lines.append(
+                f"| {b['high']}–{b['low']} | {b['group']} | "
+                f"{b['intensity']} | {b['shape']} |"
+            )
+        hints = [b for b in bands if b["hint"]]
+        if hints:
+            lines.append("\n## What to look at first")
+            lines.extend(f"- **{b['group']}** — {b['hint']}" for b in hints)
+        lines.append(
+            "\nRanges are typical values; conjugation lowers a C=O by roughly "
+            "20–30 cm⁻¹, a small ring raises it."
+        )
+        return "\n".join(lines)
+
+    if topic == "assign_wavenumber":
+        if not wavenumber:
+            raise ValueError(
+                "topic='assign_wavenumber' needs a wavenumber in cm⁻¹."
+            )
+        hits = spectro.assign_wavenumber(wavenumber)
+        if not hits:
+            return (
+                f"# {wavenumber:g} cm⁻¹\n\nNothing in the table absorbs there. "
+                f"IR spectra run from {spectro.IR_MIN} to {spectro.IR_MAX} cm⁻¹; "
+                "below about 1500 lies the fingerprint region, which is "
+                "matched against a reference spectrum rather than assigned "
+                "band by band."
+            )
+        lines = [
+            f"# Bands at {wavenumber:g} cm⁻¹",
+            "",
+            "Most likely first — a value in the middle of a range is a better "
+            "match than one at its edge.",
+            "",
+            "| Group | Range [cm⁻¹] | Intensity | Shape |",
+            "|---|---|---|---|",
+        ]
+        for h in hits:
+            lines.append(
+                f"| **{h['group']}** | {h['high']}–{h['low']} | "
+                f"{h['intensity']} | {h['shape']} |"
+            )
+        distinguishing = [h for h in hits if h["hint"]]
+        if distinguishing:
+            lines.append("\n## How to tell them apart")
+            lines.extend(f"- **{h['group']}** — {h['hint']}" for h in distinguishing)
+        return "\n".join(lines)
+
+    if topic == "nmr_signals":
+        if not structure:
+            raise ValueError("topic='nmr_signals' needs a structure (SMILES).")
+        r = spectro.proton_signals(structure)
+        lines = [
+            f"# ¹H signals for `{structure}`",
+            "",
+            f"**{r['count']} signal(s), {r['total_hydrogens']} hydrogens**",
+            "",
+            f"- Integral ratio: {':'.join(str(i) for i in r['integrals']) or '—'}",
+            f"- {r['explanation']}",
+            "",
+            "## Limitation",
+            f"- {r['limitation']}",
+            "- No chemical shifts: predicting ppm values takes a model, and a "
+            "guessed shift is worse than none.",
+        ]
+        return "\n".join(lines)
+
+    raise ValueError(
+        f"Unknown topic '{topic}' — pick one of: ir_bands, assign_wavenumber, "
+        "nmr_signals."
     )
 
 
