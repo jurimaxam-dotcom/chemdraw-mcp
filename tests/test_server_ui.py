@@ -128,14 +128,12 @@ _KNOWN_PANEL_TOOLS = frozenset(
         "batch_generate",
         "generate_mechanism",
         "generate_spectrum",
-        "calculate_validation",
         "lookup_molecule_data",
         "export_anki_deck",
         "generate_titration_curve",
         "generate_species_distribution",
         "compare_molecules",
         "generate_3d",
-        "export_curated_deck",
     }
 )
 

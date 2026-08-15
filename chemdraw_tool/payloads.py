@@ -166,53 +166,6 @@ class MechanismPayload(BaseModel):
     current_step: int = 0
 
 
-class CalculationStep(BaseModel):
-    label: str
-    formula: str
-    substitution: str
-    result: str
-    explanation: str = ""
-    is_outlier: bool = False
-
-
-class MethodResult(BaseModel):
-    name: str
-    gehalt_steps: list[CalculationStep]
-    mean: float
-    std_abs: float
-    std_rel: float
-    variance: float
-    recovery: float
-    rel_deviation: float
-    t_test_value: float
-    t_test_critical: float
-    t_test_passed: bool
-    t_test_explanation: str = ""
-
-
-class MethodComparison(BaseModel):
-    f_test_value: float
-    f_test_critical: float
-    f_test_passed: bool
-    f_test_explanation: str = ""
-    t_test_value: float
-    t_test_critical: float
-    t_test_passed: bool
-    t_test_explanation: str = ""
-    result_text: str
-
-
-class ValidationPayload(BaseModel):
-    type: str = "validation"
-    variante: str
-    substance: str
-    wahrer_wert: float
-    method_a: MethodResult
-    method_b: MethodResult
-    comparison: MethodComparison
-    summary: str = ""
-
-
 class ReactionSpec(BaseModel):
     """Reaction visual on an Anki card side (names or SMILES)."""
 

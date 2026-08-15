@@ -1,11 +1,11 @@
 import re
 from importlib.metadata import version as _pkg_version
 from pathlib import Path
+from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
 
 from chemdraw_tool.cdxml_writer import write_cdxml
-from chemdraw_tool.chemdraw import find_chemdraw, open_in_chemdraw
 from chemdraw_tool.databases import (
     _get_cid,
     chebi_lookup,
@@ -32,7 +32,6 @@ from chemdraw_tool.payloads import (
     AnkiCard,
     AnkiDeckPayload,
     BatchPayload,
-    CalculationStep,
     DatabasePayload,
     DatabaseRow,
     DatabaseSource,
@@ -40,8 +39,6 @@ from chemdraw_tool.payloads import (
     LipinskiData,
     MechanismPayload,
     MechanismStepPayload,
-    MethodComparison,
-    MethodResult,
     Molecule3DPayload,
     MoleculePayload,
     PlotPayload,
@@ -53,7 +50,6 @@ from chemdraw_tool.payloads import (
     SpectrumPeak,
     TlcLane,
     TlcPayload,
-    ValidationPayload,
 )
 from chemdraw_tool.render_style import condense_groups, get_style
 from chemdraw_tool.resolver import resolve
@@ -80,6 +76,10 @@ THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
 VALID_FORMATS = ("png", "svg", "cdxml")
 DEFAULT_FORMATS = ("png", "svg")
+
+# Die Themen des gebündelten `lookup`. Als Literal, damit schon das
+# Tool-Schema die Auswahl eingrenzt — Prosa im Docstring täte das nicht.
+LookupTopic = Literal["properties", "safety", "physical", "biochem", "pathway"]
 
 
 def _normalize_formats(formats: list[str] | None) -> list[str]:
@@ -257,7 +257,13 @@ def generate_molecule(
     installation required.
 
     Use this tool when the user mentions structural formulas, molecular
-    structures, or chemical drawings.
+    structures, or chemical drawings. It is the DEFAULT for a single
+    structure — "draw aspirin", "show me the structure of caffeine".
+
+    Not this tool for: several products of one reaction with yields
+    (generate_scope_table), several unrelated structures as separate files
+    (batch_generate), highlighting differences between structures
+    (compare_molecules), or an equation with an arrow (generate_reaction).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
@@ -510,7 +516,10 @@ def generate_scope_table(
     Suzuki couplings", "make a figure of these five products with yields",
     a table of derivatives with yields).
 
-    Not this tool for: a single equation (generate_reaction) or unrelated
+    Not this tool for: ONE single molecule — that is generate_molecule, even
+    when a title or a caption is wanted. A scope figure needs several
+    products of the SAME reaction; with one entry it is the wrong figure.
+    Also not for a single equation (generate_reaction) or unrelated
     structures as separate files (batch_generate).
 
     All structures share ONE bond length, the captions share one baseline
@@ -659,15 +668,24 @@ def generate_scope_table(
 
 @mcp.tool(structured_output=True, meta=_UI_META)
 def export_anki_deck(
-    deck_name: str,
-    cards: list[AnkiCard],
+    deck_name: str = "",
+    cards: list[AnkiCard] | None = None,
     default_tags: list[str] | None = None,
     deliver: str = "apkg",
+    curated_deck_id: str = "",
 ) -> AnkiDeckPayload:
     """Export an Anki flashcard deck (.apkg) with rendered chemistry images.
 
     Use this whenever the user wants flashcards, Anki cards or a study deck
     for molecules, reactions (e.g. pharmacopoeia identity tests) or spectra.
+
+    Two ways to fill the deck. Either pass `cards` you wrote yourself, or
+    pass `curated_deck_id` for a ready-made, formula-verified starter deck:
+
+    - "analgesics-structures": structure → name drills for 8 classic
+      analgesics (NSAIDs, paracetamol, morphine, celecoxib).
+    - "pheur-identity-basics": classic Ph.Eur. identity tests — reagent,
+      observation and reaction scheme where it helps.
 
     The tool renders the images reliably — YOU supply the card content from
     your knowledge, like with generate_spectrum. Each card side carries text
@@ -693,18 +711,27 @@ def export_anki_deck(
 
     Args:
         deck_name: Anki deck name, also used for the filename. "::" nests
-            subdecks. Re-use the exact same name to update a deck.
+            subdecks. Re-use the exact same name to update a deck. Ignored
+            when curated_deck_id is set — the curated deck brings its name.
         cards: The flashcards. Keep fronts unambiguous; explanations belong
             on the back. tags/reversed/cloze are per-card options.
         default_tags: Tags added to every card in the deck.
         deliver: "apkg" (default — file only) or "ankiconnect" (additionally
             imports into the RUNNING Anki via the AnkiConnect add-on;
             requires the user to have it installed).
+        curated_deck_id: "analgesics-structures" or "pheur-identity-basics"
+            to export a bundled starter deck instead of your own cards.
     """
-    if not cards:
-        raise ValueError("Das Deck braucht mindestens eine Karte.")
+    if curated_deck_id:
+        from chemdraw_tool.curated_decks import get_curated_deck
 
-    card_models = [AnkiCard.model_validate(c) for c in cards]
+        deck_name, card_models = get_curated_deck(curated_deck_id)
+    else:
+        if not cards:
+            raise ValueError("Das Deck braucht mindestens eine Karte.")
+        if not deck_name:
+            raise ValueError("Das Deck braucht einen Namen.")
+        card_models = [AnkiCard.model_validate(c) for c in cards]
     out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
 
     import chemdraw_tool.anki_export as _anki
@@ -720,37 +747,6 @@ def export_anki_deck(
         fronts=[c.front.text or c.front.structure for c in card_models],
         file=str(out_path),
         delivery=delivery,
-    )
-
-
-@mcp.tool(structured_output=True, meta=_UI_META)
-def export_curated_deck(deck_id: str) -> AnkiDeckPayload:
-    """Export one of the small, curated Anki starter decks (.apkg).
-
-    Curated and formula-verified content (textbook classics only):
-    - "analgesics-structures": structure → name drills for 8 classic
-      analgesics (NSAIDs, paracetamol, morphine, celecoxib).
-    - "pheur-identity-basics": classic Ph.Eur. identity tests — reagent,
-      observation and reaction scheme where it helps.
-
-    Use this when the user wants a ready-made starter deck. For custom
-    content, build cards yourself and call export_anki_deck instead.
-
-    Args:
-        deck_id: "analgesics-structures" or "pheur-identity-basics".
-    """
-    from chemdraw_tool.anki_export import write_deck
-    from chemdraw_tool.curated_decks import get_curated_deck
-
-    deck_name, cards = get_curated_deck(deck_id)
-    out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
-    stats = write_deck(deck_name, cards, out_path)
-    return AnkiDeckPayload(
-        name=deck_name,
-        cards=stats["cards"],
-        media=stats["media"],
-        fronts=[c.front.text or c.front.structure for c in cards],
-        file=str(out_path),
     )
 
 
@@ -869,6 +865,10 @@ def compare_molecules(
     Use this when the user wants to compare structures, see differences
     between compounds, or study a drug class.
 
+    Not this tool for: a single structure (generate_molecule), or several
+    structures that are merely to be drawn rather than contrasted
+    (batch_generate).
+
     Args:
         structures: 2-4 English/IUPAC names or SMILES strings.
         labels: Optional display names under each panel (localizable).
@@ -942,16 +942,52 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
 
 @mcp.tool()
-def lookup_compound(name: str) -> str:
-    """Look up chemical compound properties from PubChem.
+def lookup(name: str, topic: LookupTopic = "properties") -> str:
+    """Look up chemical facts about a compound and return them as text.
 
-    Use this when the user asks about properties, molecular weight,
-    formula, CAS number, or general information about a chemical compound.
-    Returns verified data from PubChem with source citation.
+    One tool for every database question — pick the `topic`:
+
+    - "properties" (default): formula, molecular weight, CAS number,
+      IUPAC name, LogP, InChIKey (PubChem). The right choice whenever the
+      user just asks "what is X" or wants identification data.
+    - "safety": GHS hazards — H/P statements, pictograms, signal word.
+      For lab protocols and risk assessments.
+    - "physical": experimental melting point, boiling point, density,
+      solubility.
+    - "biochem": compound class and biological role (ChEBI), related
+      enzymes and proteins (UniProt).
+    - "pathway": metabolic pathways the compound appears in (KEGG).
+
+    Not this tool for: a visual data panel with the structure next to the
+    facts — use lookup_molecule_data. It draws nothing; to show a structure
+    use generate_molecule.
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.
 
     Args:
-        name: Compound name (e.g. 'Aspirin', 'Sulfanilsäure', 'Histidin').
+        name: English/IUPAC compound name (e.g. 'Aspirin', 'Histidine').
+        topic: Which facts to fetch — see the list above.
     """
+    # Kein dict.get(...) mit Fallback: ein vertipptes Thema würde sonst still
+    # die Grunddaten liefern und wie eine Antwort auf die gestellte Frage
+    # aussehen. Lieber hörbar scheitern.
+    handlers = {
+        "properties": _lookup_compound,
+        "safety": _lookup_safety,
+        "physical": _lookup_physical,
+        "biochem": _lookup_biochem,
+        "pathway": _lookup_pathway,
+    }
+    if topic not in handlers:
+        raise ValueError(
+            f"Unbekanntes topic '{topic}' — erlaubt: {', '.join(handlers)}."
+        )
+    return handlers[topic](name)
+
+
+def _lookup_compound(name: str) -> str:
+    """PubChem-Grunddaten als Markdown — Thema "properties" von `lookup`."""
     lines = [f"## {name} — PubChem-Daten\n"]
     cid = "?"
 
@@ -1004,16 +1040,8 @@ def lookup_compound(name: str) -> str:
     return "\n".join(lines)
 
 
-@mcp.tool()
-def lookup_safety(name: str) -> str:
-    """Look up GHS safety data for a chemical compound.
-
-    Use this when the user asks about safety, hazards, H-Sätze, P-Sätze,
-    GHS pictograms, or needs safety info for a lab protocol.
-
-    Args:
-        name: Compound name.
-    """
+def _lookup_safety(name: str) -> str:
+    """GHS-Gefahrstoffdaten als Markdown — Thema "safety" von `lookup`."""
     cid = _get_cid(name)
     if cid is None:
         return f"Verbindung '{name}' nicht in PubChem gefunden."
@@ -1039,17 +1067,8 @@ def lookup_safety(name: str) -> str:
     return "\n".join(lines)
 
 
-@mcp.tool()
-def lookup_physical(name: str) -> str:
-    """Look up physical properties of a compound (melting point, boiling point,
-    solubility, density).
-
-    Use this when the user asks about physical properties, aggregation state,
-    or needs data for substance identification.
-
-    Args:
-        name: Compound name.
-    """
+def _lookup_physical(name: str) -> str:
+    """Schmelz-/Siedepunkt, Dichte, Löslichkeit — Thema "physical" von `lookup`."""
     cid = _get_cid(name)
     if cid is None:
         return f"Verbindung '{name}' nicht in PubChem gefunden."
@@ -1077,17 +1096,8 @@ def lookup_physical(name: str) -> str:
     return "\n".join(lines)
 
 
-@mcp.tool()
-def lookup_biochem(name: str) -> str:
-    """Look up biochemical classification from ChEBI and related enzyme/protein
-    info from UniProt.
-
-    Use this when the user asks what type of compound something is, its
-    biological role, or related enzymes.
-
-    Args:
-        name: Compound or enzyme name.
-    """
+def _lookup_biochem(name: str) -> str:
+    """ChEBI-Klassifikation + UniProt-Enzyme — Thema "biochem" von `lookup`."""
     lines = [f"## {name} — Biochemische Einordnung\n"]
 
     chebi = chebi_lookup(name)
@@ -1121,16 +1131,8 @@ def lookup_biochem(name: str) -> str:
     return "\n".join(lines)
 
 
-@mcp.tool()
-def lookup_pathway(name: str) -> str:
-    """Look up metabolic pathways for a compound from KEGG.
-
-    Use this when the user asks where a compound appears in metabolism,
-    which pathways it belongs to, or its biological context.
-
-    Args:
-        name: Compound name.
-    """
+def _lookup_pathway(name: str) -> str:
+    """KEGG-Stoffwechselwege — Thema "pathway" von `lookup`."""
     kegg_id = kegg_find(name)
     if kegg_id is None:
         return f"'{name}' nicht in KEGG gefunden."
@@ -1161,14 +1163,20 @@ def lookup_pathway(name: str) -> str:
 
 @mcp.tool(structured_output=True, meta=_UI_META)
 def lookup_molecule_data(name: str) -> DatabasePayload:
-    """Look up aggregated molecule data (PubChem + GHS safety) for the DatabaseView UI.
+    """Show a compound's data as a visual panel: structure plus fact sheet.
 
-    Use this when the user wants a structured overview of a compound's properties
-    and safety information in the UI panel. Returns SVG structure plus all relevant
-    database rows grouped by source.
+    Aggregates PubChem properties and GHS safety into one panel with the
+    drawn structure beside them, grouped by source. Use it when the user
+    wants an overview or a "data sheet" rather than one specific number.
+
+    Not this tool for: a single fact in text form, or the topics this does
+    not cover (physical constants, biochem, pathways) — that is lookup.
+
+    IMPORTANT: Always pass English or IUPAC compound names, never localized
+    names ('Aspirin' not 'Acetylsalicylsäure'). SMILES are always safe.
 
     Args:
-        name: Compound name or SMILES string (e.g. 'Aspirin', 'Paracetamol').
+        name: English/IUPAC compound name or SMILES (e.g. 'Aspirin').
     """
     from chemdraw_tool.svg_renderer import render_svg
 
@@ -1263,6 +1271,10 @@ def generate_reaction(
     no ChemDraw required. Conditions appear above the arrow in the UI preview.
 
     Use this when the user describes a chemical reaction with educts and products.
+
+    Not this tool for: the step-by-step course with electron-flow arrows —
+    that is generate_mechanism. Also not for many products of one reaction
+    with yields (generate_scope_table).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
@@ -1384,6 +1396,10 @@ def batch_generate(
     Use this when the user wants several individual structures generated
     in one step (e.g. 'Draw Aspirin, Paracetamol and Ibuprofen').
 
+    Not this tool for: ONE molecule — that is generate_molecule. Also not
+    for products of one reaction with yields (generate_scope_table) or for
+    contrasting structures (compare_molecules).
+
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
     not 'Coffein', 'Ascorbic acid' not 'Ascorbinsäure'. SMILES strings are
@@ -1496,6 +1512,10 @@ def generate_mechanism(
     Use this when the user asks about a reaction mechanism, electron-flow
     arrows, or wants to see how a reaction proceeds step by step.
 
+    Not this tool for: the net equation educt → product without
+    intermediates — that is generate_reaction. Only the mechanism types
+    listed in reaction_type exist; for anything else use generate_reaction.
+
     Args:
         reaction_type: Mechanism type (e.g. "sn2", "sn1", "fischer_ester").
         substrates: List of substrate SMILES or names.
@@ -1566,234 +1586,16 @@ def generate_mechanism(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
-def calculate_validation(
-    variante: str,
-    wahrer_wert: float,
-    acid_einwaagen: list[float],
-    acid_volumina: list[float],
-    acid_referenz_einwaagen: list[float],
-    acid_referenz_volumina: list[float],
-    acid_blindwert: float,
-    uv_einwaagen: list[float] | None = None,
-    uv_absorptionen: list[float] | None = None,
-    uv_verduennungsfaktor: float = 100.0,
-    uv_kolbenvolumen_ml: float = 100.0,
-) -> ValidationPayload:
-    """Calculate the complete Rechenweg for a validation experiment (Analyse 5).
-
-    Compares two analytical methods (UV/HPLC vs. Acidimetry) using
-    F-test and Welch t-test. Returns structured results with step-by-step
-    calculations and explanations.
-
-    Use this when the user provides measurement data for a validation
-    experiment and wants the Rechenweg, statistics, and method comparison.
-
-    Args:
-        variante: "A" (HPLC/Ibuprofen) or "B" (UV/Ascorbinsäure).
-        wahrer_wert: True value in % (given by the lab).
-        acid_einwaagen: Weighings for analyses 1-6 in mg (Acidimetry).
-        acid_volumina: Titration volumes for analyses 1-6 in mL.
-        acid_referenz_einwaagen: Weighings for references 1+2 in mg.
-        acid_referenz_volumina: Titration volumes for references 1+2 in mL.
-        acid_blindwert: Blank titration volume in mL.
-        uv_einwaagen: (Variante B) Weighings in mg for UV measurements.
-        uv_absorptionen: (Variante B) Measured absorptions.
-        uv_verduennungsfaktor: Total dilution factor for UV measurement (default 100).
-        uv_kolbenvolumen_ml: Volumetric flask volume in mL (default 100).
-    """
-    from chemdraw_tool.calculator.stats import (
-        descriptive_stats,
-        f_test,
-        one_sample_t_test,
-        welch_t_test,
-    )
-    from chemdraw_tool.calculator.titration import (
-        SUBSTANCE_FACTORS,
-        calculate_gehalt_titration,
-        calculate_titer,
-    )
-
-    variante = variante.upper()
-    if variante == "B":
-        substance = "Ascorbinsäure"
-        substance_key = "ascorbinsaeure"
-    elif variante == "A":
-        raise ValueError(
-            "Variante A (HPLC/Ibuprofen) ist noch nicht implementiert. "
-            "Aktuell wird nur Variante B (UV/Ascorbinsäure) unterstützt."
-        )
-    else:
-        raise ValueError(
-            f"Unbekannte Variante '{variante}'. Aktuell nur 'B' unterstützt."
-        )
-
-    # --- Method A: UV-Photometrie (Variante B) ---
-    if variante == "B":
-        if not uv_einwaagen or not uv_absorptionen:
-            raise ValueError(
-                "UV-Daten (uv_einwaagen, uv_absorptionen) sind für "
-                "Variante B erforderlich."
-            )
-        from chemdraw_tool.calculator.photometry import calculate_gehalt_uv
-
-        uv_raw = calculate_gehalt_uv(
-            einwaagen=uv_einwaagen,
-            absorptionen=uv_absorptionen,
-            substance=substance_key,
-            verduennungsfaktor=uv_verduennungsfaktor,
-            kolbenvolumen_ml=uv_kolbenvolumen_ml,
-        )
-        uv_gehalte = [r["gehalt"] for r in uv_raw]
-        uv_steps = [
-            CalculationStep(
-                label=r["label"],
-                formula=r["formula"],
-                substitution=r["substitution"],
-                result=r["result"],
-                explanation=r["explanation"],
-            )
-            for r in uv_raw
-        ]
-        uv_stats = descriptive_stats(uv_gehalte, true_value=wahrer_wert)
-        uv_t = one_sample_t_test(uv_gehalte, mu=wahrer_wert)
-        method_a = MethodResult(
-            name="UV-Photometrie",
-            gehalt_steps=uv_steps,
-            mean=uv_stats["mean"],
-            std_abs=uv_stats["std_abs"],
-            std_rel=uv_stats["std_rel"],
-            variance=uv_stats["variance"],
-            recovery=uv_stats.get("recovery", 0.0),
-            rel_deviation=uv_stats.get("rel_deviation", 0.0),
-            t_test_value=uv_t["t_value"],
-            t_test_critical=uv_t["t_critical"],
-            t_test_passed=uv_t["passed"],
-            t_test_explanation=(
-                f"Einstichproben-t-Test: t = |x̄ − µ| / (s / √n) = "
-                f"{uv_t['t_value']:.3f}. "
-                f"t_krit({uv_t['df']} FG, α=0,05) = {uv_t['t_critical']:.3f}. "
-                f"{'Bestanden' if uv_t['passed'] else 'Nicht bestanden'}: "
-                f"{'t < t_krit → kein signifikanter Unterschied zum wahren Wert.' if uv_t['passed'] else 't ≥ t_krit → signifikanter Unterschied zum wahren Wert.'}"
-            ),
-        )
-    else:  # unreachable: nur Variante B erreicht diesen Block
-        raise ValueError(f"Interner Fehler: unerwartete Variante '{variante}'.")
-
-    # --- Method B: Acidimetrie ---
-    faktor = SUBSTANCE_FACTORS[substance_key]
-    titer = calculate_titer(
-        acid_referenz_einwaagen,
-        acid_referenz_volumina,
-        acid_blindwert,
-        faktor,
-    )
-    acid_raw = calculate_gehalt_titration(
-        einwaagen=acid_einwaagen,
-        volumina=acid_volumina,
-        blindwert=acid_blindwert,
-        faktor=faktor,
-        titer=titer,
-    )
-    acid_gehalte = [r["gehalt"] for r in acid_raw]
-    acid_steps = [
-        CalculationStep(
-            label=r["label"],
-            formula=r["formula"],
-            substitution=r["substitution"],
-            result=r["result"],
-            explanation=r["explanation"],
-        )
-        for r in acid_raw
-    ]
-    acid_stats = descriptive_stats(acid_gehalte, true_value=wahrer_wert)
-    acid_t = one_sample_t_test(acid_gehalte, mu=wahrer_wert)
-    method_b = MethodResult(
-        name="Acidimetrie",
-        gehalt_steps=acid_steps,
-        mean=acid_stats["mean"],
-        std_abs=acid_stats["std_abs"],
-        std_rel=acid_stats["std_rel"],
-        variance=acid_stats["variance"],
-        recovery=acid_stats.get("recovery", 0.0),
-        rel_deviation=acid_stats.get("rel_deviation", 0.0),
-        t_test_value=acid_t["t_value"],
-        t_test_critical=acid_t["t_critical"],
-        t_test_passed=acid_t["passed"],
-        t_test_explanation=(
-            f"Einstichproben-t-Test: t = |x̄ − µ| / (s / √n) = "
-            f"{acid_t['t_value']:.3f}. "
-            f"t_krit({acid_t['df']} FG, α=0,05) = {acid_t['t_critical']:.3f}. "
-            f"{'Bestanden' if acid_t['passed'] else 'Nicht bestanden'}."
-        ),
-    )
-
-    # --- Method Comparison ---
-    f_result = f_test(uv_gehalte, acid_gehalte)
-    welch_result = welch_t_test(uv_gehalte, acid_gehalte)
-
-    if f_result["passed"] and welch_result["passed"]:
-        result_text = "Methoden sind gleichwertig (F-Test und t-Test bestanden)."
-    elif not f_result["passed"]:
-        result_text = (
-            "Methoden sind NICHT gleichwertig — die Präzision "
-            "unterscheidet sich signifikant (F-Test nicht bestanden)."
-        )
-    else:
-        result_text = (
-            "Methoden sind NICHT gleichwertig — die Mittelwerte "
-            "unterscheiden sich signifikant (t-Test nicht bestanden)."
-        )
-
-    comparison = MethodComparison(
-        f_test_value=f_result["f_value"],
-        f_test_critical=f_result["f_critical"],
-        f_test_passed=f_result["passed"],
-        f_test_explanation=(
-            f"F-Test: F = s₁²/s₂² = {f_result['f_value']:.3f}. "
-            f"F_krit = {f_result['f_critical']:.3f}. "
-            f"{'Varianzen gleichwertig.' if f_result['passed'] else 'Varianzen unterschiedlich.'}"
-        ),
-        t_test_value=welch_result["t_value"],
-        t_test_critical=welch_result["t_critical"],
-        t_test_passed=welch_result["passed"],
-        t_test_explanation=(
-            f"Welch-t-Test: t = {welch_result['t_value']:.3f}. "
-            f"t_krit({welch_result['df']} FG) = {welch_result['t_critical']:.3f}. "
-            f"{'Mittelwerte gleichwertig.' if welch_result['passed'] else 'Mittelwerte unterschiedlich.'}"
-        ),
-        result_text=result_text,
-    )
-
-    # --- Summary ---
-    summary = (
-        f"Validierung {substance} (Variante {variante}): "
-        f"UV-Photometrie Gehalt = {method_a.mean:.2f} ± {method_a.std_abs:.2f} % "
-        f"(WFR {method_a.recovery:.1f} %), "
-        f"Acidimetrie Gehalt = {method_b.mean:.2f} ± {method_b.std_abs:.2f} % "
-        f"(WFR {method_b.recovery:.1f} %). "
-        f"Methodenvergleich: {result_text}"
-    )
-
-    return ValidationPayload(
-        type="validation",
-        variante=variante,
-        substance=substance,
-        wahrer_wert=wahrer_wert,
-        method_a=method_a,
-        method_b=method_b,
-        comparison=comparison,
-        summary=summary,
-    )
-
-
 @mcp.tool()
 def save_png(png_base64: str, filename: str) -> str:
-    """Persist a client-rendered PNG to ~/ChemDraw-Output/png/ and return its path.
+    """Internal helper for the panel UI — never call this directly.
 
-    Fallback path for the UI: used when the app's image-clipboard write is
-    blocked by the sandbox. Expects a base64 PNG (with or without a
-    `data:image/png;base64,` prefix).
+    The panel's export button calls it when the image clipboard is blocked
+    by the sandbox; saving a picture is the user's click, not yours. The
+    generate_* tools already write their PNG and SVG files themselves.
+
+    Expects a base64 PNG (with or without a `data:image/png;base64,`
+    prefix) and returns the path it was written to.
     """
     from chemdraw_tool.png_writer import save_png_bytes
 
@@ -1803,57 +1605,6 @@ def save_png(png_base64: str, filename: str) -> str:
     except (ValueError, OSError) as exc:
         return f"Fehler: {exc}"
     return str(path)
-
-
-@mcp.tool()
-def open_chemdraw_file(
-    file_path: str = "", name_or_smiles: str = "", cleanup: bool = True
-) -> str:
-    """Open a structure in ChemDraw for review or editing (macOS only).
-
-    Provide EITHER file_path (an existing .cdxml/.cdx file, e.g. from a
-    generate_* call with formats=["cdxml"]) OR name_or_smiles — then the
-    structure is generated as CDXML on demand and opened directly; no prior
-    generate_molecule call needed. By default runs Clean Up Structure to
-    standardize bond geometry.
-
-    Args:
-        file_path: Absolute path to an existing .cdxml file.
-        name_or_smiles: English/IUPAC name or SMILES to generate & open.
-        cleanup: Run Clean Up Structure after opening (default: True).
-    """
-    if not file_path and not name_or_smiles:
-        return (
-            "Bitte entweder file_path (vorhandene .cdxml-Datei) oder "
-            "name_or_smiles (Struktur wird dann direkt erzeugt) angeben."
-        )
-
-    if not file_path:
-        smiles, mol = resolve(name_or_smiles)
-        mol = generate_2d(mol)
-        input_issues = validate_input(mol)
-        for issue in input_issues:
-            if issue.severity == Severity.ERROR:
-                raise ValueError(f"Input validation failed: {issue.message}")
-        slug = _slugify(name_or_smiles)
-        _, file_path = _write_structure_files(mol, slug, name_or_smiles, ["cdxml"])
-
-    if Path(file_path).suffix.lower() not in (".cdxml", ".cdx"):
-        return f"Nur ChemDraw-Dateien (.cdxml/.cdx) werden geöffnet, nicht: {file_path}"
-
-    if not Path(file_path).exists():
-        return f"Datei nicht gefunden: {file_path}"
-
-    if find_chemdraw() is None:
-        return "ChemDraw ist auf diesem Mac nicht installiert."
-
-    success = open_in_chemdraw(file_path, cleanup=cleanup)
-    if success:
-        msg = f"Geöffnet in ChemDraw: {file_path}"
-        if cleanup:
-            msg += " (Clean Up Structure ausgeführt)"
-        return msg
-    return f"Fehler beim Öffnen: {file_path}"
 
 
 if vault_enabled():

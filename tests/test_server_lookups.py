@@ -18,13 +18,30 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from chemdraw_tool.server import (
-    lookup_biochem,
-    lookup_compound,
-    lookup_pathway,
-    lookup_physical,
-    lookup_safety,
-)
+from chemdraw_tool.server import lookup
+
+
+# Seit dem Bündeln (15.08.2026) gibt es nach außen nur noch `lookup(name, topic)`.
+# Die Tests rufen weiter pro Thema auf — über diese Weichen, damit jeder Test
+# zusätzlich den Dispatch mitprüft, statt an den privaten Helfern vorbeizulaufen.
+def lookup_compound(name):
+    return lookup(name, topic="properties")
+
+
+def lookup_safety(name):
+    return lookup(name, topic="safety")
+
+
+def lookup_physical(name):
+    return lookup(name, topic="physical")
+
+
+def lookup_biochem(name):
+    return lookup(name, topic="biochem")
+
+
+def lookup_pathway(name):
+    return lookup(name, topic="pathway")
 
 # --- HTTP-Attrappe ----------------------------------------------------------
 

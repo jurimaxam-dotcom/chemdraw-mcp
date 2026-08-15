@@ -59,25 +59,46 @@ def test_generate_3d_writes_sdf_and_payload(tmp_path, monkeypatch):
     assert "V2000" in sdf.read_text()
 
 
-def test_export_curated_deck(tmp_path, monkeypatch):
+def test_curated_deck_via_parameter(tmp_path, monkeypatch):
+    """Die Starter-Decks sind seit dem Bündeln ein Parameter, kein eigenes Tool."""
     monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
-    from chemdraw_tool.server import export_curated_deck
 
-    payload = export_curated_deck("analgesics-structures")
+    payload = export_anki_deck(curated_deck_id="analgesics-structures")
     assert payload.type == "anki_deck"
     assert payload.name == "Common Analgesics — Structures"
     assert payload.cards == 8
     assert Path(payload.file).exists()
 
 
-def test_export_curated_deck_unknown_id(tmp_path, monkeypatch):
+def test_curated_deck_id_beats_own_cards(tmp_path, monkeypatch):
+    """Beides gesetzt: das kuratierte Deck gewinnt — inklusive seines Namens.
+
+    Sonst entstünde ein Deck, dessen Name nicht zu seinem Inhalt passt.
+    """
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+
+    payload = export_anki_deck(
+        "Mein Name", _cards(), curated_deck_id="analgesics-structures"
+    )
+    assert payload.name == "Common Analgesics — Structures"
+    assert payload.cards == 8
+
+
+def test_curated_deck_unknown_id(tmp_path, monkeypatch):
     monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
     import pytest
 
-    from chemdraw_tool.server import export_curated_deck
-
     with pytest.raises(ValueError, match="pheur-identity-basics"):
-        export_curated_deck("nope")
+        export_anki_deck(curated_deck_id="nope")
+
+
+def test_export_anki_deck_needs_a_name_for_own_cards(tmp_path, monkeypatch):
+    """Ohne kuratiertes Deck bleiben Name und Karten Pflicht."""
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    import pytest
+
+    with pytest.raises(ValueError, match="Namen"):
+        export_anki_deck("", _cards())
 
 
 def test_export_anki_deck_with_ankiconnect_delivery(tmp_path, monkeypatch):

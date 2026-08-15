@@ -3,7 +3,6 @@ import MoleculeView from "./MoleculeView";
 import ReactionView from "./ReactionView";
 import DatabaseView from "./DatabaseView";
 import MechanismView from "./MechanismView";
-import ValidationView from "./ValidationView";
 import SpectrumView from "./SpectrumView";
 import TlcView from "./TlcView";
 import ScopeView from "./ScopeView";
@@ -31,8 +30,6 @@ export default function App({ data }) {
       );
     case "mechanism":
       return <MechanismView data={data} />;
-    case "validation":
-      return <ValidationView data={data} />;
     case "spectrum":
       return <SpectrumView data={data} />;
     case "tlc":
