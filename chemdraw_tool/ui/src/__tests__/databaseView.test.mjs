@@ -33,7 +33,7 @@ test("startet im Datenblatt und zeigt die Quellzeilen", () => {
 
 test("Der Struktur-Reiter schaltet lokal um — ohne jeden Toolaufruf", async () => {
   const { container, calls, panel, unmount } = setup();
-  await click(buttonByText(container, "Struktur"));
+  await click(buttonByText(container, "Structure"));
 
   assert.ok(panel("structure"), "keine Struktur-Ansicht nach dem Klick");
   assert.equal(panel("data"), null, "Datenblatt haengt noch daneben");
@@ -44,8 +44,8 @@ test("Der Struktur-Reiter schaltet lokal um — ohne jeden Toolaufruf", async ()
 
 test("und wieder zurueck, ebenfalls ohne Aufruf", async () => {
   const { container, calls, panel, unmount } = setup();
-  await click(buttonByText(container, "Struktur"));
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Structure"));
+  await click(buttonByText(container, "Data"));
 
   assert.ok(panel("data"), "Rueckweg ins Datenblatt klappt nicht");
   assert.equal(calls.length, 0);

@@ -18,7 +18,7 @@ export default function ViewToggle({ view, onChange, loading = false, idPrefix }
   const panelId = (name) => (idPrefix ? `${idPrefix}-${name}` : undefined);
 
   return (
-    <div className="seg" role="tablist" aria-label="Ansicht">
+    <div className="seg" role="tablist" aria-label="View">
       <button
         type="button"
         role="tab"
@@ -27,7 +27,7 @@ export default function ViewToggle({ view, onChange, loading = false, idPrefix }
         aria-selected={view === "structure"}
         onClick={() => onChange("structure")}
       >
-        Struktur
+        Structure
       </button>
       <button
         type="button"
@@ -39,7 +39,7 @@ export default function ViewToggle({ view, onChange, loading = false, idPrefix }
         onClick={() => onChange("data")}
       >
         {loading && <span className="seg-spinner" aria-hidden="true" />}
-        Daten
+        Data
       </button>
     </div>
   );

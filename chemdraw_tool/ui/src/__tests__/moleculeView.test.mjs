@@ -8,6 +8,8 @@ import React from "react";
 import { AppContext } from "../AppContext";
 import MoleculeView, { DATA_LOAD_ERROR } from "../MoleculeView";
 import { MOLECULE, lookupFailure, lookupSuccess } from "./fixtures.mjs";
+import { act } from "react";
+
 import { buttonByText, click, render, textOf } from "./harness.mjs";
 
 function setup(respond = () => lookupSuccess()) {
@@ -40,7 +42,7 @@ test("startet in der Struktur-Ansicht, ohne irgendetwas nachzuladen", () => {
 
 test("Der Daten-Reiter ruft lookup_molecule_data mit dem SMILES und zeigt die Quellen", async () => {
   const { container, calls, panel, unmount } = setup();
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Data"));
 
   assert.equal(calls.length, 1, `erwartet 1 Aufruf, waren ${calls.length}`);
   assert.equal(calls[0].name, "lookup_molecule_data");
@@ -54,10 +56,10 @@ test("Der Daten-Reiter ruft lookup_molecule_data mit dem SMILES und zeigt die Qu
 
 test("der zweite Klick nimmt den Cache — kein zweiter Toolaufruf", async () => {
   const { container, calls, panel, unmount } = setup();
-  await click(buttonByText(container, "Daten"));
-  await click(buttonByText(container, "Struktur"));
+  await click(buttonByText(container, "Data"));
+  await click(buttonByText(container, "Structure"));
   assert.ok(panel("structure"), "Rueckweg zur Struktur klappt nicht");
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Data"));
 
   assert.equal(calls.length, 1, `erwartet 1 Aufruf, waren ${calls.length}`);
   assert.ok(panel("data"), "Cache-Klick zeigt kein Datenblatt");
@@ -66,7 +68,7 @@ test("der zweite Klick nimmt den Cache — kein zweiter Toolaufruf", async () =>
 
 test("ein fehlgeschlagener Aufruf zeigt einen Hinweis statt einer leeren Flaeche", async () => {
   const { container, panel, unmount } = setup(() => lookupFailure());
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Data"));
 
   const sheet = panel("data");
   assert.ok(sheet, "Fehlschlag laesst das Panel im Nichts");
@@ -82,11 +84,47 @@ test("nach einem Fehlschlag ist der naechste Klick ein neuer Versuch", async () 
   const { container, calls, panel, unmount } = setup(() =>
     ok ? lookupSuccess() : lookupFailure()
   );
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Data"));
   ok = true;
-  await click(buttonByText(container, "Daten"));
+  await click(buttonByText(container, "Data"));
 
   assert.equal(calls.length, 2, "Fehlschlag darf nicht gecacht werden");
   assert.match(textOf(panel("data")), /50-78-2/);
+  unmount();
+});
+
+// Die Ecke, die beim Bauen offen blieb: waehrend „Data" laedt, klickt der
+// Nutzer zurueck auf „Structure". Loest der Aufruf danach auf, darf er die
+// Ansicht NICHT unter dem Nutzer wegziehen — sein Klick ist die juengere
+// Absicht. Bei PubChem-Latenz ist das kein Randfall, sondern Alltag.
+test("ein Rueckwechsel waehrend des Ladens ueberstimmt das eintreffende Ergebnis", async () => {
+  let release;
+  const pending = new Promise((resolve) => {
+    release = resolve;
+  });
+  const { container, panel, unmount } = setup(async () => {
+    await pending;
+    return lookupSuccess();
+  });
+
+  await click(buttonByText(container, "Data"));      // startet den Aufruf
+  await click(buttonByText(container, "Structure")); // Nutzer wechselt zurueck
+  assert.ok(panel("structure"), "Rueckwechsel greift nicht sofort");
+
+  // In act() aufloesen, sonst bleibt das Folge-Render ungeflusht und der
+  // Test waere gruen, ohne den Fall ueberhaupt zu erreichen.
+  await act(async () => {
+    release();
+    await pending;
+  });
+
+  assert.ok(
+    panel("structure"),
+    "das eintreffende Datenblatt hat die Ansicht unter dem Nutzer weggezogen"
+  );
+
+  // Geholt ist geholt: der naechste Klick darf den Cache nehmen.
+  await click(buttonByText(container, "Data"));
+  assert.ok(panel("data"), "Datenblatt nach dem Rueckwechsel nicht abrufbar");
   unmount();
 });

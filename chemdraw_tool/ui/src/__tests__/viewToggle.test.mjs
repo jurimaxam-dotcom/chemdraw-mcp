@@ -27,7 +27,7 @@ test("ist eine Tabliste mit genau zwei Reitern, Struktur zuerst", () => {
   const tabs = [...container.querySelectorAll('[role="tab"]')];
   assert.deepEqual(
     tabs.map((t) => t.textContent.trim()),
-    ["Struktur", "Daten"]
+    ["Structure", "Data"]
   );
   unmount();
 });
@@ -39,16 +39,16 @@ test("aria-selected markiert die aktive Ansicht", () => {
       .filter((t) => t.getAttribute("aria-selected") === "true")
       .map((t) => t.textContent.trim());
 
-  assert.deepEqual(selected(), ["Struktur"]);
+  assert.deepEqual(selected(), ["Structure"]);
   rerender(React.createElement(ViewToggle, { view: "data", onChange: () => {} }));
-  assert.deepEqual(selected(), ["Daten"]);
+  assert.deepEqual(selected(), ["Data"]);
   unmount();
 });
 
 test("ein Klick meldet die gewuenschte Ansicht nach oben", async () => {
   const { container, calls, unmount } = setup();
-  await click(buttonByText(container, "Daten"));
-  await click(buttonByText(container, "Struktur"));
+  await click(buttonByText(container, "Data"));
+  await click(buttonByText(container, "Structure"));
   assert.deepEqual(calls, ["data", "structure"]);
   unmount();
 });
@@ -68,7 +68,7 @@ test("der Spinner steckt im Daten-Knopf und nur waehrend des Ladens", () => {
   assert.ok(spinner, "kein Spinner im Ladezustand");
   assert.equal(
     spinner.closest('[role="tab"]').textContent.trim(),
-    "Daten",
+    "Data",
     "der Spinner gehoert in den Knopf, der laedt"
   );
   unmount();

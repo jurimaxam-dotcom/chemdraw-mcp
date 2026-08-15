@@ -13,7 +13,7 @@ import { extractToolData } from "./utils/toolData";
 // Ein ruhiger Satz statt eines Stacktrace: der Klick muss sichtbar landen,
 // sonst sieht ein Fehlschlag aus wie ein toter Knopf.
 export const DATA_LOAD_ERROR =
-  "The data sheet could not be loaded. Click Daten again to retry.";
+  "The data sheet could not be loaded. Click Data again to retry.";
 
 export default function MoleculeView({ data }) {
   const app = useAppBridge();
@@ -26,6 +26,11 @@ export default function MoleculeView({ data }) {
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const inFlight = useRef(false); // blockiert den re-entranten Doppelklick
+  // Zuletzt geaeusserter Wunsch des Nutzers. Waehrend das Datenblatt laedt,
+  // kann er zurueck auf die Struktur klicken — das eintreffende Ergebnis darf
+  // ihm die Ansicht dann nicht wieder wegziehen. Bei PubChem-Latenz ist das
+  // kein Randfall.
+  const wanted = useRef("structure");
 
   const props = data.properties || {};
   const groups = data.functionalGroups || [];
@@ -36,6 +41,7 @@ export default function MoleculeView({ data }) {
 
   const handleView = useCallback(
     async (next) => {
+      wanted.current = next;
       if (next === "structure") {
         setView("structure");
         return;
@@ -65,7 +71,9 @@ export default function MoleculeView({ data }) {
       } finally {
         setLoading(false);
         inFlight.current = false;
-        setView("data");
+        // Nur umschalten, wenn der Nutzer inzwischen nicht zurueckgewechselt
+        // hat. Geholt ist trotzdem geholt — der Cache steht.
+        if (wanted.current === "data") setView("data");
       }
     },
     [app, query, sheet]

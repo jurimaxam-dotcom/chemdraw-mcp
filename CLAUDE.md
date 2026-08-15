@@ -34,9 +34,17 @@ app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
 ```bash
 ./test.sh                                     # lint + backend + bundle + frontend
 npm --prefix chemdraw_tool/ui run test:watch  # JS unit tests in watch mode
+./scripts/handshake.sh                        # real stdio handshake (needs network)
 ```
 
 One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright install chromium`
+
+`handshake.sh` sits **outside** the gate because its first run downloads the MCP
+Inspector. It is the only check that starts the server the way Claude Desktop
+does — the absolute command out of `claude_desktop_config.json` — and asserts
+the two numbers the Python side predicts (currently 20 tools, 14 with a panel).
+In-process tests cannot see the two failure modes that have actually cost time
+here: a stale server process and a GUI PATH that cannot find `uv`.
 
 The gate is built against two failure modes that cost more than a real test
 failure:
@@ -57,6 +65,12 @@ regenerated to make a diff disappear**:
   rendering change or an RDKit bump, and look at the result.
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
+
+A third frozen set covers the text the model actually reads:
+`tests/__snapshots__/tools/*.json` pins each tool's name, description and schemas.
+A diff is red on purpose — a reworded description changes which tool the model
+picks. Bless it deliberately with `UPDATE_TOOLSNAPS=1 uv run pytest
+tests/test_tool_snapshots.py`, in the same commit that changes the text.
 
 ## The five tool areas (where a new tool goes)
 
@@ -91,11 +105,34 @@ one that wins it. `generate_titration_curve` therefore points at
 `calculate_ph` just as much as the other way round — a one-sided fence
 reproduces the aspirin misfire with new names.
 
+**A fence does not help against an underspecified prompt.** A bare compound
+name ("caffeine") names no tool's job, so it goes to whichever description
+sounds most like it — which is why `lookup` used to win it with the sentence
+"the right choice whenever the user just asks 'what is X'". The answer is not a
+sharper fence but a stated default: `generate_molecule` claims the bare name in
+writing, and the server's `instructions=` says so once before any tool
+description is read. Both are test-enforced.
+
+Two more rules follow from the same measurements
+([research report](https://claude.ai/code/artifact/6fa21f2d-6223-4637-90e1-ad4b1cf99ea7)):
+
+- **Describe, never advertise.** A superlative moves a tool's usage share
+  measurably (7.48 : 1 for one appended sales sentence, arXiv:2505.18135)
+  *without* improving accuracy — it steals calls from its neighbours. The
+  taxonomy test greps for the usual phrases.
+- **Stay under 2 KB per description.** Claude Code truncates there, from the
+  end. Cut the parameter docs, never a fence.
+
 Prefer a parameter over a new tool when the output is the same kind of thing.
 That is why the five text lookups are one `lookup` with a `topic` literal, the
 curated decks are a `curated_deck_id` parameter, and the fat characteristics
 (acid/saponification/iodine value, Karl Fischer) are `method` values of
 `calculate_content` rather than four more tools.
+
+**Prompt → tool is a test, not a story.** `evals/tool-routing/cases.yaml` holds
+the cases; `tests/test_eval_cases.py` keeps them in sync with the tool list
+without touching the network and goes red when a fence has no case. The scored
+run needs an API key — see `evals/README.md`.
 
 ## Architecture
 
@@ -144,7 +181,10 @@ chemdraw_tool/
 │                            stays available as an output format)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
 ├── doctor.py              — installation diagnosis (chemdraw-doctor)
-├── server.py              — FastMCP server (stdio) + tool definitions
+├── server.py              — FastMCP server (stdio) + tool definitions;
+│                            `_INSTRUCTIONS` is the area map the client may put
+│                            in the system prompt — the one place the five
+│                            areas are explained once instead of 20 times
 └── ui/                    — embedded MCP App UI (React/Vite, served as resource)
 ```
 
