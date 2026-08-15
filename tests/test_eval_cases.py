@@ -96,3 +96,59 @@ def test_the_bare_compound_name_is_covered():
         "Kein Fall mit einem einzelnen Wort — genau der Prompt, der den "
         "Umbau ausgeloest hat."
     )
+
+
+# --- Der Alltagsfall ohne Zeichen-Verb (Auftrag Jay, 15.08.2026) -------------
+#
+# Bis hier ging es darum, den richtigen aus mehreren Kandidaten zu treffen.
+# Die zweite Haelfte ist, ueberhaupt zuzugreifen: „erklaer mir Ibuprofen",
+# „wie laeuft die Veresterung", „ich muss die NSAR lernen" enthalten kein
+# einziges Zeichen-Verb. Ohne Faelle dieser Sorte misst die Suite nur die
+# Haelfte des Problems — naemlich die, die seltener weh tut.
+
+DRAW_VERBS = (
+    "zeichne", "zeig", "male", "skizzier", "abbildung", "strukturformel",
+    "draw", "show", "plot", "figure", "structure of", "diagramm", "kurve",
+    "gib mir", "mach mir", "erstell",
+)
+
+# Tools, deren Ausgabe ein Bild oder ein Deck ist — die also von selbst
+# angeboten werden muessen, wenn die Frage es nahelegt.
+PROACTIVE_TOOLS = {
+    "generate_molecule",
+    "generate_reaction",
+    "generate_mechanism",
+    "compare_molecules",
+    "export_anki_deck",
+}
+
+
+def _implicit_cases() -> list[dict]:
+    out = []
+    for case in _cases():
+        prompt = case["prompt"].lower()
+        if case["expect"] in PROACTIVE_TOOLS and not any(
+            verb in prompt for verb in DRAW_VERBS
+        ):
+            out.append(case)
+    return out
+
+
+def test_the_everyday_case_is_represented():
+    """Mindestens fuenf Faelle muessen ohne Zeichen-Verb auskommen."""
+    implicit = _implicit_cases()
+    assert len(implicit) >= 5, (
+        f"nur {len(implicit)} Faelle ohne Zeichen-Verb: "
+        f"{[c['id'] for c in implicit]}. Der Alltag eines Pharmazie-Studenten "
+        "besteht aus Erklaerfragen, nicht aus Zeichenauftraegen."
+    )
+
+
+@pytest.mark.parametrize("tool", sorted(PROACTIVE_TOOLS))
+def test_every_proactive_tool_has_an_implicit_case(tool):
+    """Jedes Tool, das von selbst greifen soll, braucht einen solchen Fall."""
+    covered = {c["expect"] for c in _implicit_cases()}
+    assert tool in covered, (
+        f"{tool} wird nur von expliziten Auftraegen getroffen — ungeprueft "
+        "bleibt, ob es im Gespraech ueberhaupt vorkommt."
+    )

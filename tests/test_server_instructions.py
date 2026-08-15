@@ -10,6 +10,8 @@ Claude Code kappt `instructions` bei 2 KB (dokumentiert) und schneidet dabei
 das Ende ab — deshalb steht das Wichtigste vorn und die Laenge ist begrenzt.
 """
 
+import pytest
+
 from chemdraw_tool.server import mcp
 
 MAX_BYTES = 2048
@@ -54,3 +56,48 @@ def test_instructions_are_english():
     text = _instructions()
     for german in ("Zeichnen", "Nachschlagen", "Molekuel", "Struktur von"):
         assert german not in text, f"Deutscher Text in den instructions: {german!r}"
+
+
+# --- Proaktives Auslösen (Auftrag Jay, 15.08.2026) ---------------------------
+#
+# Zweite Haelfte des Routing-Problems: Das Modell greift zu selten zu, nicht nur
+# manchmal daneben. Ein Pharmazie-Alltag besteht aus Erklaerfragen — „erklaer
+# mir Ibuprofen", „wie laeuft die Veresterung", „ich muss die NSAR lernen" —
+# und keine davon enthaelt ein Zeichen-Verb. Ohne eine ausdrueckliche Regel
+# antwortet das Modell mit Prosa, obwohl ein Panel mit Struktur, eine
+# Reaktionsgleichung oder ein Kartendeck die bessere Antwort waere.
+
+PROACTIVE_MARKERS = ("explain", "learn")
+
+
+@pytest.mark.parametrize("marker", PROACTIVE_MARKERS)
+def test_instructions_invite_the_everyday_case(marker):
+    """Die Bereichskarte muss sagen, wann von selbst gezeichnet wird."""
+    assert marker in _instructions().lower(), (
+        f"{marker!r} fehlt — ohne die Einladung bleibt eine Erklaerfrage Prosa, "
+        "obwohl ein Panel die bessere Antwort waere."
+    )
+
+
+def test_instructions_do_not_forbid_the_everyday_case():
+    """Die Erklaerfrage ist der Anlass zu zeichnen, nicht der Ausschluss.
+
+    Die erste Fassung der Karte trug woertlich „do not use these tools for:
+    naming or explaining chemistry in prose" — eine Bremse genau dort, wo der
+    Pharmazie-Alltag stattfindet. Erklaeren und Zeichnen sind kein Entweder-oder.
+    """
+    text = _instructions().lower()
+    for brake in ("explaining chemistry in prose", "not use these tools for"):
+        assert brake not in text, (
+            f"Bremsklotz in den instructions: {brake!r} — haelt das Modell "
+            "genau bei der haeufigsten Frage vom Zeichnen ab."
+        )
+
+
+def test_instructions_name_the_panel_as_the_point():
+    """Das Molekuel-Panel ist interaktiv — das ist der Grund, es zu zeigen."""
+    text = _instructions().lower()
+    assert "panel" in text or "hover" in text, (
+        "Die Karte erwaehnt das Panel nicht. Es ist der Unterschied zwischen "
+        "einem Bild und etwas, in dem man Atome antippen kann."
+    )

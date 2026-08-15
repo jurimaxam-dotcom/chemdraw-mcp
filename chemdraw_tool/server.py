@@ -187,29 +187,37 @@ def _write_structure_files(
 # Clients in den Systemprompt uebernehmen duerfen. Wichtigstes zuerst — Claude
 # Code kappt das Feld bei 2 KB und schneidet hinten ab.
 _INSTRUCTIONS = """\
-Chemistry drawings, lab graphics and bench maths, rendered offline.
+Chemistry drawings, lab graphics and bench maths, rendered offline. Built for
+a pharmacy/chemistry student's everyday work.
 
-A bare compound name with no further request ("caffeine") means: draw it —
-generate_molecule. Only reach for a look-up tool when a named value is asked
-for. Tools fall into five areas:
+Reach for these tools while you answer, not only when asked to draw. Most
+chemistry questions are better with the picture beside the words, and the
+molecule panel is interactive — atoms carry hover labels and functional groups
+highlight, which prose cannot do.
 
-- Draw — structures and reactions: generate_molecule (one substance, the
-  default), batch_generate, compare_molecules, generate_reaction,
-  generate_mechanism, generate_scope_table, generate_3d.
-- Lab graphic — measured data as a figure: generate_spectrum, generate_tlc,
-  generate_titration_curve, generate_species_distribution,
-  generate_calibration_curve.
-- Look up — a named fact about a substance: lookup (text),
-  lookup_molecule_data (data sheet panel), predict_spectrum (from structure).
-- Calculate — a number and the working behind it: calculate_solution,
-  calculate_content, calculate_ph.
-- Anki — flashcard decks: export_anki_deck.
+- Naming a substance while you explain it → generate_molecule, then keep
+  explaining. A bare compound name ("caffeine") means exactly this.
+- Walking through a reaction → generate_reaction; through its steps and
+  electron flow → generate_mechanism.
+- Contrasting substances ("difference between ibuprofen and naproxen") →
+  compare_molecules.
+- The user has to learn or revise something ("I need to know the NSAIDs by
+  Friday") → offer export_anki_deck and write the cards yourself.
+- Lab data on the table (peaks, Rf values, titration readings, standards) →
+  the matching lab-graphic tool.
 
-Do not use these tools for: naming or explaining chemistry in prose, choosing
-a synthesis route, or literature search. Pass English or IUPAC compound names,
-never localized ones ('Aspirin', not 'Acetylsalicylsäure'); SMILES are always
-safe. Every drawing tool writes files itself — never call save_png, that is
-the panel's own export button.
+The five areas: Draw (generate_molecule · batch_generate ·
+compare_molecules · generate_reaction · generate_mechanism ·
+generate_scope_table · generate_3d) · Lab graphic (generate_spectrum ·
+generate_tlc · generate_titration_curve · generate_species_distribution ·
+generate_calibration_curve) · Look up, for a named fact (lookup ·
+lookup_molecule_data · predict_spectrum) · Calculate, a number with its
+working (calculate_solution · calculate_content · calculate_ph) · Anki
+(export_anki_deck).
+
+Pass English or IUPAC compound names, never localized ones ('Aspirin', not
+'Acetylsalicylsäure'); SMILES are always safe. Drawing tools write their files
+themselves — never call save_png, that is the panel's export button.
 """
 
 mcp = FastMCP("ChemDraw Tool", instructions=_INSTRUCTIONS)
@@ -727,6 +735,8 @@ def export_anki_deck(
 
     Use this whenever the user wants flashcards, Anki cards or a study deck
     for molecules, reactions (e.g. pharmacopoeia identity tests) or spectra.
+    A stated intention to learn or an exam coming up is the same request:
+    offer a deck and write the cards yourself.
 
     Two ways to fill the deck. Either pass `cards` you wrote yourself, or
     pass `curated_deck_id` for a ready-made, formula-verified starter deck:
@@ -744,14 +754,14 @@ def export_anki_deck(
     back), functional-group recognition, band assignment, name drills.
 
     Re-exporting under the SAME deck name updates existing cards instead of
-    duplicating them — the card front identifies the card.
+    duplicating them — the front identifies the card.
 
-    Card options: reversed=true drills both directions (one note, two cards);
+    Options: reversed=true drills both directions (one note, two cards);
     cloze=true makes fill-in-the-blank cards (front.text carries {{c1::...}},
     back.text becomes the extra note). "Parent::Child" nests subdecks.
 
     IMPORTANT: structures take English/IUPAC names or SMILES; card TEXTS may
-    be localized freely. Never deliver via AnkiConnect unless asked.
+    be localized. Never deliver via AnkiConnect unless asked.
 
     Args:
         deck_name: Deck name, also the filename; re-use it to update a deck.
@@ -1019,6 +1029,11 @@ def compare_molecules(
 
     Use this when the user wants to compare structures, see differences
     between compounds, or study a drug class.
+
+    Reach for it in conversation too, not only on request: the word
+    "difference" in a question about two substances is the trigger. Answering
+    "what distinguishes ibuprofen from naproxen?" in prose leaves the reader
+    to find the difference in two separate pictures — this figure marks it.
 
     Not this tool for: a single structure (generate_molecule), or several
     structures that are merely to be drawn rather than contrasted
@@ -2250,15 +2265,17 @@ def generate_reaction(
     Writes the scheme as PNG and/or SVG (default both) to the output folder —
     no ChemDraw required. Conditions appear above the arrow in the UI preview.
 
-    Use this when the user describes a chemical reaction with educts and products.
+    Use this when the user describes a chemical reaction with educts and
+    products — including in conversation: "how does the esterification of
+    acetic acid with ethanol work?" asks for this scheme, not for prose.
+    Draw it and explain alongside.
 
     Not this tool for: the step-by-step course with electron-flow arrows —
     that is generate_mechanism. Also not for many products of one reaction
     with yields (generate_scope_table).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
-    names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'
-    not 'Coffein'. SMILES strings are always safe.
+    names — 'Aspirin' not 'Acetylsalicylsäure'. SMILES are always safe.
 
     Args:
         reactants: List of English/IUPAC reactant names or SMILES strings.
@@ -2491,6 +2508,11 @@ def generate_mechanism(
 
     Use this when the user asks about a reaction mechanism, electron-flow
     arrows, or wants to see how a reaction proceeds step by step.
+
+    A question that starts "why does …" or "I don't understand why …" about a
+    mechanism is the same request in disguise ("why does SN2 invert the
+    centre?"). The arrows ARE the explanation; draw them and explain
+    alongside, rather than describing them in words.
 
     Not this tool for: the net equation educt → product without
     intermediates — that is generate_reaction. Only the mechanism types

@@ -174,3 +174,62 @@ cases:
       `save_png` gehoert dem Export-Knopf im Panel. Das Modell darf es auch
       dann nicht rufen, wenn im Prompt woertlich „PNG speichern" steht —
       generate_molecule schreibt die Datei ohnehin selbst.
+
+  # --- Der Alltag: Erklaerfragen ohne Zeichen-Verb -------------------------
+  # Diese Faelle pruefen nicht, ob das richtige aus mehreren Tools gewaehlt
+  # wird, sondern ob ueberhaupt eines greift. Ein Pharmazie-Alltag besteht aus
+  # Fragen, nicht aus Zeichenauftraegen.
+
+  - id: explain-substance
+    prompt: "Erklaer mir kurz, was Ibuprofen im Koerper macht"
+    expect: generate_molecule
+    forbidden: [lookup_molecule_data]
+    why: >
+      Reine Erklaerfrage. Die Antwort ist Text — aber mit dem Panel daneben,
+      in dem man die Carboxylgruppe antippen kann, ist sie eine andere.
+
+  - id: explain-why-acidic
+    prompt: "Warum ist Acetylsalicylsaeure eigentlich sauer?"
+    expect: generate_molecule
+    forbidden: [calculate_ph, lookup]
+    why: >
+      Die Antwort steckt in der Struktur — die Carboxylgruppe. Ohne Bild muss
+      der Nutzer sie sich vorstellen. Kein pH-Wert gefragt, nur das Warum.
+
+  - id: reaction-in-conversation
+    prompt: "Wie laeuft die Veresterung von Essigsaeure mit Ethanol ab?"
+    expect: generate_reaction
+    forbidden: [generate_molecule, generate_mechanism]
+    why: >
+      „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne
+      diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege.
+
+  - id: mechanism-in-conversation
+    prompt: "Ich verstehe nicht, warum die SN2 zur Inversion fuehrt"
+    expect: generate_mechanism
+    forbidden: [generate_reaction]
+    why: >
+      Verstaendnisfrage zu einem Mechanismus. Die Pfeile SIND die Erklaerung;
+      ein Text darueber ist die schlechtere Antwort.
+
+  - id: compare-in-conversation
+    prompt: "Was ist der Unterschied zwischen Ibuprofen und Naproxen?"
+    expect: compare_molecules
+    forbidden: [generate_molecule, batch_generate, lookup]
+    why: >
+      „Unterschied" ist der Ausloeser: compare_molecules hebt genau ihn
+      hervor, waehrend zwei Einzelbilder ihn dem Auge ueberlassen.
+
+  - id: exam-revision
+    prompt: "Ich schreibe Freitag ueber die NSAR und muss die Strukturen draufhaben"
+    expect: export_anki_deck
+    forbidden: [generate_molecule, batch_generate]
+    why: >
+      Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine
+      Reihe von Strukturen, die man wieder vergisst.
+
+  - id: exam-revision-short
+    prompt: "Kannst du mir was zum Lernen fuer die Pharmazeutische Chemie machen?"
+    expect: export_anki_deck
+    forbidden: [generate_scope_table]
+    why: Dieselbe Absicht, unspezifisch formuliert — der haeufigere Wortlaut.
