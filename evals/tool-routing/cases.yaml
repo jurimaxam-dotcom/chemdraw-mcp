@@ -1,0 +1,176 @@
+# Prompt → Tool: die Faelle, an denen sich die Werkzeugwahl entscheidet.
+#
+# Runner-unabhaengig gehalten (siehe README): promptfoo liest sie heute,
+# `claude plugin eval` soll dieselben Faelle fahren, sobald es freigeschaltet
+# ist. Deshalb steht hier nur, was beide brauchen.
+#
+# Regeln fuer neue Faelle (uebernommen von shopware/shopware-mcp-evals):
+#   * Drei VERSCHIEDENARTIGE Prompts pro kritischem Tool — drei Umformulierungen
+#     desselben Satzes beweisen nur, dass ein Wortlaut trifft.
+#   * Immer `forbidden` mitgeben. Ein Fall ohne Negativseite geht auch dann
+#     gruen durch, wenn das Modell zusaetzlich das falsche Tool ruft.
+#   * Prompts auf Deutsch, weil so gearbeitet wird; einzelne englische Faelle
+#     halten die Sprachunabhaengigkeit ehrlich.
+#
+# `expect`   — dieses Tool MUSS gerufen werden.
+# `forbidden`— diese Tools duerfen NICHT gerufen werden.
+# `why`      — warum der Fall existiert; steht im Fehlerfall in der Ausgabe.
+
+cases:
+  # --- Der unterspezifizierte Prompt (Anlass der ganzen Uebung) -------------
+  - id: bare-name-de
+    prompt: "Coffein"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data]
+    why: >
+      Ein blanker Stoffname ohne Verb. Vor dem 15.08.2026 gewann `lookup`,
+      weil dort woertlich „the right choice whenever the user just asks
+      'what is X'" stand. Der Fall ist der Grund fuer die Default-Regel.
+
+  - id: bare-name-en
+    prompt: "aspirin"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data]
+    why: Derselbe Fall auf Englisch — die Regel darf nicht an der Sprache haengen.
+
+  - id: bare-name-with-article
+    prompt: "Zeig mir mal Paracetamol"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data]
+    why: >
+      „Zeig mir" ist kein Zeichen-Verb im engeren Sinn, meint aber dasselbe.
+
+  # --- Zeichnen: der historische Fehlgriff ----------------------------------
+  - id: draw-single-structure
+    prompt: "Zeichne Aspirin"
+    expect: generate_molecule
+    forbidden: [generate_scope_table, batch_generate, compare_molecules]
+    why: >
+      Landete real bei `generate_scope_table` und erzeugte ein Ein-Zellen-Raster.
+      Der Anlass fuer die Bereichs-Taxonomie.
+
+  - id: draw-with-caption
+    prompt: "Strukturformel von Ibuprofen, mit Beschriftung 'Wirkstoff 1'"
+    expect: generate_molecule
+    forbidden: [generate_scope_table]
+    why: >
+      Eine Beschriftung macht aus einer Struktur keine Tabelle — genau die
+      Verwechslung, die `generate_scope_table` frueher angezogen hat.
+
+  - id: draw-scope-real
+    prompt: >
+      Mach mir eine Scope-Abbildung: vier Produkte meiner Suzuki-Kupplung mit
+      den Ausbeuten 78%, 65%, 91% und 43%
+    expect: generate_scope_table
+    forbidden: [generate_molecule, batch_generate]
+    why: Die Gegenrichtung — hier ist die Tabelle richtig und das Einzelmolekuel falsch.
+
+  - id: draw-batch
+    prompt: "Zeichne mir Aspirin, Coffein und Paracetamol jeweils als eigene Datei"
+    expect: batch_generate
+    forbidden: [generate_scope_table]
+    why: Mehrere unabhaengige Strukturen sind kein Scope.
+
+  - id: draw-reaction
+    prompt: "Zeichne die Veresterung von Essigsaeure mit Ethanol als Reaktionsgleichung"
+    expect: generate_reaction
+    forbidden: [generate_mechanism, generate_molecule]
+    why: Gleichung mit Pfeil, nicht Mechanismus mit Zwischenstufen.
+
+  - id: draw-mechanism
+    prompt: "Zeig mir den Mechanismus der SN2-Reaktion Schritt fuer Schritt"
+    expect: generate_mechanism
+    forbidden: [generate_reaction]
+    why: Gegenrichtung zu draw-reaction.
+
+  # --- Nachschlagen: der benannte Einzelwert --------------------------------
+  - id: lookup-named-value
+    prompt: "Was ist die CAS-Nummer von Paracetamol?"
+    expect: lookup
+    forbidden: [generate_molecule, lookup_molecule_data]
+    why: >
+      Ein benannter Einzelwert. Wenn dieser Fall ins Zeichnen kippt, ist die
+      Default-Regel zu breit geraten — der Gegentest zu bare-name-de.
+
+  - id: lookup-safety
+    prompt: "Welche H-Saetze hat Benzol?"
+    expect: lookup
+    forbidden: [lookup_molecule_data, generate_molecule]
+    why: GHS ist ein `topic` von lookup, kein eigenes Tool.
+
+  - id: lookup-melting-point
+    prompt: "Schmelzpunkt von Coffein?"
+    expect: lookup
+    forbidden: [generate_molecule]
+    why: >
+      Kurz wie ein blanker Name, nennt aber einen konkreten Wert — die
+      Trennlinie zwischen bare-name-de und lookup verlaeuft genau hier.
+
+  - id: lookup-data-sheet
+    prompt: "Gib mir ein Datenblatt zu Ibuprofen mit allem was du hast"
+    expect: lookup_molecule_data
+    forbidden: [lookup, generate_molecule]
+    why: Datenblatt heisst Panel mit Struktur plus gruppierten Quellen.
+
+  # --- Rechnen vs. Zeichnen (die Kurve gegen die Zahl) ----------------------
+  - id: calc-ph-number
+    prompt: "Welchen pH hat 0,1 M Essigsaeure? pKs 4,76"
+    expect: calculate_ph
+    forbidden: [generate_titration_curve, generate_species_distribution]
+    why: Zahl mit Rechenweg, kein Diagramm.
+
+  - id: draw-titration-curve
+    prompt: "Zeichne die Titrationskurve von 0,1 M Essigsaeure mit NaOH"
+    expect: generate_titration_curve
+    forbidden: [calculate_ph]
+    why: >
+      Gegenrichtung. Der einseitige Zaun war hier schon einmal das Problem —
+      wer den Fall nicht ausschliesst, gewinnt ihn.
+
+  - id: calc-weigh-in
+    prompt: "Wie viel NaOH brauche ich fuer 250 mL 0,1 molare Loesung?"
+    expect: calculate_solution
+    forbidden: [calculate_content, calculate_ph]
+    why: Einwaage vor dem Versuch, keine Gehaltsbestimmung.
+
+  - id: calc-content
+    prompt: >
+      Gehaltsbestimmung per Titration: Einwaagen 250,3 / 249,8 / 251,1 mg,
+      Verbrauch 24,9 / 24,8 / 25,1 mL, Faktor 10,02 mg/mL
+    expect: calculate_content
+    forbidden: [calculate_solution, generate_calibration_curve]
+    why: >
+      Monographie-Faktor statt gemessener Standardreihe — die Abgrenzung
+      gegen die Kalibriergerade.
+
+  - id: calibration-curve
+    prompt: >
+      Kalibriergerade aus 5 Standards (0,2/0,4/0,6/0,8/1,0 mg/mL, Absorptionen
+      0,21/0,40/0,62/0,79/1,01) und daraus meine Probe mit A=0,55 ablesen
+    expect: generate_calibration_curve
+    forbidden: [calculate_content]
+    why: Gegenrichtung zu calc-content.
+
+  # --- Spektren: vorhersagen vs. zeichnen -----------------------------------
+  - id: predict-spectrum
+    prompt: "Welche IR-Banden erwarte ich bei Aspirin?"
+    expect: predict_spectrum
+    forbidden: [generate_spectrum, lookup]
+    why: Aus der Struktur abgeleitet, nicht gemessen und nicht gezeichnet.
+
+  - id: draw-spectrum
+    prompt: >
+      Zeichne mir ein IR-Spektrum mit Banden bei 1750, 1690 und 2900 cm-1
+    expect: generate_spectrum
+    forbidden: [predict_spectrum]
+    why: Gegebene Peakliste zeichnen, nichts vorhersagen.
+
+  # --- Panel-Infrastruktur darf nie vom Modell kommen -----------------------
+  - id: never-save-png
+    prompt: "Zeichne Coffein und speicher das Bild als PNG"
+    expect: generate_molecule
+    forbidden: [save_png]
+    why: >
+      `save_png` gehoert dem Export-Knopf im Panel. Das Modell darf es auch
+      dann nicht rufen, wenn im Prompt woertlich „PNG speichern" steht —
+      generate_molecule schreibt die Datei ohnehin selbst.

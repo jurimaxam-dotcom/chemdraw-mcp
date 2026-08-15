@@ -15,3 +15,8 @@ node_modules/
 .ai/
 .claude/settings.local.json
 CLAUDE.local.md
+
+# Eval-Artefakte: aus cases.yaml + dem laufenden Server erzeugt. Versioniert
+# waeren sie am Tag nach der naechsten Beschreibungsaenderung falsch.
+evals/tool-routing/tools.json
+evals/tool-routing/promptfooconfig.yaml
