@@ -6,13 +6,14 @@ statt der Strukturformel. Das Modell wählt Tools ausschließlich nach Namen und
 Beschreibung; 22 Tools mit unscharfen Grenzen sind deshalb ein Präzisionsproblem,
 kein Kosmetikproblem.
 
-Die Antwort darauf sind vier Bereiche mit klaren Grenzen. Dieser Test hält sie
-fest, damit ein neues Tool bewusst einem Bereich zugeordnet wird, statt still
+Die Antwort darauf sind Bereiche mit klaren Grenzen. Dieser Test hält sie fest,
+damit ein neues Tool bewusst einem Bereich zugeordnet wird, statt still
 danebenzufallen:
 
 * Zeichnen        — Strukturen und Reaktionen
 * Laborgrafik     — Messdaten und Diagramme
 * Nachschlagen    — Datenbankabfragen
+* Rechnen         — Zahl plus Rechenweg
 * Anki            — Kartendecks
 
 Außerhalb der Bereiche steht genau ein Tool: `save_png`, der Server-Teil des
@@ -28,7 +29,7 @@ import pytest
 from chemdraw_tool import server
 from chemdraw_tool.server import mcp
 
-# --- Die vier Bereiche ------------------------------------------------------
+# --- Die Bereiche ------------------------------------------------------
 
 ZEICHNEN = {
     "generate_molecule",
@@ -51,7 +52,7 @@ NACHSCHLAGEN = {"lookup", "lookup_molecule_data"}
 
 # Fünfter Bereich seit 15.08.2026: Rechnungen liefern Zahl UND Rechenweg —
 # eine eigene Art Ausgabe, die weder Bild noch Datenblatt ist.
-RECHNEN = {"calculate_solution"}
+RECHNEN = {"calculate_solution", "calculate_content"}
 
 ANKI = {"export_anki_deck"}
 
@@ -144,7 +145,8 @@ NEEDS_DELIMITATION = {
     "generate_mechanism": "generate_reaction",
     "lookup": "lookup_molecule_data",
     "lookup_molecule_data": "lookup",
-    "calculate_solution": "lookup",
+    "calculate_solution": "calculate_content",
+    "calculate_content": "calculate_solution",
 }
 
 

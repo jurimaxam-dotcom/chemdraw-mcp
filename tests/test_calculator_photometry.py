@@ -44,7 +44,7 @@ def test_calculate_gehalt_uv_explanation_only_first():
 
 
 def test_uv_mismatched_lengths_raises():
-    with pytest.raises(ValueError, match="gleich lang"):
+    with pytest.raises(ValueError, match="same length"):
         calculate_gehalt_uv(
             einwaagen=[50.0, 51.0, 49.5],
             absorptionen=[0.348, 0.355],
@@ -55,7 +55,7 @@ def test_uv_mismatched_lengths_raises():
 
 
 def test_uv_empty_raises():
-    with pytest.raises(ValueError, match="nicht leer"):
+    with pytest.raises(ValueError, match="must not be empty"):
         calculate_gehalt_uv(
             einwaagen=[],
             absorptionen=[],
@@ -66,7 +66,7 @@ def test_uv_empty_raises():
 
 
 def test_uv_negative_mass_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_uv(
             einwaagen=[-50.0],
             absorptionen=[0.348],
@@ -77,7 +77,7 @@ def test_uv_negative_mass_raises():
 
 
 def test_uv_zero_verduennungsfaktor_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_uv(
             einwaagen=[50.0],
             absorptionen=[0.348],
@@ -88,7 +88,7 @@ def test_uv_zero_verduennungsfaktor_raises():
 
 
 def test_uv_zero_kolbenvolumen_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_uv(
             einwaagen=[50.0],
             absorptionen=[0.348],
@@ -99,7 +99,7 @@ def test_uv_zero_kolbenvolumen_raises():
 
 
 def test_uv_unknown_substance_raises():
-    with pytest.raises(ValueError, match="[Uu]nbekannte Substanz"):
+    with pytest.raises(ValueError, match="[Uu]nknown substance"):
         calculate_gehalt_uv(
             einwaagen=[50.0],
             absorptionen=[0.348],

@@ -11,22 +11,22 @@ SUBSTANCE_FACTORS: dict[str, float] = {
 def _validate_paired(name_a: str, a: list, name_b: str, b: list) -> None:
     if len(a) != len(b):
         raise ValueError(
-            f"{name_a} ({len(a)} Werte) und {name_b} ({len(b)} Werte) "
-            f"müssen gleich lang sein."
+            f"{name_a} ({len(a)} values) and {name_b} ({len(b)} values) "
+            f"must have the same length."
         )
     if len(a) == 0:
-        raise ValueError(f"{name_a} und {name_b} dürfen nicht leer sein.")
+        raise ValueError(f"{name_a} and {name_b} must not be empty.")
 
 
 def _validate_positive(name: str, values: list[float]) -> None:
     for i, v in enumerate(values):
         if v <= 0:
-            raise ValueError(f"{name}[{i}] = {v} — muss positiv sein.")
+            raise ValueError(f"{name}[{i}] = {v} — must be positive.")
 
 
 def _validate_positive_scalar(name: str, value: float) -> None:
     if value <= 0:
-        raise ValueError(f"{name} = {value} — muss positiv sein.")
+        raise ValueError(f"{name} = {value} — must be positive.")
 
 
 def calculate_titer(
@@ -73,10 +73,10 @@ def calculate_gehalt_titration(
     results = []
     formula = "w = (F · T · (V − V_blind)) / m · 100%"
     explanation = (
-        f"F = {faktor} mg/mL ist der Äquivalenzfaktor aus dem Ph.Eur. "
-        f"Er gibt an, wie viel mg Substanz 1 mL Maßlösung entspricht. "
-        f"T = {titer:.4f} ist der Titer (Korrekturfaktor der Maßlösung). "
-        f"V_blind = {blindwert} mL wird abgezogen."
+        f"F = {faktor} mg/mL is the equivalence factor from the Ph. Eur.: the mg "
+        f"of substance that 1 mL of volumetric solution corresponds to. "
+        f"T = {titer:.4f} is the titer, the correction factor of that solution. "
+        f"V_blank = {blindwert} mL is subtracted from every reading."
     )
 
     for i, (m, v) in enumerate(zip(einwaagen, volumina), start=1):
@@ -86,7 +86,7 @@ def calculate_gehalt_titration(
         )
         results.append(
             {
-                "label": f"Gehalt Analyse {i}",
+                "label": f"Content, measurement {i}",
                 "gehalt": gehalt,
                 "formula": formula,
                 "substitution": substitution,

@@ -86,6 +86,9 @@ SolutionTopic = Literal[
     "weigh_in", "concentration", "dilution", "mixing", "molar_mass"
 ]
 
+# Bestimmungsmethoden von `calculate_content`.
+ContentMethod = Literal["titration", "photometry"]
+
 
 def _normalize_formats(formats: list[str] | None) -> list[str]:
     fmts = [f.lower().strip() for f in (formats or DEFAULT_FORMATS)]
@@ -1144,6 +1147,209 @@ def calculate_solution(
         f"Unknown topic '{topic}' — pick one of: weigh_in, concentration, "
         "dilution, mixing, molar_mass."
     )
+
+
+@mcp.tool()
+def calculate_content(
+    method: ContentMethod,
+    weights_mg: list[float],
+    measurements: list[float],
+    factor_mg_per_ml: float = 0.0,
+    titer: float = 1.0,
+    blank_ml: float = 0.0,
+    a1_1cm: float = 0.0,
+    path_length_cm: float = 1.0,
+    dilution_factor: float = 1.0,
+    flask_volume_ml: float = 0.0,
+    reference_weights_mg: list[float] | None = None,
+    reference_volumes_ml: list[float] | None = None,
+    declared_content: float = 100.0,
+) -> str:
+    """Work out a content determination the way a lab report wants it.
+
+    Runs the whole chain in the order the protocol asks for: one content per
+    measurement → Grubbs outlier check → mean and spread → t-test against the
+    declared content. Every step comes back with formula, numbers substituted
+    and result, so it can be copied into the report and checked by someone else.
+
+    Two methods:
+
+    - "titration": needs `weights_mg`, `measurements` (mL of titrant) and
+      `factor_mg_per_ml` (the mg of substance one mL of titrant corresponds
+      to — it is in the monograph). `blank_ml` is subtracted from every
+      reading. Pass `reference_weights_mg` and `reference_volumes_ml` to
+      determine the titer from reference titrations first and apply it, or
+      pass a known `titer` directly.
+    - "photometry": needs `weights_mg`, `measurements` (absorbance),
+      `a1_1cm` (the specific absorbance A(1%,1cm) from the monograph),
+      `flask_volume_ml` and `dilution_factor`.
+
+    Not this tool for: preparing a solution or diluting it (that is
+    calculate_solution), or drawing the titration curve (that is
+    generate_titration_curve — this one computes, that one draws).
+
+    Args:
+        method: "titration" or "photometry".
+        weights_mg: Weighed portions in mg, one per measurement.
+        measurements: mL of titrant ("titration") or absorbance
+            ("photometry") — same length and order as weights_mg.
+        factor_mg_per_ml: Titration factor in mg/mL, from the monograph.
+        titer: Titer of the volumetric solution; 1.0 if it is exact.
+        blank_ml: Blank value in mL, subtracted from every reading.
+        a1_1cm: Specific absorbance A(1%,1cm) for photometry.
+        path_length_cm: Cuvette path length, normally 1 cm.
+        dilution_factor: Dilution factor of the measured solution.
+        flask_volume_ml: Volumetric flask used for the sample, in mL.
+        reference_weights_mg: Weighed portions of the reference, in mg.
+        reference_volumes_ml: Titrant used for the reference, in mL.
+        declared_content: Content the substance is declared with, in %
+            (100 for a pure substance); the t-test is run against it.
+    """
+    from chemdraw_tool.calculator.photometry import calculate_gehalt_uv
+    from chemdraw_tool.calculator.stats import (
+        descriptive_stats,
+        grubbs_test,
+        one_sample_t_test,
+    )
+    from chemdraw_tool.calculator.titration import (
+        calculate_gehalt_titration,
+        calculate_titer,
+    )
+
+    if method not in ("titration", "photometry"):
+        raise ValueError(
+            f"Unknown method '{method}' — use 'titration' or 'photometry'."
+        )
+    if len(weights_mg) != len(measurements):
+        raise ValueError(
+            f"weights_mg ({len(weights_mg)} values) and measurements "
+            f"({len(measurements)} values) must have the same length — every "
+            "weighed portion belongs to exactly one reading."
+        )
+
+    sections: list[str] = []
+    used_titer = titer
+
+    if method == "titration":
+        if not factor_mg_per_ml:
+            raise ValueError(
+                "method='titration' needs factor_mg_per_ml — the mg of substance "
+                "one mL of titrant corresponds to. The monograph states it."
+            )
+        if reference_weights_mg and reference_volumes_ml:
+            used_titer = calculate_titer(
+                reference_weights_mg,
+                reference_volumes_ml,
+                blank_ml,
+                factor_mg_per_ml,
+            )
+            sections.append(
+                "## Titer\n\n"
+                f"- Formula: `t = mean(content of reference) / declared content`\n"
+                f"- From {len(reference_weights_mg)} reference titrations\n"
+                f"- Result: **t = {used_titer:.4f}**\n"
+                "- Every sample reading below is corrected with this titer."
+            )
+        rows = calculate_gehalt_titration(
+            weights_mg, measurements, blank_ml, factor_mg_per_ml, used_titer
+        )
+    else:
+        if not a1_1cm:
+            raise ValueError(
+                "method='photometry' needs a1_1cm — the specific absorbance "
+                "A(1%,1cm) from the monograph."
+            )
+        if not flask_volume_ml:
+            raise ValueError("method='photometry' needs flask_volume_ml.")
+        rows = calculate_gehalt_uv(
+            weights_mg,
+            measurements,
+            substance="",
+            verduennungsfaktor=dilution_factor,
+            kolbenvolumen_ml=flask_volume_ml,
+            a1pct1cm=a1_1cm,
+            path_length_cm=path_length_cm,
+        )
+
+    contents = [row["gehalt"] for row in rows]
+
+    lines = [
+        f"# Content determination ({method})",
+        "",
+        "## Individual measurements",
+    ]
+    for i, row in enumerate(rows, 1):
+        lines.append(f"\n**Measurement {i}**")
+        lines.append(f"- Formula: `{row['formula']}`")
+        lines.append(f"- Substituted: `{row['substitution']}`")
+        lines.append(f"- Result: **{row['result']}**")
+        if row.get("explanation"):
+            lines.append(f"- {row['explanation']}")
+
+    if sections:
+        lines.insert(2, "\n".join(sections) + "\n")
+
+    if len(contents) == 1:
+        lines.append(
+            "\n## Spread\n\nOnly one measurement — no standard deviation, no "
+            "outlier test and no t-test. A single value cannot show whether it "
+            "is reproducible; the pharmacopoeia asks for a series."
+        )
+        return "\n".join(lines)
+
+    # Grubbs ist erst ab drei Werten definiert. Bei zweien gibt es keinen
+    # "am weitesten entfernten" Wert im statistischen Sinn — das zu sagen ist
+    # ehrlicher, als den Schritt stillschweigend zu überspringen.
+    grubbs = grubbs_test(contents) if len(contents) >= 3 else None
+    lines.append("\n## Outlier check (Grubbs)")
+    if grubbs is None:
+        lines.append(
+            f"- Not applicable with {len(contents)} measurements — the Grubbs "
+            "test needs at least three. Two values that disagree give no way to "
+            "tell which one is wrong."
+        )
+    else:
+        lines.append(f"- Formula: `{grubbs['formula']}`")
+        lines.append(f"- Substituted: `{grubbs['substitution']}`")
+        lines.append(
+            f"- Result: **G = {grubbs['g_value']:.3f}**, "
+            f"G_crit = {grubbs['g_critical']:.3f} (n = {grubbs['n']})"
+        )
+        lines.append(f"- {grubbs['explanation']}")
+
+    stats = descriptive_stats(contents, true_value=declared_content)
+    lines.append("\n## Mean and spread")
+    lines.append(f"- Mean: **{stats['mean']:.2f} %**")
+    lines.append(f"- Standard deviation s: {stats['std_abs']:.3f} %")
+    lines.append(f"- RSD: {stats['std_rel']:.2f} %")
+    if "recovery" in stats:
+        lines.append(
+            f"- Recovery against the declared {declared_content:.4g} %: "
+            f"{stats['recovery']:.2f} %"
+        )
+
+    t = one_sample_t_test(contents, declared_content)
+    verdict = (
+        "no significant difference from the declared content"
+        if t["passed"]
+        else "significantly different from the declared content"
+    )
+    lines.append(f"\n## t-test against {declared_content:.4g} %")
+    lines.append("- Formula: `t = |x̄ − µ| / (s / √n)`")
+    lines.append(
+        f"- Result: **t = {t['t_value']:.3f}**, t_crit = {t['t_critical']:.3f} "
+        f"(df = {t['df']}, α = 0.05)"
+    )
+    lines.append(f"- Verdict: {verdict}.")
+
+    if grubbs is not None and grubbs["is_outlier"]:
+        lines.append(
+            "\n> The mean, spread and t-test above still include the flagged "
+            "value. Decide whether to exclude it, then run this again with the "
+            "remaining measurements — and document both runs."
+        )
+
+    return "\n".join(lines)
 
 
 @mcp.tool()

@@ -15,7 +15,7 @@ def descriptive_stats(
     and optionally recovery and rel_deviation if true_value is given.
     """
     if not values:
-        raise ValueError("values darf nicht leer sein.")
+        raise ValueError("values must not be empty.")
     n = len(values)
     mean = sum(values) / n
 
@@ -133,7 +133,7 @@ def _lookup_f_critical(df1: int, df2: int) -> float:
 def one_sample_t_test(values: list[float], mu: float) -> dict[str, float | bool]:
     """One-sample t-test: is the mean significantly different from mu?"""
     if not values:
-        raise ValueError("values darf nicht leer sein.")
+        raise ValueError("values must not be empty.")
     n = len(values)
     stats = descriptive_stats(values)
     mean = stats["mean"]
@@ -157,7 +157,7 @@ def one_sample_t_test(values: list[float], mu: float) -> dict[str, float | bool]
 def f_test(values1: list[float], values2: list[float]) -> dict[str, float | bool]:
     """F-test: are the variances of two samples equal?"""
     if not values1 or not values2:
-        raise ValueError("Beide Wertelisten müssen mindestens einen Wert enthalten.")
+        raise ValueError("Both value lists must contain at least one value.")
     s1 = descriptive_stats(values1)
     s2 = descriptive_stats(values2)
 
@@ -188,7 +188,7 @@ def f_test(values1: list[float], values2: list[float]) -> dict[str, float | bool
 def welch_t_test(values1: list[float], values2: list[float]) -> dict[str, float | bool]:
     """Welch's t-test: are the means of two samples equal?"""
     if not values1 or not values2:
-        raise ValueError("Beide Wertelisten müssen mindestens einen Wert enthalten.")
+        raise ValueError("Both value lists must contain at least one value.")
     s1 = descriptive_stats(values1)
     s2 = descriptive_stats(values2)
     n1, n2 = len(values1), len(values2)
@@ -212,4 +212,121 @@ def welch_t_test(values1: list[float], values2: list[float]) -> dict[str, float 
         "t_critical": t_critical,
         "df": df,
         "passed": t_value < t_critical,
+    }
+
+
+# Kritische Werte des Grubbs-Tests (zweiseitig, alpha = 0,05).
+# Schlüssel: Stichprobenumfang n. Quelle: ISO 5725-2 / Grubbs (1969).
+_GRUBBS_CRITICAL = {
+    3: 1.155,
+    4: 1.481,
+    5: 1.715,
+    6: 1.887,
+    7: 2.020,
+    8: 2.126,
+    9: 2.215,
+    10: 2.290,
+    11: 2.355,
+    12: 2.412,
+    13: 2.462,
+    14: 2.507,
+    15: 2.549,
+    16: 2.585,
+    17: 2.620,
+    18: 2.651,
+    19: 2.681,
+    20: 2.709,
+}
+
+
+def _lookup_grubbs_critical(n: int) -> float:
+    if n in _GRUBBS_CRITICAL:
+        return _GRUBBS_CRITICAL[n]
+    # Über der Tabelle: den grössten bekannten Wert nehmen. Konservativ in die
+    # sichere Richtung — der Test wird strenger, verwirft also seltener einen
+    # echten Messwert.
+    largest = max(_GRUBBS_CRITICAL)
+    return _GRUBBS_CRITICAL[largest] if n > largest else _GRUBBS_CRITICAL[3]
+
+
+def grubbs_test(values: list[float], alpha: float = 0.05) -> dict:
+    """Grubbs test for a single outlier: G = |x_suspect − mean| / s.
+
+    Checks the one value farthest from the mean — the only value the test is
+    defined for. Repeating it on the same series after removing a hit is
+    statistically unsound, so this returns one verdict, not a cleaned list.
+
+    Returns the verdict plus formula, substitution and explanation, so the
+    decision can be written into a lab report and checked by someone else.
+    """
+    if len(values) < 3:
+        raise ValueError(
+            f"The Grubbs test needs at least three values, got {len(values)}. "
+            "With fewer measurements an outlier cannot be told apart from spread."
+        )
+    if alpha != 0.05:
+        raise ValueError(
+            "Only alpha = 0.05 is tabulated here; pass 0.05 or extend "
+            "_GRUBBS_CRITICAL with the values you need."
+        )
+
+    n = len(values)
+    stats = descriptive_stats(values)
+    mean = stats["mean"]
+    s = stats["std_abs"]
+
+    # Grösster Abstand zum Mittelwert — index() würde bei doppelten Werten den
+    # falschen Treffer liefern, deshalb über die Position suchen.
+    index = max(range(n), key=lambda i: abs(values[i] - mean))
+    suspect = values[index]
+    deviation = abs(suspect - mean)
+
+    if s == 0:
+        # Alle Werte gleich: kein Ausreisser, und keine Division durch null.
+        return {
+            "value": suspect,
+            "index": index,
+            "n": n,
+            "mean": mean,
+            "std_abs": s,
+            "g_value": 0.0,
+            "g_critical": _lookup_grubbs_critical(n),
+            "is_outlier": False,
+            "formula": "G = |x − x̄| / s",
+            "substitution": "s = 0 — all values are identical",
+            "explanation": (
+                "All measurements are identical, so there is no spread and no "
+                "outlier."
+            ),
+        }
+
+    g_value = deviation / s
+    g_critical = _lookup_grubbs_critical(n)
+    is_outlier = g_value > g_critical
+
+    if is_outlier:
+        explanation = (
+            f"G = {g_value:.3f} > G_crit = {g_critical:.3f} (n = {n}, α = 0.05): "
+            f"{suspect:.4g} is an outlier. Exclude it, then recalculate mean and "
+            "standard deviation from the remaining values — and say so in the report."
+        )
+    else:
+        explanation = (
+            f"G = {g_value:.3f} ≤ G_crit = {g_critical:.3f} (n = {n}, α = 0.05): "
+            f"{suspect:.4g} is the most deviating value but not an outlier. "
+            "Keep all measurements."
+        )
+
+    return {
+        "value": suspect,
+        "index": index,
+        "n": n,
+        "mean": mean,
+        "std_abs": s,
+        "g_value": g_value,
+        "g_critical": g_critical,
+        "is_outlier": is_outlier,
+        "formula": "G = |x − x̄| / s",
+        "substitution": f"G = |{suspect:.4g} − {mean:.4g}| / {s:.4g}",
+        "explanation": explanation,
     }

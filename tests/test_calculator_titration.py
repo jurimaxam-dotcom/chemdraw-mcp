@@ -60,17 +60,17 @@ def test_calculate_gehalt_titration_ibuprofen_example():
 
 
 def test_titer_mismatched_lengths_raises():
-    with pytest.raises(ValueError, match="gleich lang"):
+    with pytest.raises(ValueError, match="same length"):
         calculate_titer([370.0, 372.0], [18.0], 0.15, 20.63)
 
 
 def test_titer_empty_raises():
-    with pytest.raises(ValueError, match="nicht leer"):
+    with pytest.raises(ValueError, match="must not be empty"):
         calculate_titer([], [], 0.15, 20.63)
 
 
 def test_gehalt_mismatched_lengths_raises():
-    with pytest.raises(ValueError, match="gleich lang"):
+    with pytest.raises(ValueError, match="same length"):
         calculate_gehalt_titration(
             einwaagen=[419.3, 452.7],
             volumina=[16.75],
@@ -80,7 +80,7 @@ def test_gehalt_mismatched_lengths_raises():
 
 
 def test_gehalt_negative_mass_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_titration(
             einwaagen=[-1.0, 452.7],
             volumina=[16.75, 18.10],
@@ -90,22 +90,22 @@ def test_gehalt_negative_mass_raises():
 
 
 def test_titer_negative_volumen_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_titer([370.0, 372.0], [-18.0, 18.1], 0.15, 20.63)
 
 
 def test_titer_zero_faktor_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_titer([370.0, 372.0], [18.0, 18.1], 0.15, 0.0)
 
 
 def test_titer_zero_soll_gehalt_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_titer([370.0, 372.0], [18.0, 18.1], 0.15, 20.63, soll_gehalt=0.0)
 
 
 def test_gehalt_negative_volumen_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_titration(
             einwaagen=[419.3, 452.7],
             volumina=[-16.75, 18.10],
@@ -115,7 +115,7 @@ def test_gehalt_negative_volumen_raises():
 
 
 def test_gehalt_zero_faktor_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_titration(
             einwaagen=[419.3, 452.7],
             volumina=[16.75, 18.10],
@@ -125,7 +125,7 @@ def test_gehalt_zero_faktor_raises():
 
 
 def test_gehalt_zero_titer_raises():
-    with pytest.raises(ValueError, match="positiv"):
+    with pytest.raises(ValueError, match="must be positive"):
         calculate_gehalt_titration(
             einwaagen=[419.3, 452.7],
             volumina=[16.75, 18.10],

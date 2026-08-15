@@ -18,6 +18,10 @@ def calculate_gehalt_uv(
     substance: str,
     verduennungsfaktor: float,
     kolbenvolumen_ml: float,
+    a1pct1cm: float | None = None,
+    path_length_cm: float = 1.0,
+    wavelength_nm: float | None = None,
+    solvent: str = "",
 ) -> list[dict]:
     """Calculate Gehalt% from UV absorption measurements.
 
@@ -36,41 +40,55 @@ def calculate_gehalt_uv(
     """
     if len(einwaagen) != len(absorptionen):
         raise ValueError(
-            f"einwaagen ({len(einwaagen)} Werte) und absorptionen "
-            f"({len(absorptionen)} Werte) müssen gleich lang sein."
+            f"einwaagen ({len(einwaagen)} values) and absorptionen "
+            f"({len(absorptionen)} values) must have the same length."
         )
     if len(einwaagen) == 0:
-        raise ValueError("einwaagen und absorptionen dürfen nicht leer sein.")
+        raise ValueError("einwaagen and absorptionen must not be empty.")
     for i, m in enumerate(einwaagen):
         if m <= 0:
-            raise ValueError(f"einwaagen[{i}] = {m} — muss positiv sein.")
+            raise ValueError(f"einwaagen[{i}] = {m} — must be positive.")
     for i, a in enumerate(absorptionen):
         if a < 0:
-            raise ValueError(f"absorptionen[{i}] = {a} — darf nicht negativ sein.")
+            raise ValueError(f"absorptionen[{i}] = {a} — must not be negative.")
     for name, val in (
         ("verduennungsfaktor", verduennungsfaktor),
         ("kolbenvolumen_ml", kolbenvolumen_ml),
     ):
         if val <= 0:
-            raise ValueError(f"{name} = {val} — muss positiv sein.")
-    if substance not in SUBSTANCE_CONSTANTS:
-        erlaubt = ", ".join(sorted(SUBSTANCE_CONSTANTS.keys()))
-        raise ValueError(
-            f"Unbekannte Substanz: {substance!r}. Erlaubte Werte: {erlaubt}."
-        )
-
-    consts = SUBSTANCE_CONSTANTS[substance]
-    a1pct = consts["a1pct1cm"]
-    d = consts["path_length_cm"]
+            raise ValueError(f"{name} = {val} — must be positive.")
+    # A(1%,1cm) direkt übergeben schlägt die Tabelle: die Konstante steht in
+    # jeder Monographie, die Tabelle kennt nur eine Handvoll Substanzen. Ohne
+    # diesen Weg wäre die Funktion auf genau diese Handvoll beschränkt.
+    if a1pct1cm is not None:
+        if a1pct1cm <= 0:
+            raise ValueError(f"a1pct1cm = {a1pct1cm} — must be positive.")
+        if path_length_cm <= 0:
+            raise ValueError(f"path_length_cm = {path_length_cm} — must be positive.")
+        a1pct = a1pct1cm
+        d = path_length_cm
+        measured_at = f" at {wavelength_nm} nm" if wavelength_nm else ""
+        in_solvent = f", measured in {solvent}" if solvent else ""
+    else:
+        if substance not in SUBSTANCE_CONSTANTS:
+            erlaubt = ", ".join(sorted(SUBSTANCE_CONSTANTS.keys()))
+            raise ValueError(
+                f"Unknown substance: {substance!r}. Known values: {erlaubt}. "
+                "Alternatively pass a1pct1cm directly — the monograph has it."
+            )
+        consts = SUBSTANCE_CONSTANTS[substance]
+        a1pct = consts["a1pct1cm"]
+        d = consts["path_length_cm"]
+        measured_at = f" at {consts['wavelength_nm']} nm"
+        in_solvent = f", measured in {consts['solvent']}"
 
     formula = "w = (A · VF · V_Kolben) / (A¹%₁cm · d · m) · 1000"
     explanation = (
-        f"A = gemessene Absorption bei {consts['wavelength_nm']} nm. "
-        f"A¹%₁cm = {a1pct} ist die spezifische Absorption "
-        f"(Absorption einer 1%igen Lösung bei 1 cm Schichtdicke, "
-        f"gemessen in {consts['solvent']}). "
-        f"VF = {verduennungsfaktor} ist der Verdünnungsfaktor. "
-        f"V_Kolben = {kolbenvolumen_ml} mL."
+        f"A = absorbance measured{measured_at}. "
+        f"A¹%₁cm = {a1pct} is the specific absorbance (absorbance of a 1 % "
+        f"solution at 1 cm path length{in_solvent}). "
+        f"VF = {verduennungsfaktor} is the dilution factor. "
+        f"V_flask = {kolbenvolumen_ml} mL."
     )
 
     results = []
@@ -82,7 +100,7 @@ def calculate_gehalt_uv(
         )
         results.append(
             {
-                "label": f"Gehalt Analyse {i}",
+                "label": f"Content, measurement {i}",
                 "gehalt": gehalt,
                 "formula": formula,
                 "substitution": substitution,

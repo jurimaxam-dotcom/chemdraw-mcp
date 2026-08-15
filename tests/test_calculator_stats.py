@@ -62,20 +62,20 @@ def test_welch_t_test_equal_means():
 
 
 def test_descriptive_stats_empty_raises():
-    with pytest.raises(ValueError, match="nicht leer"):
+    with pytest.raises(ValueError, match="must not be empty"):
         descriptive_stats([])
 
 
 def test_one_sample_t_test_empty_raises():
-    with pytest.raises(ValueError, match="nicht leer"):
+    with pytest.raises(ValueError, match="must not be empty"):
         one_sample_t_test([], mu=100.0)
 
 
 def test_f_test_empty_raises():
-    with pytest.raises(ValueError, match="mindestens einen Wert"):
+    with pytest.raises(ValueError, match="at least one value"):
         f_test([], [82.4, 82.5])
 
 
 def test_welch_t_test_empty_raises():
-    with pytest.raises(ValueError, match="mindestens einen Wert"):
+    with pytest.raises(ValueError, match="at least one value"):
         welch_t_test([82.4], [])
