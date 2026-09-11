@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/mcpb/main/schemas/mcpb-manifest-v0.4.schema.json",
+  "manifest_version": "0.4",
+  "name": "chemdraw-mcp",
+  "display_name": "ChemDraw MCP (unofficial)",
+  "version": "@@VERSION@@",
+  "description": "Molecule names or SMILES to publication-style 2D structures, reaction schemes, mechanisms, TLC plates, titration curves and lab maths - rendered offline with RDKit.",
+  "long_description": "Describe a molecule, a reaction or a lab result in plain words and get the figure: print-ready PNG/SVG plus an interactive preview in the chat. 20 tools for pharmacy and chemistry students. The bundle is a launcher: on first start it fetches the chemdraw-mcp package from PyPI via uv (installed if missing) and caches it; afterwards rendering runs entirely on your machine. Not affiliated with Revvity/ChemDraw.",
+  "author": {
+    "name": "jurimaxam-dotcom",
+    "url": "https://github.com/jurimaxam-dotcom"
+  },
+  "homepage": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
+  "documentation": "https://github.com/jurimaxam-dotcom/chemdraw-mcp#readme",
+  "support": "https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues",
+  "license": "Apache-2.0",
+  "keywords": ["chemistry", "rdkit", "smiles", "molecule", "pharmacy", "chemdraw"],
+  "server": {
+    "type": "python",
+    "entry_point": "server/run.sh",
+    "mcp_config": {
+      "command": "/bin/sh",
+      "args": ["${__dirname}/server/run.sh"]
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "linux"]
+  }
+}

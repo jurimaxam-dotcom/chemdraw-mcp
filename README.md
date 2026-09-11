@@ -218,9 +218,19 @@ when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
 
 ## Installation
 
-Three ways in; pick one. Options 1 and 2 merge into the config idempotently,
-back it up first and leave every other MCP server you have configured
-untouched. Afterwards restart Claude Desktop and ask: *"draw caffeine"*.
+Four ways in; pick **one** — installing twice registers the server twice and
+the model sees every tool doubled. Options 2 and 3 merge into the config
+idempotently, back it up first and leave every other MCP server you have
+configured untouched. Afterwards restart Claude Desktop and ask: *"draw
+caffeine"*.
+
+**Option 0 — the bundle** (macOS/Linux, no terminal): download
+`chemdraw-mcp-<version>.mcpb` from the
+[latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
+double-click it, confirm in Claude Desktop, restart. The first start fetches
+the package from PyPI via [uv](https://docs.astral.sh/uv/) (installed for you
+if missing) — about 40 MB, give it a minute; every later start is offline.
+If you already installed via option 1 or 2, remove that entry first.
 
 **Option 1 — clone the repo** (recommended if you want to read or change the
 code; installs uv if missing, syncs dependencies, registers the server):

@@ -20,3 +20,6 @@ CLAUDE.local.md
 # waeren sie am Tag nach der naechsten Beschreibungsaenderung falsch.
 evals/tool-routing/tools.json
 evals/tool-routing/promptfooconfig.yaml
+
+# Release-Artefakte (Wheel, sdist, .mcpb) — scripts/build-mcpb.sh und uv build
+dist/

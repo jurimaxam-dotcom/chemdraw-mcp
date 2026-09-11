@@ -33,3 +33,62 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+  # Das Bundle ist ein Starter (mcpb/server/run.sh holt die PyPI-Version per uv),
+  # deshalb reicht ein Job ohne Python-Toolchain. Haengt am Release-Tag.
+  bundle:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: ./scripts/build-mcpb.sh
+      - run: gh release upload "${{ github.event.release.tag_name }}" dist/*.mcpb --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  # Registry-Eintrag ist ein Snapshot: nur ein Publish-Lauf aendert ihn. OIDC statt
+  # Device-Flow, damit er am Release haengt statt an jemandes Erinnerung
+  # (docs/registry-publish.md). Reihenfolge Pflicht: erst PyPI, dann Registry.
+  registry:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Wait for PyPI
+        run: |
+          VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null "https://pypi.org/pypi/chemdraw-mcp/$VERSION/json"; then
+              echo "chemdraw-mcp $VERSION ist auf PyPI"; exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::chemdraw-mcp $VERSION nach 5 min nicht auf PyPI"; exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64.tar.gz" \
+            | tar xz mcp-publisher
+          sudo mv mcp-publisher /usr/local/bin/
+
+      - name: Publish to MCP registry
+        run: |
+          mcp-publisher login github-oidc
+          mcp-publisher publish
+
+      - name: Verify the entry is live
+        run: |
+          VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
+          LATEST=$(curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=jurimaxam" \
+            | python3 -c "import json,sys;print(next((s['server']['version'] for s in json.load(sys.stdin)['servers'] if s['_meta']['io.modelcontextprotocol.registry/official']['isLatest']), 'keine'))")
+          [ "$LATEST" = "$VERSION" ] || { echo "::error::Registry meldet $LATEST statt $VERSION"; exit 1; }
+          echo "Registry liefert $LATEST aus"

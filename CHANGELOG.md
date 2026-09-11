@@ -6,13 +6,49 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-09-12
+
 The tool set becomes five areas with drawn boundaries, and gains the maths a
 lab report actually asks for. The trigger was a real misfire: "draw aspirin"
 was answered with `generate_scope_table`, a substrate grid holding a single
 cell. The model picks a tool from its name and description alone, so 22 tools
 with fuzzy edges are a precision problem.
 
+### Breaking — 22 tools become 20
+
+Existing Claude Desktop entries keep working (`chemdraw-tool-server` stays as
+a launcher alias). Saved prompts or scripts that name a removed tool need the
+new name:
+
+| Gone | Use instead |
+|---|---|
+| `lookup_compound`, `lookup_safety`, `lookup_physical`, `lookup_biochem`, `lookup_pathway` | `lookup` with `topic=properties / safety / physical / biochem / pathway` |
+| `export_curated_deck` | `export_anki_deck` with `curated_deck_id` |
+| `calculate_validation` | removed for now (the maths stays in `calculator/`) |
+| `open_chemdraw_file` | removed for now (CDXML remains an output format) |
+
+### Added — installation
+
+- **Claude Desktop bundle (`.mcpb`).** Download
+  `chemdraw-mcp-<version>.mcpb` from the release, double-click it, restart
+  Claude Desktop. The bundle is a launcher, not a vendored runtime — RDKit is
+  a native extension and a self-contained bundle would weigh over 100 MB per
+  platform. On first start it fetches the package from PyPI via `uv`
+  (installed to `~/.local/bin` if missing) and caches it; from then on the
+  server starts offline. macOS and Linux. Built by `scripts/build-mcpb.sh`,
+  attached to every release by CI.
+- **Registry publish runs in CI** (OIDC) after the PyPI upload, so the
+  registry entry can no longer lag behind the package the way it did from
+  June to August.
+
 ### Fixed
+
+- **Fresh installs from PyPI failed to start since 2026-08-26.** The `mcp`
+  dependency was unpinned, `mcp` 2.0 renamed `FastMCP` to `MCPServer`, and
+  `uvx chemdraw-mcp` resolved the new major — the server died on import with
+  `No module named 'mcp.server.fastmcp'`. Development installs were unaffected
+  because the lockfile held 1.27.1, which is why it went unnoticed. Pinned to
+  `mcp>=1.27,<2`; the migration to 2.x is separate work.
 
 - **Tool descriptions on Python 3.11/3.12 carried their docstring
   indentation.** Python 3.13 strips it at compile time, older versions do
@@ -63,6 +99,19 @@ answer checkable.
   form demands and the statistics module was missing.
 - `PlotPayload` gained an optional `notes` list, rendered by the panel, for
   numbers that belong to a figure but not in its subtitle.
+
+### Added — panel and routing
+
+- **Structure ⇄ data toggle in the panel.** Both the molecule view and the
+  data sheet carry the same structure data, so switching to the structure is
+  instant and local; the data sheet is fetched once on click and cached.
+- **Area map in the server instructions.** The five areas are explained once,
+  before any tool description is read, and `generate_molecule` claims the bare
+  compound name ("caffeine") in writing — previously `lookup` won it.
+- **A real stdio handshake** (`scripts/handshake.sh`) starts the server the
+  way Claude Desktop does and asserts the tool count; frozen tool snapshots
+  (`tests/__snapshots__/tools/`) and a prompt→tool case file
+  (`evals/tool-routing/cases.yaml`) pin the text the model actually reads.
 
 ### Changed
 
