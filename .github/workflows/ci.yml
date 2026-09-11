@@ -8,6 +8,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Untergrenze und Entwicklerversion. Python 3.13 dedentiert Docstrings beim
+    # Kompilieren, 3.11/3.12 nicht — das Gate war einen Monat lokal gruen und
+    # auf dem 3.12-System-Python des Runners rot (Tool-Beschreibungen ueber 2 KB).
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    name: test (py${{ matrix.python }})
     steps:
       - uses: actions/checkout@v6
 
@@ -15,6 +23,7 @@ jobs:
       - uses: astral-sh/setup-uv@v8.2.0
         with:
           enable-cache: true
+          python-version: ${{ matrix.python }}
 
       - uses: actions/setup-node@v6
         with:
@@ -51,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: ui-fixtures
+          name: ui-fixtures-py${{ matrix.python }}
           path: chemdraw_tool/ui/src/utils/__fixtures__/
