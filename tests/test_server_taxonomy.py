@@ -251,6 +251,20 @@ def test_description_survives_the_2kb_cap(tool):
     )
 
 
+@pytest.mark.parametrize("tool", sorted(_registered()))
+def test_description_is_dedented_on_every_python(tool):
+    """Python 3.13 entfernt die Docstring-Einrueckung beim Kompilieren, 3.11/3.12
+    nicht. Ohne eigenes cleandoc bekommen Nutzer auf aelteren Versionen
+    eingerueckte Beschreibungen — laenger, und ueber der 2-KB-Kappung."""
+    import inspect
+
+    desc = _registered()[tool]
+    assert desc == inspect.cleandoc(desc), (
+        f"{tool}: Beschreibung traegt Einrueckung — der Server muss "
+        "inspect.cleandoc anwenden, nicht auf Python 3.13 vertrauen."
+    )
+
+
 def test_save_png_is_declared_internal():
     """Der Export-Knopf ruft es auf — das Modell nie von sich aus."""
     desc = _registered()["save_png"]

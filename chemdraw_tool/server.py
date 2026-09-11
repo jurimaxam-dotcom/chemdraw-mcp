@@ -1,3 +1,4 @@
+import inspect
 import re
 from importlib.metadata import version as _pkg_version
 from pathlib import Path
@@ -227,6 +228,25 @@ mcp = FastMCP("ChemDraw Tool", instructions=_INSTRUCTIONS)
 # erkennen, welche chemdraw-mcp-Version bei ihm läuft.
 mcp._mcp_server.version = _pkg_version("chemdraw-mcp")
 
+
+def _tool(**kwargs):
+    """`mcp.tool`, aber mit dedentiertem Docstring.
+
+    Python 3.13 entfernt die Einrueckung von Docstrings beim Kompilieren,
+    3.11 und 3.12 nicht. FastMCP nimmt `fn.__doc__` unveraendert als
+    Beschreibung — auf aelteren Versionen kam sie also eingerueckt beim
+    Modell an: laenger, fuenf Tools ueber der 2-KB-Kappung, und die
+    Snapshots in tests/__snapshots__/tools/ passten nur auf 3.13.
+    """
+    register = mcp.tool(**kwargs)
+
+    def decorate(fn):
+        if fn.__doc__:
+            fn.__doc__ = inspect.cleandoc(fn.__doc__)
+        return register(fn)
+
+    return decorate
+
 # ---------------------------------------------------------------------------
 # UI resource — serves the built MCP App HTML to the client iframe
 # ---------------------------------------------------------------------------
@@ -317,7 +337,7 @@ def _slugify(text: str) -> str:
     return text or "molecule"
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
     name_or_smiles: str,
     label: str = "",
@@ -419,7 +439,7 @@ def generate_molecule(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_spectrum(
     spectrum_type: str,
     peaks: list[SpectrumPeak],
@@ -491,7 +511,7 @@ def generate_spectrum(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_tlc(
     lanes: list[TlcLane],
     title: str = "",
@@ -568,7 +588,7 @@ def generate_tlc(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_scope_table(
     entries: list[ScopeEntry],
     title: str = "",
@@ -723,7 +743,7 @@ def generate_scope_table(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def export_anki_deck(
     deck_name: str = "",
     cards: list[AnkiCard] | None = None,
@@ -800,7 +820,7 @@ def export_anki_deck(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_titration_curve(
     substance: str,
     pka_values: list[float],
@@ -863,7 +883,7 @@ def generate_titration_curve(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_calibration_curve(
     concentrations: list[float],
     signals: list[float],
@@ -969,7 +989,7 @@ def generate_calibration_curve(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_species_distribution(
     substance: str,
     pka_values: list[float],
@@ -1014,7 +1034,7 @@ def generate_species_distribution(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def compare_molecules(
     structures: list[str],
     labels: list[str] | None = None,
@@ -1072,7 +1092,7 @@ def compare_molecules(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
     """Generate a 3D conformer shown as an interactive, rotatable model.
 
@@ -1142,7 +1162,7 @@ def _require(value, name: str, topic: str):
     return value
 
 
-@mcp.tool()
+@_tool()
 def calculate_solution(
     topic: SolutionTopic,
     substance: str = "",
@@ -1367,7 +1387,7 @@ def _fat_value_rows(
     return rows
 
 
-@mcp.tool()
+@_tool()
 def calculate_content(
     method: ContentMethod,
     weights_mg: list[float],
@@ -1606,7 +1626,7 @@ def calculate_content(
     return "\n".join(lines)
 
 
-@mcp.tool()
+@_tool()
 def calculate_ph(
     topic: PhTopic,
     concentration: float = 0.0,
@@ -1791,7 +1811,7 @@ def calculate_ph(
     )
 
 
-@mcp.tool()
+@_tool()
 def predict_spectrum(
     topic: SpectroTopic,
     structure: str = "",
@@ -1920,7 +1940,7 @@ def predict_spectrum(
     )
 
 
-@mcp.tool()
+@_tool()
 def lookup(name: str, topic: LookupTopic = "properties") -> str:
     """Fetch a specific fact or value about a compound as plain text.
 
@@ -2140,7 +2160,7 @@ def _lookup_pathway(name: str) -> str:
     return "\n".join(lines)
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def lookup_molecule_data(name: str) -> DatabasePayload:
     """Show a compound's data sheet as a panel: structure plus grouped facts.
 
@@ -2250,7 +2270,7 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_reaction(
     reactants: list[str],
     products: list[str],
@@ -2377,7 +2397,7 @@ def generate_reaction(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def batch_generate(
     molecules: list[str],
     formats: list[str] | None = None,
@@ -2498,7 +2518,7 @@ def batch_generate(
     )
 
 
-@mcp.tool(structured_output=True, meta=_UI_META)
+@_tool(structured_output=True, meta=_UI_META)
 def generate_mechanism(
     reaction_type: str,
     substrates: list[str],
@@ -2588,7 +2608,7 @@ def generate_mechanism(
     )
 
 
-@mcp.tool()
+@_tool()
 def save_png(png_base64: str, filename: str) -> str:
     """Internal helper for the panel UI — never call this directly.
 
@@ -2611,7 +2631,7 @@ def save_png(png_base64: str, filename: str) -> str:
 
 if vault_enabled():
 
-    @mcp.tool()
+    @_tool()
     def search_vault(query: str) -> str:
         """Search the configured local knowledge vault.
 
@@ -2644,7 +2664,7 @@ if vault_enabled():
             )
         return "\n".join(lines)
 
-    @mcp.tool()
+    @_tool()
     def read_vault_entry(name: str) -> str:
         """Read a specific entry from the configured local vault.
 

@@ -12,6 +12,16 @@ was answered with `generate_scope_table`, a substrate grid holding a single
 cell. The model picks a tool from its name and description alone, so 22 tools
 with fuzzy edges are a precision problem.
 
+### Fixed
+
+- **Tool descriptions on Python 3.11/3.12 carried their docstring
+  indentation.** Python 3.13 strips it at compile time, older versions do
+  not, and FastMCP passes `__doc__` through unchanged — so users on 3.11
+  or 3.12 got longer descriptions, five of them past the 2 KB cap that
+  Claude Code truncates at, cutting the parameter docs at the end. The
+  server now applies `inspect.cleandoc` itself; CI runs on 3.11 and 3.13
+  so the two can no longer drift apart unnoticed.
+
 ### Added — bench maths
 
 Every calculation returns the working, not just the number: formula, numbers
