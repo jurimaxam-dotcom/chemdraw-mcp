@@ -21,5 +21,7 @@ CLAUDE.local.md
 evals/tool-routing/tools.json
 evals/tool-routing/promptfooconfig.yaml
 
-# Release-Artefakte (Wheel, sdist, .mcpb) — scripts/build-mcpb.sh und uv build
-dist/
+# Release-Artefakte (Wheel, sdist, .mcpb) — scripts/build-mcpb.sh und uv build.
+# Verankert: ein blankes "dist/" traf auch chemdraw_tool/ui/dist, und hatchling
+# haelt sich an .gitignore — 0.4.0 shippte deshalb ohne Panel.
+/dist/

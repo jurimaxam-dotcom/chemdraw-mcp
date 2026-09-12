@@ -6,6 +6,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-09-12
+
+### Fixed
+
+- **0.4.0 shipped without the chat panel.** The wheel lacked
+  `chemdraw_tool/ui/dist/index.html`: a `dist/` line added to `.gitignore` for
+  the release artefacts also matched the UI build folder, and hatchling filters
+  wheel contents by `.gitignore`. Tools still ran and files were written, but
+  every panel showed "cannot be reached". The pattern is anchored now, and a
+  test builds the wheel and checks that the panel is inside.
+
 ## [0.4.0] — 2026-09-12
 
 The tool set becomes five areas with drawn boundaries, and gains the maths a
