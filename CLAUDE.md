@@ -35,6 +35,7 @@ app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
 ./test.sh                                     # lint + backend + bundle + frontend
 npm --prefix chemdraw_tool/ui run test:watch  # JS unit tests in watch mode
 ./scripts/handshake.sh                        # real stdio handshake (needs network)
+uv run python scripts/identitaet.py           # name → right molecule (needs network)
 ```
 
 One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright install chromium`
@@ -65,6 +66,17 @@ regenerated to make a diff disappear**:
   rendering change or an RDKit bump, and look at the result.
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
+
+`identitaet.py` is the same idea one step earlier, and it is the only check
+on the step that can make everything else *consistently* wrong: if `resolve()`
+picks the wrong record, drawing, formula, mass and CAS all agree — for the
+wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 24
+entries (German trivial names, IUPAC names, raw SMILES, a salt, `O` for water)
+and the runner separates **red** (resolved to something else) from **yellow**
+(a source is down, or a documented gap) — a check that goes red because PubChem
+hiccups is a check that gets ignored. Two findings are written into the fixture
+as notes: "Glucose" resolves to the open-chain aldehyde, and PubChem answers the
+metformin SMILES with its `[14C]` record.
 
 A third frozen set covers the text the model actually reads:
 `tests/__snapshots__/tools/*.json` pins each tool's name, description and schemas.
