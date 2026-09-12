@@ -84,7 +84,7 @@ def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safet
     assert "IUPAC-Name" in row_keys
     assert "Summenformel" in row_keys
     assert "Molmasse" in row_keys
-    assert "LogP" in row_keys
+    assert "XLogP" in row_keys
     assert "TPSA" in row_keys
     assert "H-Brücken-Donoren" in row_keys
     assert "H-Brücken-Akzeptoren" in row_keys

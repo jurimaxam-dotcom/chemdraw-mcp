@@ -6,6 +6,7 @@ from rdkit.Chem import AllChem
 from chemdraw_tool.svg_renderer import (
     database_payload,
     extract_atom_data,
+    extract_functional_groups,
     molecule_payload,
     reaction_payload,
     render_svg,
@@ -197,3 +198,32 @@ def test_ui_preview_supports_stereo_annotation():
     AllChem.Compute2DCoords(mol)
     assert "CIP_Code" in render_svg(mol, annotate_stereo=True)
     assert "CIP_Code" not in render_svg(mol)
+
+
+# --- Gruppenzahl statt Atomzahl -------------------------------------------
+# Die Zahl neben einer Gruppe wird als "wie viele davon" gelesen. Die Zahl der
+# Atome im SMARTS-Treffer hat keine chemische Bedeutung: Methylphenidat zeigte
+# "Ester 5", und gemeint waren die fuenf markierten Atome eines einzigen Esters.
+
+
+def test_functional_groups_count_groups_not_atoms():
+    """Methylphenidat: ein Ester, ein sekundaeres Amin, ein aromatischer Ring."""
+    mol = _make_mol("COC(=O)C(C1CCCCN1)C2=CC=CC=C2")
+    counts = {g["name"]: g["count"] for g in extract_functional_groups(mol)}
+    assert counts == {"Ester": 1, "Sek. Amin": 1, "Aromat": 1}
+
+
+def test_two_esters_count_as_two():
+    """Bernsteinsaeuredimethylester: zwei Estergruppen, zehn markierte Atome."""
+    mol = _make_mol("COC(=O)CCC(=O)OC")
+    ester = next(g for g in extract_functional_groups(mol) if g["name"] == "Ester")
+    assert ester["count"] == 2
+    assert len(ester["atomIndices"]) == 10
+
+
+def test_aromat_counts_rings_not_ring_atoms():
+    """Naphthalin: zwei aromatische Ringe, zehn Ringatome."""
+    mol = _make_mol("c1ccc2ccccc2c1")
+    aromat = next(g for g in extract_functional_groups(mol) if g["name"] == "Aromat")
+    assert aromat["count"] == 2
+    assert len(aromat["atomIndices"]) == 10

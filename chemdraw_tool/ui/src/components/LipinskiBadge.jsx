@@ -2,7 +2,7 @@ import React from "react";
 
 const RULES = [
   { key: "mw", label: "MW", limit: "≤ 500", check: (v) => v != null && v <= 500 },
-  { key: "logP", label: "LogP", limit: "≤ 5", check: (v) => v != null && v <= 5 },
+  { key: "logP", label: "XLogP", limit: "≤ 5", check: (v) => v != null && v <= 5 },
   { key: "hbd", label: "HBD", limit: "≤ 5", check: (v) => v != null && v <= 5 },
   { key: "hba", label: "HBA", limit: "≤ 10", check: (v) => v != null && v <= 10 },
 ];

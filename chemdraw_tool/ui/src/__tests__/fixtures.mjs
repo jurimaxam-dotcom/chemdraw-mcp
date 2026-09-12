@@ -8,7 +8,7 @@ export const ATOMS = [
 ];
 
 export const GROUPS = [
-  { name: "Ester", atomIndices: [0, 1, 2], color: "#d35400" },
+  { name: "Ester", atomIndices: [0, 1, 2], count: 1, color: "#d35400" },
 ];
 
 export const SVG = "<svg viewBox='0 0 40 20'><path d='M0 0'/></svg>";

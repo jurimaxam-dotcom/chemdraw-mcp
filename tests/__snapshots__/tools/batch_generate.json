@@ -102,6 +102,11 @@
             "title": "Color",
             "type": "string"
           },
+          "count": {
+            "default": 1,
+            "title": "Count",
+            "type": "integer"
+          },
           "name": {
             "title": "Name",
             "type": "string"

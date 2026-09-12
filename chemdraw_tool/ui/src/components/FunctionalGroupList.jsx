@@ -52,7 +52,7 @@ export default function FunctionalGroupList({
               marginLeft: "auto",
               opacity: 0.6,
             }}>
-              {g.atomIndices.length}
+              {g.count}
             </span>
           </div>
         );

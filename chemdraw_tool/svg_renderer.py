@@ -184,29 +184,36 @@ def extract_functional_groups(mol: Chem.Mol) -> list[dict]:
         matches = mol.GetSubstructMatches(pattern)
         if not matches:
             continue
-        atom_indices = sorted({idx for match in matches for idx in match})
-        new_atoms = [i for i in atom_indices if i not in seen_atoms]
-        if not new_atoms:
+        # Gezaehlt werden Treffer, nicht Atome: "Ester 2" heisst zwei
+        # Estergruppen. Treffer, deren Atome schon einer frueheren (spezielleren)
+        # Gruppe gehoeren, zaehlen nicht mit — der Ether im Ester ist keiner.
+        kept = [m for m in matches if any(i not in seen_atoms for i in m)]
+        if not kept:
             continue
-        seen_atoms.update(atom_indices)
+        atom_indices = sorted({idx for match in kept for idx in match})
+        seen_atoms.update(idx for match in matches for idx in match)
         groups.append(
             {
                 "name": name,
                 "atomIndices": atom_indices,
+                "count": len(kept),
                 "color": color,
             }
         )
 
     ri = mol.GetRingInfo()
-    aromatic_atoms = []
-    for ring in ri.AtomRings():
-        if all(mol.GetAtomWithIdx(i).GetIsAromatic() for i in ring):
-            aromatic_atoms.extend(ring)
-    if aromatic_atoms:
+    aromatic_rings = [
+        ring
+        for ring in ri.AtomRings()
+        if all(mol.GetAtomWithIdx(i).GetIsAromatic() for i in ring)
+    ]
+    if aromatic_rings:
         groups.append(
             {
                 "name": "Aromat",
-                "atomIndices": sorted(set(aromatic_atoms)),
+                "atomIndices": sorted({i for ring in aromatic_rings for i in ring}),
+                # Naphthalin sind zwei Ringe, nicht zehn Atome.
+                "count": len(aromatic_rings),
                 "color": "#2980b9",
             }
         )

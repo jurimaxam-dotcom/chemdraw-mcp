@@ -33,6 +33,12 @@ export default function MoleculeView({ data }) {
   const wanted = useRef("structure");
 
   const props = data.properties || {};
+  // Welchen PubChem-Datensatz die Zahlen beschreiben. Steht im Kopf, weil ein
+  // falsch aufgeloester Name sonst nirgends auffaellt: die Struktur passt dann
+  // zu den Werten, nur eben zum falschen Stoff.
+  const record = props.pubchemTitle
+    ? `PubChem: ${props.pubchemTitle}${props.cid ? ` (CID ${props.cid})` : ""}`
+    : "";
   const groups = data.functionalGroups || [];
   const smiles = data.smiles ?? props.smiles;
   // SMILES zuerst: die sind laut Tool-Doku immer aufloesbar, ein Name kann
@@ -98,6 +104,14 @@ export default function MoleculeView({ data }) {
           {data.subtitle && (
             <div style={{ fontSize: 10, color: "var(--fg-muted)", marginTop: 1 }}>
               {data.subtitle}
+            </div>
+          )}
+          {record && (
+            <div
+              data-testid="pubchem-record"
+              style={{ fontSize: 9, color: "var(--fg-muted)", marginTop: 1, opacity: 0.8 }}
+            >
+              {record}
             </div>
           )}
         </div>

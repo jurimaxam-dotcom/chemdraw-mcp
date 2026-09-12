@@ -26,7 +26,7 @@ _PUBCHEM_SYNONYMS_URL = (
 
 _PUBCHEM_SMILES_PROPS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles"
-    "/property/MolecularFormula,MolecularWeight,IUPACName,"
+    "/property/Title,MolecularFormula,MolecularWeight,IUPACName,"
     "ExactMass,Charge,XLogP,TPSA,HBondDonorCount,HBondAcceptorCount,"
     "CanonicalSMILES,IsomericSMILES,InChIKey/JSON"
 )

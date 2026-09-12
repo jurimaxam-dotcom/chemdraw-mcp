@@ -17,6 +17,9 @@ class AtomData(BaseModel):
 class FunctionalGroup(BaseModel):
     name: str
     atomIndices: list[int] = []
+    # Zahl der Gruppen, nicht der markierten Atome — das Panel zeigt sie
+    # neben dem Namen, und dort liest sie jeder als "wie viele davon".
+    count: int = 1
     color: str = "#999999"
 
 

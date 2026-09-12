@@ -372,7 +372,7 @@ def test_lookup_compound_formats_full_pubchem_table():
     assert "| **Summenformel** | C9H8O4 |" in out
     assert "| **Molmasse** | 180.16 g/mol |" in out
     assert "| **Exakte Masse** | 180.04225873 |" in out
-    assert "| **LogP** | 1.2 |" in out
+    assert "| **XLogP** | 1.2 |" in out
     assert "| **Polare Oberfläche** | 63.6 Å² |" in out
     assert "| **H-Brücken-Donoren** | 1 |" in out
     assert "| **H-Brücken-Akzeptoren** | 4 |" in out
@@ -415,7 +415,7 @@ def test_lookup_compound_omits_rows_for_missing_fields():
 
     assert "| **Summenformel** | H2O |" in out
     assert "None" not in out
-    for absent in ("IUPAC-Name", "Molmasse", "LogP", "InChIKey", "CAS-Nr.", "Synonyme"):
+    for absent in ("IUPAC-Name", "Molmasse", "XLogP", "InChIKey", "CAS-Nr.", "Synonyme"):
         assert absent not in out
 
 
@@ -505,7 +505,7 @@ def test_lookup_compound_shows_logp_of_zero():
     ):
         out = lookup_compound("Testolin")
 
-    assert "| **LogP** | 0 |" in out
+    assert "| **XLogP** | 0 |" in out
 
 
 def test_lookup_compound_keeps_markdown_valid_on_partial_outage():

@@ -292,6 +292,13 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
         properties["hba"] = str(v)
     if v := props_raw.get("CanonicalSMILES"):
         properties["smiles"] = v
+    # Welchen Datensatz PubChem zurueckgegeben hat. Kostet keine zusaetzliche
+    # Anfrage und ist die einzige Stelle, an der ein falsch aufgeloester Name
+    # auffaellt: darunter ist dann alles konsistent falsch.
+    if v := props_raw.get("Title"):
+        properties["pubchemTitle"] = str(v)
+    if v := props_raw.get("CID"):
+        properties["cid"] = str(v)
     if cas:
         properties["cas"] = cas
     return properties
@@ -2005,7 +2012,7 @@ def _lookup_compound(name: str) -> str:
             ("MolecularFormula", "Summenformel", ""),
             ("MolecularWeight", "Molmasse", " g/mol"),
             ("ExactMass", "Exakte Masse", ""),
-            ("XLogP", "LogP", ""),
+            ("XLogP", "XLogP", ""),
             ("TPSA", "Polare Oberfläche", " Å²"),
             ("HBondDonorCount", "H-Brücken-Donoren", ""),
             ("HBondAcceptorCount", "H-Brücken-Akzeptoren", ""),
@@ -2217,7 +2224,7 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
     if (v := props.get("MolecularWeight")) is not None:
         pubchem_rows.append(DatabaseRow(key="Molmasse", val=f"{v} g/mol"))
     if (v := props.get("XLogP")) is not None:
-        pubchem_rows.append(DatabaseRow(key="LogP", val=str(v)))
+        pubchem_rows.append(DatabaseRow(key="XLogP", val=str(v)))
     if (v := props.get("TPSA")) is not None:
         pubchem_rows.append(DatabaseRow(key="TPSA", val=f"{v} Å²"))
     if (v := props.get("HBondDonorCount")) is not None:
