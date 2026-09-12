@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
+from rdkit import Chem
+from rdkit.Chem.inchi import MolToInchiKey
 
 from chemdraw_tool.cdxml_writer import write_cdxml
 from chemdraw_tool.databases import (
@@ -14,9 +16,11 @@ from chemdraw_tool.databases import (
     kegg_find,
     pubchem_physical_properties,
     pubchem_properties,
+    pubchem_properties_by_inchikey,
     pubchem_properties_by_smiles,
     pubchem_safety,
     pubchem_synonyms,
+    pubchem_synonyms_by_inchikey,
     pubchem_synonyms_by_smiles,
     uniprot_search,
 )
@@ -267,15 +271,45 @@ def chem_app_ui() -> str:
     return _UI_DIST.read_text(encoding="utf-8")
 
 
-def _enrich_properties(smiles: str) -> dict[str, str]:
-    """Build properties dict from PubChem using canonical SMILES.
+def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
+    """Den PubChem-Stammdatensatz zur Struktur holen: Properties + CAS.
 
-    SMILES-based lookup is deterministic and language-independent —
+    Gefragt wird ueber den InChIKey, den RDKit lokal aus dem SMILES rechnet.
+    Grund ist eine Messung: Auf das Metformin-SMILES antwortet PubChem mit
+    "[14C]metformin" (CID 152743144) statt mit dem Stammdatensatz CID 4091 —
+    gleiche Struktur, gleicher InChIKey, aber ohne CAS. Ueber den InChIKey
+    steht der Stammdatensatz an erster Stelle.
+
+    Der SMILES-Weg bleibt als Rueckfallebene: Kennt PubChem den Schluessel
+    nicht (Tautomer-Normalisierung, exotische Strukturen), ist ein Datensatz
+    gleicher Struktur besser als gar keiner.
+    """
+    key = None
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is not None:
+        try:
+            key = MolToInchiKey(mol)
+        except Exception:  # InChI kapituliert vor manchen Strukturen
+            key = None
+
+    if key:
+        props = pubchem_properties_by_inchikey(key)
+        if props:
+            cas, _ = pubchem_synonyms_by_inchikey(key)
+            return props, cas
+
+    return (pubchem_properties_by_smiles(smiles) or {}), pubchem_synonyms_by_smiles(smiles)[0]
+
+
+def _enrich_properties(smiles: str) -> dict[str, str]:
+    """Build properties dict from the PubChem record for this structure.
+
+    Structure-based lookup is deterministic and language-independent —
     works for German names, raw SMILES input, or any other input
     as long as resolve() returned a valid canonical SMILES.
     """
-    props_raw = pubchem_properties_by_smiles(smiles) or {}
-    cas, _ = pubchem_synonyms_by_smiles(smiles)
+    props_raw, cas = _pubchem_record(smiles)
+    props_raw = props_raw or {}
 
     properties: dict[str, str] = {}
     if v := props_raw.get("MolecularFormula"):

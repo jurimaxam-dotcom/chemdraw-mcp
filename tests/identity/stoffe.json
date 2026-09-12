@@ -33,7 +33,7 @@
     {"eingabe": "Theophyllin", "inchikey": "ZFXYFBGIUFBOJW-UHFFFAOYSA-N", "formel": "C7H8N4O2"},
     {"eingabe": "Diclofenac", "inchikey": "DCOPUUMXTXDBNB-UHFFFAOYSA-N", "formel": "C14H11Cl2NO2"},
     {"eingabe": "Metformin", "inchikey": "XZWYZXLIPXDOLR-UHFFFAOYSA-N", "formel": "C4H11N5",
-     "notiz": "BEFUND: die Struktur stimmt, aber PubChem gibt zu diesem SMILES den Datensatz '[14C]metformin' (CID 152743144) zurueck — daher keine CAS im Panel. Die Kopfzeile macht genau das sichtbar"},
+     "notiz": "War der Ausloeser fuer die InChIKey-Abfrage: auf das SMILES antwortete PubChem mit '[14C]metformin' (CID 152743144, ohne CAS). Ueber den InChIKey kommt CID 4091 mit CAS 657-24-9"},
     {"eingabe": "Methylphenidat", "inchikey": "DUGOZIWVEXMGBE-UHFFFAOYSA-N", "formel": "C14H19NO2",
      "notiz": "deutscher Name, PubChem 404 — haengt an NCI CIR. Am 12.09.2026 war CIR aus (HTTP 500): gelb"},
     {"eingabe": "methylphenidate", "inchikey": "DUGOZIWVEXMGBE-UHFFFAOYSA-N", "formel": "C14H19NO2"},

@@ -33,6 +33,20 @@ _PUBCHEM_SMILES_PROPS_URL = (
 _PUBCHEM_SMILES_SYNONYMS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/synonyms/JSON"
 )
+
+# Der InChIKey ist der praezisere Schluessel: Auf ein SMILES antwortet PubChem
+# mit IRGENDEINEM Datensatz gleicher Struktur — beim Metformin-SMILES mit
+# "[14C]metformin" (CID 152743144) statt mit CID 4091. Ueber den InChIKey steht
+# der Stammdatensatz an erster Stelle.
+_PUBCHEM_INCHIKEY_PROPS_URL = (
+    "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey"
+    "/{key}/property/Title,MolecularFormula,MolecularWeight,IUPACName,"
+    "ExactMass,Charge,XLogP,TPSA,HBondDonorCount,HBondAcceptorCount,"
+    "CanonicalSMILES,IsomericSMILES,InChIKey/JSON"
+)
+_PUBCHEM_INCHIKEY_SYNONYMS_URL = (
+    "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{key}/synonyms/JSON"
+)
 _PUBCHEM_VIEW_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound"
     "/{cid}/JSON?heading={heading}"
@@ -79,6 +93,38 @@ def pubchem_properties_by_smiles(smiles: str) -> dict | None:
     except Exception:
         logger.warning("PubChem SMILES properties failed for %r", smiles, exc_info=True)
         return None
+
+
+def pubchem_properties_by_inchikey(key: str) -> dict | None:
+    """Properties des Stammdatensatzes zu einem InChIKey (erster Treffer)."""
+    try:
+        resp = requests.get(
+            _PUBCHEM_INCHIKEY_PROPS_URL.format(key=quote(key, safe="")),
+            timeout=_TIMEOUT,
+        )
+        resp.raise_for_status()
+        props = resp.json().get("PropertyTable", {}).get("Properties", [])
+        return props[0] if props else None
+    except Exception:
+        logger.warning("PubChem InChIKey properties failed for %r", key, exc_info=True)
+        return None
+
+
+def pubchem_synonyms_by_inchikey(key: str) -> tuple[str | None, list[str]]:
+    try:
+        resp = requests.get(
+            _PUBCHEM_INCHIKEY_SYNONYMS_URL.format(key=quote(key, safe="")),
+            timeout=_TIMEOUT,
+        )
+        resp.raise_for_status()
+        syns = resp.json()["InformationList"]["Information"][0].get("Synonym", [])
+        cas_list = [s for s in syns[:30] if re.match(r"^\d{2,7}-\d{2}-\d$", s)]
+        cas = cas_list[0] if cas_list else None
+        others = [s for s in syns[:10] if s not in cas_list]
+        return cas, others
+    except Exception:
+        logger.warning("PubChem InChIKey synonyms failed for %r", key, exc_info=True)
+        return None, []
 
 
 def pubchem_synonyms(name: str) -> tuple[str | None, list[str]]:

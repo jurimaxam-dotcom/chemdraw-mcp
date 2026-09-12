@@ -74,9 +74,11 @@ wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 24
 entries (German trivial names, IUPAC names, raw SMILES, a salt, `O` for water)
 and the runner separates **red** (resolved to something else) from **yellow**
 (a source is down, or a documented gap) — a check that goes red because PubChem
-hiccups is a check that gets ignored. Two findings are written into the fixture
-as notes: "Glucose" resolves to the open-chain aldehyde, and PubChem answers the
-metformin SMILES with its `[14C]` record.
+hiccups is a check that gets ignored. It paid for itself on the first run:
+PubChem answered the metformin SMILES with its `[14C]` record (no CAS), which is
+why properties are now fetched by InChIKey with the SMILES route as fallback.
+The open question it also surfaced is noted in the fixture: "Glucose" resolves to
+the open-chain aldehyde, not the pyranose.
 
 A third frozen set covers the text the model actually reads:
 `tests/__snapshots__/tools/*.json` pins each tool's name, description and schemas.

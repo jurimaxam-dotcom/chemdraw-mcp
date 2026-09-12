@@ -6,6 +6,37 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The number beside a functional group counted atoms, not groups.**
+  Methylphenidate showed "Ester 5" for a single ester — those were the five
+  highlighted atoms. Groups are counted as matches now (aromatics as rings), and
+  only matches that actually own their atoms are highlighted, so the ether
+  inside an ester is no longer tagged twice.
+- **The compound behind the numbers can be the wrong record.** PubChem answers
+  the metformin SMILES with `[14C]metformin` (CID 152743144) instead of the
+  parent record CID 4091 — same structure, same InChIKey, but no CAS number, so
+  the panel simply showed none. Properties and synonyms are now fetched by
+  InChIKey (computed locally by RDKit), which returns the parent record first;
+  the SMILES route stays as a fallback when PubChem does not know the key.
+
+### Changed
+
+- **"LogP" is labelled "XLogP"** in the panel, the data sheet and `lookup`'s
+  text output. The value is PubChem's computed XLogP, not a measured partition
+  coefficient — RDKit's Crippen estimate for methylphenidate is 2.09 against
+  PubChem's 0.2, and a number that size deserves its source in its name.
+
+### Added
+
+- **The panel names the PubChem record its numbers come from** ("PubChem:
+  Methylphenidate (CID 4158)"). Costs no extra request, and it is the one place
+  where a mis-resolved name becomes visible — below it, everything is
+  consistently wrong together.
+- **`scripts/identitaet.py` + `tests/identity/stoffe.json`**: 24 inputs pinned to
+  their InChIKey, run live against OPSIN/PubChem/NCI. Red only for a wrong
+  substance, yellow for a dead source — outside the gate, like `handshake.sh`.
+
 ## [0.4.1] — 2026-09-12
 
 ### Fixed
