@@ -13,10 +13,17 @@ interactive preview inside the chat. *"Draw aspirin"* is already a complete
 command.
 
 Built for pharmacy and chemistry students who spend too much time clicking
-hexagons. 20 tools cover what a report or a slide actually needs:
-structures, reaction schemes, step-by-step mechanisms, substrate-scope
-figures, TLC plates, titration curves, schematic spectra, substance data
-sheets, Ph.Eur. assay calculations and Anki decks.
+hexagons: **structures, reaction schemes, curved-arrow mechanisms and
+substrate-scope figures** — the drawing a report or a slide actually asks for.
+
+For the same lab report, also:
+
+| | |
+|---|---|
+| **Lab graphics** | TLC plates, titration curves, schematic spectra, calibration lines |
+| **Look up** | PubChem/GHS data sheets, expected IR bands |
+| **Bench maths** | weighing and dilutions, Ph.Eur. content determination, pH and buffers |
+| **Exam prep** | Anki decks with the structures rendered in |
 
 What it costs you: one install command. Apache-2.0, no API key, no sign-up
 for the server, no ChemDraw licence — you need Claude Desktop and
