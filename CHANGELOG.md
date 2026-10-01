@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.2] — 2026-10-01
+
 ### Fixed
 
 - **The number beside a functional group counted atoms, not groups.**
