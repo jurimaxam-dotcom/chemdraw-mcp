@@ -195,7 +195,7 @@ chemdraw_tool/
 │                            stays available as an output format)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
 ├── doctor.py              — installation diagnosis (chemdraw-doctor)
-├── server.py              — FastMCP server (stdio) + tool definitions;
+├── server.py              — MCPServer (mcp 2.x, stdio) + tool definitions;
 │                            `_INSTRUCTIONS` is the area map the client may put
 │                            in the system prompt — the one place the five
 │                            areas are explained once instead of 20 times
@@ -212,7 +212,7 @@ structures (a TLC plate or scope figure is not one).
 **Adding a panel tool is a five-link chain** — miss one and the panel silently
 shows nothing: renderer → payload model with a `type` default → tool with
 `meta=_UI_META` → View component + `case` in `ui/src/App.jsx` → rebuild the
-bundle. Tests enforce every link (panel tools are derived from the FastMCP
+bundle. Tests enforce every link (panel tools are derived from the MCPServer
 registration, payload types are compared against App.jsx cases in both
 directions, the gate checks bundle freshness). Removing one walks the same
 chain backwards — and the bundle rebuild is just as mandatory.

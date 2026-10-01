@@ -4,7 +4,7 @@ from importlib.metadata import version as _pkg_version
 from pathlib import Path
 from typing import Literal
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from rdkit import Chem
 from rdkit.Chem.inchi import MolToInchiKey
 
@@ -225,19 +225,23 @@ Pass English or IUPAC compound names, never localized ones ('Aspirin', not
 themselves — never call save_png, that is the panel's export button.
 """
 
-mcp = FastMCP("ChemDraw Tool", instructions=_INSTRUCTIONS)
-# FastMCP nimmt keine Version entgegen, der Low-Level-Server trägt sie aber in
-# serverInfo — und genau das zeigt jeder Host an. Ohne diese Zeile meldet sich
-# der Server mit der SDK-Version (gemessen: "1.27.1"), und der Nutzer kann nicht
-# erkennen, welche chemdraw-mcp-Version bei ihm läuft.
-mcp._mcp_server.version = _pkg_version("chemdraw-mcp")
+# version= landet in serverInfo — und genau das zeigt jeder Host an. Ohne die
+# Angabe meldete sich der Server unter mcp 1.x mit der SDK-Version (gemessen:
+# "1.27.1"), und der Nutzer konnte nicht erkennen, welche chemdraw-mcp-Version
+# bei ihm läuft. Seit mcp 2 ist das ein Konstruktor-Argument statt eines
+# Eingriffs in den Low-Level-Server.
+mcp = MCPServer(
+    "ChemDraw Tool",
+    instructions=_INSTRUCTIONS,
+    version=_pkg_version("chemdraw-mcp"),
+)
 
 
 def _tool(**kwargs):
     """`mcp.tool`, aber mit dedentiertem Docstring.
 
     Python 3.13 entfernt die Einrueckung von Docstrings beim Kompilieren,
-    3.11 und 3.12 nicht. FastMCP nimmt `fn.__doc__` unveraendert als
+    3.11 und 3.12 nicht. MCPServer (vormals FastMCP) nimmt `fn.__doc__` unveraendert als
     Beschreibung — auf aelteren Versionen kam sie also eingerueckt beim
     Modell an: laenger, fuenf Tools ueber der 2-KB-Kappung, und die
     Snapshots in tests/__snapshots__/tools/ passten nur auf 3.13.

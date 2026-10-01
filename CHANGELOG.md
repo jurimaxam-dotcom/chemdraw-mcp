@@ -6,6 +6,16 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Runs on the `mcp` 2.x Python SDK** (pinned `mcp>=2,<3`, tested with
+  2.2.0). `FastMCP` became `MCPServer`, and the server version is now a
+  constructor argument instead of a patch on the low-level server. What a
+  client sees is unchanged: the same 20 tools with byte-identical names,
+  descriptions and schemas, the same 14 panel tools, `serverInfo.version`
+  still the package version, and structured output still also arrives as a
+  JSON text block for hosts that drop `structuredContent`.
+
 ## [0.4.2] — 2026-10-01
 
 ### Fixed

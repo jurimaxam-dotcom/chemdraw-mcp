@@ -120,7 +120,7 @@ _UI_META_EXPECTED = {"ui": {"resourceUri": _RESOURCE_URI}}
 
 # Untergrenze, KEINE Sollmenge: geprüft wird die aus der Registrierung
 # abgeleitete Menge (siehe _panel_payload_type). Diese Liste schlägt nur an,
-# wenn die Ableitung selbst blind wird — etwa nach einem FastMCP-Update.
+# wenn die Ableitung selbst blind wird — etwa nach einem MCPServer-Update.
 _KNOWN_PANEL_TOOLS = frozenset(
     {
         "generate_molecule",
@@ -171,7 +171,7 @@ def test_every_panel_tool_carries_the_ui_meta():
     """Ohne meta=_UI_META öffnet Claude Desktop KEIN App-Panel — das Tool
     'funktioniert' dann scheinbar nicht, obwohl Dateien geschrieben werden
     (generate_spectrum-Bug, 2026-06-11). Die Menge der Panel-Tools kommt aus
-    der FastMCP-Registrierung, nicht aus einer gepflegten Konstante: ein neu
+    der MCPServer-Registrierung, nicht aus einer gepflegten Konstante: ein neu
     hinzugefügtes Panel-Tool ohne Meta fällt so von selbst auf."""
     from chemdraw_tool.server import mcp
 
@@ -220,8 +220,9 @@ def test_generate_molecule_with_stereo_annotation(tmp_path, monkeypatch):
 def test_server_reports_its_own_version_not_the_sdk_version():
     """Jeder MCP-Host zeigt serverInfo.version an.
 
-    Ohne explizite Angabe meldet FastMCP die SDK-Version (gemessen: 1.27.1) und
-    der Nutzer kann nicht erkennen, welche chemdraw-mcp-Version läuft —
+    Ohne explizite Angabe meldete FastMCP (mcp 1.x) die SDK-Version (gemessen:
+    1.27.1), unter mcp 2 ist der Default ein Leerstring — in beiden Fällen kann
+    der Nutzer nicht erkennen, welche chemdraw-mcp-Version läuft —
     ausgerechnet die Frage, die nach einem Registry-Eintrag mit veralteter
     Version zählt.
     """
@@ -229,4 +230,4 @@ def test_server_reports_its_own_version_not_the_sdk_version():
 
     from chemdraw_tool.server import mcp
 
-    assert mcp._mcp_server.version == version("chemdraw-mcp")
+    assert mcp.version == version("chemdraw-mcp")
