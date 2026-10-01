@@ -25,3 +25,6 @@ evals/tool-routing/promptfooconfig.yaml
 # Verankert: ein blankes "dist/" traf auch chemdraw_tool/ui/dist, und hatchling
 # haelt sich an .gitignore — 0.4.0 shippte deshalb ohne Panel.
 /dist/
+
+# Agenten-Worktrees (eigene Repos, nie einchecken)
+/.claude/worktrees/
