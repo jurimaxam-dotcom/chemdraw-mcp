@@ -6,6 +6,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The panel's Data button failed for every molecule.** PubChem no longer
+  returns `CanonicalSMILES`, so the molecule payload carried no SMILES and the
+  button asked for the data sheet by display name ("Methylphenidat") — which
+  does not resolve. The payload now always carries the resolved SMILES, and
+  `lookup_molecule_data` fetches its record by InChIKey like the molecule panel
+  does, instead of sending a SMILES to PubChem's name endpoint (HTTP 404).
+
 ## [0.4.2] — 2026-10-01
 
 ### Fixed

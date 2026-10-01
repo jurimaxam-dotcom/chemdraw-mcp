@@ -111,3 +111,37 @@ def test_unparsable_input_skips_the_key_route(monkeypatch):
 def test_inchikey_endpoints_exist():
     assert "/inchikey/" in databases._PUBCHEM_INCHIKEY_PROPS_URL
     assert "/inchikey/" in databases._PUBCHEM_INCHIKEY_SYNONYMS_URL
+
+
+# --- Der Daten-Knopf im Panel (gemessen 01.10.2026) -------------------------
+# PubChem liefert kein "CanonicalSMILES" mehr (heute "SMILES" /
+# "ConnectivitySMILES"). Damit fehlte properties.smiles, MoleculeView fragte das
+# Datenblatt mit dem Anzeigenamen ("Methylphenidat") an — resolve() scheiterte.
+# Und selbst mit SMILES ging lookup_molecule_data per NAME zu PubChem, wo ein
+# SMILES mit 404 beantwortet wird.
+
+
+def test_payload_smiles_survives_a_pubchem_answer_without_canonical_smiles(monkeypatch):
+    _fake_pubchem(monkeypatch, {"CID": 4158, "Title": "Methylphenidate"})
+    props = server._enrich_properties(_SMILES)
+    assert props["smiles"] == _SMILES
+
+
+def test_data_sheet_goes_by_structure_not_by_name(monkeypatch):
+    _fake_pubchem(
+        monkeypatch,
+        {"CID": 4158, "Title": "Methylphenidate", "InChIKey": "DUGOZIWVEXMGBE-UHFFFAOYSA-N"},
+    )
+
+    def per_name(name):
+        raise AssertionError(f"Namensweg mit {name!r} — das Panel schickt ein SMILES")
+
+    monkeypatch.setattr(server, "pubchem_properties", per_name)
+    monkeypatch.setattr(server, "pubchem_synonyms", per_name)
+    monkeypatch.setattr(server, "pubchem_safety", lambda cid: [])
+
+    sheet = server.lookup_molecule_data(_SMILES)
+
+    rows = {r.key: r.val for r in sheet.sources[0].rows}
+    assert rows["CID"] == "4158"
+    assert rows["CAS-Nr."] == "113-45-1"

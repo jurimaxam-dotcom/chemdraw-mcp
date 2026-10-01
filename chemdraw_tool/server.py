@@ -324,8 +324,10 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
         properties["hbd"] = str(v)
     if v := props_raw.get("HBondAcceptorCount"):
         properties["hba"] = str(v)
-    if v := props_raw.get("CanonicalSMILES"):
-        properties["smiles"] = v
+    # PubChem liefert seit 2025 "SMILES"/"ConnectivitySMILES" statt
+    # "CanonicalSMILES". Ohne Fallback fehlte das Feld, und der Daten-Knopf im
+    # Panel fragte mit dem Anzeigenamen statt mit der Struktur an.
+    properties["smiles"] = props_raw.get("CanonicalSMILES") or smiles
     # Welchen Datensatz PubChem zurueckgegeben hat. Kostet keine zusaetzliche
     # Anfrage und ist die einzige Stelle, an der ein falsch aufgeloester Name
     # auffaellt: darunter ist dann alles konsistent falsch.
@@ -2240,7 +2242,10 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
     sources: list[DatabaseSource] = []
 
     # --- PubChem properties source ---
-    props = pubchem_properties(name) or {}
+    # Ueber die Struktur, nicht ueber den Namen: das Panel schickt ein SMILES,
+    # und auf ein SMILES antwortet PubChems Namens-Endpunkt mit 404. Derselbe
+    # Weg wie im Molekuel-Panel — gleicher Stammdatensatz, gleiche CAS.
+    props, cas_nr = _pubchem_record(smiles)
     cid_raw = props.get("CID")
     try:
         cid_int = int(cid_raw) if cid_raw else None
@@ -2267,7 +2272,6 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
         pubchem_rows.append(DatabaseRow(key="H-Brücken-Akzeptoren", val=str(v)))
     if (v := props.get("InChIKey")) is not None:
         pubchem_rows.append(DatabaseRow(key="InChIKey", val=v))
-    cas_nr, _ = pubchem_synonyms(name)
     if cas_nr:
         pubchem_rows.append(DatabaseRow(key="CAS-Nr.", val=cas_nr))
 
