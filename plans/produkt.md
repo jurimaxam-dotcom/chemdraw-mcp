@@ -47,7 +47,9 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [x] Entschieden (02.10.): `reaction-in-conversation` — Reaktion + Mechanismus ist gute Antwort, `forbidden` nur noch generate_molecule; `draw-scope-real` mit Strukturen im Prompt. Eval 28/28 in drei Wiederholungen der Fälle
 - [x] Dateipfade im Panel mit `~` gekürzt (6 Views), Tooltip hat den vollen Pfad
 - [x] Design-Galerie: `uv run python tests/gallery_ui.py` → /tmp/chem-gallery/sheet.png (13 Panel-Typen nebeneinander)
-- [ ] Design-Befunde aus der Galerie, nach Aufwand: (1) Speziesverteilung: Legende liegt über der Kurve (Matplotlib `legend(loc=…)` außerhalb) (2) Kalibrierkurve: Titel doppelt (Panel-Kopf + Plot) (3) Mechanismus-Overview: uneinheitliche Strukturgrößen (Br⁻ winzig, HO⁻ groß), Übergangszustand-Beschriftung überlagert den Pfeilbogen, viel Leerraum (4) Reaktion: kein Titel
+- [x] Speziesverteilung: Legende neben der Achse (6763642, Test rot gesehen)
+- [x] Geprüft, kein Fehler: Kalibrierkurve-Titel doppelt (der Titel im Bild gehört in die exportierten Dateien); Reaktion ohne Titel (Edukte/Produkte/Bedingungen sind beschriftet)
+- [ ] Mechanismus-Overview (größter Design-Block, ~halber Tag): uneinheitliche Strukturgrößen (Br⁻ winzig, HO⁻ groß), Übergangszustand-Beschriftung überlagert den Pfeilbogen (`mechanism_coords.py`), viel Leerraum. Zuerst Golden-Test für die Koordinaten, dann Layout
 - [ ] (alt, erledigt) — „Wie läuft die Veresterung ab?“ ruft Reaktion **und** Mechanismus. Fall zu streng (dann `forbidden` lockern) oder Beschreibung schärfen?
 - [ ] Fall `draw-scope-real` ist fehlerhaft: Prompt ohne Strukturen, Modell fragt zu Recht nach. Prompt um SMILES ergänzen (Begründung ins `why`)
 - [ ] Geschwindigkeit: Server-Import 1,4 s (mcp 0,33 · rdkit 0,25 · matplotlib 0,25) — nur lazy laden, wenn die Handshake-Zeit unter Last wehtut; Datenblatt-Ladezeit 2,3 s (PubChem) — Vorabladen nur falls Jay es spürt
