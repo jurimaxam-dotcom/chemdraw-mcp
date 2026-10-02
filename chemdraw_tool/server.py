@@ -1536,7 +1536,7 @@ def calculate_content(
             )
             sections.append(
                 "## Titer\n\n"
-                f"- Formula: `t = mean(content of reference) / declared content`\n"
+                f"- Formula: `t = declared content / mean(content of reference at t = 1)`\n"
                 f"- From {len(reference_weights_mg)} reference titrations\n"
                 f"- Result: **t = {used_titer:.4f}**\n"
                 "- Every sample reading below is corrected with this titer."

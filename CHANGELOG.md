@@ -8,6 +8,12 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **`calculate_content` inverted the titer from a reference titration.** A
+  titrant 2 % stronger than nominal (t = 1.02) came out as t ≈ 0.98, so every
+  sample corrected with it read about 4 % low. The titer is now declared
+  content / apparent content of the reference, and a test builds the reference
+  readings from a known titer and checks the round trip.
+
 - **The panel's Data button failed for every molecule.** PubChem no longer
   returns `CanonicalSMILES`, so the molecule payload carried no SMILES and the
   button asked for the data sheet by display name ("Methylphenidat") — which

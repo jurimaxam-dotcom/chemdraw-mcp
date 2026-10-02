@@ -38,7 +38,12 @@ def calculate_titer(
 ) -> float:
     """Calculate titer from reference titrations.
 
-    Titer = mean(Gehalt_ref) / soll_gehalt.
+    Titer = soll_gehalt / mean(scheinbarer Gehalt_ref).
+
+    Der scheinbare Gehalt ist mit t = 1 gerechnet. Ist die Maßlösung stärker
+    als nominal, verbraucht die Referenz weniger und wirkt "zu schwach" — der
+    Titer ist deshalb Soll durch Schein, nicht umgekehrt (bis 02.10.2026 stand
+    hier der Kehrwert; jede Probe mit Referenztitration lag um ~2·|t−1| daneben).
     """
     _validate_paired("ref_einwaagen", ref_einwaagen, "ref_volumina", ref_volumina)
     _validate_positive("ref_einwaagen", ref_einwaagen)
@@ -50,7 +55,7 @@ def calculate_titer(
         gehalt = (faktor * (v - blindwert)) / m * 100
         gehalte.append(gehalt)
     mean_gehalt = sum(gehalte) / len(gehalte)
-    return mean_gehalt / soll_gehalt
+    return soll_gehalt / mean_gehalt
 
 
 def calculate_gehalt_titration(

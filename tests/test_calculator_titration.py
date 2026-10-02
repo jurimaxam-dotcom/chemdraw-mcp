@@ -133,3 +133,28 @@ def test_gehalt_zero_titer_raises():
             faktor=20.63,
             titer=0.0,
         )
+
+
+# --- Richtung des Titers (02.10.2026) ---------------------------------------
+# Ist die Maßlösung stärker als nominal (t > 1), verbraucht die Referenz WENIGER
+# Volumen; ihr scheinbarer Gehalt liegt unter dem Sollwert. Der Titer ist also
+# Soll / scheinbar — nicht umgekehrt. Der alte Test (0,95 < t < 1,05) sah die
+# Richtung nicht; mit t = 1/1,02 lag jede Probe rund 4 % zu niedrig.
+
+
+@pytest.mark.parametrize("t_wahr", [0.97, 1.0, 1.02])
+def test_titer_aus_referenz_hat_die_richtige_richtung(t_wahr):
+    faktor, m = 20.63, 400.0
+    v = m / (faktor * t_wahr)  # Referenz mit 100 % Gehalt, Blindwert 0
+    assert calculate_titer([m], [v], 0.0, faktor) == pytest.approx(t_wahr, rel=1e-9)
+
+
+def test_probe_mit_derselben_massloesung_ergibt_ihren_wahren_gehalt():
+    faktor, t_wahr = 20.63, 1.02
+    ref_m = [400.0, 410.0]
+    ref_v = [m / (faktor * t_wahr) for m in ref_m]
+    titer = calculate_titer(ref_m, ref_v, 0.0, faktor)
+    m_probe, gehalt_wahr = 450.0, 99.3
+    v_probe = m_probe * gehalt_wahr / 100 / (faktor * t_wahr)
+    gehalt = calculate_gehalt_titration([m_probe], [v_probe], 0.0, faktor, titer)[0]["gehalt"]
+    assert gehalt == pytest.approx(gehalt_wahr, rel=1e-9)
