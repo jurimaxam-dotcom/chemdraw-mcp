@@ -6,6 +6,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Name lookups no longer wait seconds for OPSIN first.** OPSIN (the offline
+  IUPAC-name parser that runs before any network lookup) used to start a new
+  Java VM for every name — about 2–6 s each, paid in full by every trivial name
+  like "methylphenidate" before PubChem was even asked. OPSIN now runs as one
+  long-lived Java process that answers name by name: after the first start
+  (about 1.5 s) a name takes 1–15 ms instead of 2 s. Behaviour is unchanged —
+  systematic names still resolve offline, Java stays optional, and if the
+  long-lived process cannot start, the old one-VM-per-name path takes over.
+
 ## [0.4.4] — 2026-10-02
 
 ### Fixed

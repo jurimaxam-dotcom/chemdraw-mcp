@@ -1,10 +1,15 @@
+import atexit
 import functools
+import glob
+import importlib.util
 import logging
 import os
+import queue
 import re
 import shutil
 import subprocess
 import tempfile
+import threading
 import warnings
 from urllib.parse import quote
 
@@ -214,16 +219,192 @@ def _java_runtime_available() -> bool:
     return False
 
 
-def _opsin_lookup(name: str) -> str | None:
-    """Parse systematic IUPAC nomenclature offline via OPSIN (rule-based).
+# --- OPSIN als Dauer-JVM -----------------------------------------------------
+# py2opsin startet pro Name eine neue JVM (1,9–5,8 s gemessen). Weil OPSIN in
+# der Kaskade VOR dem Netz steht, zahlte jeder Trivialname diese Zeit als
+# Fehlschlag. Stattdessen läuft die OPSIN-CLI aus dem py2opsin-Paket einmal
+# und bekommt die Namen zeilenweise. Protokoll (opsin-cli 2.9.0, gemessen):
+# eine Zeile rein → genau eine Zeile raus, pro Zeile geflusht; mit `-n` lautet
+# sie "SMILES\tName", bei unparsebarem Namen "\tName" (Grund auf stderr). Das
+# Namens-Echo macht jede Antwort ihrer Frage zuordenbar — passt es nicht, ist
+# der Strom verrutscht und die JVM wird verworfen. EOF auf stdin beendet sie.
 
-    Returns None when no JRE is reachable (graceful degradation to the
-    network cascade) or when OPSIN can't parse the name (trivial names).
-    """
-    if not _java_runtime_available():
+_OPSIN_HANDSHAKE = ("methane", "C")
+_OPSIN_START_TIMEOUT = 60.0  # Kaltstart unter Last gemessen bis 12 s
+_OPSIN_TIMEOUT = 10.0  # warm < 30 ms; das hier fängt nur Hänger
+_OPSIN_MAX_FAILURES = 3
+_JVM_FLAGS = (
+    "-XX:+IgnoreUnrecognizedVMOptions",  # fremde JVMs scheitern nicht an -XX
+    "-XX:TieredStopAtLevel=1",  # nur C1: Kaltstart 2,2 → 1,4 s
+    "-Dfile.encoding=UTF-8",  # stdin-Zeichensatz nicht vom (leeren) LANG abhängig
+    "-Djava.awt.headless=true",
+)
+
+
+class _OpsinUnavailable(Exception):
+    """Die Dauer-JVM ist nicht nutzbar — dieser Aufruf geht den py2opsin-Weg."""
+
+
+class _OpsinTimeout(Exception):
+    """Die JVM lebt, antwortet aber nicht."""
+
+
+class _OpsinProcess:
+    def __init__(self, java: str, jar: str):
+        self._proc = subprocess.Popen(
+            [java, *_JVM_FLAGS, "-jar", jar, "-osmi", "-n"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            # stderr nie als Pipe: läuft sie voll, blockiert die JVM.
+            stderr=subprocess.DEVNULL,
+            # Unter Claude Desktop ist die CWD "/" — nichts soll davon abhängen.
+            cwd=tempfile.gettempdir(),
+        )
+        self._lines: queue.Queue[bytes] = queue.Queue()
+        threading.Thread(
+            target=self._pump, args=(self._proc.stdout, self._lines), daemon=True
+        ).start()
+
+    @staticmethod
+    def _pump(stdout, lines: "queue.Queue[bytes]") -> None:
+        # Leseschleife im eigenen Thread: so bekommt ask() einen portablen
+        # Timeout per Queue, ohne select() auf Pipes (geht unter Windows nicht).
+        try:
+            for line in iter(stdout.readline, b""):
+                lines.put(line)
+        except (OSError, ValueError):
+            pass
+        finally:
+            lines.put(b"")  # EOF-Marke
+
+    def ask(self, name: str, timeout: float) -> str:
+        """SMILES, oder "" wenn OPSIN den Namen nicht parsen kann."""
+        try:
+            self._proc.stdin.write(name.encode("utf-8") + b"\n")
+            self._proc.stdin.flush()
+        except (OSError, ValueError) as exc:
+            raise _OpsinUnavailable(f"stdin: {exc}") from exc
+        try:
+            line = self._lines.get(timeout=timeout)
+        except queue.Empty:
+            raise _OpsinTimeout(name) from None
+        # EOF (b"") vor dem Strippen prüfen — sonst sähe ein toter Prozess
+        # aus wie "unparsebar" (b"\t…\n").
+        if not line:
+            raise _OpsinUnavailable("JVM beendet")
+        smiles, sep, echoed = (
+            line.decode("utf-8", "replace").rstrip("\r\n").partition("\t")
+        )
+        if not sep or echoed != name:
+            raise _OpsinUnavailable(f"Antwort passt nicht zur Frage: {echoed!r}")
+        return smiles
+
+    def close(self) -> None:
+        try:
+            self._proc.stdin.close()
+        except Exception:
+            pass
+        try:
+            self._proc.kill()
+            self._proc.wait(timeout=5)
+        except Exception:
+            pass
+
+
+_opsin_lock = threading.Lock()
+_opsin_proc: _OpsinProcess | None = None
+_opsin_failures = 0
+
+
+def _opsin_jar() -> str | None:
+    """Das OPSIN-CLI-JAR aus dem py2opsin-Paket — ohne py2opsin zu importieren
+    (dessen Import startet ein `java -version`)."""
+    spec = importlib.util.find_spec("py2opsin")
+    if spec is None or not spec.submodule_search_locations:
         return None
-    # Import after the PATH fix above; py2opsin probes `java -version` at
-    # import time and warns on every unparseable name — keep logs clean.
+    for folder in spec.submodule_search_locations:
+        jars = sorted(
+            glob.glob(os.path.join(folder, "opsin-cli-*-jar-with-dependencies.jar"))
+        )
+        if jars:
+            return jars[-1]
+    return None
+
+
+def _start_opsin_process() -> _OpsinProcess:
+    # Nach _java_runtime_available() zeigt PATH auf eine funktionierende JRE;
+    # trotzdem absolut starten, damit nichts mehr vom PATH abhängt.
+    java = shutil.which("java")
+    jar = _opsin_jar()
+    if not java or not jar:
+        raise _OpsinUnavailable("kein java oder kein OPSIN-JAR")
+    try:
+        proc = _OpsinProcess(java, jar)
+    except OSError as exc:
+        raise _OpsinUnavailable(f"Start: {exc}") from exc
+    name, expected = _OPSIN_HANDSHAKE
+    try:
+        answer = proc.ask(name, _OPSIN_START_TIMEOUT)
+    except (_OpsinTimeout, _OpsinUnavailable) as exc:
+        proc.close()
+        raise _OpsinUnavailable(f"Handshake: {exc}") from exc
+    if answer != expected:
+        proc.close()
+        raise _OpsinUnavailable(f"Handshake: {answer!r} statt {expected!r}")
+    return proc
+
+
+def _discard_opsin_process() -> None:
+    global _opsin_proc
+    if _opsin_proc is not None:
+        _opsin_proc.close()
+        _opsin_proc = None
+
+
+def _opsin_persistent(name: str) -> str:
+    """SMILES oder "" (unparsebar / Hänger). Wirft _OpsinUnavailable, wenn
+    dieser Aufruf über py2opsin laufen soll."""
+    global _opsin_proc, _opsin_failures
+    with _opsin_lock:
+        if _opsin_failures >= _OPSIN_MAX_FAILURES:
+            raise _OpsinUnavailable("Dauer-JVM aufgegeben")
+        try:
+            if _opsin_proc is None:
+                _opsin_proc = _start_opsin_process()
+            smiles = _opsin_proc.ask(name, _OPSIN_TIMEOUT)
+        except _OpsinTimeout:
+            # Nicht über py2opsin wiederholen — derselbe Name hinge erneut.
+            logger.warning(
+                "OPSIN answered nothing for %r within %ss", name, _OPSIN_TIMEOUT
+            )
+            _discard_opsin_process()
+            _opsin_failures += 1
+            return ""
+        except _OpsinUnavailable as exc:
+            logger.info("Persistent OPSIN unavailable (%s), using py2opsin", exc)
+            _discard_opsin_process()
+            _opsin_failures += 1
+            raise
+        _opsin_failures = 0
+        return smiles
+
+
+def _opsin_reset() -> None:
+    """Dauer-JVM beenden und Fehlerzähler zurücksetzen (atexit, Tests)."""
+    global _opsin_failures
+    with _opsin_lock:
+        _discard_opsin_process()
+        _opsin_failures = 0
+
+
+atexit.register(_opsin_reset)
+
+
+def _opsin_oneshot(name: str) -> str | None:
+    """Der alte Weg: py2opsin, eine JVM pro Name. Fallback, wenn die
+    Dauer-JVM nicht startet."""
+    # Import after the PATH fix in _java_runtime_available(); py2opsin probes
+    # `java -version` at import time and warns on every unparseable name.
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         from py2opsin import py2opsin
@@ -238,7 +419,30 @@ def _opsin_lookup(name: str) -> str | None:
         except Exception:
             # py2opsin's error path is buggy (str + Exception raises TypeError)
             return None
-    if not isinstance(smiles, str) or not smiles:
+    return smiles if isinstance(smiles, str) else None
+
+
+def _opsin_lookup(name: str) -> str | None:
+    """Parse systematic IUPAC nomenclature offline via OPSIN (rule-based).
+
+    Returns None when no JRE is reachable (graceful degradation to the
+    network cascade) or when OPSIN can't parse the name (trivial names).
+    """
+    if not _java_runtime_available():
+        return None
+    # Das Zeilenprotokoll verträgt keinen Zeilenumbruch im Namen (er würde
+    # jede spätere Antwort verschieben) und keinen leeren Namen.
+    if not name.strip() or "\n" in name or "\r" in name:
+        return None
+    try:
+        name.encode("utf-8")
+    except UnicodeEncodeError:
+        return None
+    try:
+        smiles = _opsin_persistent(name)
+    except _OpsinUnavailable:
+        smiles = _opsin_oneshot(name)
+    if not smiles:
         return None
     if validate_smiles(smiles) is None:
         return None
