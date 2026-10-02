@@ -76,3 +76,20 @@ def test_stabilize_sequence_preserves_mapped_positions():
     result = stabilize_sequence(steps_smiles)
     assert len(result) == 2
     assert all(len(mols) > 0 for mols in result)
+
+
+def test_schritt_kann_eigenen_fragmentabstand_haben():
+    """SN2-Übergangszustand: O···C···Br braucht Platz für Teilbindungen und Beschriftungen
+    (Galerie 02.10.2026: bei einer Bindungslänge Abstand lief der Strich durch den Text)."""
+    result = stabilize_sequence([["[O-:3]", "[CH3:1]", "[Br-:2]"]], gaps=[1.8])
+    pos = extract_positions(result[0])
+    assert abs(pos[1][0] - pos[3][0]) >= 1.7
+    assert abs(pos[2][0] - pos[1][0]) >= 1.7
+
+
+def test_sn2_uebergangszustand_hat_drei_getrennte_fragmente_mit_platz():
+    from chemdraw_tool.templates import get_template
+
+    ts = next(s for s in get_template("sn2").steps if s.is_transition_state)
+    assert len(ts.molecules) == 3
+    assert ts.mol_gap >= 1.5

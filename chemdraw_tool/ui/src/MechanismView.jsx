@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import SectionHeader from "./components/SectionHeader";
+import { naturalWidth } from "./utils/svgSize";
+
+// Pixel je viewBox-Einheit in der Overview: gleiche Atomgröße in allen Kacheln.
+const OVERVIEW_SCALE = 0.62;
 
 function StepIndicator({ current, total, onStepClick }) {
   return (
@@ -35,9 +39,9 @@ function StepIndicator({ current, total, onStepClick }) {
 function StepArrow() {
   return (
     <div style={{ display: "flex", alignItems: "center", flexShrink: 0, padding: "0 2px" }}>
-      <svg width="30" height="20" viewBox="0 0 30 20">
-        <line x1="2" y1="10" x2="22" y2="10" stroke="var(--fg-muted)" strokeWidth="1.5" />
-        <polygon points="22,6 30,10 22,14" fill="var(--fg-muted)" />
+      <svg width="20" height="26" viewBox="0 0 20 26">
+        <line x1="10" y1="2" x2="10" y2="16" stroke="var(--fg-muted)" strokeWidth="1.5" />
+        <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
       </svg>
     </div>
   );
@@ -47,11 +51,12 @@ function OverviewMode({ steps, onStepClick }) {
   return (
     <div
       style={{
+        // Spalte statt Zeile: Schritte sind unterschiedlich breit (Produkt + abgespaltenes Br⁻),
+        // in einer Zeile werden sie entweder winzig oder brechen mitten im Fluss um.
         display: "flex",
-        flexWrap: "wrap",
+        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
+        gap: 4,
         padding: 8,
       }}
     >
@@ -66,8 +71,7 @@ function OverviewMode({ steps, onStepClick }) {
               alignItems: "center",
               gap: 6,
               flexShrink: 0,
-              minWidth: 180,
-              maxWidth: 240,
+              maxWidth: "100%",
               cursor: "pointer",
               padding: 6,
               borderRadius: 8,
@@ -81,7 +85,8 @@ function OverviewMode({ steps, onStepClick }) {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                width: "100%",
+                width: naturalWidth(step.svg) ? naturalWidth(step.svg) * OVERVIEW_SCALE : "100%",
+                maxWidth: "100%",
               }}
             />
             <div

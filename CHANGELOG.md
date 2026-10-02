@@ -6,6 +6,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Mechanism overview is readable.** Every step is drawn with the same bond
+  length, so a wide picture (a product plus a far-away bromide) no longer shrinks
+  its atoms while a narrow one grows. The overview is now one step per row with
+  downward arrows instead of a wrapping row, and the SN2 transition state keeps
+  its three fragments apart so the dashed partial bonds and curved arrows no
+  longer run through the atom labels.
+
 ## [0.4.6] — 2026-10-02
 
 ### Fixed

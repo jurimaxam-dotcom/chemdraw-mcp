@@ -2623,7 +2623,7 @@ def generate_mechanism(
         )
 
     steps_smiles = [step.molecules for step in template.steps]
-    stabilized = stabilize_sequence(steps_smiles)
+    stabilized = stabilize_sequence(steps_smiles, gaps=[step.mol_gap for step in template.steps])
 
     if not stabilized:
         raise ValueError(

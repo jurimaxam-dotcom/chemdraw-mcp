@@ -109,6 +109,7 @@ def extract_positions(mols: list[Chem.Mol]) -> dict[int, tuple[float, float]]:
 
 def stabilize_sequence(
     steps_smiles: list[list[str]],
+    gaps: list[float] | None = None,
 ) -> list[list[Chem.Mol]]:
     """Compute stabilized coordinates for an entire mechanism sequence.
 
@@ -117,9 +118,10 @@ def stabilize_sequence(
     result = []
     prior_positions = None
 
-    for smiles_list in steps_smiles:
+    for i, smiles_list in enumerate(steps_smiles):
         mols = [_parse_mol_safe(smi) for smi in smiles_list]
-        computed = compute_step_coords(mols, prior_positions=prior_positions)
+        gap = gaps[i] if gaps else 4.0
+        computed = compute_step_coords(mols, prior_positions=prior_positions, mol_gap=gap)
         result.append(computed)
         prior_positions = extract_positions(computed)
 

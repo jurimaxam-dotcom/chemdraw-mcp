@@ -19,6 +19,9 @@ class MechanismStep:
     arrows: list[CurvedArrow]
     is_transition_state: bool = False
     partial_bonds: list[tuple[int, int]] = field(default_factory=list)
+    # Abstand zwischen den Molekülen des Schritts in Bindungslängen (Übergangszustände brauchen
+    # weniger als Edukte, aber mehr als eine Bindung: Platz für Teilbindung und Beschriftung)
+    mol_gap: float = 4.0
 
 
 @dataclass

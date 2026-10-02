@@ -17,6 +17,12 @@ from chemdraw_tool.mechanism import CurvedArrow, MechanismStep
 
 STEP_WIDTH = 450
 STEP_HEIGHT = 350
+# Feste Bindungslänge in Pixeln: ohne sie fittet RDKit jeden Schritt in dieselbe Leinwand, und
+# ein breites Bild (Produkt + weit entferntes Br⁻) bekommt winzige Atome (Galerie 02.10.2026).
+BOND_PX = 38
+# Die Leinwand muss größer sein als das größte Bild, sonst schneidet viewBox (max(0, …)) ab.
+CANVAS_W = 1200
+CANVAS_H = 900
 
 
 def _get_draw_coords(
@@ -58,10 +64,11 @@ def _render_mols_svg(
     for atom in mol.GetAtoms():
         atom.SetAtomMapNum(0)
 
-    drawer = rdMolDraw2D.MolDraw2DSVG(width, height)
+    drawer = rdMolDraw2D.MolDraw2DSVG(max(width, CANVAS_W), max(height, CANVAS_H))
     opts = drawer.drawOptions()
     opts.clearBackground = False
     opts.bondLineWidth = 2.5
+    opts.fixedBondLength = BOND_PX
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
     drawer.FinishDrawing()
 
@@ -199,8 +206,17 @@ def _resolve_arrow_coords(
     return (sx, sy), (tx, ty)
 
 
-def _dashed_bond_line(x1: float, y1: float, x2: float, y2: float) -> str:
-    """SVG dashed line for partial bonds in transition states."""
+def _dashed_bond_line(x1: float, y1: float, x2: float, y2: float, trim: float = 14.0) -> str:
+    """SVG dashed line for partial bonds in transition states.
+
+    Beide Enden werden um `trim` Pixel gekürzt: die Koordinaten sind Atommittelpunkte, und der
+    Strich lief sonst mitten durch die Beschriftungen („O⁻“, „CH₃“, „Br⁻“).
+    """
+    dx, dy = x2 - x1, y2 - y1
+    length = math.hypot(dx, dy)
+    if length > 3 * trim:
+        ux, uy = dx / length, dy / length
+        x1, y1, x2, y2 = x1 + ux * trim, y1 + uy * trim, x2 - ux * trim, y2 - uy * trim
     return (
         f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
         f'stroke="#999" stroke-width="2.0" stroke-dasharray="6,3" />'

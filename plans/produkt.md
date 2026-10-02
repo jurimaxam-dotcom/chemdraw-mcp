@@ -49,5 +49,6 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [x] Design-Galerie: `uv run python tests/gallery_ui.py` → /tmp/chem-gallery/sheet.png (13 Panel-Typen nebeneinander)
 - [x] Speziesverteilung: Legende neben der Achse (6763642, Test rot gesehen)
 - [x] Geprüft, kein Fehler: Kalibrierkurve-Titel doppelt (der Titel im Bild gehört in die exportierten Dateien); Reaktion ohne Titel (Edukte/Produkte/Bedingungen sind beschriftet)
-- [ ] Mechanismus-Overview (größter Design-Block, ~halber Tag): uneinheitliche Strukturgrößen (Br⁻ winzig, HO⁻ groß), Übergangszustand-Beschriftung überlagert den Pfeilbogen (`mechanism_coords.py`), viel Leerraum. Zuerst Golden-Test für die Koordinaten, dann Layout
+- [x] Mechanismus-Overview: gleiche Bindungslänge, Spalte statt Zeile, SN2-TS mit Platz für Teilbindungen (4 neue Tests, je rot gesehen); steht im CHANGELOG unter Unreleased → 0.4.7
+- [ ] Jay: `gh release create v0.4.6` (Auto-Modus verweigert öffentliche Veröffentlichung)
 - [ ] Geschwindigkeit: Server-Import 1,4 s (mcp 0,33 · rdkit 0,25 · matplotlib 0,25) — nur lazy laden, wenn die Handshake-Zeit unter Last wehtut; Datenblatt-Ladezeit 2,3 s (PubChem) — Vorabladen nur falls Jay es spürt

@@ -38,6 +38,8 @@ def payloads() -> dict[str, object]:
         "batch": lambda: s.batch_generate(["aspirin", "caffeine", "paracetamol"]),
         "reaction": lambda: s.generate_reaction(["ethanol", "acetic acid"], ["ethyl acetate", "water"], conditions="H2SO4, Δ"),
         "mechanism": lambda: s.generate_mechanism("sn2", ["bromoethane", "hydroxide"]),
+        "mechanism_fischer": lambda: s.generate_mechanism("fischer_ester", ["acetic acid", "ethanol"]),
+        "mechanism_sn1": lambda: s.generate_mechanism("sn1", ["2-bromo-2-methylpropane", "water"]),
         "spectrum": lambda: s.generate_spectrum("ir", IR_PEAKS, title="Aspirin"),
         "tlc": lambda: s.generate_tlc(ESTER_LANES, title="Veresterung"),
         "scope": lambda: s.generate_scope_table(ENTRIES, title="Suzuki scope"),

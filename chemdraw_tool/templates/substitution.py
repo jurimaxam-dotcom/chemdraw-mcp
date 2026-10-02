@@ -17,7 +17,7 @@ SN2_TEMPLATE = MechanismTemplate(
         ),
         MechanismStep(
             label="Backside attack (transition state)",
-            molecules=["[O-:3].[CH3:1].[Br-:2]"],
+            molecules=["[O-:3]", "[CH3:1]", "[Br-:2]"],
             arrows=[
                 CurvedArrow(
                     source=(3, "lone_pair"),
@@ -32,6 +32,7 @@ SN2_TEMPLATE = MechanismTemplate(
             ],
             is_transition_state=True,
             partial_bonds=[(3, 1), (1, 2)],
+            mol_gap=1.8,
         ),
         MechanismStep(
             label="Products",
