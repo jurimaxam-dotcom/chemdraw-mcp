@@ -179,7 +179,8 @@ def build_species_figure(
     ax.set_xlabel("pH")
     ax.set_ylabel("Species fraction α")
     ax.set_title(f"Species distribution: {title}" if title else "Species distribution")
-    ax.legend(frameon=False)
+    # Rechts neben der Achse: „best“ legte sie über das Ende der letzten Kurve (Galerie 02.10.2026)
+    ax.legend(frameon=False, loc="center left", bbox_to_anchor=(1.01, 0.5))
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
     return fig

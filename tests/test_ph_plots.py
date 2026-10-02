@@ -139,3 +139,16 @@ def test_species_custom_labels_appear_in_legend():
     fig = build_species_figure([4.76], labels=["CH₃COOH", "CH₃COO⁻"])
     legend_texts = [t.get_text() for t in fig.axes[0].get_legend().get_texts()]
     assert legend_texts == ["CH₃COOH", "CH₃COO⁻"]
+
+
+def test_speziesverteilung_legende_liegt_ausserhalb_der_kurven():
+    """Gesehen in der Panel-Galerie (02.10.2026): die Legende lag in der Achse und
+    verdeckte das Ende der A³⁻-Kurve."""
+    from chemdraw_tool.ph_plots import build_species_figure
+
+    fig = build_species_figure([2.15, 7.2, 12.35], None, "Phosphorsäure")
+    fig.canvas.draw()
+    ax = fig.axes[0]
+    legende = ax.get_legend().get_window_extent()
+    achse = ax.get_window_extent()
+    assert legende.x0 >= achse.x1 - 1, "Legende überlappt die Achse"
