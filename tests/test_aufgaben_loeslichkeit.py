@@ -74,3 +74,43 @@ def test_angezeigte_loeslichkeit_ist_die_gerechnete(seed):
     from chemdraw_tool.aufgaben.basis import zahl
 
     assert zahl(gezeigt.replace("⁻", "-").translate(str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")).replace(" · 10", "e")) == pytest.approx(L)
+
+
+# --- Zweitgutachten 02.10.2026 ----------------------------------------------
+
+
+def test_kein_calciumcarbonat_beim_gleichionigen_zusatz():
+    """Carbonat protolysiert (pKb ≈ 3,7) — das reine KL-Modell liegt dort >10 % daneben."""
+    assert all(l.zusatz_aufgabe(s)["stoff"] != "Calciumcarbonat" for s in range(400))
+
+
+@pytest.mark.parametrize("seed", range(400))
+def test_komplexbildner_nur_verduennt(seed):
+    a = l.zusatz_aufgabe(seed)
+    w = a["werte"]
+    if a["stoff"] in ("Silberchlorid", "Silberbromid", "Bleiiodid") and "c_an" in w:
+        assert w["c_an"] <= 0.02, "Halogenid-Überschuss bildet [AgX₂]⁻ bzw. [PbI₄]²⁻"
+
+
+def test_modellgrenze_wird_genannt():
+    text = " ".join(x["explanation"] for x in l.zusatz_aufgabe(3)["rechenweg"])
+    assert "KL-Modell" in text and "Komplexbildung" in text
+
+
+def test_klammerhinweis_nur_bei_stoechiometrie_ungleich_eins():
+    for s in range(200):
+        a = l.kl_aufgabe(s)
+        text = " ".join(x["explanation"] for x in a["rechenweg"])
+        einfach = a["werte"]["x"] == 1 and a["werte"]["y"] == 1
+        assert ("Klammer" in text) != einfach, (s, a["stoff"])
+
+
+@pytest.mark.parametrize("seed", range(200))
+def test_kl_aus_l_bleibt_nah_am_tabellenwert(seed):
+    a = l.kl_aufgabe(seed)
+    kl_tab = next(x.kl for x in l.SALZE if x.name == a["stoff"])
+    assert 0.6 <= a["loesung"] / kl_tab <= 1.6
+
+
+def test_zusatz_text_nennt_kl_einheit():
+    assert "mol" in l.zusatz_aufgabe(0)["text"].split("KL =")[1].split(")")[0]

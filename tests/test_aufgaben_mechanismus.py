@@ -129,3 +129,21 @@ def test_2_brombutan_mit_kotbu_kein_bevorzugtes_hofmann():
         a = m.weg_aufgabe(s)
         if a["werte"]["substrat"] == "2-Brombutan" and a["werte"]["reagenz_name"] == "Kalium-tert-butanolat":
             assert "bevorzugt das Hofmann" not in " ".join(x["explanation"] for x in a["rechenweg"])
+
+
+def test_methylfaelle_nicht_ueberrepraesentiert():
+    n = sum(m.weg_aufgabe(s)["werte"]["klasse"] == "methyl" for s in range(1000))
+    assert n < 150, f"{n} von 1000 sind Methyl-Fälle"
+
+
+def test_begruendung_nennt_das_angreifende_teilchen():
+    for s in range(400):
+        a = m.weg_aufgabe(s)
+        text = " ".join(x["explanation"] for x in a["rechenweg"])
+        assert "Natriumhydroxid greift" not in text and "Natriumethanolat greift" not in text
+
+
+def test_kein_waermehinweis_bei_raumtemperatur():
+    for s in range(200):
+        a = m.weg_aufgabe(s)
+        assert "Wärme" not in " ".join(x["explanation"] for x in a["rechenweg"])

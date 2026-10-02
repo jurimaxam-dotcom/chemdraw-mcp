@@ -73,12 +73,11 @@ def _c_text(c: float) -> str:
 def _faktor_schritt(s: Stoff) -> dict:
     return _schritt(
         "Titrationsäquivalent",
-        "Ä = M · c / z",
+        "Ä = M · c / ν",
         f"Ä = {_de(s.molmasse, 2)} g/mol · {_c_text(s.c)} mol/L / {s.z}",
         f"Ä = {_f_text(s.faktor)} mg/mL",
         f"1 mL {_c_text(s.c)} M {s.massloesung} entspricht Ä mg {s.name}; "
-        f"z = {s.z} mol Maßlösung je mol {s.name} ({s.methode}). "
-        f"Nicht verwechseln mit dem Äquivalenzfaktor 1/z (dimensionslos, DIN 32625).",
+        f"ν = {s.z} mol Maßlösung je mol {s.name} ({s.methode}).",
     )
 
 
@@ -254,7 +253,7 @@ def titer_aufgabe(seed: int) -> dict:
         ),
         _schritt(
             "Faktor",
-            "f = z · n(U) / n(ML)",
+            "f = ν · n(U) / n(ML)",
             f"f = {u.z} · {_de(n_u, 4)} / {_de(n_soll, 4)}",
             f"f = {_de(titer, 4)}",
             "f > 1: die Lösung ist stärker als nominal. Ph. Eur. verlangt 0,9–1,1.",

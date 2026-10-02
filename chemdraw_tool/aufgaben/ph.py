@@ -43,13 +43,17 @@ STARK = (
     ("Natronlauge", False),
     ("Kalilauge", False),
 )
-# (Säure, Base, pKs)
+# (Säure, Base, pKs, Säureteilchen im pKs — "" wenn es die genannte Säure selbst ist)
 PUFFER = (
-    ("Essigsäure", "Natriumacetat", 4.76),
-    ("Ameisensäure", "Natriumformiat", 3.75),
-    ("Natriumdihydrogenphosphat", "Dinatriumhydrogenphosphat", 7.21),
-    ("Ammoniumchlorid", "Ammoniak", 9.25),
+    ("Essigsäure", "Natriumacetat", 4.76, ""),
+    ("Ameisensäure", "Natriumformiat", 3.75, ""),
+    ("Natriumdihydrogenphosphat", "Dinatriumhydrogenphosphat", 7.21, "H₂PO₄⁻"),
+    ("Ammoniumchlorid", "Ammoniak", 9.25, "NH₄⁺"),
 )
+
+
+def _pks_text(teilchen: str) -> str:
+    return f"pKs({teilchen})" if teilchen else "pKs"
 KONZENTRATIONEN = (0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5, 1.0)
 
 
@@ -159,7 +163,7 @@ def puffer_aufgabe(seed: int) -> dict:
     rng = random.Random(f"puffer-{seed}")
     stufen = (0.05, 0.08, 0.1, 0.12, 0.15, 0.2, 0.25, 0.3)
     for _ in range(MAX_VERSUCHE):
-        s_name, b_name, pks = rng.choice(PUFFER)
+        s_name, b_name, pks, teilchen = rng.choice(PUFFER)
         cs, cb = rng.choice(stufen), rng.choice(stufen)
         hh = pks + math.log10(cb / cs)
         exakt = exact_ph([pks], c_acid=cs + cb, c_na=cb)
@@ -167,7 +171,7 @@ def puffer_aufgabe(seed: int) -> dict:
             break
     text = (
         f"Ein Puffer enthält {_c(cs)} mol/L {s_name} und {_c(cb)} mol/L {b_name} "
-        f"(pKs = {de(pks, 2)}). Berechne den pH-Wert."
+        f"({_pks_text(teilchen)} = {de(pks, 2)}). Berechne den pH-Wert."
     )
     return {
         "typ": "puffer",
@@ -195,11 +199,11 @@ def puffer_aufgabe(seed: int) -> dict:
 
 def verhaeltnis_aufgabe(seed: int) -> dict:
     rng = random.Random(f"verh-{seed}")
-    s_name, b_name, pks = rng.choice(PUFFER)
+    s_name, b_name, pks, teilchen = rng.choice(PUFFER)
     ziel = round(pks + rng.choice((-0.8, -0.6, -0.5, -0.4, -0.3, -0.2, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8)), 1)
     verhaeltnis = 10 ** (ziel - pks)
     text = (
-        f"Du willst einen Puffer aus {s_name} und {b_name} (pKs = {de(pks, 2)}) mit "
+        f"Du willst einen Puffer aus {s_name} und {b_name} ({_pks_text(teilchen)} = {de(pks, 2)}) mit "
         f"pH {de(ziel, 1)} ansetzen. In welchem Stoffmengenverhältnis "
         f"n({b_name}) : n({s_name}) mischst du?"
     )

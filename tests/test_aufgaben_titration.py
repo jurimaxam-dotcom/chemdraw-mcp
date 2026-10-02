@@ -151,3 +151,10 @@ def test_kaliumbromid_raus_weil_ph_eur_volhard_ruecktitriert():
 @pytest.mark.parametrize("seed", range(200))
 def test_urtiter_einwaage_praxisnah(seed):
     assert t.titer_aufgabe(seed)["werte"]["m_mg"] >= 100.0
+
+
+def test_nu_statt_z_im_rechenweg():
+    """z ist nach DIN 32625 die Äquivalentzahl; hier gemeint ist n(Maßlösung)/n(Stoff)."""
+    for s in range(120):
+        for x in t.neue_aufgabe(s)["rechenweg"]:
+            assert " z " not in f" {x['formula']} " and "z =" not in x["explanation"], x

@@ -59,6 +59,13 @@ def _vf(vorfaktor: int) -> str:
     return "" if vorfaktor == 1 else f"{vorfaktor} · "
 
 
+def _klammerform(s: Salz) -> str:
+    """(2L)² · L für Ag₂CrO₄, L · (2L)² für CaF₂, L · L für AgCl."""
+    def teil(anzahl: int) -> str:
+        return "L" if anzahl == 1 else f"({anzahl}L){str(anzahl).translate(_HOCH)}"
+    return f"{teil(s.x)} · {teil(s.y)}"
+
+
 def _kl_ausdruck(s: Salz) -> str:
     teile = []
     for anzahl, ion in ((s.x, s.kation), (s.y, s.anion)):
@@ -115,7 +122,7 @@ def kl_aufgabe(seed: int) -> dict:
     s = rng.choice(SALZE)
     n = s.x + s.y
     vorfaktor = s.x**s.x * s.y**s.y
-    L = float(f"{(s.kl / vorfaktor) ** (1 / n) * rng.uniform(0.8, 1.25):.2e}")
+    L = float(f"{(s.kl / vorfaktor) ** (1 / n) * rng.uniform(0.9, 1.1):.2e}")
     loesung = vorfaktor * L**n
     text = (
         f"In einer gesättigten Lösung von {s.name} ({s.formel}) sind {sci(L, 3)} mol/L gelöst. "
@@ -130,10 +137,11 @@ def kl_aufgabe(seed: int) -> dict:
         ),
         schritt(
             "Einsetzen",
-            f"KL = {_vf(vorfaktor)}L{str(n).translate(_HOCH)}",
+            f"KL = {_klammerform(s)} = {_vf(vorfaktor)}L{str(n).translate(_HOCH)}",
             f"KL = {_vf(vorfaktor)}({sci(L, 3)}){str(n).translate(_HOCH)}",
             f"KL = {sci(loesung, 3)} {_einheit_kl(n)}",
-            "Achtung beim Exponenten: Der stöchiometrische Faktor steht in der Klammer mit.",
+            "Achtung: Der stöchiometrische Faktor steht in der Klammer mit und wird mit potenziert."
+            if vorfaktor > 1 else "",
         ),
     ]
     return {
@@ -147,10 +155,15 @@ def kl_aufgabe(seed: int) -> dict:
 def zusatz_aufgabe(seed: int) -> dict:
     """Gleichioniger Zusatz: Löslichkeit sinkt — Näherung c(Zusatz) ≫ Beitrag des Salzes."""
     rng = random.Random(f"zusatz-{seed}")
+    # CaCO₃ fehlt: Carbonat protolysiert (pKb ≈ 3,7), das reine KL-Modell läge
+    # >10 % daneben. Halogenid-Überschuss bildet [AgX₂]⁻ bzw. [PbI₄]²⁻ — dort
+    # nur verdünnte Zusätze (Zweitgutachten 02.10.2026).
+    kandidaten = [x for x in SALZE if x.name != "Calciumcarbonat"]
     for _ in range(MAX_VERSUCHE):
-        s = rng.choice(SALZE)
-        c = rng.choice((0.01, 0.02, 0.05, 0.1, 0.2))
+        s = rng.choice(kandidaten)
         ueber_anion = rng.random() < 0.5
+        komplex = ueber_anion and s.name in ("Silberchlorid", "Silberbromid", "Bleiiodid")
+        c = rng.choice((0.01, 0.02) if komplex else (0.01, 0.02, 0.05, 0.1, 0.2))
         if ueber_anion:
             # Ein Na₂SO₄, NaF … liefert c Anionen je Formeleinheit (1 Anion pro Formel).
             loesung = (s.kl / c**s.y) ** (1 / s.x) / s.x
@@ -164,7 +177,7 @@ def zusatz_aufgabe(seed: int) -> dict:
     ion = s.anion if ueber_anion else s.kation
     n_fest, n_frei = (s.y, s.x) if ueber_anion else (s.x, s.y)
     text = (
-        f"Wie viel {s.name} ({s.formel}, KL = {sci(s.kl)}) löst sich in einer {str(c).replace('.', ',')} M "
+        f"Wie viel {s.name} ({s.formel}, KL = {sci(s.kl)} {_einheit_kl(s.x + s.y)}) löst sich in einer {str(c).replace('.', ',')} M "
         f"{zusatz}-Lösung? Gib L in mol/L an."
     )
     weg = [
@@ -172,8 +185,9 @@ def zusatz_aufgabe(seed: int) -> dict:
             "Gleichioniger Zusatz",
             f"c({ion}) ≈ c(Zusatz)",
             f"c({ion}) ≈ {str(c).replace('.', ',')} mol/L",
-            "Das Salz selbst trägt dazu praktisch nichts bei",
-            "Näherung geprüft: Die exakte Rechnung weicht um weniger als 1 % ab.",
+            f"{s.name} selbst trägt praktisch nichts bei, weil L ≪ c(Zusatz)",
+            "Näherung geprüft: Im KL-Modell (ohne Protolyse, Komplexbildung und Aktivitäten) "
+            "weicht die exakte Rechnung um weniger als 1 % ab.",
         ),
         schritt(
             "Nach L auflösen",

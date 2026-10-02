@@ -72,6 +72,17 @@ FAELLE = {
     ("tertiaer", "solvolyse"): ("SN1", "Stabiles tertiäres Carbokation, schwaches Nucleophil, Raumtemperatur: SN1 (E1 nur als Nebenreaktion)."),
 }
 
+# Das Teilchen, das tatsächlich angreift — "OH⁻ greift an", nicht "Natriumhydroxid greift an".
+TEILCHEN = {
+    "Natriumethanolat": "Ethanolat (EtO⁻)",
+    "Natriummethanolat": "Methanolat (MeO⁻)",
+    "Natriumhydroxid": "Hydroxid (OH⁻)",
+    "Kalium-tert-butanolat": "tert-Butanolat (tBuO⁻)",
+    "Natriumiodid": "Iodid (I⁻)",
+    "Natriumazid": "Azid (N₃⁻)",
+    "Natriummethanthiolat": "Methanthiolat (MeS⁻)",
+}
+
 # Substrate, die nur EIN Alken bilden können — dort gibt es keine Regioselektivität.
 SYMMETRISCH = {"2-Brompropan", "Bromcyclohexan", "2-Brom-2-methylpropan", "2-Chlor-2-methylpropan"}
 
@@ -99,7 +110,11 @@ _LOESUNGSMITTEL = {
 
 def weg_aufgabe(seed: int) -> dict:
     rng = random.Random(f"mech-{seed}")
-    klasse, reagenz = rng.choice(sorted(FAELLE))
+    # Methyl-Fälle sind trivial (kein β-H) — seltener ziehen, sonst kam
+    # Methyl + KOtBu in fast jeder vierten Aufgabe (Zweitgutachten 02.10.2026).
+    faelle = sorted(FAELLE)
+    gewichte = [1 if k == "methyl" else 3 for k, _ in faelle]
+    klasse, reagenz = rng.choices(faelle, weights=gewichte)[0]
     klasse_text, substrate = SUBSTRATE[klasse]
     reagenz_text, varianten = REAGENZIEN[reagenz]
     substrat = rng.choice(substrate)
@@ -108,7 +123,7 @@ def weg_aufgabe(seed: int) -> dict:
     varianten = [v for v in varianten if klasse in v[3]]
     mittel, lm, bedingung, _ = rng.choice(varianten)
     weg, warum = FAELLE[(klasse, reagenz)]
-    warum = warum.format(mittel=mittel)
+    warum = warum.format(mittel=TEILCHEN.get(mittel, mittel))
 
     if reagenz == "solvolyse":
         text = (
@@ -126,7 +141,7 @@ def weg_aufgabe(seed: int) -> dict:
         schritt("Reagenz", "Nucleophil oder Base, stark oder schwach, sperrig?", mittel,
                 reagenz_text, ""),
         schritt("Bedingungen", "Lösungsmittel und Temperatur", f"{lm}, {bedingung}",
-                _LOESUNGSMITTEL.get(lm, ""), "Polar aprotisch stärkt Nucleophile (SN2). Wärme begünstigt Eliminierung."),
+                _LOESUNGSMITTEL.get(lm, ""), "Polar aprotisch stärkt Nucleophile (SN2); polar protisch stabilisiert Carbokationen (SN1)."),
         schritt("Entscheidung", "Substrat × Reagenz × Bedingungen", f"{klasse_text} + {reagenz_text}",
                 weg, warum + _regio(weg, mittel, substrat)),
     ]

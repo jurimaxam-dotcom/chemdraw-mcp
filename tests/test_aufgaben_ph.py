@@ -93,3 +93,9 @@ def test_salzloesungen_nennen_das_teilchen_im_pk():
     texte = [ph.neue_aufgabe(s)["text"] for s in range(300)]
     assert any("pKs(NH₄⁺)" in x for x in texte)
     assert not any("(NH₄⁺)-Lösung" in x or "(CH₃COO⁻)-Lösung" in x for x in texte)
+
+
+def test_puffer_nennen_das_saeureteilchen_im_pks():
+    texte = [ph.puffer_aufgabe(s)["text"] + ph.verhaeltnis_aufgabe(s)["text"] for s in range(200)]
+    assert any("pKs(NH₄⁺)" in x for x in texte)
+    assert any("pKs(H₂PO₄⁻)" in x for x in texte)
