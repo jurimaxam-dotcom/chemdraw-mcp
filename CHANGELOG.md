@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.3] — 2026-10-02
+
 ### Fixed
 
 - **The Claude Desktop bundle failed to start in about one launch out of four.**
@@ -15,6 +17,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   PyPI). The bundle now installs once into its own tool directory, which survives
   cache cleaning and leaves a global `uv tool install chemdraw-mcp` alone, and
   then starts the server directly: 1.6 s after a cleared cache instead of 15.4 s.
+  Desktop starts two instances at once; a lock keeps the second from tearing
+  down the first one's fresh install (measured: 1 of 3 parallel cold starts
+  survived before, 3 of 3 now).
 
 - **`calculate_content` inverted the titer from a reference titration.** A
   titrant 2 % stronger than nominal (t = 1.02) came out as t ≈ 0.98, so every
