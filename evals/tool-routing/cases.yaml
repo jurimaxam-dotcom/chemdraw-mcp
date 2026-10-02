@@ -60,10 +60,14 @@ cases:
   - id: draw-scope-real
     prompt: >
       Mach mir eine Scope-Abbildung: vier Produkte meiner Suzuki-Kupplung mit
-      den Ausbeuten 78%, 65%, 91% und 43%
+      den Ausbeuten 78%, 65%, 91% und 43% — 4-Methylbiphenyl, 4-Methoxybiphenyl,
+      4-Fluorbiphenyl und 4-Cyanbiphenyl
     expect: generate_scope_table
     forbidden: [generate_molecule, batch_generate]
-    why: Die Gegenrichtung — hier ist die Tabelle richtig und das Einzelmolekuel falsch.
+    why: >
+      Die Gegenrichtung — hier ist die Tabelle richtig und das Einzelmolekuel falsch.
+      Die Produkte stehen im Prompt: ohne sie fragt das Modell zu Recht zurueck
+      (gemessen 02.10.2026) und der Fall misst keine Werkzeugwahl mehr.
 
   - id: draw-batch
     prompt: "Zeichne mir Aspirin, Coffein und Paracetamol jeweils als eigene Datei"
@@ -199,10 +203,13 @@ cases:
   - id: reaction-in-conversation
     prompt: "Wie laeuft die Veresterung von Essigsaeure mit Ethanol ab?"
     expect: generate_reaction
-    forbidden: [generate_molecule, generate_mechanism]
+    forbidden: [generate_molecule]
     why: >
       „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne
       diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege.
+      Entscheidung 02.10.2026: Reaktion UND Mechanismus ist eine gute Antwort auf
+      „wie laeuft ab" (gemessen: das Modell ruft beide) — verboten bleibt nur das
+      Einzelmolekuel; vorher stand generate_mechanism auch in `forbidden`.
 
   - id: mechanism-in-conversation
     prompt: "Ich verstehe nicht, warum die SN2 zur Inversion fuehrt"
