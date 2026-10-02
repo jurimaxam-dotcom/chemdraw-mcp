@@ -9,7 +9,6 @@ Installation nicht an) und startet danach direkt, ohne uv.
 Getestet mit einem nachgebauten uv, damit nichts aus dem Netz kommt.
 """
 
-import os
 import stat
 import subprocess
 from pathlib import Path
