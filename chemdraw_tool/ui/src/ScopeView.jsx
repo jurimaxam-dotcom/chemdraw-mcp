@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 // Der Bezeichner ist die Angabe, nach der in einer Scope-Figur gesucht wird —
 // er steht deshalb auch in der Liste vorn und fett.
@@ -99,7 +100,7 @@ export default function ScopeView({ data }) {
             wordBreak: "break-all",
           }}
         >
-          PNG: {data.files.png}
+          PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
         </div>
       )}
     </div>

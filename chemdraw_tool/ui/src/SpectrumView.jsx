@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 const TYPE_LABELS = {
   ir: "IR",
@@ -69,7 +70,7 @@ export default function SpectrumView({ data }) {
             wordBreak: "break-all",
           }}
         >
-          PNG: {pngPath}
+          PNG: <span title={pngPath}>{displayPath(pngPath)}</span>
         </div>
       )}
     </div>

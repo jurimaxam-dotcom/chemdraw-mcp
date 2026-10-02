@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 // Rf ist ein Verhältnis — im Protokoll immer zweistellig notiert.
 const fmtRf = (rf) => (typeof rf === "number" ? rf.toFixed(2) : String(rf ?? ""));
@@ -98,7 +99,7 @@ export default function TlcView({ data }) {
             wordBreak: "break-all",
           }}
         >
-          PNG: {data.files.png}
+          PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
         </div>
       )}
     </div>

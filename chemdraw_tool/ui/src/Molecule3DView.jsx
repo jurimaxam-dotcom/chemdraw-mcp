@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 // Leichtgewichtiger Ball-and-Stick-Viewer: Rotationsmatrix + Painter's
 // Algorithm in purem SVG. Bewusst kein WebGL/3Dmol — die Single-File-App
@@ -231,7 +232,7 @@ export default function Molecule3DView({ data }) {
             flexShrink: 0,
           }}
         >
-          SDF: {data.files.sdf}
+          SDF: <span title={data.files.sdf}>{displayPath(data.files.sdf)}</span>
         </div>
       )}
     </div>

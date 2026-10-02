@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 export default function PlotView({ data }) {
   if (!data.svg) {
@@ -64,7 +65,7 @@ export default function PlotView({ data }) {
             wordBreak: "break-all",
           }}
         >
-          PNG: {data.files.png}
+          PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
         </div>
       )}
     </div>

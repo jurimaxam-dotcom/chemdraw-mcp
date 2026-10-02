@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import { displayPath } from "./utils/displayPath";
 
 const MAX_FRONTS = 10;
 
@@ -51,7 +52,7 @@ export default function AnkiDeckView({ data }) {
             padding: "8px 10px",
           }}
         >
-          {data.file}
+          <span title={data.file}>{displayPath(data.file)}</span>
         </div>
       )}
     </div>
