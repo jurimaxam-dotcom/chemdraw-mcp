@@ -10,6 +10,7 @@
     "test:unit": "node --test src/utils/*.test.mjs",
     "test:dom": "node --import ./src/test-setup.mjs --test src/__tests__/*.test.mjs",
     "test:e2e": "node src/utils/svgToPng.e2e.mjs",
+    "test:host": "node src/host/host.e2e.mjs",
     "test:e2e:update": "UPDATE_SNAPSHOTS=1 node src/utils/svgToPng.e2e.mjs",
     "test": "npm run test:unit && npm run test:dom && npm run test:e2e",
     "test:watch": "node --test --watch src/utils/*.test.mjs"
