@@ -21,6 +21,7 @@ RECHENKERN = [
     "chemdraw_tool.calculator.photometry",
     "chemdraw_tool.calculator.stats",
     "chemdraw_tool.calculator.fat_values",
+    "chemdraw_tool.aufgaben.titration",
 ]
 VERBOTEN = ["matplotlib", "rdkit", "mcp", "requests"]
 

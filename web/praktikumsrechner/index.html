@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Praktikumsrechner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Aufgabenkarte, darunter Antwortzeile und aufklappbarer Rechenweg. Handy zuerst. */
+:root {
+  --bg: #eef2f0; --surface: #fafcfb; --ink: #111816; --ink-2: #46534e; --muted: #7a8680;
+  --line: #d4dcd8; --accent: #1f6f5c; --accent-ink: #f4faf7; --accent-soft: #e1efea;
+  --ok: #1f7a43; --ok-soft: #e1f3e7; --bad: #b3322a; --bad-soft: #fbe6e4;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-head: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0d1210; --surface: #151b18; --ink: #e4ebe8; --ink-2: #a8b4ae; --muted: #7c8882;
+  --line: #29322e; --accent: #5fc0a3; --accent-ink: #08130f; --accent-soft: #14302a;
+  --ok: #6fd093; --ok-soft: #13291b; --bad: #f07d73; --bad-soft: #391b19; color-scheme: dark } }
+* { box-sizing: border-box }
+html, body { margin: 0 }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--f-body); padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0) }
+.wrap { max-width: 680px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 16px }
+header h1 { font: 700 24px/1.1 var(--f-head); margin: 0 }
+header p { margin: 4px 0 0; color: var(--ink-2); font-size: 14px }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between }
+select, input, button { font: inherit; color: inherit }
+select { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px }
+.score { font: 500 13px var(--f-mono); color: var(--ink-2); font-variant-numeric: tabular-nums }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.chip { font: 500 13px/22px var(--f-body); padding: 0 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent) }
+.task { font-size: 17px; line-height: 1.55; margin: 0 }
+.answer { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap }
+.answer label { flex-basis: 100%; font-size: 13px; color: var(--ink-2) }
+.field { display: flex; align-items: center; flex: 1 1 180px; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 4px }
+.field input { flex: 1; min-width: 0; border: 0; background: none; padding: 10px 12px; font: 500 18px var(--f-mono); outline: none }
+.field span { padding-right: 12px; color: var(--muted); font: 15px var(--f-mono) }
+.field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft) }
+.btn { border: 0; border-radius: 4px; padding: 10px 16px; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--accent-ink) }
+.btn.ghost { background: none; color: var(--accent); border: 1px solid var(--line) }
+.btn:disabled { opacity: .5; cursor: default }
+.btn:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.verdict { border-radius: 4px; padding: 10px 12px; font-size: 15px }
+.verdict.ok { background: var(--ok-soft); color: var(--ok) }
+.verdict.bad { background: var(--bad-soft); color: var(--bad) }
+details { border-top: 1px solid var(--line); padding-top: 10px }
+summary { cursor: pointer; font-weight: 600; color: var(--accent); list-style: none }
+summary { display: flex; align-items: center; gap: 8px }
+summary::-webkit-details-marker { display: none }
+summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s }
+details[open] summary::before { transform: rotate(45deg) }
+ol.steps { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; counter-reset: s }
+ol.steps li { counter-increment: s; padding-left: 30px; position: relative }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 600 12px/22px var(--f-mono); text-align: center }
+.st-label { font-weight: 600 }
+.st-f, .st-s, .st-r { font: 14px/1.5 var(--f-mono); overflow-wrap: anywhere }
+.st-f { color: var(--ink-2) }
+.st-r { font-weight: 500 }
+.st-e { font-size: 14px; color: var(--ink-2); margin-top: 2px }
+.loading { color: var(--ink-2); font-size: 15px }
+footer { font-size: 12.5px; color: var(--muted) }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Praktikumsrechner</h1>
+    <p>Gehaltsbestimmung per Titration. Jede Aufgabe ist neu, jede Lösung wird gerechnet und nicht nachgeschlagen.</p>
+  </header>
+
+  <div class="bar">
+    <select id="typ" aria-label="Aufgabentyp">
+      <option value="neue_aufgabe">Alle Typen</option>
+      <option value="gehalt_aufgabe">Gehalt aus Verbrauch</option>
+      <option value="sollverbrauch_aufgabe">Sollverbrauch</option>
+      <option value="faktor_aufgabe">Äquivalenzfaktor</option>
+    </select>
+    <span class="score" id="score">0 von 0 richtig</span>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <p class="loading" id="loading">Rechenkern lädt (Python im Browser, beim ersten Mal einige Sekunden) …</p>
+  </main>
+
+  <footer>Faktoren aus F = M · c / z, auf 4 geltende Ziffern gerundet. Rechenkern: chemdraw-mcp (Apache-2.0).</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+<script>
+const SRC = "../../chemdraw_tool/aufgaben/titration.py";
+const card = document.getElementById("card");
+let py, aufgabe, seed, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
+
+const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Äquivalenzfaktor" };
+
+async function start() {
+  const t0 = performance.now();
+  py = await loadPyodide();
+  const code = await (await fetch(SRC)).text();
+  py.FS.writeFile("titration.py", code);
+  py.runPython("import json, titration");
+  console.log(`[praktikumsrechner] Rechenkern bereit nach ${Math.round(performance.now() - t0)} ms`);
+  neu();
+}
+
+function neu() {
+  seed = Math.floor(Math.random() * 1e9);
+  const fn = document.getElementById("typ").value;
+  aufgabe = JSON.parse(py.runPython(`json.dumps(titration.${fn}(${seed}))`));
+  versuche = 0; gewertet = false;
+  render();
+}
+
+function pruefe(antwort) {
+  py.globals.set("_a", py.toPy(aufgabe));
+  py.globals.set("_x", antwort);
+  return py.runPython("titration.pruefe(_a, _x)");
+}
+
+function stellen(a) { return a.einheit === "%" || a.einheit === "mL" ? 2 : 3; }
+
+function render(verdict) {
+  const a = aufgabe;
+  card.innerHTML = `
+    <div class="chips"><span class="chip">${CHIP[a.typ]}</span><span class="chip">${esc(a.stoff)}</span></div>
+    <p class="task">${esc(a.text)}</p>
+    <form class="answer" id="f" autocomplete="off">
+      <label for="antwort">${esc(a.gesucht)}</label>
+      <div class="field"><input id="antwort" inputmode="decimal" placeholder="${a.einheit === "%" ? "z. B. 99,50" : a.einheit === "mL" ? "z. B. 12,40" : "z. B. 12,210"}"><span>${esc(a.einheit)}</span></div>
+      <button class="btn" type="submit">Prüfen</button>
+    </form>
+    ${verdict || ""}
+    <details id="weg"><summary>Rechenweg zeigen</summary>
+      <ol class="steps">${a.rechenweg.map((s) => `
+        <li><div class="st-label">${esc(s.label)}</div>
+          <div class="st-f">${esc(s.formula)}</div>
+          <div class="st-s">${esc(s.substitution)}</div>
+          <div class="st-r">${esc(s.result)}</div>
+          ${s.explanation ? `<div class="st-e">${esc(s.explanation)}</div>` : ""}</li>`).join("")}
+      </ol></details>
+    <div><button class="btn ghost" type="button" id="next">Neue Aufgabe</button></div>`;
+  document.getElementById("f").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const x = document.getElementById("antwort").value;
+    if (!x.trim()) return;
+    const ok = pruefe(x);
+    versuche++;
+    if (!gewertet && (ok || versuche >= 2)) { gewertet = true; gesamt++; if (ok) richtig++; }
+    document.getElementById("score").textContent = `${richtig} von ${gesamt} richtig`;
+    const loesung = `${de(a.loesung, stellen(a))} ${a.einheit}`;
+    const v = ok
+      ? `<div class="verdict ok">Richtig: ${loesung}.</div>`
+      : versuche >= 2
+        ? `<div class="verdict bad">Nicht ganz. Richtig ist ${loesung}. Schau in den Rechenweg.</div>`
+        : `<div class="verdict bad">Noch nicht. Ein Versuch bleibt, dann zeige ich die Lösung.</div>`;
+    render(v);
+    document.getElementById("antwort").value = x;
+    if (!ok && versuche >= 2) document.getElementById("weg").open = true;
+  });
+  document.getElementById("next").addEventListener("click", neu);
+}
+
+document.getElementById("typ").addEventListener("change", () => py && neu());
+start().catch((e) => {
+  console.error("[praktikumsrechner]", e);
+  card.innerHTML = `<p class="verdict bad">Der Rechenkern konnte nicht laden: ${esc(e.message)}. Seite neu laden.</p>`;
+});
+</script>
+</body>
+</html>
