@@ -16,6 +16,34 @@ this project uses [Semantic Versioning](https://semver.org/).
   still the package version, and structured output still also arrives as a
   JSON text block for hosts that drop `structuredContent`.
 
+## [0.4.3] — 2026-10-02
+
+### Fixed
+
+- **The Claude Desktop bundle failed to start in about one launch out of four.**
+  Desktop's log showed 11 of 38 launches timing out on `initialize` (median
+  answer 21.6 s, Desktop gives up at ~55 s). Part of it was `uv tool run`
+  rebuilding its throwaway environment after every `uv cache clean` (≈50 MB from
+  PyPI). The bundle now installs once into its own tool directory, which survives
+  cache cleaning and leaves a global `uv tool install chemdraw-mcp` alone, and
+  then starts the server directly: 1.6 s after a cleared cache instead of 15.4 s.
+  Desktop starts two instances at once; a lock keeps the second from tearing
+  down the first one's fresh install (measured: 1 of 3 parallel cold starts
+  survived before, 3 of 3 now).
+
+- **`calculate_content` inverted the titer from a reference titration.** A
+  titrant 2 % stronger than nominal (t = 1.02) came out as t ≈ 0.98, so every
+  sample corrected with it read about 4 % low. The titer is now declared
+  content / apparent content of the reference, and a test builds the reference
+  readings from a known titer and checks the round trip.
+
+- **The panel's Data button failed for every molecule.** PubChem no longer
+  returns `CanonicalSMILES`, so the molecule payload carried no SMILES and the
+  button asked for the data sheet by display name ("Methylphenidat") — which
+  does not resolve. The payload now always carries the resolved SMILES, and
+  `lookup_molecule_data` fetches its record by InChIKey like the molecule panel
+  does, instead of sending a SMILES to PubChem's name endpoint (HTTP 404).
+
 ## [0.4.2] — 2026-10-01
 
 ### Fixed

@@ -1,6 +1,6 @@
 """pH-Rechnungen: exakte Ladungsbilanz, Lehrbuchnäherung daneben.
 
-Gerechnet wird über `ph_plots.exact_ph` — dieselbe Bilanz, die auch die
+Gerechnet wird über `ph_core.exact_ph` — dieselbe Bilanz, die auch die
 Titrationskurve zeichnet. Das ist Absicht: Bild und Zahl im selben Protokoll
 dürfen sich nicht widersprechen.
 
@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import math
 
-from chemdraw_tool.ph_plots import exact_ph
+from chemdraw_tool.ph_core import exact_ph
 
 PKW = 14.0
 

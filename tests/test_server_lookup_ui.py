@@ -2,11 +2,23 @@
 
 from unittest.mock import patch
 
+import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
 from chemdraw_tool.payloads import DatabasePayload
 from chemdraw_tool.server import lookup_molecule_data
+
+
+@pytest.fixture(autouse=True)
+def _kein_smiles_rueckweg(monkeypatch):
+    """Das Datenblatt holt den Datensatz per InChIKey (die Tests mocken das).
+    Liefert der Mock nichts, faellt _pubchem_record auf den SMILES-Weg zurueck —
+    der darf hier nicht ans echte Netz."""
+    from chemdraw_tool import server
+
+    monkeypatch.setattr(server, "pubchem_properties_by_smiles", lambda smiles: None)
+    monkeypatch.setattr(server, "pubchem_synonyms_by_smiles", lambda smiles: (None, []))
 
 
 def _make_mol(smiles: str) -> Chem.Mol:
@@ -16,8 +28,8 @@ def _make_mol(smiles: str) -> Chem.Mol:
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_lookup_molecule_data_returns_database_payload(
     mock_resolve, mock_props, mock_synonyms, mock_safety
@@ -51,8 +63,8 @@ def test_lookup_molecule_data_returns_database_payload(
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safety):
     """PubChem source rows must include all mapped properties and CAS."""
@@ -100,8 +112,8 @@ def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safet
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_ghs_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safety):
     """GHS source must contain safety rows when available."""
@@ -133,13 +145,13 @@ def test_ghs_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safety):
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_no_ghs_when_no_cid_in_props(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):
-    """When CID is not in pubchem_properties, only PubChem source present (no GHS)."""
+    """When the PubChem record has no CID, only the PubChem source is present (no GHS)."""
     mol = _make_mol("CCO")
     mock_resolve.return_value = ("CCO", mol)
     mock_props.return_value = {}
@@ -161,8 +173,8 @@ def test_no_ghs_when_no_cid_in_props(
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_payload_carries_atoms_for_the_hover(
     mock_resolve, mock_props, mock_synonyms, mock_safety
@@ -183,8 +195,8 @@ def test_payload_carries_atoms_for_the_hover(
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_payload_carries_functional_groups(
     mock_resolve, mock_props, mock_synonyms, mock_safety
@@ -203,8 +215,8 @@ def test_payload_carries_functional_groups(
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
-@patch("chemdraw_tool.server.pubchem_synonyms")
-@patch("chemdraw_tool.server.pubchem_properties")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
 def test_payload_names_its_compound(
     mock_resolve, mock_props, mock_synonyms, mock_safety

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Praktikumsrechner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1f6f5c">
+<style>
+/* Schriften vom eigenen Host (DSGVO, scripts/build-web.sh). Fehlen die Dateien
+   (Entwicklung im Repo), greift der Fallback-Stack. */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("vendor/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-display: swap; src: url("vendor/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 600; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-condensed-latin-600-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 700; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-condensed-latin-700-normal.woff2") format("woff2") }
+
+/* Layout: eine Aufgabenkarte, darunter Antwortzeile und aufklappbarer Rechenweg. Handy zuerst. */
+:root {
+  --bg: #eef2f0; --surface: #fafcfb; --ink: #111816; --ink-2: #46534e; --muted: #7a8680;
+  --line: #d4dcd8; --accent: #1f6f5c; --accent-ink: #f4faf7; --accent-soft: #e1efea;
+  --ok: #1f7a43; --ok-soft: #e1f3e7; --bad: #b3322a; --bad-soft: #fbe6e4;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-head: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0d1210; --surface: #151b18; --ink: #e4ebe8; --ink-2: #a8b4ae; --muted: #7c8882;
+  --line: #29322e; --accent: #5fc0a3; --accent-ink: #08130f; --accent-soft: #14302a;
+  --ok: #6fd093; --ok-soft: #13291b; --bad: #f07d73; --bad-soft: #391b19; color-scheme: dark } }
+* { box-sizing: border-box }
+html, body { margin: 0 }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--f-body); padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0) }
+.wrap { max-width: 680px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 16px }
+header h1 { font: 700 24px/1.1 var(--f-head); margin: 0 }
+header p { margin: 4px 0 0; color: var(--ink-2); font-size: 14px }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between }
+select, input, button { font: inherit; color: inherit }
+select { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px }
+.score { font: 500 13px var(--f-mono); color: var(--ink-2); font-variant-numeric: tabular-nums }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.chip { font: 500 13px/22px var(--f-body); padding: 0 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent) }
+.task { font-size: 17px; line-height: 1.55; margin: 0 }
+.answer { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap }
+.answer label { flex-basis: 100%; font-size: 13px; color: var(--ink-2) }
+.field { display: flex; align-items: center; flex: 1 1 180px; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 4px }
+.field input { flex: 1; min-width: 0; border: 0; background: none; padding: 10px 12px; font: 500 18px var(--f-mono); outline: none }
+.field span { padding-right: 12px; color: var(--muted); font: 15px var(--f-mono) }
+.field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft) }
+.btn { border: 0; border-radius: 4px; padding: 10px 16px; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--accent-ink) }
+.btn.ghost { background: none; color: var(--accent); border: 1px solid var(--line) }
+.btn:disabled { opacity: .5; cursor: default }
+.btn:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.choices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex-basis: 100% }
+.choices button { font: 600 16px var(--f-mono); padding: 12px 0; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer }
+.choices button:hover { border-color: var(--accent) }
+.choices button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.verdict { border-radius: 4px; padding: 10px 12px; font-size: 15px }
+.verdict.ok { background: var(--ok-soft); color: var(--ok) }
+.verdict.bad { background: var(--bad-soft); color: var(--bad) }
+details { border-top: 1px solid var(--line); padding-top: 10px }
+summary { cursor: pointer; font-weight: 600; color: var(--accent); list-style: none }
+summary { display: flex; align-items: center; gap: 8px }
+summary::-webkit-details-marker { display: none }
+summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s }
+details[open] summary::before { transform: rotate(45deg) }
+ol.steps { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; counter-reset: s }
+ol.steps li { counter-increment: s; padding-left: 30px; position: relative }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 600 12px/22px var(--f-mono); text-align: center }
+.st-label { font-weight: 600 }
+.st-f, .st-s, .st-r { font: 14px/1.5 var(--f-mono); overflow-wrap: anywhere }
+.st-f { color: var(--ink-2) }
+.st-r { font-weight: 500 }
+.st-e { font-size: 14px; color: var(--ink-2); margin-top: 2px }
+.loading { color: var(--ink-2); font-size: 15px }
+footer { font-size: 12.5px; color: var(--muted) }
+.row { display: flex; flex-wrap: wrap; gap: 8px }
+.ergebnis { font: 500 20px/1.3 var(--f-head); margin: 0 }
+.themen { border-collapse: collapse; font-size: 14px; width: 100% }
+.themen th, .themen td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line) }
+.themen th { font-weight: 600; color: var(--ink-2) }
+.themen .num { text-align: right; font-variant-numeric: tabular-nums }
+.themen td.num { font-family: var(--f-mono) }
+.hinweis { margin: 0; color: var(--ink-2); font-size: 14px }
+.rueckblick { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px }
+.rueckblick li { border-left: 3px solid var(--line); padding: 4px 0 4px 12px; font-size: 14.5px }
+.rueckblick li.r-ok { border-left-color: var(--ok) } .rueckblick li.r-bad { border-left-color: var(--bad) }
+.r-kopf { font-weight: 600; font-size: 13px; color: var(--ink-2) }
+.r-antw { font-family: var(--f-mono); font-size: 13px; margin: 4px 0 }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Praktikumsrechner</h1>
+    <p>Titration, Lösungen ansetzen, pH und Puffer, Löslichkeit, Reaktionsmechanismen. Jede Aufgabe ist neu, jede Lösung wird gerechnet oder aus festen Lehrbuchregeln abgeleitet.</p>
+  </header>
+
+  <div class="bar">
+    <select id="typ" aria-label="Aufgabentyp">
+      <optgroup label="Gehaltsbestimmung">
+        <option value="titration.neue_aufgabe">Titration, gemischt</option>
+        <option value="titration.gehalt_aufgabe">Gehalt aus Verbrauch</option>
+        <option value="titration.sollverbrauch_aufgabe">Sollverbrauch</option>
+        <option value="titration.faktor_aufgabe">Titrationsäquivalent</option>
+        <option value="titration.titer_aufgabe">Faktorbestimmung (Urtiter)</option>
+      </optgroup>
+      <optgroup label="pH und Puffer">
+        <option value="ph.neue_aufgabe">pH, gemischt</option>
+        <option value="ph.saeure_aufgabe">Schwache Säure</option>
+        <option value="ph.base_aufgabe">Schwache Base</option>
+        <option value="ph.stark_aufgabe">Starke Säure oder Base</option>
+        <option value="ph.puffer_aufgabe">Puffer-pH</option>
+        <option value="ph.verhaeltnis_aufgabe">Puffer ansetzen</option>
+      </optgroup>
+      <optgroup label="Lösungen ansetzen">
+        <option value="loesungen.neue_aufgabe">Lösungsrechnen, gemischt</option>
+        <option value="loesungen.einwaage_aufgabe">Einwaage für eine Lösung</option>
+        <option value="loesungen.verduennung_aufgabe">Verdünnen</option>
+        <option value="loesungen.mischkreuz_aufgabe">Mischungskreuz</option>
+        <option value="loesungen.konz_aufgabe">Konzentrierte Säuren</option>
+      </optgroup>
+      <optgroup label="Allgemeine Chemie">
+        <option value="loeslichkeit.neue_aufgabe">Löslichkeitsprodukt, gemischt</option>
+        <option value="loeslichkeit.loeslichkeit_aufgabe">Löslichkeit aus KL</option>
+        <option value="loeslichkeit.kl_aufgabe">KL aus Löslichkeit</option>
+        <option value="loeslichkeit.zusatz_aufgabe">Gleichioniger Zusatz</option>
+      </optgroup>
+      <optgroup label="Organische Chemie">
+        <option value="mechanismus.weg_aufgabe">SN1, SN2, E1 oder E2?</option>
+      </optgroup>
+    </select>
+    <button class="btn" type="button" id="klausur">Klausur: 10 Aufgaben</button>
+    <span class="score" id="score">0 von 0 richtig</span>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <p class="loading" id="loading">Rechenkern lädt (Python im Browser, beim ersten Mal einige Sekunden) …</p>
+  </main>
+
+  <footer>Titrationsäquivalente aus Ä = M · c / z, auf 4 geltende Ziffern gerundet (kann in der letzten Stelle von der Monographie abweichen). pH-Aufgaben nur, wo die Näherungsformel höchstens 0,05 von der exakten Rechnung abweicht. Rechenkern: chemdraw-mcp (Apache-2.0). <a href="impressum.html">Impressum</a></footer>
+</div>
+
+<script>
+// Im Repo (Entwicklung) liegt der Rechenkern zwei Ebenen höher, in web/dist unter py/.
+const IM_REPO = location.pathname.includes("/web/praktikumsrechner/");
+const ROOT = IM_REPO ? "../../" : "py/";
+// Pyodide vom eigenen Host. Den CDN gibt es nur bei der Entwicklung auf localhost —
+// ausgeliefert wird ohne Drittanbieter (DSGVO).
+const LOKAL = "vendor/pyodide/";
+const CDN = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
+const ENTWICKLUNG = ["localhost", "127.0.0.1"].includes(location.hostname) && IM_REPO;
+
+function skript(src) {
+  return new Promise((ok, fehler) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = ok; s.onerror = () => fehler(new Error(`${src} nicht ladbar`));
+    document.head.appendChild(s);
+  });
+}
+
+async function ladePyodide() {
+  const basis = ENTWICKLUNG ? CDN : LOKAL;
+  await skript(basis + "pyodide.js");
+  return loadPyodide({ indexURL: basis });
+}
+const DATEIEN = [
+  "chemdraw_tool/__init__.py",
+  "chemdraw_tool/ph_core.py",
+  "chemdraw_tool/aufgaben/__init__.py",
+  "chemdraw_tool/aufgaben/basis.py",
+  "chemdraw_tool/aufgaben/titration.py",
+  "chemdraw_tool/aufgaben/ph.py",
+  "chemdraw_tool/aufgaben/mechanismus.py",
+  "chemdraw_tool/aufgaben/loeslichkeit.py",
+  "chemdraw_tool/aufgaben/loesungen.py",
+];
+const card = document.getElementById("card");
+let py, aufgabe, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
+
+const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Titrationsäquivalent", titer: "Faktorbestimmung",
+  einwaage: "Einwaage", verduennung: "Verdünnen", mischkreuz: "Mischungskreuz", konz: "Konz. Säure",
+  mechanismus: "Mechanismus", loeslichkeit: "Löslichkeit", kl: "Löslichkeitsprodukt", zusatz: "Gleichioniger Zusatz", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
+
+async function start() {
+  const t0 = performance.now();
+  py = await ladePyodide();
+  py.FS.mkdirTree("/home/pyodide/chemdraw_tool/aufgaben");
+  await Promise.all(DATEIEN.map(async (pfad) => {
+    const r = await fetch(ROOT + pfad);
+    if (!r.ok) throw new Error(`${pfad}: HTTP ${r.status}`);
+    py.FS.writeFile("/home/pyodide/" + pfad, await r.text());
+  }));
+  py.runPython("import json\nfrom chemdraw_tool.aufgaben import titration, ph, mechanismus, loeslichkeit, loesungen, basis");
+  console.log(`[praktikumsrechner] Rechenkern bereit nach ${Math.round(performance.now() - t0)} ms`);
+  neu();
+}
+
+function erzeuge(fn) {
+  const sd = Math.floor(Math.random() * 1e9);
+  return JSON.parse(py.runPython(`json.dumps(${fn}(${sd}))`));
+}
+
+function neu() {
+  klausur = null;
+  aufgabe = erzeuge(document.getElementById("typ").value);
+  versuche = 0; gewertet = false;
+  render();
+}
+
+function pruefeA(a, antwort) {
+  py.globals.set("_a", py.toPy(a));
+  py.globals.set("_x", antwort);
+  return py.runPython("basis.pruefe(_a, _x)");
+}
+
+function stellen(a) { return a.typ === "titer" ? 4 : a.einheit === "mg/mL" ? 3 : 2; }
+
+function loesungText(a) {
+  if (a.loesung_text) return a.loesung_text;
+  if (a.auswahl) return a.loesung;
+  const zahl = de(a.loesung, stellen(a));
+  return a.einheit === "pH" ? `pH ${zahl}` : a.einheit ? `${zahl} ${a.einheit}` : zahl;
+}
+
+const BEISPIEL = { "%": "z. B. 99,50", "mL": "z. B. 12,40", "mg/mL": "z. B. 12,210", "pH": "z. B. 4,76", ": 1": "z. B. 1,58", "g": "z. B. 2,922", "mol/L": "z. B. 12,08" };
+
+function eingabeHtml(a, knopf) {
+  if (a.auswahl) {
+    return `<div class="choices">${a.auswahl.map((x) => `<button type="button" data-wahl="${esc(x)}">${esc(x)}</button>`).join("")}</div><input type="hidden" id="antwort">`;
+  }
+  const ph = BEISPIEL[a.einheit] || (a.typ === "titer" ? "z. B. 1,0123" : a.loesung_text ? "z. B. 1,3e-5 oder 1,3 · 10^-5" : "");
+  return `<div class="field"><input id="antwort" inputmode="decimal" placeholder="${ph}"><span>${esc(a.einheit)}</span></div>
+      <button class="btn" type="submit">${knopf}</button>`;
+}
+
+function rechenwegHtml(a, id) {
+  return `<details${id ? ` id="${id}"` : ""}><summary>Rechenweg zeigen</summary>
+      <ol class="steps">${a.rechenweg.map((s) => `
+        <li><div class="st-label">${esc(s.label)}</div>
+          <div class="st-f">${esc(s.formula)}</div>
+          <div class="st-s">${esc(s.substitution)}</div>
+          <div class="st-r">${esc(s.result)}</div>
+          ${s.explanation ? `<div class="st-e">${esc(s.explanation)}</div>` : ""}</li>`).join("")}
+      </ol></details>`;
+}
+
+function verdrahte(form, beiAntwort) {
+  form.querySelectorAll("[data-wahl]").forEach((btn) => btn.addEventListener("click", () => {
+    document.getElementById("antwort").value = btn.dataset.wahl;
+    form.requestSubmit();
+  }));
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const x = document.getElementById("antwort").value;
+    if (!x.trim()) return;
+    beiAntwort(x);
+  });
+}
+
+function render(verdict) {
+  const a = aufgabe;
+  card.innerHTML = `
+    <div class="chips"><span class="chip">${CHIP[a.typ]}</span><span class="chip">${esc(a.stoff)}</span></div>
+    <p class="task">${esc(a.text)}</p>
+    <form class="answer" id="f" autocomplete="off">
+      <label for="antwort">${esc(a.gesucht)}</label>
+      ${eingabeHtml(a, "Prüfen")}
+    </form>
+    ${verdict || ""}
+    ${rechenwegHtml(a, "weg")}
+    <div class="row"><button class="btn ghost" type="button" id="next">Neue Aufgabe</button></div>`;
+  verdrahte(document.getElementById("f"), (x) => {
+    const ok = pruefeA(a, x);
+    versuche++;
+    if (!gewertet && (ok || versuche >= 2)) { gewertet = true; gesamt++; if (ok) richtig++; }
+    document.getElementById("score").textContent = `${richtig} von ${gesamt} richtig`;
+    const loesung = loesungText(a);
+    const v = ok
+      ? `<div class="verdict ok">Richtig: ${loesung}.</div>`
+      : versuche >= 2
+        ? `<div class="verdict bad">Nicht ganz. Richtig ist ${loesung}. Schau in den Rechenweg.</div>`
+        : `<div class="verdict bad">Noch nicht. Ein Versuch bleibt, dann zeige ich die Lösung.</div>`;
+    render(v);
+    document.getElementById("antwort").value = x;
+    if (!ok && versuche >= 2) document.getElementById("weg").open = true;
+  });
+  document.getElementById("next").addEventListener("click", neu);
+}
+
+// --- Klausurmodus: 10 gemischte Aufgaben, je ein Versuch, Rechenweg erst danach ---
+const KLAUSUR_POOL = ["titration.neue_aufgabe", "loesungen.neue_aufgabe", "ph.neue_aufgabe",
+  "loeslichkeit.neue_aufgabe", "mechanismus.weg_aufgabe"];
+const KLAUSUR_LAENGE = 10;
+const BEREICH = {
+  gehalt: "Titration", sollverbrauch: "Titration", faktor: "Titration", titer: "Titration",
+  einwaage: "Lösungen ansetzen", verduennung: "Lösungen ansetzen", mischkreuz: "Lösungen ansetzen", konz: "Lösungen ansetzen",
+  saeure: "pH und Puffer", base: "pH und Puffer", stark: "pH und Puffer", puffer: "pH und Puffer", verhaeltnis: "pH und Puffer",
+  loeslichkeit: "Löslichkeit", kl: "Löslichkeit", zusatz: "Löslichkeit", mechanismus: "Mechanismen",
+};
+let klausur = null;
+
+function starteKlausur() {
+  const fns = Array.from({ length: KLAUSUR_LAENGE }, (_, k) => KLAUSUR_POOL[k % KLAUSUR_POOL.length]);
+  for (let i = fns.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [fns[i], fns[j]] = [fns[j], fns[i]]; }
+  klausur = { aufgaben: fns.map(erzeuge), antworten: [], i: 0, t0: Date.now() };
+  renderKlausur();
+}
+
+function renderKlausur() {
+  const k = klausur, a = k.aufgaben[k.i];
+  card.innerHTML = `
+    <div class="chips"><span class="chip">Klausur ${k.i + 1} von ${KLAUSUR_LAENGE}</span><span class="chip">${CHIP[a.typ]}</span></div>
+    <p class="task">${esc(a.text)}</p>
+    <form class="answer" id="f" autocomplete="off">
+      <label for="antwort">${esc(a.gesucht)}</label>
+      ${eingabeHtml(a, k.i + 1 < KLAUSUR_LAENGE ? "Weiter" : "Abgeben")}
+    </form>
+    <div class="row"><button class="btn ghost" type="button" id="abbruch">Klausur abbrechen</button></div>`;
+  verdrahte(document.getElementById("f"), (x) => {
+    k.antworten.push({ antwort: x, ok: pruefeA(a, x) });
+    k.i++;
+    if (k.i < KLAUSUR_LAENGE) renderKlausur(); else renderAuswertung();
+  });
+  document.getElementById("abbruch").addEventListener("click", neu);
+  document.getElementById("antwort")?.focus?.();
+}
+
+function renderAuswertung() {
+  const k = klausur;
+  const punkte = k.antworten.filter((x) => x.ok).length;
+  const minuten = Math.max(1, Math.round((Date.now() - k.t0) / 60000));
+  const proThema = {};
+  k.aufgaben.forEach((a, i) => {
+    const t = BEREICH[a.typ];
+    proThema[t] = proThema[t] || [0, 0];
+    proThema[t][1]++;
+    if (k.antworten[i].ok) proThema[t][0]++;
+  });
+  const schwach = Object.entries(proThema).filter(([, [r, n]]) => r < n).map(([t]) => t);
+  card.innerHTML = `
+    <div class="chips"><span class="chip">Auswertung</span></div>
+    <p class="ergebnis" id="ergebnis"><b>${punkte} von ${KLAUSUR_LAENGE}</b> richtig · ${minuten} min</p>
+    <table class="themen"><thead><tr><th>Bereich</th><th class="num">richtig</th></tr></thead><tbody>
+      ${Object.entries(proThema).map(([t, [r, n]]) => `<tr><td>${esc(t)}</td><td class="num">${r} / ${n}</td></tr>`).join("")}
+    </tbody></table>
+    ${schwach.length ? `<p class="hinweis">Üben: ${schwach.map(esc).join(", ")}. Wähle das Thema oben aus.</p>` : `<p class="hinweis">Alles richtig.</p>`}
+    <ol class="rueckblick">${k.aufgaben.map((a, i) => `
+      <li class="${k.antworten[i].ok ? "r-ok" : "r-bad"}">
+        <div class="r-kopf">${k.antworten[i].ok ? "richtig" : "falsch"} · ${esc(CHIP[a.typ])}</div>
+        <div>${esc(a.text)}</div>
+        <div class="r-antw">Deine Antwort: ${esc(k.antworten[i].antwort)}${k.antworten[i].ok ? "" : ` · richtig: ${esc(loesungText(a))}`}</div>
+        ${rechenwegHtml(a)}
+      </li>`).join("")}</ol>
+    <div class="row"><button class="btn" type="button" id="nochmal">Neue Klausur</button><button class="btn ghost" type="button" id="ueben">Zurück zum Üben</button></div>`;
+  document.getElementById("nochmal").addEventListener("click", starteKlausur);
+  document.getElementById("ueben").addEventListener("click", neu);
+}
+
+document.getElementById("typ").addEventListener("change", () => py && neu());
+document.getElementById("klausur").addEventListener("click", () => py && starteKlausur());
+// Offline nach dem ersten Besuch (nur ausgeliefert, nicht bei der Entwicklung im Repo).
+if ("serviceWorker" in navigator && !IM_REPO) {
+  navigator.serviceWorker.register("sw.js").catch((e) => console.warn("[praktikumsrechner] kein Offline-Modus:", e));
+}
+start().catch((e) => {
+  console.error("[praktikumsrechner]", e);
+  card.innerHTML = `<p class="verdict bad">Der Rechenkern konnte nicht laden: ${esc(e.message)}. Seite neu laden.</p>`;
+});
+</script>
+</body>
+</html>

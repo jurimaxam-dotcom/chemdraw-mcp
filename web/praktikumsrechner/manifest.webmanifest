@@ -1,0 +1,14 @@
+{
+  "name": "Praktikumsrechner",
+  "short_name": "Rechner",
+  "description": "Frische Übungsaufgaben mit Rechenweg: Titration, Lösungen, pH, Löslichkeit, Mechanismen.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2f0",
+  "theme_color": "#1f6f5c",
+  "lang": "de",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

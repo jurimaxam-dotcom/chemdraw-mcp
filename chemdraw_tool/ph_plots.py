@@ -25,6 +25,8 @@ matplotlib.use("Agg")
 from matplotlib import rc_context  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 
+from chemdraw_tool.ph_core import alpha_fractions, exact_ph  # noqa: E402,F401
+
 FIGSIZE = (10.0, 6.5)
 DPI = 150
 CURVE_POINTS = 400
@@ -32,55 +34,11 @@ INDICATOR_COLOR = "#9467bd"
 SPECIES_COLORS = ("#1a1a1a", "#d62728", "#1f77b4", "#2ca02c", "#9467bd")
 
 
-def alpha_fractions(pka_values: Sequence[float], ph: float) -> list[float]:
-    """Anteile der Protonierungsspezies H(n)A … A(n-) bei gegebenem pH.
-
-    Index 0 = vollprotonierte Form. Summe ist 1.
-    """
-    h = 10.0 ** (-ph)
-    kas = [10.0 ** (-pka) for pka in pka_values]
-    n = len(kas)
-    terms = []
-    for k in range(n + 1):
-        ka_product = 1.0
-        for j in range(k):
-            ka_product *= kas[j]
-        terms.append(h ** (n - k) * ka_product)
-    denominator = sum(terms)
-    return [t / denominator for t in terms]
-
-
 @dataclass(frozen=True)
 class TitrationCurve:
     volumes_ml: list[float]
     ph: list[float]
     eq_volumes_ml: list[float]
-
-
-def exact_ph(pka_values: Sequence[float], c_acid: float, c_na: float) -> float:
-    """pH aus der Ladungsbilanz [Na+] + [H+] = [OH-] + Σ k·α_k·C_A,
-    gelöst per Bisektion (f ist in pH streng monoton).
-
-    Öffentlich, weil `ph_calc` dieselbe Bilanz braucht: Die gezeichnete Kurve
-    und die gerechnete Zahl müssen aus einer Quelle kommen, sonst widersprechen
-    sich Bild und Text im selben Protokoll.
-    """
-
-    def f(ph: float) -> float:
-        h = 10.0 ** (-ph)
-        oh = 10.0 ** (ph - 14.0)
-        alphas = alpha_fractions(pka_values, ph)
-        bound = sum(k * a for k, a in enumerate(alphas)) * c_acid
-        return c_na + h - oh - bound
-
-    lo, hi = 0.0, 14.0
-    for _ in range(60):
-        mid = (lo + hi) / 2.0
-        if f(mid) > 0.0:
-            lo = mid
-        else:
-            hi = mid
-    return (lo + hi) / 2.0
 
 
 def titration_curve(
