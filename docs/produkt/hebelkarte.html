@@ -4,7 +4,7 @@
 <style>
 /* Layout: Entscheidungsblatt — Empfehlung oben, darunter Prüfsteine, Studienverläufe, Uni-Vergleich, Markt, Lücken, Schritte. Eine Spalte, Tabellen scrollen in sich. */
 :root {
-  --bg: #f3f5f4; --surface: #ffffff; --ink: #121815; --ink-2: #47534d; --muted: #7a857f;
+  --bg: #f3f5f4; --surface: #fbfcfb; --ink: #121815; --ink-2: #47534d; --muted: #7a857f;
   --line: #d5dcd8; --accent: #1f6f5c; --accent-soft: #e2f0eb; --bar: #2f8a73;
   --yes: #22703f; --yes-soft: #e2f2e7; --mid: #8a5a00; --mid-soft: #fbf0d9; --no: #b3322a; --no-soft: #fbe7e5;
   --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -27,7 +27,7 @@ h1 { font: 700 30px/1.1 var(--f-head); margin: 0; letter-spacing: -0.01em; text-
 h2 { font: 600 20px/1.2 var(--f-head); margin: 0 0 10px; text-wrap: balance }
 h3 { font: 600 15px/1.25 var(--f-head); margin: 0 0 4px }
 .meta { color: var(--ink-2); font-size: 13px; margin-top: 6px }
-.eyebrow { font: 600 11px var(--f-head); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) }
+.eyebrow { font: 600 13px var(--f-body); color: var(--accent) }
 p { margin: 0 0 8px; max-width: 70ch }
 code { font: 13px var(--f-mono); background: var(--accent-soft); padding: 0 4px; border-radius: 3px }
 .tag { font: 500 10.5px/16px var(--f-mono); padding: 0 5px; border-radius: 3px; white-space: nowrap; vertical-align: 1px }
@@ -36,17 +36,17 @@ code { font: 13px var(--f-mono); background: var(--accent-soft); padding: 0 4px;
 .t-l { background: var(--no-soft); color: var(--no) }
 
 /* Empfehlung */
-.verdict { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; padding: 20px 22px; display: grid; gap: 14px }
+.verdict { background: var(--surface); border: 2px solid var(--accent); border-radius: 8px; padding: 20px 22px; display: grid; gap: 14px }
 .verdict .big { font: 600 22px/1.25 var(--f-head); text-wrap: balance }
 .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px }
-.vcell { background: var(--bg); border-radius: 8px; padding: 10px 12px; min-width: 0 }
-.vcell b { display: block; font: 600 11px var(--f-head); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px }
+.vcell { background: var(--bg); border-radius: 4px; padding: 10px 12px; min-width: 0 }
+.vcell b { display: block; font: 600 13px var(--f-body); color: var(--ink-2); margin-bottom: 2px }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0 }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; min-width: 0 }
 .scroll { overflow-x: auto; margin-inline: -4px; padding-inline: 4px }
 table { border-collapse: collapse; width: 100%; font-size: 13.5px }
 th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line) }
-th { font: 600 11px var(--f-head); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); white-space: nowrap }
+th { font: 600 12.5px var(--f-body); color: var(--ink-2); white-space: nowrap }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap }
 tr.pick td { background: var(--accent-soft) }
 .g { display: inline-flex; align-items: center; gap: 5px; font: 600 12px var(--f-body); padding: 1px 7px; border-radius: 4px; white-space: nowrap }
@@ -59,13 +59,13 @@ td small { display: block; color: var(--ink-2); font-size: 12.5px; margin-top: 3
 .seg > .who { font: 600 15px/1.2 var(--f-head) }
 .seg > .who small { display: block; font: 12px var(--f-body); color: var(--muted); margin-top: 2px }
 .stations { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px }
-.st { flex: 0 0 auto; width: 200px; background: var(--bg); border-radius: 8px; padding: 9px 11px; border-top: 3px solid var(--line); font-size: 13px }
+.st { flex: 0 0 auto; width: 200px; background: var(--bg); border-radius: 4px; padding: 9px 11px; border-top: 3px solid var(--line); font-size: 13px }
 .st.hot { border-top-color: var(--no) }
 .st .sem { font: 500 11px var(--f-mono); color: var(--muted) }
 .st .what { font-weight: 600; margin: 2px 0 4px }
 .st .q { font: 600 12.5px var(--f-mono); color: var(--no) }
 .st .tool { margin-top: 5px; font: 12px var(--f-mono); color: var(--accent) }
-.pending { border: 1px dashed var(--mid); background: var(--mid-soft); color: var(--ink); border-radius: 8px; padding: 10px 12px; font-size: 13.5px }
+.pending { border: 1px dashed var(--mid); background: var(--mid-soft); color: var(--ink); border-radius: 4px; padding: 10px 12px; font-size: 13.5px }
 @media (max-width: 640px) { .seg { grid-template-columns: minmax(0, 1fr) } }
 
 /* Balken */
@@ -79,7 +79,7 @@ td small { display: block; color: var(--ink-2); font-size: 12.5px; margin-top: 3
 
 .gaps { display: grid; gap: 6px; padding-left: 18px; margin: 0 }
 .no-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px }
-.no-list div { background: var(--no-soft); border-radius: 8px; padding: 10px 12px; font-size: 13.5px }
+.no-list div { background: var(--no-soft); border-radius: 4px; padding: 10px 12px; font-size: 13.5px }
 .no-list b { color: var(--no); display: block; font: 600 14px var(--f-head) }
 
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px }
@@ -102,14 +102,14 @@ textarea { min-height: 64px; resize: vertical }
   <header>
     <div class="eyebrow">chemdraw-mcp · Produktentscheidung</div>
     <h1>Chemie-Hebelkarte</h1>
-    <div class="meta">Was Studierende in Deutschland in Chemie bestehen müssen, wo sie scheitern und womit sich Geld verdienen lässt. Stand 02.10.2026, drei Recherchen mit Quellen (<code>docs/produkt/</code>). <span class="tag t-b">belegt</span> <span class="tag t-s">Schätzung</span> <span class="tag t-l">Lücke</span></div>
+    <div class="meta">Was Studierende in Deutschland in Chemie bestehen müssen, wo sie scheitern und womit sich Geld verdienen lässt. Stand 02.10.2026, vier Recherchen mit Quellen (<code>docs/produkt/</code>). <span class="tag t-b">belegt</span> <span class="tag t-s">Schätzung</span> <span class="tag t-l">Lücke</span></div>
   </header>
 
   <section class="verdict" aria-labelledby="v">
     <div class="eyebrow" id="v">Empfehlung</div>
-    <div class="big">Zuerst verkaufen: einen Praktikums- und Prüfungsrechner für Pharmazie-Grundstudis. Jede Aufgabe wird frisch erzeugt und kommt mit geprüftem Rechenweg. Verkauft wird er als Semesterpass im Browser, ohne Installation.</div>
+    <div class="big">Zuerst verkaufen: einen Praktikums- und Prüfungsrechner für Pharmazie-Grundstudis. Jede Aufgabe wird frisch erzeugt und kommt mit geprüftem Rechenweg. Verkauft wird er als Semesterpass im Browser, ohne Installation. Ein Prototyp läuft.</div>
     <div class="vgrid">
-      <div class="vcell"><b>Warum zahlen sie</b>Pharmazie-Studis kaufen schon Prüfungsmaterial: Anki-Decks für 25–115 €, Repetitorien für 200–1.100 €, Fragenbücher für 48 €. Organische Chemie ist im 1. StEx das schwächste Fach (Schnitt 52,0 %).</div>
+      <div class="vcell"><b>Warum zahlen sie</b>Pharmazie-Studis kaufen schon Prüfungsmaterial: Anki-Decks für 25–115 €, Repetitorien für 200–1.100 €, Fragenbücher für 48 €. In der Quantitativen Analyse (2. Semester) gibt eine nur teilweise richtige Rechnung 0 Punkte.</div>
       <div class="vcell"><b>Was keiner kopiert</b>Das IMPP vergibt seit 2025 keine Lizenzen mehr für neue Fragen, also bleiben alle Kreuz-Produkte auf dem Stand von 2024. Unser Rechenkern erzeugt unbegrenzt neue Aufgaben und rechnet die Lösung exakt.</div>
       <div class="vcell"><b>Preis</b>29–49 € pro Semester als Einmalkauf. Vergleich: Pharmazing 24,99 €, DAV 48 €, pharma4u 95 € pro Jahr. Für Studis sind 5–12 € im Monat die Obergrenze.</div>
       <div class="vcell"><b>Danach</b>Stufe 2 ist ein Rechentrainer für Allgemeine Chemie im 1. Semester für alle Fächer (über 15.000 Anfänger). Stufe 3 ist eine Sponsor- oder Campuslizenz, sobald 50 Studis zahlen.</div>
@@ -122,24 +122,24 @@ textarea { min-height: 64px; resize: vertical }
     <div class="scroll"><table>
       <thead><tr><th>Kandidat</th><th>A · ersetzt Bezahltes</th><th>B · Kanal in 2 Wochen</th><th>C · erster Teil in 1 Woche</th><th>Preisanker</th></tr></thead>
       <tbody>
-        <tr class="pick"><td><b>1 · Pharmazie-Rechner + frische Übungen</b><small>Ph.-Eur.-Gehalt, Titration, pH/Puffer, Kalibrierung, Fettkennzahlen, jeweils mit Rechenweg</small></td>
+        <tr class="pick"><td><b>1 · Pharmazie-Rechner + frische Übungen</b><small>Gehalt, Faktorbestimmung, Sollverbrauch, pH/Puffer, jeweils mit Rechenweg. Fettkennzahlen kommen erst im 5. Semester und bleiben deshalb draußen</small></td>
           <td><span class="g y">✓ ja</span><small>Anki-Decks, Fragenbücher, Repetitorien</small></td>
           <td><span class="g m">? offen</span><small>hängt an einer Fachschaft oder Studi-Gruppe, die du kennst</small></td>
-          <td><span class="g y">✓ ja</span><small>Rechenkern vorhanden: <code>calculate_content</code>, <code>calculate_ph</code>, <code>calculate_solution</code></small></td>
+          <td><span class="g y">✓ steht</span><small>Prototyp läuft: 4 Titrations- und 5 pH-Typen, jede Lösung gegen den Rechenkern getestet</small></td>
           <td class="num">29–49 € pro Semester</td></tr>
         <tr><td><b>2 · Allgemeine Chemie, Rechentrainer im 1. Semester</b><small>Stöchiometrie, pH/Puffer, Redox, für Medizin, Pharmazie, Chemie und Biologie</small></td>
           <td><span class="g m">~ teils</span><small>Mediziner haben AMBOSS gratis (über 92 % der Unis zahlen). Für Chemie und Biologie ist kein bezahltes Gegenstück belegt</small></td>
           <td><span class="g m">~ breit, aber verstreut</span><small>viele Fächer, kein einzelner Verteiler</small></td>
           <td><span class="g y">✓ ja</span><small>derselbe Rechenkern</small></td>
           <td class="num">5–8 € pro Monat</td></tr>
-        <tr><td><b>3 · OC-Mechanismus-Trainer</b><small>SN/E, Carbonylchemie, Aromaten, mit Elektronenpfeilen</small></td>
+        <tr><td><b>3 · OC-Mechanismus-Trainer</b><small>SN/E, Carbonylchemie, Aromaten, mit Elektronenpfeilen. Größter Block im 1. StEx und dort seit 2023 immer das schwächste Teilgebiet der Fächergruppe I</small></td>
           <td><span class="g m">~ teils</span><small>Mechanismus-Apps aus den USA kosten 9,99 USD einmalig bis 99 USD pro Jahr, auf Englisch</small></td>
           <td><span class="g m">? offen</span></td>
           <td><span class="g n">✗ eher nicht</span><small>Mechanismen gibt es nur als feste Definitionen, sie lassen sich nicht frei erzeugen. Eher 2–3 Wochen</small></td>
           <td class="num">5–10 € pro Monat</td></tr>
       </tbody>
     </table></div>
-    <p style="margin-top:10px;font-size:13px;color:var(--ink-2)">Dass es für Kandidat 1 keine Konkurrenz gibt, hat der Markt-Agent wörtlich so eingeschränkt: „allerdings nicht systematisch gesucht“ <span class="tag t-s">Schätzung</span>. Pharmatorium (KI-Karten aus PDFs) kommt am nächsten heran.</p>
+    <p style="margin-top:10px;font-size:13px;color:var(--ink-2)">Konkurrenz für Kandidat 1: Die GitHub-Suche fand keinen deutschen Rechner mit Ph.-Eur.-Rechenweg <span class="tag t-s">Schätzung</span>. Am nächsten kommen Pharmatorium (KI-Karten aus PDFs) und RxMath Lab (USA, nur klinisches Rechnen).</p>
   </section>
 
   <section class="card" aria-labelledby="tl">
@@ -147,12 +147,12 @@ textarea { min-height: 64px; resize: vertical }
     <div class="tl">
       <div class="seg"><div class="who">Pharmazie<small>1.853 + 770 Anfänger im Jahr <span class="tag t-b">belegt</span></small></div>
         <div class="stations">
-          <div class="st"><div class="sem">Sem. 1–2</div><div class="what">Qualitative und quantitative Analyse</div>Trennungsgang, Titrationen, Gehaltsberechnung<div class="tool">calculate_content · titration</div></div>
-          <div class="st"><div class="sem">Sem. 2–3</div><div class="what">Arzneibuch-Analytik, OC-Synthese</div>Identitätsprüfungen, Mechanismen<div class="tool">generate_mechanism · predict_spectrum</div></div>
-          <div class="st"><div class="sem">Sem. 3–4</div><div class="what">Instrumentelle Analytik</div>IR/UV/NMR, DC, HPLC<div class="tool">generate_tlc · generate_spectrum</div></div>
-          <div class="st hot"><div class="sem">nach Sem. 4</div><div class="what">1. Staatsexamen (IMPP, MC)</div><div class="q">Chemie-Fächergruppe: 20,0 % durchgefallen</div><div class="q">OC: Schnitt 52,0 %</div>Frühjahr 2026 <span class="tag t-b">belegt</span></div>
+          <div class="st hot"><div class="sem">Sem. 1</div><div class="what">Qualitative Analyse</div>Trennungsgang, Nachweise, pH und Löslichkeitsprodukt mit Rechnung<div class="q">LMU 08/2026: 14 von 44 bestanden</div>Aushang ausgezählt <span class="tag t-s">Schätzung</span></div>
+          <div class="st hot"><div class="sem">Sem. 2</div><div class="what">Quantitative Analyse</div>Faktorbestimmung, Gehalt, Sollverbrauch. Eine nur teilweise richtige Rechnung gibt 0 Punkte<div class="tool">Praktikumsrechner (Prototyp)</div></div>
+          <div class="st"><div class="sem">Sem. 3</div><div class="what">Organische Chemie</div>Eingangsklausur zu Mechanismen (Freiburg), Antrittsklausur (Würzburg)<div class="tool">generate_mechanism</div></div>
+          <div class="st"><div class="sem">Sem. 4</div><div class="what">Instrumentelle Analytik</div>IR/UV/NMR, DC, HPLC; Antestat und Klausur<div class="tool">predict_spectrum (teilweise)</div></div>
+          <div class="st hot"><div class="sem">nach Sem. 4</div><div class="what">1. Staatsexamen (IMPP, MC)</div>Chemie = 180 von 360 Fragen<div class="q">Fächergruppe I: 16–20 % durchgefallen</div><div class="q">OC: 49–56 % richtig, seit 2023 immer das Schlusslicht der FG I</div>7 Termine F2023–F2026 <span class="tag t-b">belegt</span></div>
         </div></div>
-      <div class="pending" id="pharm-pending">Die Pharmazie-Recherche läuft neu, nachdem der erste Lauf am Netzausfall abgebrochen ist. Noch offen: Fragenzahlen je Fach, Quoten der letzten Termine, was in Antestaten und Testaten konkret drankommt, Vergleich der Standorte. Diese Seite wird an derselben Adresse aktualisiert.</div>
       <div class="seg"><div class="who">Medizin<small>10.352 Anfänger im WS 25/26 <span class="tag t-b">belegt</span></small></div>
         <div class="stations">
           <div class="st hot"><div class="sem">Sem. 1</div><div class="what">Chemie-Praktikum und Seminar</div>Antestat an jedem Tag, 2 Klausuren (AC/OC), bestanden ab 60 % (Würzburg)<div class="tool">calculate_ph · calculate_solution</div></div>
@@ -171,6 +171,25 @@ textarea { min-height: 64px; resize: vertical }
           <div class="st hot"><div class="sem">Sem. 1–2</div><div class="what">Chemie für Biologen</div><div class="q">RWTH: 84 % durchgefallen</div>Nachklausur rund 70 % (2024) <span class="tag t-b">belegt</span></div>
         </div></div>
     </div>
+  </section>
+
+  <section class="card" aria-labelledby="pharm">
+    <h2 id="pharm">Pharmazie an 9 Standorten</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Standort</th><th class="num">Plätze WS · SS</th><th class="num">FG I H2025: Teilnehmende</th><th class="num">durchgefallen</th><th>Hürde im Grundstudium</th></tr></thead>
+      <tbody>
+        <tr><td>Marburg</td><td class="num">140 · 95</td><td class="num">127</td><td class="num"><b>43,3 %</b></td><td>Eingangsklausur vor dem Labor, Praktikum höchstens 3×</td></tr>
+        <tr><td>LMU</td><td class="num">110 · 93</td><td class="num">57</td><td class="num">24,6 %</td><td>Quali-Klausur sperrt die Quanti</td></tr>
+        <tr><td>Kiel</td><td class="num">66 · 66</td><td class="num">47</td><td class="num">21,3 %</td><td>Kolloquium vor dem Praktikum</td></tr>
+        <tr><td>FU Berlin</td><td class="num">77 · 59</td><td class="num">52</td><td class="num">13,5 %</td><td>Anorganik-Schein sperrt das 2. Semester</td></tr>
+        <tr><td>Bonn</td><td class="num">84 · 83</td><td class="num">48</td><td class="num">12,5 %</td><td>Exmatrikulation nach dem 4. Fehlversuch</td></tr>
+        <tr><td>Münster</td><td class="num">85 · 76</td><td class="num">84</td><td class="num">9,5 %</td><td>höchstens 4 Versuche</td></tr>
+        <tr><td>Frankfurt</td><td class="num">86 · 57</td><td class="num">48</td><td class="num">8,3 %</td><td>Zwischenklausur in Woche 3–4</td></tr>
+        <tr><td>Würzburg</td><td class="num">65 · 55</td><td class="num">30</td><td class="num">6,7 %</td><td>OC in 3 Prüfstufen</td></tr>
+        <tr><td>Freiburg</td><td class="num">90 · 0</td><td class="num">50</td><td class="num">2,0 %</td><td>Mechanismen-Eingangsklausur</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:10px;font-size:13px;color:var(--ink-2)">Die Quoten für FG I (Herbst 2025) hat der Agent gegen die IMPP-Ergebnisdatei geprüft. Plätze von hochschulstart.de, Hürden aus Fachschafts- und Institutsseiten <span class="tag t-s">Agentenbefund</span>. Praktikumsskripte liegen an 9 von 10 Standorten hinter einem Login. Tübingen und Heidelberg stehen nicht in den IMPP-Dateien.</p>
   </section>
 
   <section class="card" aria-labelledby="unis">
@@ -231,9 +250,10 @@ textarea { min-height: 64px; resize: vertical }
       <li><span class="tag t-l">Lücke</span> Durchfallquoten in OC-Klausuren im Chemie-B.Sc.: an 0 von 8 Unis veröffentlicht.</li>
       <li><span class="tag t-l">Lücke</span> Durchfallquoten der Chemie-Testate in der Medizin: nicht gefunden.</li>
       <li><span class="tag t-l">Lücke</span> Wie viel Pharmazie-Studis insgesamt fürs Staatsexamen ausgeben.</li>
+      <li><span class="tag t-l">Lücke</span> Amtliche Durchfallquoten für Praktika in der Pharmazie: es gibt keine. Die IMPP-Daten trennen außerdem nicht zwischen Erstversuch und Wiederholung.</li>
       <li><span class="tag t-l">Lücke</span> Anfängerzahl im Lehramt Chemie: seit 2009 nicht mehr erhoben.</li>
       <li><span class="tag t-s">Schätzung</span> Im Physikum kommen grob 20 Fragen auf Chemie und 60 auf Biochemie; das IMPP trennt die beiden nicht.</li>
-      <li><span class="tag t-s">Schätzung</span> Für Praktikumsrechner mit Rechenweg ist keine Konkurrenz bekannt, systematisch gesucht wurde aber nicht.</li>
+      <li><span class="tag t-s">Schätzung</span> Für Praktikumsrechner mit Rechenweg ist keine Konkurrenz bekannt. Die GitHub-Suche (Repos, Code, Web) fand nichts, aber ohne semantische Suche. Nächstes Gegenstück: RxMath Lab (USA, nur klinisches Rechnen).</li>
       <li><span class="tag t-l">Lücke</span> Ob Studis Claude nutzen, weist keine der fünf Umfragen aus. Es gibt also keinen Beleg, dass ein Produkt nur für Claude-Nutzer genug Käufer findet.</li>
     </ul>
   </section>
@@ -242,15 +262,16 @@ textarea { min-height: 64px; resize: vertical }
     <h2 id="next">Nächste Schritte</h2>
     <div class="steps">
       <div class="hand"><h3>Deine Hand</h3><ol>
-        <li><b>Heute:</b> Nenne eine Pharmazie-Fachschaft oder 2–3 Pharmazie-Studis aus Sem. 1–4, denen du diese Woche einen Prototyp zeigen kannst. Davon hängt Prüfstein B ab.</li>
-        <li><b>Nach dem Prototyp:</b> 10 Minuten zuschauen, wie jemand eine echte Praktikumsrechnung damit löst, und fragen, ob er dafür 29 € pro Semester zahlen würde.</li>
-        <li><b>Ab 50 Zahlenden:</b> Sponsor-Gespräch (apoBank, ratiopharm oder Avoxa-StudiClub). Entwürfe schreibe ich, senden tust du.</li>
+        <li><b>Heute, 1 Minute:</b> <code>! git merge --no-edit opsin-jvm</code>. Damit wird die Namensauflösung 2 s schneller. Der Auto-Modus lässt mich nicht selbst mergen.</li>
+        <li><b>Heute, 2 Minuten:</b> den Prototyp öffnen, mit <code>! cd ~/Documents/projects/chemdraw-mcp && python3 -m http.server 8765</code>, dann <code>localhost:8765/web/praktikumsrechner/</code> und drei Aufgaben lösen.</li>
+        <li><b>Diese Woche:</b> Eine Fachschaft oder 2–3 Pharmazie-Studis aus dem 1.–4. Semester nennen. Marburg liegt nahe: dort fielen 43 % durch FG I. Daran hängt Prüfstein B.</li>
+        <li><b>Release 0.4.3:</b> <code>calculate_content</code> hat den Titer aus einer Referenztitration bisher invertiert, das ist jetzt behoben. Veröffentlichen erst auf dein Go.</li>
       </ol></div>
-      <div class="hand"><h3>Claude</h3><ol>
-        <li>Pharmazie-Recherche einarbeiten (läuft) und diese Seite aktualisieren.</li>
-        <li>GitHub-First-Suche nach Übungsgeneratoren mit Rechenweg, bevor die erste Zeile geschrieben wird.</li>
-        <li>Erster Teil, eine Woche: Web-Seite „Gehaltsbestimmung nach Ph. Eur.“ mit frisch erzeugten Aufgaben, Rechenweg zum Aufklappen und einem 10-Sekunden-Test für dich.</li>
-        <li>Plan-Datei <code>plans/produkt.md</code> mit Haken führen.</li>
+      <div class="hand"><h3>Claude, erledigt und offen</h3><ol>
+        <li>Erledigt: GitHub-First-Suche. Ergebnis: Pyodide plus Eigenbau; einen deutschen Rechner mit Ph.-Eur.-Rechenweg gibt es nicht.</li>
+        <li>Erledigt: Prototyp mit 9 Aufgabentypen, E2E im echten Chromium (<code>scripts/rechner-e2e.sh</code>).</li>
+        <li>Offen: veröffentlichen (GitHub Pages braucht dein Go, weil es öffentlich ist), Bezahlweg erst nach dem Nutzertest.</li>
+        <li>Offen: Stufe 2 für Pharmazie: Mechanismen-Übungen für die OC-Eingangsklausur.</li>
       </ol></div>
     </div>
   </section>

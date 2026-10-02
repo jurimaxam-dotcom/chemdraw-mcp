@@ -7,9 +7,14 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 
 - [x] Recherche Markt + Chemie/Medizin (01.10.)
 - [x] Entscheidungsseite v1 (02.10.)
-- [ ] Pharmazie-Recherche einarbeiten, Seite republishen
+- [x] Pharmazie-Recherche einarbeiten, Seite republishen (02.10.)
 - [ ] Jay: Kanal nennen (Fachschaft oder 2–3 Pharmazie-Studis, Sem. 1–4) — Prüfstein B
-- [ ] GitHub-First: Übungsgeneratoren mit Rechenweg (Verdikt)
-- [ ] Erster Teil: Web-Seite „Gehaltsbestimmung Ph. Eur.“, frische Aufgaben + Rechenweg, 10-Sekunden-Test
+- [x] GitHub-First: Pyodide einbinden, Numbas-Muster abkupfern, keine deutsche Konkurrenz gefunden (02.10.)
+- [x] Erster Teil: web/praktikumsrechner, 4 Titrations- + 5 pH-Typen, E2E grün (02.10.)
+- [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
+- [ ] Jay: `git merge opsin-jvm` (Auto-Modus blockt Merge ohne Review)
+- [ ] Release 0.4.3 (Titer-Fix in calculate_content) — Jays Go
+- [ ] Veröffentlichen (GitHub Pages) — Jays Go, öffentlich
+- [ ] Stufe 2 Pharmazie: Mechanismus-Übungen für die OC-Eingangsklausur
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
