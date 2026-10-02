@@ -2210,6 +2210,8 @@ def lookup_molecule_data(name: str) -> DatabasePayload:
     Aggregates PubChem properties and GHS safety into one panel with the
     drawn structure beside them, grouped by source. Use it when the request
     asks for a data sheet, an overview or "all the data" on a substance.
+One call covers the properties and GHS data it lists; do not follow it
+with predict_spectrum or repeat those facts via lookup unless asked.
 
     Not this tool for: a bare compound name with no data asked for — that
     means show the substance, use generate_molecule. Nor for a single fact in
