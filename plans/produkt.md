@@ -26,7 +26,7 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
 - [ ] Jay: `git merge --no-edit opsin-jvm` — Probe-Merge sauber (main schon eingemergt, 6fbf437), Gate dort grün
 - [ ] Release 0.4.3 vorbereitet (e74c7c2: Titer, Daten-Knopf, Bundle-Start + Sperre) — Jay: `gh release create v0.4.3 --generate-notes --title "0.4.3"`
-- [ ] `mcp-2-migration`: GEPARKT — Konflikte mit main, Desktop-Test ausstehend; nicht mergen
+- [ ] `mcp-2-migration`: GEPARKT bis zum Desktop-Test. Auf main 3e056e0 abgeglichen (836324b, Gate grün, Handshake 2,06 s mit mcp 2.2.0). Nach dem OPSIN-Merge erneut mit main abgleichen (CHANGELOG-Konflikt), dann erst mergen
 - [x] Klausurmodus (d772e01) und Offline-Modus per Service Worker (fbd37be)
 - [x] Lösungsrechnen als 5. Bereich (e674c23)
 - [ ] Veröffentlichen für den Nutzertest: `./scripts/deploy-pages.sh` (GitHub Pages, kostenlos, öffentlich) — Jays Go. Ein Artifact geht nicht, weil es keine .zip ausliefert (Pyodide-Stdlib)
