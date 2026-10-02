@@ -16,7 +16,23 @@ ein blankes „Coffein" bei `lookup`. Hier wird daraus ein Testfall.
 `tools.json` und `promptfooconfig.yaml` sind erzeugt und deshalb nicht
 versioniert; sie wären am Tag nach der nächsten Beschreibungsänderung falsch.
 
-## Lauf
+## Lauf ohne API-Schlüssel: über Claude Code
+
+```bash
+uv run python evals/tool-routing/run_claude.py [fall-id …]   # MODEL=sonnet für ein anderes Modell
+```
+
+Fährt dieselben Fälle über `claude -p` mit der Claude-Code-Anmeldung. Das Modell sieht
+alle 20 Tools samt `instructions` des echten Servers, aber `stub_server.py` führt nichts
+aus (kein Schreiben nach `~/ChemDraw-Output`, kein Netz). Hooks und CLAUDE.md des Nutzers
+sind abgeschaltet (`--setting-sources project`) — ohne das diskutiert das Modell den
+Arbeitsordner statt ein Tool zu wählen (gemessen 02.10.: 10/28 statt 24/28). Ein roter
+Fall ist ein Befund über Beschreibungen, nicht automatisch ein Fehler im Fall: ein Prompt
+ohne Strukturen („vier Produkte meiner Suzuki-Kupplung") wird zu Recht mit einer Rückfrage
+beantwortet. Der Lauf ist nicht deterministisch; ein einzelner roter Fall gehört
+wiederholt, bevor man Beschreibungen ändert. Nicht im Gate (Modellaufruf, ~3 min).
+
+## Lauf mit promptfoo
 
 Braucht einen Anthropic-API-Schlüssel in der Umgebung — die Claude-Code-
 Anmeldung reicht **nicht**, promptfoo spricht die API direkt an.
