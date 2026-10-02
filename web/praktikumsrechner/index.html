@@ -45,6 +45,10 @@ select { background: var(--surface); border: 1px solid var(--line); border-radiu
 .btn.ghost { background: none; color: var(--accent); border: 1px solid var(--line) }
 .btn:disabled { opacity: .5; cursor: default }
 .btn:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.choices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex-basis: 100% }
+.choices button { font: 600 16px var(--f-mono); padding: 12px 0; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer }
+.choices button:hover { border-color: var(--accent) }
+.choices button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
 .verdict { border-radius: 4px; padding: 10px 12px; font-size: 15px }
 .verdict.ok { background: var(--ok-soft); color: var(--ok) }
 .verdict.bad { background: var(--bad-soft); color: var(--bad) }
@@ -71,7 +75,7 @@ footer { font-size: 12.5px; color: var(--muted) }
 <div class="wrap">
   <header>
     <h1>Praktikumsrechner</h1>
-    <p>Titration, pH und Puffer. Jede Aufgabe ist neu, jede Lösung wird gerechnet und nicht nachgeschlagen.</p>
+    <p>Titration, pH und Puffer, Reaktionsmechanismen. Jede Aufgabe ist neu, jede Lösung wird gerechnet oder aus festen Lehrbuchregeln abgeleitet.</p>
   </header>
 
   <div class="bar">
@@ -90,6 +94,9 @@ footer { font-size: 12.5px; color: var(--muted) }
         <option value="ph.stark_aufgabe">Starke Säure oder Base</option>
         <option value="ph.puffer_aufgabe">Puffer-pH</option>
         <option value="ph.verhaeltnis_aufgabe">Puffer ansetzen</option>
+      </optgroup>
+      <optgroup label="Organische Chemie">
+        <option value="mechanismus.weg_aufgabe">SN1, SN2, E1 oder E2?</option>
       </optgroup>
     </select>
     <span class="score" id="score">0 von 0 richtig</span>
@@ -113,6 +120,7 @@ const DATEIEN = [
   "chemdraw_tool/aufgaben/basis.py",
   "chemdraw_tool/aufgaben/titration.py",
   "chemdraw_tool/aufgaben/ph.py",
+  "chemdraw_tool/aufgaben/mechanismus.py",
 ];
 const card = document.getElementById("card");
 let py, aufgabe, seed, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
@@ -120,7 +128,7 @@ let py, aufgabe, seed, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
 const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Äquivalenzfaktor", titer: "Faktorbestimmung",
-  saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
+  mechanismus: "Mechanismus", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
 
 async function start() {
   const t0 = performance.now();
@@ -131,7 +139,7 @@ async function start() {
     if (!r.ok) throw new Error(`${pfad}: HTTP ${r.status}`);
     py.FS.writeFile("/home/pyodide/" + pfad, await r.text());
   }));
-  py.runPython("import json\nfrom chemdraw_tool.aufgaben import titration, ph, basis");
+  py.runPython("import json\nfrom chemdraw_tool.aufgaben import titration, ph, mechanismus, basis");
   console.log(`[praktikumsrechner] Rechenkern bereit nach ${Math.round(performance.now() - t0)} ms`);
   neu();
 }
@@ -159,8 +167,8 @@ function render(verdict) {
     <p class="task">${esc(a.text)}</p>
     <form class="answer" id="f" autocomplete="off">
       <label for="antwort">${esc(a.gesucht)}</label>
-      <div class="field"><input id="antwort" inputmode="decimal" placeholder="${{ "%": "z. B. 99,50", "mL": "z. B. 12,40", "mg/mL": "z. B. 12,210", "pH": "z. B. 4,76", ": 1": "z. B. 1,58" }[a.einheit] || (a.typ === "titer" ? "z. B. 1,0123" : "")}"><span>${esc(a.einheit)}</span></div>
-      <button class="btn" type="submit">Prüfen</button>
+      ${a.auswahl ? `<div class="choices">${a.auswahl.map((x) => `<button type="button" data-wahl="${esc(x)}">${esc(x)}</button>`).join("")}</div><input type="hidden" id="antwort">` : `<div class="field"><input id="antwort" inputmode="decimal" placeholder="${{ "%": "z. B. 99,50", "mL": "z. B. 12,40", "mg/mL": "z. B. 12,210", "pH": "z. B. 4,76", ": 1": "z. B. 1,58" }[a.einheit] || (a.typ === "titer" ? "z. B. 1,0123" : "")}"><span>${esc(a.einheit)}</span></div>
+      <button class="btn" type="submit">Prüfen</button>`}
     </form>
     ${verdict || ""}
     <details id="weg"><summary>Rechenweg zeigen</summary>
@@ -172,7 +180,12 @@ function render(verdict) {
           ${s.explanation ? `<div class="st-e">${esc(s.explanation)}</div>` : ""}</li>`).join("")}
       </ol></details>
     <div><button class="btn ghost" type="button" id="next">Neue Aufgabe</button></div>`;
-  document.getElementById("f").addEventListener("submit", (e) => {
+  const form = document.getElementById("f");
+  form.querySelectorAll("[data-wahl]").forEach((btn) => btn.addEventListener("click", () => {
+    document.getElementById("antwort").value = btn.dataset.wahl;
+    form.requestSubmit();
+  }));
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     const x = document.getElementById("antwort").value;
     if (!x.trim()) return;
@@ -180,8 +193,8 @@ function render(verdict) {
     versuche++;
     if (!gewertet && (ok || versuche >= 2)) { gewertet = true; gesamt++; if (ok) richtig++; }
     document.getElementById("score").textContent = `${richtig} von ${gesamt} richtig`;
-    const zahl = de(a.loesung, stellen(a));
-    const loesung = a.einheit === "pH" ? `pH ${zahl}` : a.einheit ? `${zahl} ${a.einheit}` : zahl;
+    const zahl = a.auswahl ? a.loesung : de(a.loesung, stellen(a));
+    const loesung = a.auswahl ? a.loesung : a.einheit === "pH" ? `pH ${zahl}` : a.einheit ? `${zahl} ${a.einheit}` : zahl;
     const v = ok
       ? `<div class="verdict ok">Richtig: ${loesung}.</div>`
       : versuche >= 2

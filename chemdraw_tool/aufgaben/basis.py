@@ -31,8 +31,15 @@ def schritt(label: str, formula: str, substitution: str, result: str, explanatio
     }
 
 
+def _norm(text) -> str:
+    return "".join(str(text).split()).upper()
+
+
 def pruefe(aufgabe: dict, antwort) -> bool:
-    """Antwort mit deutschem oder englischem Dezimaltrenner gegen die Toleranz."""
+    """Auswahlaufgabe: Text vergleichen (Leerzeichen und Groß/klein egal).
+    Rechenaufgabe: Zahl mit deutschem oder englischem Dezimaltrenner gegen die Toleranz."""
+    if aufgabe.get("auswahl"):
+        return _norm(antwort) == _norm(aufgabe["loesung"])
     try:
         wert = float(str(antwort).strip().replace(",", "."))
     except ValueError:

@@ -23,6 +23,7 @@ RECHENKERN = [
     "chemdraw_tool.calculator.fat_values",
     "chemdraw_tool.aufgaben.titration",
     "chemdraw_tool.aufgaben.ph",
+    "chemdraw_tool.aufgaben.mechanismus",
 ]
 VERBOTEN = ["matplotlib", "rdkit", "mcp", "requests"]
 
