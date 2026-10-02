@@ -13,13 +13,20 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [x] Erster Teil: web/praktikumsrechner, 4 Titrations- + 5 pH-Typen, E2E grün (02.10.)
 - [x] Mechanismus-Entscheider (SN1/SN2/E2) + Löslichkeitsprodukt (3 Typen) (02.10.)
 - [x] Chemie-Gutachten: 9 Befunde behoben, je mit Test (c8ff96e)
-- [ ] Zweitgutachten Löslichkeit + Fix-Verifikation (läuft)
+- [x] Zweitgutachten: alle 4 Generatoren „lieferbar“, Befunde behoben (5ede28b)
 - [x] Anschreiben-Entwurf Fachschaft: docs/produkt/anschreiben-fachschaft.md (Jay sendet)
-- [ ] Recht/Steuer/Zahlung für den ersten Euro (Recherche läuft)
+- [x] Recht/Steuer/Zahlung recherchiert: docs/produkt/recht-steuer-zahlung-2026-10.md
+- [x] DSGVO: Schriften + Pyodide selbst gehostet, E2E zählt 0 fremde Hosts (c6077fc)
+- [x] Bundle-Startfix: feste Installation statt uv tool run (adaed6c) — braucht Release
+- [ ] Hosting: Cloudflare Pages statt GitHub Pages (GH verbietet kommerzielle Transaktionen) — Jays Konto/Go
+- [ ] Jay: Gewerbe anmelden, ELSTER-Fragebogen (Kleinunternehmer), Krankenkasse/BAföG informieren
+- [ ] Stripe Managed Payments (MoR) aktivieren — Jays Login; Frage an Stripe: Widerrufsbutton beim MoR?
+- [ ] Worker: Zahlung prüfen → signiertes Token bis Semesterende, Widerrufsfunktion (§ 356a BGB) — Claude, ~1 Tag
+- [ ] Impressum, Datenschutz, Widerrufsbelehrung, 2 Checkboxen (§ 356 Abs. 6 BGB) — Jay entscheidet die Adresse
 - [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
 - [ ] Jay: `git merge opsin-jvm` (Auto-Modus blockt Merge ohne Review)
 - [ ] Release 0.4.3 (Titer-Fix in calculate_content) — Jays Go
-- [ ] Veröffentlichen (GitHub Pages) — Jays Go, öffentlich
+- [ ] Veröffentlichen für den Nutzertest (kostenlos, ohne Bezahlung: GitHub Pages ginge; mit Bezahlung: Cloudflare Pages) — Jays Go
 - [ ] Stufe 2 Pharmazie: Mechanismus-Übungen für die OC-Eingangsklausur
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
