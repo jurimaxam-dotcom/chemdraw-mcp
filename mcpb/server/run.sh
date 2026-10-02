@@ -59,14 +59,43 @@ export UV_TOOL_BIN_DIR="$BASE/bin"
 SERVER="$UV_TOOL_DIR/chemdraw-mcp/bin/chemdraw-mcp"
 RECEIPT="$UV_TOOL_DIR/chemdraw-mcp/uv-receipt.toml"
 
-if [ -x "$SERVER" ] && grep -q "\"==$VERSION\"" "$RECEIPT" 2>/dev/null; then
+installiert() { [ -x "$SERVER" ] && grep -q "\"==$VERSION\"" "$RECEIPT" 2>/dev/null; }
+
+if installiert; then
+  exec "$SERVER"
+fi
+
+# Sperre: Desktop startet zwei Instanzen gleichzeitig (Chat + Cowork/Code). Ohne
+# sie riss die zweite --force-Installation der ersten die Umgebung unter dem
+# laufenden Server weg (02.10.2026). mkdir ist atomar und braucht kein flock.
+mkdir -p "$BASE"
+LOCK="$BASE/.install.lock"
+versuche=0
+while ! mkdir "$LOCK" 2>/dev/null; do
+  # Sperre eines abgestürzten Starts (älter als 10 min) übernehmen.
+  if [ -n "$(find "$LOCK" -maxdepth 0 -mmin +10 2>/dev/null)" ]; then
+    rmdir "$LOCK" 2>/dev/null || true
+    continue
+  fi
+  versuche=$((versuche + 1))
+  if [ "$versuche" -gt 900 ]; then  # 180 s — dann ohne Sperre weiter
+    log "Installationssperre hängt — fahre ohne fort"
+    break
+  fi
+  sleep 0.2
+done
+
+if installiert; then  # ein paralleler Start war schneller
+  rmdir "$LOCK" 2>/dev/null || true
   exec "$SERVER"
 fi
 
 log "installiere chemdraw-mcp $VERSION über $UV (einmalig, danach startet es ohne uv und offline)"
-if "$UV" tool install --force --quiet "chemdraw-mcp==$VERSION" >&2 && [ -x "$SERVER" ]; then
+if "$UV" tool install --force --quiet "chemdraw-mcp==$VERSION" >&2 && installiert; then
+  rmdir "$LOCK" 2>/dev/null || true
   exec "$SERVER"
 fi
+rmdir "$LOCK" 2>/dev/null || true
 
 log "feste Installation fehlgeschlagen — starte über uv tool run"
 exec "$UV" tool run --from "chemdraw-mcp==$VERSION" chemdraw-mcp

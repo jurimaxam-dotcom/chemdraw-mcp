@@ -19,11 +19,15 @@ STUB = r"""#!/bin/sh
 echo "$*" >> "$STUB_LOG"
 if [ "$1 $2" = "tool install" ]; then
   [ -n "$STUB_FAIL_INSTALL" ] && exit 1
+  echo "install-start" >> "$STUB_LOG"
+  rm -rf "$UV_TOOL_DIR/chemdraw-mcp"   # wie --force: alte Umgebung weg
+  sleep "${STUB_INSTALL_SLEEP:-0}"
   spec=""; for a in "$@"; do case "$a" in chemdraw-mcp==*) spec="${a#chemdraw-mcp}";; esac; done
   mkdir -p "$UV_TOOL_DIR/chemdraw-mcp/bin"
   printf '[tool]\nrequirements = [{ name = "chemdraw-mcp", specifier = "%s" }]\n' "$spec" > "$UV_TOOL_DIR/chemdraw-mcp/uv-receipt.toml"
   printf '#!/bin/sh\necho "SERVER %s"\n' "$spec" > "$UV_TOOL_DIR/chemdraw-mcp/bin/chemdraw-mcp"
   chmod +x "$UV_TOOL_DIR/chemdraw-mcp/bin/chemdraw-mcp"
+  echo "install-end" >> "$STUB_LOG"
   exit 0
 fi
 if [ "$1 $2" = "tool run" ]; then echo "SERVER via tool run"; exit 0; fi
@@ -83,3 +87,25 @@ def test_eigenes_tool_verzeichnis_statt_globalem(tmp_path):
 def test_scheitert_die_installation_bleibt_tool_run(tmp_path):
     out, calls = _start(tmp_path, "9.9.1", fail_install=True)
     assert out == "SERVER via tool run"
+
+
+def test_parallele_kaltstarts_installieren_nur_einmal(tmp_path):
+    """Desktop startet zwei Instanzen gleichzeitig (Chat + Cowork/Code). Ohne
+    Sperre riss die zweite --force-Installation der ersten die Umgebung unter
+    dem laufenden Server weg (gemessen 02.10.: 'python: realpath … No such file')."""
+    stub = tmp_path / "uv"
+    stub.write_text(STUB)
+    stub.chmod(stub.stat().st_mode | stat.S_IEXEC)
+    log = tmp_path / "calls.log"
+    env = {
+        "PATH": "/usr/bin:/bin", "HOME": str(tmp_path / "home"), "CHEMDRAW_MCP_UV": str(stub),
+        "CHEMDRAW_MCP_VERSION": "9.9.1", "STUB_LOG": str(log), "STUB_INSTALL_SLEEP": "1",
+    }
+    procs = [
+        subprocess.Popen(["/bin/sh", str(RUN_SH)], env=env, stdout=subprocess.PIPE, text=True)
+        for _ in range(3)
+    ]
+    outs = [p.communicate(timeout=60)[0].strip() for p in procs]
+    assert outs == ["SERVER ==9.9.1"] * 3
+    marken = [z for z in log.read_text().splitlines() if z.startswith("install-")]
+    assert marken == ["install-start", "install-end"], f"Installationen überlappen: {marken}"
