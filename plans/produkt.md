@@ -11,6 +11,11 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Jay: Kanal nennen (Fachschaft oder 2–3 Pharmazie-Studis, Sem. 1–4) — Prüfstein B
 - [x] GitHub-First: Pyodide einbinden, Numbas-Muster abkupfern, keine deutsche Konkurrenz gefunden (02.10.)
 - [x] Erster Teil: web/praktikumsrechner, 4 Titrations- + 5 pH-Typen, E2E grün (02.10.)
+- [x] Mechanismus-Entscheider (SN1/SN2/E2) + Löslichkeitsprodukt (3 Typen) (02.10.)
+- [x] Chemie-Gutachten: 9 Befunde behoben, je mit Test (c8ff96e)
+- [ ] Zweitgutachten Löslichkeit + Fix-Verifikation (läuft)
+- [x] Anschreiben-Entwurf Fachschaft: docs/produkt/anschreiben-fachschaft.md (Jay sendet)
+- [ ] Recht/Steuer/Zahlung für den ersten Euro (Recherche läuft)
 - [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
 - [ ] Jay: `git merge opsin-jvm` (Auto-Modus blockt Merge ohne Review)
 - [ ] Release 0.4.3 (Titer-Fix in calculate_content) — Jays Go
