@@ -49,7 +49,13 @@ const [mant, ex] = l.toExponential(3).split("e");
 await p.fill("#antwort", `${mant.replace(".", ",")} · 10^${Number(ex)}`);
 await p.click("button[type=submit]");
 const loeslOk = (await p.textContent(".verdict")).startsWith("Richtig");
+// Lösungsrechnen: Verdünnung richtig lösen
+await p.selectOption("#typ", "loesungen.verduennung_aufgabe"); await p.waitForSelector(".task");
+const v1 = await p.evaluate(() => aufgabe.loesung);
+await p.fill("#antwort", v1.toFixed(2).replace(".", ","));
+await p.click("button[type=submit]");
+const loesOk = (await p.textContent(".verdict")).startsWith("Richtig");
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus und Löslichkeit (10^-Schreibweise) richtig erkannt, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise) und Verdünnung richtig erkannt, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
 JS
