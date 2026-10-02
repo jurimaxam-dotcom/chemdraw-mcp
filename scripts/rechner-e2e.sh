@@ -64,7 +64,24 @@ for (let i = 0; i < 10; i++) {
 }
 await p.waitForSelector("#ergebnis");
 const klausurOk = (await p.textContent("#ergebnis")).startsWith("10 von 10");
+// Offline: Service Worker abwarten, Netz kappen, neu laden, eine Aufgabe lösen
+const swBereit = await p.evaluate(() => Promise.race([
+  navigator.serviceWorker.ready.then(() => true),
+  new Promise((ok) => setTimeout(() => ok(false), 20000)),
+]));
+if (!swBereit) { console.error("❌ Service Worker nach 20 s nicht aktiv"); await b.close(); process.exit(1); }
+await p.reload(); await p.waitForSelector(".task");  // jetzt kontrolliert der SW die Seite
+const ctx = p.context();
+await ctx.setOffline(true);
+await p.reload(); await p.waitForSelector(".task", { timeout: 60000 });
+const offLoesung = await p.evaluate(() => aufgabe.auswahl ? null : aufgabe.loesung);
+let offlineOk = false;
+if (offLoesung === null) { offlineOk = true; } else {
+  await p.fill("#antwort", String(offLoesung).replace(".", ",")); await p.click("button[type=submit]");
+  offlineOk = (await p.textContent(".verdict")).startsWith("Richtig");
+}
+await ctx.setOffline(false);
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || !klausurOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, klausurOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise) und Verdünnung richtig erkannt, Klausur 10 von 10, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || !klausurOk || !offlineOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, klausurOk, offlineOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise) und Verdünnung richtig erkannt, Klausur 10 von 10, offline nach Neuladen lauffähig, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
 JS

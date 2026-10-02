@@ -34,4 +34,14 @@ for spec in ibm-plex-sans:400 ibm-plex-sans:500 ibm-plex-sans:600 ibm-plex-mono:
   cp "$CACHE/$file" "$OUT/vendor/fonts/$file"
 done
 
-echo "web/dist gebaut: $(du -sh "$OUT" | cut -f1), $(find "$OUT" -type f | wc -l | tr -d ' ') Dateien"
+# 4. Offline (PWA): Unnötiges aus dem Pyodide-Paket raus, dann Service Worker
+#    mit der vollständigen Dateiliste und einer Build-Kennung (neuer Build =
+#    neuer Cache).
+rm -f "$OUT/vendor/pyodide/python" "$OUT/vendor/pyodide/python.bat" "$OUT/vendor/pyodide/python.exe" \
+      "$OUT/vendor/pyodide/python_cli_entry.mjs" "$OUT"/vendor/pyodide/*.d.ts "$OUT/vendor/pyodide/package.json"
+cp "$ROOT/web/praktikumsrechner/manifest.webmanifest" "$ROOT/web/praktikumsrechner/icon.svg" "$OUT/"
+BUILD="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo dev)-$(date +%Y%m%d%H%M%S)"
+DATEIEN="$(cd "$OUT" && find . -type f ! -name sw.js | sed 's|^\./||' | sort | sed 's/.*/"&"/' | paste -sd, -)"
+sed -e "s|@@BUILD@@|$BUILD|" -e "s|\"@@DATEIEN@@\"|$DATEIEN|" "$ROOT/web/praktikumsrechner/sw.js" > "$OUT/sw.js"
+
+echo "web/dist gebaut: $(du -sh "$OUT" | cut -f1), $(find "$OUT" -type f | wc -l | tr -d ' ') Dateien, Build $BUILD"

@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Praktikumsrechner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1f6f5c">
 <style>
 /* Schriften vom eigenen Host (DSGVO, scripts/build-web.sh). Fehlen die Dateien
    (Entwicklung im Repo), greift der Fallback-Stack. */
@@ -364,6 +367,10 @@ function renderAuswertung() {
 
 document.getElementById("typ").addEventListener("change", () => py && neu());
 document.getElementById("klausur").addEventListener("click", () => py && starteKlausur());
+// Offline nach dem ersten Besuch (nur ausgeliefert, nicht bei der Entwicklung im Repo).
+if ("serviceWorker" in navigator && !IM_REPO) {
+  navigator.serviceWorker.register("sw.js").catch((e) => console.warn("[praktikumsrechner] kein Offline-Modus:", e));
+}
 start().catch((e) => {
   console.error("[praktikumsrechner]", e);
   card.innerHTML = `<p class="verdict bad">Der Rechenkern konnte nicht laden: ${esc(e.message)}. Seite neu laden.</p>`;
