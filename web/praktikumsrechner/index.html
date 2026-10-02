@@ -84,7 +84,7 @@ footer { font-size: 12.5px; color: var(--muted) }
         <option value="titration.neue_aufgabe">Titration, gemischt</option>
         <option value="titration.gehalt_aufgabe">Gehalt aus Verbrauch</option>
         <option value="titration.sollverbrauch_aufgabe">Sollverbrauch</option>
-        <option value="titration.faktor_aufgabe">Äquivalenzfaktor</option>
+        <option value="titration.faktor_aufgabe">Titrationsäquivalent</option>
         <option value="titration.titer_aufgabe">Faktorbestimmung (Urtiter)</option>
       </optgroup>
       <optgroup label="pH und Puffer">
@@ -112,7 +112,7 @@ footer { font-size: 12.5px; color: var(--muted) }
     <p class="loading" id="loading">Rechenkern lädt (Python im Browser, beim ersten Mal einige Sekunden) …</p>
   </main>
 
-  <footer>Faktoren aus F = M · c / z, auf 4 geltende Ziffern gerundet. pH-Aufgaben nur, wo die Näherungsformel höchstens 0,05 von der exakten Rechnung abweicht. Rechenkern: chemdraw-mcp (Apache-2.0).</footer>
+  <footer>Titrationsäquivalente aus Ä = M · c / z, auf 4 geltende Ziffern gerundet (kann in der letzten Stelle von der Monographie abweichen). pH-Aufgaben nur, wo die Näherungsformel höchstens 0,05 von der exakten Rechnung abweicht. Rechenkern: chemdraw-mcp (Apache-2.0).</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
@@ -134,7 +134,7 @@ let py, aufgabe, seed, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
 
 const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Äquivalenzfaktor", titer: "Faktorbestimmung",
+const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Titrationsäquivalent", titer: "Faktorbestimmung",
   mechanismus: "Mechanismus", loeslichkeit: "Löslichkeit", kl: "Löslichkeitsprodukt", zusatz: "Gleichioniger Zusatz", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
 
 async function start() {

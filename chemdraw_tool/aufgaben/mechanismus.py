@@ -23,52 +23,53 @@ SUBSTRATE = {
     "tertiaer": ("tertiär", ("2-Brom-2-methylpropan", "2-Chlor-2-methylpropan", "2-Brom-2-methylbutan")),
 }
 
-# Reagenzklasse → (Beschreibung, [(Reagenz, Lösungsmittel, Bedingung)])
+# Reagenzklasse → (Beschreibung, [(Reagenz, Lösungsmittel, Bedingung, erlaubte Substratklassen)])
+# Die Klassenliste schneidet die Kombinationen weg, die nicht eindeutig sind
+# (Chemie-Gutachten 02.10.2026): OH⁻ in wässrigem Ethanol an sek./tert. C ist das
+# klassische SN1-Medium bzw. ~1:1 SN2/E2; DBU eliminiert primäre Halogenide kaum.
+ALLE = ("methyl", "primaer", "sekundaer", "tertiaer")
 REAGENZIEN = {
     "nuc": (
         "starkes Nucleophil, schwache Base",
-        (("Natriumiodid", "Aceton", "Raumtemperatur"),
-         ("Natriumazid", "DMSO", "Raumtemperatur"),
-         ("Natriummethanthiolat", "DMF", "Raumtemperatur")),
+        (("Natriumiodid", "Aceton", "Raumtemperatur", ALLE),
+         ("Natriumazid", "DMSO", "Raumtemperatur", ALLE),
+         ("Natriummethanthiolat", "DMF", "Raumtemperatur", ALLE)),
     ),
     "base": (
         "starke Base, zugleich starkes Nucleophil",
-        (("Natriumethanolat", "Ethanol", "Raumtemperatur"),
-         ("Natriummethanolat", "Methanol", "Raumtemperatur"),
-         ("Natriumhydroxid", "Ethanol/Wasser", "Raumtemperatur")),
+        (("Natriumethanolat", "Ethanol", "Raumtemperatur", ALLE),
+         ("Natriummethanolat", "Methanol", "Raumtemperatur", ALLE),
+         ("Natriumhydroxid", "Ethanol/Wasser", "Raumtemperatur", ("methyl", "primaer"))),
     ),
     "sperrig": (
         "starke, sperrige Base",
-        (("Kalium-tert-butanolat", "tert-Butanol", "Raumtemperatur"),
-         ("DBU", "THF", "Raumtemperatur")),
+        (("Kalium-tert-butanolat", "tert-Butanol", "Raumtemperatur", ALLE),
+         ("DBU", "THF", "Raumtemperatur", ("sekundaer", "tertiaer"))),
     ),
-    "solvolyse_kalt": (
+    "solvolyse": (
         "schwaches Nucleophil, schwache Base (Solvolyse)",
-        (("Wasser", "Wasser/Aceton", "Raumtemperatur"),
-         ("Ethanol", "Ethanol", "Raumtemperatur")),
-    ),
-    "solvolyse_warm": (
-        "schwaches Nucleophil, schwache Base (Solvolyse)",
-        (("Ethanol", "Ethanol", "Erwärmen unter Rückfluss"),
-         ("Wasser", "Wasser", "Erwärmen")),
+        (("Wasser", "Wasser/Aceton", "Raumtemperatur", ALLE),
+         ("Ethanol", "Ethanol", "Raumtemperatur", ALLE)),
     ),
 }
 
-# Die eindeutigen Fälle und ihre Antwort, mit Begründung.
+# Die eindeutigen Fälle und ihre Antwort. {mittel} wird durch das Reagenz ersetzt,
+# damit die Begründung nie ein anderes Reagenz nennt als die Aufgabe.
+# Bewusst NICHT dabei: tertiär + Solvolyse + Wärme (SN1 und E1 konkurrieren,
+# Hughes/Ingold) und sekundär + Solvolyse.
 FAELLE = {
     ("methyl", "nuc"): ("SN2", "Methylgruppen bilden kein Carbokation und haben kein β-H — nur SN2 ist möglich."),
-    ("methyl", "base"): ("SN2", "Ohne β-Wasserstoff gibt es keine Eliminierung; das Alkoholat greift als Nucleophil an."),
-    ("methyl", "sperrig"): ("SN2", "Kein β-H, also keine E2. Das sperrige Alkoholat substituiert, wenn auch langsam."),
-    ("primaer", "nuc"): ("SN2", "Primäres C ist kaum abgeschirmt, das gute Nucleophil greift rückseitig an."),
+    ("methyl", "base"): ("SN2", "Ohne β-Wasserstoff gibt es keine Eliminierung; {mittel} greift als Nucleophil an."),
+    ("methyl", "sperrig"): ("SN2", "Kein β-H, also keine E2. {mittel} substituiert, wenn auch langsam."),
+    ("primaer", "nuc"): ("SN2", "Primäres C ist kaum abgeschirmt, das gute Nucleophil greift von der Rückseite an."),
     ("primaer", "base"): ("SN2", "Am primären C gewinnt die Substitution; E2 ist nur Nebenreaktion."),
-    ("primaer", "sperrig"): ("E2", "Die sperrige Base kommt nicht an das C heran und zieht stattdessen ein β-H ab."),
-    ("sekundaer", "nuc"): ("SN2", "Gutes Nucleophil, kaum basisch, im polar aprotischen Lösungsmittel: SN2 mit Inversion."),
+    ("primaer", "sperrig"): ("E2", "{mittel} ist zu sperrig für den Rückseitenangriff und zieht stattdessen ein β-H ab."),
+    ("sekundaer", "nuc"): ("SN2", "Gutes Nucleophil, kaum basisch, im polar aprotischen Lösungsmittel: SN2 (Rückseitenangriff)."),
     ("sekundaer", "base"): ("E2", "Am sekundären C ist die starke Base im Vorteil: E2 überwiegt."),
     ("sekundaer", "sperrig"): ("E2", "Sperrige starke Base am sekundären C: E2."),
     ("tertiaer", "base"): ("E2", "Tertiäres C ist für SN2 blockiert; die starke Base eliminiert."),
     ("tertiaer", "sperrig"): ("E2", "Tertiär plus sperrige Base: E2."),
-    ("tertiaer", "solvolyse_kalt"): ("SN1", "Stabiles tertiäres Carbokation, schwaches Nucleophil, kalt: SN1."),
-    ("tertiaer", "solvolyse_warm"): ("E1", "Gleiches Carbokation, aber Wärme begünstigt die Eliminierung (Entropie): E1."),
+    ("tertiaer", "solvolyse"): ("SN1", "Stabiles tertiäres Carbokation, schwaches Nucleophil, Raumtemperatur: SN1 (E1 nur als Nebenreaktion)."),
 }
 
 # Substrate, die nur EIN Alken bilden können — dort gibt es keine Regioselektivität.
@@ -81,7 +82,11 @@ def _regio(weg: str, mittel: str, substrat: str) -> str:
     if mittel == "DBU":
         return ""  # DBU liefert je nach Substrat oft Saytzeff — keine Pauschalaussage
     if mittel == "Kalium-tert-butanolat":
-        return " Regioselektivität: Die sperrige Base holt das zugänglichste β-H — bevorzugt das Hofmann-Produkt (weniger substituiertes Alken)."
+        if substrat == "2-Brom-2-methylbutan":
+            return (" Regioselektivität: Die sperrige Base holt das zugänglichste β-H — bevorzugt "
+                    "das Hofmann-Produkt 2-Methylbut-1-en (rund 70 %).")
+        return (" Regioselektivität: Mit der sperrigen Base steigt der Anteil des weniger substituierten "
+                "Alkens deutlich (Hofmann-Tendenz); bei 2-Brombutan ist das Verhältnis aber knapp, etwa 1 : 1.")
     return " Regioselektivität: Saytzeff — bevorzugt das höher substituierte, stabilere Alken."
 
 
@@ -100,13 +105,21 @@ def weg_aufgabe(seed: int) -> dict:
     substrat = rng.choice(substrate)
     # Iodid an einem Iodalkan tauscht Iod gegen Iod — das ist keine Reaktion.
     varianten = [v for v in varianten if not ("Iod" in substrat and v[0] == "Natriumiodid")]
-    mittel, lm, bedingung = rng.choice(varianten)
+    varianten = [v for v in varianten if klasse in v[3]]
+    mittel, lm, bedingung, _ = rng.choice(varianten)
     weg, warum = FAELLE[(klasse, reagenz)]
+    warum = warum.format(mittel=mittel)
 
-    text = (
-        f"{substrat} reagiert mit {mittel} in {lm} ({bedingung}). "
-        f"Über welchen Mechanismus läuft die Hauptreaktion?"
-    )
+    if reagenz == "solvolyse":
+        text = (
+            f"{substrat} wird in {lm} gelöst und bei {bedingung} stehen gelassen (Solvolyse). "
+            f"Über welchen Mechanismus läuft die Hauptreaktion?"
+        )
+    else:
+        text = (
+            f"{substrat} reagiert mit {mittel} in {lm} ({bedingung}). "
+            f"Über welchen Mechanismus läuft die Hauptreaktion?"
+        )
     rechenweg = [
         schritt("Substrat", "Wie substituiert ist das C mit der Abgangsgruppe?", substrat,
                 f"{klasse_text}", "Methyl/primär: SN2 möglich. Tertiär: SN2 blockiert, Carbokation stabil."),

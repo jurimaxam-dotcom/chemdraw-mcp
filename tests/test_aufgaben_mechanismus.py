@@ -21,8 +21,7 @@ ERWARTET = {
     ("sekundaer", "sperrig"): "E2",
     ("tertiaer", "base"): "E2",
     ("tertiaer", "sperrig"): "E2",
-    ("tertiaer", "solvolyse_kalt"): "SN1",
-    ("tertiaer", "solvolyse_warm"): "E1",
+    ("tertiaer", "solvolyse"): "SN1",
 }
 
 
@@ -91,3 +90,42 @@ def test_kein_iodid_an_iodalkan():
     for s in range(600):
         w = m.weg_aufgabe(s)["werte"]
         assert not ("Iod" in w["substrat"] and w["reagenz_name"] == "Natriumiodid"), s
+
+
+# --- Chemie-Gutachten 02.10.2026 --------------------------------------------
+
+
+def test_kein_e1_als_eindeutige_antwort():
+    """Tertiär + Solvolyse + Wärme: SN1 und E1 konkurrieren (Hughes/Ingold)."""
+    assert all(m.weg_aufgabe(s)["loesung"] != "E1" for s in range(600))
+
+
+def test_begruendung_nennt_kein_falsches_reagenz():
+    for s in range(600):
+        a = m.weg_aufgabe(s)
+        text = " ".join(x["explanation"] for x in a["rechenweg"])
+        if "Alkoholat" in text or "Alkoxid" in text:
+            assert a["werte"]["reagenz_name"].endswith(("olat", "anolat")), (s, a["werte"]["reagenz_name"])
+        assert "Inversion" not in text, "bei achiralen Substraten nicht beobachtbar"
+
+
+def test_natronlauge_nur_bei_methyl_und_primaer():
+    for s in range(600):
+        w = m.weg_aufgabe(s)["werte"]
+        if w["reagenz_name"] == "Natriumhydroxid":
+            assert w["klasse"] in ("methyl", "primaer"), s
+
+
+def test_dbu_nur_bei_sekundaer_und_tertiaer():
+    for s in range(600):
+        w = m.weg_aufgabe(s)["werte"]
+        if w["reagenz_name"] == "DBU":
+            assert w["klasse"] in ("sekundaer", "tertiaer"), s
+
+
+def test_2_brombutan_mit_kotbu_kein_bevorzugtes_hofmann():
+    """1-Buten : 2-Buten nur ~53 : 47 — 'bevorzugt' ist zu stark."""
+    for s in range(800):
+        a = m.weg_aufgabe(s)
+        if a["werte"]["substrat"] == "2-Brombutan" and a["werte"]["reagenz_name"] == "Kalium-tert-butanolat":
+            assert "bevorzugt das Hofmann" not in " ".join(x["explanation"] for x in a["rechenweg"])

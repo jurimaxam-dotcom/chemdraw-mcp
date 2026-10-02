@@ -51,10 +51,10 @@ STOFFE: tuple[Stoff, ...] = (
     Stoff("Salicylsäure", "C7H6O3", 138.12, "Natriumhydroxid-Lösung", 0.1, 1, "Alkalimetrie"),
     Stoff("Citronensäure", "C6H8O7", 192.12, "Natriumhydroxid-Lösung", 1.0, 3, "Alkalimetrie"),
     Stoff("Natriumhydrogencarbonat", "NaHCO3", 84.01, "Salzsäure", 1.0, 1, "Acidimetrie"),
-    Stoff("Ascorbinsäure", "C6H8O6", 176.12, "Iod-Lösung", 0.05, 1, "Iodometrie"),
-    Stoff("Paracetamol", "C8H9NO2", 151.16, "Cer(IV)-sulfat-Lösung", 0.1, 2, "Cerimetrie"),
+    Stoff("Ascorbinsäure", "C6H8O6", 176.12, "Iod-Lösung", 0.05, 1, "Iodimetrie"),
+    Stoff("Paracetamol", "C8H9NO2", 151.16, "Cer(IV)-sulfat-Lösung", 0.1, 2,
+          "Cerimetrie nach saurer Hydrolyse zu 4-Aminophenol"),
     Stoff("Natriumchlorid", "NaCl", 58.44, "Silbernitrat-Lösung", 0.1, 1, "Argentometrie"),
-    Stoff("Kaliumbromid", "KBr", 119.00, "Silbernitrat-Lösung", 0.1, 1, "Argentometrie"),
     Stoff("Calciumgluconat", "C12H22CaO14.H2O", 448.39, "Natriumedetat-Lösung", 0.1, 1, "Komplexometrie"),
     Stoff("Lidocain", "C14H22N2O", 234.34, "Perchlorsäure", 0.1, 1, "Titration in wasserfreiem Medium"),
 )
@@ -72,12 +72,13 @@ def _c_text(c: float) -> str:
 
 def _faktor_schritt(s: Stoff) -> dict:
     return _schritt(
-        "Äquivalenzfaktor",
-        "F = M · c / z",
-        f"F = {_de(s.molmasse, 2)} g/mol · {_c_text(s.c)} mol/L / {s.z}",
-        f"F = {_f_text(s.faktor)} mg/mL",
-        f"1 mL {_c_text(s.c)} M {s.massloesung} entspricht F mg {s.name}; "
-        f"z = {s.z} mol Maßlösung je mol {s.name} ({s.methode}).",
+        "Titrationsäquivalent",
+        "Ä = M · c / z",
+        f"Ä = {_de(s.molmasse, 2)} g/mol · {_c_text(s.c)} mol/L / {s.z}",
+        f"Ä = {_f_text(s.faktor)} mg/mL",
+        f"1 mL {_c_text(s.c)} M {s.massloesung} entspricht Ä mg {s.name}; "
+        f"z = {s.z} mol Maßlösung je mol {s.name} ({s.methode}). "
+        f"Nicht verwechseln mit dem Äquivalenzfaktor 1/z (dimensionslos, DIN 32625).",
     )
 
 
@@ -104,7 +105,7 @@ def gehalt_aufgabe(seed: int) -> dict:
     text = (
         f"Gehaltsbestimmung von {s.name} ({s.methode}): Einwaage {_de(m_mg, 1)} mg, "
         f"Verbrauch {_de(v_ml, 2)} mL {_c_text(s.c)} M {s.massloesung} "
-        f"(Titer {_de(titer, 4)}).{blind_satz} "
+        f"(Faktor f = {_de(titer, 4)}).{blind_satz} "
         f"1 mL {_c_text(s.c)} M {s.massloesung} entspricht {_f_text(s.faktor)} mg "
         f"{s.name}. Berechne den Gehalt in Prozent."
     )
@@ -112,14 +113,14 @@ def gehalt_aufgabe(seed: int) -> dict:
         _faktor_schritt(s),
         _schritt(
             "Korrigierter Verbrauch",
-            "V_korr = (V − V_blind) · T",
+            "V_korr = (V − V_blind) · f",
             f"V_korr = ({_de(v_ml, 2)} − {_de(v_blind, 2)}) mL · {_de(titer, 4)}",
             f"V_korr = {_de((v_ml - v_blind) * titer, 4)} mL",
-            "Der Titer rechnet die Ablesung auf eine Maßlösung exakt der Nennkonzentration um.",
+            "Der Faktor f rechnet die Ablesung auf eine Maßlösung exakt der Nennkonzentration um.",
         ),
         _schritt(
             "Gehalt",
-            "w = F · V_korr / m · 100 %",
+            "w = Ä · V_korr / m · 100 %",
             f"w = {_f_text(s.faktor)} mg/mL · {_de((v_ml - v_blind) * titer, 4)} mL / {_de(m_mg, 1)} mg · 100 %",
             f"w = {_de(gehalt, 2)} %",
         ),
@@ -149,17 +150,17 @@ def sollverbrauch_aufgabe(seed: int) -> dict:
             break
     text = (
         f"Du wägst {_de(m_mg, 1)} mg {s.name} ein und titrierst mit {_c_text(s.c)} M "
-        f"{s.massloesung} (Titer {_de(titer, 4)}; {s.methode}). Wie viel mL erwartest du "
+        f"{s.massloesung} (Faktor f = {_de(titer, 4)}; {s.methode}). Wie viel mL erwartest du "
         f"bei einem Gehalt von 100,0 %?"
     )
     rechenweg = [
         _faktor_schritt(s),
         _schritt(
             "Sollverbrauch",
-            "V_soll = m / (F · T)",
+            "V_soll = m / (Ä · f)",
             f"V_soll = {_de(m_mg, 1)} mg / ({_f_text(s.faktor)} mg/mL · {_de(titer, 4)})",
             f"V_soll = {_de(v_soll, 2)} mL",
-            "Aus w = F · T · V / m · 100 % mit w = 100 % nach V umgestellt.",
+            "Aus w = Ä · f · V / m · 100 % mit w = 100 % nach V umgestellt.",
         ),
     ]
     return {
@@ -176,7 +177,7 @@ def sollverbrauch_aufgabe(seed: int) -> dict:
 
 
 def faktor_aufgabe(seed: int) -> dict:
-    """Äquivalenzfaktor aus Molmasse, Konzentration und Stöchiometrie."""
+    """Titrationsäquivalent (mg je mL) aus Molmasse, Konzentration und Stöchiometrie."""
     rng = random.Random(f"faktor-{seed}")
     s = rng.choice(STOFFE)
     f_exakt = s.molmasse * s.c / s.z
@@ -189,7 +190,7 @@ def faktor_aufgabe(seed: int) -> dict:
         "typ": "faktor",
         "stoff": s.name,
         "text": _nbsp(text),
-        "gesucht": "Äquivalenzfaktor",
+        "gesucht": "Titrationsäquivalent",
         "einheit": "mg/mL",
         "loesung": f_exakt,
         "toleranz": max(0.006, f_exakt * 0.0005),
@@ -223,11 +224,11 @@ def titer_aufgabe(seed: int) -> dict:
     u = rng.choice(URTITER)
     for _ in range(MAX_VERSUCHE):
         f_wahr = rng.uniform(0.97, 1.03)
-        v_ziel = rng.uniform(8.0, 20.0)
+        v_ziel = rng.uniform(8.0, 24.0)
         m_mg = round(v_ziel * u.c * f_wahr * u.molmasse / u.z, 1)
         v_ml = round(round(v_ziel / 0.05) * 0.05, 2)
         titer = u.z * m_mg / (u.molmasse * u.c * v_ml)
-        if 5.0 <= v_ml <= 25.0 and 0.95 <= titer <= 1.05:
+        if 5.0 <= v_ml <= 25.0 and 0.95 <= titer <= 1.05 and m_mg >= 100.0:
             break
     n_u = m_mg / u.molmasse
     n_soll = u.c * v_ml
@@ -276,5 +277,5 @@ _BAUER = (gehalt_aufgabe, sollverbrauch_aufgabe, faktor_aufgabe, titer_aufgabe)
 
 
 def neue_aufgabe(seed: int) -> dict:
-    """Mischt die drei Typen; gleicher Seed, gleiche Aufgabe."""
+    """Mischt die vier Typen; gleicher Seed, gleiche Aufgabe."""
     return random.Random(f"typ-{seed}").choice(_BAUER)(seed)

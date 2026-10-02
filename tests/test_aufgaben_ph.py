@@ -77,3 +77,19 @@ def test_neue_ph_aufgabe_mischt_alle_typen():
 def test_pruefe_akzeptiert_komma():
     a = ph.puffer_aufgabe(1)
     assert ph.pruefe(a, f"{a['loesung']:.2f}".replace(".", ","))
+
+
+# --- Chemie-Gutachten 02.10.2026 --------------------------------------------
+
+
+@pytest.mark.parametrize("seed", range(300))
+def test_benzoesaeure_nur_unter_ihrer_loeslichkeit(seed):
+    a = ph.saeure_aufgabe(seed)
+    if a["stoff"] == "Benzoesäure":
+        assert a["werte"]["c"] <= 0.02, "Benzoesäure löst sich nur zu ~0,025 mol/L"
+
+
+def test_salzloesungen_nennen_das_teilchen_im_pk():
+    texte = [ph.neue_aufgabe(s)["text"] for s in range(300)]
+    assert any("pKs(NH₄⁺)" in x for x in texte)
+    assert not any("(NH₄⁺)-Lösung" in x or "(CH₃COO⁻)-Lösung" in x for x in texte)

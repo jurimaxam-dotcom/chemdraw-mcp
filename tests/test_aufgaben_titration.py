@@ -122,3 +122,32 @@ def test_titeraufgabe_stimmt_mit_calculate_titer(seed):
 
 def test_neue_aufgabe_kennt_auch_die_titerbestimmung():
     assert "titer" in {t.neue_aufgabe(s)["typ"] for s in range(120)}
+
+
+# --- Chemie-Gutachten 02.10.2026 --------------------------------------------
+
+
+def test_ascorbinsaeure_heisst_iodimetrie():
+    assert next(s for s in t.STOFFE if s.name == "Ascorbinsäure").methode == "Iodimetrie"
+
+
+def test_kein_aequivalenzfaktor_in_mg_pro_ml():
+    """DIN 32625: Äquivalenzfaktor = 1/z, dimensionslos. Die mg/mL-Größe ist das Titrationsäquivalent."""
+    for s in range(120):
+        a = t.neue_aufgabe(s)
+        texte = [a["text"], a["gesucht"]] + [x["label"] for x in a["rechenweg"]]
+        assert not any("Äquivalenzfaktor" in x for x in texte), a["text"]
+
+
+def test_paracetamol_nennt_die_hydrolyse():
+    a = next(t.gehalt_aufgabe(s) for s in range(400) if t.gehalt_aufgabe(s)["stoff"] == "Paracetamol")
+    assert "Hydrolyse" in a["text"]
+
+
+def test_kaliumbromid_raus_weil_ph_eur_volhard_ruecktitriert():
+    assert "Kaliumbromid" not in {s.name for s in t.STOFFE}
+
+
+@pytest.mark.parametrize("seed", range(200))
+def test_urtiter_einwaage_praxisnah(seed):
+    assert t.titer_aufgabe(seed)["werte"]["m_mg"] >= 100.0

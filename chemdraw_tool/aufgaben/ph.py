@@ -22,20 +22,20 @@ PKW = 14.0
 MAX_VERSUCHE = 200
 GRENZE = 0.05  # erlaubte Abweichung Näherung ↔ exakt
 
-# (Name, pKs)
+# (Name, pKs, Teilchen im pK — "" wenn der Stoff selbst die Säure ist, höchste Konzentration in mol/L)
 SAEUREN = (
-    ("Essigsäure", 4.76),
-    ("Ameisensäure", 3.75),
-    ("Benzoesäure", 4.20),
-    ("Milchsäure", 3.86),
-    ("Ammoniumchlorid (NH₄⁺)", 9.25),
+    ("Essigsäure", 4.76, "", 1.0),
+    ("Ameisensäure", 3.75, "", 1.0),
+    ("Benzoesäure", 4.20, "", 0.02),  # löst sich nur zu ~0,025 mol/L (≈ 3 g/L)
+    ("Milchsäure", 3.86, "", 1.0),
+    ("Ammoniumchlorid", 9.25, "NH₄⁺", 1.0),
 )
-# (Name, pKb)
+# (Name, pKb, Teilchen im pK, höchste Konzentration)
 BASEN = (
-    ("Ammoniak", 4.75),
-    ("Methylamin", 3.36),
-    ("Natriumacetat (CH₃COO⁻)", 9.24),
-    ("Natriumbenzoat", 9.80),
+    ("Ammoniak", 4.75, "", 1.0),
+    ("Methylamin", 3.36, "", 1.0),
+    ("Natriumacetat", 9.24, "CH₃COO⁻", 1.0),
+    ("Natriumbenzoat", 9.80, "C₆H₅COO⁻", 1.0),
 )
 STARK = (
     ("Salzsäure", True),
@@ -64,12 +64,13 @@ def _ph(x: float) -> str:
 def saeure_aufgabe(seed: int) -> dict:
     rng = random.Random(f"saeure-{seed}")
     for _ in range(MAX_VERSUCHE):
-        name, pks = rng.choice(SAEUREN)
-        c = rng.choice(KONZENTRATIONEN)
+        name, pks, teilchen, c_max = rng.choice(SAEUREN)
+        c = rng.choice([k for k in KONZENTRATIONEN if k <= c_max])
         naeherung = 0.5 * (pks - math.log10(c))
         if abs(naeherung - exact_ph([pks], c_acid=c, c_na=0.0)) <= GRENZE:
             break
-    text = f"Berechne den pH-Wert einer {_c(c)} M {name}-Lösung (pKs = {de(pks, 2)})."
+    pk_text = f"pKs({teilchen})" if teilchen else "pKs"
+    text = f"Berechne den pH-Wert einer {_c(c)} M {name}-Lösung ({pk_text} = {de(pks, 2)})."
     return {
         "typ": "saeure",
         "stoff": name,
@@ -95,14 +96,15 @@ def saeure_aufgabe(seed: int) -> dict:
 def base_aufgabe(seed: int) -> dict:
     rng = random.Random(f"base-{seed}")
     for _ in range(MAX_VERSUCHE):
-        name, pkb = rng.choice(BASEN)
-        c = rng.choice(KONZENTRATIONEN)
+        name, pkb, teilchen, c_max = rng.choice(BASEN)
+        c = rng.choice([k for k in KONZENTRATIONEN if k <= c_max])
         poh = 0.5 * (pkb - math.log10(c))
         naeherung = PKW - poh
         exakt = exact_ph([PKW - pkb], c_acid=c, c_na=c)
         if abs(naeherung - exakt) <= GRENZE:
             break
-    text = f"Berechne den pH-Wert einer {_c(c)} M {name}-Lösung (pKb = {de(pkb, 2)})."
+    pk_text = f"pKb({teilchen})" if teilchen else "pKb"
+    text = f"Berechne den pH-Wert einer {_c(c)} M {name}-Lösung ({pk_text} = {de(pkb, 2)})."
     return {
         "typ": "base",
         "stoff": name,
@@ -183,7 +185,9 @@ def puffer_aufgabe(seed: int) -> dict:
                 f"pH = {de(pks, 2)} + log({_c(cb)} / {_c(cs)})",
                 f"pH = {_ph(hh)}",
                 "Gilt im Pufferbereich pKs ± 1, solange beide Partner deutlich konzentrierter "
-                "sind als H₃O⁺ und OH⁻.",
+                "sind als H₃O⁺ und OH⁻."
+                + (" Beim Phosphatpuffer ist pKs = 7,21 der zweite pKs der Phosphorsäure "
+                   "(H₂PO₄⁻/HPO₄²⁻), der thermodynamische Wert." if "phosphat" in s_name else ""),
             )
         ],
     }
