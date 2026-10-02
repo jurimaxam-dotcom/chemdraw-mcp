@@ -39,3 +39,12 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
 - [ ] 0.4.6 veröffentlichen: Version in pyproject/server.json/uv.lock, PyPI, neues .mcpb bauen (`scripts/build-mcpb.sh`), bei Jay installieren — Jays Go
+
+## MCP verfeinern (Jay /goal, 02.10.2026): kleinster Eingriff, größter Hebel zuerst
+- [x] Messung: `evals/tool-routing/run_claude.py` (Tool-Wahl über claude -p, Attrappen-Server) — 24/28 → 26/28
+- [x] `lookup_molecule_data`: 6–8 Folgeaufrufe → 4 bei „Datenblatt mit allem“ (ein Satz Beschreibung)
+- [x] `test:host` schreibt nicht mehr ins echte `~/ChemDraw-Output`
+- [ ] Jay entscheidet: `reaction-in-conversation` — „Wie läuft die Veresterung ab?“ ruft Reaktion **und** Mechanismus. Fall zu streng (dann `forbidden` lockern) oder Beschreibung schärfen?
+- [ ] Fall `draw-scope-real` ist fehlerhaft: Prompt ohne Strukturen, Modell fragt zu Recht nach. Prompt um SMILES ergänzen (Begründung ins `why`)
+- [ ] Geschwindigkeit: Server-Import 1,4 s (mcp 0,33 · rdkit 0,25 · matplotlib 0,25) — nur lazy laden, wenn die Handshake-Zeit unter Last wehtut; Datenblatt-Ladezeit 2,3 s (PubChem) — Vorabladen nur falls Jay es spürt
+- [ ] Design: Panel-Screenshots aller 14 Panel-Tools nebeneinander ansehen, Schwächen sammeln (Leerraum unter der Struktur bei 640×640 fällt auf)

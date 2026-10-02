@@ -8,7 +8,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,12 @@ const out = join(mkdtempSync(join(tmpdir(), "panel-host-")), "host.js");
 await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: "iife", outfile: out, logLevel: "error" });
 
 const client = new Client({ name: "panel-e2e", version: "0.0.0" });
-await client.connect(new StdioClientTransport({ command: "uv", args: ["run", "chemdraw-tool-server"], cwd: repo }));
+// HOME zeigt auf einen Wegwerf-Ordner: der Server schreibt seine Dateien nach ~/ChemDraw-Output,
+// und der Test soll Jays echten Ordner nicht füllen. Dafür direkt die venv-Binärdatei (uv bräuchte das echte HOME).
+const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
+if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
+const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome }, cwd: repo }));
 let browser;
 try {
   const tools = (await client.listTools()).tools;
