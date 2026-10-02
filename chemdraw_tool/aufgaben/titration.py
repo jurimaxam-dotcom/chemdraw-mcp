@@ -18,8 +18,12 @@ Rechenweg-Schema wie in `solution.py` und `calculator/`:
 from __future__ import annotations
 
 import random
-import re
 from dataclasses import dataclass
+
+from .basis import de as _de
+from .basis import nbsp as _nbsp
+from .basis import pruefe  # noqa: F401 — Teil der Modul-API (Browser, Tests)
+from .basis import schritt as _schritt
 
 MAX_VERSUCHE = 200
 
@@ -56,35 +60,14 @@ STOFFE: tuple[Stoff, ...] = (
 )
 
 
-def _de(x: float, stellen: int) -> str:
-    return f"{x:.{stellen}f}".replace(".", ",")
-
 
 def _f_text(f: float) -> str:
     """Faktor mit 4 geltenden Ziffern: 20,63 · 8,806 · 84,01."""
     return _de(f, max(0, 4 - len(str(int(f)))))
 
 
-_ZAHL_EINHEIT = re.compile(r"(\d) (mL|mg|%|g/mol|mol/L|M)(?=[\s.,;:)?]|$)")
-
-
-def _nbsp(text: str) -> str:
-    """Zahl und Einheit bleiben auf einer Zeile ("100,0 %" bricht sonst vor dem %)."""
-    return _ZAHL_EINHEIT.sub("\\1\u00a0\\2", text)
-
-
 def _c_text(c: float) -> str:
     return _de(c, 2 if c < 0.1 else 1)
-
-
-def _schritt(label: str, formula: str, substitution: str, result: str, explanation: str = "") -> dict:
-    return {
-        "label": label,
-        "formula": formula,
-        "substitution": substitution,
-        "result": result,
-        "explanation": explanation,
-    }
 
 
 def _faktor_schritt(s: Stoff) -> dict:
@@ -221,12 +204,3 @@ _BAUER = (gehalt_aufgabe, sollverbrauch_aufgabe, faktor_aufgabe)
 def neue_aufgabe(seed: int) -> dict:
     """Mischt die drei Typen; gleicher Seed, gleiche Aufgabe."""
     return random.Random(f"typ-{seed}").choice(_BAUER)(seed)
-
-
-def pruefe(aufgabe: dict, antwort) -> bool:
-    """Antwort mit deutschem oder englischem Dezimaltrenner gegen die Toleranz."""
-    try:
-        wert = float(str(antwort).strip().replace(",", "."))
-    except ValueError:
-        return False
-    return abs(wert - aufgabe["loesung"]) <= aufgabe["toleranz"]

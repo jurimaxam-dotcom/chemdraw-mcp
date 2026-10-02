@@ -26,7 +26,14 @@ const ok = (await p.textContent(".verdict")).startsWith("Richtig");
 await p.click("#next"); await p.waitForSelector(".task");
 for (const x of ["1", "2"]) { await p.fill("#antwort", x); await p.click("button[type=submit]"); }
 const weg = await p.evaluate(() => document.getElementById("weg").open);
+// pH-Block: Puffer-Aufgabe wählen und richtig lösen
+await p.selectOption("#typ", "ph.puffer_aufgabe"); await p.waitForSelector(".task");
+const phText = await p.textContent(".task");
+const phLoesung = await p.evaluate(() => aufgabe.loesung);
+await p.fill("#antwort", phLoesung.toFixed(2).replace(".", ","));
+await p.click("button[type=submit]");
+const phOk = (await p.textContent(".verdict")).startsWith("Richtig") && phText.includes("Puffer");
 await b.close();
-if (!ok || !weg || fehler.length) { console.error("❌ Rechner rot:", { ok, weg, fehler }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, richtig erkannt, Rechenweg nach 2 Fehlversuchen offen.`);
+if (!ok || !weg || !phOk || fehler.length) { console.error("❌ Rechner rot:", { ok, weg, phOk, fehler }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration und Puffer richtig erkannt, Rechenweg nach 2 Fehlversuchen offen.`);
 JS
