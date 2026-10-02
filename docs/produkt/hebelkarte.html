@@ -125,7 +125,7 @@ textarea { min-height: 64px; resize: vertical }
         <tr class="pick"><td><b>1 · Pharmazie-Rechner + frische Übungen</b><small>Gehalt, Faktorbestimmung, Sollverbrauch, pH/Puffer, jeweils mit Rechenweg. Fettkennzahlen kommen erst im 5. Semester und bleiben deshalb draußen</small></td>
           <td><span class="g y">✓ ja</span><small>Anki-Decks, Fragenbücher, Repetitorien</small></td>
           <td><span class="g m">? offen</span><small>hängt an einer Fachschaft oder Studi-Gruppe, die du kennst</small></td>
-          <td><span class="g y">✓ steht</span><small>Prototyp läuft: 12 Aufgabentypen (Titration, pH, Löslichkeit, SN/E-Mechanismus), jede Lösung gegen den Rechenkern getestet, zwei Chemie-Gutachten eingearbeitet</small></td>
+          <td><span class="g y">✓ steht</span><small>Prototyp läuft: 16 Aufgabentypen in 5 Bereichen, Klausurmodus mit Auswertung, offline nutzbar, jede Lösung gegen den Rechenkern getestet, zwei Chemie-Gutachten eingearbeitet</small></td>
           <td class="num">29–49 € pro Semester</td></tr>
         <tr><td><b>2 · Allgemeine Chemie, Rechentrainer im 1. Semester</b><small>Stöchiometrie, pH/Puffer, Redox, für Medizin, Pharmazie, Chemie und Biologie</small></td>
           <td><span class="g m">~ teils</span><small>Mediziner haben AMBOSS gratis (über 92 % der Unis zahlen). Für Chemie und Biologie ist kein bezahltes Gegenstück belegt</small></td>
@@ -283,6 +283,7 @@ textarea { min-height: 64px; resize: vertical }
       <div class="hand"><h3>Deine Hand</h3><ol>
         <li><b>Heute, 1 Minute:</b> <code>! git merge --no-edit opsin-jvm</code>. Damit wird die Namensauflösung 2 s schneller. Der Auto-Modus lässt mich nicht selbst mergen.</li>
         <li><b>Heute, 2 Minuten:</b> den Prototyp öffnen, mit <code>! cd ~/Documents/projects/chemdraw-mcp && ./scripts/build-web.sh && cd web/dist && python3 -m http.server 8765</code>, dann <code>localhost:8765</code> und drei Aufgaben lösen.</li>
+        <li><b>Für den Nutzertest:</b> <code>! cd ~/Documents/projects/chemdraw-mcp && ./scripts/deploy-pages.sh</code> stellt den Rechner kostenlos auf GitHub Pages, öffentlich. Den Link kannst du dann mit dem Anschreiben an die Fachschaft schicken.</li>
         <li><b>Diese Woche:</b> Eine Fachschaft oder 2–3 Pharmazie-Studis aus dem 1.–4. Semester nennen. Marburg liegt nahe: dort fielen 43 % durch FG I. Daran hängt Prüfstein B.</li>
         <li><b>Release 0.4.3:</b> enthält zwei Fixes. Der Titer aus einer Referenztitration wurde bisher invertiert (Proben lagen rund 4 % daneben). Und 29 % der Desktop-Starts scheiterten am Timeout, jetzt startet das Bundle nach geleertem Cache in 1,6 s statt 15 s. Veröffentlichen erst auf dein Go.</li>
       </ol></div>

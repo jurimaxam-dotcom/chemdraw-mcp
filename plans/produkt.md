@@ -26,7 +26,10 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
 - [ ] Jay: `git merge opsin-jvm` (Auto-Modus blockt Merge ohne Review)
 - [ ] Release 0.4.3 (Titer-Fix in calculate_content) — Jays Go
-- [ ] Veröffentlichen für den Nutzertest (kostenlos, ohne Bezahlung: GitHub Pages ginge; mit Bezahlung: Cloudflare Pages) — Jays Go
+- [x] Klausurmodus (d772e01) und Offline-Modus per Service Worker (fbd37be)
+- [x] Lösungsrechnen als 5. Bereich (e674c23)
+- [ ] Veröffentlichen für den Nutzertest: `./scripts/deploy-pages.sh` (GitHub Pages, kostenlos, öffentlich) — Jays Go. Ein Artifact geht nicht, weil es keine .zip ausliefert (Pyodide-Stdlib)
+- [ ] Option: Server-Import ohne RDKit/matplotlib (spart warm ~0,8 s, unter Last mehr) — zurückgestellt
 - [ ] Stufe 2 Pharmazie: Mechanismus-Übungen für die OC-Eingangsklausur
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
