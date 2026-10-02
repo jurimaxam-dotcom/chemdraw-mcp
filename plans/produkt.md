@@ -24,8 +24,9 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Worker: Zahlung prüfen → signiertes Token bis Semesterende, Widerrufsfunktion (§ 356a BGB) — Claude, ~1 Tag
 - [ ] Impressum, Datenschutz, Widerrufsbelehrung, 2 Checkboxen (§ 356 Abs. 6 BGB) — Jay entscheidet die Adresse
 - [ ] Jay: Prototyp lokal ansehen (10-Sekunden-Test)
-- [ ] Jay: `git merge opsin-jvm` (Auto-Modus blockt Merge ohne Review)
-- [ ] Release 0.4.3 (Titer-Fix in calculate_content) — Jays Go
+- [ ] Jay: `git merge --no-edit opsin-jvm` — Probe-Merge sauber (main schon eingemergt, 6fbf437), Gate dort grün
+- [ ] Release 0.4.3 vorbereitet (e74c7c2: Titer, Daten-Knopf, Bundle-Start + Sperre) — Jay: `gh release create v0.4.3 --generate-notes --title "0.4.3"`
+- [ ] `mcp-2-migration`: GEPARKT — Konflikte mit main, Desktop-Test ausstehend; nicht mergen
 - [x] Klausurmodus (d772e01) und Offline-Modus per Service Worker (fbd37be)
 - [x] Lösungsrechnen als 5. Bereich (e674c23)
 - [ ] Veröffentlichen für den Nutzertest: `./scripts/deploy-pages.sh` (GitHub Pages, kostenlos, öffentlich) — Jays Go. Ein Artifact geht nicht, weil es keine .zip ausliefert (Pyodide-Stdlib)
