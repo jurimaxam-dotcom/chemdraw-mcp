@@ -91,11 +91,15 @@ if installiert; then  # ein paralleler Start war schneller
 fi
 
 log "installiere chemdraw-mcp $VERSION über $UV (einmalig, danach startet es ohne uv und offline)"
-if "$UV" tool install --force --quiet "chemdraw-mcp==$VERSION" >&2 && installiert; then
+# --refresh-package: Direkt nach einem Release kennt uvs zwischengespeicherter
+# PyPI-Index die neue Version noch nicht ("there is no version of
+# chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026). Nur auf dem Installationsweg —
+# der Normalstart ruft uv gar nicht auf.
+if "$UV" tool install --force --quiet --refresh-package chemdraw-mcp "chemdraw-mcp==$VERSION" >&2 && installiert; then
   rmdir "$LOCK" 2>/dev/null || true
   exec "$SERVER"
 fi
 rmdir "$LOCK" 2>/dev/null || true
 
 log "feste Installation fehlgeschlagen — starte über uv tool run"
-exec "$UV" tool run --from "chemdraw-mcp==$VERSION" chemdraw-mcp
+exec "$UV" tool run --refresh-package chemdraw-mcp --from "chemdraw-mcp==$VERSION" chemdraw-mcp

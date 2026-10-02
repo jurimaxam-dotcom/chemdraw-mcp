@@ -6,6 +6,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.4] — 2026-10-02
+
+### Fixed
+
+- **A freshly installed bundle could not find its own release.** Right after
+  0.4.3 went out, uv answered from its cached copy of the PyPI index ("there is
+  no version of chemdraw-mcp==0.4.3") and Claude Desktop failed to start the
+  server. The bundle now refreshes the index for chemdraw-mcp when it installs
+  (and in the fallback). The normal start does not call uv at all, so this
+  costs nothing after the first launch.
+
 ## [0.4.3] — 2026-10-02
 
 ### Fixed

@@ -109,3 +109,18 @@ def test_parallele_kaltstarts_installieren_nur_einmal(tmp_path):
     assert outs == ["SERVER ==9.9.1"] * 3
     marken = [z for z in log.read_text().splitlines() if z.startswith("install-")]
     assert marken == ["install-start", "install-end"], f"Installationen überlappen: {marken}"
+
+
+def test_installation_fragt_pypi_frisch(tmp_path):
+    """Direkt nach einem Release kennt uvs zwischengespeicherter Index die neue
+    Version noch nicht: 'there is no version of chemdraw-mcp==0.4.3' (Desktop-Log
+    02.10.2026, 0.4.3-Bundle). Installation und Fallback müssen den Index für
+    chemdraw-mcp neu holen."""
+    _, calls = _start(tmp_path, "9.9.1")
+    install = next(c for c in calls if c.startswith("tool install"))
+    assert "--refresh-package chemdraw-mcp" in install
+    zwei = tmp_path / "zwei"
+    zwei.mkdir()
+    _, calls = _start(zwei, "9.9.1", fail_install=True)
+    run = next(c for c in calls if c.startswith("tool run"))
+    assert "--refresh-package chemdraw-mcp" in run
