@@ -81,7 +81,7 @@ def test_verschiedene_seeds_verschiedene_aufgaben():
 
 def test_neue_aufgabe_waehlt_typ_nach_seed():
     typen = {t.neue_aufgabe(s)["typ"] for s in range(60)}
-    assert typen == {"gehalt", "sollverbrauch", "faktor"}
+    assert typen == {"gehalt", "sollverbrauch", "faktor", "titer"}
 
 
 def test_pruefe_antwort_toleriert_rundung():
@@ -97,3 +97,28 @@ def test_zahl_und_einheit_brechen_nicht_auseinander():
     for einheit in ("mL", "mg", "%"):
         assert f"0 {einheit}" not in texte and f"5 {einheit}" not in texte
     assert " %" in texte
+
+
+# --- Faktorbestimmung gegen Urtitersubstanz (Quanti, 2. Semester) ------------
+from chemdraw_tool.calculator.titration import calculate_titer  # noqa: E402
+
+
+@pytest.mark.parametrize("u", t.URTITER, ids=lambda u: u.name)
+def test_urtiter_molmasse_passt_zur_summenformel(u):
+    assert Formula(u.formel).mass == pytest.approx(u.molmasse, abs=0.02)
+
+
+@pytest.mark.parametrize("seed", range(200))
+def test_titeraufgabe_stimmt_mit_calculate_titer(seed):
+    a = t.titer_aufgabe(seed)
+    g = a["werte"]
+    f_mg_ml = g["molmasse"] * g["c"] / g["z"]  # Urtiter als Referenz mit 100 %
+    assert a["loesung"] == pytest.approx(
+        calculate_titer([g["m_mg"]], [g["v_ml"]], 0.0, f_mg_ml), rel=1e-12
+    )
+    assert 0.9 <= a["loesung"] <= 1.1, "Ph.-Eur.-Grenze f = 0,9–1,1"
+    assert 5.0 <= g["v_ml"] <= 25.0
+
+
+def test_neue_aufgabe_kennt_auch_die_titerbestimmung():
+    assert "titer" in {t.neue_aufgabe(s)["typ"] for s in range(120)}

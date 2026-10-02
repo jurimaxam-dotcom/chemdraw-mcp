@@ -81,6 +81,7 @@ footer { font-size: 12.5px; color: var(--muted) }
         <option value="titration.gehalt_aufgabe">Gehalt aus Verbrauch</option>
         <option value="titration.sollverbrauch_aufgabe">Sollverbrauch</option>
         <option value="titration.faktor_aufgabe">Äquivalenzfaktor</option>
+        <option value="titration.titer_aufgabe">Faktorbestimmung (Urtiter)</option>
       </optgroup>
       <optgroup label="pH und Puffer">
         <option value="ph.neue_aufgabe">pH, gemischt</option>
@@ -118,7 +119,7 @@ let py, aufgabe, seed, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
 
 const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: n, maximumFractionDigits: n });
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Äquivalenzfaktor",
+const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Äquivalenzfaktor", titer: "Faktorbestimmung",
   saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
 
 async function start() {
@@ -149,7 +150,7 @@ function pruefe(antwort) {
   return py.runPython("basis.pruefe(_a, _x)");
 }
 
-function stellen(a) { return a.einheit === "mg/mL" ? 3 : 2; }
+function stellen(a) { return a.typ === "titer" ? 4 : a.einheit === "mg/mL" ? 3 : 2; }
 
 function render(verdict) {
   const a = aufgabe;
@@ -158,7 +159,7 @@ function render(verdict) {
     <p class="task">${esc(a.text)}</p>
     <form class="answer" id="f" autocomplete="off">
       <label for="antwort">${esc(a.gesucht)}</label>
-      <div class="field"><input id="antwort" inputmode="decimal" placeholder="${{ "%": "z. B. 99,50", "mL": "z. B. 12,40", "mg/mL": "z. B. 12,210", "pH": "z. B. 4,76", ": 1": "z. B. 1,58" }[a.einheit] || ""}"><span>${esc(a.einheit)}</span></div>
+      <div class="field"><input id="antwort" inputmode="decimal" placeholder="${{ "%": "z. B. 99,50", "mL": "z. B. 12,40", "mg/mL": "z. B. 12,210", "pH": "z. B. 4,76", ": 1": "z. B. 1,58" }[a.einheit] || (a.typ === "titer" ? "z. B. 1,0123" : "")}"><span>${esc(a.einheit)}</span></div>
       <button class="btn" type="submit">Prüfen</button>
     </form>
     ${verdict || ""}
@@ -180,7 +181,7 @@ function render(verdict) {
     if (!gewertet && (ok || versuche >= 2)) { gewertet = true; gesamt++; if (ok) richtig++; }
     document.getElementById("score").textContent = `${richtig} von ${gesamt} richtig`;
     const zahl = de(a.loesung, stellen(a));
-    const loesung = a.einheit === "pH" ? `pH ${zahl}` : `${zahl} ${a.einheit}`;
+    const loesung = a.einheit === "pH" ? `pH ${zahl}` : a.einheit ? `${zahl} ${a.einheit}` : zahl;
     const v = ok
       ? `<div class="verdict ok">Richtig: ${loesung}.</div>`
       : versuche >= 2

@@ -198,7 +198,81 @@ def faktor_aufgabe(seed: int) -> dict:
     }
 
 
-_BAUER = (gehalt_aufgabe, sollverbrauch_aufgabe, faktor_aufgabe)
+@dataclass(frozen=True)
+class Urtiter:
+    name: str
+    formel: str
+    molmasse: float
+    massloesung: str
+    c: float
+    z: int  # mol Maßlösung je mol Urtitersubstanz
+
+
+URTITER: tuple[Urtiter, ...] = (
+    Urtiter("Kaliumhydrogenphthalat", "C8H5KO4", 204.22, "Natriumhydroxid-Lösung", 0.1, 1),
+    Urtiter("Trometamol", "C4H11NO3", 121.14, "Salzsäure", 0.1, 1),
+    Urtiter("Natriumcarbonat", "Na2CO3", 105.99, "Salzsäure", 0.1, 2),
+    Urtiter("Natriumchlorid", "NaCl", 58.44, "Silbernitrat-Lösung", 0.1, 1),
+    Urtiter("Zink", "Zn", 65.38, "Natriumedetat-Lösung", 0.1, 1),
+)
+
+
+def titer_aufgabe(seed: int) -> dict:
+    """Faktor (Titer) einer Maßlösung aus einer Urtitersubstanz — Quanti, 2. Semester."""
+    rng = random.Random(f"titer-{seed}")
+    u = rng.choice(URTITER)
+    for _ in range(MAX_VERSUCHE):
+        f_wahr = rng.uniform(0.97, 1.03)
+        v_ziel = rng.uniform(8.0, 20.0)
+        m_mg = round(v_ziel * u.c * f_wahr * u.molmasse / u.z, 1)
+        v_ml = round(round(v_ziel / 0.05) * 0.05, 2)
+        titer = u.z * m_mg / (u.molmasse * u.c * v_ml)
+        if 5.0 <= v_ml <= 25.0 and 0.95 <= titer <= 1.05:
+            break
+    n_u = m_mg / u.molmasse
+    n_soll = u.c * v_ml
+    text = (
+        f"Zur Faktorbestimmung der {_c_text(u.c)} M {u.massloesung} wägst du {_de(m_mg, 1)} mg "
+        f"{u.name} (M = {_de(u.molmasse, 2)} g/mol) ein und verbrauchst {_de(v_ml, 2)} mL. "
+        f"1 mol {u.name} reagiert mit {u.z} mol Maßlösung. Berechne den Faktor."
+    )
+    rechenweg = [
+        _schritt(
+            "Stoffmenge Urtitersubstanz",
+            "n(U) = m / M",
+            f"n(U) = {_de(m_mg, 1)} mg / {_de(u.molmasse, 2)} g/mol",
+            f"n(U) = {_de(n_u, 4)} mmol",
+            "mg durch g/mol ergibt mmol.",
+        ),
+        _schritt(
+            "Stoffmenge Maßlösung, nominal",
+            "n(ML) = c · V",
+            f"n(ML) = {_c_text(u.c)} mol/L · {_de(v_ml, 2)} mL",
+            f"n(ML) = {_de(n_soll, 4)} mmol",
+            "Was die Lösung enthielte, wenn sie exakt die Nennkonzentration hätte.",
+        ),
+        _schritt(
+            "Faktor",
+            "f = z · n(U) / n(ML)",
+            f"f = {u.z} · {_de(n_u, 4)} / {_de(n_soll, 4)}",
+            f"f = {_de(titer, 4)}",
+            "f > 1: die Lösung ist stärker als nominal. Ph. Eur. verlangt 0,9–1,1.",
+        ),
+    ]
+    return {
+        "typ": "titer",
+        "stoff": u.name,
+        "text": _nbsp(text),
+        "gesucht": "Faktor f",
+        "einheit": "",
+        "loesung": titer,
+        "toleranz": 0.0006,
+        "werte": {"m_mg": m_mg, "v_ml": v_ml, "molmasse": u.molmasse, "c": u.c, "z": u.z},
+        "rechenweg": rechenweg,
+    }
+
+
+_BAUER = (gehalt_aufgabe, sollverbrauch_aufgabe, faktor_aufgabe, titer_aufgabe)
 
 
 def neue_aufgabe(seed: int) -> dict:
