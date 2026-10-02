@@ -49,10 +49,13 @@ try {
 
   // 2. Data-Knopf: callServerTool → Host → echter Server → Datenblatt
   await frame.getByText("Data", { exact: true }).click();
-  await frame.getByText("113-45-1").first().waitFor({ timeout: 20000 });
+  const t0 = Date.now();
+  // „IUPAC-Name" und „CAS-Nr." gibt es nur im Datenblatt — die Strukturansicht hat schon „CAS 113-45-1"
+  await frame.getByText("IUPAC-Name").first().waitFor({ timeout: 30000 });
+  console.log(`Datenblatt nach ${Date.now() - t0} ms`);
   t = await text();
   prüfe(serverCalls.filter((n) => n === "lookup_molecule_data").length === 1, "Data-Knopf löst genau einen lookup_molecule_data über die Bridge aus");
-  prüfe(t.includes("113-45-1") && t.includes("4158"), "Datenblatt zeigt CAS 113-45-1 und CID 4158");
+  prüfe(t.includes("CAS-Nr. 113-45-1") && t.includes("PubChem CID 4158"), "Datenblatt (nicht Strukturansicht) zeigt CAS-Nr. 113-45-1 und PubChem CID 4158");
   await page.screenshot({ path: join(tmpdir(), "panel-host-data.png") });
 
   // 3. Zurück zur Struktur, wieder Data: Cache, kein zweiter Serveraufruf
