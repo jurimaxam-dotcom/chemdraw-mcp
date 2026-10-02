@@ -55,7 +55,16 @@ const v1 = await p.evaluate(() => aufgabe.loesung);
 await p.fill("#antwort", v1.toFixed(2).replace(".", ","));
 await p.click("button[type=submit]");
 const loesOk = (await p.textContent(".verdict")).startsWith("Richtig");
+// Klausurmodus: 10 Aufgaben, alle richtig beantworten → 10 von 10
+await p.click("#klausur"); await p.waitForSelector(".task");
+for (let i = 0; i < 10; i++) {
+  const a = await p.evaluate(() => klausur.aufgaben[klausur.i]);
+  if (a.auswahl) await p.click(`[data-wahl="${a.loesung}"]`);
+  else { await p.fill("#antwort", String(a.loesung).replace(".", ",")); await p.click("button[type=submit]"); }
+}
+await p.waitForSelector("#ergebnis");
+const klausurOk = (await p.textContent("#ergebnis")).startsWith("10 von 10");
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise) und Verdünnung richtig erkannt, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || !klausurOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, klausurOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise) und Verdünnung richtig erkannt, Klausur 10 von 10, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
 JS
