@@ -4,7 +4,8 @@
 # der Repo-Wurzel, löst eine Aufgabe richtig und eine zweimal falsch.
 set -eu
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
+"$ROOT/scripts/build-web.sh" >/dev/null
+cd "$ROOT/web/dist"
 python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 &
 SERVER=$!
 trap 'kill $SERVER 2>/dev/null' EXIT
@@ -15,8 +16,11 @@ const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 390, height: 844 } });
 const fehler = [];
 p.on("pageerror", (e) => fehler.push(e.message));
+// DSGVO: keine einzige Anfrage an fremde Hosts
+const fremd = [];
+p.on("request", (r) => { const u = new URL(r.url()); if (u.protocol.startsWith("http") && u.host !== "127.0.0.1:8765") fremd.push(u.host); });
 const t0 = Date.now();
-await p.goto("http://127.0.0.1:8765/web/praktikumsrechner/index.html");
+await p.goto("http://127.0.0.1:8765/index.html");
 await p.waitForSelector(".task", { timeout: 90000 });
 const ms = Date.now() - t0;
 const loesung = await p.evaluate(() => aufgabe.loesung);
@@ -46,6 +50,6 @@ await p.fill("#antwort", `${mant.replace(".", ",")} · 10^${Number(ex)}`);
 await p.click("button[type=submit]");
 const loeslOk = (await p.textContent(".verdict")).startsWith("Richtig");
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || fehler.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, fehler }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus und Löslichkeit (10^-Schreibweise) richtig erkannt, Rechenweg nach 2 Fehlversuchen offen.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus und Löslichkeit (10^-Schreibweise) richtig erkannt, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
 JS

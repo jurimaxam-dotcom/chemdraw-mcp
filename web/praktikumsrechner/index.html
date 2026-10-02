@@ -4,9 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Praktikumsrechner</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
+/* Schriften vom eigenen Host (DSGVO, scripts/build-web.sh). Fehlen die Dateien
+   (Entwicklung im Repo), greift der Fallback-Stack. */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("vendor/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-display: swap; src: url("vendor/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 600; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-condensed-latin-600-normal.woff2") format("woff2") }
+@font-face { font-family: "IBM Plex Sans Condensed"; font-weight: 700; font-display: swap; src: url("vendor/fonts/ibm-plex-sans-condensed-latin-700-normal.woff2") format("woff2") }
+
 /* Layout: eine Aufgabenkarte, darunter Antwortzeile und aufklappbarer Rechenweg. Handy zuerst. */
 :root {
   --bg: #eef2f0; --surface: #fafcfb; --ink: #111816; --ink-2: #46534e; --muted: #7a8680;
@@ -115,10 +123,29 @@ footer { font-size: 12.5px; color: var(--muted) }
   <footer>Titrationsäquivalente aus Ä = M · c / z, auf 4 geltende Ziffern gerundet (kann in der letzten Stelle von der Monographie abweichen). pH-Aufgaben nur, wo die Näherungsformel höchstens 0,05 von der exakten Rechnung abweicht. Rechenkern: chemdraw-mcp (Apache-2.0).</footer>
 </div>
 
-<script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
 <script>
-// Das echte Paket, Datei für Datei — kein Kopieren, keine zweite Quelle.
-const ROOT = "../../";
+// Im Repo (Entwicklung) liegt der Rechenkern zwei Ebenen höher, in web/dist unter py/.
+const IM_REPO = location.pathname.includes("/web/praktikumsrechner/");
+const ROOT = IM_REPO ? "../../" : "py/";
+// Pyodide vom eigenen Host. Den CDN gibt es nur bei der Entwicklung auf localhost —
+// ausgeliefert wird ohne Drittanbieter (DSGVO).
+const LOKAL = "vendor/pyodide/";
+const CDN = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
+const ENTWICKLUNG = ["localhost", "127.0.0.1"].includes(location.hostname) && IM_REPO;
+
+function skript(src) {
+  return new Promise((ok, fehler) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = ok; s.onerror = () => fehler(new Error(`${src} nicht ladbar`));
+    document.head.appendChild(s);
+  });
+}
+
+async function ladePyodide() {
+  const basis = ENTWICKLUNG ? CDN : LOKAL;
+  await skript(basis + "pyodide.js");
+  return loadPyodide({ indexURL: basis });
+}
 const DATEIEN = [
   "chemdraw_tool/__init__.py",
   "chemdraw_tool/ph_core.py",
@@ -139,7 +166,7 @@ const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Titrat
 
 async function start() {
   const t0 = performance.now();
-  py = await loadPyodide();
+  py = await ladePyodide();
   py.FS.mkdirTree("/home/pyodide/chemdraw_tool/aufgaben");
   await Promise.all(DATEIEN.map(async (pfad) => {
     const r = await fetch(ROOT + pfad);

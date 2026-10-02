@@ -28,3 +28,4 @@ evals/tool-routing/promptfooconfig.yaml
 
 # Agenten-Worktrees (eigene Repos, nie einchecken)
 /.claude/worktrees/
+/web/dist/
