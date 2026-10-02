@@ -75,3 +75,18 @@ Praktikumsskripte liegen an 9 von 10 Standorten hinter einem Login.
 3. **Spektroskopie** (FG IV, 4. Semester): ein Drittel von FG IV, mehrfach das Schlusslicht.
 4. **Trennungsgang** (Quali, 1. Semester): siebt am frühesten aus; im Produkt gibt es dafür heute nichts.
 5. **Arzneibuch-Identität und Gehalt:** kommt in allen Semestern vor, ist aber kein eigener Staatsexamens-Block.
+
+## 5. Quellen zum Standortvergleich (abgerufen 01./02.10.2026)
+
+- IMPP Herbst 2025: https://www.impp.de/files/PDF/Pr%C3%BCfungsergebnisse/Pr%C3%BCfungsergebnisse/ErgPhaH2025.pdf
+- Kapazitäten: https://www.hochschulstart.de/fileadmin/media/dosv/auswahlgrenzen/Auswahlgrenzen_Pharmazie_W_2025__EndeKoordinierung.pdf · https://www.hochschulstart.de/fileadmin/media/dosv/nc/sose26/Auswahlgrenzen_Pharmazie_S_2026_EndeKoordinierung.pdf
+- CHE 2024: https://studiengaenge.zeit.de/ranking/pharmazie-pharmakologie. Dort gilt laut Erklärseite „Spitze“ ab 4 Sternen, die Daten führen aber schon 3,8 als Spitze.
+- Tübingen fehlt in den IMPP-Dateien, weil es ein alternatives Prüfungsverfahren nach § 8 Abs. 2 AAppO hat: https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/pharmaziebiochemie/teilbereich-pharmazie-pharmazeutisches-institut/studium-der-pharmazie-staatsexamen/alternatives-pruefungsverfahren/
+- Hürden:
+  - LMU: https://bracher.cup.uni-muenchen.de/site/assets/files/1074/infomaterial_wiederholer_innen.pdf
+  - Würzburg: https://www.pharmazie.uni-wuerzburg.de/fsi-pharmazie/studieninfos/klausurenuebersicht/
+  - Freiburg: https://pharmazie-web.uni-freiburg.de/de/studiumpharmazie/ausfhrungsbestimmungen_grundstudium_pharmazie_2024_April.pdf
+  - Marburg: https://fachschaft-pharmazie-marburg.de/wp-content/uploads/2022/09/Ersti-Info-Heft.pdf
+  - Frankfurt: https://www.uni-frankfurt.de/120840563/Veranstaltungsbeschreibungen_Grundstudium_WS25_26.pdf
+  - Kiel: https://www.studservice.uni-kiel.de/sta/studienordnung-pharmazie-staatsexamen.pdf
+- Für Marburg (43,3 % durchgefallen in FG I) gibt es bisher keine Erklärung, weder von der Fachschaft noch aus der Presse [Lücke].

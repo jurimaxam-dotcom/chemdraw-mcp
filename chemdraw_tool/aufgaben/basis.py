@@ -31,6 +31,16 @@ def schritt(label: str, formula: str, substitution: str, result: str, explanatio
     }
 
 
+_ZEHNERPOTENZ = re.compile(r"\s*[·x×*]\s*10\s*\^?\s*", re.I)
+
+
+def zahl(text) -> float:
+    """Liest 12,5 · 12.5 · 1,3e-5 · 1,3E-5 · 1,3 · 10^-5 · 1,3 x 10-5."""
+    t = str(text).strip().replace("−", "-").replace(",", ".")
+    t = _ZEHNERPOTENZ.sub("e", t)
+    return float(t.replace(" ", ""))
+
+
 def _norm(text) -> str:
     return "".join(str(text).split()).upper()
 
@@ -41,7 +51,7 @@ def pruefe(aufgabe: dict, antwort) -> bool:
     if aufgabe.get("auswahl"):
         return _norm(antwort) == _norm(aufgabe["loesung"])
     try:
-        wert = float(str(antwort).strip().replace(",", "."))
+        wert = zahl(antwort)
     except ValueError:
         return False
     return abs(wert - aufgabe["loesung"]) <= aufgabe["toleranz"]

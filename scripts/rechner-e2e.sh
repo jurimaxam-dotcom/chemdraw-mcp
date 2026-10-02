@@ -38,7 +38,14 @@ await p.selectOption("#typ", "mechanismus.weg_aufgabe"); await p.waitForSelector
 const weg = await p.evaluate(() => aufgabe.loesung);
 await p.click(`[data-wahl="${weg}"]`);
 const mechOk = (await p.textContent(".verdict")).startsWith("Richtig");
+// Löslichkeit: wissenschaftliche Schreibweise mit Komma und 10^
+await p.selectOption("#typ", "loeslichkeit.zusatz_aufgabe"); await p.waitForSelector(".task");
+const l = await p.evaluate(() => aufgabe.loesung);
+const [mant, ex] = l.toExponential(3).split("e");
+await p.fill("#antwort", `${mant.replace(".", ",")} · 10^${Number(ex)}`);
+await p.click("button[type=submit]");
+const loeslOk = (await p.textContent(".verdict")).startsWith("Richtig");
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || fehler.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, fehler }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer und Mechanismus richtig erkannt, Rechenweg nach 2 Fehlversuchen offen.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || fehler.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, fehler }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus und Löslichkeit (10^-Schreibweise) richtig erkannt, Rechenweg nach 2 Fehlversuchen offen.`);
 JS

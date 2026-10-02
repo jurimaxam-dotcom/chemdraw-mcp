@@ -24,6 +24,7 @@ RECHENKERN = [
     "chemdraw_tool.aufgaben.titration",
     "chemdraw_tool.aufgaben.ph",
     "chemdraw_tool.aufgaben.mechanismus",
+    "chemdraw_tool.aufgaben.loeslichkeit",
 ]
 VERBOTEN = ["matplotlib", "rdkit", "mcp", "requests"]
 
