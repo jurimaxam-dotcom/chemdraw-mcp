@@ -124,3 +124,96 @@ def test_installation_fragt_pypi_frisch(tmp_path):
     _, calls = _start(zwei, "9.9.1", fail_install=True)
     run = next(c for c in calls if c.startswith("tool run"))
     assert "--refresh-package chemdraw-mcp" in run
+
+
+# --- verwaiste Startsperre (02.10.2026, 21:08 bei Jay) ----------------------------
+# Desktop bricht einen Start mitten in der Installation ab (TERM) oder killt ihn hart.
+# Die Sperre blieb liegen; der nächste Start wartete bis zu 10 min darauf.
+
+
+def _env(tmp_path: Path, version: str = "9.9.1", **extra: str) -> dict[str, str]:
+    stub = tmp_path / "uv"
+    stub.write_text(STUB)
+    stub.chmod(stub.stat().st_mode | stat.S_IEXEC)
+    env = {
+        "PATH": "/usr/bin:/bin",
+        "HOME": str(tmp_path / "home"),
+        "CHEMDRAW_MCP_UV": str(stub),
+        "CHEMDRAW_MCP_VERSION": version,
+        "STUB_LOG": str(tmp_path / "calls.log"),
+    }
+    env.update(extra)
+    return env
+
+
+def _lock(tmp_path: Path) -> Path:
+    return tmp_path / "home" / ".local" / "share" / "chemdraw-mcp-bundle" / ".install.lock"
+
+
+def _warte_bis(bedingung, sekunden: float = 10.0) -> bool:
+    import time
+
+    ende = time.monotonic() + sekunden
+    while time.monotonic() < ende:
+        if bedingung():
+            return True
+        time.sleep(0.05)
+    return False
+
+
+def _toter_pid() -> int:
+    p = subprocess.Popen(["/bin/sh", "-c", "exit 0"])
+    p.wait()
+    return p.pid
+
+
+def test_abbruch_mitten_in_der_installation_gibt_die_sperre_frei(tmp_path):
+    import signal
+
+    env = _env(tmp_path, STUB_INSTALL_SLEEP="30")
+    log = tmp_path / "calls.log"
+    p = subprocess.Popen(["/bin/sh", str(RUN_SH)], env=env, stdout=subprocess.PIPE, text=True)
+    try:
+        assert _warte_bis(lambda: log.exists() and "install-start" in log.read_text()), "Installation startete nicht"
+        assert _lock(tmp_path).exists()
+        p.send_signal(signal.SIGTERM)
+        p.wait(timeout=5)
+    finally:
+        if p.poll() is None:
+            p.kill()
+    assert not _lock(tmp_path).exists(), "Sperre blieb nach TERM liegen"
+
+
+def test_tote_pid_in_der_sperre_wird_sofort_uebernommen(tmp_path):
+    """kill -9 lässt keinen trap laufen: nur die PID in der Sperre verrät, dass sie verwaist ist."""
+    lock = _lock(tmp_path)
+    lock.mkdir(parents=True)
+    (lock / "pid").write_text(f"{_toter_pid()}\n")
+    out = subprocess.run(
+        ["/bin/sh", str(RUN_SH)], env=_env(tmp_path), capture_output=True, text=True, timeout=10
+    ).stdout.strip()
+    assert out == "SERVER ==9.9.1"
+
+
+def test_lebende_pid_in_der_sperre_wird_respektiert(tmp_path):
+    lock = _lock(tmp_path)
+    lock.mkdir(parents=True)
+    halter = subprocess.Popen(["/bin/sleep", "30"])
+    try:
+        (lock / "pid").write_text(f"{halter.pid}\n")
+        p = subprocess.Popen(
+            ["/bin/sh", str(RUN_SH)], env=_env(tmp_path), stdout=subprocess.PIPE, text=True
+        )
+        try:
+            p.wait(timeout=2)
+            raise AssertionError("Start hat eine Sperre mit lebender PID übernommen")
+        except subprocess.TimeoutExpired:
+            pass
+        finally:
+            p.kill()
+            p.wait()
+    finally:
+        halter.kill()
+        halter.wait()
+    log = tmp_path / "calls.log"
+    assert not log.exists() or "tool install" not in log.read_text()

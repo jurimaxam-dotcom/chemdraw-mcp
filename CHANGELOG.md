@@ -6,6 +6,14 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **An interrupted first start no longer blocks the next one.** If Claude Desktop
+  cancelled the bundle's first-time install midway, the install lock stayed behind
+  and the next start waited up to 10 minutes for it. The start script now releases
+  the lock when it is stopped (TERM/INT/HUP), and records its PID in the lock, so a
+  lock whose owner has died — even by `kill -9` — is taken over immediately.
+
 ## [0.4.5] — 2026-10-02
 
 ### Changed

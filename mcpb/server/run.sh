@@ -68,13 +68,49 @@ fi
 # Sperre: Desktop startet zwei Instanzen gleichzeitig (Chat + Cowork/Code). Ohne
 # sie riss die zweite --force-Installation der ersten die Umgebung unter dem
 # laufenden Server weg (02.10.2026). mkdir ist atomar und braucht kein flock.
+# Verwaist die Sperre (Desktop bricht den Start ab, 02.10.2026 21:08), erkennt der
+# Nächste das an der PID in der Sperre: tot heißt sofort übernehmen.
 mkdir -p "$BASE"
 LOCK="$BASE/.install.lock"
+HALTE_ICH=0
+KIND=""
+
+gib_frei() {
+  if [ "$HALTE_ICH" = 1 ]; then
+    rm -f "$LOCK/pid" 2>/dev/null || true
+    rmdir "$LOCK" 2>/dev/null || true
+    HALTE_ICH=0
+  fi
+}
+
+# TERM/INT/HUP: laufende Installation beenden, Sperre freigeben. Die Installation
+# läuft im Hintergrund und `wait` unten, weil sh einen trap sonst erst nach dem
+# Vordergrundbefehl ausführt — also nach der fertigen Installation.
+bei_abbruch() {
+  [ -n "$KIND" ] && kill "$KIND" 2>/dev/null || true
+  gib_frei
+  exit 143
+}
+trap bei_abbruch TERM INT HUP
+
+# Sperre eines toten Halters oder (ohne PID) eines abgestürzten Starts
+# (älter als 10 min) wegräumen. mv ist atomar: nur einer von zwei gleichzeitigen
+# Aufräumern gewinnt.
+sperre_verwaist() {
+  pid="$(cat "$LOCK/pid" 2>/dev/null || true)"
+  if [ -n "$pid" ]; then
+    ! kill -0 "$pid" 2>/dev/null
+  else
+    [ -n "$(find "$LOCK" -maxdepth 0 -mmin +10 2>/dev/null)" ]
+  fi
+}
+
 versuche=0
 while ! mkdir "$LOCK" 2>/dev/null; do
-  # Sperre eines abgestürzten Starts (älter als 10 min) übernehmen.
-  if [ -n "$(find "$LOCK" -maxdepth 0 -mmin +10 2>/dev/null)" ]; then
-    rmdir "$LOCK" 2>/dev/null || true
+  if sperre_verwaist; then
+    if mv "$LOCK" "$LOCK.alt.$$" 2>/dev/null; then
+      rm -rf "$LOCK.alt.$$"
+    fi
     continue
   fi
   versuche=$((versuche + 1))
@@ -84,9 +120,13 @@ while ! mkdir "$LOCK" 2>/dev/null; do
   fi
   sleep 0.2
 done
+if [ -d "$LOCK" ] && [ "$versuche" -le 900 ]; then
+  printf '%s\n' "$$" > "$LOCK/pid"
+  HALTE_ICH=1
+fi
 
 if installiert; then  # ein paralleler Start war schneller
-  rmdir "$LOCK" 2>/dev/null || true
+  gib_frei
   exec "$SERVER"
 fi
 
@@ -95,11 +135,15 @@ log "installiere chemdraw-mcp $VERSION über $UV (einmalig, danach startet es oh
 # PyPI-Index die neue Version noch nicht ("there is no version of
 # chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026). Nur auf dem Installationsweg —
 # der Normalstart ruft uv gar nicht auf.
-if "$UV" tool install --force --quiet --refresh-package chemdraw-mcp "chemdraw-mcp==$VERSION" >&2 && installiert; then
-  rmdir "$LOCK" 2>/dev/null || true
+"$UV" tool install --force --quiet --refresh-package chemdraw-mcp "chemdraw-mcp==$VERSION" >&2 &
+KIND=$!
+if wait "$KIND" && installiert; then
+  KIND=""
+  gib_frei
   exec "$SERVER"
 fi
-rmdir "$LOCK" 2>/dev/null || true
+KIND=""
+gib_frei
 
 log "feste Installation fehlgeschlagen — starte über uv tool run"
 exec "$UV" tool run --refresh-package chemdraw-mcp --from "chemdraw-mcp==$VERSION" chemdraw-mcp

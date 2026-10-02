@@ -27,7 +27,7 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Jay: `git merge --no-edit opsin-jvm` — Probe-Merge sauber (main schon eingemergt, 6fbf437), Gate dort grün
 - [x] Release 0.4.3 (Titer, Daten-Knopf, Bundle-Start + Sperre) und 0.4.4 (Index-Refresh im Bundle) veröffentlicht, 02.10.
 - [x] OPSIN gemergt, 0.4.5 veröffentlicht und bei Jay installiert (Desktop verbunden 21:36, 20 Tools)
-- [ ] **0.4.6 als NÄCHSTES:** Die run.sh-Sperre verwaist, wenn Desktop den Start mitten in der Installation abbricht (bei Jay passiert, 02.10. 21:08). Fix: trap auf TERM/INT/HUP gibt die Sperre frei, eine PID-Datei in der Sperre, eine tote PID heißt sofort übernehmen statt erst nach 10 min. Test mit nachgebautem uv, dessen Installation per kill abgebrochen wird.
+- [x] **0.4.6 Code fertig (02.10.), Release offen:** Die run.sh-Sperre verwaist, wenn Desktop den Start mitten in der Installation abbricht (bei Jay passiert, 02.10. 21:08). Fix: trap auf TERM/INT/HUP gibt die Sperre frei, eine PID-Datei in der Sperre, eine tote PID heißt sofort übernehmen statt erst nach 10 min. Test mit nachgebautem uv, dessen Installation per kill abgebrochen wird.
 - [ ] In der Desktop-App per Computer use testen: „Zeig mir Methylphenidat“ → Data-Knopf (CID 4158, CAS 113-45-1)
 - [ ] `mcp-2-migration`: GEPARKT bis zum Desktop-Test. Auf main 3e056e0 abgeglichen (836324b, Gate grün, Handshake 2,06 s mit mcp 2.2.0). Nach dem OPSIN-Merge erneut mit main abgleichen (CHANGELOG-Konflikt), dann erst mergen
 - [x] Klausurmodus (d772e01) und Offline-Modus per Service Worker (fbd37be)
@@ -37,3 +37,4 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Stufe 2 Pharmazie: Mechanismus-Übungen für die OC-Eingangsklausur
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
+- [ ] 0.4.6 veröffentlichen: Version in pyproject/server.json/uv.lock, PyPI, neues .mcpb bauen (`scripts/build-mcpb.sh`), bei Jay installieren — Jays Go
