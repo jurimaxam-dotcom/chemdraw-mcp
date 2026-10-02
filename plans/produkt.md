@@ -50,7 +50,4 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [x] Speziesverteilung: Legende neben der Achse (6763642, Test rot gesehen)
 - [x] Geprüft, kein Fehler: Kalibrierkurve-Titel doppelt (der Titel im Bild gehört in die exportierten Dateien); Reaktion ohne Titel (Edukte/Produkte/Bedingungen sind beschriftet)
 - [ ] Mechanismus-Overview (größter Design-Block, ~halber Tag): uneinheitliche Strukturgrößen (Br⁻ winzig, HO⁻ groß), Übergangszustand-Beschriftung überlagert den Pfeilbogen (`mechanism_coords.py`), viel Leerraum. Zuerst Golden-Test für die Koordinaten, dann Layout
-- [ ] (alt, erledigt) — „Wie läuft die Veresterung ab?“ ruft Reaktion **und** Mechanismus. Fall zu streng (dann `forbidden` lockern) oder Beschreibung schärfen?
-- [ ] Fall `draw-scope-real` ist fehlerhaft: Prompt ohne Strukturen, Modell fragt zu Recht nach. Prompt um SMILES ergänzen (Begründung ins `why`)
 - [ ] Geschwindigkeit: Server-Import 1,4 s (mcp 0,33 · rdkit 0,25 · matplotlib 0,25) — nur lazy laden, wenn die Handshake-Zeit unter Last wehtut; Datenblatt-Ladezeit 2,3 s (PubChem) — Vorabladen nur falls Jay es spürt
-- [ ] Design: Panel-Screenshots aller 14 Panel-Tools nebeneinander ansehen, Schwächen sammeln (Leerraum unter der Struktur bei 640×640 fällt auf)
