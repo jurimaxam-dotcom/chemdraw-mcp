@@ -2,7 +2,11 @@
 
 Jay sendet, Claude entwirft (Außenkommunikation). Platzhalter in [eckigen Klammern].
 Ziel: 3–5 Studierende aus dem 1.–4. Semester für einen 10-Minuten-Test.
-Erst senden, wenn der Link öffentlich ist (GitHub Pages, Jays Go).
+Erst senden, wenn der Link öffentlich ist. Vorher:
+1. `web/praktikumsrechner/impressum.html` ausfüllen: Name, ladungsfähige Anschrift, E-Mail (§ 5 DDG).
+   Das Deploy-Skript bricht ab, solange dort Platzhalter stehen.
+2. `cd ~/Documents/projects/chemdraw-mcp && ./scripts/deploy-pages.sh`. Es gibt den Link aus oder sagt,
+   welche Einstellung fehlt.
 
 ---
 

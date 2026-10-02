@@ -39,7 +39,7 @@ done
 #    neuer Cache).
 rm -f "$OUT/vendor/pyodide/python" "$OUT/vendor/pyodide/python.bat" "$OUT/vendor/pyodide/python.exe" \
       "$OUT/vendor/pyodide/python_cli_entry.mjs" "$OUT"/vendor/pyodide/*.d.ts "$OUT/vendor/pyodide/package.json"
-cp "$ROOT/web/praktikumsrechner/manifest.webmanifest" "$ROOT/web/praktikumsrechner/icon.svg" "$OUT/"
+cp "$ROOT/web/praktikumsrechner/manifest.webmanifest" "$ROOT/web/praktikumsrechner/icon.svg" "$ROOT/web/praktikumsrechner/impressum.html" "$OUT/"
 BUILD="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo dev)-$(date +%Y%m%d%H%M%S)"
 DATEIEN="$(cd "$OUT" && find . -type f ! -name sw.js | sed 's|^\./||' | sort | sed 's/.*/"&"/' | paste -sd, -)"
 sed -e "s|@@BUILD@@|$BUILD|" -e "s|\"@@DATEIEN@@\"|$DATEIEN|" "$ROOT/web/praktikumsrechner/sw.js" > "$OUT/sw.js"
