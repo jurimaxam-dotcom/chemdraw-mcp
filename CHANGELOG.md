@@ -6,6 +6,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Pharmacokinetics practice problems** in the Praktikumsrechner: half-life from
+  clearance and Vd, concentration after an i.v. dose, mean steady-state
+  concentration, loading dose, accumulation factor and the uncharged fraction at a
+  given pH — each with the working. The drug is "Wirkstoff X" with made-up values,
+  so no invented number passes as real drug data. Every solution is checked against
+  the same formulas as `calculate_pharmacokinetics`.
+
 ## [0.4.8] — 2026-10-03
 
 ### Fixed

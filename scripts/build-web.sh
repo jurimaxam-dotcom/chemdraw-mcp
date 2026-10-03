@@ -14,8 +14,8 @@ mkdir -p "$CACHE" "$OUT/vendor/fonts" "$OUT/py/chemdraw_tool/aufgaben"
 
 # 1. Seite und Rechenkern (dieselben Dateien wie im Repo — keine Kopie im Git)
 cp "$ROOT/web/praktikumsrechner/index.html" "$OUT/index.html"
-for f in __init__.py ph_core.py; do cp "$ROOT/chemdraw_tool/$f" "$OUT/py/chemdraw_tool/$f"; done
-for f in __init__.py basis.py titration.py ph.py mechanismus.py loeslichkeit.py loesungen.py; do
+for f in __init__.py ph_core.py ph_calc.py pk.py; do cp "$ROOT/chemdraw_tool/$f" "$OUT/py/chemdraw_tool/$f"; done
+for f in __init__.py basis.py titration.py ph.py mechanismus.py loeslichkeit.py loesungen.py pharmakokinetik.py; do
   cp "$ROOT/chemdraw_tool/aufgaben/$f" "$OUT/py/chemdraw_tool/aufgaben/$f"
 done
 

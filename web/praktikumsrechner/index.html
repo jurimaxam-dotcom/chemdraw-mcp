@@ -99,7 +99,7 @@ footer { font-size: 12.5px; color: var(--muted) }
 <div class="wrap">
   <header>
     <h1>Praktikumsrechner</h1>
-    <p>Titration, Lösungen ansetzen, pH und Puffer, Löslichkeit, Reaktionsmechanismen. Jede Aufgabe ist neu, jede Lösung wird gerechnet oder aus festen Lehrbuchregeln abgeleitet.</p>
+    <p>Titration, Lösungen ansetzen, pH und Puffer, Löslichkeit, Pharmakokinetik, Reaktionsmechanismen. Jede Aufgabe ist neu, jede Lösung wird gerechnet oder aus festen Lehrbuchregeln abgeleitet.</p>
   </header>
 
   <div class="bar">
@@ -125,6 +125,15 @@ footer { font-size: 12.5px; color: var(--muted) }
         <option value="loesungen.verduennung_aufgabe">Verdünnen</option>
         <option value="loesungen.mischkreuz_aufgabe">Mischungskreuz</option>
         <option value="loesungen.konz_aufgabe">Konzentrierte Säuren</option>
+      </optgroup>
+      <optgroup label="Pharmakokinetik">
+        <option value="pharmakokinetik.neue_aufgabe">Pharmakokinetik, gemischt</option>
+        <option value="pharmakokinetik.halbwertszeit_aufgabe">Halbwertszeit</option>
+        <option value="pharmakokinetik.konzentration_aufgabe">Konzentration nach i.v.-Gabe</option>
+        <option value="pharmakokinetik.steady_state_aufgabe">Steady State</option>
+        <option value="pharmakokinetik.aufsaettigung_aufgabe">Aufsättigungsdosis</option>
+        <option value="pharmakokinetik.akkumulation_aufgabe">Akkumulationsfaktor</option>
+        <option value="pharmakokinetik.ionisation_aufgabe">Ionisierung bei gegebenem pH</option>
       </optgroup>
       <optgroup label="Allgemeine Chemie">
         <option value="loeslichkeit.neue_aufgabe">Löslichkeitsprodukt, gemischt</option>
@@ -173,6 +182,8 @@ async function ladePyodide() {
 const DATEIEN = [
   "chemdraw_tool/__init__.py",
   "chemdraw_tool/ph_core.py",
+  "chemdraw_tool/ph_calc.py",
+  "chemdraw_tool/pk.py",
   "chemdraw_tool/aufgaben/__init__.py",
   "chemdraw_tool/aufgaben/basis.py",
   "chemdraw_tool/aufgaben/titration.py",
@@ -180,6 +191,7 @@ const DATEIEN = [
   "chemdraw_tool/aufgaben/mechanismus.py",
   "chemdraw_tool/aufgaben/loeslichkeit.py",
   "chemdraw_tool/aufgaben/loesungen.py",
+  "chemdraw_tool/aufgaben/pharmakokinetik.py",
 ];
 const card = document.getElementById("card");
 let py, aufgabe, versuche = 0, richtig = 0, gesamt = 0, gewertet = false;
@@ -188,7 +200,8 @@ const de = (x, n) => Number(x).toLocaleString("de-DE", { minimumFractionDigits: 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Titrationsäquivalent", titer: "Faktorbestimmung",
   einwaage: "Einwaage", verduennung: "Verdünnen", mischkreuz: "Mischungskreuz", konz: "Konz. Säure",
-  mechanismus: "Mechanismus", loeslichkeit: "Löslichkeit", kl: "Löslichkeitsprodukt", zusatz: "Gleichioniger Zusatz", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen" };
+  mechanismus: "Mechanismus", loeslichkeit: "Löslichkeit", kl: "Löslichkeitsprodukt", zusatz: "Gleichioniger Zusatz", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen",
+  halbwertszeit: "Halbwertszeit", iv_c: "Konzentration i.v.", css: "Steady State", aufsaettigung: "Aufsättigungsdosis", akkumulation: "Akkumulation", ionisation: "Ionisierung" };
 
 async function start() {
   const t0 = performance.now();
@@ -199,7 +212,7 @@ async function start() {
     if (!r.ok) throw new Error(`${pfad}: HTTP ${r.status}`);
     py.FS.writeFile("/home/pyodide/" + pfad, await r.text());
   }));
-  py.runPython("import json\nfrom chemdraw_tool.aufgaben import titration, ph, mechanismus, loeslichkeit, loesungen, basis");
+  py.runPython("import json\nfrom chemdraw_tool.aufgaben import titration, ph, mechanismus, loeslichkeit, loesungen, pharmakokinetik, basis");
   console.log(`[praktikumsrechner] Rechenkern bereit nach ${Math.round(performance.now() - t0)} ms`);
   neu();
 }
@@ -298,13 +311,15 @@ function render(verdict) {
 
 // --- Klausurmodus: 10 gemischte Aufgaben, je ein Versuch, Rechenweg erst danach ---
 const KLAUSUR_POOL = ["titration.neue_aufgabe", "loesungen.neue_aufgabe", "ph.neue_aufgabe",
-  "loeslichkeit.neue_aufgabe", "mechanismus.weg_aufgabe"];
+  "loeslichkeit.neue_aufgabe", "mechanismus.weg_aufgabe", "pharmakokinetik.neue_aufgabe"];
 const KLAUSUR_LAENGE = 10;
 const BEREICH = {
   gehalt: "Titration", sollverbrauch: "Titration", faktor: "Titration", titer: "Titration",
   einwaage: "Lösungen ansetzen", verduennung: "Lösungen ansetzen", mischkreuz: "Lösungen ansetzen", konz: "Lösungen ansetzen",
   saeure: "pH und Puffer", base: "pH und Puffer", stark: "pH und Puffer", puffer: "pH und Puffer", verhaeltnis: "pH und Puffer",
   loeslichkeit: "Löslichkeit", kl: "Löslichkeit", zusatz: "Löslichkeit", mechanismus: "Mechanismen",
+  halbwertszeit: "Pharmakokinetik", iv_c: "Pharmakokinetik", css: "Pharmakokinetik", aufsaettigung: "Pharmakokinetik",
+  akkumulation: "Pharmakokinetik", ionisation: "Pharmakokinetik",
 };
 let klausur = null;
 

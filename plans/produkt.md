@@ -36,6 +36,7 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Veröffentlichen für den Nutzertest: `./scripts/deploy-pages.sh` (GitHub Pages, kostenlos, öffentlich) — Jays Go. Ein Artifact geht nicht, weil es keine .zip ausliefert (Pyodide-Stdlib)
 - [ ] Option: Server-Import ohne RDKit/matplotlib (spart warm ~0,8 s, unter Last mehr) — zurückgestellt
 - [ ] Stufe 2 Pharmazie: Mechanismus-Übungen für die OC-Eingangsklausur
+- [x] Pharmakologie-Stufe (03.10.): 6 Pharmakokinetik-Aufgabentypen im Rechner (1448 Tests, E2E grün, Klausurpool erweitert); Wirkstoff X mit fiktiven Werten
 - [ ] Jay: 10-Minuten-Nutzertest + Preisfrage (29 € pro Semester?)
 - [ ] Bezahlweg (erst wenn der Nutzertest „ja“ sagt)
 - [ ] 0.4.6 veröffentlichen: Version in pyproject/server.json/uv.lock, PyPI, neues .mcpb bauen (`scripts/build-mcpb.sh`), bei Jay installieren — Jays Go
