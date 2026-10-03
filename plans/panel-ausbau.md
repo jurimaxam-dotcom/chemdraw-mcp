@@ -2,6 +2,17 @@
 
 Ziel: Das Moleküle-Panel wird vom Bild zum Lernwerkzeug. **Eine** Molekülanfrage liefert alle Ansichten, man schaltet sofort um, wird durch die Optionen geführt, und kann sich selbst abfragen.
 
+## Fokusänderung 03.10.2026 (abends) — Wow-Moment statt Nische
+Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein** für alle, die es auf GitHub ausprobieren (Chemie, Pharmazie, Biologie). Die Liste aller Möglichkeiten und die Bewertung steht in `docs/produkt/panel-moeglichkeiten.md`. **Diese Reihenfolge gilt vor den Phasen unten:**
+
+- [ ] W0 Host-Messung: Zeile im Panel „Claude Desktop · Vollbild · Nachricht · Download …" (1 h) — entscheidet über 4, 5, 6
+- [ ] W1 Reiter **Struktur · Stereo · 3D · Daten** von Anfang an (Phase 1 unten)
+- [ ] W2 3D dreht sich von selbst, weicher Wechsel (Teil von Phase 4 vorgezogen)
+- [ ] W3 **Browser-Demo ohne Installation**, Link ganz oben im README (Hebel für Sterne)
+- [ ] W4 je nach W0: Atom anklicken → Claude erklärt · Vollbild + Download · Folge-Vorschläge
+- [ ] W5 README neu aufbauen um den Wow-Moment (GIF der Reiter, Demo-Link) — erst nach W1–W3, sonst verspricht es Ungebautes
+- [ ] W6 danach: Blind-Modus, Prüfmodus (Phasen 5–6), Biologie-Paket, Wirkstoffklassen-Galerie
+
 ## Deine Gedanken, sortiert
 
 | # | Gedanke | Kern | Baut auf |
