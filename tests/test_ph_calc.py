@@ -172,3 +172,36 @@ def test_very_dilute_strong_acid_does_not_go_alkaline():
 def test_very_dilute_strong_base_does_not_go_acidic():
     r = strong_base_ph(1e-8)
     assert 7.0 < r["ph"] < 7.1
+
+
+def test_ionisation_saeure_im_magen():
+    """Acetylsalicylsäure (pKs 3,5) bei pH 1,5: 10^(pH−pKa) = 0,01 → 99 % ungeladen."""
+    from chemdraw_tool import ph_calc
+
+    r = ph_calc.ionisation(pka=3.5, ph=1.5, kind="acid")
+    assert r["fraction_unionised"] == pytest.approx(0.9901, abs=1e-4)
+    assert r["fraction_ionised"] == pytest.approx(0.0099, abs=1e-4)
+    assert r["ratio_ionised_to_unionised"] == pytest.approx(0.01)
+
+
+def test_ionisation_base_im_blut():
+    """Base mit pKs der konjugierten Säure 9,0 bei pH 7,4: 97,5 % protoniert (geladen)."""
+    from chemdraw_tool import ph_calc
+
+    r = ph_calc.ionisation(pka=9.0, ph=7.4, kind="base")
+    assert r["fraction_ionised"] == pytest.approx(0.9755, abs=1e-4)
+    assert r["fraction_unionised"] == pytest.approx(0.0245, abs=1e-4)
+
+
+def test_ionisation_bei_ph_gleich_pka_ist_die_haelfte_geladen():
+    from chemdraw_tool import ph_calc
+
+    for kind in ("acid", "base"):
+        assert ph_calc.ionisation(pka=4.76, ph=4.76, kind=kind)["fraction_ionised"] == pytest.approx(0.5)
+
+
+def test_ionisation_unbekannte_art_wird_abgelehnt():
+    from chemdraw_tool import ph_calc
+
+    with pytest.raises(ValueError, match="acid"):
+        ph_calc.ionisation(pka=4.0, ph=2.0, kind="salt")

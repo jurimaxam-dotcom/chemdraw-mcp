@@ -125,7 +125,13 @@ PkTopic = Literal["half_life", "iv_bolus", "oral", "steady_state", "loading_dose
 
 # Die Fälle von `calculate_ph`.
 PhTopic = Literal[
-    "weak_acid", "weak_base", "strong_acid", "strong_base", "buffer", "buffer_recipe"
+    "weak_acid",
+    "weak_base",
+    "strong_acid",
+    "strong_base",
+    "buffer",
+    "buffer_recipe",
+    "ionisation",
 ]
 
 
@@ -1687,6 +1693,7 @@ def calculate_ph(
     volume_ml: float = 0.0,
     acid_molar_mass: float = 0.0,
     base_molar_mass: float = 0.0,
+    drug_type: Literal["acid", "base"] = "acid",
 ) -> str:
     """Calculate pH, buffer composition and buffer recipes, with the working.
 
@@ -1705,6 +1712,8 @@ def calculate_ph(
       ratio and buffer capacity, and warns when the pair is wrong for the pH.
     - "buffer_recipe": target_ph, pka, total_concentration, volume_ml;
       acid_molar_mass and base_molar_mass turn moles into weighable masses.
+    - "ionisation": pka, target_ph (pH of the medium), drug_type "acid" or
+      "base"; gives the charged and uncharged fractions.
 
     You supply the pKa values — they are in the monograph or the table, and
     guessing them would silently change the answer.
@@ -1715,18 +1724,19 @@ def calculate_ph(
     concentration (calculate_solution).
 
     Args:
-        topic: Which case to solve — see the list above.
-        concentration: Concentration in mol/L of the acid or base.
+        topic: Which case to solve.
+        concentration: Concentration in mol/L.
         pka: pKa of the acid, or of the conjugate acid of a base.
         pkb: pKb of the base.
         pka_values: All pKa values of a polyprotic acid, in order.
-        acid_concentration: [HA] in mol/L ("buffer").
-        base_concentration: [A⁻] in mol/L ("buffer").
-        target_ph: pH the buffer should have ("buffer_recipe").
-        total_concentration: [HA] + [A⁻] in mol/L ("buffer_recipe").
-        volume_ml: Volume of buffer to prepare, in mL.
-        acid_molar_mass: Molar mass of the acid component, in g/mol.
-        base_molar_mass: Molar mass of the base component, in g/mol.
+        acid_concentration: [HA] in mol/L.
+        base_concentration: [A⁻] in mol/L.
+        target_ph: Wanted pH ("buffer_recipe") or medium pH ("ionisation").
+        total_concentration: [HA] + [A⁻] in mol/L.
+        volume_ml: Buffer volume in mL.
+        acid_molar_mass: Acid component, g/mol.
+        base_molar_mass: Base component, g/mol.
+        drug_type: "acid" or "base" ("ionisation").
     """
     from chemdraw_tool import ph_calc
 
@@ -1813,6 +1823,26 @@ def calculate_ph(
             f"- Total concentration = {r['total_concentration']:g} mol/L",
         ]
         return block("Buffer pH", f"pH = {r['ph']:.2f}", rows, r["notes"])
+
+    if topic == "ionisation":
+        r = ph_calc.ionisation(pka=pka, ph=target_ph, kind=drug_type)
+        rows = [
+            f"- {r['formula']} → ratio = 10^({target_ph:g} − {pka:g}) = {r['ratio_ionised_to_unionised']:.3g}"
+            if drug_type == "acid"
+            else f"- {r['formula']} → ratio = 10^({pka:g} − {target_ph:g}) = {r['ratio_ionised_to_unionised']:.3g}",
+            f"- Charged: {r['fraction_ionised'] * 100:.2f} %",
+            f"- Uncharged: {r['fraction_unionised'] * 100:.2f} %",
+        ]
+        notes = [
+            "Only the uncharged form crosses a lipid membrane easily; this is the ion-trapping logic.",
+            "At pH = pKa exactly half is charged.",
+        ]
+        return block(
+            "Ionisation",
+            f"Uncharged at pH {target_ph:g}: {r['fraction_unionised'] * 100:.2f} %",
+            rows,
+            notes,
+        )
 
     if topic == "buffer_recipe":
         r = ph_calc.buffer_recipe(

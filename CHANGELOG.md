@@ -8,6 +8,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **`calculate_ph` knows the degree of ionisation.** New `topic` "ionisation":
+  give the pKa, the pH of the medium and whether the drug is an acid or a base;
+  it returns the charged and uncharged fractions (Henderson-Hasselbalch), the
+  logic behind absorption in the stomach versus the gut.
 - **`calculate_pharmacokinetics`** — pharmacokinetics in the one-compartment
   model, with the working: half-life, concentration over time, AUC, tmax and
   Cmax after an oral dose, accumulation and steady state, loading and

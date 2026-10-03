@@ -310,3 +310,26 @@ def strong_base_ph(concentration: float) -> dict:
         "poh": PKW - ph,
         "notes": notes,
     }
+
+
+def ionisation(pka: float, ph: float, kind: str = "acid") -> dict:
+    """Ionisierungsgrad einer schwachen Säure oder Base bei gegebenem pH.
+
+    Säure HA ⇌ H⁺ + A⁻:   [A⁻]/[HA] = 10^(pH − pKs)  → geladen ist A⁻.
+    Base B + H⁺ ⇌ BH⁺:    [BH⁺]/[B]  = 10^(pKs − pH)  → geladen ist BH⁺
+    (pKs der konjugierten Säure BH⁺). Ungeladen ist die Form, die Membranen passiert.
+    """
+    if kind not in ("acid", "base"):
+        raise ValueError("kind muss 'acid' oder 'base' sein.")
+    exponent = (ph - pka) if kind == "acid" else (pka - ph)
+    ratio = 10.0**exponent
+    ionised = ratio / (1 + ratio)
+    return {
+        "kind": kind,
+        "pka": pka,
+        "ph": ph,
+        "ratio_ionised_to_unionised": ratio,
+        "fraction_ionised": ionised,
+        "fraction_unionised": 1 - ionised,
+        "formula": "[A⁻]/[HA] = 10^(pH − pKa)" if kind == "acid" else "[BH⁺]/[B] = 10^(pKa − pH)",
+    }

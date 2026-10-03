@@ -82,3 +82,10 @@ def test_unknown_topic_fails_audibly():
 def test_output_is_markdown_with_a_heading():
     out = calculate_ph("weak_acid", concentration=0.1, pka=4.76)
     assert out.startswith("#")
+
+
+def test_ionisation_gibt_anteile_und_henderson_hasselbalch():
+    out = calculate_ph("ionisation", pka=3.5, target_ph=1.5, drug_type="acid")
+    assert "99.01 %" in out  # ungeladen, resorbierbar
+    assert "0.99 %" in out  # geladen
+    assert "10^(pH − pKa)" in out
