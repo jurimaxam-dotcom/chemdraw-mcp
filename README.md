@@ -424,6 +424,7 @@ This is built for students, and what it does next comes from what you run into.
 - **Missing something in your course?** [Tell us what you would draw or calculate](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=feature_request.yml) —
   say the subject and the exam question; that is worth more than a feature name.
 - **Wrong chemistry?** Use the bug form and name the compound and the figure. Wrong structures matter more than anything else here.
+- **A question, or something you made with it?** [Discussions](https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions) — "Show and tell" is the place for what you used it for.
 - **It worked well?** A ⭐ on the repository is the only analytics this project has.
 
 ## License
