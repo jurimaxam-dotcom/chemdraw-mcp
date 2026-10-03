@@ -1,0 +1,46 @@
+name: Bug report
+description: Something drew wrong, did not draw, or the server does not start
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The more exact this is, the faster it gets fixed.
+        Wrong chemistry (a wrong structure, a wrong number) is the highest priority.
+  - type: textarea
+    id: what
+    attributes:
+      label: What did you ask, and what happened?
+      description: Paste your prompt. If a figure is wrong, name the compound and say what is wrong with it.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: false
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `chemdraw-doctor`
+      description: Run `chemdraw-doctor` in a terminal (or `uv run chemdraw-doctor` in a clone) and paste the result.
+      render: text
+    validations:
+      required: false
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - Desktop extension (.mcpb)
+        - uv tool install / chemdraw-install
+        - Cloned the repository
+        - Edited the config by hand
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The release number, e.g. 0.4.8.

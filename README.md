@@ -5,6 +5,8 @@
 [![CI](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/jurimaxam-dotcom/chemdraw-mcp)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/chemdraw-mcp)](https://pypi.org/project/chemdraw-mcp/)
+[![GitHub stars](https://img.shields.io/github/stars/jurimaxam-dotcom/chemdraw-mcp?style=social)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers)
 
 **Chat → chemical structure.** An MCP server for Claude Desktop: you describe
 a molecule, a reaction or a lab result in plain words, and it draws the
@@ -23,6 +25,7 @@ For the same lab report, also:
 | **Lab graphics** | TLC plates, titration curves, schematic spectra, calibration lines |
 | **Look up** | PubChem/GHS data sheets, expected IR bands |
 | **Bench maths** | weighing and dilutions, Ph.Eur. content determination, pH and buffers |
+| **Pharmacology** | concentration-time curves, dose-response with an antagonist, half-life / steady-state / loading-dose maths, ionisation at a given pH |
 | **Exam prep** | Anki decks with the structures rendered in |
 
 What it costs you: one install command. Apache-2.0, no API key, no sign-up
@@ -33,6 +36,25 @@ database lookups reach the internet. ChemDraw CDXML is an optional extra
 format for people who want to keep editing there, never a requirement.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo.gif" alt="Live demo: 'Draw Caffein' renders an interactive structure panel in Claude Desktop" width="560"></p>
+
+## Try it in 30 seconds
+
+1. **[Download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**
+   (`chemdraw-mcp-<version>.mcpb`) and double-click it. Confirm in Claude Desktop.
+2. Open a **new chat** and say *"Use the ChemDraw MCP: draw caffeine"* — a panel with the structure appears.
+3. Then try one of these:
+
+| Ask | You get |
+|---|---|
+| *"Draw ibuprofen and naproxen side by side and mark the differences"* | both structures, differences highlighted |
+| *"Show the SN2 mechanism of bromoethane with hydroxide"* | curved-arrow mechanism, step by step |
+| *"Plot plasma concentration for 500 mg orally every 8 h, F 0.8, Vd 70 L, t½ 4.6 h"* | the curve up to steady state, with the numbers |
+| *"What fraction of aspirin (pKa 3.5) is uncharged in the stomach at pH 1.5?"* | the working, not just the answer |
+| *"Make Anki cards for the NSAIDs with the structures"* | an `.apkg` deck with the structures rendered in |
+
+No API key, no sign-up, no ChemDraw licence. Rendering runs on your machine.
+Details and the other install routes are under [Installation](#installation).
+If it saves you time, a ⭐ helps other students find it.
 
 ## Example output
 
@@ -51,6 +73,10 @@ live in the chat panel:
 panel:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-demo.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
+
+The overview lays every step out in one column with the same bond length, so reactants, transition state and products read at a glance:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-overview.png" alt="SN2 overview: reactants, transition state with partial bonds and curved arrows, products" width="520"></p>
 
 *"Make a scope figure of my Suzuki couplings: 3a 92%, 3b 88% after 12 h,
 3c 64% with ee 94% and dr 10:1, 3d 71%"* — `generate_scope_table` sets the
@@ -98,6 +124,22 @@ with rendered structures embedded; with the optional AnkiConnect add-on the
 cards land straight in the running Anki, no clicks:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-demo.gif" alt="Split screen: asking Claude for an Anki deck, cards appear in Anki via AnkiConnect" width="760"></p>
+
+## Pharmacology
+
+The curves a pharmacology course keeps asking for, drawn from the numbers you give.
+Both figures and the maths behind them (`calculate_pharmacokinetics`) share the same
+formulas, so the picture and the number never disagree.
+
+*"Plot plasma concentration for 500 mg orally every 8 hours (F 0.8, Vd 70 L, half-life 4.6 h, ka 1.2/h) with a therapeutic window of 2–6 mg/L"* —
+`generate_pk_curve` builds up to steady state and prints Cmax, tmax, AUC, accumulation and the time to 90 % of steady state:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/pk-curve.png" alt="Plasma concentration over time for repeated oral doses, building up to steady state inside a therapeutic window" width="640"></p>
+
+*"Draw the dose-response curve of an agonist with EC50 10 nM and show what a competitive antagonist (20 nM, KB 10 nM) does"* —
+`generate_dose_response` shifts the curve to the right by the dose ratio and leaves Emax where it is:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/dose-response.png" alt="Hill curve of an agonist and the same curve shifted to the right by a competitive antagonist" width="640"></p>
 
 ## Features
 
@@ -372,6 +414,17 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium  # fronten
 600+ tests, written test-first. The e2e test rasters a real RDKit SVG in
 headless Chromium and compares it against an exact pixel snapshot — the
 export path and the in-chat preview are held to the same drawing constants.
+
+## Feedback, bugs and wishes
+
+This is built for students, and what it does next comes from what you run into.
+
+- **Something broke?** [Open a bug report](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=bug_report.yml) —
+  the form asks for the output of `chemdraw-doctor`, which answers most questions before they are asked.
+- **Missing something in your course?** [Tell us what you would draw or calculate](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=feature_request.yml) —
+  say the subject and the exam question; that is worth more than a feature name.
+- **Wrong chemistry?** Use the bug form and name the compound and the figure. Wrong structures matter more than anything else here.
+- **It worked well?** A ⭐ on the repository is the only analytics this project has.
 
 ## License
 

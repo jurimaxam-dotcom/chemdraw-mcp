@@ -1,0 +1,25 @@
+name: Feature request
+description: Something from your course that you would like to draw or calculate
+labels: [enhancement]
+body:
+  - type: input
+    id: subject
+    attributes:
+      label: Subject and semester
+      description: For example "Pharmacology, 4th semester" or "Organic chemistry lab".
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: The exam or lab question that needs it
+      description: One concrete question or task. This is worth more than a feature name.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: How do you do it today?
+      description: By hand, in another tool, with a spreadsheet?
+    validations:
+      required: false
