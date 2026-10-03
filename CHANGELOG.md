@@ -6,6 +6,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The panel runs on `ext-apps` 2.0.** The wire protocol between Claude Desktop and
+  the panel is unchanged (2.x panels run in 1.x hosts and the other way round), so
+  nothing changes for users. The bundled panel is about a quarter smaller
+  (524 kB to 399 kB) because the old SDK and zod 3 are no longer part of it.
+
 ### Added
 
 - **Pharmacokinetics practice problems** in the Praktikumsrechner: half-life from

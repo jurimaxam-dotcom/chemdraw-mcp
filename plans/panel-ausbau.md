@@ -5,7 +5,7 @@ Ziel: Das Moleküle-Panel wird vom Bild zum Lernwerkzeug. **Eine** Molekülanfra
 ## Fokusänderung 03.10.2026 (abends) — Wow-Moment statt Nische
 Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein** für alle, die es auf GitHub ausprobieren (Chemie, Pharmazie, Biologie). Die Liste aller Möglichkeiten und die Bewertung steht in `docs/produkt/panel-moeglichkeiten.md`. **Diese Reihenfolge gilt vor den Phasen unten:**
 
-- [ ] **M0** `ext-apps` 2.0.3 und MCP-Fassung 2026-07-28: Release-Notizen/Changelog lesen, Migrationsaufwand schätzen (vor allem anderen; `docs/anthropic/abgleich.md` §1)
+- [x] **M0** `ext-apps` 2.0.3 migriert (03.10.): keine Codeänderung im Panel, Bundle 524 → 399 kB, Gate/Host-Test/Handshake grün; MCP-Fassung 2026-07-28 gelesen, nichts zu tun (`docs/anthropic/abgleich.md` §1)
 - [ ] **M3** alle 23 Werkzeuge mit `title` und `readOnlyHint` annotieren (Snapshot-Tests mit freigeben)
 - [ ] **M2** Größen der Panel-Ergebnisse messen (Grenze ~150.000 Zeichen, sonst lädt das Panel nicht), Großes nachladen
 - [ ] **M7** Manifest: Icon (512 px), `privacy_policies`, Windows testen oder ausschließen; **M8** README: Organisationen können Extensions sperren

@@ -11,8 +11,8 @@ Pflege-Regel: Ändert sich eine Quelle, wird **hier** die Zeile angepasst, dann 
 
 | Baustein | unser Stand | neueste | Folge |
 |---|---|---|---|
-| `@modelcontextprotocol/ext-apps` | ^1.7.4 | **2.0.3** (2.0.0 am 08.09.2026) | **M0:** Hauptversion — Release-Notizen lesen, Migrationsaufwand schätzen, bevor das Panel weiter wächst |
-| MCP-Spezifikation | – | Fassung **2026-07-28** | M0b: Änderungsliste (`changelog`) lesen, ob Tools/Ressourcen/stdio betroffen sind |
+| `@modelcontextprotocol/ext-apps` | **^2.0.3** (migriert 03.10.2026) | 2.0.3 | **M0 erledigt:** Protokoll auf dem Draht unverändert (2.x-Panels laufen in 1.x-Hosts und umgekehrt, vom Hersteller getestet). Gebrochen waren nur Abhängigkeiten (`client` ^2 statt `sdk` ^1, `zod` ^4.2, Node ≥ 20); unser Panel braucht dafür **keine Codeänderung** (nutzt ext-apps an einer Stelle: `useApp`). Bundle 524 → 399 kB. 2.0.1 bis 2.0.3 sind Beispiel-Patches, an der Bibliothek ändert sich nichts. |
+| MCP-Spezifikation | – | Fassung **2026-07-28** | **M0b erledigt:** zustandslos (kein `initialize` mehr), `server/discover`, Pflichtfeld `resultType`, Cache-Hinweise `ttlMs`/`cacheScope`, Roots/Sampling/Logging als veraltet markiert. Das setzt das Python-`mcp` 2.x für uns um (Plan mcp-2-migration, geparkt); ältere Server bleiben nutzbar (Clients behandeln fehlendes `resultType` als vollständig). Für uns jetzt nichts zu tun; Sampling nutzen wir nicht. |
 | Python `mcp` | `>=1.27,<2` | 2.3.0 | siehe Plan „mcp-2-migration" (geparkt) |
 | `@anthropic-ai/mcpb` (Bau) | 2.1.2 | 2.1.2 | aktuell |
 
