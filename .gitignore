@@ -29,3 +29,6 @@ evals/tool-routing/promptfooconfig.yaml
 # Agenten-Worktrees (eigene Repos, nie einchecken)
 /.claude/worktrees/
 /web/dist/
+
+# Anthropic-Doku: lokale Textkopien gehören Anthropic und bleiben aus dem Repo
+.cache/

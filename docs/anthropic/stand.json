@@ -1,0 +1,354 @@
+{
+ "geprueft": "2026-10-03",
+ "hinweis": "Fingerabdrücke und Titel — die Texte liegen lokal in .cache/anthropic/ und gehören Anthropic.",
+ "seiten": {
+  "https://claude.com/docs/build/overview.md": {
+   "titel": "Build for Claude",
+   "beschreibung": "Build a plugin people use inside Claude: an MCP connector to your product, skills for your workflows, optional MCP Apps UI, and a listing in the directory.",
+   "quelle": "claude-docs",
+   "hash": "2309ede9965fb187"
+  },
+  "https://claude.com/docs/connectors/building/after-publishing.md": {
+   "titel": "Manage your listing after publishing",
+   "beschreibung": "Update your MCP server, plugin, and directory listing after publication, keep your listing URL stable, and delist when you need to.",
+   "quelle": "claude-docs",
+   "hash": "83d924fb359c715d"
+  },
+  "https://claude.com/docs/connectors/building/authentication.md": {
+   "titel": "Authentication for connectors",
+   "beschreibung": "Meet Claude's OAuth requirements for remote MCP servers: supported authentication types, client registration, discovery, callback URLs, and token refresh.",
+   "quelle": "claude-docs",
+   "hash": "9b12eefbb1a7a304"
+  },
+  "https://claude.com/docs/connectors/building/directory-vs-custom.md": {
+   "titel": "Directory connectors vs custom connectors",
+   "beschreibung": "Compare directory-listed and custom connectors: Anthropic review, in-product discovery, install links, Suggested Connectors, and per-tenant URL listings.",
+   "quelle": "claude-docs",
+   "hash": "84b5871b2ba1fa71"
+  },
+  "https://claude.com/docs/connectors/building/enterprise-managed-auth.md": {
+   "titel": "Enterprise Managed Auth for connectors",
+   "beschreibung": "Accept identity assertions from enterprise SSO so users connect to your MCP server without a separate OAuth consent step.",
+   "quelle": "claude-docs",
+   "hash": "b6338698e11a1b5c"
+  },
+  "https://claude.com/docs/connectors/building/index.md": {
+   "titel": "Build an MCP server for Claude",
+   "beschreibung": "Build a remote MCP server that people use as a connector in Claude: where it runs, authentication, what it exposes, size and timeout limits, and distribution.",
+   "quelle": "claude-docs",
+   "hash": "f42ff8380518fd4e"
+  },
+  "https://claude.com/docs/connectors/building/lazy-authentication.md": {
+   "titel": "Lazy authentication for MCP servers",
+   "beschreibung": "Let users call public tools immediately and defer OAuth until a protected tool is actually invoked.",
+   "quelle": "claude-docs",
+   "hash": "849b9619a80cc31f"
+  },
+  "https://claude.com/docs/connectors/building/managing-your-listing.md": {
+   "titel": "Manage your directory listing",
+   "beschreibung": "Track submissions, monitor server health and usage metrics, and edit your directory listing",
+   "quelle": "claude-docs",
+   "hash": "9ec62fdfae50fb66"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/design-guidelines.md": {
+   "titel": "Design guidelines",
+   "beschreibung": "Design MCP Apps that feel native to Claude: display modes, mobile layout, visual style, interaction patterns, and the host's style variables.",
+   "quelle": "claude-docs",
+   "hash": "6ab604d6ba3b12cf"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/external-links.md": {
+   "titel": "Open external links from MCP Apps",
+   "beschreibung": "Declare allowed link destinations so ui/open-link requests from your directory connector's MCP App open without Claude's confirmation modal.",
+   "quelle": "claude-docs",
+   "hash": "a1c10cc565853eac"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/getting-started.md": {
+   "titel": "Get started with MCP Apps",
+   "beschreibung": "Try example MCP Apps in Claude Desktop, then use the MCP Apps SDK, examples, and agent skills to add interactive UI to your own MCP server.",
+   "quelle": "claude-docs",
+   "hash": "c5441a92ac32c17a"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/instance-supersession.md": {
+   "titel": "Supersede older widget instances",
+   "beschreibung": "Keep only the newest copy of an MCP App widget active when Claude calls its tool more than once in a conversation, using a server key and BroadcastChannel.",
+   "quelle": "claude-docs",
+   "hash": "6ba204c331fafe72"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/quickstart.md": {
+   "titel": "Add an interactive UI to your MCP server",
+   "beschreibung": "Add an MCP App to the quickstart MCP server: register a ui:// resource with the MCP Apps SDK, link it to a tool, and check that the server advertises the UI.",
+   "quelle": "claude-docs",
+   "hash": "02854740f19bb073"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/transparent-theming.md": {
+   "titel": "Blend your MCP App with Claude's theme",
+   "beschreibung": "Make your MCP App's background transparent and style it with Claude's host style variables so it blends into the conversation in light and dark mode.",
+   "quelle": "claude-docs",
+   "hash": "91f6c1a711bfcd2a"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/troubleshooting.md": {
+   "titel": "Troubleshoot MCP Apps",
+   "beschreibung": "Debug MCP Apps in Claude with developer tools on desktop and iOS, and fix invisible apps, large tool results, iOS-only request failures, and ui.domain errors.",
+   "quelle": "claude-docs",
+   "hash": "9129e3a23b61f0da"
+  },
+  "https://claude.com/docs/connectors/building/mcp.md": {
+   "titel": "Model Context Protocol (MCP)",
+   "beschreibung": "Get oriented to the Model Context Protocol, the open standard behind Claude's connectors: local and remote servers, tools, resources, and prompts.",
+   "quelle": "claude-docs",
+   "hash": "8f4b30d7ef015cf7"
+  },
+  "https://claude.com/docs/connectors/building/mcpb.md": {
+   "titel": "Build a desktop extension with MCPB",
+   "beschreibung": "Package a local MCP server as a single-click .mcpb install for Claude Desktop: when to build one, the CLI quickstart, manifest.json, and how users install it.",
+   "quelle": "claude-docs",
+   "hash": "0f36c9867125401a"
+  },
+  "https://claude.com/docs/connectors/building/quickstart.md": {
+   "titel": "Build your first MCP server for Claude",
+   "beschreibung": "Build a minimal MCP server with one tool in JavaScript, run it on your machine, and connect it to Claude Code so Claude calls your tool.",
+   "quelle": "claude-docs",
+   "hash": "a833e06f5e3d9d0e"
+  },
+  "https://claude.com/docs/connectors/building/review-criteria.md": {
+   "titel": "Connector pre-submission checklist",
+   "beschreibung": "Check your MCP connector against what Anthropic reviewers test, including tool design, prompt-injection patterns, and functional quality, before you submit.",
+   "quelle": "claude-docs",
+   "hash": "7ccd15f1b68ee754"
+  },
+  "https://claude.com/docs/connectors/building/submission.md": {
+   "titel": "Submit a connector to the directory",
+   "beschreibung": "Submit a remote MCP server or MCP App to the Connectors Directory through the developer portal: requirements, screenshot specs, and what each step asks for.",
+   "quelle": "claude-docs",
+   "hash": "590f028b6b3a72a9"
+  },
+  "https://claude.com/docs/connectors/building/testing.md": {
+   "titel": "Test your connector",
+   "beschreibung": "Test your MCP server against Claude as a custom connector before you submit it to the directory, including a local server exposed through a tunnel.",
+   "quelle": "claude-docs",
+   "hash": "dfe120a429ad0ab2"
+  },
+  "https://claude.com/docs/connectors/building/troubleshooting.md": {
+   "titel": "Troubleshoot your connector",
+   "beschreibung": "Diagnose and resolve common connection, authorization, and tool-call failures for custom and directory MCP connectors",
+   "quelle": "claude-docs",
+   "hash": "e23674847514af2d"
+  },
+  "https://claude.com/docs/connectors/building/what-to-build.md": {
+   "titel": "Decide what to include in your plugin",
+   "beschreibung": "Decide which pieces your Claude plugin needs: an MCP connector backed by a server you host, skills, commands, agents, or UI, and how they're listed together.",
+   "quelle": "claude-docs",
+   "hash": "5afb76ad7bb4a15b"
+  },
+  "https://claude.com/docs/connectors/custom/add-unlisted.md": {
+   "titel": "Add a connector that isn't in the directory",
+   "beschreibung": "Connect Claude to an MCP server that isn't in the Connectors Directory, by its URL or as a local desktop extension.",
+   "quelle": "claude-docs",
+   "hash": "0941b24d0315a213"
+  },
+  "https://claude.com/docs/connectors/directory.md": {
+   "titel": "Connectors directory",
+   "beschreibung": "Browse verified and community MCP connectors in the Connectors Directory, one catalog for claude.ai, Claude Desktop, mobile, Claude Code, and Cowork",
+   "quelle": "claude-docs",
+   "hash": "54bf799e973ed203"
+  },
+  "https://claude.com/docs/connectors/getting-started.md": {
+   "titel": "Get started with connectors",
+   "beschreibung": "Connect Claude to an app or service from the Connectors directory, turn the connector on in a conversation, and manage or disconnect it later.",
+   "quelle": "claude-docs",
+   "hash": "57a5c3970aabf3ef"
+  },
+  "https://claude.com/docs/connectors/verification.md": {
+   "titel": "Connector verification",
+   "beschreibung": "How Anthropic reviews connectors in the directory, what the Verified, Community, and Custom labels mean, and how to stay safe with third-party connectors.",
+   "quelle": "claude-docs",
+   "hash": "00d60de3bb00ee41"
+  },
+  "https://claude.com/docs/directory/publish.md": {
+   "titel": "Publish to the directory",
+   "beschreibung": "Submit a plugin or MCP connector to Anthropic's directory: the two submission kinds, who can submit, what review involves, and where to start.",
+   "quelle": "claude-docs",
+   "hash": "3e40abfe6a91b3c3"
+  },
+  "https://claude.com/docs/directory/submission-status.md": {
+   "titel": "Track your directory submission",
+   "beschreibung": "Look up the status the developer portal shows for a plugin bundle or MCP connector submission: what it means, who acts next, and who to contact.",
+   "quelle": "claude-docs",
+   "hash": "63c0fef68dd5f3b9"
+  },
+  "https://claude.com/docs/plugins/admin.md": {
+   "titel": "Manage plugins for your organization",
+   "beschreibung": "Control which plugins members of your Team or Enterprise organization can use in claude.ai and Cowork: see what you have, add your own, and set availability.",
+   "quelle": "claude-docs",
+   "hash": "bed00c6f3ab05e7a"
+  },
+  "https://claude.com/docs/plugins/build.md": {
+   "titel": "Plugin structure and testing",
+   "beschreibung": "Reference for the plugin folder: what each file is, the manifest fields every app reads, bundling an MCP connector with its skill, and testing on each app.",
+   "quelle": "claude-docs",
+   "hash": "a619792c12ab84e6"
+  },
+  "https://claude.com/docs/plugins/create-with-claude.md": {
+   "titel": "Create a plugin with Claude",
+   "beschreibung": "Make a plugin for your own workflow from claude.ai or the desktop app without writing files: choose Create with Claude and answer Claude's questions.",
+   "quelle": "claude-docs",
+   "hash": "3e498c8943a92426"
+  },
+  "https://claude.com/docs/plugins/org-rollout.md": {
+   "titel": "Roll out a plugin to your whole organization",
+   "beschreibung": "Get your organization's plugin to members in claude.ai and Cowork and to developers in Claude Code by using organization settings and managed settings together.",
+   "quelle": "claude-docs",
+   "hash": "a318369c4104c5a8"
+  },
+  "https://claude.com/docs/plugins/org-sync.md": {
+   "titel": "Sync your organization's plugins from a repository",
+   "beschreibung": "Distribute your organization's plugins from a GitHub or GitLab repository through organization settings, including repository requirements and GitLab setup.",
+   "quelle": "claude-docs",
+   "hash": "f5ad61567f2b9c3c"
+  },
+  "https://claude.com/docs/plugins/overview.md": {
+   "titel": "Plugins",
+   "beschreibung": "Add plugins to Claude: what a plugin adds, where to find and install one, and where it's available across chat, Cowork, and Claude Code.",
+   "quelle": "claude-docs",
+   "hash": "9130251d47efb7d0"
+  },
+  "https://claude.com/docs/plugins/platform-support.md": {
+   "titel": "Plugin feature support across platforms",
+   "beschreibung": "Look up which plugin components and install paths work in claude.ai chat, Cowork, and Claude Code, and why a plugin behaves differently on each.",
+   "quelle": "claude-docs",
+   "hash": "68dc6eb2d2eeb13c"
+  },
+  "https://claude.com/docs/plugins/pre-submission-checklist.md": {
+   "titel": "Plugin pre-submission checklist",
+   "beschreibung": "Fix every finding before you submit a plugin to the Claude plugin directory: what the developer portal's validation and scan check, and what each result means.",
+   "quelle": "claude-docs",
+   "hash": "98397affbe6b5fa5"
+  },
+  "https://claude.com/docs/plugins/quickstart.md": {
+   "titel": "Build your first plugin",
+   "beschreibung": "Build a plugin with one skill and an optional MCP connector, test it in Claude Code, validate it, and push it to GitHub, ready to submit your own.",
+   "quelle": "claude-docs",
+   "hash": "70c395a8c83dd3b3"
+  },
+  "https://claude.com/docs/plugins/share.md": {
+   "titel": "Share a plugin with teammates",
+   "beschreibung": "Share a plugin you made with specific people in your Team or Enterprise organization, or publish it to your organization's library.",
+   "quelle": "claude-docs",
+   "hash": "d6c8fa6ac969bc78"
+  },
+  "https://claude.com/docs/plugins/submit.md": {
+   "titel": "Submit your plugin",
+   "beschreibung": "Submit a plugin from a GitHub repository to Anthropic's directory through the developer portal, follow its review, publish it, and release updates.",
+   "quelle": "claude-docs",
+   "hash": "17af4b5b81d6ea3d"
+  },
+  "https://modelcontextprotocol.io/extensions/apps/build.md": {
+   "titel": "Build an MCP App",
+   "beschreibung": "Getting started guide for building interactive UI applications with MCP Apps",
+   "quelle": "mcp-standard",
+   "hash": "e9ccb0a553b59d8e"
+  },
+  "https://modelcontextprotocol.io/extensions/apps/overview.md": {
+   "titel": "MCP Apps",
+   "beschreibung": "Interactive UI applications that render inside MCP hosts like Claude Desktop",
+   "quelle": "mcp-standard",
+   "hash": "06325802b0d30ea3"
+  },
+  "https://modelcontextprotocol.io/specification/2024-11-05/server/resources.md": {
+   "titel": "Resources",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "a33902d393bf46c9"
+  },
+  "https://modelcontextprotocol.io/specification/2024-11-05/server/tools.md": {
+   "titel": "Tools",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "9e69422a44b1b87d"
+  },
+  "https://modelcontextprotocol.io/specification/2025-03-26/changelog.md": {
+   "titel": "Key Changes",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "3bc36335059c998b"
+  },
+  "https://modelcontextprotocol.io/specification/2025-03-26/server/resources.md": {
+   "titel": "Resources",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "45b8b267094225c8"
+  },
+  "https://modelcontextprotocol.io/specification/2025-03-26/server/tools.md": {
+   "titel": "Tools",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "3625c1d5d3e8b7f1"
+  },
+  "https://modelcontextprotocol.io/specification/2025-06-18/changelog.md": {
+   "titel": "Key Changes",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "62ea7adfd7c40337"
+  },
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/resources.md": {
+   "titel": "Resources",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "29790aa949db37b0"
+  },
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/tools.md": {
+   "titel": "Tools",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "ec1cd3d6b847fc59"
+  },
+  "https://modelcontextprotocol.io/specification/2025-11-25/changelog.md": {
+   "titel": "Key Changes",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "0c6f3a313c714462"
+  },
+  "https://modelcontextprotocol.io/specification/2025-11-25/server/resources.md": {
+   "titel": "Resources",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "ee91db032b81c00e"
+  },
+  "https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md": {
+   "titel": "Tools",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "e1ab0b823bb1637e"
+  },
+  "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio.md": {
+   "titel": "stdio",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "00a2c4b0446b9be8"
+  },
+  "https://modelcontextprotocol.io/specification/2026-07-28/changelog.md": {
+   "titel": "Key Changes",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "a3057e765e623dbd"
+  },
+  "https://modelcontextprotocol.io/specification/2026-07-28/deprecated.md": {
+   "titel": "Deprecated Features",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "62a4379256d6a923"
+  },
+  "https://modelcontextprotocol.io/specification/2026-07-28/server/resources.md": {
+   "titel": "Resources",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "b592e287668cc33a"
+  },
+  "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md": {
+   "titel": "Tools",
+   "beschreibung": "",
+   "quelle": "mcp-standard",
+   "hash": "95273b4b02158c67"
+  }
+ }
+}

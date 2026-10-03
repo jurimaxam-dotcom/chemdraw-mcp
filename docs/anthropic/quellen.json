@@ -1,0 +1,27 @@
+{
+  "hinweis": "Welche Seiten für dieses Projekt zählen. `einschliessen` sind Muster auf die URL, gematcht gegen die Einträge der Indizes. Neue Seiten, die passen, erscheinen von selbst als NEU.",
+  "indizes": [
+    {
+      "name": "claude-docs",
+      "url": "https://claude.com/docs/llms.txt",
+      "einschliessen": [
+        "/docs/connectors/building/",
+        "/docs/connectors/custom/",
+        "/docs/connectors/directory",
+        "/docs/connectors/verification",
+        "/docs/connectors/getting-started",
+        "/docs/directory/",
+        "/docs/build/",
+        "/docs/plugins/"
+      ]
+    },
+    {
+      "name": "mcp-standard",
+      "url": "https://modelcontextprotocol.io/llms.txt",
+      "einschliessen": [
+        "/extensions/apps/",
+        "/specification/[0-9-]+/(changelog|deprecated|server/tools|server/resources|basic/transports/stdio)\\.md"
+      ]
+    }
+  ]
+}

@@ -29,6 +29,15 @@ signature errors. Restart it yourself after such changes (`osascript -e 'quit
 app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
 (initialize → tools/list) is the hard proof that the registered command works.
 
+## Anthropic-Doku im Blick (Pflicht vor Panel-/Architekturarbeit)
+
+Was Claude Desktop für MCP-Apps, Extensions und Panels anbietet, ändert sich laufend (ext-apps 2.0, neue
+MCP-Fassung, neue Leitfaden-Seiten). Deshalb: **vor Panel-, Manifest- oder Architekturarbeit**
+`uv run python scripts/anthropic_sync.py --check` — es meldet NEU/GEÄNDERT/WEG und neue Paketversionen. Bei
+Änderungen die Seiten lesen (`--diff URL`), `docs/anthropic/abgleich.md` anpassen, **dann** bauen, dann `--update`.
+Die Textkopien liegen nur lokal (`.cache/`, Anthropics Urheberrecht); im Repo stehen Fingerabdrücke und unsere
+Auswertung. Ein Sitzungsstart-Hook meldet, wenn der Stand älter als 7 Tage ist.
+
 ## Auto-Gate (the project's green/red)
 
 ```bash
