@@ -6,6 +6,7 @@ zusätzlich die Bahnen mit ihren Rf-Werten — das Panel listet sie als
 Ableseliste fürs Protokoll.
 """
 
+import re
 from pathlib import Path
 
 import pytest
@@ -85,4 +86,4 @@ def test_filename_uses_title_slug(tmp_path):
 
 def test_filename_falls_back_to_plate(tmp_path):
     payload = generate_tlc(ESTER_LANES)
-    assert Path(payload.files["png"]).name == "tlc-plate.png"
+    assert re.fullmatch(r"tlc-plate-[0-9a-f]{6}\.png", Path(payload.files["png"]).name)

@@ -54,6 +54,6 @@ Empfehlung (Stand 02.10.): Zuerst ein Pharmazie-Praktikums- und Prüfungsrechner
 - [ ] Geschwindigkeit: Server-Import 1,4 s (mcp 0,33 · rdkit 0,25 · matplotlib 0,25) — nur lazy laden, wenn die Handshake-Zeit unter Last wehtut; Datenblatt-Ladezeit 2,3 s (PubChem) — Vorabladen nur falls Jay es spürt
 - [x] Desktop-Test 03.10.: 0.4.7 verbunden, `generate_pk_curve` kam an, Zahlen stimmen (Css,av 4,74 mg/L, R 1,43). Desktop lädt MCP-Tools erst nach („Ich lade die ChemDraw-Werkzeuge“) und nimmt sonst die Sandbox — Prompt mit „Nutze den ChemDraw-MCP“ wirkt
 - [x] Dateinamen von `generate_pk_curve`/`generate_dose_response` tragen ohne `drug` die Parameter (vorher überschrieb jede Kurve `pk-pharmacokinetics.png`)
-- [ ] Gleiches Überschreiben bei TLC (`tlc-plate`), Scope (`substrate-scope`), Kalibrierkurve (`calibration-curve`), Reaktion (`reaktion`) ohne Titel und bei Titration mit gleichem Stoff, anderen Parametern — Dateiname aus den Eingaben ableiten, je mit Test
+- [x] (03.10., 0.4.8) Gleiches Überschreiben bei TLC (`tlc-plate`), Scope (`substrate-scope`), Kalibrierkurve (`calibration-curve`), Reaktion (`reaktion`) ohne Titel und bei Titration mit gleichem Stoff, anderen Parametern — Dateiname aus den Eingaben ableiten, je mit Test
 - [ ] Hinweis in `_INSTRUCTIONS`/README für Nutzer: Desktop nimmt die Sandbox, wenn man den MCP nicht nennt — prüfen, ob ein Satz in `instructions` das ändert (nur messbar in Desktop)
 

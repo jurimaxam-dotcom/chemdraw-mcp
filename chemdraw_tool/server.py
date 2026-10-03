@@ -1,4 +1,6 @@
+import hashlib
 import inspect
+import json
 import re
 from importlib.metadata import version as _pkg_version
 from pathlib import Path
@@ -383,6 +385,17 @@ def _build_lipinski(props: dict[str, str]) -> LipinskiData | None:
     )
 
 
+def _default_slug(base: str, *inputs: object) -> str:
+    """Dateiname ohne Titel: Vorgabe plus kurzer Fingerabdruck der Eingaben.
+
+    Eine feste Vorgabe („tlc-plate“) ließ jede Zeichnung ohne Titel die vorige überschreiben
+    (Desktop-Chat 03.10.2026). Andere Eingaben ergeben eine andere Datei, gleiche Eingaben
+    dieselbe — Wiederholen füllt den Ordner nicht.
+    """
+    tag = hashlib.sha1(json.dumps(inputs, sort_keys=True, default=str).encode()).hexdigest()[:6]
+    return f"{_slugify(base)}-{tag}"
+
+
 def _slugify(text: str) -> str:
     text = text.lower().strip()
     text = re.sub(r"[^\w\s-]", "", text)
@@ -549,7 +562,7 @@ def generate_spectrum(
         artifacts["png"] = render_spectrum_png(spectrum_type, peak_dicts, title=title)
     if "svg" in fmts:
         artifacts["svg"] = render_spectrum_svg(spectrum_type, peak_dicts, title=title)
-    slug = _slugify(title or cfg.title)
+    slug = _slugify(title) if title else _default_slug(cfg.title, spectrum_type, peak_dicts)
     files = write_files(SPECTRUM_DIR / slug, artifacts)
 
     svg_preview = artifacts.get("svg") or render_spectrum_svg(
@@ -624,7 +637,7 @@ def generate_tlc(
         artifacts["svg"] = render_tlc_svg(
             lane_dicts, title=title, solvent=solvent, detection=detection
         )
-    slug = _slugify(title or "TLC plate")
+    slug = _slugify(title) if title else _default_slug("tlc-plate", lane_dicts, solvent, detection)
     files = write_files(TLC_DIR / slug, artifacts)
 
     svg_preview = artifacts.get("svg") or render_tlc_svg(
@@ -780,7 +793,7 @@ def generate_scope_table(
         artifacts["png"] = render_scope_png(items, **figure)
     if "svg" in fmts:
         artifacts["svg"] = render_scope_svg(items, **figure)
-    slug = _slugify(title or "substrate-scope")
+    slug = _slugify(title) if title else _default_slug("substrate-scope", entries, reaction, columns)
     files = write_files(SCOPE_DIR / slug, artifacts)
 
     svg_preview = artifacts.get("svg") or render_scope_svg(items, **figure)
@@ -1026,9 +1039,10 @@ def generate_calibration_curve(
         "png": calibration_plot.render_png(**kwargs),
         "svg": calibration_plot.render_svg(**kwargs),
     }
-    files = write_files(
-        PLOT_DIR / _slugify(substance or "calibration curve"), artifacts
+    stem = _slugify(substance) if substance else _default_slug(
+        "calibration-curve", concentrations, signals, unknown_signals
     )
+    files = write_files(PLOT_DIR / stem, artifacts)
 
     return PlotPayload(
         name=title,
@@ -2726,7 +2740,7 @@ def generate_reaction(
                 raise ValueError(f"Product '{p}' validation failed: {issue.message}")
         product_mols.append(mol)
 
-    slug = _slugify(name or "reaktion")
+    slug = _slugify(name) if name else _default_slug("reaktion", reactants, products, conditions)
     out_dir = REACTION_DIR / slug
 
     # Abkürzen betrifft nur die Zeichnung — das CDXML unten wird aus den

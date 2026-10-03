@@ -4,6 +4,7 @@ Wie die anderen generate_*-Tools: PNG+SVG sind Default und werden als Dateien
 geschrieben; CDXML gibt es für Spektren nicht (Spektrum ≠ Struktur).
 """
 
+import re
 from pathlib import Path
 
 import pytest
@@ -63,4 +64,5 @@ def test_filename_uses_title_slug(tmp_path):
 
 def test_filename_falls_back_to_type(tmp_path):
     payload = generate_spectrum("cd", [{"position": 280, "intensity": -1}])
-    assert Path(payload.files["png"]).name == "cd-spectrum.png"
+    # Ohne Titel: Vorgabe plus Fingerabdruck der Eingaben (siehe tests/test_filenames_without_title.py)
+    assert re.fullmatch(r"cd-spectrum-[0-9a-f]{6}\.png", Path(payload.files["png"]).name)
