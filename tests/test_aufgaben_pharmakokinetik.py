@@ -5,11 +5,10 @@ Jede Lösung wird gegen `chemdraw_tool.pk` geprüft — dieselben Formeln wie in
 Übungszahlen, keine Wirkstoffdaten.
 """
 
-import math
 
 import pytest
 
-from chemdraw_tool import pk, ph_calc
+from chemdraw_tool import ph_calc, pk
 from chemdraw_tool.aufgaben import pharmakokinetik as pa
 from chemdraw_tool.aufgaben.basis import de, pruefe
 

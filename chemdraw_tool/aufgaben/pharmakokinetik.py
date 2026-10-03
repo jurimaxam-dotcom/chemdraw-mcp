@@ -13,7 +13,6 @@ Nur Standardbibliothek — läuft per Pyodide im Browser.
 
 from __future__ import annotations
 
-import math
 import random
 
 from .. import pk
