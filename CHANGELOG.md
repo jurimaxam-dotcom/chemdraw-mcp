@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.7] — 2026-10-03
+
 ### Added
 
 - **`generate_pk_curve` and `generate_dose_response`** — the two pharmacology

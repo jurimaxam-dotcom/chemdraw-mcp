@@ -245,7 +245,7 @@ cases:
   - id: pk-halflife-from-clearance
     prompt: "Ein Arzneistoff hat ein Verteilungsvolumen von 70 L und eine Clearance von 10,5 L/h. Wie lang ist die Halbwertszeit?"
     expect: calculate_pharmacokinetics
-    forbidden: [calculate_solution, calculate_ph, lookup]
+    forbidden: [calculate_solution, calculate_ph, lookup, generate_pk_curve]
     why: >
       Eine Rechenaufgabe mit gegebenen Parametern. Ohne diesen Fall waere offen,
       ob das Modell sie dem pH- oder dem Loesungs-Rechner zuschiebt.
@@ -253,7 +253,7 @@ cases:
   - id: pk-oral-peak
     prompt: "Wann erreicht eine orale Dosis von 500 mg (F 0,8; Vd 70 L; ke 0,15/h; ka 1,2/h) ihren Gipfel und wie hoch ist Cmax?"
     expect: calculate_pharmacokinetics
-    forbidden: [calculate_solution, generate_titration_curve, generate_species_distribution, generate_pk_curve]
+    forbidden: [calculate_solution, generate_titration_curve, generate_species_distribution]
     why: „Gipfel“ und Kurvenwoerter ziehen zu den Diagramm-Tools; gefragt sind aber Zahlen.
 
   - id: pk-steady-state
@@ -273,10 +273,12 @@ cases:
   - id: pk-curve-draw
     prompt: "Zeichne mir den Konzentrationsverlauf im Plasma, wenn ich alle 8 Stunden 500 mg oral nehme (F 0,8; Vd 70 L; t½ 4,6 h; ka 1,2/h) und zeig das therapeutische Fenster von 2 bis 6 mg/L"
     expect: generate_pk_curve
-    forbidden: [calculate_pharmacokinetics, generate_titration_curve, generate_calibration_curve]
+    forbidden: [generate_titration_curve, generate_calibration_curve]
     why: >
       Gegenrichtung zu pk-steady-state: dieselben Parameter, aber gewuenscht ist
-      die Kurve. Ohne den Fall zieht der Rechner jede PK-Frage an sich.
+      die Kurve. Zusaetzlich den Rechner zu rufen ist eine gute Antwort (Bild und
+      Zahl, gemessen 03.10.2026) und deshalb nicht verboten — verboten sind die
+      anderen Kurven-Tools. Die Abgrenzung zum Rechner prueft pk-halflife-from-clearance.
 
   - id: dose-response-antagonist
     prompt: "Zeichne die Dosis-Wirkungs-Kurve eines Agonisten mit EC50 10 nM und zeig, wie ein kompetitiver Antagonist (20 nM, KB 10 nM) sie verschiebt"

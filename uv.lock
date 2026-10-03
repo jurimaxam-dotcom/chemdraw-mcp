@@ -216,7 +216,7 @@ wheels = [
 
 [[package]]
 name = "chemdraw-mcp"
-version = "0.4.6"
+version = "0.4.7"
 source = { editable = "." }
 dependencies = [
     { name = "genanki" },
