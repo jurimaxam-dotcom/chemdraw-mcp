@@ -1,0 +1,106 @@
+{
+  "description": "Draw a dose-response curve of an agonist, optionally with a competitive antagonist.\n\nResponse against the logarithm of the concentration (Hill equation) with\nEC50 marked. With an antagonist concentration and its KB, the curve shifts\nparallel to the right by the dose ratio r = 1 + [B]/KB while Emax stays.\n\nUse this when the user asks about receptor theory: potency, EC50, the\neffect of an antagonist, or why the curve moves but does not drop. YOU\nsupply EC50 and, for the antagonist, [B] and KB from the lecture.\n\nNot this tool for: fractions of a drug's protonation species over pH\n(generate_species_distribution) or a titration (generate_titration_curve)\n— these sigmoids sit on a pH axis, this one on a concentration axis.\n\nArgs:\n    ec50: Agonist concentration for the half-maximal response.\n    unit: Concentration unit of all values, e.g. \"nM\".\n    emax: Maximal response (100 means percent).\n    hill: Hill coefficient (slope), 1 by default.\n    antagonist_concentration: Competitive antagonist [B], same unit.\n    antagonist_kb: Antagonist dissociation constant KB, same unit.\n    drug: Display name (localizable).",
+  "inputSchema": {
+    "properties": {
+      "antagonist_concentration": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Antagonist Concentration"
+      },
+      "antagonist_kb": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Antagonist Kb"
+      },
+      "drug": {
+        "default": "",
+        "title": "Drug",
+        "type": "string"
+      },
+      "ec50": {
+        "title": "Ec50",
+        "type": "number"
+      },
+      "emax": {
+        "default": 100.0,
+        "title": "Emax",
+        "type": "number"
+      },
+      "hill": {
+        "default": 1.0,
+        "title": "Hill",
+        "type": "number"
+      },
+      "unit": {
+        "default": "nM",
+        "title": "Unit",
+        "type": "string"
+      }
+    },
+    "required": [
+      "ec50"
+    ],
+    "title": "generate_dose_responseArguments",
+    "type": "object"
+  },
+  "name": "generate_dose_response",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}

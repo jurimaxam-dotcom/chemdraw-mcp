@@ -98,3 +98,60 @@ def test_aufsaettigungs_und_erhaltungsdosis():
 def test_unsinnige_werte_werden_abgelehnt(args):
     with pytest.raises(ValueError):
         pk.c_iv(*args)
+
+
+# --- Mehrfachdosierung durch Überlagerung ------------------------------------
+
+
+def test_mehrfachdosis_iv_naehert_sich_dem_steady_state():
+    """Tal und Spitze nach vielen Gaben = die geschlossenen Formeln (Bild und Zahl stimmen überein)."""
+    tau, n = 8.0, 60
+    vor_der_letzten = pk.concentration_profile(D, 1.0, VD, KE, None, [(n - 1) * tau - 1e-9], tau=tau, n_doses=n)[0]
+    nach_der_letzten = pk.concentration_profile(D, 1.0, VD, KE, None, [(n - 1) * tau], tau=tau, n_doses=n)[0]
+    assert vor_der_letzten == pytest.approx(pk.css_min_iv(D, VD, KE, tau), rel=1e-3)
+    assert nach_der_letzten == pytest.approx(pk.css_max_iv(D, VD, KE, tau), rel=1e-3)
+
+
+def test_mehrfachdosis_oral_mittelwert_im_intervall_ist_css_avg():
+    tau, n = 8.0, 80
+    start = (n - 1) * tau
+    k = 4000
+    zeiten = [start + (i + 0.5) * tau / k for i in range(k)]
+    werte = pk.concentration_profile(D, F, VD, KE, KA, zeiten, tau=tau, n_doses=n)
+    assert sum(werte) / k == pytest.approx(pk.css_avg(D, F, VD * KE, tau), rel=2e-3)
+
+
+def test_einzeldosis_profil_stimmt_mit_den_einzelformeln_ueberein():
+    t = [0.0, 1.0, 5.0, 12.0]
+    assert pk.concentration_profile(D, F, VD, KE, KA, t) == pytest.approx([pk.c_oral(D, F, VD, KE, KA, x) for x in t])
+    assert pk.concentration_profile(D, 1.0, VD, KE, None, t) == pytest.approx([pk.c_iv(D, VD, KE, x) for x in t])
+
+
+# --- Dosis-Wirkung ------------------------------------------------------------
+
+
+@pytest.mark.parametrize("hill", [0.5, 1.0, 2.0, 3.0])
+def test_wirkung_bei_ec50_ist_die_haelfte(hill):
+    assert pk.response(10.0, ec50=10.0, emax=100.0, hill=hill) == pytest.approx(50.0)
+
+
+def test_wirkung_grenzwerte():
+    assert pk.response(0.0, ec50=10, emax=80, hill=1) == 0.0
+    assert pk.response(1e9, ec50=10, emax=80, hill=1) == pytest.approx(80.0, rel=1e-6)
+
+
+def test_kompetitiver_antagonist_verschiebt_parallel_um_das_dosisverhaeltnis():
+    r = pk.dose_ratio(antagonist=20.0, kb=10.0)
+    assert r == pytest.approx(3.0)  # 1 + B/Kb
+    # Bei c = r·EC50 ist die Wirkung wieder die Hälfte — gleiche Emax, nur nach rechts verschoben
+    assert pk.response(r * 5.0, ec50=r * 5.0, emax=100, hill=1.3) == pytest.approx(50.0)
+    assert pk.dose_ratio(antagonist=0.0, kb=10.0) == 1.0
+
+
+def test_dosisverhaeltnis_lehnt_unsinn_ab():
+    with pytest.raises(ValueError):
+        pk.dose_ratio(antagonist=-1, kb=10)
+    with pytest.raises(ValueError):
+        pk.dose_ratio(antagonist=5, kb=0)
+    with pytest.raises(ValueError):
+        pk.response(1.0, ec50=0, emax=100, hill=1)

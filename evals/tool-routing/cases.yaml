@@ -253,7 +253,7 @@ cases:
   - id: pk-oral-peak
     prompt: "Wann erreicht eine orale Dosis von 500 mg (F 0,8; Vd 70 L; ke 0,15/h; ka 1,2/h) ihren Gipfel und wie hoch ist Cmax?"
     expect: calculate_pharmacokinetics
-    forbidden: [calculate_solution, generate_titration_curve, generate_species_distribution]
+    forbidden: [calculate_solution, generate_titration_curve, generate_species_distribution, generate_pk_curve]
     why: „Gipfel“ und Kurvenwoerter ziehen zu den Diagramm-Tools; gefragt sind aber Zahlen.
 
   - id: pk-steady-state
@@ -269,3 +269,23 @@ cases:
     why: >
       Gegenrichtung: Ionisierung und Resorption klingen nach Pharmakologie, sind
       aber Henderson-Hasselbalch und gehoeren zu calculate_ph.
+
+  - id: pk-curve-draw
+    prompt: "Zeichne mir den Konzentrationsverlauf im Plasma, wenn ich alle 8 Stunden 500 mg oral nehme (F 0,8; Vd 70 L; t½ 4,6 h; ka 1,2/h) und zeig das therapeutische Fenster von 2 bis 6 mg/L"
+    expect: generate_pk_curve
+    forbidden: [calculate_pharmacokinetics, generate_titration_curve, generate_calibration_curve]
+    why: >
+      Gegenrichtung zu pk-steady-state: dieselben Parameter, aber gewuenscht ist
+      die Kurve. Ohne den Fall zieht der Rechner jede PK-Frage an sich.
+
+  - id: dose-response-antagonist
+    prompt: "Zeichne die Dosis-Wirkungs-Kurve eines Agonisten mit EC50 10 nM und zeig, wie ein kompetitiver Antagonist (20 nM, KB 10 nM) sie verschiebt"
+    expect: generate_dose_response
+    forbidden: [generate_species_distribution, generate_titration_curve, calculate_pharmacokinetics]
+    why: Sigmoid ueber der Konzentration, nicht ueber dem pH — die Verwechslung mit Titration und Spezies.
+
+  - id: dose-response-concept
+    prompt: "Warum verschiebt ein kompetitiver Antagonist die Kurve nur nach rechts, ohne das Maximum zu senken?"
+    expect: generate_dose_response
+    forbidden: [generate_species_distribution, generate_titration_curve]
+    why: Erklaerfrage der Rezeptortheorie — das Diagramm gehoert daneben (wie bei den Strukturen).

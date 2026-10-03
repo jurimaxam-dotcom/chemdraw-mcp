@@ -224,7 +224,7 @@ The five areas: Draw (generate_molecule · batch_generate ·
 compare_molecules · generate_reaction · generate_mechanism ·
 generate_scope_table · generate_3d) · Lab graphic (generate_spectrum ·
 generate_tlc · generate_titration_curve · generate_species_distribution ·
-generate_calibration_curve) · Look up, for a named fact (lookup ·
+generate_calibration_curve · generate_pk_curve · generate_dose_response) · Look up, for a named fact (lookup ·
 lookup_molecule_data · predict_spectrum) · Calculate, a number with its
 working (calculate_solution · calculate_content · calculate_ph ·
 calculate_pharmacokinetics) · Anki
@@ -1061,7 +1061,8 @@ def generate_species_distribution(
 
     Not this tool for: the pH of a solution or a buffer as a number — that
     is calculate_ph. This one draws the fractions across the whole pH range;
-    it answers "which species when", not "what pH do I have".
+    it answers "which species when", not "what pH do I have". A drug's
+    dose-response curve is generate_dose_response.
 
     Args:
         substance: Display name, e.g. "Phosphoric acid" (localizable).
@@ -1084,6 +1085,159 @@ def generate_species_distribution(
         subtitle="Species distribution over pH",
         svg=svg,
         files=files,
+    )
+
+
+@_tool(structured_output=True, meta=_UI_META)
+def generate_pk_curve(
+    dose_mg: float,
+    vd_l: float,
+    ke_per_h: float | None = None,
+    half_life_h: float | None = None,
+    clearance_l_per_h: float | None = None,
+    ka_per_h: float | None = None,
+    bioavailability: float = 1.0,
+    tau_h: float | None = None,
+    mec_mg_per_l: float | None = None,
+    mtc_mg_per_l: float | None = None,
+    drug: str = "",
+) -> PlotPayload:
+    """Draw plasma concentration over time for a dose (one-compartment model).
+
+    A single dose, or repeated doses every tau_h hours with the build-up to
+    steady state; oral when ka_per_h is given, otherwise an i.v. bolus. The
+    minimal effective and toxic concentrations draw as a therapeutic window.
+
+    Use this when the user wants to see a concentration-time curve, the effect
+    of a dosing interval, or why a drug accumulates. YOU supply the
+    parameters from the lecture or monograph: Vd plus one of ke, half-life or
+    clearance.
+
+    Not this tool for: the numbers — half-life, Cmax, steady state, loading
+    dose (calculate_pharmacokinetics; this one draws, that one computes) —
+    or titration and calibration curves (generate_titration_curve,
+    generate_calibration_curve).
+
+    Args:
+        dose_mg: Dose in mg.
+        vd_l: Volume of distribution in L.
+        ke_per_h: Elimination rate constant in 1/h.
+        half_life_h: Elimination half-life in h.
+        clearance_l_per_h: Clearance in L/h.
+        ka_per_h: Absorption rate constant in 1/h; leave empty for i.v.
+        bioavailability: Fraction F absorbed (0-1), oral only.
+        tau_h: Dosing interval in h for repeated doses.
+        mec_mg_per_l: Minimal effective concentration in mg/L.
+        mtc_mg_per_l: Minimal toxic concentration in mg/L.
+        drug: Display name (localizable).
+    """
+    from chemdraw_tool import pk
+    from chemdraw_tool.pk_plots import pk_plan, render_pk_png, render_pk_svg
+
+    r = pk.resolve(vd=vd_l, ke=ke_per_h, t_half=half_life_h, cl=clearance_l_per_h)
+    ke, vd, cl, t_half = r["ke"], r["vd"], r["cl"], r["t_half"]
+    kwargs = dict(
+        dose=dose_mg, vd=vd, ke=ke, f=bioavailability, ka=ka_per_h, tau=tau_h,
+        mec=mec_mg_per_l, mtc=mtc_mg_per_l, drug=drug,
+    )
+    svg = render_pk_svg(**kwargs)
+    name = drug or "Pharmacokinetics"
+    files = write_files(
+        PLOT_DIR / f"pk-{_slugify(name)}",
+        {"png": render_pk_png(**kwargs), "svg": svg},
+    )
+    notes = [f"t½ = {t_half:.3g} h · CL = {cl:.3g} L/h · Vd = {vd:.3g} L"]
+    f_eff = bioavailability if ka_per_h else 1.0
+    if ka_per_h:
+        notes.append(
+            f"Cmax = {pk.cmax(dose_mg, bioavailability, vd, ke, ka_per_h):.3g} mg/L at tmax = "
+            f"{pk.tmax(ka_per_h, ke):.3g} h · AUC = {pk.auc_inf(dose_mg, bioavailability, cl):.3g} mg·h/L"
+        )
+    else:
+        notes.append(f"C0 = {dose_mg / vd:.3g} mg/L · AUC = {pk.auc_inf(dose_mg, 1.0, cl):.3g} mg·h/L")
+    if tau_h:
+        n, _ = pk_plan(ke, tau_h, ka_per_h)
+        notes.append(
+            f"Css,av = {pk.css_avg(dose_mg, f_eff, cl, tau_h):.3g} mg/L · accumulation "
+            f"R = {pk.accumulation(ke, tau_h):.3g} · 90 % of steady state after "
+            f"{pk.time_to_fraction_ss(ke, 0.9):.3g} h (plotted: {n} doses)"
+        )
+    return PlotPayload(
+        name=name,
+        subtitle="Plasma concentration over time (one-compartment model)",
+        svg=svg,
+        files=files,
+        notes=notes,
+    )
+
+
+@_tool(structured_output=True, meta=_UI_META)
+def generate_dose_response(
+    ec50: float,
+    unit: str = "nM",
+    emax: float = 100.0,
+    hill: float = 1.0,
+    antagonist_concentration: float | None = None,
+    antagonist_kb: float | None = None,
+    drug: str = "",
+) -> PlotPayload:
+    """Draw a dose-response curve of an agonist, optionally with a competitive antagonist.
+
+    Response against the logarithm of the concentration (Hill equation) with
+    EC50 marked. With an antagonist concentration and its KB, the curve shifts
+    parallel to the right by the dose ratio r = 1 + [B]/KB while Emax stays.
+
+    Use this when the user asks about receptor theory: potency, EC50, the
+    effect of an antagonist, or why the curve moves but does not drop. YOU
+    supply EC50 and, for the antagonist, [B] and KB from the lecture.
+
+    Not this tool for: fractions of a drug's protonation species over pH
+    (generate_species_distribution) or a titration (generate_titration_curve)
+    — these sigmoids sit on a pH axis, this one on a concentration axis.
+
+    Args:
+        ec50: Agonist concentration for the half-maximal response.
+        unit: Concentration unit of all values, e.g. "nM".
+        emax: Maximal response (100 means percent).
+        hill: Hill coefficient (slope), 1 by default.
+        antagonist_concentration: Competitive antagonist [B], same unit.
+        antagonist_kb: Antagonist dissociation constant KB, same unit.
+        drug: Display name (localizable).
+    """
+    from chemdraw_tool import pk
+    from chemdraw_tool.pk_plots import (
+        render_dose_response_png,
+        render_dose_response_svg,
+    )
+
+    if (antagonist_concentration is None) != (antagonist_kb is None):
+        raise ValueError(
+            "Für den Antagonisten werden antagonist_concentration UND antagonist_kb gebraucht — "
+            "es wurde nur eines von beiden angegeben."
+        )
+    kwargs = dict(
+        ec50=ec50, unit=unit, emax=emax, hill=hill,
+        antagonist=antagonist_concentration, kb=antagonist_kb, drug=drug,
+    )
+    svg = render_dose_response_svg(**kwargs)
+    name = drug or "Dose-response"
+    files = write_files(
+        PLOT_DIR / f"dose-response-{_slugify(name)}",
+        {"png": render_dose_response_png(**kwargs), "svg": svg},
+    )
+    notes = [f"EC50 = {ec50:g} {unit} · Hill coefficient = {hill:g}"]
+    if antagonist_kb is not None:
+        r = pk.dose_ratio(antagonist_concentration, antagonist_kb)
+        notes.append(
+            f"Competitive antagonist: dose ratio r = {r:.3g} (= 1 + [B]/KB) → EC50 shifts to "
+            f"{ec50 * r:.3g} {unit}, Emax unchanged (pA2-type shift, Schild slope 1)"
+        )
+    return PlotPayload(
+        name=name,
+        subtitle="Response over log concentration (Hill equation)",
+        svg=svg,
+        files=files,
+        notes=notes,
     )
 
 
@@ -1924,7 +2078,8 @@ def calculate_pharmacokinetics(
     The model is deliberately the simple one: first-order absorption and
     elimination, one compartment.
 
-    Not this tool for: preparing a solution of a given strength
+    Not this tool for: drawing the concentration-time curve
+    (generate_pk_curve), preparing a solution of a given strength
     (calculate_solution), or pH and ionisation (calculate_ph).
 
     Args:

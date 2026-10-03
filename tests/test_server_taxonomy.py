@@ -47,6 +47,8 @@ LABORGRAFIK = {
     "generate_titration_curve",
     "generate_species_distribution",
     "generate_calibration_curve",
+    "generate_pk_curve",
+    "generate_dose_response",
 }
 
 # „Nachschlagen" heisst Fakten zu einem Stoff — aus einer Datenbank (lookup,
@@ -111,16 +113,18 @@ def test_families_do_not_overlap():
 def test_tool_count_stays_reviewable():
     """Obergrenze mit Ansage: jedes Tool ist ein Kandidat bei jeder Anfrage.
 
-    Kein Selbstzweck — wächst die Liste wieder Richtung 23, muss das eine
+    Kein Selbstzweck — wächst die Liste wieder Richtung 25, muss das eine
     bewusste Entscheidung sein und nicht durch Anbauen passieren. Die Grenze
     wurde am 15.08.2026 von 16 auf 18 gehoben, um den Bereich „Rechnen"
     aufzunehmen, auf 19 fuer die Kalibriergerade und auf 20 fuer die
     Spektren-Vorhersage und am 03.10.2026 auf 21 fuer die Pharmakokinetik
     (Pharmakologie-Studium: Halbwertszeit, Steady State und Aufsaettigungsdosis
     sind Rechnen mit Rechenweg wie der pH, nur ein anderes Fach); jede Rechenart
-    ist ein `topic` bzw. eine `method`, kein eigenes Tool.
+    ist ein `topic` bzw. eine `method`, kein eigenes Tool. Am 03.10.2026 auf 23:
+    zwei Diagramme fuer die Pharmakologie (Konzentrations-Zeit-Kurve und
+    Dosis-Wirkung) — Kurven, nicht Zahlen, also Laborgrafik, kein `topic`.
     """
-    assert len(_registered()) <= 21
+    assert len(_registered()) <= 23
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -166,12 +170,16 @@ NEEDS_DELIMITATION = {
     # Gegenrichtung: Ohne sie faengt das Zeichen-Tool die Rechenfrage ab —
     # dieselbe Konstellation wie beim Aspirin-Fehlgriff.
     "generate_titration_curve": ("calculate_ph",),
-    "generate_species_distribution": ("calculate_ph",),
+    "generate_species_distribution": ("calculate_ph", "generate_dose_response"),
     # Beide machen aus einem Signal einen Gehalt — die eine ueber eine
     # gemessene Reihe, die andere ueber die Monographie-Konstante.
     "generate_calibration_curve": ("calculate_content",),
     # Pharmakokinetik rechnet; weder Loesungen ansetzen noch pH/Ionisierung
-    "calculate_pharmacokinetics": ("calculate_solution", "calculate_ph"),
+    "calculate_pharmacokinetics": ("calculate_solution", "calculate_ph", "generate_pk_curve"),
+    # Gegenrichtung zu den Zahlen: Kurve zeichnen, nicht rechnen
+    "generate_pk_curve": ("calculate_pharmacokinetics", "generate_titration_curve"),
+    # Zwei Sigmoide auf verschiedenen Achsen: pH gegen Konzentration
+    "generate_dose_response": ("generate_species_distribution", "generate_titration_curve"),
     "predict_spectrum": ("generate_spectrum",),
     "generate_spectrum": ("predict_spectrum",),
 }

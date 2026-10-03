@@ -101,7 +101,7 @@ cards land straight in the running Anki, no clicks:
 
 ## Features
 
-All 21 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+All 23 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
 **Structures and schemes**
@@ -146,6 +146,12 @@ every drawing tool also returns a live preview for the in-chat panel.
 
 **Bench maths** (the number *and* the working — a lab report asks for both)
 
+- **`generate_pk_curve`** — plasma concentration over time in the
+  one-compartment model: a single dose or repeated doses with the build-up to
+  steady state, oral or i.v., with the therapeutic window drawn in
+- **`generate_dose_response`** — the Hill curve on a log axis with EC50, and a
+  competitive antagonist shifting it parallel to the right (dose ratio
+  r = 1 + [B]/KB, Emax unchanged)
 - **`calculate_solution`** — what to weigh (`m = c · V · M`), what you
   actually got, dilutions (C₁V₁ = C₂V₂ with the solvent volume spelled out),
   the mixing cross, and molar masses including hydrates like `CuSO₄·5H₂O`.
@@ -204,7 +210,7 @@ on its own.
 
 Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
 when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
-21 tools above.
+23 tools above.
 
 ### Options on the drawing tools
 

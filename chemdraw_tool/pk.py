@@ -152,3 +152,57 @@ def maintenance_rate(target: float, cl: float, f: float = 1.0) -> float:
     """Erhaltungsdosisrate in mg/h: Zielkonzentration · CL / F."""
     _positiv(target=target, cl=cl, f=f)
     return target * cl / f
+
+
+def concentration_profile(
+    dose: float,
+    f: float,
+    vd: float,
+    ke: float,
+    ka: float | None,
+    times: list[float],
+    tau: float | None = None,
+    n_doses: int = 1,
+) -> list[float]:
+    """Konzentration zu den Zeiten `times`, bei Mehrfachgabe durch Überlagerung.
+
+    Das Einkompartiment-Modell ist linear: jede Gabe trägt unabhängig bei, die Kurve
+    ist die Summe der um τ verschobenen Einzelkurven. `ka=None` heißt i.v.-Bolus
+    (dann gilt F = 1 für die Dosis, f wird ignoriert).
+    """
+    if n_doses < 1:
+        raise ValueError("n_doses muss mindestens 1 sein.")
+    if n_doses > 1 and not tau:
+        raise ValueError("Für mehrere Gaben wird das Dosierungsintervall tau gebraucht.")
+    werte = []
+    for t in times:
+        summe = 0.0
+        for k in range(n_doses):
+            dt = t - k * (tau or 0.0)
+            if dt < 0:
+                continue
+            summe += c_iv(dose, vd, ke, dt) if ka is None else c_oral(dose, f, vd, ke, ka, dt)
+        werte.append(summe)
+    return werte
+
+
+def response(c: float, ec50: float, emax: float = 100.0, hill: float = 1.0) -> float:
+    """Hill-Gleichung: E = Emax · c^n / (EC50^n + c^n)."""
+    _positiv(ec50=ec50, emax=emax, hill=hill)
+    if c < 0:
+        raise ValueError("Die Konzentration darf nicht negativ sein.")
+    if c == 0:
+        return 0.0
+    x = c**hill
+    return emax * x / (ec50**hill + x)
+
+
+def dose_ratio(antagonist: float, kb: float) -> float:
+    """Dosisverhältnis eines kompetitiven Antagonisten: r = 1 + [B]/KB (Schild, Steigung 1).
+
+    Die Agonisten-Kurve wandert parallel nach rechts, Emax bleibt: EC50' = r · EC50.
+    """
+    _positiv(kb=kb)
+    if antagonist < 0:
+        raise ValueError("Die Antagonistenkonzentration darf nicht negativ sein.")
+    return 1 + antagonist / kb

@@ -8,6 +8,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **`generate_pk_curve` and `generate_dose_response`** — the two pharmacology
+  figures. The first draws plasma concentration over time (single dose or
+  repeated doses with the build-up to steady state, oral or i.v., with the
+  therapeutic window); the second draws the Hill curve on a log axis with a
+  competitive antagonist shifting it to the right. Both use the panel that
+  already shows titration curves, and share their formulas with
+  `calculate_pharmacokinetics`, so figure and number agree.
 - **`calculate_ph` knows the degree of ionisation.** New `topic` "ionisation":
   give the pKa, the pH of the medium and whether the drug is an acid or a base;
   it returns the charged and uncharged fractions (Henderson-Hasselbalch), the

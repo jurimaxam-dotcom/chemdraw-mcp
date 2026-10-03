@@ -1,0 +1,161 @@
+{
+  "description": "Draw plasma concentration over time for a dose (one-compartment model).\n\nA single dose, or repeated doses every tau_h hours with the build-up to\nsteady state; oral when ka_per_h is given, otherwise an i.v. bolus. The\nminimal effective and toxic concentrations draw as a therapeutic window.\n\nUse this when the user wants to see a concentration-time curve, the effect\nof a dosing interval, or why a drug accumulates. YOU supply the\nparameters from the lecture or monograph: Vd plus one of ke, half-life or\nclearance.\n\nNot this tool for: the numbers — half-life, Cmax, steady state, loading\ndose (calculate_pharmacokinetics; this one draws, that one computes) —\nor titration and calibration curves (generate_titration_curve,\ngenerate_calibration_curve).\n\nArgs:\n    dose_mg: Dose in mg.\n    vd_l: Volume of distribution in L.\n    ke_per_h: Elimination rate constant in 1/h.\n    half_life_h: Elimination half-life in h.\n    clearance_l_per_h: Clearance in L/h.\n    ka_per_h: Absorption rate constant in 1/h; leave empty for i.v.\n    bioavailability: Fraction F absorbed (0-1), oral only.\n    tau_h: Dosing interval in h for repeated doses.\n    mec_mg_per_l: Minimal effective concentration in mg/L.\n    mtc_mg_per_l: Minimal toxic concentration in mg/L.\n    drug: Display name (localizable).",
+  "inputSchema": {
+    "properties": {
+      "bioavailability": {
+        "default": 1.0,
+        "title": "Bioavailability",
+        "type": "number"
+      },
+      "clearance_l_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Clearance L Per H"
+      },
+      "dose_mg": {
+        "title": "Dose Mg",
+        "type": "number"
+      },
+      "drug": {
+        "default": "",
+        "title": "Drug",
+        "type": "string"
+      },
+      "half_life_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Half Life H"
+      },
+      "ka_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ka Per H"
+      },
+      "ke_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ke Per H"
+      },
+      "mec_mg_per_l": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Mec Mg Per L"
+      },
+      "mtc_mg_per_l": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Mtc Mg Per L"
+      },
+      "tau_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tau H"
+      },
+      "vd_l": {
+        "title": "Vd L",
+        "type": "number"
+      }
+    },
+    "required": [
+      "dose_mg",
+      "vd_l"
+    ],
+    "title": "generate_pk_curveArguments",
+    "type": "object"
+  },
+  "name": "generate_pk_curve",
+  "outputSchema": {
+    "description": "Generic rendered diagram (titration curve, species distribution, …).",
+    "properties": {
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "plot",
+        "title": "Type",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "PlotPayload",
+    "type": "object"
+  }
+}
