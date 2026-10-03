@@ -8,6 +8,43 @@ Deshalb ist die erste Aufgabe unten ein Versuch, kein Bauen.
 Ziel: Wer das Projekt auf GitHub findet und ausprobiert, sieht in den ersten 60 Sekunden etwas,
 das er nicht erwartet hat — egal ob Chemie, Pharmazie oder Biologie. Nicht eine Nische.
 
+## 0. Was Claude selbst anbietet (öffentlich dokumentiert, 03.10.2026)
+
+Es gibt zwei verschiedene Dinge, die man leicht verwechselt:
+
+| | **Claudes eigene Inline-Grafiken** | **MCP-Apps-Panels (unser Panel)** |
+|---|---|---|
+| Wer baut es? | Claude selbst, ad hoc, aus HTML/SVG | unser Server liefert die Oberfläche |
+| Was ist das? | Diagramme, Rechner, klickbare Auswahlfragen (Quiz mit Antippen), z. B. ein anklickbares Periodensystem | die Molekül-Ansichten, Kurven, Mechanismen |
+| Lebensdauer | flüchtig, ändert sich oder verschwindet mit dem Gespräch | gehört zum Werkzeug-Ergebnis |
+| Wie ausgelöst? | automatisch oder auf Wunsch (visualisiere …) | durch den Werkzeug-Aufruf |
+| Verfügbar | alle Tarife, Web; seit 22.04.2026 auch in Cowork | Desktop, Web (bezahlt), Handy-App (nativer WebView) |
+
+**Das Quiz mit Antippen, das du gesehen hast, ist Claudes eigene Auswahlfrage** (strukturierte Fragen mit
+anklickbaren Antworten statt Tippen). Unser Server kann sie nicht auslösen, aber **anregen**: ein Satz in
+den `instructions` (nach einer Struktur ein Quiz mit Auswahlfragen anbieten) kostet nichts und wirkt, wenn Claude ihn befolgt.
+Das ist ein billiger Wow-Baustein ohne Panel-Code, messbar mit dem Eval.
+
+**Regeln von Anthropic für Panels** (Design-Leitfaden), die direkt auf unser Panel zutreffen:
+- **Host-Farben und -Schrift benutzen** (`--color-background-primary`, `--font-sans` = Anthropic Sans, Radien) statt eigener
+  Tokens: so sieht das Panel in Hell und Dunkel nativ aus. Das ist der größte Hebel für sauberer.
+- **Inline-Karte**: Höhe passt sich dem Inhalt an, **kein verschachteltes Scrollen**, höchstens 2 Aktionen, 4–5 Datenpunkte,
+  keine Menüs und Popovers (sie werden abgeschnitten), stattdessen sichtbare Segment-Knöpfe und Reiter, genau unser Umschalter.
+- **Vollbild** für Dichtes (3D, Prüfung): eigener Vollbild-Knopf im Panel, Chat-Eingabe bleibt sichtbar, Details über Reiter oder einklappbare Seitenleisten.
+- **Karussell** (3–8 gleich große Karten mit Bild, Titel, 3 Zeilen, einer Aktion): offizielles Muster für unsere **Wirkstoffklassen-Galerie** und den Vergleich.
+- **Ladezustände als Skelett**, nicht als Spinner. Wir zeigen heute einen Spinner am Data-Reiter.
+- **Handy**: Panels laufen im WebView; Tippflächen mindestens 44 pt, `safeAreaInsets` beachten, kein horizontales Scrollen.
+- **Trennung App und Chat**: direkte Bedienung (Regler, Reiter, Aufdecken) im Panel; alles, was Verstehen braucht (Erklärung, Rückfrage), geht in den Chat.
+- **Beim ersten Mal fragt Claude um Erlaubnis** (Allow / Always allow), bevor das Panel erscheint. Im README erwähnen, sonst wirkt es wie ein Fehler.
+- **Verzeichnis**: Anthropic führt MCP-Apps im Connector-Verzeichnis (claude.ai/directory). Eine Aufnahme wäre echte Sichtbarkeit.
+  Ob ein lokaler Server ohne Fernzugriff dort einreichbar ist, habe ich nicht geprüft.
+- Rückmeldekanal zu MCP Apps bei Anthropic: mcp-apps@anthropic.com und Issues im Repository `modelcontextprotocol/ext-apps`.
+
+Quellen: [Claude baut interaktive Grafiken im Gespräch](https://claude.com/blog/claude-builds-visuals) ·
+[MCP Apps, Einstieg](https://claude.com/docs/connectors/building/mcp-apps/getting-started) ·
+[MCP Apps, Design-Leitfaden](https://claude.com/docs/connectors/building/mcp-apps/design-guidelines) ·
+[MCP-Apps-Standard](https://modelcontextprotocol.io/extensions/apps/overview)
+
 ## 1. Was der Standard einer Oberfläche im Chat erlaubt
 
 | Fähigkeit | Was das Panel damit tun kann | Wird heute genutzt? |
@@ -45,6 +82,10 @@ Wow = sieht ein Neuling es in 60 s und denkt „das kann ich alles sehen?". Aufw
 | 9 | **Biologie-Paket klein**: Aminosäuren/Peptide aus der Sequenz („Gly-Ala-Ser"), Zucker, Nukleotide — in denselben Reitern | hoch für Biologie | 6–10 | Biologie, Pharmazie | mittel (SMILES-Erzeugung prüfen) |
 | 10 | **Wirkstoffklassen-Galerie**: 8 Strukturen einer Klasse als Kacheln, Antippen vergrößert | hoch | 4–6 | Pharmazie, Chemie | gering |
 | 11 | **Enzymkinetik** (Michaelis-Menten, Hemmtypen) neben Dosis-Wirkung | mittel | 3–4 | Biologie, Pharmazie | gering |
+| 13 | **Host-Farben und -Schrift übernehmen** (nativer Look in Hell/Dunkel), Skelett statt Spinner, Tippflächen ≥ 44 pt | hoch (wirkt fertig) | 3–4 | alle | gering |
+| 14 | **Ein Satz in `instructions`: nach einer Struktur ein Quiz mit Auswahlfragen anbieten** (Claudes eigene Fragekarten) | hoch | <1 | alle | gering; wirkt nur, wenn Claude folgt, im Eval messen |
+| 15 | **Karussell**-Ansicht für Wirkstoffklassen und Vergleiche (3–8 Karten) | hoch | 4–6 | Pharmazie, Chemie | gering |
+| 16 | **Einreichung im Anthropic-Verzeichnis** prüfen | sehr hoch (Reichweite) | 1 (Recherche) | alle | offen, ob lokal einreichbar |
 | 12 | **Host-Zeile im Panel** („Claude Desktop · Vollbild ja · Nachricht ja …") — für Bug-Meldungen und als Messinstrument | indirekt | 1 | alle | keines |
 
 ## 3. Was ich empfehle: zuerst messen, dann das Paket bauen
@@ -53,6 +94,7 @@ Wow = sieht ein Neuling es in 60 s und denkt „das kann ich alles sehen?". Aufw
 wirklich anbietet. Davon hängen 4, 5, 6 ab, und ich will nicht blind bauen, was der Host dann verweigert.
 
 **Paket „Wow-Moment" (die Reihenfolge, in der ein Neuling es sieht):**
+0. Nativer Look (13) und der Quiz-Satz in den `instructions` (14): beides klein und sofort sichtbar
 1. Reiter Struktur · Stereo · 3D · Daten — sofort da (Baustein 1)
 2. 3D dreht sich von selbst, Wechsel weich (3)
 3. Browser-Demo mit Link im README (2) — der Hebel für Sterne, weil man ohne Claude etwas sieht

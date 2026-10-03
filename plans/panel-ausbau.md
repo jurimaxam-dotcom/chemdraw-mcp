@@ -5,6 +5,9 @@ Ziel: Das Moleküle-Panel wird vom Bild zum Lernwerkzeug. **Eine** Molekülanfra
 ## Fokusänderung 03.10.2026 (abends) — Wow-Moment statt Nische
 Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein** für alle, die es auf GitHub ausprobieren (Chemie, Pharmazie, Biologie). Die Liste aller Möglichkeiten und die Bewertung steht in `docs/produkt/panel-moeglichkeiten.md`. **Diese Reihenfolge gilt vor den Phasen unten:**
 
+- [ ] W-1 Nativer Look: Host-Farben/-Schrift (`--color-*`, `--font-sans`) statt eigener Tokens, Skelett statt Spinner, Tippflächen ≥ 44 pt (Baustein 13)
+- [ ] W-1b Quiz-Satz in den `instructions` + Eval-Fall (Baustein 14)
+- [ ] W-1c Recherche: Anthropic-Verzeichnis, geht ein lokaler Server? (Baustein 16)
 - [ ] W0 Host-Messung: Zeile im Panel „Claude Desktop · Vollbild · Nachricht · Download …" (1 h) — entscheidet über 4, 5, 6
 - [ ] W1 Reiter **Struktur · Stereo · 3D · Daten** von Anfang an (Phase 1 unten)
 - [ ] W2 3D dreht sich von selbst, weicher Wechsel (Teil von Phase 4 vorgezogen)
