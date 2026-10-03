@@ -35,7 +35,7 @@ PREFIX = "mcp__chemdraw__"
 def gerufene_tools(prompt: str, config: str, modell: str | None) -> tuple[list[str], str]:
     cmd = [
         "claude", "-p", prompt,
-        "--mcp-config", config, "--strict-mcp-config", "--tools", "",
+        "--mcp-config", config, "--strict-mcp-config", "--tools", os.environ.get("BUILTIN_TOOLS", ""),
         # Ohne Isolation leaken Jays Hooks und CLAUDE.md (CWD-Wächter, Antwortstil) in die Wahl
         "--setting-sources", "project", "--disable-slash-commands",
         "--output-format", "stream-json", "--verbose",
@@ -57,6 +57,9 @@ def gerufene_tools(prompt: str, config: str, modell: str | None) -> tuple[list[s
                     namen.append(b["name"].removeprefix(PREFIX))
                 elif b.get("type") == "text" and not text:
                     text = b["text"]
+    if text.startswith("Failed to authenticate"):
+        # Kein Messwert: ein abgelaufener Login darf nicht als „Modell wählt kein Tool" erscheinen
+        raise SystemExit(f"ABBRUCH (kein Ergebnis, kein roter Fall): {text}\nAnmelden: `claude` im Terminal starten und /login ausführen.")
     return namen, text
 
 
