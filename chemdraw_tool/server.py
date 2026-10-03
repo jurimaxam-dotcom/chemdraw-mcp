@@ -1142,8 +1142,15 @@ def generate_pk_curve(
     )
     svg = render_pk_svg(**kwargs)
     name = drug or "Pharmacokinetics"
+    # Ohne Namen trägt der Dateiname die Parameter, sonst überschreibt jede Kurve die vorige
+    stem = _slugify(drug) if drug else (
+        f"{dose_mg:g}mg-{'oral' if ka_per_h else 'iv'}-vd{vd:g}-ke{ke:.3g}"
+        + (f"-f{bioavailability:g}" if ka_per_h and bioavailability != 1.0 else "")
+        + (f"-ka{ka_per_h:g}" if ka_per_h else "")
+        + (f"-q{tau_h:g}h" if tau_h else "")
+    )
     files = write_files(
-        PLOT_DIR / f"pk-{_slugify(name)}",
+        PLOT_DIR / f"pk-{stem}",
         {"png": render_pk_png(**kwargs), "svg": svg},
     )
     notes = [f"t½ = {t_half:.3g} h · CL = {cl:.3g} L/h · Vd = {vd:.3g} L"]
@@ -1221,8 +1228,13 @@ def generate_dose_response(
     )
     svg = render_dose_response_svg(**kwargs)
     name = drug or "Dose-response"
+    stem = _slugify(drug) if drug else (
+        f"ec50-{ec50:g}{_slugify(unit)}"
+        + (f"-hill{hill:g}" if hill != 1.0 else "")
+        + (f"-b{antagonist_concentration:g}-kb{antagonist_kb:g}" if antagonist_kb is not None else "")
+    )
     files = write_files(
-        PLOT_DIR / f"dose-response-{_slugify(name)}",
+        PLOT_DIR / f"dose-response-{stem}",
         {"png": render_dose_response_png(**kwargs), "svg": svg},
     )
     notes = [f"EC50 = {ec50:g} {unit} · Hill coefficient = {hill:g}"]

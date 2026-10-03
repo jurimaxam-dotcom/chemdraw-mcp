@@ -66,3 +66,23 @@ def test_dose_response_figure_kurve_geht_bei_ec50_durch_die_haelfte():
     xs, ys = fig.axes[0].lines[0].get_xdata(), fig.axes[0].lines[0].get_ydata()
     i = min(range(len(xs)), key=lambda k: abs(xs[k] - 10))
     assert ys[i] == pytest.approx(50, abs=1.0)
+
+
+def test_ohne_namen_ueberschreiben_sich_verschiedene_kurven_nicht(tmp_path, monkeypatch):
+    """Desktop-Chat 03.10.2026: ohne `drug` hieß jede Datei pk-pharmacokinetics.png — die nächste
+    Kurve überschrieb die vorige."""
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    a = generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, ka_per_h=1.2, tau_h=8)
+    b = generate_pk_curve(dose_mg=250, vd_l=70, ke_per_h=0.15)
+    assert a.files["png"] != b.files["png"]
+    # gleiche Parameter → gleiche Datei (idempotent, keine Dateiflut beim Wiederholen)
+    a2 = generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, ka_per_h=1.2, tau_h=8)
+    assert a2.files["png"] == a.files["png"]
+
+
+def test_dose_response_ohne_namen_ueberschreibt_nicht(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    a = generate_dose_response(ec50=10)
+    b = generate_dose_response(ec50=10, antagonist_concentration=20, antagonist_kb=10)
+    c = generate_dose_response(ec50=50)
+    assert len({a.files["png"], b.files["png"], c.files["png"]}) == 3
