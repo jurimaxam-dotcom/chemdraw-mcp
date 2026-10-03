@@ -55,7 +55,12 @@ NACHSCHLAGEN = {"lookup", "lookup_molecule_data", "predict_spectrum"}
 
 # Fünfter Bereich seit 15.08.2026: Rechnungen liefern Zahl UND Rechenweg —
 # eine eigene Art Ausgabe, die weder Bild noch Datenblatt ist.
-RECHNEN = {"calculate_solution", "calculate_content", "calculate_ph"}
+RECHNEN = {
+    "calculate_solution",
+    "calculate_content",
+    "calculate_ph",
+    "calculate_pharmacokinetics",
+}
 
 ANKI = {"export_anki_deck"}
 
@@ -106,14 +111,16 @@ def test_families_do_not_overlap():
 def test_tool_count_stays_reviewable():
     """Obergrenze mit Ansage: jedes Tool ist ein Kandidat bei jeder Anfrage.
 
-    Kein Selbstzweck — wächst die Liste wieder Richtung 22, muss das eine
+    Kein Selbstzweck — wächst die Liste wieder Richtung 23, muss das eine
     bewusste Entscheidung sein und nicht durch Anbauen passieren. Die Grenze
     wurde am 15.08.2026 von 16 auf 18 gehoben, um den Bereich „Rechnen"
     aufzunehmen, auf 19 fuer die Kalibriergerade und auf 20 fuer die
-    Spektren-Vorhersage; jede Rechenart ist ein
-    `topic` bzw. eine `method`, kein eigenes Tool.
+    Spektren-Vorhersage und am 03.10.2026 auf 21 fuer die Pharmakokinetik
+    (Pharmakologie-Studium: Halbwertszeit, Steady State und Aufsaettigungsdosis
+    sind Rechnen mit Rechenweg wie der pH, nur ein anderes Fach); jede Rechenart
+    ist ein `topic` bzw. eine `method`, kein eigenes Tool.
     """
-    assert len(_registered()) <= 20
+    assert len(_registered()) <= 21
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -163,6 +170,8 @@ NEEDS_DELIMITATION = {
     # Beide machen aus einem Signal einen Gehalt — die eine ueber eine
     # gemessene Reihe, die andere ueber die Monographie-Konstante.
     "generate_calibration_curve": ("calculate_content",),
+    # Pharmakokinetik rechnet; weder Loesungen ansetzen noch pH/Ionisierung
+    "calculate_pharmacokinetics": ("calculate_solution", "calculate_ph"),
     "predict_spectrum": ("generate_spectrum",),
     "generate_spectrum": ("predict_spectrum",),
 }

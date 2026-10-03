@@ -120,6 +120,9 @@ _BACK_TITRATION_METHODS = ("saponification_value", "iodine_value")
 # Die Fragen von `predict_spectrum`.
 SpectroTopic = Literal["ir_bands", "assign_wavenumber", "nmr_signals"]
 
+# Die Fälle von `calculate_pharmacokinetics`.
+PkTopic = Literal["half_life", "iv_bolus", "oral", "steady_state", "loading_dose"]
+
 # Die Fälle von `calculate_ph`.
 PhTopic = Literal[
     "weak_acid", "weak_base", "strong_acid", "strong_base", "buffer", "buffer_recipe"
@@ -217,7 +220,8 @@ generate_scope_table · generate_3d) · Lab graphic (generate_spectrum ·
 generate_tlc · generate_titration_curve · generate_species_distribution ·
 generate_calibration_curve) · Look up, for a named fact (lookup ·
 lookup_molecule_data · predict_spectrum) · Calculate, a number with its
-working (calculate_solution · calculate_content · calculate_ph) · Anki
+working (calculate_solution · calculate_content · calculate_ph ·
+calculate_pharmacokinetics) · Anki
 (export_anki_deck).
 
 Pass English or IUPAC compound names, never localized ones ('Aspirin', not
@@ -1852,6 +1856,145 @@ def calculate_ph(
         f"Unknown topic '{topic}' — pick one of: weak_acid, weak_base, "
         "strong_acid, strong_base, buffer, buffer_recipe."
     )
+
+
+@_tool()
+def calculate_pharmacokinetics(
+    topic: PkTopic,
+    dose_mg: float | None = None,
+    bioavailability: float = 1.0,
+    vd_l: float | None = None,
+    ke_per_h: float | None = None,
+    half_life_h: float | None = None,
+    clearance_l_per_h: float | None = None,
+    ka_per_h: float | None = None,
+    tau_h: float | None = None,
+    time_h: float | None = None,
+    target_mg_per_l: float | None = None,
+) -> str:
+    """Calculate pharmacokinetics in a one-compartment model, with the working.
+
+    Half-life, concentration over time, AUC, peak after an oral dose,
+    steady state and loading dose. Give Vd plus any one of ke, half-life or
+    clearance; the others follow, and values that contradict each other are
+    named instead of one being picked silently.
+
+    Pick the `topic`:
+
+    - "half_life": Vd plus ke, half_life_h or clearance_l_per_h.
+    - "iv_bolus": dose_mg plus the above; time_h adds the concentration then.
+    - "oral": as iv_bolus plus ka_per_h; gives tmax, Cmax and AUC. Set
+      bioavailability (F) below 1 when the dose is not fully absorbed.
+    - "steady_state": dose_mg, tau_h (interval between doses) plus the above;
+      gives accumulation, average level and the time to 90 % of steady state.
+    - "loading_dose": target_mg_per_l plus the above; gives the loading dose
+      and the maintenance rate.
+
+    You supply the parameters — they come from the lecture or the monograph.
+    The model is deliberately the simple one: first-order absorption and
+    elimination, one compartment.
+
+    Not this tool for: preparing a solution of a given strength
+    (calculate_solution), or pH and ionisation (calculate_ph).
+
+    Args:
+        topic: Which case to solve — see the list above.
+        dose_mg: Dose in mg.
+        bioavailability: Fraction F that reaches the circulation (0–1).
+        vd_l: Volume of distribution in L.
+        ke_per_h: Elimination rate constant in 1/h.
+        half_life_h: Elimination half-life in h.
+        clearance_l_per_h: Clearance in L/h.
+        ka_per_h: Absorption rate constant in 1/h ("oral").
+        tau_h: Dosing interval in h ("steady_state").
+        time_h: Time after the dose in h, for a concentration at that moment.
+        target_mg_per_l: Target plasma concentration in mg/L ("loading_dose").
+    """
+    from chemdraw_tool import pk
+
+    def g(x: float) -> str:
+        return f"{x:.3g}"
+
+    def need(name: str, value: float | None) -> float:
+        if value is None:
+            raise ValueError(f"Für '{topic}' fehlt {name}.")
+        return value
+
+    r = pk.resolve(vd=vd_l, ke=ke_per_h, t_half=half_life_h, cl=clearance_l_per_h)
+    vd, ke, cl, t_half = r["vd"], r["ke"], r["cl"], r["t_half"]
+    f = bioavailability
+
+    lines = [
+        "## Parameters",
+        f"- Vd = {g(vd)} L · ke = {g(ke)} /h · t½ = ln 2 / ke = {g(t_half)} h · CL = ke × Vd = {g(cl)} L/h",
+    ]
+    notes: list[str] = []
+
+    if topic == "half_life":
+        head = f"t½ = {g(t_half)} h"
+        lines.append(f"- After 5 half-lives ({g(5 * t_half)} h) about 97 % of the drug is eliminated.")
+    elif topic == "iv_bolus":
+        dose = need("dose_mg", dose_mg)
+        c0 = pk.c_iv(dose, vd, ke, 0)
+        head = f"C₀ = {g(c0)} mg/L"
+        lines += [
+            "## Working",
+            f"- C₀ = D / Vd = {g(dose)} / {g(vd)} = {g(c0)} mg/L",
+            "- C(t) = C₀ · e^(−ke·t)",
+            f"- AUC = D / CL = {g(dose)} / {g(cl)} = {g(pk.auc_inf(dose, 1.0, cl))} mg·h/L",
+        ]
+        if time_h is not None:
+            lines.append(f"- C({g(time_h)} h) = {g(pk.c_iv(dose, vd, ke, time_h))} mg/L")
+    elif topic == "oral":
+        dose = need("dose_mg", dose_mg)
+        ka = need("ka_per_h", ka_per_h)
+        tm = pk.tmax(ka, ke)
+        cm = pk.cmax(dose, f, vd, ke, ka)
+        head = f"Cmax = {g(cm)} mg/L at tmax = {g(tm)} h"
+        lines += [
+            "## Working",
+            f"- tmax = ln(ka/ke) / (ka − ke) = ln({g(ka)}/{g(ke)}) / ({g(ka)} − {g(ke)}) = {g(tm)} h",
+            "- C(t) = F·D·ka / (Vd·(ka − ke)) · (e^(−ke·t) − e^(−ka·t))",
+            f"- Cmax = C(tmax) = {g(cm)} mg/L",
+            f"- AUC = F·D / CL = {g(f)}·{g(dose)} / {g(cl)} = {g(pk.auc_inf(dose, f, cl))} mg·h/L",
+        ]
+        if time_h is not None:
+            lines.append(f"- C({g(time_h)} h) = {g(pk.c_oral(dose, f, vd, ke, ka, time_h))} mg/L")
+        if ka <= ke * 1.0000001:
+            notes.append("ka ≤ ke is the flip-flop case: the slow step is absorption, so the terminal slope shows ka, not ke.")
+    elif topic == "steady_state":
+        dose = need("dose_mg", dose_mg)
+        tau = need("tau_h", tau_h)
+        rr = pk.accumulation(ke, tau)
+        avg = pk.css_avg(dose, f, cl, tau)
+        t90 = pk.time_to_fraction_ss(ke, 0.9)
+        head = f"Css,av = {g(avg)} mg/L · accumulation R = {g(rr)}"
+        lines += [
+            "## Working",
+            f"- R = 1 / (1 − e^(−ke·τ)) = 1 / (1 − e^(−{g(ke)}·{g(tau)})) = {g(rr)}",
+            f"- Css,av = F·D / (CL·τ) = {g(f)}·{g(dose)} / ({g(cl)}·{g(tau)}) = {g(avg)} mg/L",
+            f"- 90 % of steady state after −ln(0.1) / ke = {g(t90)} h (≈ 3.3 half-lives)",
+        ]
+        if f == 1.0:
+            lines.append(
+                f"- i.v. bolus every τ: peak {g(pk.css_max_iv(dose, vd, ke, tau))} mg/L, "
+                f"trough {g(pk.css_min_iv(dose, vd, ke, tau))} mg/L"
+            )
+    else:  # loading_dose
+        target = need("target_mg_per_l", target_mg_per_l)
+        ld = pk.loading_dose(target, vd, f)
+        rate = pk.maintenance_rate(target, cl, f)
+        head = f"Loading dose = {g(ld)} mg · maintenance {g(rate)} mg/h"
+        lines += [
+            "## Working",
+            f"- Loading dose = Css · Vd / F = {g(target)} · {g(vd)} / {g(f)} = {g(ld)} mg",
+            f"- Maintenance rate = Css · CL / F = {g(target)} · {g(cl)} / {g(f)} = {g(rate)} mg/h",
+        ]
+
+    out = [f"# Pharmacokinetics — {topic.replace('_', ' ')}", "", f"**{head}**", ""] + lines
+    if notes:
+        out += ["", "## Worth knowing"] + [f"- {n}" for n in notes]
+    return "\n".join(out)
 
 
 @_tool()

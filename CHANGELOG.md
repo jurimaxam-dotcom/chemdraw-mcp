@@ -6,6 +6,14 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **`calculate_pharmacokinetics`** — pharmacokinetics in the one-compartment
+  model, with the working: half-life, concentration over time, AUC, tmax and
+  Cmax after an oral dose, accumulation and steady state, loading and
+  maintenance dose. Give Vd plus any one of ke, half-life or clearance; values
+  that contradict each other are named instead of one being picked silently.
+
 ### Changed
 
 - **Mechanism overview is readable.** Every step is drawn with the same bond

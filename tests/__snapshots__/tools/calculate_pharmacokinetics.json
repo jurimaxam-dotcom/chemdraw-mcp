@@ -1,0 +1,150 @@
+{
+  "description": "Calculate pharmacokinetics in a one-compartment model, with the working.\n\nHalf-life, concentration over time, AUC, peak after an oral dose,\nsteady state and loading dose. Give Vd plus any one of ke, half-life or\nclearance; the others follow, and values that contradict each other are\nnamed instead of one being picked silently.\n\nPick the `topic`:\n\n- \"half_life\": Vd plus ke, half_life_h or clearance_l_per_h.\n- \"iv_bolus\": dose_mg plus the above; time_h adds the concentration then.\n- \"oral\": as iv_bolus plus ka_per_h; gives tmax, Cmax and AUC. Set\n  bioavailability (F) below 1 when the dose is not fully absorbed.\n- \"steady_state\": dose_mg, tau_h (interval between doses) plus the above;\n  gives accumulation, average level and the time to 90 % of steady state.\n- \"loading_dose\": target_mg_per_l plus the above; gives the loading dose\n  and the maintenance rate.\n\nYou supply the parameters — they come from the lecture or the monograph.\nThe model is deliberately the simple one: first-order absorption and\nelimination, one compartment.\n\nNot this tool for: preparing a solution of a given strength\n(calculate_solution), or pH and ionisation (calculate_ph).\n\nArgs:\n    topic: Which case to solve — see the list above.\n    dose_mg: Dose in mg.\n    bioavailability: Fraction F that reaches the circulation (0–1).\n    vd_l: Volume of distribution in L.\n    ke_per_h: Elimination rate constant in 1/h.\n    half_life_h: Elimination half-life in h.\n    clearance_l_per_h: Clearance in L/h.\n    ka_per_h: Absorption rate constant in 1/h (\"oral\").\n    tau_h: Dosing interval in h (\"steady_state\").\n    time_h: Time after the dose in h, for a concentration at that moment.\n    target_mg_per_l: Target plasma concentration in mg/L (\"loading_dose\").",
+  "inputSchema": {
+    "properties": {
+      "bioavailability": {
+        "default": 1.0,
+        "title": "Bioavailability",
+        "type": "number"
+      },
+      "clearance_l_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Clearance L Per H"
+      },
+      "dose_mg": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Dose Mg"
+      },
+      "half_life_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Half Life H"
+      },
+      "ka_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ka Per H"
+      },
+      "ke_per_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ke Per H"
+      },
+      "target_mg_per_l": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Target Mg Per L"
+      },
+      "tau_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tau H"
+      },
+      "time_h": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Time H"
+      },
+      "topic": {
+        "enum": [
+          "half_life",
+          "iv_bolus",
+          "oral",
+          "steady_state",
+          "loading_dose"
+        ],
+        "title": "Topic",
+        "type": "string"
+      },
+      "vd_l": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Vd L"
+      }
+    },
+    "required": [
+      "topic"
+    ],
+    "title": "calculate_pharmacokineticsArguments",
+    "type": "object"
+  },
+  "name": "calculate_pharmacokinetics",
+  "outputSchema": {
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "calculate_pharmacokineticsOutput",
+    "type": "object"
+  }
+}

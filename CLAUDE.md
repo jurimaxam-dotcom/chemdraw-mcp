@@ -44,7 +44,7 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (currently 20 tools, 14 with a panel).
+the two numbers the Python side predicts (currently 21 tools, 14 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, and clicks Data for methylphenidate (CAS 113-45-1, cache on second switch). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 
@@ -99,7 +99,7 @@ a tested promise in `tests/test_server_taxonomy.py`:
 | Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d | structures and reactions |
 | Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution · generate_calibration_curve | measured data as a diagram |
 | Look up | lookup · lookup_molecule_data · predict_spectrum | facts about a substance, from a database or derived from its structure |
-| Calculate | calculate_solution · calculate_content · calculate_ph | a number **and** the working behind it |
+| Calculate | calculate_solution · calculate_content · calculate_ph · calculate_pharmacokinetics | a number **and** the working behind it |
 | Anki | export_anki_deck | flashcard decks |
 
 Outside the areas sits exactly one tool: `save_png`, the server half of the
@@ -113,7 +113,7 @@ selectable: any tool confusable with an existing one must carry a
 `Not this tool for: … — use X` line naming the alternative (also test-enforced),
 and the count has a ceiling that is only ever raised deliberately, with the
 reason written into the test (16 → 18 for the calculating area, → 19 for the
-calibration curve, → 20 for the spectrum prediction).
+calibration curve, → 20 for the spectrum prediction, → 21 for pharmacokinetics).
 
 **Delimit in both directions.** The tool that fails to exclude a case is the
 one that wins it. `generate_titration_curve` therefore points at

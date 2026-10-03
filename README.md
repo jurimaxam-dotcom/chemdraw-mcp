@@ -101,7 +101,7 @@ cards land straight in the running Anki, no clicks:
 
 ## Features
 
-All 20 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+All 21 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
 **Structures and schemes**
@@ -162,6 +162,11 @@ every drawing tool also returns a live preview for the in-chat panel.
   with the textbook approximation printed beside it: where the two disagree,
   the approximation has lost its assumptions and says so. 10⁻⁸ M HCl comes
   out at pH 6.98, not 8
+- **`calculate_pharmacokinetics`** — the one-compartment model with the working:
+  half-life, concentration over time, AUC, tmax/Cmax after an oral dose,
+  accumulation and steady state, loading and maintenance dose. Give Vd plus any
+  one of ke, half-life or clearance; contradicting values are named, not
+  silently resolved
 
 **Substance data** (online lookups)
 
@@ -199,7 +204,7 @@ on its own.
 
 Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
 when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
-20 tools above.
+21 tools above.
 
 ### Options on the drawing tools
 

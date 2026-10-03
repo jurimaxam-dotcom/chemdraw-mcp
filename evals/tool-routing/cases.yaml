@@ -240,3 +240,32 @@ cases:
     expect: export_anki_deck
     forbidden: [generate_scope_table]
     why: Dieselbe Absicht, unspezifisch formuliert — der haeufigere Wortlaut.
+
+  # --- Pharmakokinetik (03.10.2026) ------------------------------------------
+  - id: pk-halflife-from-clearance
+    prompt: "Ein Arzneistoff hat ein Verteilungsvolumen von 70 L und eine Clearance von 10,5 L/h. Wie lang ist die Halbwertszeit?"
+    expect: calculate_pharmacokinetics
+    forbidden: [calculate_solution, calculate_ph, lookup]
+    why: >
+      Eine Rechenaufgabe mit gegebenen Parametern. Ohne diesen Fall waere offen,
+      ob das Modell sie dem pH- oder dem Loesungs-Rechner zuschiebt.
+
+  - id: pk-oral-peak
+    prompt: "Wann erreicht eine orale Dosis von 500 mg (F 0,8; Vd 70 L; ke 0,15/h; ka 1,2/h) ihren Gipfel und wie hoch ist Cmax?"
+    expect: calculate_pharmacokinetics
+    forbidden: [calculate_solution, generate_titration_curve, generate_species_distribution]
+    why: „Gipfel“ und Kurvenwoerter ziehen zu den Diagramm-Tools; gefragt sind aber Zahlen.
+
+  - id: pk-steady-state
+    prompt: "Ich gebe alle 8 Stunden 500 mg (Vd 70 L, ke 0,15/h). Wie lange dauert es bis zum Steady State und wie stark akkumuliert das?"
+    expect: calculate_pharmacokinetics
+    forbidden: [calculate_solution, calculate_content]
+    why: Akkumulation und Steady State sind Pharmakokinetik, keine Gehaltsbestimmung.
+
+  - id: pk-ionisation-is-ph
+    prompt: "Welcher Anteil von Acetylsalicylsaeure (pKs 3,5) liegt im Magen bei pH 1,5 ungeladen vor?"
+    expect: calculate_ph
+    forbidden: [calculate_pharmacokinetics]
+    why: >
+      Gegenrichtung: Ionisierung und Resorption klingen nach Pharmakologie, sind
+      aber Henderson-Hasselbalch und gehoeren zu calculate_ph.
