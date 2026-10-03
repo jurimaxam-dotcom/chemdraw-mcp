@@ -40,6 +40,8 @@ def payloads() -> dict[str, object]:
         "mechanism": lambda: s.generate_mechanism("sn2", ["bromoethane", "hydroxide"]),
         "mechanism_fischer": lambda: s.generate_mechanism("fischer_ester", ["acetic acid", "ethanol"]),
         "mechanism_sn1": lambda: s.generate_mechanism("sn1", ["2-bromo-2-methylpropane", "water"]),
+        "pk": lambda: s.generate_pk_curve(500, 70, half_life_h=4.62, ka_per_h=1.2, bioavailability=0.8, tau_h=8, mec_mg_per_l=2, mtc_mg_per_l=6, drug="Wirkstoff X"),
+        "dose_response": lambda: s.generate_dose_response(10, "nM", antagonist_concentration=20, antagonist_kb=10, drug="Agonist A"),
         "spectrum": lambda: s.generate_spectrum("ir", IR_PEAKS, title="Aspirin"),
         "tlc": lambda: s.generate_tlc(ESTER_LANES, title="Veresterung"),
         "scope": lambda: s.generate_scope_table(ENTRIES, title="Suzuki scope"),
