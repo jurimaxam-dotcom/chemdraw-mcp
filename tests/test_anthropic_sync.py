@@ -5,6 +5,7 @@ Alles ohne Netz: der Abruf wird als Funktion hineingereicht.
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 SKRIPT = Path(__file__).parent.parent / "scripts" / "anthropic_sync.py"
@@ -82,7 +83,7 @@ def test_versionsvergleich_kleine_aenderung():
 
 def test_pins_werden_aus_den_projektdateien_gelesen():
     pins = sync.lese_pins(Path(__file__).parent.parent)
-    assert pins["ext-apps"].lstrip("^~") .startswith("1.")
+    assert re.search(r"\d+\.\d+\.\d+", pins["ext-apps"]), pins["ext-apps"]  # eine Version, nicht eine feste Hauptversion
     assert pins["mcpb"].count(".") == 2
     assert "mcp" in pins
 

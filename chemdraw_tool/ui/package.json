@@ -16,9 +16,11 @@
     "test:watch": "node --test --watch src/utils/*.test.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/ext-apps": "^1.7.4",
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/ext-apps": "^2.0.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zod": "^4.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",

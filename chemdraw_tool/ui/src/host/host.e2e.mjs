@@ -2,8 +2,8 @@
 // Deckt, was in-process-Tests nicht sehen: das sandboxed iframe, den Nachrichtenweg
 // Panel → Host → Server (callServerTool) und die Tool-Antwort, die das Panel wirklich füllt.
 // usage: node src/host/host.e2e.mjs      (Netz nötig für den Data-Knopf: PubChem)
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
