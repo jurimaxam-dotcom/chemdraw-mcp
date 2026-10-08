@@ -1,3 +1,5 @@
+> Archiviert 08.10.2026: Doku, kein Plan — der Text steht wortgleich in CHANGELOG.md unter [0.4.7] (diff leer).
+
 ### Added
 
 - **`generate_pk_curve` and `generate_dose_response`** — the two pharmacology

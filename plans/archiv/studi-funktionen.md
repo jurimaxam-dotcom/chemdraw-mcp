@@ -1,3 +1,5 @@
+> Archiviert 08.10.2026: erledigt (15/15 Haken). Der „Release"-Punkt unter „Bewusst NICHT" ist überholt: 0.4.0–0.4.8 sind veröffentlicht (gh release list).
+
 # Studi-Funktionen anbauen — Auftrag Jay, 15.08.2026 (Nachtlauf)
 
 **Auftrag:** „Fixe bis alles sauber läuft, dann entwickle neue Funktionen in
@@ -38,7 +40,7 @@ strukturelle Trennung, an die angebaut wird.
 - [x] Doku nachziehen (CLAUDE.md, README, CHANGELOG) — Commit d121cb3
 - [x] Gegenprobe: `generate_molecule("Aspirin")` schreibt wieder nach
       `einzelmolekuele/`, nicht nach `scope/`
-- [ ] Recherche auswerten (Scout + Repo-Analyse)
+- [x] Recherche auswerten (Scout + Repo-Analyse) (Ergebnis im Abschnitt „Neue Funktionen", umgesetzt ab a0fcb57)
 
 ### Neue Funktionen
 

@@ -1,3 +1,5 @@
+> Archiviert 08.10.2026: erledigt (15/15 Haken, Gate 15.08.2026).
+
 # Routing schärfen + Umschalter im Panel
 
 Auftrag Jay, 15.08.2026. Grundlage: Recherchebefund

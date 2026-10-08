@@ -1,3 +1,5 @@
+> Archiviert 08.10.2026: aufgegangen in plans/mcp-server.md (Etappe 03.10.2026: Panel-Ausbau).
+
 # Panel-Ausbau: Ansichten, Animation, Abfrage- und Prüfungsmodus (Jay, 03.10.2026)
 
 Ziel: Das Moleküle-Panel wird vom Bild zum Lernwerkzeug. **Eine** Molekülanfrage liefert alle Ansichten, man schaltet sofort um, wird durch die Optionen geführt, und kann sich selbst abfragen.

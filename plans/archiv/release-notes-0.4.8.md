@@ -1,3 +1,5 @@
+> Archiviert 08.10.2026: Doku, kein Plan — der Text steht wortgleich in CHANGELOG.md unter [0.4.8] (diff leer).
+
 ### Fixed
 
 - **A figure without a title no longer overwrites the previous one.** TLC plates,
