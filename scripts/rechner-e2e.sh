@@ -55,15 +55,20 @@ const v1 = await p.evaluate(() => aufgabe.loesung);
 await p.fill("#antwort", v1.toFixed(2).replace(".", ","));
 await p.click("button[type=submit]");
 const loesOk = (await p.textContent(".verdict")).startsWith("Richtig");
-// Pharmakokinetik: alle sechs Typen richtig lösen (Ionisierung und Akkumulation haben andere Einheiten)
+// Pharmakokinetik: alle sieben Typen richtig lösen (Ionisierung und Akkumulation haben andere Einheiten)
 let pkOk = true;
-for (const typ of ["halbwertszeit", "konzentration", "steady_state", "aufsaettigung", "akkumulation", "ionisation"]) {
+for (const typ of ["halbwertszeit", "konzentration", "steady_state", "aufsaettigung", "akkumulation", "ionisation", "tangente"]) {
   await p.selectOption("#typ", `pharmakokinetik.${typ}_aufgabe`); await p.waitForSelector(".task");
   const x = await p.evaluate(() => aufgabe.loesung);
   await p.fill("#antwort", x.toFixed(4).replace(".", ","));
   await p.click("button[type=submit]");
   if (!(await p.textContent(".verdict")).startsWith("Richtig")) { pkOk = false; console.error("PK rot:", typ, x); }
 }
+// Hilfsmittel: der Rechenweg der Tangenten-Aufgabe trägt den TI-Tastenweg bis zur Geradengleichung
+await p.click("#weg summary");
+const tiText = await p.textContent("#weg");
+const tiOk = tiText.includes("5:Tangente(") && tiText.includes("y = m·x + b") && (await p.$$("#weg .st-ti")).length === 4;
+if (!tiOk) console.error("TI-Tastenweg fehlt im Rechenweg");
 // Klausurmodus: 10 Aufgaben, alle richtig beantworten → 10 von 10
 await p.click("#klausur"); await p.waitForSelector(".task");
 for (let i = 0; i < 10; i++) {
@@ -91,6 +96,6 @@ if (offLoesung === null) { offlineOk = true; } else {
 }
 await ctx.setOffline(false);
 await b.close();
-if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || !pkOk || !klausurOk || !offlineOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, pkOk, klausurOk, offlineOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
-console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise), Verdünnung und alle sechs Pharmakokinetik-Typen richtig erkannt, Klausur 10 von 10, offline nach Neuladen lauffähig, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
+if (!ok || !wegOffen || !phOk || !mechOk || !loeslOk || !loesOk || !pkOk || !tiOk || !klausurOk || !offlineOk || fehler.length || fremd.length) { console.error("❌ Rechner rot:", { ok, wegOffen, phOk, mechOk, loeslOk, loesOk, pkOk, tiOk, klausurOk, offlineOk, fehler, fremd: [...new Set(fremd)] }); process.exit(1); }
+console.log(`✅ Rechner grün: geladen nach ${ms} ms, Titration, Puffer, Mechanismus, Löslichkeit (10^-Schreibweise), Verdünnung und alle sieben Pharmakokinetik-Typen richtig erkannt, TI-Tastenweg bis zur Tangentengleichung sichtbar, Klausur 10 von 10, offline nach Neuladen lauffähig, Rechenweg nach 2 Fehlversuchen offen, 0 Anfragen an fremde Hosts.`);
 JS

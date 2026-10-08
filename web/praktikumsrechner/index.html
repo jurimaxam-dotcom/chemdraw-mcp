@@ -77,6 +77,17 @@ ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 1px
 .st-f { color: var(--ink-2) }
 .st-r { font-weight: 500 }
 .st-e { font-size: 14px; color: var(--ink-2); margin-top: 2px }
+/* Hilfsmittel TI-84 Plus CE-T: Tastenweg unter dem Schritt, abgesetzt durch eine Haarlinie links */
+.st-ti { margin: 6px 0 0; padding: 2px 0 2px 10px; border-left: 2px solid var(--line); list-style: none; display: flex; flex-direction: column; gap: 2px }
+ol.steps .st-ti li { counter-increment: none; padding: 0; font: 13px/1.5 var(--f-mono); color: var(--ink-2); overflow-wrap: anywhere }
+ol.steps .st-ti li::before { content: none }
+.st-ti .ti-kopf { font: 600 12px var(--f-body); color: var(--ink-2) }
+.hilfsmittel { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px }
+.hilfsmittel details { border-top: 0; padding-top: 0 }
+.hilfsmittel h3 { font-size: 15px; margin: 14px 0 4px }
+.hilfsmittel ol { margin: 0; padding-left: 20px; font-size: 14.5px; display: flex; flex-direction: column; gap: 4px }
+.hilfsmittel p { margin: 6px 0 0; font-size: 14px; color: var(--ink-2) }
+.hilfsmittel kbd { font: 500 12.5px var(--f-mono); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; white-space: nowrap }
 .loading { color: var(--ink-2); font-size: 15px }
 footer { font-size: 12.5px; color: var(--muted) }
 .row { display: flex; flex-wrap: wrap; gap: 8px }
@@ -134,6 +145,7 @@ footer { font-size: 12.5px; color: var(--muted) }
         <option value="pharmakokinetik.aufsaettigung_aufgabe">Aufsättigungsdosis</option>
         <option value="pharmakokinetik.akkumulation_aufgabe">Akkumulationsfaktor</option>
         <option value="pharmakokinetik.ionisation_aufgabe">Ionisierung bei gegebenem pH</option>
+        <option value="pharmakokinetik.tangente_aufgabe">Steigung der Konzentrationskurve (Tangente)</option>
       </optgroup>
       <optgroup label="Allgemeine Chemie">
         <option value="loeslichkeit.neue_aufgabe">Löslichkeitsprodukt, gemischt</option>
@@ -152,6 +164,39 @@ footer { font-size: 12.5px; color: var(--muted) }
   <main class="card" id="card" aria-live="polite">
     <p class="loading" id="loading">Rechenkern lädt (Python im Browser, beim ersten Mal einige Sekunden) …</p>
   </main>
+
+  <section class="hilfsmittel" id="hilfsmittel" aria-label="Hilfsmittel">
+    <details>
+      <summary>Hilfsmittel: TI-84 Plus CE-T</summary>
+      <p>In der Pharmakokinetik steht unter jedem Rechenschritt, was man auf dem TI tippt. Hier die Handgriffe, die immer wieder vorkommen. Quelle: TI-Referenzhandbuch und TI-84-Guidebook, Kapitel „Draw Instructions“.</p>
+
+      <h3>Tangente an einen Graphen zeichnen, Geradengleichung ablesen</h3>
+      <ol>
+        <li><kbd>y=</kbd>: Funktion bei Y1 eintragen. Die Variable x liegt auf <kbd>x,t,θ,n</kbd>.</li>
+        <li><kbd>window</kbd>: Xmin/Xmax/Ymin/Ymax so setzen, dass der Punkt im Bild liegt.</li>
+        <li><kbd>graph</kbd> zeichnet die Kurve.</li>
+        <li><kbd>2nd</kbd> <kbd>prgm</kbd> öffnet ZEICHNEN (englisch DRAW). Dort <b>5:Tangente(</b> wählen.</li>
+        <li>Bei mehreren Graphen mit <kbd>▲</kbd> <kbd>▼</kbd> die richtige Kurve wählen.</li>
+        <li>Den x-Wert eintippen oder mit <kbd>◀</kbd> <kbd>▶</kbd> hinfahren, dann <kbd>enter</kbd>.</li>
+        <li>Die Tangente erscheint. Unten stehen x und die Gleichung <b>y = m·x + b</b>. m ist die Steigung.</li>
+      </ol>
+      <p>Die Gleichung erscheint nur in diesem Weg aus dem Graphen heraus. Tippt man <code>Tangente(Y1,2)</code> im Rechenfenster, zeichnet der TI nur die Linie. Die Zahl der Nachkommastellen stellt man unter <kbd>mode</kbd> ein, mit FLOAT oder FIX 0–9. Die Einstellung gilt auch für die Tangentengleichung. Löschen kann man die Tangente mit <kbd>2nd</kbd> <kbd>prgm</kbd> → 1:LöBild.</p>
+
+      <h3>Nur die Steigung an einer Stelle</h3>
+      <ol>
+        <li>Im Graphen <kbd>2nd</kbd> <kbd>trace</kbd> drücken. Das öffnet CALC.</li>
+        <li><b>6:dy/dx</b> wählen, den x-Wert tippen und mit <kbd>enter</kbd> bestätigen. Der TI zeigt dann dy/dx.</li>
+      </ol>
+
+      <h3>Stolperstellen beim Tippen</h3>
+      <ol>
+        <li>Der TI rechnet mit Dezimal<b>punkt</b>. Für 0,35 tippt man also 0.35.</li>
+        <li>Ein negatives Vorzeichen kommt von <kbd>(−)</kbd>, nicht von <kbd>−</kbd>. Sonst meldet der TI einen Syntaxfehler.</li>
+        <li><kbd>2nd</kbd> <kbd>ln</kbd> ergibt e^( und <kbd>2nd</kbd> <kbd>log</kbd> ergibt 10^(.</li>
+        <li><kbd>2nd</kbd> <kbd>(−)</kbd> ruft Ans auf, das letzte Ergebnis. Es bleibt ungerundet, so entstehen keine Rundungsfehler über mehrere Schritte.</li>
+      </ol>
+    </details>
+  </section>
 
   <footer>Titrationsäquivalente aus Ä = M · c / z, auf 4 geltende Ziffern gerundet (kann in der letzten Stelle von der Monographie abweichen). pH-Aufgaben nur, wo die Näherungsformel höchstens 0,05 von der exakten Rechnung abweicht. Rechenkern: chemdraw-mcp (Apache-2.0). <a href="impressum.html">Impressum</a></footer>
 </div>
@@ -201,7 +246,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 const CHIP = { gehalt: "Gehalt", sollverbrauch: "Sollverbrauch", faktor: "Titrationsäquivalent", titer: "Faktorbestimmung",
   einwaage: "Einwaage", verduennung: "Verdünnen", mischkreuz: "Mischungskreuz", konz: "Konz. Säure",
   mechanismus: "Mechanismus", loeslichkeit: "Löslichkeit", kl: "Löslichkeitsprodukt", zusatz: "Gleichioniger Zusatz", saeure: "Schwache Säure", base: "Schwache Base", stark: "Stark", puffer: "Puffer-pH", verhaeltnis: "Puffer ansetzen",
-  halbwertszeit: "Halbwertszeit", iv_c: "Konzentration i.v.", css: "Steady State", aufsaettigung: "Aufsättigungsdosis", akkumulation: "Akkumulation", ionisation: "Ionisierung" };
+  halbwertszeit: "Halbwertszeit", iv_c: "Konzentration i.v.", css: "Steady State", aufsaettigung: "Aufsättigungsdosis", akkumulation: "Akkumulation", ionisation: "Ionisierung", tangente: "Tangente" };
 
 async function start() {
   const t0 = performance.now();
@@ -262,7 +307,8 @@ function rechenwegHtml(a, id) {
           <div class="st-f">${esc(s.formula)}</div>
           <div class="st-s">${esc(s.substitution)}</div>
           <div class="st-r">${esc(s.result)}</div>
-          ${s.explanation ? `<div class="st-e">${esc(s.explanation)}</div>` : ""}</li>`).join("")}
+          ${s.explanation ? `<div class="st-e">${esc(s.explanation)}</div>` : ""}
+          ${s.taschenrechner ? `<ul class="st-ti" aria-label="Tastenweg TI-84 Plus CE-T"><li class="ti-kopf">TI-84 Plus CE-T</li>${s.taschenrechner.map((z) => `<li>${esc(z)}</li>`).join("")}</ul>` : ""}</li>`).join("")}
       </ol></details>`;
 }
 
@@ -319,7 +365,7 @@ const BEREICH = {
   saeure: "pH und Puffer", base: "pH und Puffer", stark: "pH und Puffer", puffer: "pH und Puffer", verhaeltnis: "pH und Puffer",
   loeslichkeit: "Löslichkeit", kl: "Löslichkeit", zusatz: "Löslichkeit", mechanismus: "Mechanismen",
   halbwertszeit: "Pharmakokinetik", iv_c: "Pharmakokinetik", css: "Pharmakokinetik", aufsaettigung: "Pharmakokinetik",
-  akkumulation: "Pharmakokinetik", ionisation: "Pharmakokinetik",
+  akkumulation: "Pharmakokinetik", ionisation: "Pharmakokinetik", tangente: "Pharmakokinetik",
 };
 let klausur = null;
 

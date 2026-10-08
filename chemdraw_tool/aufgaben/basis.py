@@ -20,15 +20,22 @@ def nbsp(text: str) -> str:
     return _ZAHL_EINHEIT.sub("\\1\u00a0\\2", text)
 
 
-def schritt(label: str, formula: str, substitution: str, result: str, explanation: str = "") -> dict:
-    """Ein Rechenweg-Schritt im Schema von solution.py und calculator/."""
-    return {
+def schritt(label: str, formula: str, substitution: str, result: str, explanation: str = "",
+            taschenrechner: list[str] | None = None) -> dict:
+    """Ein Rechenweg-Schritt im Schema von solution.py und calculator/.
+
+    `taschenrechner`: optionaler Tastenweg für das Hilfsmittel TI-84 Plus CE-T, eine Zeile je
+    Handgriff; links vom „→" steht, was man tippt (Dezimalpunkt!), rechts, was der TI zeigt."""
+    s = {
         "label": label,
         "formula": formula,
         "substitution": substitution,
         "result": result,
         "explanation": explanation,
     }
+    if taschenrechner:
+        s["taschenrechner"] = list(taschenrechner)
+    return s
 
 
 _ZEHNERPOTENZ = re.compile(r"\s*[·x×*]\s*10\s*\^?\s*", re.I)
