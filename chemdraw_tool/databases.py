@@ -18,7 +18,7 @@ _PUBCHEM_PROPS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name"
     "/{name}/property/MolecularFormula,MolecularWeight,IUPACName,"
     "ExactMass,Charge,XLogP,TPSA,HBondDonorCount,HBondAcceptorCount,"
-    "CanonicalSMILES,IsomericSMILES,InChIKey/JSON"
+    "SMILES,InChIKey/JSON"
 )
 _PUBCHEM_SYNONYMS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/synonyms/JSON"
@@ -28,7 +28,7 @@ _PUBCHEM_SMILES_PROPS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles"
     "/property/Title,MolecularFormula,MolecularWeight,IUPACName,"
     "ExactMass,Charge,XLogP,TPSA,HBondDonorCount,HBondAcceptorCount,"
-    "CanonicalSMILES,IsomericSMILES,InChIKey/JSON"
+    "SMILES,InChIKey/JSON"
 )
 _PUBCHEM_SMILES_SYNONYMS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/synonyms/JSON"
@@ -42,7 +42,7 @@ _PUBCHEM_INCHIKEY_PROPS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey"
     "/{key}/property/Title,MolecularFormula,MolecularWeight,IUPACName,"
     "ExactMass,Charge,XLogP,TPSA,HBondDonorCount,HBondAcceptorCount,"
-    "CanonicalSMILES,IsomericSMILES,InChIKey/JSON"
+    "SMILES,InChIKey/JSON"
 )
 _PUBCHEM_INCHIKEY_SYNONYMS_URL = (
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{key}/synonyms/JSON"

@@ -382,22 +382,25 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
     props_raw = props_raw or {}
 
     properties: dict[str, str] = {}
-    if v := props_raw.get("MolecularFormula"):
+    # "is not None" statt Wahrheitswert: XLogP 0 oder 0 H-Bruecken-Donoren
+    # sind Messwerte und duerfen nicht als Luecke verschwinden.
+    if (v := props_raw.get("MolecularFormula")) is not None:
         properties["formula"] = v
-    if v := props_raw.get("MolecularWeight"):
+    if (v := props_raw.get("MolecularWeight")) is not None:
         properties["mw"] = f"{v} g/mol"
-    if v := props_raw.get("XLogP"):
+    if (v := props_raw.get("XLogP")) is not None:
         properties["logP"] = str(v)
-    if v := props_raw.get("TPSA"):
+    if (v := props_raw.get("TPSA")) is not None:
         properties["tpsa"] = f"{v} Å²"
-    if v := props_raw.get("HBondDonorCount"):
+    if (v := props_raw.get("HBondDonorCount")) is not None:
         properties["hbd"] = str(v)
-    if v := props_raw.get("HBondAcceptorCount"):
+    if (v := props_raw.get("HBondAcceptorCount")) is not None:
         properties["hba"] = str(v)
-    # PubChem liefert seit 2025 "SMILES"/"ConnectivitySMILES" statt
-    # "CanonicalSMILES". Ohne Fallback fehlte das Feld, und der Daten-Knopf im
-    # Panel fragte mit dem Anzeigenamen statt mit der Struktur an.
-    properties["smiles"] = props_raw.get("CanonicalSMILES") or smiles
+    # Immer die gezeichnete Struktur: Der Daten-Knopf im Panel fragt damit an,
+    # und das Datenblatt muss zur Zeichnung gehoeren. PubChems SMILES kann vom
+    # Rueckfallweg stammen (anderer Datensatz gleicher Struktur, z. B. ein
+    # Isotopolog) — fuer die Identitaet zaehlt, was resolve() geliefert hat.
+    properties["smiles"] = smiles
     # Welchen Datensatz PubChem zurueckgegeben hat. Kostet keine zusaetzliche
     # Anfrage und ist die einzige Stelle, an der ein falsch aufgeloester Name
     # auffaellt: darunter ist dann alles konsistent falsch.

@@ -145,3 +145,54 @@ def test_data_sheet_goes_by_structure_not_by_name(monkeypatch):
     rows = {r.key: r.val for r in sheet.sources[0].rows}
     assert rows["CID"] == "4158"
     assert rows["CAS-Nr."] == "113-45-1"
+
+
+# --- PubChem-Feldnamen (live geprueft 14.10.2026) ----------------------------
+# Wer heute "CanonicalSMILES,IsomericSMILES" anfragt, bekommt die Schluessel
+# "ConnectivitySMILES" und "SMILES" zurueck. Die alten Namen in der URL sind
+# Altlast; die Lesestelle auf "CanonicalSMILES" lief immer ins Leere.
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        databases._PUBCHEM_PROPS_URL,
+        databases._PUBCHEM_SMILES_PROPS_URL,
+        databases._PUBCHEM_INCHIKEY_PROPS_URL,
+    ],
+)
+def test_property_urls_ask_for_current_pubchem_field_names(url):
+    assert "CanonicalSMILES" not in url
+    assert "IsomericSMILES" not in url
+    assert ",SMILES," in url
+
+
+def test_payload_smiles_is_the_drawn_structure_not_pubchems(monkeypatch):
+    """Das Datenblatt fragt mit properties.smiles an — es muss die gezeichnete
+    Struktur sein. Ein abweichender PubChem-Datensatz (SMILES-Rueckfallweg,
+    z. B. ein Isotopolog) darf sie nicht ersetzen."""
+    _fake_pubchem(
+        monkeypatch,
+        {"CID": 1, "Title": "Anderes", "SMILES": "C", "ConnectivitySMILES": "C"},
+    )
+    assert server._enrich_properties(_SMILES)["smiles"] == _SMILES
+
+
+def test_zero_valued_properties_are_kept(monkeypatch):
+    """XLogP 0, TPSA 0, 0 Donoren/Akzeptoren sind Messwerte, keine Luecken."""
+    _fake_pubchem(
+        monkeypatch,
+        {
+            "CID": 297,
+            "MolecularWeight": "16.04",
+            "XLogP": 0,
+            "TPSA": 0,
+            "HBondDonorCount": 0,
+            "HBondAcceptorCount": 0,
+        },
+    )
+    props = server._enrich_properties("C")
+    assert props["logP"] == "0"
+    assert props["tpsa"] == "0 Å²"
+    assert props["hbd"] == "0"
+    assert props["hba"] == "0"

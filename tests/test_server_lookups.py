@@ -125,8 +125,8 @@ PUBCHEM_PROPS_ASPIRIN = {
                 "TPSA": 63.6,
                 "HBondDonorCount": 1,
                 "HBondAcceptorCount": 4,
-                "CanonicalSMILES": "CC(=O)OC1=CC=CC=C1C(=O)O",
-                "IsomericSMILES": "CC(=O)OC1=CC=CC=C1C(=O)O",
+                "ConnectivitySMILES": "CC(=O)OC1=CC=CC=C1C(=O)O",
+                "SMILES": "CC(=O)OC1=CC=CC=C1C(=O)O",
                 "InChIKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N",
             }
         ]
