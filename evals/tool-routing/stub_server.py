@@ -17,17 +17,23 @@ from mcp.server.stdio import stdio_server
 
 from chemdraw_tool.server import mcp as echt
 
-server = Server("chemdraw", instructions=echt.instructions)
+
+async def _tools(_ctx, _params) -> types.ListToolsResult:
+    return types.ListToolsResult(tools=await echt.list_tools())
 
 
-@server.list_tools()
-async def _tools() -> list[types.Tool]:
-    return await echt.list_tools()
+async def _call(_ctx, params: types.CallToolRequestParams) -> types.CallToolResult:
+    text = f"(Attrappe) {params.name} aufgerufen"
+    return types.CallToolResult(content=[types.TextContent(type="text", text=text)])
 
 
-@server.call_tool()
-async def _call(name: str, arguments: dict) -> list[types.TextContent]:
-    return [types.TextContent(type="text", text=f"(Attrappe) {name} aufgerufen")]
+# mcp 2: Handler gehen in den Konstruktor, die Dekoratoren gibt es nicht mehr.
+server = Server(
+    "chemdraw",
+    instructions=echt.instructions,
+    on_list_tools=_tools,
+    on_call_tool=_call,
+)
 
 
 async def main() -> None:

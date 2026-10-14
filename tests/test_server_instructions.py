@@ -24,7 +24,7 @@ def _instructions() -> str:
 def test_server_has_instructions():
     """Ohne dieses Feld muss jede Tool-Beschreibung die Landkarte mittragen."""
     assert _instructions().strip(), (
-        "instructions= am FastMCP-Konstruktor ist leer — die Bereichskarte "
+        "instructions= am MCPServer-Konstruktor ist leer — die Bereichskarte "
         "fehlt dem Modell komplett."
     )
 

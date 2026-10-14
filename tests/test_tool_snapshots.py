@@ -59,8 +59,8 @@ def _registered_tools() -> dict[str, dict]:
         tool.name: {
             "name": tool.name,
             "description": tool.description or "",
-            "inputSchema": tool.inputSchema,
-            "outputSchema": tool.outputSchema,
+            "inputSchema": tool.input_schema,
+            "outputSchema": tool.output_schema,
         }
         for tool in tools
         if tool.name not in VAULT

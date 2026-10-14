@@ -8,6 +8,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Runs on the `mcp` 2.x Python SDK** (pinned `mcp>=2.3,<3`, tested with
+  2.3.0). `FastMCP` became `MCPServer`, and the server version is now a
+  constructor argument. What a client sees is unchanged in both profiles: the
+  same tools with byte-identical names, descriptions and schemas, the same panel
+  tools, `serverInfo.version` still the package version, and structured output
+  still also arrives as a JSON text block. Error messages that tell the user
+  what to do (a name that did not resolve, sources offline, invalid input) still
+  reach the client — mcp 2.1+ would otherwise replace them with a generic
+  "Error executing tool".
 - **The MVP panel is easier to read and use.** Molecule names and facts have a
   clearer hierarchy, structures and details stack on narrow panels, and the data
   sheet keeps labels beside their values. The UI follows host fonts and theme,
