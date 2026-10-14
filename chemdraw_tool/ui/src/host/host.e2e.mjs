@@ -52,6 +52,29 @@ try {
   prüfe(t.includes("Methylphenidate") && t.includes("CID 4158"), "Panel zeigt Methylphenidate (CID 4158) im sandboxed iframe");
   prüfe(!serverCalls.includes("lookup_molecule_data"), "Strukturansicht ruft den Server noch nicht (lokal, kein Spinner)");
 
+  // Reale Geometrie statt CSS-Snapshot: schmal/breit, hell/dunkel.
+  for (const colorScheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme });
+    for (const width of [360, 980]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.locator("iframe").evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "820px"; }, width - 16);
+      await frame.getByRole("button", { name: "Export as PNG" }).waitFor();
+      const geometry = await frame.evaluate(() => {
+        const panel = document.querySelector('[data-view="structure"]');
+        const canvas = panel.firstElementChild.getBoundingClientRect();
+        const info = panel.lastElementChild.getBoundingClientRect();
+        const title = document.querySelector(".panel-title");
+        return { overflow: document.documentElement.scrollWidth > innerWidth, canvas: canvas.toJSON(), info: info.toJSON(),
+          titleSize: title ? parseFloat(getComputedStyle(title).fontSize) : 0,
+          exportLabel: document.querySelector('[title="Export as PNG"]').textContent };
+      });
+      prüfe(!geometry.overflow && geometry.titleSize >= 15 && geometry.exportLabel.includes("PNG"), `${colorScheme} ${width}px: readable title, explicit export, no horizontal overflow`);
+      if (width === 360) prüfe(geometry.info.top >= geometry.canvas.bottom - 1, "Schmale Ansicht stapelt Struktur und Steckbrief");
+      else prüfe(geometry.info.left >= geometry.canvas.right - 1, "Breite Ansicht ordnet Steckbrief neben Struktur an");
+      await page.screenshot({ path: join(tmpdir(), `chem-ui-${colorScheme}-${width}.png`) });
+    }
+  }
+
   // 2. Data-Knopf: callServerTool → Host → echter Server → Datenblatt
   await frame.getByText("Data", { exact: true }).click();
   const t0 = Date.now();
@@ -62,6 +85,24 @@ try {
   prüfe(serverCalls.filter((n) => n === "lookup_molecule_data").length === 1, "Data-Knopf löst genau einen lookup_molecule_data über die Bridge aus");
   prüfe(t.includes("CAS-Nr. 113-45-1") && t.includes("PubChem CID 4158"), "Datenblatt (nicht Strukturansicht) zeigt CAS-Nr. 113-45-1 und PubChem CID 4158");
   await page.screenshot({ path: join(tmpdir(), "panel-host-data.png") });
+
+  for (const colorScheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme });
+    for (const width of [360, 980]) {
+      await page.setViewportSize({ width, height: 1100 });
+      await page.locator("iframe").evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "1040px"; }, width - 16);
+      prüfe(await frame.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${colorScheme} ${width}px: Datenblatt ohne horizontales Abschneiden`);
+      await page.screenshot({ path: join(tmpdir(), `chem-ui-data-${colorScheme}-${width}.png`) });
+    }
+  }
+  // Der Host darf ein anderes Theme als das Betriebssystem setzen.
+  await page.emulateMedia({ colorScheme: "light" });
+  await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  prüfe(await frame.evaluate(() => getComputedStyle(document.body).backgroundColor === "rgb(32, 39, 36)"), "Explizites Host-Dunkeltheme überstimmt helles Systemtheme");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  prüfe(await frame.evaluate(() => getComputedStyle(document.body).backgroundColor === "rgb(250, 251, 249)"), "Explizites Host-Helltheme überstimmt dunkles Systemtheme");
+  await frame.evaluate(() => document.documentElement.removeAttribute("data-theme"));
 
   // 3. Zurück zur Struktur, wieder Data: Cache, kein zweiter Serveraufruf
   await frame.getByText("Structure", { exact: true }).click();

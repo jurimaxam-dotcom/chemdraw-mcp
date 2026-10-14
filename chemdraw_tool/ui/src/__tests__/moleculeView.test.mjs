@@ -128,3 +128,32 @@ test("ein Rueckwechsel waehrend des Ladens ueberstimmt das eintreffende Ergebnis
   assert.ok(panel("data"), "Datenblatt nach dem Rueckwechsel nicht abrufbar");
   unmount();
 });
+
+test("ein neuer Stoff im selben App-Slot verwirft das alte Datenblatt", async () => {
+  const { default: App } = await import("../App");
+  const calls = [];
+  const bridge = { callServerTool: async (req) => {
+    calls.push(req.arguments.name);
+    return lookupSuccess();
+  } };
+  const element = (data) => React.createElement(AppContext.Provider, { value: bridge }, React.createElement(App, { data }));
+  const { container, rerender, unmount } = render(element(MOLECULE));
+  await click(buttonByText(container, "Data"));
+  assert.match(textOf(container.querySelector('[data-view="data"]')), /50-78-2/);
+  rerender(element({ ...MOLECULE, name: "Caffeine", properties: { smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O" } }));
+  assert.ok(container.querySelector('[data-view="structure"]'), "neuer Stoff muss mit eigener Struktur starten");
+  await click(buttonByText(container, "Data"));
+  assert.equal(calls.length, 2, "alter Stoff-Cache darf neuen Lookup nicht ersetzen");
+  unmount();
+});
+
+test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Struktur", async () => {
+  const { container, unmount } = setup();
+  const group = [...container.querySelectorAll('button')].find((b) => b.textContent.includes("Ester"));
+  assert.ok(group, "Gruppe muss ein bedienbarer Knopf sein");
+  await act(async () => group.focus());
+  assert.equal(group.getAttribute("aria-pressed"), "true");
+  await click(group);
+  assert.equal(group.getAttribute("aria-pressed"), "true");
+  unmount();
+});

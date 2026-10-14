@@ -1,14 +1,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #ffffff;
-  --bg-alt: #f7f7f8;
-  --fg: #1a1a1a;
-  --fg-muted: #6b6b7b;
-  --border: #e3e3e8;
-  --accent: #6b5ce7;
+  --bg: var(--color-background-primary, #fafbf9);
+  --bg-alt: var(--color-background-secondary, #f0f3f1);
+  --fg: var(--color-text-primary, #202c29);
+  --fg-muted: var(--color-text-secondary, #596961);
+  --border: var(--color-border-primary, #d9e1dc);
+  --accent: #23796d;
   --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', monospace;
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif);
   --radius: 10px;
   --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px var(--border);
   --copy-success: #16a34a;
@@ -16,12 +16,12 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1e1e1e;
-    --bg-alt: #262626;
-    --fg: #e4e4e7;
-    --fg-muted: #a1a1aa;
-    --border: #333336;
+  :root:not([data-theme="light"]) {
+    --bg: var(--color-background-primary, #202724);
+    --bg-alt: var(--color-background-secondary, #29312d);
+    --fg: var(--color-text-primary, #e2eae5);
+    --fg-muted: var(--color-text-secondary, #aab9af);
+    --border: var(--color-border-primary, #404d45);
     --shadow: none;
     --copy-success: #4ade80;
     --copy-success-bg: rgba(74,222,128,0.1);
@@ -34,7 +34,7 @@
      UI-Icons) bleibt unberührt, weil nur die RDKit-Syntax gematcht wird:
      Bindungen = inline style 'stroke:#RRGGBB' (braucht !important),
      Atom-Label-Glyphen = fill-Attribut. */
-  :root {
+  :root:not([data-theme="light"]) {
     --atom-c: var(--fg);
     --atom-o: #ff7b72;  /* O  #FF0000 → helles Rot */
     --atom-n: #79c0ff;  /* N  #0000FF → helles Blau */
@@ -45,25 +45,74 @@
     --atom-p: #ffa657;  /* P  #FF7F00 → helles Orange */
     --atom-i: #d2a8ff;  /* I  #A020F0 → helles Violett */
   }
-  svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
-  svg path[fill="#000000"]          { fill: var(--atom-c); }
-  svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
-  svg path[fill="#FF0000"]          { fill: var(--atom-o); }
-  svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
-  svg path[fill="#0000FF"]          { fill: var(--atom-n); }
-  svg path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
-  svg path[fill="#CCCC00"]          { fill: var(--atom-s); }
-  svg path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
-  svg path[fill="#00CC00"]          { fill: var(--atom-cl); }
-  svg path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
-  svg path[fill="#33CCCC"]          { fill: var(--atom-f); }
-  svg path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
-  svg path[fill="#A52A2A"]          { fill: var(--atom-br); }
-  svg path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
-  svg path[fill="#FF7F00"]          { fill: var(--atom-p); }
-  svg path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
-  svg path[fill="#A020F0"]          { fill: var(--atom-i); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#000000"]          { fill: var(--atom-c); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#FF0000"]          { fill: var(--atom-o); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#0000FF"]          { fill: var(--atom-n); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#CCCC00"]          { fill: var(--atom-s); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#00CC00"]          { fill: var(--atom-cl); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#33CCCC"]          { fill: var(--atom-f); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#A52A2A"]          { fill: var(--atom-br); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#FF7F00"]          { fill: var(--atom-p); }
+  :root:not([data-theme="light"]) svg path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
+  :root:not([data-theme="light"]) svg path[fill="#A020F0"]          { fill: var(--atom-i); }
 }
+
+  :root[data-theme="dark"] {
+    --bg: var(--color-background-primary, #202724);
+    --bg-alt: var(--color-background-secondary, #29312d);
+    --fg: var(--color-text-primary, #e2eae5);
+    --fg-muted: var(--color-text-secondary, #aab9af);
+    --border: var(--color-border-primary, #404d45);
+    --shadow: none;
+    --copy-success: #4ade80;
+    --copy-success-bg: rgba(74,222,128,0.1);
+  }
+
+  /* RDKit-SVGs nativ umfärben statt CSS-invert-Filter: der alte
+     invert(1) hue-rotate(180deg)-Hack verdrehte die Atomfarben (O wurde
+     orange, N blass). Hier bekommen Kohlenstoff-Gerüst + Heteroatome
+     gezielt dunkeltaugliche Farben; alles andere (Mechanismus-Pfeile,
+     UI-Icons) bleibt unberührt, weil nur die RDKit-Syntax gematcht wird:
+     Bindungen = inline style 'stroke:#RRGGBB' (braucht !important),
+     Atom-Label-Glyphen = fill-Attribut. */
+  :root[data-theme="dark"] {
+    --atom-c: var(--fg);
+    --atom-o: #ff7b72;  /* O  #FF0000 → helles Rot */
+    --atom-n: #79c0ff;  /* N  #0000FF → helles Blau */
+    --atom-s: #e3b341;  /* S  #CCCC00 → warmes Gelb */
+    --atom-cl: #7ee787; /* Cl #00CC00 → helles Grün */
+    --atom-f: #67e8f9;  /* F  #33CCCC → helles Türkis */
+    --atom-br: #d18b6f; /* Br #A52A2A → helles Braunrot */
+    --atom-p: #ffa657;  /* P  #FF7F00 → helles Orange */
+    --atom-i: #d2a8ff;  /* I  #A020F0 → helles Violett */
+  }
+  :root[data-theme="dark"] svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
+  :root[data-theme="dark"] svg path[fill="#000000"]          { fill: var(--atom-c); }
+  :root[data-theme="dark"] svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
+  :root[data-theme="dark"] svg path[fill="#FF0000"]          { fill: var(--atom-o); }
+  :root[data-theme="dark"] svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
+  :root[data-theme="dark"] svg path[fill="#0000FF"]          { fill: var(--atom-n); }
+  :root[data-theme="dark"] svg path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
+  :root[data-theme="dark"] svg path[fill="#CCCC00"]          { fill: var(--atom-s); }
+  :root[data-theme="dark"] svg path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
+  :root[data-theme="dark"] svg path[fill="#00CC00"]          { fill: var(--atom-cl); }
+  :root[data-theme="dark"] svg path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
+  :root[data-theme="dark"] svg path[fill="#33CCCC"]          { fill: var(--atom-f); }
+  :root[data-theme="dark"] svg path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
+  :root[data-theme="dark"] svg path[fill="#A52A2A"]          { fill: var(--atom-br); }
+  :root[data-theme="dark"] svg path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
+  :root[data-theme="dark"] svg path[fill="#FF7F00"]          { fill: var(--atom-p); }
+  :root[data-theme="dark"] svg path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
+  :root[data-theme="dark"] svg path[fill="#A020F0"]          { fill: var(--atom-i); }
+
 
 html, body {
   background: var(--bg);
@@ -76,14 +125,14 @@ html, body {
 }
 
 body {
-  padding: 4px 6px;
+  padding: 16px;
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-::selection { background: rgba(107,92,231,0.2); }
+::selection { background: rgba(35,121,109,0.2); }
 
 /* SVG responsive scaling — RDKit SVGs have viewBox but no fixed dimensions.
    Both max constraints ensure the SVG fits within its container without clipping. */
@@ -103,9 +152,9 @@ svg { display: block; max-width: 100%; max-height: 100%; }
 }
 .seg button {
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 560;
-  padding: 3px 10px;
+  padding: 6px 10px;
   border: 0;
   border-radius: 5px;
   background: transparent;
@@ -119,7 +168,7 @@ svg { display: block; max-width: 100%; max-height: 100%; }
 .seg button[aria-selected="true"] {
   background: var(--bg);
   color: var(--fg);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+  box-shadow: none;
 }
 .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
@@ -134,3 +183,59 @@ svg { display: block; max-width: 100%; max-height: 100%; }
 }
 @keyframes seg-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .seg-spinner { animation-duration: 2.4s; } }
+
+/* Hostschrift: native Einbettung ohne Netzfont, klare Stufen fuer Stoffnamen und Daten. */
+:root { --radius-sm: 4px; --radius-md: 8px; --shadow-card: none; }
+#root { max-width: 1000px; margin-inline: auto; min-width: 0; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button:hover { filter: brightness(0.96); }
+button:active { filter: brightness(0.92); }
+.panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.panel-heading { min-width: 0; flex: 1 1 230px; }
+.panel-title { font-size: 19px; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; letter-spacing: -0.02em; }
+.panel-subtitle, .panel-record { color: var(--fg-muted); font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
+.panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.seg { min-height: 40px; }
+.seg button { min-height: 32px; }
+.export-png { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.structure-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(230px, 270px); gap: 24px; padding-top: 20px; align-items: stretch; }
+.structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
+.structure-canvas { height: 320px; }
+.structure-drawing { display: flex; align-items: center; justify-content: center; }
+.structure-drawing > svg { width: 100%; height: 100%; }
+.molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
+.section-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 6px; }
+.smiles-row { display: flex; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); margin-top: auto; }
+.smiles-row code { font-family: var(--font-mono); font-size: 12px; overflow-wrap: anywhere; min-width: 0; flex: 1; }
+.functional-group { display: flex; width: 100%; align-items: center; gap: 8px; padding: 6px 4px; min-height: 32px; text-align: left; border: 0; border-radius: 4px; background: transparent; color: var(--fg-muted); font-size: 12px; cursor: pointer; }
+.functional-group[aria-pressed="true"] { color: var(--fg); background: var(--bg-alt); }
+.group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.group-count { margin-left: auto; font-variant-numeric: tabular-nums; }
+.data-panel { padding-top: 16px; }
+.panel-note { font-size: 13px; color: var(--fg-muted); padding: 16px 0; }
+.source-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.source-tabs button { font-size: 12px; padding: 6px 12px; min-height: 36px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--fg-muted); cursor: pointer; }
+.source-tabs button[aria-pressed="true"] { color: var(--fg); border-color: var(--border); background: var(--bg-alt); }
+.source-content { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: 24px; }
+.source-content:not(:has(.source-structure)) { grid-template-columns: 1fr; }
+.source-structure { max-height: 160px; pointer-events: none; padding-top: 12px; }
+.source-table { min-width: 0; }
+.source-row { display: grid; grid-template-columns: minmax(100px, 0.36fr) minmax(0, 1fr); align-items: start; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.source-row dt { color: var(--fg-muted); overflow-wrap: anywhere; }
+.source-row dd { min-width: 0; display: flex; align-items: flex-start; gap: 8px; font-variant-numeric: tabular-nums; }
+.source-row dd > span { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.source-link { display: inline-block; margin-top: 12px; padding-block: 8px; color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
+.reaction-panel > .panel-heading { margin-bottom: 16px; }
+@media (max-width: 619px) {
+  body { padding: 12px; }
+  .structure-layout { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-top: 12px; }
+  .structure-canvas { height: 260px; }
+  .molecule-info { border-left: 0; border-top: 1px solid var(--border); padding: 16px 0 0; }
+  .source-content { grid-template-columns: 1fr; gap: 12px; }
+  .source-structure { width: 100px; max-height: 100px; margin-inline: auto; }
+  .source-row { grid-template-columns: minmax(105px, 0.4fr) minmax(0, 1fr); gap: 12px; font-size: 12px; }
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #82c6b7; } }
+:root[data-theme="dark"] { --accent: #82c6b7; }

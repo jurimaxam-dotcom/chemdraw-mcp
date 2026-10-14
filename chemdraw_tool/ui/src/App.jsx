@@ -13,11 +13,11 @@ import Molecule3DView from "./Molecule3DView";
 export default function App({ data }) {
   switch (data.type) {
     case "molecule":
-      return <MoleculeView data={data} />;
+      return <MoleculeView key={data.smiles || data.properties?.smiles || data.name} data={data} />;
     case "reaction":
       return <ReactionView data={data} />;
     case "database":
-      return <DatabaseView data={data} />;
+      return <DatabaseView key={data.smiles || data.name} data={data} />;
     case "batch":
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

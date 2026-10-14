@@ -9,7 +9,7 @@ export default function ExportPngButton({ svg, filename, size }) {
   const [savedPath, setSavedPath] = useState("");
   const timeoutRef = useRef(null);
   const busyRef = useRef(false); // in-flight guard: blocks a re-entrant double-click
-  const dim = size === "sm" ? 22 : 26;
+  const dim = size === "sm" ? 32 : 40;
   const ok = status === "copied" || status === "saved";
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
@@ -86,10 +86,13 @@ export default function ExportPngButton({ svg, filename, size }) {
 
   return (
     <button
+      type="button"
+      className="export-png"
+      aria-label={title}
       onClick={handleExport}
       title={title}
       style={{
-        width: dim,
+        minWidth: dim,
         height: dim,
         display: "inline-flex",
         alignItems: "center",
@@ -99,7 +102,8 @@ export default function ExportPngButton({ svg, filename, size }) {
         borderRadius: "var(--border-radius-sm, 6px)",
         cursor: "pointer",
         color: fg,
-        padding: 0,
+        padding: "0 10px",
+        gap: 7,
         flexShrink: 0,
       }}
     >
@@ -120,6 +124,7 @@ export default function ExportPngButton({ svg, filename, size }) {
           <path d="M2 10l3-3 2.5 2.5L10 6l2 2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )}
+      <span aria-live="polite">{ok ? (status === "copied" ? "Copied" : "Saved") : status === "error" ? "Retry PNG" : "Export PNG"}</span>
     </button>
   );
 }

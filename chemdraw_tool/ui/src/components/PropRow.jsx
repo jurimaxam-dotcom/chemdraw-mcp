@@ -13,13 +13,13 @@ export default function PropRow({ label, value, copyable, mono = true }) {
         padding: "5px 0",
       }}
     >
-      <div style={{ fontSize: 10, color: "var(--fg-muted)", flexShrink: 0 }}>
+      <div style={{ fontSize: 12, color: "var(--fg-muted)", flexShrink: 0 }}>
         {label}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <span
           style={{
-            fontSize: 11,
+            fontSize: 13,
             color: "var(--fg)",
             fontFamily: mono ? "var(--font-mono, 'SF Mono', ui-monospace, monospace)" : "var(--font)",
             wordBreak: "break-all",

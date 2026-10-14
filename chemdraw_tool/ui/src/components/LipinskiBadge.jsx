@@ -22,16 +22,16 @@ export default function LipinskiBadge({ lipinski }) {
         marginBottom: 4,
       }}>
         <span style={{
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: 700,
           color: lipinski.passes ? passColor : failColor,
         }}>
-          {lipinski.passes ? "✓" : "✗"}
+          {lipinski.passes ? "Pass" : "Fail"}
         </span>
-        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>
           Lipinski
         </span>
-        <span style={{ fontSize: 9, color: "var(--fg-muted)" }}>
+        <span style={{ fontSize: 12, color: "var(--fg-muted)" }}>
           {lipinski.violations === 0
             ? "0 violations"
             : `${lipinski.violations} violation${lipinski.violations > 1 ? "s" : ""}`}
@@ -46,7 +46,7 @@ export default function LipinskiBadge({ lipinski }) {
               key={key}
               title={`${label} ${limit}`}
               style={{
-                fontSize: 9,
+                fontSize: 12,
                 padding: "1px 5px",
                 borderRadius: 4,
                 border: `1px solid ${ok ? passColor : failColor}`,

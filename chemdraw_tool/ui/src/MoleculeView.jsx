@@ -86,174 +86,49 @@ export default function MoleculeView({ data }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: 360, overflow: "hidden" }}>
-      <div
-        style={{
-          marginBottom: 6,
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 8,
-        }}
-      >
-        <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>
-            {data.name || "Molecule"}
-          </div>
-          {data.subtitle && (
-            <div style={{ fontSize: 10, color: "var(--fg-muted)", marginTop: 1 }}>
-              {data.subtitle}
-            </div>
-          )}
-          {record && (
-            <div
-              data-testid="pubchem-record"
-              style={{ fontSize: 9, color: "var(--fg-muted)", marginTop: 1, opacity: 0.8 }}
-            >
-              {record}
-            </div>
-          )}
+    <article className="molecule-panel">
+      <header className="panel-header">
+        <div className="panel-heading">
+          <h2 className="panel-title">{data.name || "Molecule"}</h2>
+          {data.subtitle && <p className="panel-subtitle">{data.subtitle}</p>}
+          {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-          {query && (
-            <ViewToggle
-              view={view}
-              onChange={handleView}
-              loading={loading}
-              idPrefix={uid}
-            />
-          )}
-          {data.svg && (
-            <ExportPngButton svg={data.svg} filename={data.name || "molekuel"} />
-          )}
+        <div className="panel-actions">
+          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
+          {data.svg && <ExportPngButton svg={data.svg} filename={data.name || "molecule"} />}
         </div>
-      </div>
-
+      </header>
       {view === "structure" ? (
-        <div
-          id={`${uid}-structure`}
-          role="tabpanel"
-          aria-labelledby={`${uid}-tab-structure`}
-          data-view="structure"
-          style={{ display: "flex", gap: 10, flex: 1, minHeight: 0 }}
-        >
-          <StructureCanvas
-            svg={data.svg}
-            atoms={data.atoms}
-            groups={groups}
-            hoveredGroup={hoveredGroup}
-            onHoverGroup={setHoveredGroup}
-          />
-
-          {/* Panel */}
-          <div
-            style={{
-              flex: "0 0 25%",
-              borderLeft: "1px solid var(--border)",
-              padding: "4px 8px",
-              minWidth: 0,
-              minHeight: 0,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            {/* Steckbrief */}
-            <div>
-              <SectionLabel>Steckbrief</SectionLabel>
+        <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure" className="structure-layout">
+          <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+          <aside className="molecule-info" aria-label="Molecule details">
+            <section>
+              <SectionLabel>Properties</SectionLabel>
               <PropRow label="Formula" value={data.formula ?? props.formula} copyable mono={false} />
               <PropRow label="Mass" value={props.mw} copyable={false} mono={false} />
               <PropRow label="CAS" value={props.cas} copyable mono={false} />
-            </div>
-
-            {/* Functional groups */}
-            {groups.length > 0 && (
-              <div>
-                <SectionLabel>Functional groups</SectionLabel>
-                <FunctionalGroupList
-                  groups={groups}
-                  hoveredGroup={hoveredGroup}
-                  onHoverGroup={setHoveredGroup}
-                />
-              </div>
-            )}
-
-            {/* Lipinski */}
-            {data.lipinski && (
-              <div>
-                <SectionLabel>Rule of Five</SectionLabel>
-                <LipinskiBadge lipinski={data.lipinski} />
-              </div>
-            )}
-
-            {/* SMILES */}
-            {smiles && (
-              <div style={{
-                marginTop: "auto",
-                paddingTop: 4,
-                borderTop: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}>
-                <span style={{
-                  fontSize: 9,
-                  fontFamily: "var(--font-mono)",
-                  color: "var(--fg-muted)",
-                  wordBreak: "break-all",
-                  flex: 1,
-                  lineHeight: 1.3,
-                }}>
-                  {smiles}
-                </span>
-                <CopyButton text={smiles} size="sm" />
-              </div>
-            )}
-          </div>
+            </section>
+            {groups.length > 0 && <section>
+              <SectionLabel>Functional groups</SectionLabel>
+              <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+            </section>}
+            {data.lipinski && <section><SectionLabel>Rule of Five</SectionLabel><LipinskiBadge lipinski={data.lipinski} /></section>}
+            {smiles && <div className="smiles-row"><code>{smiles}</code><CopyButton text={smiles} size="sm" /></div>}
+          </aside>
         </div>
       ) : (
-        <div
-          id={`${uid}-data`}
-          role="tabpanel"
-          aria-labelledby={`${uid}-tab-data`}
-          data-view="data"
-          style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
-        >
-          {sheet ? (
-            <SourceList
-              sources={sheet.sources}
-              moleculeSvg={sheet.molecule_svg || data.svg}
-            />
-          ) : (
-            <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>
-          )}
+        <div id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
+          {sheet ? <SourceList sources={sheet.sources} moleculeSvg={sheet.molecule_svg || data.svg} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
         </div>
       )}
-    </div>
+    </article>
   );
 }
 
 function Note({ children }) {
-  return (
-    <div style={{ fontSize: 11, color: "var(--fg-muted)", padding: "8px 2px" }}>
-      {children}
-    </div>
-  );
+  return <div className="panel-note" role="status">{children}</div>;
 }
 
 function SectionLabel({ children }) {
-  return (
-    <div style={{
-      fontSize: 9,
-      fontWeight: 600,
-      color: "var(--fg-muted)",
-      marginBottom: 3,
-      letterSpacing: "0.04em",
-      textTransform: "uppercase",
-    }}>
-      {children}
-    </div>
-  );
+  return <h3 className="section-label">{children}</h3>;
 }

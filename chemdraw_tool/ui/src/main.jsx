@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { useApp } from "@modelcontextprotocol/ext-apps/react";
+import { useApp, useHostStyleVariables } from "@modelcontextprotocol/ext-apps/react";
 import App from "./App";
 import { AppContext } from "./AppContext";
 import { extractToolData } from "./utils/toolData";
@@ -19,6 +19,8 @@ function Root() {
       });
     },
   });
+
+  useHostStyleVariables(app, app?.getHostContext());
 
   if (data)
     return (

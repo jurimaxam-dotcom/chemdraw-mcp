@@ -31,6 +31,26 @@
 
 ## Etappen
 
+### Etappe 14.10.2026: vorhandene MVP-Oberfläche autonom verbessern
+
+- [x] Molekül- und Datenblattlayout lesbar, schmal gestapelt, breit mit eigener
+  Informationsspalte; klare Exportbeschriftung, Hostschrift und Hosttheme.
+- [x] Funktionelle Gruppen per Tastatur bedienbar; Molekülwechsel verwirft das
+  fremde Datenblatt. Drei neue DOM-Regressionen zuerst rot, dann grün.
+- [x] Unabhängige Abnahme: `./test.sh` mit 6.958 Python- und 40 Frontendtests grün;
+  `test:host` prüft Struktur und Datenblatt hell/dunkel bei 360/980 px sowie
+  explizite Host-Themes. Default-Pixelreferenz unverändert.
+- [x] Lokales Wheel installiert und Bundle-Codegleichheit geprüft; Desktop
+  neu gestartet; neuer Chat `132254e1-49e3-41b1-8bba-5f79198cae7e` zeigt Koffein,
+  HBD 0 und Datenblatt mit CAS 58-08-2/CID 2519. Exportknopf bestätigt
+  `~/ChemDraw-Output/png/Koffein-2.png`; Bild pixelgleich zur Ausgangsabnahme.
+- [x] Automatische DOM-Schleife `test:ui:watch` ergänzt; Entwickleroptionen,
+  Logs und Prüfschichten in `docs/ui-pruefung.md` dokumentiert. DevTools nicht
+  ungefragt aktiviert. Layoutbelege: `docs/produkt/panel-mvp/`.
+
+Noch offen bleibt die persönliche Gestaltungsrückmeldung von Jay; weitere
+Panelmodi und Fachfunktionen sind damit nicht freigegeben.
+
 ### Etappe 03.10.2026: Panel-Ausbau — Ansichten, Animation, Abfrage- und Prüfungsmodus
 
 Ziel: Das Moleküle-Panel wird vom Bild zum Lernwerkzeug. **Eine** Molekülanfrage liefert alle Ansichten, man schaltet sofort um, wird durch die Optionen geführt, und kann sich selbst abfragen.

@@ -27,7 +27,7 @@ function ConditionsCaption({ conditions }) {
   return (
     <div
       style={{
-        fontSize: 11,
+        fontSize: 13,
         color: "var(--fg-muted)",
         textAlign: "center",
         padding: "6px 12px",
@@ -39,7 +39,7 @@ function ConditionsCaption({ conditions }) {
         lineHeight: 1.4,
       }}
     >
-      <span style={{ color: "var(--fg-muted)", marginRight: 6, fontSize: 9, letterSpacing: "0.04em", textTransform: "uppercase" }}>Conditions</span>
+      <span style={{ color: "var(--fg-muted)", marginRight: 6, fontSize: 12 }}>Conditions</span>
       <span style={{ color: "var(--fg)" }}>{conditions}</span>
     </div>
   );
@@ -92,7 +92,7 @@ function MoleculeCard({ molecule }) {
             alignItems: "center",
             justifyContent: "center",
             color: "var(--fg-muted)",
-            fontSize: 10,
+            fontSize: 12,
           }}
         >
           {molecule.name || "?"}
@@ -101,7 +101,7 @@ function MoleculeCard({ molecule }) {
       {molecule.name && (
         <div
           style={{
-            fontSize: 11,
+            fontSize: 13,
             color: "var(--fg-muted)",
             textAlign: "center",
             maxWidth: 160,
@@ -203,7 +203,7 @@ export default function ReactionView({ data }) {
   const name = data.name || null;
 
   return (
-    <div style={{ padding: "8px 0" }}>
+    <div className="reaction-panel">
       {name && <SectionHeader title={name} />}
       <div
         style={{

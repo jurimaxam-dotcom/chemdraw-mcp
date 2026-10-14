@@ -80,6 +80,7 @@ export default function StructureCanvas({
 
   return (
     <div
+      className="structure-canvas"
       ref={svgContainerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -87,6 +88,7 @@ export default function StructureCanvas({
     >
       {svg ? (
         <div
+          className="structure-drawing"
           dangerouslySetInnerHTML={{ __html: svg }}
           style={{
             width: "100%",
@@ -94,7 +96,7 @@ export default function StructureCanvas({
           }}
         />
       ) : (
-        <div style={{ color: "var(--fg-muted)", fontSize: 11 }}>Kein SVG</div>
+        <div style={{ color: "var(--fg-muted)", fontSize: 11 }}>No structure available</div>
       )}
       <AtomHighlights
         atoms={atoms}

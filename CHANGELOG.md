@@ -8,6 +8,12 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **The MVP panel is easier to read and use.** Molecule names and facts have a
+  clearer hierarchy, structures and details stack on narrow panels, and the data
+  sheet keeps labels beside their values. The UI follows host fonts and theme,
+  shows an explicit PNG export label and supports keyboard group highlighting.
+  Updating the molecule in an existing panel now discards the previous data-sheet
+  cache. Chemical drawing and exported PNG pixels remain unchanged.
 - **MVP is the default server profile.** Four drawing workflows remain active:
   individual structures, batches, comparisons and reaction schemes, with data
   sheets and PNG export as panel support (six registered tools). Other tools are

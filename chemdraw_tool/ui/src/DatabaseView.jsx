@@ -18,22 +18,15 @@ export default function DatabaseView({ data }) {
   const hasStructure = Boolean(data.molecule_svg);
 
   return (
-    <div style={{ padding: "8px 0" }}>
+    <article className="molecule-panel">
       {(data.name || hasStructure) && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 8,
-          }}
-        >
+        <header className="panel-header">
           {data.name ? (
             <SectionHeader title={data.name} subtitle={data.formula} />
           ) : (
             <div />
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          <div className="panel-actions">
             {hasStructure && (
               <ViewToggle view={view} onChange={setView} idPrefix={uid} />
             )}
@@ -41,7 +34,7 @@ export default function DatabaseView({ data }) {
               <ExportPngButton svg={data.molecule_svg} filename={data.name || "molekuel"} />
             )}
           </div>
-        </div>
+        </header>
       )}
 
       {view === "structure" && hasStructure ? (
@@ -50,7 +43,7 @@ export default function DatabaseView({ data }) {
           role="tabpanel"
           aria-labelledby={`${uid}-tab-structure`}
           data-view="structure"
-          style={{ display: "flex", gap: 10, height: 300, minHeight: 0 }}
+          className={groups.length ? "structure-layout" : "structure-layout structure-only"}
         >
           <StructureCanvas
             svg={data.molecule_svg}
@@ -61,34 +54,14 @@ export default function DatabaseView({ data }) {
             style={groups.length > 0 ? undefined : { flex: "1 1 100%" }}
           />
           {groups.length > 0 && (
-            <div
-              style={{
-                flex: "0 0 25%",
-                borderLeft: "1px solid var(--border)",
-                padding: "4px 8px",
-                minWidth: 0,
-                minHeight: 0,
-                overflowY: "auto",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 600,
-                  color: "var(--fg-muted)",
-                  marginBottom: 3,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                }}
-              >
-                Functional groups
-              </div>
+            <aside className="molecule-info">
+              <h3 className="section-label">Functional groups</h3>
               <FunctionalGroupList
                 groups={groups}
                 hoveredGroup={hoveredGroup}
                 onHoverGroup={setHoveredGroup}
               />
-            </div>
+            </aside>
           )}
         </div>
       ) : (
@@ -96,11 +69,12 @@ export default function DatabaseView({ data }) {
           id={`${uid}-data`}
           role="tabpanel"
           aria-labelledby={`${uid}-tab-data`}
+          className="data-panel"
           data-view="data"
         >
           <SourceList sources={data.sources} moleculeSvg={data.molecule_svg} />
         </div>
       )}
-    </div>
+    </article>
   );
 }

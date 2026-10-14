@@ -73,3 +73,10 @@ test("der Spinner steckt im Daten-Knopf und nur waehrend des Ladens", () => {
   );
   unmount();
 });
+
+test("PNG-Export nennt seine Aktion auch ohne Tooltip", async () => {
+  const { default: ExportPngButton } = await import("../components/ExportPngButton");
+  const { container, unmount } = render(React.createElement(ExportPngButton, { svg: "<svg/>", filename: "aspirin" }));
+  assert.match(container.querySelector("button").textContent, /PNG/);
+  unmount();
+});
