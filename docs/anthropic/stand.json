@@ -1,5 +1,5 @@
 {
- "geprueft": "2026-10-03",
+ "geprueft": "2026-10-14",
  "hinweis": "Fingerabdrücke und Titel — die Texte liegen lokal in .cache/anthropic/ und gehören Anthropic.",
  "seiten": {
   "https://claude.com/docs/build/overview.md": {
@@ -204,7 +204,7 @@
    "titel": "Sync your organization's plugins from a repository",
    "beschreibung": "Distribute your organization's plugins from a GitHub or GitLab repository through organization settings, including repository requirements and GitLab setup.",
    "quelle": "claude-docs",
-   "hash": "f5ad61567f2b9c3c"
+   "hash": "639dda4da03b4953"
   },
   "https://claude.com/docs/plugins/overview.md": {
    "titel": "Plugins",

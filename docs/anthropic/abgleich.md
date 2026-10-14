@@ -1,6 +1,10 @@
 # Abgleich: was Anthropic veröffentlicht — und wo wir stehen
 
-Stand 03.10.2026. **Das ist unsere Auswertung in eigenen Worten**, keine Kopie. Die Quellen stehen in
+Stand 03.10.2026; erneut geprüft am 14.10.2026 für die MVP-Profilumschaltung.
+Einzige Quellenänderung: `plugins/org-sync.md` benennt den GitLab-Einstellungsort
+in „Git providers“ um; ohne Auswirkung auf unseren lokalen Server oder seine Profile.
+Die gemeldeten Paketversionen bleiben wie unten; keine Migration in dieser Etappe.
+**Das ist unsere Auswertung in eigenen Worten**, keine Kopie. Die Quellen stehen in
 `quellen.json`, ihre Fingerabdrücke in `stand.json`. Wer diese Datei anfasst, hat vorher
 `uv run python scripts/anthropic_sync.py --check` laufen lassen und die geänderten Seiten gelesen.
 

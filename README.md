@@ -14,19 +14,32 @@ figure — a print-ready PNG/SVG rendered locally with RDKit, plus an
 interactive preview inside the chat. *"Draw aspirin"* is already a complete
 command.
 
-Built for pharmacy and chemistry students who spend too much time clicking
-hexagons: **structures, reaction schemes, curved-arrow mechanisms and
-substrate-scope figures** — the drawing a report or a slide actually asks for.
+The default **MVP profile** focuses on four jobs: draw a molecule, draw several
+individual structures, compare compounds, and draw a reaction scheme. The panel
+also supports compound data sheets and PNG export. It registers six tools in total.
+This is a general chemistry workflow for study, teaching and lab reports.
 
-For the same lab report, also:
+Other features remain in the code and in the optional **full profile**, but are
+not registered or callable in the MVP. The separate browser practice trainer
+is retained and is outside the MCP MVP.
 
-| | |
-|---|---|
-| **Lab graphics** | TLC plates, titration curves, schematic spectra, calibration lines |
-| **Look up** | PubChem/GHS data sheets, expected IR bands |
-| **Bench maths** | weighing and dilutions, Ph.Eur. content determination, pH and buffers |
-| **Pharmacology** | concentration-time curves, dose-response with an antagonist, half-life / steady-state / loading-dose maths, ionisation at a given pH |
-| **Exam prep** | Anki decks with the structures rendered in |
+**Availability:** profiles are currently available from this source checkout;
+existing PyPI and `.mcpb` releases retain their previous behavior until the next release.
+
+### Switching profiles
+
+Run from the repository root (restart the server after changing the profile):
+
+```bash
+uv run chemdraw-tool-server                         # MVP, the default
+CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # restore all 23 tools
+```
+
+For a server registered in `claude_desktop_config.json`, set
+`"env": {"CHEMDRAW_PROFILE": "full"}` on that server entry, preserving any existing
+environment values, then restart Claude Desktop. Remove that variable or set it
+to `mvp` to return to the MVP. A shell variable does not automatically configure
+an already running Desktop app. Invalid profile names stop startup with an error.
 
 What it costs you: one install command. Apache-2.0, no API key, no sign-up
 for the server, no ChemDraw licence — you need Claude Desktop and
@@ -47,10 +60,9 @@ format for people who want to keep editing there, never a requirement.
 | Ask | You get |
 |---|---|
 | *"Draw ibuprofen and naproxen side by side and mark the differences"* | both structures, differences highlighted |
-| *"Show the SN2 mechanism of bromoethane with hydroxide"* | curved-arrow mechanism, step by step |
-| *"Plot plasma concentration for 500 mg orally every 8 h, F 0.8, Vd 70 L, t½ 4.6 h"* | the curve up to steady state, with the numbers |
-| *"What fraction of aspirin (pKa 3.5) is uncharged in the stomach at pH 1.5?"* | the working, not just the answer |
-| *"Make Anki cards for the NSAIDs with the structures"* | an `.apkg` deck with the structures rendered in |
+| *"Draw aspirin, caffeine and paracetamol"* | separate structures and files |
+| *"Draw ethanol plus acetic acid reacting to ethyl acetate and water"* | a reaction scheme |
+| *"Show the data sheet for caffeine"* | structure, PubChem properties and GHS safety |
 
 No API key, no sign-up, no ChemDraw licence. Rendering runs on your machine.
 Details and the other install routes are under [Installation](#installation).
@@ -67,6 +79,12 @@ If it saves you time, a ⭐ helps other students find it.
 live in the chat panel:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/reaction-demo.gif" alt="Reaction scheme with conditions appearing live in the chat panel" width="640"></p>
+
+<details>
+<summary>Additional examples — full profile only</summary>
+
+The following collection includes features paused in the MVP. Use
+`CHEMDRAW_PROFILE=full` to enable the complete feature set.
 
 *"Show the Fischer esterification mechanism step by step"* —
 `generate_mechanism` renders curved electron-flow arrows in the interactive
@@ -141,9 +159,14 @@ formulas, so the picture and the number never disagree.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/dose-response.png" alt="Hill curve of an agonist and the same curve shifted to the right by a competitive antagonist" width="640"></p>
 
-## Features
+</details>
 
-All 23 tools the server exposes. Files are written to `~/ChemDraw-Output/`;
+## Full-profile feature reference
+
+All 23 tools exposed with `CHEMDRAW_PROFILE=full`. The default MVP registers only
+`generate_molecule`, `batch_generate`, `compare_molecules`, `generate_reaction`,
+`lookup_molecule_data` and the panel's internal `save_png`.
+Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
 **Structures and schemes**
@@ -251,8 +274,8 @@ server half of the panel's export button, called when you click it, never
 on its own.
 
 Two optional vault tools (`search_vault`, `read_vault_entry`) appear only
-when `CHEMDRAW_VAULT_PATH` is set; without it the server exposes exactly the
-23 tools above.
+in the full profile when `CHEMDRAW_VAULT_PATH` is set; without it that profile
+exposes exactly the 23 tools above. The MVP never registers vault tools.
 
 ### Options on the drawing tools
 

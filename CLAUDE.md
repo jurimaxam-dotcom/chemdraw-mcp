@@ -1,5 +1,20 @@
 # chemdraw-mcp
 
+## Current focus: general chemistry MVP (14.10.2026)
+
+The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
+`compare_molecules`, `generate_reaction`, plus `lookup_molecule_data` and
+`save_png` for panel support (6 tools, 5 with a panel). Set `CHEMDRAW_PROFILE=full`
+and restart to restore the full catalog (23 tools, 16 with a panel).
+Other tools remain implemented and tested, but are not registered in the MVP.
+The immediate goal is a reliable input → correct structure → usable export
+workflow for general chemistry. Specialized pharmacy, trainer, quiz and payment
+expansion is paused. The existing browser trainer remains separate.
+`tests/server_catalog.py` explicitly builds the full profile for the historical
+taxonomy, snapshots and payload checks; `tests/test_server_profiles.py` verifies
+the actual default and explicit profiles in fresh processes. The stdio handshake
+derives its expected counts from the selected profile.
+
 MCP server for Claude Desktop that turns molecule names or SMILES into
 publication-style 2D structure drawings. PNG/SVG are the primary outputs
 (rendered offline via RDKit) — ChemDraw CDXML is an optional extra format,
@@ -53,7 +68,8 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (currently 23 tools, 16 with a panel).
+the two numbers the Python side predicts (default MVP: 6 tools, 5 with a panel;
+full profile: 23 tools, 16 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, and clicks Data for methylphenidate (CAS 113-45-1, cache on second switch). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 

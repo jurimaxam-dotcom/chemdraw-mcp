@@ -3,7 +3,7 @@
 
 Gleiche Fälle wie promptfoo (`cases.yaml`), aber das Modell ist das, was Jay in
 Claude Code/Desktop benutzt, und es sieht den Server so, wie er sich beim Verbinden
-meldet (alle 20 Tools + `instructions`). Der Server ist eine Attrappe
+meldet (die Tools des gewählten Profils + `instructions`). Der Server ist eine Attrappe
 (`stub_server.py`): es wird nichts ausgeführt, nur gemessen, WELCHES Tool gerufen wird.
 Die eingebauten Claude-Code-Tools sind abgeschaltet (`--tools ""`), sonst wählt das
 Modell statt eines Tools Bash.
@@ -17,6 +17,7 @@ Exit 0 = alle Fälle grün, 1 = mindestens ein Fall rot.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import subprocess
@@ -63,14 +64,38 @@ def gerufene_tools(prompt: str, config: str, modell: str | None) -> tuple[list[s
     return namen, text
 
 
+def select_cases(cases: list[dict], offered: set[str], selection: set[str]) -> list[dict]:
+    """Explizite Auswahl validieren, sonst nur angebotene Werkzeuge messen."""
+    by_id = {case["id"]: case for case in cases}
+    unknown = selection - by_id.keys()
+    if unknown:
+        raise ValueError("Unbekannte Fall-IDs: " + ", ".join(sorted(unknown)))
+    disabled = {name for name in selection if by_id[name]["expect"] not in offered}
+    if disabled:
+        raise ValueError("Im gewählten Profil deaktivierte Fälle: " + ", ".join(sorted(disabled)))
+    selected = [
+        case for case in cases
+        if case["expect"] in offered and (not selection or case["id"] in selection)
+    ]
+    if not selected:
+        raise ValueError("Keine passenden Eval-Fälle für die angebotenen Tools.")
+    return selected
+
+
 def main() -> int:
+    from chemdraw_tool.server import mcp
+
     fälle = yaml.safe_load((HIER / "cases.yaml").read_text())["cases"]
-    wahl = set(sys.argv[1:])
-    if wahl:
-        fälle = [f for f in fälle if f["id"] in wahl]
+    offered = {tool.name for tool in asyncio.run(mcp.list_tools())}
+    try:
+        fälle = select_cases(fälle, offered, set(sys.argv[1:]))
+    except ValueError as error:
+        print(f"ABBRUCH: {error}", file=sys.stderr)
+        return 2
     config = json.dumps({"mcpServers": {"chemdraw": {
         "command": "uv",
         "args": ["run", "--directory", str(REPO), "python", str(HIER / "stub_server.py")],
+        "env": {"CHEMDRAW_PROFILE": os.environ.get("CHEMDRAW_PROFILE", "mvp")},
     }}})
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         f.write(config)

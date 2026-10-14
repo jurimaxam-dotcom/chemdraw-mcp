@@ -1,6 +1,7 @@
 import hashlib
 import inspect
 import json
+import os
 import re
 from importlib.metadata import version as _pkg_version
 from pathlib import Path
@@ -202,7 +203,7 @@ def _write_structure_files(
 # Beschreibungen: `instructions` ist laut MCP-Spec ein „hint to the model", den
 # Clients in den Systemprompt uebernehmen duerfen. Wichtigstes zuerst — Claude
 # Code kappt das Feld bei 2 KB und schneidet hinten ab.
-_INSTRUCTIONS = """\
+_FULL_INSTRUCTIONS = """\
 Chemistry drawings, lab graphics and bench maths, rendered offline. Built for
 a pharmacy/chemistry student's everyday work.
 
@@ -237,12 +238,75 @@ Pass English or IUPAC compound names, never localized ones ('Aspirin', not
 themselves — never call save_png, that is the panel's export button.
 """
 
-mcp = FastMCP("ChemDraw Tool", instructions=_INSTRUCTIONS)
-# FastMCP nimmt keine Version entgegen, der Low-Level-Server trägt sie aber in
-# serverInfo — und genau das zeigt jeder Host an. Ohne diese Zeile meldet sich
-# der Server mit der SDK-Version (gemessen: "1.27.1"), und der Nutzer kann nicht
-# erkennen, welche chemdraw-mcp-Version bei ihm läuft.
-mcp._mcp_server.version = _pkg_version("chemdraw-mcp")
+MVP_TOOLS = frozenset({
+    "generate_molecule", "batch_generate", "compare_molecules",
+    "generate_reaction", "lookup_molecule_data", "save_png",
+})
+
+_MVP_INSTRUCTIONS = """\
+Draw chemical structures and reaction schemes as PNG/SVG files with an
+interactive panel. This server runs the MVP profile.
+
+- A bare compound name ("caffeine") means generate_molecule. Use it also
+  while explaining a compound when its structure helps.
+- Several individual structures: batch_generate.
+- Structural differences between two to four compounds: compare_molecules.
+- Reactants, products and conditions: generate_reaction.
+- A compound's data sheet: lookup_molecule_data. The molecule panel's Data
+  button also retrieves it on demand; database access needs the internet.
+
+Only these drawing and data-sheet functions are available. Other features
+are temporarily disabled. Do not offer unavailable tools.
+Pass English or IUPAC compound names; SMILES are always safe. Labels may be
+localized. Drawing tools write their files themselves — never call save_png,
+that is the panel's export button.
+"""
+
+# Nur die Auswahlhinweise unterscheiden sich. Parameter und Schemata bleiben
+# identisch; der Vollumfang behält seine eingefrorenen Beschreibungen.
+_MVP_SUMMARIES = {
+    "generate_molecule": """Draw one compound as a 2D structure — the default for a single substance.
+
+Writes PNG/SVG files and returns an interactive panel with the structure,
+properties and functional groups. A bare compound name ("caffeine") also
+means this tool. No ChemDraw required.
+
+Not this tool for: several individual structures (use batch_generate),
+structural differences (use compare_molecules), a reaction scheme (use
+generate_reaction), or a data sheet (use lookup_molecule_data).
+
+Pass English or IUPAC names, or SMILES; use label for a localized display name.
+""",
+    "batch_generate": """Draw several individual compounds as separate PNG/SVG files and panels.
+
+Failed names are reported in failed while successful structures are returned.
+Pass English or IUPAC names, or SMILES.
+
+Not this tool for: one compound (use generate_molecule), structural
+differences (use compare_molecules), or a reaction scheme (use generate_reaction).
+""",
+    "generate_reaction": """Draw a reaction scheme from reactants, products and conditions.
+
+Writes PNG/SVG files and returns a panel with conditions above the arrow.
+Use it when explaining a reaction as well as for explicit drawing requests.
+This draws the net reaction, without step-by-step electron-flow mechanisms.
+Pass English or IUPAC compound names, or SMILES.
+
+Not this tool for: one compound (use generate_molecule), independent
+structures (use batch_generate), or structural differences (use compare_molecules).
+""",
+    "lookup_molecule_data": """Show a compound's data sheet: structure, PubChem properties and GHS safety.
+
+Use it for a data sheet or facts available from those sources. The molecule
+panel also calls this tool when the user clicks Data. Internet access is
+required. Missing values are not evidence that a property or hazard is absent.
+
+Not this tool for: a bare compound name with no data requested — use
+generate_molecule. Pass English or IUPAC names, or SMILES.
+""",
+}
+
+_TOOL_DEFINITIONS = []
 
 
 def _tool(**kwargs):
@@ -254,12 +318,11 @@ def _tool(**kwargs):
     Modell an: laenger, fuenf Tools ueber der 2-KB-Kappung, und die
     Snapshots in tests/__snapshots__/tools/ passten nur auf 3.13.
     """
-    register = mcp.tool(**kwargs)
-
     def decorate(fn):
         if fn.__doc__:
             fn.__doc__ = inspect.cleandoc(fn.__doc__)
-        return register(fn)
+        _TOOL_DEFINITIONS.append((fn, kwargs))
+        return fn
 
     return decorate
 
@@ -273,11 +336,6 @@ _RESOURCE_URI = "ui://chem-app/index.html"
 _UI_META = {"ui": {"resourceUri": _RESOURCE_URI}}
 
 
-@mcp.resource(
-    _RESOURCE_URI,
-    mime_type="text/html;profile=mcp-app",
-    meta={"ui": {"permissions": {"clipboardWrite": {}}}},
-)
 def chem_app_ui() -> str:
     """Serve the MCP App UI (single-page React app)."""
     return _UI_DIST.read_text(encoding="utf-8")
@@ -3085,6 +3143,37 @@ if vault_enabled():
             return "\n".join(lines)
 
         return f"# {entry_name}\n\n{content}"
+
+
+def create_server(profile: str | None = None) -> FastMCP:
+    """Build a server with only the tools enabled by its startup profile."""
+    selected = os.environ.get("CHEMDRAW_PROFILE", "mvp") if profile is None else profile
+    if selected not in {"mvp", "full"}:
+        raise ValueError("CHEMDRAW_PROFILE must be 'mvp' or 'full'.")
+    instance = FastMCP(
+        "ChemDraw Tool",
+        instructions=_MVP_INSTRUCTIONS if selected == "mvp" else _FULL_INSTRUCTIONS,
+    )
+    # Der Host soll die Paketversion sehen, nicht die Version des MCP-SDK.
+    instance._mcp_server.version = _pkg_version("chemdraw-mcp")
+    for fn, options in _TOOL_DEFINITIONS:
+        if selected == "mvp" and fn.__name__ not in MVP_TOOLS:
+            continue
+        registration = dict(options)
+        if selected == "mvp" and fn.__name__ in _MVP_SUMMARIES:
+            summary = _MVP_SUMMARIES[fn.__name__].strip()
+            _, separator, args = (fn.__doc__ or "").partition("Args:")
+            registration["description"] = summary + ("\n\nArgs:" + args if separator else "")
+        instance.tool(**registration)(fn)
+    instance.resource(
+        _RESOURCE_URI,
+        mime_type="text/html;profile=mcp-app",
+        meta={"ui": {"permissions": {"clipboardWrite": {}}}},
+    )(chem_app_ui)
+    return instance
+
+
+mcp = create_server()
 
 
 def main():

@@ -4,8 +4,8 @@
   "name": "chemdraw-mcp",
   "display_name": "ChemDraw MCP (unofficial)",
   "version": "@@VERSION@@",
-  "description": "Molecule names or SMILES to publication-style 2D structures, reaction schemes, mechanisms, TLC plates, titration curves and lab maths - rendered offline with RDKit.",
-  "long_description": "Describe a molecule, a reaction or a lab result in plain words and get the figure: print-ready PNG/SVG plus an interactive preview in the chat. 20 tools for pharmacy and chemistry students. The bundle is a launcher: on first start it fetches the chemdraw-mcp package from PyPI via uv (installed if missing) and caches it; afterwards rendering runs entirely on your machine. Not affiliated with Revvity/ChemDraw.",
+  "description": "Molecule names or SMILES to 2D structures, comparisons and reaction schemes as PNG/SVG files with an interactive panel.",
+  "long_description": "Draw individual molecules, batches, structural comparisons and reaction schemes, with data sheets and PNG export. The default MVP registers six tools; other features are retained in an optional full profile. The bundle is a launcher: on first start it fetches chemdraw-mcp from PyPI via uv (installed if missing). Structure rendering runs locally; name resolution and data sheets may access online sources. Not affiliated with Revvity/ChemDraw.",
   "author": {
     "name": "jurimaxam-dotcom",
     "url": "https://github.com/jurimaxam-dotcom"

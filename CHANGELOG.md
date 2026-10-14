@@ -8,6 +8,12 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **MVP is the default server profile.** Four drawing workflows remain active:
+  individual structures, batches, comparisons and reaction schemes, with data
+  sheets and PNG export as panel support (six registered tools). Other tools are
+  not registered and cannot be called. Set `CHEMDRAW_PROFILE=full` and restart
+  to restore the complete catalog. Tool descriptions and server instructions
+  match the selected profile; the full catalog and its snapshots remain tested.
 - **The panel runs on `ext-apps` 2.0.** The wire protocol between Claude Desktop and
   the panel is unchanged (2.x panels run in 1.x hosts and the other way round), so
   nothing changes for users. The bundled panel is about a quarter smaller

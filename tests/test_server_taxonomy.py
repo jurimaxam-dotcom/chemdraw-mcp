@@ -27,7 +27,7 @@ import inspect
 import pytest
 
 from chemdraw_tool import server
-from chemdraw_tool.server import mcp
+from tests.server_catalog import mcp
 
 # --- Die Bereiche ------------------------------------------------------
 

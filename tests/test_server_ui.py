@@ -173,7 +173,7 @@ def test_every_panel_tool_carries_the_ui_meta():
     (generate_spectrum-Bug, 2026-06-11). Die Menge der Panel-Tools kommt aus
     der FastMCP-Registrierung, nicht aus einer gepflegten Konstante: ein neu
     hinzugefügtes Panel-Tool ohne Meta fällt so von selbst auf."""
-    from chemdraw_tool.server import mcp
+    from tests.server_catalog import mcp
 
     manager = mcp._tool_manager
     detected = {t.name for t in manager.list_tools() if _panel_payload_type(t)}
@@ -190,7 +190,7 @@ def test_every_panel_tool_carries_the_ui_meta():
 def test_panel_meta_check_notices_a_newly_registered_tool():
     """Schärfebeweis für den Test darüber: ein NEU registriertes Panel-Tool
     ohne Meta muss auffallen, ohne dass jemand eine Liste pflegt."""
-    from chemdraw_tool.server import mcp
+    from tests.server_catalog import mcp
 
     manager = mcp._tool_manager
 
@@ -227,6 +227,6 @@ def test_server_reports_its_own_version_not_the_sdk_version():
     """
     from importlib.metadata import version
 
-    from chemdraw_tool.server import mcp
+    from tests.server_catalog import mcp
 
     assert mcp._mcp_server.version == version("chemdraw-mcp")

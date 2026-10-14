@@ -1,5 +1,21 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+> Fokusentscheidung 14.10.2026: erst den allgemeinen Chemie-Kern stabilisieren.
+> MVP als Standard: Einzelstrukturen, Batch, Vergleich, Reaktionsschema; Datenblatt
+> und PNG-Export als Unterstützung (6 Tools). `CHEMDRAW_PROFILE=full` schaltet den
+> erhaltenen Vollumfang wieder zu. Die Ausbauphasen unten bleiben dokumentiert,
+> sind aber bis zur Abnahme des Kerns zurückgestellt. Keine weitere Fachvertiefung,
+> Quiz-/Trainer- oder Bezahlfunktionen in dieser Etappe.
+>
+> Umgesetzt 14.10.: Profilumschaltung und passende Tooltexte, getrennte Tests für
+> MVP und Vollbestand, profilabhängige Routing-Evals. Gate: 6.953 Python-Tests,
+> 37 Frontendtests grün; Host-Test grün. Lokale Bundle-Installation aus dem
+> aktuellen Wheel aktualisiert, Desktop neu gestartet; echter Extension-Start:
+> 6 Tools / 5 Panels, installiertes Vollprofil: 23 Tools. Noch kein neuer öffentlicher
+> Release. Sichtbarer Abnahmeschritt: neuer Desktop-Chat → „Nutze den ChemDraw-MCP:
+> zeichne Koffein“ → Data → PNG-Export. Die Fehler aus
+> `docs/projektpruefung-2026-10-14.md` sind damit noch nicht behoben.
+
 > Zusammengelegt 08.10.2026 aus `plans/archiv/panel-ausbau.md` (03.10.) und dem MCP-Teil von
 > `plans/produkt.md` (02.10.). Frühere, abgeschlossene Etappen: `plans/archiv/repo-level-up.md`
 > (14.08.), `routing-und-umschalter.md` (15.08.), `studi-funktionen.md` (15.08.).

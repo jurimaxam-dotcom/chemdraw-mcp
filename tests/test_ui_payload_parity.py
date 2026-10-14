@@ -91,7 +91,8 @@ def test_every_view_case_has_a_payload_type():
 def test_every_panel_tool_returns_a_renderable_type():
     """Die Kette bis ans Ende: jedes Tool mit UI-Meta liefert einen Payload,
     dessen `type` in App.jsx einen case hat."""
-    from chemdraw_tool.server import _RESOURCE_URI, mcp
+    from chemdraw_tool.server import _RESOURCE_URI
+    from tests.server_catalog import mcp
 
     cases = _view_case_types()
     broken = {}

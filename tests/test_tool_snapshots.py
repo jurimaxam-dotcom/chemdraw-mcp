@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.server import mcp
+from tests.server_catalog import mcp
 
 SNAPSHOT_DIR = Path(__file__).parent / "__snapshots__" / "tools"
 

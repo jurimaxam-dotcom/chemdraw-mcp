@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Baut aus cases.yaml + tools.json eine fertige promptfoo-Konfiguration.
 
-Handgepflegtes YAML fuer 22 Faelle x 20 Tools waere sofort veraltet. Diese
+Handgepflegtes YAML fuer alle Faelle und Tools waere sofort veraltet. Diese
 Datei ist der Generator: sie liest die Faelle, haengt die echten
 Tool-Definitionen an und schreibt `promptfooconfig.yaml`.
 
@@ -37,6 +37,11 @@ def main() -> int:
         )
     tools = json.loads(tools_file.read_text(encoding="utf-8"))
 
+    offered = {tool["name"] for tool in tools}
+    cases = [case for case in cases if case["expect"] in offered]
+    if not cases:
+        raise SystemExit("Keine passenden Eval-Fälle für die exportierten Tools.")
+
     tests = []
     for case in cases:
         asserts = [
@@ -64,8 +69,8 @@ def main() -> int:
 
     config = {
         "description": (
-            "chemdraw-mcp — Prompt zu Tool. Alle 20 Tools sind angeboten, "
-            "damit ein Fehlgriff ueberhaupt moeglich ist."
+            f"chemdraw-mcp — Prompt zu Tool. Alle {len(tools)} exportierten Tools "
+            "des gewählten Profils sind angeboten."
         ),
         "providers": [
             {

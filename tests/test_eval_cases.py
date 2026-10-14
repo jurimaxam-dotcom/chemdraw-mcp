@@ -19,7 +19,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from chemdraw_tool.server import mcp
+from tests.server_catalog import mcp
 from tests.test_server_taxonomy import NEEDS_DELIMITATION
 
 CASES_FILE = Path(__file__).resolve().parents[1] / "evals" / "tool-routing" / "cases.yaml"

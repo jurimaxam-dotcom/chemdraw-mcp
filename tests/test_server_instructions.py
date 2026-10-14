@@ -12,7 +12,7 @@ das Ende ab — deshalb steht das Wichtigste vorn und die Laenge ist begrenzt.
 
 import pytest
 
-from chemdraw_tool.server import mcp
+from tests.server_catalog import mcp
 
 MAX_BYTES = 2048
 
