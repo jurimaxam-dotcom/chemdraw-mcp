@@ -1,3 +1,4 @@
+import functools
 import hashlib
 import inspect
 import json
@@ -7,7 +8,8 @@ from importlib.metadata import version as _pkg_version
 from pathlib import Path
 from typing import Literal
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 from rdkit import Chem
 from rdkit.Chem.inchi import MolToInchiKey
 
@@ -313,7 +315,7 @@ def _tool(**kwargs):
     """`mcp.tool`, aber mit dedentiertem Docstring.
 
     Python 3.13 entfernt die Einrueckung von Docstrings beim Kompilieren,
-    3.11 und 3.12 nicht. FastMCP nimmt `fn.__doc__` unveraendert als
+    3.11 und 3.12 nicht. MCPServer (vormals FastMCP) nimmt `fn.__doc__` unveraendert als
     Beschreibung — auf aelteren Versionen kam sie also eingerueckt beim
     Modell an: laenger, fuenf Tools ueber der 2-KB-Kappung, und die
     Snapshots in tests/__snapshots__/tools/ passten nur auf 3.13.
@@ -3148,17 +3150,40 @@ if vault_enabled():
         return f"# {entry_name}\n\n{content}"
 
 
-def create_server(profile: str | None = None) -> FastMCP:
+def _user_facing_errors(fn):
+    """ValueError aus dem Tool als `ToolError` weiterreichen.
+
+    Seit mcp 2.1 kommt von jeder anderen Exception beim Client nur
+    "Error executing tool <name>" an. Die ValueErrors dieses Servers sind aber
+    Bedienhinweise — allen voran `NameResolutionError` mit seinem `kind`
+    (not_found/offline/sources_down/partial), der sagt, was tatsächlich hilft.
+    Echte Abstürze (alles andere) bleiben bewusst pauschal. `functools.wraps`
+    hält Name, Docstring und Signatur gleich, also auch die Schemas.
+    """
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except ValueError as exc:
+            raise ToolError(str(exc)) from exc
+
+    return wrapper
+
+
+def create_server(profile: str | None = None) -> MCPServer:
     """Build a server with only the tools enabled by its startup profile."""
     selected = os.environ.get("CHEMDRAW_PROFILE", "mvp") if profile is None else profile
     if selected not in {"mvp", "full"}:
         raise ValueError("CHEMDRAW_PROFILE must be 'mvp' or 'full'.")
-    instance = FastMCP(
+    # Der Host soll die Paketversion sehen, nicht die Version des MCP-SDK
+    # (mcp 1.x meldete sonst "1.27.1", mcp 2 einen Leerstring). Seit mcp 2 ist
+    # das ein Konstruktor-Argument statt eines Eingriffs in den Low-Level-Server.
+    instance = MCPServer(
         "ChemDraw Tool",
         instructions=_MVP_INSTRUCTIONS if selected == "mvp" else _FULL_INSTRUCTIONS,
+        version=_pkg_version("chemdraw-mcp"),
     )
-    # Der Host soll die Paketversion sehen, nicht die Version des MCP-SDK.
-    instance._mcp_server.version = _pkg_version("chemdraw-mcp")
     for fn, options in _TOOL_DEFINITIONS:
         if selected == "mvp" and fn.__name__ not in MVP_TOOLS:
             continue
@@ -3167,7 +3192,7 @@ def create_server(profile: str | None = None) -> FastMCP:
             summary = _MVP_SUMMARIES[fn.__name__].strip()
             _, separator, args = (fn.__doc__ or "").partition("Args:")
             registration["description"] = summary + ("\n\nArgs:" + args if separator else "")
-        instance.tool(**registration)(fn)
+        instance.tool(**registration)(_user_facing_errors(fn))
     instance.resource(
         _RESOURCE_URI,
         mime_type="text/html;profile=mcp-app",

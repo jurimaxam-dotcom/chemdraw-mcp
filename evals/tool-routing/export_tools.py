@@ -27,7 +27,7 @@ async def _collect() -> list[dict]:
         {
             "name": t.name,
             "description": t.description or "",
-            "input_schema": t.inputSchema,
+            "input_schema": t.input_schema,
         }
         for t in tools
     ]
