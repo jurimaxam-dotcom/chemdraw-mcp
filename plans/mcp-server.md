@@ -51,6 +51,21 @@
   Entwickler-Menüpunkt und geöffnetes DevTools-Fenster mit Console/Network selbst
   sichtbar geprüft. Die Konfiguration liegt lokal außerhalb des Repositories.
 
+- [ ] **Routing-Befund MVP (Claude, 14.10., `run_claude.py`, 11/13 grün):** zwei Fälle
+  3 von 3 stabil rot — `lookup-data-sheet` ruft nach `lookup_molecule_data` zusätzlich
+  das verbotene `generate_molecule`; `explain-why-acidic` („Warum ist Acetylsalicylsäure
+  sauer?“) landet bei `generate_reaction` statt `generate_molecule`. Betrifft
+  `_MVP_SUMMARIES`/Instructions; erst nach dem mcp-2-Branch angehen (Konfliktgefahr).
+- [ ] **mcp-2.x-Migration als Cloud-Session** (Cloud-Guthaben-Testlauf, gestartet 14.10.):
+  Branch `mcp-2-migration-v2` von `d830726`, kein Merge durch die Session. Danach lokal:
+  Gate, Handshake beider Profile, Snapshots unverändert, dann Merge.
+- [ ] Desktop-Entwicklermenü „MCP-Konfiguration neu laden“ ersetzt per AppleScript einen
+  von zwei laufenden Serverprozessen (57152 → 63588, 57194 blieb). Vor einem Reload-Skript
+  klären, welcher Prozess einen neuen Chat bedient.
+- [ ] Offen aus der Kernanalyse: Dateinamen-Kollision (`_slugify`); NCI CIR antwortet live
+  mit 500 auf deutsche Namen (Methylphenidat, Salicylsäure) → Kandidat Wikidata-Stufe;
+  ACS-1996-Stil nur nach Designrunde.
+
 Noch offen bleibt die persönliche Gestaltungsrückmeldung von Jay; weitere
 Panelmodi und Fachfunktionen sind damit nicht freigegeben.
 
