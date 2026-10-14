@@ -15,6 +15,11 @@ taxonomy, snapshots and payload checks; `tests/test_server_profiles.py` verifies
 the actual default and explicit profiles in fresh processes. The stdio handshake
 derives its expected counts from the selected profile.
 
+Helfer reports are claims to verify, not acceptance evidence (Jay, 14.10.2026).
+Independently inspect the diff and run the relevant checks before confirming
+completion. Distinguish repository code, installed package/dependencies and the
+running Desktop process; matching tool counts alone do not establish matching code.
+
 MCP server for Claude Desktop that turns molecule names or SMILES into
 publication-style 2D structure drawings. PNG/SVG are the primary outputs
 (rendered offline via RDKit) — ChemDraw CDXML is an optional extra format,

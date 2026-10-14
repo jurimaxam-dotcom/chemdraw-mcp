@@ -97,3 +97,50 @@ Nicht durchgeführt: neuer bezahlter Modell-Routinglauf, vollständiger Live-Ide
 2. Bestehende Prüfungen verbindlich machen: Release an denselben grünen Commit binden, Wheel-Smoke, Trainer-CI, leere Evals ablehnen. Kleinere Daten- und Diagnosefehler mitnehmen.
 3. Vorhandenen Browsertrainer mit wenigen echten Zielnutzern prüfen. Die im Produktplan offenen Entscheidungen zu Sichtung, Kanal und Impressum bleiben echte Voraussetzungen; kein Deploy im Rahmen dieses Audits.
 4. Erst nach dieser Rückmeldung weiteren Panel-/Trainerumfang priorisieren. Den gemeinsamen Fachkern behalten; technische Extraktionen an nachgewiesener Doppelarbeit ausrichten.
+
+## Unabhängige Nachprüfung der Claude-Commits e17eb61 und 243b1e5
+
+Auf Jays ausdrückliche Korrektur hin wurden die Helfer-Rückmeldungen selbst geprüft,
+nicht als Abnahme übernommen. Ausgangsstand dieser Nachprüfung: `243b1e5`, sauberer
+Arbeitsbaum. Prüfung durch Codex:
+
+- `./test.sh` selbst ausgeführt: **6.958 Python-Tests bestanden, 16 übersprungen**,
+  37 Frontendtests bestanden, UI-Bundle bytegleich. Default-Golden-Dateien wurden
+  in den beiden Commits nicht geändert und ihre Tests bestehen.
+- `test:host` selbst ausgeführt: Datenblatt für Methylphenidat mit CAS 113-45-1,
+  zweiter Wechsel aus Cache. `identitaet.py`: **22 grün, 2 gelb, 0 rot**;
+  gelb sind Salicylsäure und Methylphenidat.
+- Die fünf neuen Parametrisierungen aus `test_server_identity.py` zusätzlich
+  gegen den Quellstand vor dem Fix (`6171a15`) in einem temporären Verzeichnis
+  ausgeführt: **4 rot, 1 grün**. Der Nullwerttest zeigt den alten Fehler wirklich.
+  Der neue Test mit abweichendem PubChem-`SMILES` besteht auch vor dem Fix, weil
+  der alte Code dieses moderne Feld bereits ignoriert und die Eingabe verwendet.
+  Er belegt daher keine neu reparierte Regression.
+- Live-PubChem-Abfrage für Koffein: Sowohl `SMILES` als auch die alten angefragten
+  Aliasnamen `CanonicalSMILES,IsomericSMILES` liefern **HTTP 200** mit CID 2519.
+  Die Antwortschlüssel heißen modern `SMILES` bzw. `ConnectivitySMILES`.
+  **Präzisierung:** Die URL-Änderung ist eine Bereinigung, kein nachgewiesener
+  Fix einer aktuell kaputten Anfrage. Das aktuelle Mapping liefert live
+  `hbd="0"` und CAS `58-08-2`.
+- Direkte CIR-Abfragen selbst wiederholt: `Methylphenidat`, `Salicylsäure`,
+  `Salicylsaeure` jeweils **500**; `methylphenidate` und `salicylic acid`
+  jeweils **200**. Das bestätigt den beobachteten Quellenausfall für diese Namen;
+  daraus folgt keine Freigabe für einen zusätzlichen Resolverdienst.
+- RDKit **2026.3.6** und MCP **1.30.0** sind tatsächlich installiert. Der konkret
+  behauptete vorgelagerte Reaktionslayout-Bug wurde mangels eines gezielten
+  Vorher/Nachher-Reproduktionsfalls nicht separat nachgewiesen. Ein ACS-Profil
+  ist in den Änderungen nicht enthalten; die Begründung für dessen Designbedarf
+  wurde in dieser Nachprüfung nicht als API-Befund übernommen.
+
+Die Desktop-Installation wurde isoliert mit ihrem eigenen Python und `-I`
+geprüft, damit das Projekt-CWD nicht versehentlich den Repo-Code importiert.
+**Vorher:** neue RDKit/MCP-Versionen, aber alter Server- und Datenbankcode;
+der Nullwertversuch verlor weiterhin alle vier Werte. Gleiche Paketversion
+`0.4.8` und gleiche Toolzahl reichten also nicht zum Nachweis des Codes.
+
+Anschließend wurde das Wheel aus dem geprüften Repo neu gebaut und lokal
+installiert, ohne Abhängigkeiten erneut aufzulösen. **Danach:** Server- und
+Datenbankdatei stimmen byteweise mit dem geprüften Repo überein, der isolierte
+Nullwertversuch erhält alle vier Nullen. Claude Desktop wurde neu gestartet.
+Die sichtbare Prüfung im Desktop-Chat bleibt von automatisierten Nachweisen
+getrennt; es wurde kein öffentlicher Release erstellt.

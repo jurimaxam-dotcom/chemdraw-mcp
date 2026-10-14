@@ -15,6 +15,13 @@
 > Release. Sichtbarer Abnahmeschritt: neuer Desktop-Chat → „Nutze den ChemDraw-MCP:
 > zeichne Koffein“ → Data → PNG-Export. Die Fehler aus
 > `docs/projektpruefung-2026-10-14.md` sind damit noch nicht behoben.
+>
+> Unabhängig nachgeprüft 14.10. nach Claudes Kernpflege (`e17eb61`, `243b1e5`):
+> Gate 6.958 Python / 37 Frontend grün, Host grün, Identität 22 grün / 2 gelb.
+> Nullwerte korrigiert; PubChem-URL-Umstellung ist eine Bereinigung (alte Aliase
+> antworten live weiterhin mit 200). Lokales Desktop-Wheel anschließend aus dem
+> geprüften Repo aktualisiert, isoliert auf Codegleichheit und Nullwerte geprüft;
+> Desktop neu gestartet. Einzelheiten und Grenzen im Prüfbericht.
 
 > Zusammengelegt 08.10.2026 aus `plans/archiv/panel-ausbau.md` (03.10.) und dem MCP-Teil von
 > `plans/produkt.md` (02.10.). Frühere, abgeschlossene Etappen: `plans/archiv/repo-level-up.md`
