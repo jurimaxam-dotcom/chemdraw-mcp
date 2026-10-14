@@ -47,6 +47,9 @@
 - [x] Automatische DOM-Schleife `test:ui:watch` ergänzt; Entwickleroptionen,
   Logs und Prüfschichten in `docs/ui-pruefung.md` dokumentiert. DevTools nicht
   ungefragt aktiviert. Layoutbelege: `docs/produkt/panel-mvp/`.
+- [x] Anschließend auf Jays ausdrücklichen Auftrag DevTools aktiviert; neuer
+  Entwickler-Menüpunkt und geöffnetes DevTools-Fenster mit Console/Network selbst
+  sichtbar geprüft. Die Konfiguration liegt lokal außerhalb des Repositories.
 
 Noch offen bleibt die persönliche Gestaltungsrückmeldung von Jay; weitere
 Panelmodi und Fachfunktionen sind damit nicht freigegeben.

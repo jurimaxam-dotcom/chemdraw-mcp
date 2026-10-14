@@ -67,9 +67,13 @@ CAS/CID, sichtbare Ansicht und Export prüfen.
 
 Die offizielle MCP-Dokumentation beschreibt außerdem Chrome DevTools über
 `~/Library/Application Support/Claude/developer_settings.json` mit
-`"allowDevTools": true` und anschließend `⌘⌥I`. Die Datei war bei dieser Prüfung
-nicht vorhanden; die Einstellung wurde nicht verändert. Bei späterer Aktivierung
-vorhandene JSON-Einstellungen erhalten und vorher sichern. Console und Network
+`"allowDevTools": true` und anschließend `⌘⌥I`. Auf ausdrücklichen Auftrag von Jay
+am 14.10.2026 aktiviert: die zuvor nicht vorhandene Datei angelegt, Claude komplett
+neu gestartet, das neue Menü **Entwickler** und das tatsächliche Fenster
+**Developer Tools - https://claude.ai/new** mit **Console** und **Network** geprüft.
+Das Entwicklermenü bietet außerdem „MCP-Protokolldatei öffnen“ und
+„MCP-Konfiguration neu laden“. Bei späteren Änderungen vorhandene
+JSON-Einstellungen erhalten und vorher sichern. Console und Network
 helfen bei Host-/iframe-Fehlern, ersetzen aber keine Testassertionen.
 
 Quellen: [MCP-Debugging](https://modelcontextprotocol.io/docs/tools/debugging),
