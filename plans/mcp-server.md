@@ -56,9 +56,12 @@
   das verbotene `generate_molecule`; `explain-why-acidic` („Warum ist Acetylsalicylsäure
   sauer?“) landet bei `generate_reaction` statt `generate_molecule`. Betrifft
   `_MVP_SUMMARIES`/Instructions; erst nach dem mcp-2-Branch angehen (Konfliktgefahr).
-- [ ] **mcp-2.x-Migration als Cloud-Session** (Cloud-Guthaben-Testlauf, gestartet 14.10.):
-  Branch `mcp-2-migration-v2` von `d830726`, kein Merge durch die Session. Danach lokal:
-  Gate, Handshake beider Profile, Snapshots unverändert, dann Merge.
+- [x] **mcp-2.x-Migration** (14.10., `c0dd24d` auf main): `MCPServer`, `version=` im
+  Konstruktor, `ValueError` → `ToolError` (Resolver-Meldungen kommen lesbar an, Test neu).
+  Lokal nachgeprüft nach Rebase: Gate 6.964 grün, `test:host` grün, Routing 11/13 wie vorher,
+  Handshake 6/5. Lief NICHT in der Cloud: `isolation: remote` fiel still auf einen lokalen
+  Worktree zurück. Offen: Desktop-Wheel neu installieren + Smoke-Test; Entscheidung, ob
+  auch andere Fehler (z. B. `OSError` beim Schreiben) als Klartext durchgereicht werden.
 - [ ] Desktop-Entwicklermenü „MCP-Konfiguration neu laden“ ersetzt per AppleScript einen
   von zwei laufenden Serverprozessen (57152 → 63588, 57194 blieb). Vor einem Reload-Skript
   klären, welcher Prozess einen neuen Chat bedient.
