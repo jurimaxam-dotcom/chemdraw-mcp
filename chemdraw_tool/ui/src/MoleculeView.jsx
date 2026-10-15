@@ -1,8 +1,6 @@
 import React, { useCallback, useId, useRef, useState } from "react";
-import PropRow from "./components/PropRow";
 import CopyButton from "./components/CopyButton";
-import FunctionalGroupList from "./components/FunctionalGroupList";
-import LipinskiBadge from "./components/LipinskiBadge";
+import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
 import SourceList from "./components/SourceList";
 import StructureCanvas from "./components/StructureCanvas";
@@ -40,6 +38,7 @@ export default function MoleculeView({ data }) {
     ? `PubChem: ${props.pubchemTitle}${props.cid ? ` (CID ${props.cid})` : ""}`
     : "";
   const groups = data.functionalGroups || [];
+  const formula = data.formula ?? props.formula;
   const smiles = data.smiles ?? props.smiles;
   // SMILES zuerst: die sind laut Tool-Doku immer aufloesbar, ein Name kann
   // danebengehen.
@@ -90,7 +89,6 @@ export default function MoleculeView({ data }) {
       <header className="panel-header">
         <div className="panel-heading">
           <h2 className="panel-title">{data.name || "Molecule"}</h2>
-          {data.subtitle && <p className="panel-subtitle">{data.subtitle}</p>}
           {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
         </div>
         <div className="panel-actions">
@@ -99,22 +97,20 @@ export default function MoleculeView({ data }) {
         </div>
       </header>
       {view === "structure" ? (
-        <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure" className="structure-layout">
-          <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
-          <aside className="molecule-info" aria-label="Molecule details">
-            <section>
-              <SectionLabel>Properties</SectionLabel>
-              <PropRow label="Formula" value={data.formula ?? props.formula} copyable mono={false} />
-              <PropRow label="Mass" value={props.mw} copyable={false} mono={false} />
-              <PropRow label="CAS" value={props.cas} copyable mono={false} />
-            </section>
-            {groups.length > 0 && <section>
-              <SectionLabel>Functional groups</SectionLabel>
-              <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
-            </section>}
-            {data.lipinski && <section><SectionLabel>Rule of Five</SectionLabel><LipinskiBadge lipinski={data.lipinski} /></section>}
-            {smiles && <div className="smiles-row"><code>{smiles}</code><CopyButton text={smiles} size="sm" /></div>}
-          </aside>
+        <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
+          <div className="structure-layout">
+            <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+            <dl className="key-facts" aria-label="Molecule details">
+              <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
+              <Fact label="Molar mass" value={molarMass(props.mw)} />
+              <Fact label="CAS" value={props.cas} copy={props.cas} />
+            </dl>
+          </div>
+          {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
+            <h3 className="section-label">Functional groups</h3>
+            <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+            <GroupNote groups={groups} hoveredGroup={hoveredGroup} />
+          </section>}
         </div>
       ) : (
         <div id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
@@ -129,6 +125,22 @@ function Note({ children }) {
   return <div className="panel-note" role="status">{children}</div>;
 }
 
-function SectionLabel({ children }) {
-  return <h3 className="section-label">{children}</h3>;
+// Der Server liefert "233.31 g/mol", aeltere Payloads nur die Zahl.
+function molarMass(mw) {
+  if (mw == null || mw === "") return null;
+  return /g\/mol/.test(String(mw)) ? String(mw) : `${mw} g/mol`;
+}
+
+// Zahlen in der Summenformel tiefgestellt: C9H8O4 → C₉H₈O₄.
+function Formula({ text }) {
+  return String(text).split(/(\d+)/).map((part, i) =>
+    /^\d+$/.test(part) ? <sub key={i}>{part}</sub> : part);
+}
+
+function Fact({ label, value, copy }) {
+  if (value == null || value === "") return null;
+  return <div className="fact">
+    <dt>{label}</dt>
+    <dd><span>{value}</span>{copy && <CopyButton text={String(copy)} size="sm" />}</dd>
+  </div>;
 }

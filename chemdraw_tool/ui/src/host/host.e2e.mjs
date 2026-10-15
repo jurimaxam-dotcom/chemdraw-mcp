@@ -61,8 +61,8 @@ try {
       await frame.getByRole("button", { name: "Export as PNG" }).waitFor();
       const geometry = await frame.evaluate(() => {
         const panel = document.querySelector('[data-view="structure"]');
-        const canvas = panel.firstElementChild.getBoundingClientRect();
-        const info = panel.lastElementChild.getBoundingClientRect();
+        const canvas = panel.querySelector(".structure-canvas").getBoundingClientRect();
+        const info = panel.querySelector(".key-facts").getBoundingClientRect();
         const title = document.querySelector(".panel-title");
         return { overflow: document.documentElement.scrollWidth > innerWidth, canvas: canvas.toJSON(), info: info.toJSON(),
           titleSize: title ? parseFloat(getComputedStyle(title).fontSize) : 0,
@@ -72,6 +72,16 @@ try {
       if (width === 360) prüfe(geometry.info.top >= geometry.canvas.bottom - 1, "Schmale Ansicht stapelt Struktur und Steckbrief");
       else prüfe(geometry.info.left >= geometry.canvas.right - 1, "Breite Ansicht ordnet Steckbrief neben Struktur an");
       await page.screenshot({ path: join(tmpdir(), `chem-ui-${colorScheme}-${width}.png`) });
+      // Hover auf die erste Gruppe: Bindungen leuchten, darunter stehen Name und Kurzformel.
+      await frame.locator("button.functional-group").first().hover();
+      await page.waitForTimeout(250); // Ueberblendung der Toenung (160 ms) abwarten, sonst zeigt das Foto Grau
+      const glow = await frame.evaluate(() => ({
+        lines: document.querySelectorAll(".group-glow line, .group-glow circle").length,
+        note: document.querySelector(".group-note.is-active")?.textContent ?? "",
+      }));
+      prüfe(glow.lines > 0 && glow.note.length > 0, `${colorScheme} ${width}px: Gruppen-Hover leuchtet und nennt die Gruppe`);
+      await page.screenshot({ path: join(tmpdir(), `chem-ui-${colorScheme}-${width}-hover.png`) });
+      await frame.locator(".panel-title").hover();
     }
   }
 

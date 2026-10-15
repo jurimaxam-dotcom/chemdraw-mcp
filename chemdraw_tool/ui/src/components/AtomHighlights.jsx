@@ -1,6 +1,10 @@
 import React from "react";
 import { getSvgTransform, viewBoxToScreen } from "../utils/svgCoords";
+import { groupBonds } from "../utils/groupInfo";
 
+// Glow statt Kreisen: die Bindungen der Gruppe leuchten weich in ihrer Farbe.
+// Ein Atom ohne Bindungspartner in der Gruppe (z. B. ein einzelnes Halogen)
+// bekommt einen weichen Fleck, damit es nicht unsichtbar bleibt.
 export default function AtomHighlights({
   atoms,
   groups,
@@ -15,34 +19,22 @@ export default function AtomHighlights({
   const t = getSvgTransform(svgContainerRef);
   if (!t) return null;
 
-  const highlightAtoms = atoms.filter((a) =>
-    group.atomIndices.includes(a.idx)
-  );
+  const bonds = groupBonds(atoms, group.atomIndices);
+  const bonded = new Set(bonds.flat().map((a) => a.idx));
+  const lone = atoms.filter((a) => group.atomIndices.includes(a.idx) && !bonded.has(a.idx));
+  const screen = (a) => viewBoxToScreen(t, a.x, a.y);
 
   return (
-    <>
-      {highlightAtoms.map((atom) => {
-        const pos = viewBoxToScreen(t, atom.x, atom.y);
-        return (
-          <div
-            key={atom.idx}
-            style={{
-              position: "absolute",
-              left: pos.x,
-              top: pos.y,
-              width: 20,
-              height: 20,
-              marginLeft: -10,
-              marginTop: -10,
-              borderRadius: "50%",
-              background: `${group.color}30`,
-              border: `2px solid ${group.color}`,
-              pointerEvents: "none",
-              transition: "opacity 0.15s",
-            }}
-          />
-        );
+    <svg className="group-glow" aria-hidden="true" style={{ "--group-color": group.color }}>
+      {bonds.map(([a, b]) => {
+        const p = screen(a);
+        const q = screen(b);
+        return <line key={`${a.idx}-${b.idx}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} />;
       })}
-    </>
+      {lone.map((a) => {
+        const p = screen(a);
+        return <circle key={a.idx} cx={p.x} cy={p.y} r={9} />;
+      })}
+    </svg>
   );
 }

@@ -147,6 +147,43 @@ test("ein neuer Stoff im selben App-Slot verwirft das alte Datenblatt", async ()
   unmount();
 });
 
+// Was Studierende brauchen: Struktur, Formel, molare Masse, CAS, Gruppen.
+// SMILES, Rule of Five und der IUPAC-Untertitel sind bewusst raus (Jay, 15.10.2026).
+test("die Struktur-Ansicht zeigt die Kernwerte und nichts darueber hinaus", () => {
+  const { panel, container, unmount } = setup();
+  const text = textOf(panel("structure"));
+  assert.match(text, /Formula/);
+  assert.match(text, /Molar mass/);
+  assert.match(text, /180\.16/);
+  assert.match(text, /50-78-2/);
+  assert.doesNotMatch(text, /CC\(=O\)Oc1ccccc1C\(=O\)O/, "SMILES steht noch im Panel");
+  assert.doesNotMatch(text, /Lipinski|Rule of Five/, "Rule of Five steht noch im Panel");
+  assert.doesNotMatch(textOf(container), /Acetyloxy/, "IUPAC-Untertitel steht noch im Kopf");
+  unmount();
+});
+
+test("die Einheit der molaren Masse steht genau einmal da", () => {
+  const data = { ...MOLECULE, properties: { ...MOLECULE.properties, mw: "180.16 g/mol" } };
+  const view = render(React.createElement(AppContext.Provider, { value: {} }, React.createElement(MoleculeView, { data })));
+  assert.doesNotMatch(textOf(view.container), /g\/mol g\/mol/);
+  assert.match(textOf(view.container), /180\.16 g\/mol/);
+  view.unmount();
+});
+
+test("Hover auf eine Gruppe nennt sie unter den Gruppen, ohne Erklaersatz", async () => {
+  const { container, unmount } = setup();
+  const note = () => textOf(container.querySelector(".group-note"));
+  assert.match(note(), /Hover a group/, "Ruhezustand ohne Hinweis");
+  const group = [...container.querySelectorAll("button")].find((b) => b.textContent.includes("Ester"));
+  await act(async () => group.focus());
+  assert.match(note(), /Ester/);
+  assert.match(note(), /–COO–/, "Formel der Gruppe fehlt");
+  assert.doesNotMatch(note(), /hydrolys/i, "Erklaersatz steht noch da");
+  await act(async () => group.blur());
+  assert.match(note(), /Hover a group/, "Erklaerung bleibt nach dem Verlassen stehen");
+  unmount();
+});
+
 test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Struktur", async () => {
   const { container, unmount } = setup();
   const group = [...container.querySelectorAll('button')].find((b) => b.textContent.includes("Ester"));
