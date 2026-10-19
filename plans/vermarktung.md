@@ -35,13 +35,18 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
 - [ ] Post-Entwürfe je Release aus `CHANGELOG.md` und Bildern, je Kanal nach dessen Regeln
 - [ ] Release-Notes mit Bild
 
+## Etappe 3b: hochwertige Videos (Jay 19.10.: Reddit raus, Shorts und Videos rein)
+- [ ] Remotion (React → MP4) als Schnittwerkzeug: eine Quelle, Formate 16:9 und 9:16;
+  Moleküle aus unserem eigenen SVG-Renderer animieren
+- [ ] Echte Aufnahmen aus Claude Desktop (nie KI-generierte Oberfläche, die würde täuschen)
+- [ ] Flow (Google AI Pro) nur für Intro-B-Roll und Musik (Flow Music)
+- [ ] Stimme: Jays eigene oder TTS — Entscheidung offen
+- [ ] **Jay:** Bildschirmaufnahme-Recht für das Terminal freigeben, YouTube-Kanal anlegen
+
 ## Etappe 4: Verbreitung (Jays Klick, 2 Posts pro Woche, nie am selben Tag)
-- [ ] r/mcp (Tag „showcase“, Eigenwerbung erlaubt)
 - [ ] YouTube Short (eigener Kanal; der Upload ist Jays Klick)
 - [ ] Show HN: Di–Do, 12–17 UTC (14–19 Uhr MESZ), mit Demo
-- [ ] r/ClaudeAI, sobald Jays Konto mehr als 100 Karma hat
 - [ ] Bluesky/X-Thread mit Bildern, RDKit erwähnen
-- [ ] r/chemistry erst nach Modmail-Freigabe
 - [ ] Anthropic-Plugin-Portal (seit 25.09.2026): Bedingungen in der Primärdoku prüfen
 
 ## Etappe 5: Messen
