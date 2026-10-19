@@ -40,7 +40,7 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
   Moleküle aus unserem eigenen SVG-Renderer animieren
 - [ ] Echte Aufnahmen aus Claude Desktop (nie KI-generierte Oberfläche, die würde täuschen)
 - [ ] Flow (Google AI Pro) nur für Intro-B-Roll und Musik (Flow Music)
-- [ ] Stimme: Jays eigene oder TTS — Entscheidung offen
+- [x] Stimme: keine — Untertitel-Text + Flow-Musik (Jay 19.10.2026)
 - [ ] **Jay:** Bildschirmaufnahme-Recht für das Terminal freigeben, YouTube-Kanal anlegen
 
 ## Etappe 4: Verbreitung (Jays Klick, 2 Posts pro Woche, nie am selben Tag)
