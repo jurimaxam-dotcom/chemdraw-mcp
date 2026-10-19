@@ -271,7 +271,8 @@ _MVP_SUMMARIES = {
 
 Writes PNG/SVG files and returns an interactive panel with the structure,
 properties and functional groups. A bare compound name ("caffeine") also
-means this tool. No ChemDraw required.
+means this tool, and so does a question about why one compound behaves as it
+does (acidity, solubility) — the answer is in its structure. No ChemDraw required.
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
@@ -294,8 +295,9 @@ Use it when explaining a reaction as well as for explicit drawing requests.
 This draws the net reaction, without step-by-step electron-flow mechanisms.
 Pass English or IUPAC compound names, or SMILES.
 
-Not this tool for: one compound (use generate_molecule), independent
-structures (use batch_generate), or structural differences (use compare_molecules).
+Not this tool for: one compound or a property of one compound such as its
+acidity (use generate_molecule), independent structures (use batch_generate),
+or structural differences (use compare_molecules).
 """,
     "lookup_molecule_data": """Show a compound's data sheet: structure, PubChem properties and GHS safety.
 

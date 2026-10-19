@@ -56,6 +56,11 @@
   das verbotene `generate_molecule`; `explain-why-acidic` („Warum ist Acetylsalicylsäure
   sauer?“) landet bei `generate_reaction` statt `generate_molecule`. Betrifft
   `_MVP_SUMMARIES`/Instructions; erst nach dem mcp-2-Branch angehen (Konfliktgefahr).
+  **19.10.:** `explain-why-acidic` grün (Eigenschaftsfrage zu einem Stoff → generate_molecule,
+  Zaun in generate_reaction); Gesamtlauf 12/13. `lookup-data-sheet` blieb nach drei
+  Formulierungen (Summary beider Tools + Instructions) rot und ist zurückgenommen.
+  Vermutung: Die Attrappe in `stub_server.py` liefert kein Datenblatt, also zeichnet das Modell
+  nach. Prüfen mit einem Stub, der echten Datenblatt-Text zurückgibt.
 - [x] **mcp-2.x-Migration** (14.10., `c0dd24d` auf main): `MCPServer`, `version=` im
   Konstruktor, `ValueError` → `ToolError` (Resolver-Meldungen kommen lesbar an, Test neu).
   Lokal nachgeprüft nach Rebase: Gate 6.964 grün, `test:host` grün, Routing 11/13 wie vorher,
