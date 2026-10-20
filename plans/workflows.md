@@ -9,10 +9,10 @@ Stand Panel heute: Struktur/Daten-Umschalter, „Export PNG", Kopierknöpfe an d
 ## Faden 1: Lernen – Molekül → Anki
 „Hey Claude, draw me ibuprofen" → Panel in Sekunden → Knopf **Add to Anki** am Panel → Anki öffnet
 sich mit der Karte.
-- [ ] Knopf im MoleculeView: ruft per `app.callServerTool` ein Server-Tool, das eine .apkg mit
+- [x] Knopf im MoleculeView: ruft per `app.callServerTool` ein Server-Tool, das eine .apkg mit
       genau diesem Molekül baut (Vorderseite Struktur, Rückseite Name/Formel) und sie mit dem
       Standardprogramm öffnet (macOS `open` → Anki importiert). Kein AnkiConnect-Zwang.
-- [ ] `export_anki_deck` zurück ins MVP (Chat-Weg „mach mir Karten zu den Analgetika"),
+- [x] `export_anki_deck` zurück ins MVP (Chat-Weg „mach mir Karten zu den Analgetika"),
       Profil-/Taxonomie-/Snapshot-Tests, Handshake-Zahlen anpassen
 - [ ] Desktop-Neustart, 10-Sekunden-Test durch Jay
 

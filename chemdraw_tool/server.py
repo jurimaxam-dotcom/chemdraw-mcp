@@ -243,6 +243,9 @@ themselves — never call save_png, that is the panel's export button.
 MVP_TOOLS = frozenset({
     "generate_molecule", "batch_generate", "compare_molecules",
     "generate_reaction", "lookup_molecule_data", "save_png",
+    # Lernweg Molekül → Anki (21.10.2026): der Panel-Knopf „Add to Anki" und
+    # der Chat-Weg „mach mir Karten zu …" brauchen dasselbe Tool.
+    "export_anki_deck",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -256,9 +259,12 @@ interactive panel. This server runs the MVP profile.
 - Reactants, products and conditions: generate_reaction.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
+- The user has to learn or revise something → offer export_anki_deck and
+  write the cards yourself. The molecule panel's Add to Anki button adds
+  a single structure card.
 
-Only these drawing and data-sheet functions are available. Other features
-are temporarily disabled. Do not offer unavailable tools.
+Only these drawing, data-sheet and flashcard functions are available. Other
+features are temporarily disabled. Do not offer unavailable tools.
 Pass English or IUPAC compound names; SMILES are always safe. Labels may be
 localized. Drawing tools write their files themselves — never call save_png,
 that is the panel's export button.
@@ -909,7 +915,7 @@ def export_anki_deck(
       observation and reaction scheme where it helps.
 
     The tool renders the images — YOU supply the card content from your
-    knowledge, as with generate_spectrum. Each card side carries text plus at
+    knowledge. Each card side carries text plus at
     most ONE visual: structure (name or SMILES), reaction ({reactants,
     products, conditions}) or spectrum ({spectrum_type, peaks, title}).
     Proven types: structure↔name, identity reactions (question front, scheme
@@ -930,8 +936,8 @@ def export_anki_deck(
             Ignored when curated_deck_id is set.
         cards: The flashcards. Fronts unambiguous, explanations on the back.
         default_tags: Tags added to every card.
-        deliver: "apkg" (file only) or "ankiconnect" (also imports into the
-            RUNNING Anki via the AnkiConnect add-on).
+        deliver: "apkg" (file only), "open" (also opens it in Anki, macOS)
+            or "ankiconnect" (imports via the AnkiConnect add-on).
         curated_deck_id: "analgesics-structures" or "pheur-identity-basics".
     """
     if curated_deck_id:
@@ -952,6 +958,8 @@ def export_anki_deck(
     delivery = "apkg"
     if deliver == "ankiconnect":
         delivery = _anki.push_via_ankiconnect(out_path)
+    elif deliver == "open":
+        delivery = _anki.open_with_default_app(out_path)
     return AnkiDeckPayload(
         name=deck_name,
         cards=stats["cards"],

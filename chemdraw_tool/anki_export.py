@@ -14,6 +14,8 @@ deshalb weder untereinander noch in Ankis globalem Medienordner.
 from __future__ import annotations
 
 import hashlib
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -225,6 +227,19 @@ def push_via_ankiconnect(apkg_path: Path) -> str:
     if result.get("error"):
         return f"ankiconnect-error: {result['error']}"
     return "ankiconnect"
+
+
+def open_with_default_app(apkg_path: Path) -> str:
+    """Öffnet die .apkg mit dem Standardprogramm — auf macOS startet Anki
+    und zeigt den Import. Anderswo nur speichern; scheitert `open`, bleibt
+    die Datei der Weg. Der Rückgabewert meldet ehrlich, was passiert ist."""
+    if sys.platform != "darwin":
+        return "apkg"
+    try:
+        subprocess.run(["open", str(apkg_path)], check=True, timeout=10)
+    except Exception:
+        return "apkg"
+    return "open"
 
 
 def write_deck(

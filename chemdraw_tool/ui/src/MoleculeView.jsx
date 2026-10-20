@@ -2,6 +2,7 @@ import React, { useCallback, useId, useRef, useState } from "react";
 import CopyButton from "./components/CopyButton";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
+import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
@@ -94,6 +95,7 @@ export default function MoleculeView({ data }) {
         <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
           {data.svg && <ExportPngButton svg={data.svg} filename={data.name || "molecule"} />}
+          {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} />}
         </div>
       </header>
       {view === "structure" ? (
