@@ -1,0 +1,4 @@
+node_modules/
+# Aufnahme + Click-Log kommen pro Lauf aus scripts/demo-short.sh
+public/
+out/

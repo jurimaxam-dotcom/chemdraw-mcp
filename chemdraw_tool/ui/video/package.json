@@ -1,0 +1,19 @@
+{
+  "name": "chemdraw-demo-video",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "//": "Montage der Demo-Shorts (Remotion). Eigenes Paket, damit Panel-Bundle und ui/package-lock.json unberührt bleiben. Alle remotion-Pakete exakt gleiche Version — Remotion bricht bei Mischständen ab.",
+  "scripts": {
+    "test": "node --test src/lib/*.test.ts",
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Short"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.533",
+    "@remotion/renderer": "4.0.533",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.533"
+  }
+}
