@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MVP = {
     "generate_molecule", "batch_generate", "compare_molecules",
     "generate_reaction", "lookup_molecule_data", "save_png",
+    # Seit 21.10.2026: Lernweg Molekül → Anki (Panel-Knopf und Chat).
+    "export_anki_deck",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -54,7 +56,7 @@ def _data(profile=None, vault=False):
 
 
 @pytest.mark.parametrize("profile", [None, "mvp"])
-def test_default_and_explicit_mvp_offer_exactly_six_tools(profile):
+def test_default_and_explicit_mvp_offer_exactly_seven_tools(profile):
     assert {t["name"] for t in _data(profile)["tools"]} == MVP
 
 
@@ -77,6 +79,7 @@ def test_mvp_instructions_and_descriptions_reference_only_available_tools():
     assert mentioned <= MVP, mentioned - MVP
     assert "bare compound name" in text
     assert "never call save_png" in data["instructions"]
+    assert "export_anki_deck" in data["instructions"]
     assert len(data["instructions"].encode()) <= 2048
 
 

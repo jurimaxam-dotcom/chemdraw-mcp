@@ -243,6 +243,9 @@ themselves — never call save_png, that is the panel's export button.
 MVP_TOOLS = frozenset({
     "generate_molecule", "batch_generate", "compare_molecules",
     "generate_reaction", "lookup_molecule_data", "save_png",
+    # Lernweg Molekül → Anki (21.10.2026): der Panel-Knopf „Add to Anki" und
+    # der Chat-Weg „mach mir Karten zu …" brauchen dasselbe Tool.
+    "export_anki_deck",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -256,9 +259,12 @@ interactive panel. This server runs the MVP profile.
 - Reactants, products and conditions: generate_reaction.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
+- The user has to learn or revise something → offer export_anki_deck and
+  write the cards yourself. The molecule panel's Add to Anki button adds
+  a single structure card.
 
-Only these drawing and data-sheet functions are available. Other features
-are temporarily disabled. Do not offer unavailable tools.
+Only these drawing, data-sheet and flashcard functions are available. Other
+features are temporarily disabled. Do not offer unavailable tools.
 Pass English or IUPAC compound names; SMILES are always safe. Labels may be
 localized. Drawing tools write their files themselves — never call save_png,
 that is the panel's export button.
