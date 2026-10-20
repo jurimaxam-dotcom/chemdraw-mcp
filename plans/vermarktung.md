@@ -14,7 +14,7 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
 ## Etappe 1: Feinschliff Produkt → Release 0.5.0
 - [ ] `lookup-data-sheet` (12/13): mit einem Stub prüfen, der echten Datenblatt-Text liefert
 - [ ] Bundle frisch installieren und Smoke-Test: Koffein → Datenblatt → PNG-Export — geht erst nach dem Publish (Bundle pinnt `==0.5.0` von PyPI); bis dahin `test:host` grün (20.10.)
-- [ ] Release 0.5.0 mit `.mcpb` — Entwurf liegt auf GitHub (Commit 3912e95), Bundle-Job hängt jetzt an `publish`. **Jay:** „Publish release“ klicken
+- [x] Release 0.5.0 veröffentlicht (21.10., Jays Auftrag „release du“): PyPI, `.mcpb`, Registry grün; PyPI-sdist/Wheel/Bundle nachgeprüft ohne private Inhalte
 - [x] Repo-Audit 20.10.: sdist-Erlaubnisliste, private Produktdoku nach `leben`, alte GIFs mit `/Users/tom` ersetzt, Panel komplett englisch, Layoutfix Vergleich (Codex + Claude p3 gegengeprüft)
 
 ## Etappe 2: Landingpage
@@ -35,6 +35,9 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
   - quadratische Fassung für Reddit und Bluesky
 - [ ] Post-Entwürfe je Release aus `CHANGELOG.md` und Bildern, je Kanal nach dessen Regeln
 - [ ] Release-Notes mit Bild
+
+## Danach: Features einzeln zurück ins Standardprofil (je Minor-Release, je Routing-Fall + Demo-GIF)
+- [ ] 0.6.0: 3D-Ansicht · danach Mechanismus · Anki-Export · Laborgrafiken
 
 ## Etappe 3b: hochwertige Videos (Jay 19.10.: Reddit raus, Shorts und Videos rein)
 - [ ] Remotion (React → MP4) als Schnittwerkzeug: eine Quelle, Formate 16:9 und 9:16;
