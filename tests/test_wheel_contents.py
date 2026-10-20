@@ -26,6 +26,8 @@ def test_wheel_ships_the_ui_bundle(tmp_path):
     )
     assert not any(n.startswith("chemdraw_tool/ui/src/") for n in names)
     assert not any("node_modules" in n for n in names)
+    # Demo-Montage (Remotion) ist Werkzeug fürs Repo, nichts für Nutzer des Servers
+    assert not any(n.startswith("chemdraw_tool/ui/video/") for n in names)
 
 
 def test_sdist_ships_only_the_allowlist(tmp_path):
@@ -43,6 +45,8 @@ def test_sdist_ships_only_the_allowlist(tmp_path):
     with tarfile.open(sdists[0]) as tar:
         # erster Pfadteil ist chemdraw_mcp-<version>/
         tops = {n.split("/", 2)[1] for n in tar.getnames() if n.count("/") >= 1}
+        video = [n for n in tar.getnames() if "/chemdraw_tool/ui/video/" in n]
+    assert not video, f"Demo-Montage im sdist: {video[:3]}"
     erlaubt = {"chemdraw_tool", "README.md", "LICENSE", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}
     assert tops <= erlaubt, f"unerwartet im sdist: {sorted(tops - erlaubt)}"
     assert "chemdraw_tool" in tops
