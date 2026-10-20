@@ -24,7 +24,7 @@
 > Desktop neu gestartet. Einzelheiten und Grenzen im Prüfbericht.
 
 > Zusammengelegt 08.10.2026 aus `plans/archiv/panel-ausbau.md` (03.10.) und dem MCP-Teil von
-> `plans/produkt.md` (02.10.). Frühere, abgeschlossene Etappen: `plans/archiv/repo-level-up.md`
+> den privaten Produktplan (`leben/plans/chemdraw-produkt.md`) (02.10.). Frühere, abgeschlossene Etappen: `plans/archiv/repo-level-up.md`
 > (14.08.), `routing-und-umschalter.md` (15.08.), `studi-funktionen.md` (15.08.).
 > Gate je Schritt: `./test.sh` grün · `npm --prefix chemdraw_tool/ui run test:host` · `./scripts/handshake.sh`.
 > Vor Panel-/Manifestarbeit: `uv run python scripts/anthropic_sync.py --check` (CLAUDE.md).
@@ -169,7 +169,7 @@ Entscheidungen (Jay kann widersprechen): 1. Ansichten mitliefern, nicht nachlade
 
 Für jede Phase: Tests zuerst und einmal rot gesehen · `./test.sh` grün · Host-Test und Galerie angesehen · CHANGELOG · README-Bild aktualisieren, wenn sich das Aussehen ändert · Release erst nach Jays Go.
 
-### Etappe 02.10.2026: MCP verfeinern und Releases 0.4.3–0.4.8 (aus `plans/produkt.md`)
+### Etappe 02.10.2026: MCP verfeinern und Releases 0.4.3–0.4.8 (aus den privaten Produktplan (`leben/plans/chemdraw-produkt.md`))
 
 - [ ] **Jay:** einmal von Hand in Desktop „Zeig mir Methylphenidat" → Data (nur noch Host-Eigenheiten, die der Nachbau `test:host` nicht kennt)
 - [ ] `mcp-2-migration` (Worktree `.claude/worktrees/agent-a567114bbee585cc8`, Branch-Stand 836324b vom 02.10.): GEPARKT bis zum Desktop-Test. Die Vorbedingung „erst nach dem OPSIN-Merge" ist erfüllt (022507d); der Branch liegt jetzt 41 Commits hinter main → erneut mit main abgleichen (CHANGELOG-Konflikt), Gate + Handshake, dann mergen. Nicht nebenbei anfassen.

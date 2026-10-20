@@ -3,7 +3,7 @@
 # Pages (Branch gh-pages). Öffentlich — nur auf Jays Ansage ausführen.
 #
 # Nicht für den Verkauf: GitHub Pages verbietet kommerzielle Transaktionen
-# (docs/produkt/recht-steuer-zahlung-2026-10.md). Dafür Cloudflare Pages.
+# (private Rechtsnotiz, nicht im Repo). Dafür Cloudflare Pages.
 set -eu
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # Impressum (§ 5 DDG) muss ausgefüllt sein, bevor die Seite öffentlich wird.

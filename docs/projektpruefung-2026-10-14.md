@@ -15,7 +15,7 @@ Das Repository enthält inzwischen zwei Produkte:
 | Zielgruppe laut Unterlagen | Chemie, Pharmazie, teilweise Biologie | Zunächst Pharmazie-Praktikum und Prüfung |
 | Geschäftsmodell laut Plan | Kostenloses Open-Source-Werkzeug | Geplanter Semesterpass; noch nicht validiert |
 
-`plans/produkt.md` benennt den Browsertrainer ausdrücklich als verkaufbares Produkt. README und Paketbeschreibung erklären hauptsächlich den MCP. Gleichzeitig plant `plans/mcp-server.md` eine weitere Lernplattform im Panel. Meine Einschätzung: Hier fehlt aktuell vor allem eine gemeinsame Priorität. Für ein Verkaufsziel sollte der vorhandene Trainer in einen kleinen Nutzertest gehen, bevor weitere Themen, Quizmodi oder Zahlungsinfrastruktur entstehen. Für ein Open-Source-Ziel sollten Installation, Identität der Ergebnisse und der erste sichtbare Nutzen Vorrang haben. Ein sofortiger Repo-Split ist dafür unnötig.
+den privaten Produktplan (`leben/plans/chemdraw-produkt.md`) benennt den Browsertrainer ausdrücklich als verkaufbares Produkt. README und Paketbeschreibung erklären hauptsächlich den MCP. Gleichzeitig plant `plans/mcp-server.md` eine weitere Lernplattform im Panel. Meine Einschätzung: Hier fehlt aktuell vor allem eine gemeinsame Priorität. Für ein Verkaufsziel sollte der vorhandene Trainer in einen kleinen Nutzertest gehen, bevor weitere Themen, Quizmodi oder Zahlungsinfrastruktur entstehen. Für ein Open-Source-Ziel sollten Installation, Identität der Ergebnisse und der erste sichtbare Nutzen Vorrang haben. Ein sofortiger Repo-Split ist dafür unnötig.
 
 ## Was an der Struktur trägt
 
