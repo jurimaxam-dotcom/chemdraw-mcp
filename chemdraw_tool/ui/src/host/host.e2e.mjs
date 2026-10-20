@@ -37,7 +37,16 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 700, height: 700 } });
   const serverCalls = [];
-  await page.exposeFunction("__callTool", (p) => { serverCalls.push(p.name); return client.callTool(p); });
+  const ankiCalls = [];
+  await page.exposeFunction("__callTool", (p) => {
+    serverCalls.push(p.name);
+    if (p.name === "export_anki_deck") {
+      ankiCalls.push(p.arguments);
+      // Im Test nie Anki starten: der Knopf schickt "open", der Server bekommt "apkg".
+      p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
+    }
+    return client.callTool(p);
+  });
   await page.setContent("<body></body>");
   await page.addScriptTag({ path: out });
   await page.evaluate((a) => window.__startHost(a), { html, toolInput, toolResult });
@@ -119,6 +128,17 @@ try {
   await frame.getByText("Data", { exact: true }).click();
   await page.waitForTimeout(300);
   prüfe(serverCalls.filter((n) => n === "lookup_molecule_data").length === 1, "Zweiter Wechsel kommt aus dem Cache");
+
+  // 3b. Add to Anki: Panel → Host → echter Server schreibt genau eine Karte ins Deck „ChemDraw"
+  await frame.locator("button.add-to-anki").click();
+  await frame.locator("button.add-to-anki", { hasText: "Saved" }).waitFor({ timeout: 30000 });
+  const anki = ankiCalls[0] ?? {};
+  prüfe(ankiCalls.length === 1 && anki.deliver === "open" && anki.deck_name === "ChemDraw",
+    "Anki-Knopf löst genau einen export_anki_deck (deliver=open, Deck ChemDraw) aus");
+  prüfe(anki.cards?.length === 1 && anki.cards[0].front.structure && /Methylphenidate/i.test(anki.cards[0].back.text),
+    "Eine Karte: Struktur per SMILES vorn, Name hinten");
+  const apkg = join(wegwerfHome, "ChemDraw-Output", "anki", "chemdraw.apkg");
+  prüfe(existsSync(apkg), `Server hat ${apkg} geschrieben`);
 
   // 4. Spalten-Ansicht (Vergleich → PlotView): Die Überschrift darf nicht in die Höhe wachsen,
   // sonst schrumpft das Bild auf einen Streifen (Regression aus adccc04, gefunden per Demo-Aufnahme)

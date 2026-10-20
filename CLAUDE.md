@@ -76,7 +76,7 @@ Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
 the two numbers the Python side predicts (default MVP: 7 tools, 6 with a panel;
 full profile: 23 tools, 16 with a panel).
-`test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, and clicks Data for methylphenidate (CAS 113-45-1, cache on second switch). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. In-process tests cannot see the two failure modes that have actually cost time
+`test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 
 The gate is built against two failure modes that cost more than a real test
