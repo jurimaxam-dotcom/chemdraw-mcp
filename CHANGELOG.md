@@ -6,6 +6,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Add to Anki button on the molecule panel.** One click adds a flashcard for
+  that molecule (structure on the front, name and formula on the back) to the
+  Anki deck "ChemDraw"; on macOS Anki opens and imports it. Clicking again for
+  the same molecule updates the card instead of duplicating it.
+- **`export_anki_deck` is part of the default profile** (now 7 tools, 6 with a
+  panel) and accepts `deliver="open"` to open the deck file in Anki on macOS.
+
 ## [0.5.0] — 2026-10-20
 
 ### Changed
