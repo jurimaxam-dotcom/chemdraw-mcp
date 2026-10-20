@@ -58,8 +58,10 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.sdist]
-# assets/ sind reine README-Medien (GIFs!) — im Paket nur Ballast.
-exclude = ["chemdraw_tool/ui/node_modules", "assets"]
+# Erlaubnisliste statt Sperrliste: das sdist ist öffentlich, und hatchling packt sonst
+# alles ein, was nicht gitignored ist — auch ungetrackte interne Dateien (Audit 20.10.2026).
+only-include = ["chemdraw_tool", "README.md", "LICENSE", "CHANGELOG.md"]
+exclude = ["chemdraw_tool/ui/node_modules"]
 
 [tool.pytest.ini_options]
 # "scripts" mit drin, damit dortige test_*.py automatisch vom Gate erfasst werden;
