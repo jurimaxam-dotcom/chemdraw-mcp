@@ -468,6 +468,17 @@ def _slugify(text: str) -> str:
     return text or "molecule"
 
 
+def _molecule_slug(display_name: str, smiles: str) -> str:
+    """Keep names readable and preserve identity for raw SMILES filenames."""
+    slug = _slugify(display_name)
+    # Bei SMILES tragen Großschreibung und Satzzeichen chemische Bedeutung.
+    # Der normale Slug verliert beides (Benzol/Cyclohexan und E/Z-Isomere).
+    if display_name.strip() == smiles:
+        tag = hashlib.sha256(smiles.encode()).hexdigest()[:12]
+        return f"{slug}-{tag}"
+    return slug
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
     name_or_smiles: str,
@@ -529,7 +540,7 @@ def generate_molecule(
             raise ValueError(f"Input validation failed: {issue.message}")
 
     display_name = label or name_or_smiles
-    slug = _slugify(display_name)
+    slug = _molecule_slug(display_name, smiles)
     # Abgekürzt wird nur die Zeichnung. Analyse (funktionelle Gruppen,
     # Properties, Validierung) und CDXML laufen weiter am vollen Molekül.
     drawn = condense_groups(mol) if abbreviate_groups else mol
@@ -2937,7 +2948,7 @@ def batch_generate(
             continue
 
         display_name = name_or_smiles
-        slug = _slugify(display_name)
+        slug = _molecule_slug(display_name, smiles)
         drawn = condense_groups(mol) if abbreviate_groups else mol
 
         files, cdxml_path = _write_structure_files(

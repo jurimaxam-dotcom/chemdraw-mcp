@@ -81,6 +81,30 @@ def test_batch_passes_formats_through(tmp_path):
     assert not list((tmp_path / "mol").glob("*.cdxml"))
 
 
+@pytest.mark.parametrize("inputs", [
+    ("C/C=C/C", "C/C=C\\C"),
+    ("C1CCCCC1", "c1ccccc1"),
+])
+@pytest.mark.parametrize("fmt", ["png", "svg", "cdxml"])
+@pytest.mark.parametrize("batch", [False, True])
+def test_distinct_smiles_keep_distinct_export_files(inputs, fmt, batch):
+    if batch:
+        payloads = batch_generate(list(inputs), formats=[fmt]).molecules
+        assert len(payloads) == 2
+    else:
+        first = generate_molecule(inputs[0], formats=[fmt])
+        original = Path(first.files[fmt]).read_bytes()
+        second = generate_molecule(inputs[1], formats=[fmt])
+        payloads = [first, second]
+        assert Path(first.files[fmt]).read_bytes() == original
+
+    paths = [Path(payload.files[fmt]) for payload in payloads]
+    assert paths[0] != paths[1], "Verschiedene Strukturen dürfen sich nicht überschreiben"
+    assert all(path.exists() for path in paths)
+    repeated = generate_molecule(inputs[0], formats=[fmt])
+    assert Path(repeated.files[fmt]) == paths[0]
+
+
 def test_batch_default_no_cdxml_but_paths_for_requested(tmp_path):
     payload = batch_generate([ASPIRIN], formats=["cdxml"])
     assert len(payload.cdxml_paths) == 1
