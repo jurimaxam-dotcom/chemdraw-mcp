@@ -41,7 +41,7 @@ Nächster Schritt liegt bei Jay: Prototyp ansehen, dann Go für den Nutzertest-D
 ### Etappe danach: Verkauf (erst wenn der Nutzertest „ja" sagt)
 
 - [ ] **Jay:** Hosting auf Cloudflare Pages statt GitHub Pages (GH verbietet kommerzielle Transaktionen) — Jays Konto/Go
-- [ ] **Jay:** Gewerbe anmelden, ELSTER-Fragebogen (Kleinunternehmer), Krankenkasse/BAföG informieren
+- [ ] Vor einem Verkauf: Gewerbe- und Steuerpflichten prüfen; gegebenenfalls Versicherung und Studienförderung berücksichtigen
 - [ ] **Jay:** Stripe Managed Payments (MoR) aktivieren — Jays Login; Frage an Stripe: Widerrufsbutton beim MoR?
 - [ ] Worker: Zahlung prüfen → signiertes Token bis Semesterende, Widerrufsfunktion (§ 356a BGB) — Claude, ~1 Tag; noch kein Code im Repo
 - [ ] Datenschutzerklärung, Widerrufsbelehrung, 2 Checkboxen (§ 356 Abs. 6 BGB) — fehlen; das Impressum steht oben

@@ -13,7 +13,7 @@
 
 ## 2. Verbraucherpflichten
 
-- **Impressum** § 5 DDG: Name + *Anschrift, unter der man niedergelassen ist* + E-Mail [9, belegt]. Ob eine c/o-Adresse genügt, ist strittig → Jays Entscheidung.
+- **Impressum** § 5 DDG: Name + *Anschrift, unter der man niedergelassen ist* + E-Mail [9, belegt]. Ob eine c/o-Adresse genügt, ist strittig → Entscheidung des Betreibers.
 - **Datenschutz:** Google Fonts vom Google-Server → LG München I 3 O 17493/20: unzulässig, Schadensersatz [10, belegt]. Gleiche Logik für das Pyodide-CDN jsDelivr [E] → Fonts und Pyodide selbst hosten. GitHub Pages loggt IPs [11, belegt] → in die Datenschutzerklärung.
 - **Achtung, Paragraf verschoben:** Seit 19.06.2026 steht die Regel zu digitalen Inhalten in **§ 356 Abs. 6** BGB, nicht Abs. 5 [12, belegt]. Erlöschen erst, wenn alles erfüllt ist: Lieferung hat begonnen + ausdrückliche Zustimmung + bestätigte Kenntnis + Bestätigung per E-Mail (§ 312f) [12].
 - **Größtes Risiko:** Ein „Semesterpass" kann als *digitale Dienstleistung* gelten. Dann greift Abs. 5: Das Widerrufsrecht erlischt erst bei vollständiger Erbringung, also am Semesterende. Wertersatz gibt es nur bei korrekter Belehrung [13, belegt; Haufe Rn 26b sieht Portalzugang eher als Inhalt [14]]. Pyodide liefert statische Dateien aufs Gerät, das spricht eher für „Inhalt" [E]. In beiden Fällen nötig: zwei nicht vorangekreuzte Checkboxen, getrennt von den AGB [13].
@@ -36,12 +36,12 @@
 - Managed Payments nimmt Verkäufer aus DE an, deckt „Online-Kurse" ab und läuft über Payment Links [23, belegt].
 - Gegenüber Kunden tritt „Link" als Verkäufer auf und verschickt Belege und Rechnungen selbst [24, belegt].
 - Damit fallen USt/OSS und Rechnungen weg. Ob damit auch Widerrufsbutton und Belehrung bei Link liegen: **Lücke**, bei Stripe erfragen.
-- Ohne MoR: EU-Verbraucherumsätze < 10.000 € bleiben in DE [25, belegt] → § 19 greift, kein OSS. Jay trägt dann aber alle Pflichten aus Abschnitt 2 selbst.
+- Ohne MoR: EU-Verbraucherumsätze < 10.000 € bleiben in DE [25, belegt] → § 19 greift, kein OSS. Der Betreiber trägt dann aber alle Pflichten aus Abschnitt 2 selbst.
 
 **§ 13b UStG:**
 - Belegt: Auch Kleinunternehmer schulden Reverse-Charge-Steuer für Leistungen ausländischer Unternehmer und müssen sie voranmelden [26; § 19 Abs. 1 S. 2: „§ 18 Abs. 4a bleibt unberührt"] – ohne Vorsteuerabzug.
 - Lücke: Ob Stripe-/MoR-Gebühren steuerfrei (Zahlungsverkehr) sind oder mit dem Kaufpreis verrechnet werden, ist offen. Erste Abrechnung auf den Vermerk „reverse charge" prüfen.
-- [E] Jays Leistung an den MoR (Irland/UK) ist B2B, in DE nicht steuerbar und zählt nicht zum § 19-Umsatz.
+- [E] Die Leistung des Betreibers an den MoR (Irland/UK) ist B2B, in DE nicht steuerbar und zählt nicht zum § 19-Umsatz.
 
 ## 4. Freischalten ohne eigenen Server
 
@@ -64,14 +64,14 @@
 
 ## Erste-Euro-Checkliste
 
-1. Gewerbe anmelden – 30 min online – **Jay**
-2. ELSTER-Fragebogen, Kleinunternehmer ankreuzen, § 13b-Frage stellen – 45 min – **Jay**
-3. Krankenkasse + BAföG-Amt informieren – 15 min – **Jay**
-4. Managed Payments aktivieren, Steuercode „Online-Kurs", Widerrufsbutton bei Stripe erfragen – 1 h – Jay (Login), Claude bereitet vor
+1. Gewerbe anmelden – 30 min online – **Betreiber**
+2. ELSTER-Fragebogen, Kleinunternehmer ankreuzen, § 13b-Frage stellen – 45 min – **Betreiber**
+3. Gegebenenfalls zuständige Versicherung und Studienförderung informieren – 15 min – **Betreiber**
+4. Managed Payments aktivieren, Steuercode „Online-Kurs", Widerrufsbutton bei Stripe erfragen – 1 h – Betreiber (Login), Claude bereitet vor
 5. Hosting auf Cloudflare Pages, Fonts und Pyodide selbst hosten – 2 h – Claude
 6. Worker: Token + Widerrufsfunktion + Mail – 1 Tag – Claude
-7. Impressum, Datenschutzerklärung, Widerrufsbelehrung, Checkboxen – 2 h Generator (z. B. IT-Recht/eRecht24) – Jay entscheidet die Adresse
-8. Testkauf + Testwiderruf mit echter Karte – 20 min – **Jay**
+7. Impressum, Datenschutzerklärung, Widerrufsbelehrung, Checkboxen – 2 h Generator (z. B. IT-Recht/eRecht24) – Betreiber entscheidet die Adresse
+8. Testkauf + Testwiderruf mit echter Karte – 20 min – **Betreiber**
 
 **Quellen (abgerufen 02.10.2026)**
 [1] gesetze-im-internet.de/gewstg/__11.html · [2] …/ustg_1980/__19.html · [3] …/ao_1977/__138.html · [4] …/estg/__32a.html · [5] barmer.de/unsere-leistungen/beitraege-tarife/krankenversicherung-familien/voraussetzungen-1480744 ; tk.de (Stand 19.12.2025) · [6] bafög.de „Welche Freibeträge…" + Rundschreiben 04.12.2025 · [7] …/baf_g/__21.html · [8] familienportal.de (Kindergeld eigenes Einkommen) · [9] …/ddg/__5.html · [10] gesetze-bayern.de LG München I 20.01.2022 3 O 17493/20 · [11] docs.github.com/…/what-is-github-pages · [12] …/bgb/__356.html ; buzer.de (Fassungsvergleich, G v. 03.02.2026) · [13] heuking.de (23.08.2023, Widerrufsbelehrungen digitale Inhalte) · [14] haufe.de Prütting/Wegen/Weinreich § 356 Rn 26b (01.09.2025) · [15] ihk.de/dortmund Widerrufsbutton ; bitkom Praxisleitfaden 05/2026 · [16] …/bgb/__312j.html · [17] stripe.com/de/pricing · [18] paddle.com/pricing · [19] lemonsqueezy.com/pricing · [20] lemonsqueezy.com/blog/2026-update (16.04.2026) · [21] polar.sh/resources/pricing · [22] gumroad.com/pricing · [23] docs.stripe.com/payments/managed-payments/eligibility · [24] …/managed-payments/how-it-works · [25] …/ustg_1980/__3a.html (Abs. 5 S. 3) · [26] …/ustg_1980/__13b.html (Abs. 5 S. 1) · [27] docs.github.com/…/github-pages-limits · [28] developers.cloudflare.com/workers/platform/pricing · [29] docs.lemonsqueezy.com/api/license-api

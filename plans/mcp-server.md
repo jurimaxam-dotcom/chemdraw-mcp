@@ -70,7 +70,11 @@
 - [ ] Desktop-Entwicklermenü „MCP-Konfiguration neu laden“ ersetzt per AppleScript einen
   von zwei laufenden Serverprozessen (57152 → 63588, 57194 blieb). Vor einem Reload-Skript
   klären, welcher Prozess einen neuen Chat bedient.
-- [ ] Offen aus der Kernanalyse: Dateinamen-Kollision (`_slugify`); NCI CIR antwortet live
+- [x] SMILES-Dateinamen-Kollisionen behoben (20.10., `20c204f`): Großschreibung und
+  Stereopunktuation bleiben durch einen stabilen Fingerabdruck unterscheidbar, für
+  Einzel- und Batch-Export in PNG/SVG/CDXML. Zwölf Regressionen erst rot, dann grün;
+  Gate 6.976 bestanden / 16 übersprungen. Explizit gleiche Labels bleiben überschreibbar.
+- [ ] Offen aus der Kernanalyse: NCI CIR antwortet live
   mit 500 auf deutsche Namen (Methylphenidat, Salicylsäure) → Kandidat Wikidata-Stufe;
   ACS-1996-Stil nur nach Designrunde.
 
