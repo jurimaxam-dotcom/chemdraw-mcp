@@ -8,47 +8,23 @@
 [![PyPI](https://img.shields.io/pypi/v/chemdraw-mcp)](https://pypi.org/project/chemdraw-mcp/)
 [![GitHub stars](https://img.shields.io/github/stars/jurimaxam-dotcom/chemdraw-mcp?style=social)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers)
 
-**Chat → chemical structure.** An MCP server for Claude Desktop: you describe
-a molecule, a reaction or a lab result in plain words, and it draws the
-figure — a print-ready PNG/SVG rendered locally with RDKit, plus an
-interactive preview inside the chat. *"Draw aspirin"* is already a complete
-command.
+**Chat → chemical structure.** Say *"draw aspirin"* in Claude Desktop and get a
+correct, print-ready structure — rendered locally with RDKit, interactive right in the chat.
 
-The default **MVP profile** focuses on four jobs: draw a molecule, draw several
-individual structures, compare compounds, and draw a reaction scheme. The panel
-also supports compound data sheets and PNG export. It registers six tools in total.
-This is a general chemistry workflow for study, teaching and lab reports.
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="640"></p>
 
-Other features remain in the code and in the optional **full profile**, but are
-not registered or callable in the MVP. The separate browser practice trainer
-is retained and is outside the MCP MVP.
+- **The right molecule, not a lookalike.** Names (also German trivial names), IUPAC names and SMILES resolve through OPSIN, PubChem and NCI; a pinned identity test checks 24 inputs against their InChIKey.
+- **Ready for your lab report.** PNG and SVG in a consistent publication style, optional ChemDraw CDXML — no ChemDraw licence needed.
+- **Understand, not just draw.** Hover a functional group to see where it sits, switch to the PubChem data sheet with GHS safety, compare structures with the differences highlighted.
 
-**Availability:** profiles are currently available from this source checkout;
-existing PyPI and `.mcpb` releases retain their previous behavior until the next release.
+**Install:** [download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest) (`.mcpb`, double-click) — or `uv tool install chemdraw-mcp && chemdraw-install`.
+Free and open source (Apache-2.0), no API key, no sign-up.
 
-### Switching profiles
-
-Run from the repository root (restart the server after changing the profile):
-
-```bash
-uv run chemdraw-tool-server                         # MVP, the default
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # restore all 23 tools
-```
-
-For a server registered in `claude_desktop_config.json`, set
-`"env": {"CHEMDRAW_PROFILE": "full"}` on that server entry, preserving any existing
-environment values, then restart Claude Desktop. Remove that variable or set it
-to `mvp` to return to the MVP. A shell variable does not automatically configure
-an already running Desktop app. Invalid profile names stop startup with an error.
-
-What it costs you: one install command. Apache-2.0, no API key, no sign-up
-for the server, no ChemDraw licence — you need Claude Desktop and
-[uv](https://docs.astral.sh/uv/), everything else is fetched once.
-Rendering runs entirely on your machine; only name resolution and the
-database lookups reach the internet. ChemDraw CDXML is an optional extra
-format for people who want to keep editing there, never a requirement.
-
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo.gif" alt="Live demo: 'Draw Caffein' renders an interactive structure panel in Claude Desktop" width="560"></p>
+| Without | With chemdraw-mcp |
+|---|---|
+| Claude describes the structure in words or writes SMILES you have to paste somewhere | the structure appears in the chat, ready to export |
+| hand-drawn figures in ChemDraw or ChemSketch | one sentence per figure, consistent style across the whole report |
+| molar mass, CAS and hazards from three different websites | one data sheet, sourced from PubChem |
 
 ## Try it in 30 seconds
 
@@ -74,11 +50,16 @@ If it saves you time, a ⭐ helps other students find it.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/caffeine.png" alt="Caffeine structure, rendered by generate_molecule" width="420"></p>
 
+*"What distinguishes ibuprofen from naproxen and ketoprofen?"* —
+`compare_molecules` keeps the shared scaffold neutral and highlights what differs:
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-compare.gif" alt="Ibuprofen, naproxen and ketoprofen side by side with differences highlighted in the chat panel" width="640"></p>
+
 *"Show the Fischer esterification of ethanol with acetic acid"* —
 `generate_reaction` renders the scheme with conditions above the arrow,
 live in the chat panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/reaction-demo.gif" alt="Reaction scheme with conditions appearing live in the chat panel" width="640"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-reaction.gif" alt="Reaction scheme with conditions appearing live in the chat panel" width="640"></p>
 
 <details>
 <summary>Additional examples — full profile only</summary>
@@ -90,7 +71,7 @@ The following collection includes features paused in the MVP. Use
 `generate_mechanism` renders curved electron-flow arrows in the interactive
 panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-demo.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-mechanism.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
 
 The overview lays every step out in one column with the same bond length, so reactants, transition state and products read at a glance:
 
@@ -117,13 +98,7 @@ for, with mobile phase and detection as its caption:
 *"Show caffeine in 3D"* — `generate_3d` embeds the molecule (ETKDG + force
 field) and opens a drag-to-rotate ball-and-stick viewer in the chat panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/3d-demo.gif" alt="Rotating 3D ball-and-stick caffeine model inside the concave viewer" width="560"></p>
-
-*"What distinguishes ibuprofen from naproxen and ketoprofen?"* —
-`compare_molecules` keeps the shared scaffold (MCS) neutral and highlights
-everything that differs:
-
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/compare-profens.png" alt="Ibuprofen, naproxen and ketoprofen side by side with differences highlighted" width="680"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="Rotating 3D ball-and-stick caffeine model inside the concave viewer" width="560"></p>
 
 *"Titration curve of phosphoric acid with NaOH, phenolphthalein as
 indicator"* — `generate_titration_curve` computes pH from the exact charge
@@ -141,9 +116,9 @@ species dominates at every pH:
 with rendered structures embedded; with the optional AnkiConnect add-on the
 cards land straight in the running Anki, no clicks:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-demo.gif" alt="Split screen: asking Claude for an Anki deck, cards appear in Anki via AnkiConnect" width="760"></p>
-
 ## Pharmacology
+
+*Full profile only* (`CHEMDRAW_PROFILE=full`, see [Profiles](#profiles)).
 
 The curves a pharmacology course keeps asking for, drawn from the numbers you give.
 Both figures and the maths behind them (`calculate_pharmacokinetics`) share the same
@@ -298,6 +273,32 @@ exposes exactly the 23 tools above. The MVP never registers vault tools.
   look, untouched.
 - **`annotate_stereo=True`** — prints CIP descriptors (R/S, E/Z) on the 2D
   drawing (`generate_molecule`, `batch_generate`).
+
+## Profiles
+
+The default **MVP profile** focuses on four jobs: draw a molecule, draw several
+individual structures, compare compounds, and draw a reaction scheme. The panel
+also supports compound data sheets and PNG export. It registers six tools in total.
+This is a general chemistry workflow for study, teaching and lab reports.
+
+Other features remain in the code and in the optional **full profile**, but are
+not registered or callable in the MVP. The separate browser practice trainer
+is retained and is outside the MCP MVP.
+
+### Switching profiles
+
+Run from the repository root (restart the server after changing the profile):
+
+```bash
+uv run chemdraw-tool-server                         # MVP, the default
+CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # restore all 23 tools
+```
+
+For a server registered in `claude_desktop_config.json`, set
+`"env": {"CHEMDRAW_PROFILE": "full"}` on that server entry, preserving any existing
+environment values, then restart Claude Desktop. Remove that variable or set it
+to `mvp` to return to the MVP. A shell variable does not automatically configure
+an already running Desktop app. Invalid profile names stop startup with an error.
 
 ## Installation
 

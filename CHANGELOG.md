@@ -8,6 +8,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Panel text is English throughout.** The data sheet now reads *IUPAC name,
+  Molecular formula, Molar mass, H-bond donors/acceptors, CAS No.*, and the
+  loading lines read *Connecting… / Waiting for data…*.
+- **Mechanism titles show the names you typed** ("acetic acid + ethanol")
+  instead of the resolved SMILES.
+- **New README demos**, recorded from the real panel and server
+  (`scripts/demo-video.sh` also writes 9:16 and 1:1 videos).
 - **Runs on the `mcp` 2.x Python SDK** (pinned `mcp>=2.3,<3`, tested with
   2.3.0). `FastMCP` became `MCPServer`, and the server version is now a
   constructor argument. What a client sees is unchanged in both profiles: the
@@ -42,6 +49,14 @@ this project uses [Semantic Versioning](https://semver.org/).
   given pH — each with the working. The drug is "Wirkstoff X" with made-up values,
   so no invented number passes as real drug data. Every solution is checked against
   the same formulas as `calculate_pharmacokinetics`.
+
+### Fixed
+
+- **Comparison and plot panels use their full height again.** The panel
+  heading grew vertically in column layouts and squeezed the image into a strip.
+- **The source package (sdist) ships only the package**, README, licence and
+  changelog — an allowlist instead of a blocklist, so local working files can
+  never end up on PyPI.
 
 ## [0.4.8] — 2026-10-03
 

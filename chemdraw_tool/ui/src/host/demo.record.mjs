@@ -2,7 +2,8 @@
 // echter MCP-Server), aber als Video mit sichtbarem Mauszeiger. Keine Attrappe von
 // Claude Desktop: gezeigt wird nur das Panel, so wie der Server es ausliefert.
 // usage: node src/host/demo.record.mjs <ausgabeordner> [szene …]
-//   Szenen: molecule (Standard), compare, reaction
+//   Szenen: molecule (Standard), compare, reaction, 3d, mechanism
+//   (3d und mechanism gibt es nur im vollen Profil — der Recorder startet den Server deshalb mit CHEMDRAW_PROFILE=full)
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -22,6 +23,8 @@ const SZENEN = {
   molecule: { tool: "generate_molecule", args: { name_or_smiles: "aspirin" }, ablauf: "struktur-gruppen-daten" },
   compare: { tool: "compare_molecules", args: { structures: ["ibuprofen", "naproxen", "ketoprofen"] }, ablauf: "ansehen" },
   reaction: { tool: "generate_reaction", args: { reactants: ["acetic acid", "ethanol"], products: ["ethyl acetate", "water"], conditions: "H2SO4, heat" }, ablauf: "ansehen" },
+  "3d": { tool: "generate_3d", args: { name_or_smiles: "caffeine", label: "Caffeine" }, ablauf: "drehen" },
+  mechanism: { tool: "generate_mechanism", args: { reaction_type: "fischer_ester", substrates: ["acetic acid", "ethanol"] }, ablauf: "schritte" },
 };
 
 const hostJs = join(mkdtempSync(join(tmpdir(), "panel-host-")), "host.js");
@@ -32,7 +35,7 @@ if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const client = new Client({ name: "panel-demo", version: "0.0.0" });
 // Wegwerf-HOME wie im Host-Test: die Aufnahme soll ~/ChemDraw-Output nicht füllen
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome }, cwd: repo }));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "full" }, cwd: repo }));
 // Im Bild soll ~/ChemDraw-Output stehen, nicht der Wegwerf-Pfad: Ergebnis auf ein neutrales Home umschreiben
 const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
@@ -88,6 +91,25 @@ try {
       await page.waitForTimeout(2600);
       await klick(frame.getByText("Structure", { exact: true }));
       await page.waitForTimeout(1500);
+    } else if (s.ablauf === "drehen") {
+      // Ziehen dreht das Modell; Strich neu ansetzen, die Drehung bleibt erhalten
+      for (let zug = 0; zug < 3; zug++) {
+        await page.evaluate(() => Object.assign(document.getElementById("demo-cursor").style, { left: "111px", top: "271px", transition: "none" }));
+        await page.mouse.move(120, 280);
+        await page.mouse.down();
+        for (let x = 120; x <= 600; x += 12) {
+          await page.mouse.move(x, 280);
+          await page.evaluate((x) => { document.getElementById("demo-cursor").style.left = `${x - 9}px`; }, x);
+          await page.waitForTimeout(30);
+        }
+        await page.mouse.up();
+      }
+      await page.waitForTimeout(800);
+    } else if (s.ablauf === "schritte") {
+      await klick(frame.getByText("Step by step", { exact: true }));
+      await page.waitForTimeout(1200);
+      const weiter = frame.getByRole("button", { name: /Next/ });
+      for (let i = 0; i < 4 && (await weiter.isEnabled().catch(() => false)); i++) { await klick(weiter); await page.waitForTimeout(1400); }
     } else {
       await page.waitForTimeout(3500);
     }

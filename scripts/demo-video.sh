@@ -7,7 +7,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT="${1:-$(mktemp -d)/chemdraw-demo}"
-SZENEN=(molecule compare reaction)
+SZENEN=(molecule compare reaction 3d mechanism)
 
 (cd chemdraw_tool/ui && node src/host/demo.record.mjs "$OUT" "${SZENEN[@]}")
 
