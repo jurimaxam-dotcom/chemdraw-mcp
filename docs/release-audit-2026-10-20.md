@@ -12,13 +12,18 @@ History was not rewritten; no branch or worktree was removed.
 | `6a89263` | Ignore local `.tisch/`, `.env` and `.env.*`, retaining example/template files | Previously `git check-ignore` did not exclude them; now it does. Full `./test.sh`: exit 0, 6,964 passed / 16 skipped. |
 | `20c204f` | Distinguish raw SMILES export filenames with a stable fingerprint | Twelve regressions failed first, then passed: E/Z butene and benzene/cyclohexane, individual and batch calls, PNG/SVG/CDXML. Full gate: exit 0, 6,976 passed / 16 skipped. Named compounds and explicit labels keep readable names. |
 
-The accompanying documentation cleanup makes business/insurance/funding
-checklists generic and removes `docs/.seen`, a local two-path reading marker.
-It does not validate or update the legal/financial claims in those older notes.
+The accompanying documentation cleanup removes `docs/.seen`, a local two-path
+reading marker. Personal business notes were subsequently removed from the
+public repository in `d574e22`.
 The documentation cleanup also passed `./test.sh` (exit 0, 6,976 passed /
 16 skipped) in a temporary copy of `20c204f` plus the cleanup, with the
 committed UI, while Claude continued changing the shared UI working tree.
 This is not a combined acceptance test of his later release/UI changes.
+Follow-up: the full `./test.sh` on main at `d574e22`, with this report update,
+passed with exit 0: 6,977 Python tests passed / 16 skipped, frontend checks
+passed and the rebuilt UI bundle was byte-identical. This includes the
+committed archive-content regression and UI layout fix; it does not accept
+subsequent recording or data-sheet label changes.
 
 ## Release findings requiring follow-through
 
@@ -30,22 +35,23 @@ This is not a combined acceptance test of his later release/UI changes.
    the sdist file selection with an explicit allowlist. A second independent
    offline build to `/tmp/chemdraw-sdist-audit-after-20261020` contains 121
    members, including the UI bundle, and no agent/inbox/plan/document paths.
-   This fixes distribution leakage in the working tree; the release owner
-   still needs to commit and gate that change. Public internal documents
-   remain in the Git repository even though they no longer ship in the sdist.
+   The fix and its archive-content regression are committed in `caee4fe`.
 2. **P2: personal user paths in UI fixtures/harness, including history.**
    `.repro-harness/payload-desktop.json`, `payload.json` and `run.mjs` originated
    in `b532286`; `src/utils/displayPath.test.mjs` in `6c9b308`.
-   Claude is removing the obsolete harness and replacing the test username.
+   `caee4fe` removes the obsolete harness; `9becadd` replaces the test username.
    Removal in the current tree does not remove the historical copies.
    The interim handoff note repeated the user path in `813caa1`; its current
    wording has also been neutralized. A targeted final working-tree grep finds
    no remaining literal real-user home path from these findings.
-3. **P2: historical personal assignments in business checklists.**
-   `docs/produkt/recht-steuer-zahlung-2026-10.md`, introduced in `adaed6c`,
-   and `plans/produkt.md` assigned insurance/funding/tax tasks to an individual.
-   Current wording has been neutralized. These were planning suggestions, not
-   evidence of actual benefit receipt, insurance status or a diagnosis.
+3. **P2: personal business notes removed.**
+   `d574e22` removes these notes from the public repository. Earlier copies
+   remain in history; this report intentionally omits their personal details.
+4. **P2: visible desktop identifiers in demo media.**
+   Claude is replacing the demo GIFs. The image review below inspected
+   metadata, not visible frame contents; it does not establish that the
+   existing recordings are suitable for publication. Replacement recordings
+   still require visual inspection.
 
 At audit start, privacy review enumerated 924 unique historical text blobs over
 192 commits across all local refs, plus 27 historical image blobs for metadata. Pattern
@@ -100,7 +106,7 @@ incorrect. Installation/restart/visible acceptance remains with the release.
 
 ## Decisions for the owner
 
-Keep or rewrite the public Git history containing the user-path/checklist
-references; no rewrite was attempted. Decide which internal documentation and
+Keep or rewrite the public Git history containing personal references;
+no rewrite was attempted. Decide which internal documentation and
 unused assets should remain public. Confirm release archive exclusions and
 perform a new installed-Desktop smoke test after the final release build.
