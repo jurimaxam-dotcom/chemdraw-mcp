@@ -36,7 +36,10 @@ jobs:
 
   # Das Bundle ist ein Starter (mcpb/server/run.sh holt die PyPI-Version per uv),
   # deshalb reicht ein Job ohne Python-Toolchain. Haengt am Release-Tag.
+  # Erst nach PyPI: run.sh holt beim ersten Start genau diese Version per uv —
+  # ein frueher hochgeladenes Bundle wuerde sonst ins Leere greifen (Codex-Befund).
   bundle:
+    needs: publish
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:

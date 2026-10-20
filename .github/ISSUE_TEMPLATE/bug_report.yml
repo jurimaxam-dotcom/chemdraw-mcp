@@ -43,4 +43,4 @@ body:
     id: version
     attributes:
       label: Version
-      description: The release number, e.g. 0.4.8.
+      description: The release number, e.g. 0.5.0.

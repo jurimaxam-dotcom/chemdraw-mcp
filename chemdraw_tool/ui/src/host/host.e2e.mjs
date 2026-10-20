@@ -18,7 +18,7 @@ await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: 
 
 const client = new Client({ name: "panel-e2e", version: "0.0.0" });
 // HOME zeigt auf einen Wegwerf-Ordner: der Server schreibt seine Dateien nach ~/ChemDraw-Output,
-// und der Test soll Jays echten Ordner nicht füllen. Dafür direkt die venv-Binärdatei (uv bräuchte das echte HOME).
+// und der Test soll den echten Ordner des Nutzers nicht füllen. Dafür direkt die venv-Binärdatei (uv bräuchte das echte HOME).
 const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));

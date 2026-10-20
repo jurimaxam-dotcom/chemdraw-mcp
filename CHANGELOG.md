@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-10-20
+
 ### Changed
 
 - **Panel text is English throughout.** The data sheet now reads *IUPAC name,

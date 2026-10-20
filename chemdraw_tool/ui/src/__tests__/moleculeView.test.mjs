@@ -148,7 +148,7 @@ test("ein neuer Stoff im selben App-Slot verwirft das alte Datenblatt", async ()
 });
 
 // Was Studierende brauchen: Struktur, Formel, molare Masse, CAS, Gruppen.
-// SMILES, Rule of Five und der IUPAC-Untertitel sind bewusst raus (Jay, 15.10.2026).
+// SMILES, Rule of Five und der IUPAC-Untertitel sind bewusst raus (Designentscheid 15.10.2026).
 test("die Struktur-Ansicht zeigt die Kernwerte und nichts darueber hinaus", () => {
   const { panel, container, unmount } = setup();
   const text = textOf(panel("structure"));

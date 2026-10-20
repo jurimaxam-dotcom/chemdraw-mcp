@@ -1,6 +1,6 @@
 // Funktionelle Gruppen fuers Panel: was der Glow verbindet und wie die
 // Gruppe unter den Chips heisst (Name + Kurzformel). Ein Erklaersatz ist
-// bewusst weggelassen (Jay, 15.10.2026): er waere fuer jeden Stoff derselbe.
+// bewusst weggelassen (Designentscheid 15.10.2026): er waere fuer jeden Stoff derselbe.
 //
 // Der Server liefert Gruppennamen auf Deutsch ("Carbonsäure") und keine
 // Bindungen, nur Atomkoordinaten. Beides wird hier im Panel aufgeloest, damit
