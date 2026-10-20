@@ -16,6 +16,16 @@ sich mit der Karte.
       Profil-/Taxonomie-/Snapshot-Tests, Handshake-Zahlen anpassen
 - [ ] Desktop-Neustart, 10-Sekunden-Test durch Jay
 
+### Faden 1b: eigene Karten (Jay 21.10., nach dem Standardknopf)
+- [ ] Rückseite selbst füllen: im Chat Hinweise/Merksätze diktieren („schreib dazu: hemmt COX-1/2")
+      → Karte erstellen → exportieren. Chat-Weg kann `export_anki_deck` schon (Claude schreibt `back.text`);
+      im Panel: Hinweisfeld vor „Add to Anki"
+- [ ] Ziel-Deck wählen statt festem „ChemDraw": Deckname mit Unterdecks (`Pharmakologie::NSAIDs`),
+      zuletzt genutztes merken. Bestehende Decks auflisten geht nur mit AnkiConnect (Add-on) → optional,
+      ohne Add-on Deckname eintippen
+- [ ] Mehr Kartenformate: Name→Struktur (umgekehrt), funktionelle Gruppen markieren, Lückentext,
+      Reaktion; Auswahl am Knopf (Formate gibt es in `AnkiCard` schon: reversed, cloze, reaction)
+
 ## Faden 2: Praktikumsbericht – Molekül → Word
 Panel → Knopf **Copy for Word** → in Word einfügen, Bild in Druckqualität.
 - [ ] Weg klären: Bild in die Zwischenablage über den Server (macOS: osascript, PNG in hoher
