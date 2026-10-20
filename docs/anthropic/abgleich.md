@@ -62,3 +62,5 @@ lenken (unsere `instructions` „Reach for these tools …" tun das bewusst und 
 1. **M0 ext-apps 2.0 und neue MCP-Fassung lesen** — bevor das Panel weiter wächst, sonst bauen wir auf der alten Hauptversion weiter.
 2. **M1 nativer Look**, **M3 Annotationen**, **M2 Größenmessung** — klein, jeder für sich prüfbar.
 3. Danach die Reiter und der Rest aus `plans/panel-ausbau.md`.
+
+- 21.10.2026: 12 Spezifikationsseiten (tools, resources, changelog, stdio, deprecated) als GEÄNDERT gemeldet; Stichprobe tools.md/changelog.md: nur Umstellung MDX → Markdown (`<Note>` → `> [!NOTE]`), kein inhaltlicher Unterschied. Kein Handlungsbedarf für die Panel-Knöpfe (Faden 1, plans/workflows.md).
