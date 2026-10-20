@@ -39,6 +39,15 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
 ## Danach: Features einzeln zurück ins Standardprofil (je Minor-Release, je Routing-Fall + Demo-GIF)
 - [ ] 0.6.0: 3D-Ansicht · danach Mechanismus · Anki-Export · Laborgrafiken
 
+## Stand 21.10.2026 (Übergabe für die nächste Session)
+- [x] Panel in Desktop mit 0.5.0 bestätigt (Jays Screenshot). Die ersten Fehlschläge lagen daran, dass Desktop nach der `.mcpb`-Installation nicht neu gestartet war. Gegenprobe mit 0.4.8 zeigte dasselbe Bild.
+- [ ] README/Release-Notes: Satz „nach der Installation Claude Desktop einmal neu starten“
+- [ ] Erstes Short gerendert (Branch `worktree-agent-a89d4c26da6a9d6c2`, 5 Commits, nicht gemergt; Skript `scripts/demo-short.sh`, Remotion in `chemdraw_tool/ui/video/`). Merge mit Skill `branch-abschliessen`
+- [ ] **Jay:** Gestaltungsrückmeldung zum Short (Aufhänger-Text, dunkles Schema, Tempo)
+- [ ] Short fertig: Musik (YouTube Audio Library), echter Cursor in Remotion (`cursor.ts`), PubChem-Wartezeit (~2 s) kürzen, Video-Tests in `ui/video` (9, `npm test`) noch nicht im Gate
+- [ ] Szenen Reaktion und Anki-Import: Anki nur per Cap (`brew install --cask cap`, Deeplink-Steuerung, 29 $/Jahr bei kommerzieller Nutzung) + osascript; Recherche-Verdikt: Remotion + Kamera aus ashrafchowdury/programatic-demo (MIT), Screen Studio verworfen
+- [ ] `anthropic_sync.py --check` meldet geänderte MCP-Apps-Seiten (troubleshooting, getting-started, mcpb …): lesen, `docs/anthropic/abgleich.md` anpassen
+
 ## Etappe 3b: hochwertige Videos (Jay 19.10.: Reddit raus, Shorts und Videos rein)
 - [ ] Remotion (React → MP4) als Schnittwerkzeug: eine Quelle, Formate 16:9 und 9:16;
   Moleküle aus unserem eigenen SVG-Renderer animieren
