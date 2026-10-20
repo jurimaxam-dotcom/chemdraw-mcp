@@ -3071,7 +3071,8 @@ def generate_mechanism(
             )
         )
 
-    substrate_names = " + ".join(resolved[:2])
+    # Eingabe statt aufgelöstem SMILES: der Nutzer erkennt seine Stoffnamen wieder
+    substrate_names = " + ".join(s.strip() for s in substrates[:2])
     display_name = f"{template.name}: {substrate_names}"
 
     clamped_step = max(0, min(current_step, len(step_payloads)))

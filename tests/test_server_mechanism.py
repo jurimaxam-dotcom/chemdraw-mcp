@@ -62,3 +62,10 @@ def test_generate_mechanism_wrong_substrates():
             reaction_type="sn2",
             substrates=["CC=O", "CC"],
         )
+
+
+def test_title_keeps_the_names_the_user_typed():
+    """Der Titel zeigt die Eingabe, nicht das aufgelöste SMILES — „acetic acid + ethanol"
+    statt „C(C)(=O)O + C(C)O" (Demo-Aufnahme 20.10.2026)."""
+    result = generate_mechanism("fischer_ester", ["acetic acid", "ethanol"])
+    assert result.name == "Fischer esterification: acetic acid + ethanol"
