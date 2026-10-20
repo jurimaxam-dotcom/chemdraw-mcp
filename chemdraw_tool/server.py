@@ -2689,23 +2689,23 @@ with predict_spectrum or repeat those facts via lookup unless asked.
     if cid_str:
         pubchem_rows.append(DatabaseRow(key="CID", val=cid_str))
     if (v := props.get("IUPACName")) is not None:
-        pubchem_rows.append(DatabaseRow(key="IUPAC-Name", val=v))
+        pubchem_rows.append(DatabaseRow(key="IUPAC name", val=v))
     if (v := props.get("MolecularFormula")) is not None:
-        pubchem_rows.append(DatabaseRow(key="Summenformel", val=v))
+        pubchem_rows.append(DatabaseRow(key="Molecular formula", val=v))
     if (v := props.get("MolecularWeight")) is not None:
-        pubchem_rows.append(DatabaseRow(key="Molmasse", val=f"{v} g/mol"))
+        pubchem_rows.append(DatabaseRow(key="Molar mass", val=f"{v} g/mol"))
     if (v := props.get("XLogP")) is not None:
         pubchem_rows.append(DatabaseRow(key="XLogP", val=str(v)))
     if (v := props.get("TPSA")) is not None:
         pubchem_rows.append(DatabaseRow(key="TPSA", val=f"{v} Å²"))
     if (v := props.get("HBondDonorCount")) is not None:
-        pubchem_rows.append(DatabaseRow(key="H-Brücken-Donoren", val=str(v)))
+        pubchem_rows.append(DatabaseRow(key="H-bond donors", val=str(v)))
     if (v := props.get("HBondAcceptorCount")) is not None:
-        pubchem_rows.append(DatabaseRow(key="H-Brücken-Akzeptoren", val=str(v)))
+        pubchem_rows.append(DatabaseRow(key="H-bond acceptors", val=str(v)))
     if (v := props.get("InChIKey")) is not None:
         pubchem_rows.append(DatabaseRow(key="InChIKey", val=v))
     if cas_nr:
-        pubchem_rows.append(DatabaseRow(key="CAS-Nr.", val=cas_nr))
+        pubchem_rows.append(DatabaseRow(key="CAS No.", val=cas_nr))
 
     sources.append(
         DatabaseSource(

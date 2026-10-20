@@ -2,10 +2,10 @@
 
 Zweite Hälfte der Lehre aus dem generate_spectrum-Bug (2026-06-11): ein Tool
 kann korrekt registriert sein, das Meta tragen und trotzdem nur
-„Unbekannter Typ" anzeigen — nämlich dann, wenn der `type`-Diskriminator des
+„Unknown type" anzeigen — nämlich dann, wenn der `type`-Diskriminator des
 Payloads in `App.jsx` keinen `case` hat. Beide Richtungen sind eine Lücke:
 
-* Payload ohne View  → Panel zeigt „Unbekannter Typ: …"
+* Payload ohne View  → Panel zeigt „Unknown type: …"
 * View ohne Payload  → toter Code, meist ein Tippfehler beim Umbenennen
 
 Der Test liest die Wahrheit an beiden Enden aus dem Quellcode: die
@@ -69,12 +69,12 @@ def test_payload_models_are_found_at_all():
 
 
 def test_every_payload_type_has_a_view_case():
-    """Payload ohne `case` in App.jsx → Panel zeigt 'Unbekannter Typ'."""
+    """Payload ohne `case` in App.jsx → Panel zeigt 'Unknown type'."""
     cases = _view_case_types()
     orphans = {model: t for model, t in _payload_types().items() if t not in cases}
     assert not orphans, (
         f"Payload-Typen ohne View in App.jsx: {orphans} — das Panel zeigt dafür "
-        "'Unbekannter Typ'. Entweder case ergänzen oder Payload entfernen."
+        "'Unknown type'. Entweder case ergänzen oder Payload entfernen."
     )
 
 
@@ -109,5 +109,5 @@ def test_every_panel_tool_returns_a_renderable_type():
             broken[tool.name] = payload_type
     assert not broken, (
         f"Panel-Tools ohne passenden View-case: {broken} — Payload kommt an, "
-        "Panel zeigt 'Unbekannter Typ'."
+        "Panel zeigt 'Unknown type'."
     )

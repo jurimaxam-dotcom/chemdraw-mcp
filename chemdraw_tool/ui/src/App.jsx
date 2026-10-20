@@ -43,6 +43,6 @@ export default function App({ data }) {
     case "molecule3d":
       return <Molecule3DView data={data} />;
     default:
-      return <div style={{ color: "#8b949e", padding: 16 }}>Unbekannter Typ: {data.type}</div>;
+      return <div style={{ color: "#8b949e", padding: 16 }}>Unknown type: {data.type}</div>;
   }
 }

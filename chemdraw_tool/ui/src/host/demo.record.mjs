@@ -31,7 +31,10 @@ const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const client = new Client({ name: "panel-demo", version: "0.0.0" });
 // Wegwerf-HOME wie im Host-Test: die Aufnahme soll ~/ChemDraw-Output nicht füllen
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: mkdtempSync(join(tmpdir(), "panel-home-")) }, cwd: repo }));
+const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome }, cwd: repo }));
+// Im Bild soll ~/ChemDraw-Output stehen, nicht der Wegwerf-Pfad: Ergebnis auf ein neutrales Home umschreiben
+const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
 const W = 720, H = 560;
 const browser = await chromium.launch();
@@ -40,7 +43,7 @@ try {
   for (const name of szenen) {
     const s = SZENEN[name];
     if (!s) throw new Error(`unbekannte Szene: ${name}`);
-    const toolResult = await client.callTool({ name: s.tool, arguments: s.args });
+    const toolResult = neutral(await client.callTool({ name: s.tool, arguments: s.args }));
     if (toolResult.isError) throw new Error(`${s.tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
     const uri = tools.find((t) => t.name === s.tool)._meta.ui.resourceUri;
     const html = (await client.readResource({ uri })).contents[0].text;
@@ -81,7 +84,7 @@ try {
       const n = Math.min(await gruppen.count(), 3);
       for (let i = 0; i < n; i++) { await zeigeAuf(gruppen.nth(i)); await page.waitForTimeout(900); }
       await klick(frame.getByText("Data", { exact: true }));
-      await frame.getByText("IUPAC-Name").first().waitFor({ timeout: 30000 });
+      await frame.getByText("IUPAC name").first().waitFor({ timeout: 30000 });
       await page.waitForTimeout(2600);
       await klick(frame.getByText("Structure", { exact: true }));
       await page.waitForTimeout(1500);

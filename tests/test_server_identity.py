@@ -144,7 +144,7 @@ def test_data_sheet_goes_by_structure_not_by_name(monkeypatch):
 
     rows = {r.key: r.val for r in sheet.sources[0].rows}
     assert rows["CID"] == "4158"
-    assert rows["CAS-Nr."] == "113-45-1"
+    assert rows["CAS No."] == "113-45-1"
 
 
 # --- PubChem-Feldnamen (live geprueft 14.10.2026) ----------------------------

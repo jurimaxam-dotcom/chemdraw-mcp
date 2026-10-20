@@ -28,9 +28,9 @@ function Root() {
         <App data={data} />
       </AppContext.Provider>
     );
-  if (error) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Verbindungsfehler</div>;
-  if (!isConnected) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Verbinde…</div>;
-  return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Warte auf Daten…</div>;
+  if (error) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Connection error</div>;
+  if (!isConnected) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Connecting…</div>;
+  return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Waiting for data…</div>;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);

@@ -93,22 +93,22 @@ def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safet
 
     row_keys = [r.key for r in pubchem_src.rows]
     assert "CID" in row_keys
-    assert "IUPAC-Name" in row_keys
-    assert "Summenformel" in row_keys
-    assert "Molmasse" in row_keys
+    assert "IUPAC name" in row_keys
+    assert "Molecular formula" in row_keys
+    assert "Molar mass" in row_keys
     assert "XLogP" in row_keys
     assert "TPSA" in row_keys
-    assert "H-Brücken-Donoren" in row_keys
-    assert "H-Brücken-Akzeptoren" in row_keys
+    assert "H-bond donors" in row_keys
+    assert "H-bond acceptors" in row_keys
     assert "InChIKey" in row_keys
-    assert "CAS-Nr." in row_keys
+    assert "CAS No." in row_keys
 
     row_map = {r.key: r.val for r in pubchem_src.rows}
-    assert row_map["Summenformel"] == "C6H6"
-    assert row_map["Molmasse"] == "78.11 g/mol"
-    assert row_map["CAS-Nr."] == "71-43-2"
-    assert row_map["H-Brücken-Donoren"] == "1"
-    assert row_map["H-Brücken-Akzeptoren"] == "2"
+    assert row_map["Molecular formula"] == "C6H6"
+    assert row_map["Molar mass"] == "78.11 g/mol"
+    assert row_map["CAS No."] == "71-43-2"
+    assert row_map["H-bond donors"] == "1"
+    assert row_map["H-bond acceptors"] == "2"
 
 
 @patch("chemdraw_tool.server.pubchem_safety")
