@@ -201,7 +201,7 @@ button:active { filter: brightness(0.92); }
 .panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .seg { min-height: 40px; }
 .seg button { min-height: 32px; }
-.export-png { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.export-png, .add-to-anki { font-size: 12px; font-weight: 600; white-space: nowrap; }
 .structure-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(170px, 210px); gap: 24px; padding-top: 20px; align-items: stretch; }
 .structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
 .structure-canvas { height: 320px; border: 1px solid var(--border); border-radius: 12px; }
