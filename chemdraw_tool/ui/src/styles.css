@@ -193,7 +193,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 button:hover { filter: brightness(0.96); }
 button:active { filter: brightness(0.92); }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-.panel-heading { min-width: 0; flex: 1 1 230px; }
+.panel-heading { min-width: 0; }
+/* Nur in der Kopfzeile neben den Knöpfen wachsen — in Spalten-Views (flex-direction: column) würde die Überschrift sonst in die Höhe gehen */
+.panel-header > .panel-heading { flex: 1 1 230px; }
 .panel-title { font-size: 19px; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; letter-spacing: -0.02em; }
 .panel-subtitle, .panel-record { color: var(--fg-muted); font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
 .panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

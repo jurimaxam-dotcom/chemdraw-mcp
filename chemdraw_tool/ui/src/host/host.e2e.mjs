@@ -119,6 +119,26 @@ try {
   await frame.getByText("Data", { exact: true }).click();
   await page.waitForTimeout(300);
   prüfe(serverCalls.filter((n) => n === "lookup_molecule_data").length === 1, "Zweiter Wechsel kommt aus dem Cache");
+
+  // 4. Spalten-Ansicht (Vergleich → PlotView): Die Überschrift darf nicht in die Höhe wachsen,
+  // sonst schrumpft das Bild auf einen Streifen (Regression aus adccc04, gefunden per Demo-Aufnahme)
+  const cmpInput = { structures: ["ibuprofen", "naproxen", "ketoprofen"] };
+  const cmpResult = await client.callTool({ name: "compare_molecules", arguments: cmpInput });
+  const cmpUri = tools.find((x) => x.name === "compare_molecules")._meta.ui.resourceUri;
+  const cmpHtml = (await client.readResource({ uri: cmpUri })).contents[0].text;
+  const cmpPage = await browser.newPage({ viewport: { width: 720, height: 600 } });
+  await cmpPage.setContent("<body></body>");
+  await cmpPage.addScriptTag({ path: out });
+  await cmpPage.evaluate((a) => window.__startHost(a), { html: cmpHtml, toolInput: cmpInput, toolResult: cmpResult });
+  await cmpPage.locator("iframe").evaluate((el) => { el.style.width = "700px"; el.style.height = "560px"; });
+  const cmpFrame = cmpPage.frames().find((f) => f !== cmpPage.mainFrame());
+  await cmpFrame.locator(".plot-svg svg").waitFor();
+  const cmp = await cmpFrame.evaluate(() => ({
+    heading: document.querySelector(".panel-heading").getBoundingClientRect().height,
+    box: document.querySelector(".plot-svg").getBoundingClientRect().width,
+    svg: document.querySelector(".plot-svg svg").getBoundingClientRect().width,
+  }));
+  prüfe(cmp.heading < 100 && cmp.svg >= 0.8 * cmp.box, `Vergleich: Überschrift ${Math.round(cmp.heading)} px, Bild ${Math.round(cmp.svg)} von ${Math.round(cmp.box)} px breit`);
 } finally {
   await browser?.close();
   await client.close();
