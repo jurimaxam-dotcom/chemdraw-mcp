@@ -133,3 +133,47 @@ def test_export_anki_deck_passes_default_tags(tmp_path, monkeypatch):
     monkeypatch.setattr("chemdraw_tool.anki_export.write_deck", spy)
     export_anki_deck("Tagged", _cards(), default_tags=["klausur"])
     assert seen["tags"] == ["klausur"]
+
+
+def test_open_delivery_hands_the_file_to_the_default_app_on_macos(tmp_path, monkeypatch):
+    """deliver="open": Datei schreiben und mit dem Standardprogramm öffnen —
+    auf macOS zeigt Anki dann den Import. Im Test läuft nie ein echtes `open`."""
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    monkeypatch.setattr("sys.platform", "darwin")
+    calls = []
+    monkeypatch.setattr(
+        "chemdraw_tool.anki_export.subprocess.run",
+        lambda args, **kw: calls.append(args),
+    )
+    payload = export_anki_deck("ChemDraw", _cards(), deliver="open")
+    assert payload.delivery == "open"
+    assert calls == [["open", payload.file]]
+    assert Path(payload.file).exists()
+
+
+def test_open_delivery_only_saves_outside_macos(tmp_path, monkeypatch):
+    """Anderswo kein Öffnen — und delivery meldet ehrlich nur die Datei."""
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    monkeypatch.setattr("sys.platform", "linux")
+    calls = []
+    monkeypatch.setattr(
+        "chemdraw_tool.anki_export.subprocess.run",
+        lambda args, **kw: calls.append(args),
+    )
+    payload = export_anki_deck("ChemDraw", _cards(), deliver="open")
+    assert payload.delivery == "apkg"
+    assert calls == []
+    assert Path(payload.file).exists()
+
+
+def test_open_delivery_falls_back_to_the_file_when_open_fails(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    monkeypatch.setattr("sys.platform", "darwin")
+
+    def boom(args, **kw):
+        raise OSError("kein open")
+
+    monkeypatch.setattr("chemdraw_tool.anki_export.subprocess.run", boom)
+    payload = export_anki_deck("ChemDraw", _cards(), deliver="open")
+    assert payload.delivery == "apkg"
+    assert Path(payload.file).exists()

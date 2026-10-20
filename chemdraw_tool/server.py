@@ -909,7 +909,7 @@ def export_anki_deck(
       observation and reaction scheme where it helps.
 
     The tool renders the images — YOU supply the card content from your
-    knowledge, as with generate_spectrum. Each card side carries text plus at
+    knowledge. Each card side carries text plus at
     most ONE visual: structure (name or SMILES), reaction ({reactants,
     products, conditions}) or spectrum ({spectrum_type, peaks, title}).
     Proven types: structure↔name, identity reactions (question front, scheme
@@ -930,8 +930,8 @@ def export_anki_deck(
             Ignored when curated_deck_id is set.
         cards: The flashcards. Fronts unambiguous, explanations on the back.
         default_tags: Tags added to every card.
-        deliver: "apkg" (file only) or "ankiconnect" (also imports into the
-            RUNNING Anki via the AnkiConnect add-on).
+        deliver: "apkg" (file only), "open" (also opens it in Anki, macOS)
+            or "ankiconnect" (imports via the AnkiConnect add-on).
         curated_deck_id: "analgesics-structures" or "pheur-identity-basics".
     """
     if curated_deck_id:
@@ -952,6 +952,8 @@ def export_anki_deck(
     delivery = "apkg"
     if deliver == "ankiconnect":
         delivery = _anki.push_via_ankiconnect(out_path)
+    elif deliver == "open":
+        delivery = _anki.open_with_default_app(out_path)
     return AnkiDeckPayload(
         name=deck_name,
         cards=stats["cards"],
