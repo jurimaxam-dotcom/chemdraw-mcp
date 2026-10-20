@@ -16,6 +16,13 @@ node_modules/
 .claude/settings.local.json
 CLAUDE.local.md
 
+# Lokale Helfer-Abstimmung und Zugangsdaten bleiben auf dem Rechner.
+/.tisch/
+.env
+.env.*
+!.env.example
+!.env.template
+
 # Eval-Artefakte: aus cases.yaml + dem laufenden Server erzeugt. Versioniert
 # waeren sie am Tag nach der naechsten Beschreibungsaenderung falsch.
 evals/tool-routing/tools.json
