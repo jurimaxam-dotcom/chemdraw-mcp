@@ -13,22 +13,23 @@ Vollautomatisches Posten ist ausgeschlossen, aus drei Gründen:
 
 ## Etappe 1: Feinschliff Produkt → Release 0.5.0
 - [ ] `lookup-data-sheet` (12/13): mit einem Stub prüfen, der echten Datenblatt-Text liefert
-- [ ] Bundle frisch installieren und Smoke-Test: Koffein → Datenblatt → PNG-Export
-- [ ] Release 0.5.0 mit `.mcpb`. Den Bundle-Job erst nach dem PyPI-Publish starten (Codex-Befund)
+- [ ] Bundle frisch installieren und Smoke-Test: Koffein → Datenblatt → PNG-Export — geht erst nach dem Publish (Bundle pinnt `==0.5.0` von PyPI); bis dahin `test:host` grün (20.10.)
+- [ ] Release 0.5.0 mit `.mcpb` — Entwurf liegt auf GitHub (Commit 3912e95), Bundle-Job hängt jetzt an `publish`. **Jay:** „Publish release“ klicken
+- [x] Repo-Audit 20.10.: sdist-Erlaubnisliste, private Produktdoku nach `leben`, alte GIFs mit `/Users/tom` ersetzt, Panel komplett englisch, Layoutfix Vergleich (Codex + Claude p3 gegengeprüft)
 
 ## Etappe 2: Landingpage
-- [ ] README-Oberkante in dieser Reihenfolge:
+- [x] README-Oberkante in dieser Reihenfolge (4ae09b6):
   - Einzeiler
   - Demo-GIF
   - drei Nutzen-Punkte
   - Download `.mcpb` und eine `uvx`-Zeile
   - Gegenüberstellung „Without / With“
   - Profile weiter nach unten
-- [ ] `gh repo edit`: Homepage auf `/releases/latest`, Topics `claude-desktop` `mcpb` `mcp-apps`
+- [x] `gh repo edit`: Homepage auf `/releases/latest`, Topics `claude-desktop` `mcpb` `mcp-apps`
 - [ ] **Jay:** Social Preview hochladen (1280×640, liefert Claude als PNG)
 
 ## Etappe 3: Content-Fabrik (automatisch je Release)
-- [ ] `scripts/demo-video.sh`: `test:host` mit Playwright-`recordVideo` und ffmpeg. Ausgaben:
+- [x] `scripts/demo-video.sh` (505ba8d): Host-Nachbau mit Playwright-`recordVideo` und ffmpeg, fünf Szenen. Ausgaben:
   - README-GIF
   - 9:16-Short mit 15–30 s für YouTube Shorts, TikTok und Reels
   - quadratische Fassung für Reddit und Bluesky
