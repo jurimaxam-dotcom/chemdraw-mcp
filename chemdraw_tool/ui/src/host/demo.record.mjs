@@ -125,6 +125,7 @@ try {
       const strukturUndGruppen = mitKlicks ? await vereint(frame.locator(".structure-canvas"), gruppen.first(), gruppen.nth(n - 1)) : undefined;
       for (let i = 0; i < n; i++) { await zeigeAuf(gruppen.nth(i), `group ${i + 1}`, strukturUndGruppen); await page.waitForTimeout(900); }
       await klick(frame.getByText("Data", { exact: true }), "data");
+      const datenKlick = klicks.at(-1);
       const iupac = frame.getByText("IUPAC name").first();
       await iupac.waitFor({ timeout: 30000 });
       // Datenblatt als Beat, damit die Kamera das Ergebnis rahmt statt den Knopf
@@ -132,7 +133,9 @@ try {
         // Beschriftungen + Werte (ohne Kopier-Knöpfe), damit die Kamera lesbar nah rangeht
         const zeilen = frame.locator(".source-row");
         const blatt = await vereint(zeilen.first().locator("dt"), zeilen.last().locator("dt"), zeilen.filter({ hasText: "InChIKey" }).locator("dd > span"));
-        klicks.push({ label: "data sheet", tMs: jetzt(), x: blatt.x + blatt.w / 2, y: blatt.y + blatt.h / 2, rect: blatt, content: blatt });
+        // tDepartMs: Kamera verlässt den Knopf 0,7 s nach dem Druck (upstream ACTION_WATCH_S)
+        // und fährt über „Loading…" raus, statt erst zu starten, wenn das Blatt schon steht
+        klicks.push({ label: "data sheet", tDepartMs: datenKlick.tDownMs + 700, tMs: jetzt(), x: blatt.x + blatt.w / 2, y: blatt.y + blatt.h / 2, rect: blatt, content: blatt });
       }
       // Shorts: die Kamera braucht ~1,2 s zum Rausfahren, danach soll das Blatt lesbar stehen
       await page.waitForTimeout(mitKlicks ? 3800 : 2600);
