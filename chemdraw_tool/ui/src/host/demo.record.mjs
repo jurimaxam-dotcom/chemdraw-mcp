@@ -1,9 +1,10 @@
 // Demo-Aufnahme: dasselbe Setup wie host.e2e.mjs (sandboxed iframe, echte AppBridge,
 // echter MCP-Server), aber als Video mit sichtbarem Mauszeiger. Keine Attrappe von
 // Claude Desktop: gezeigt wird nur das Panel, so wie der Server es ausliefert.
-// usage: node src/host/demo.record.mjs <ausgabeordner> [--clicks] [szene …]
+// usage: node src/host/demo.record.mjs <ausgabeordner> [--hires] [--clicks] [szene …]
+//   --hires: doppelte Aufnahmeauflösung (1440×1120), ohne Click-Log oder höheres Layout
 //   --clicks: zusätzlich <szene>.clicks.json (Datenvertrag ClickLog, Format siehe Shorts-Montage)
-//             und Aufnahme in doppelter Größe (1440×1120, Panel per CSS-Transform ×2) für die Shorts-Montage
+//             und höhere Aufnahme in doppelter Größe (1440×1440) für die Shorts-Montage
 //   Szenen: molecule (Standard), compare, reaction, 3d, mechanism
 //   (3d und mechanism gibt es nur im vollen Profil — der Recorder startet den Server deshalb mit CHEMDRAW_PROFILE=full)
 import { Client } from "@modelcontextprotocol/client";
@@ -14,19 +15,16 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { mkdtempSync, mkdirSync, existsSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { recordingOptions } from "./demo-options.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "..", "..", "..", "..");
 const outDir = resolve(process.argv[2] ?? join(tmpdir(), "chemdraw-demo"));
-const rest = process.argv.slice(3);
-const mitKlicks = rest.includes("--clicks");
-const szenenArgs = rest.filter((a) => a !== "--clicks");
-const szenen = szenenArgs.length ? szenenArgs : ["molecule"];
+const { mitKlicks, szenen, zoom: ZOOM, width: W, height: H } = recordingOptions(process.argv.slice(3));
 // Shorts zoomen bis ~1,7× in eine 1080 breite Spur: 720-px-Video wäre dort matschig.
 // deviceScaleFactor hilft nicht — recordVideo nimmt in CSS-Pixeln auf und polstert nur
 // auf (gemessen 20.10.2026). Deshalb bleibt das Panel 720×560 CSS-px groß und wird als
 // Vektor per transform ×2 in ein doppelt so großes Fenster gezeichnet.
-const ZOOM = mitKlicks ? 2 : 1;
 mkdirSync(outDir, { recursive: true });
 
 const SZENEN = {
@@ -49,8 +47,7 @@ await client.connect(new StdioClientTransport({ command: serverBin, env: { ...pr
 // Im Bild soll ~/ChemDraw-Output stehen, nicht der Wegwerf-Pfad: Ergebnis auf ein neutrales Home umschreiben
 const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
-// Shorts-Modus: Panel höher, damit Gruppen-Karte und Datenblatt (≈700 px) ganz ins Bild passen
-const W = 720, H = mitKlicks ? 720 : 560;
+// Shorts-Modus: Panel höher, damit Gruppen-Karte und Datenblatt ganz ins Bild passen.
 const browser = await chromium.launch();
 try {
   const tools = (await client.listTools()).tools;
@@ -145,12 +142,12 @@ try {
     } else if (s.ablauf === "drehen") {
       // Ziehen dreht das Modell; Strich neu ansetzen, die Drehung bleibt erhalten
       for (let zug = 0; zug < 3; zug++) {
-        await page.evaluate(() => Object.assign(document.getElementById("demo-cursor").style, { left: "111px", top: "271px", transition: "none" }));
-        await page.mouse.move(120, 280);
+        await page.evaluate((z) => Object.assign(document.getElementById("demo-cursor").style, { left: `${120 * z - 9}px`, top: `${280 * z - 9}px`, transition: "none" }), ZOOM);
+        await page.mouse.move(120 * ZOOM, 280 * ZOOM);
         await page.mouse.down();
         for (let x = 120; x <= 600; x += 12) {
-          await page.mouse.move(x, 280);
-          await page.evaluate((x) => { document.getElementById("demo-cursor").style.left = `${x - 9}px`; }, x);
+          await page.mouse.move(x * ZOOM, 280 * ZOOM);
+          await page.evaluate((x) => { document.getElementById("demo-cursor").style.left = `${x - 9}px`; }, x * ZOOM);
           await page.waitForTimeout(30);
         }
         await page.mouse.up();
