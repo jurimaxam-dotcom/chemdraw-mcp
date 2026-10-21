@@ -1,6 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { recordingOptions } from "../host/demo-options.mjs";
+import { recordingOptions, demoEditFilter } from "../host/demo-options.mjs";
+
+test("Demo kürzt nur lange Ladepausen; Klick und fertiges Datenblatt bleiben stehen", () => {
+  assert.equal(demoEditFilter(1000, 5000), "select='not(between(t,1.350,4.850))',setpts='PTS-if(gte(T,4.850),3.500,0)/TB'");
+  assert.equal(demoEditFilter(1000, 1400), "null");
+  assert.equal(demoEditFilter(null, null), "null");
+});
 
 test("Aufnahme ohne Optionen behält Standardgröße und Standardszene", () => {
   assert.deepEqual(recordingOptions([]), {

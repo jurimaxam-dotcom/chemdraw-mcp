@@ -12,6 +12,7 @@
 correct, print-ready structure — rendered locally with RDKit, interactive right in the chat.
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="640"></p>
+<p align="center"><sub>Demo edited to shorten the PubChem loading wait.</sub></p>
 
 - **The right molecule, not a lookalike.** Names (also German trivial names), IUPAC names and SMILES resolve through OPSIN, PubChem and NCI; a pinned identity test checks 24 inputs against their InChIKey.
 - **Ready for your lab report.** PNG and SVG in a consistent publication style, optional ChemDraw CDXML — no ChemDraw licence needed.

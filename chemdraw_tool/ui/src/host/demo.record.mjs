@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { mkdtempSync, mkdirSync, existsSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { recordingOptions } from "./demo-options.mjs";
+import { recordingOptions, demoEditFilter } from "./demo-options.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "..", "..", "..", "..");
@@ -73,7 +73,12 @@ try {
       const x1 = Math.max(...bs.map((b) => b.x + b.width)), y1 = Math.min(Math.max(...bs.map((b) => b.y + b.height)), H * ZOOM);
       return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
     };
-    await page.exposeFunction("__callTool", (p) => client.callTool(p));
+    await page.exposeFunction("__callTool", async (p) => {
+      const start = Date.now();
+      const result = await client.callTool(p);
+      console.log(`${p.name}: Serverantwort nach ${Date.now() - start} ms`);
+      return result;
+    });
     await page.setContent(`<body style="margin:0;background:#fafbf9"></body>`);
     await page.addScriptTag({ path: hostJs });
     await page.evaluate((a) => window.__startHost(a), { html, toolInput: s.args, toolResult });
@@ -111,7 +116,7 @@ try {
       await page.waitForTimeout(140);
       await page.evaluate(() => { document.getElementById("demo-cursor").style.transform = ""; });
     };
-    let trimBeforeMs = 0, endeMs = null;
+    let trimBeforeMs = 0, endeMs = null, editFilter = "null";
 
     await page.waitForTimeout(1800);
     if (s.ablauf === "struktur-gruppen-daten") {
@@ -125,6 +130,9 @@ try {
       const datenKlick = klicks.at(-1);
       const iupac = frame.getByText("IUPAC name").first();
       await iupac.waitFor({ timeout: 30000 });
+      const dataReadyMs = jetzt();
+      editFilter = demoEditFilter(datenKlick.tDownMs, dataReadyMs);
+      console.log(`Data-Klick → Datenblatt: ${dataReadyMs - datenKlick.tDownMs} ms (Medienschnitt: maximal 500 ms Ladepause)`);
       // Datenblatt als Beat, damit die Kamera das Ergebnis rahmt statt den Knopf
       if (mitKlicks) {
         // Beschriftungen + Werte (ohne Kopier-Knöpfe), damit die Kamera lesbar nah rangeht
@@ -164,6 +172,7 @@ try {
     const video = page.video();
     await context.close();
     renameSync(await video.path(), join(outDir, `${name}.webm`));
+    writeFileSync(join(outDir, `${name}.edit-filter.txt`), editFilter);
     console.log(`✔ ${name}.webm`);
     if (mitKlicks) {
       const log = {
