@@ -1,9 +1,9 @@
 # Abgleich: was Anthropic veröffentlicht — und wo wir stehen
 
-Stand 03.10.2026; erneut geprüft am 14.10.2026 für die MVP-Profilumschaltung.
-Einzige Quellenänderung: `plugins/org-sync.md` benennt den GitLab-Einstellungsort
-in „Git providers“ um; ohne Auswirkung auf unseren lokalen Server oder seine Profile.
-Die gemeldeten Paketversionen bleiben wie unten; keine Migration in dieser Etappe.
+Stand 24.10.2026; Remote-Panels und lokale Desktop-Pfade erneut geprüft (Abschnitt 5).
+`--check`: 0 neue, 58 geänderte, 0 entfernte Seiten. Überwiegend Link-/Exportformatierung,
+aber auch inhaltliche Änderungen an Verzeichnis-Veröffentlichung und OAuth-Verwaltung.
+Keine Server-, Panel- oder Abhängigkeitsänderung in dieser Etappe.
 **Das ist unsere Auswertung in eigenen Worten**, keine Kopie. Die Quellen stehen in
 `quellen.json`, ihre Fingerabdrücke in `stand.json`. Wer diese Datei anfasst, hat vorher
 `uv run python scripts/anthropic_sync.py --check` laufen lassen und die geänderten Seiten gelesen.
@@ -17,7 +17,7 @@ Pflege-Regel: Ändert sich eine Quelle, wird **hier** die Zeile angepasst, dann 
 |---|---|---|---|
 | `@modelcontextprotocol/ext-apps` | **^2.0.3** (migriert 03.10.2026) | 2.0.3 | **M0 erledigt:** Protokoll auf dem Draht unverändert (2.x-Panels laufen in 1.x-Hosts und umgekehrt, vom Hersteller getestet). Gebrochen waren nur Abhängigkeiten (`client` ^2 statt `sdk` ^1, `zod` ^4.2, Node ≥ 20); unser Panel braucht dafür **keine Codeänderung** (nutzt ext-apps an einer Stelle: `useApp`). Bundle 524 → 399 kB. 2.0.1 bis 2.0.3 sind Beispiel-Patches, an der Bibliothek ändert sich nichts. |
 | MCP-Spezifikation | – | Fassung **2026-07-28** | **M0b erledigt:** zustandslos (kein `initialize` mehr), `server/discover`, Pflichtfeld `resultType`, Cache-Hinweise `ttlMs`/`cacheScope`, Roots/Sampling/Logging als veraltet markiert. Das setzt das Python-`mcp` 2.x für uns um (Plan mcp-2-migration, geparkt); ältere Server bleiben nutzbar (Clients behandeln fehlendes `resultType` als vollständig). Für uns jetzt nichts zu tun; Sampling nutzen wir nicht. |
-| Python `mcp` | `>=1.27,<2` | 2.3.0 | siehe Plan „mcp-2-migration" (geparkt) |
+| Python `mcp` | `>=2.3,<3`; installiert 2.3.0 | 2.3.0 | Arbeitsbaum und installierte Umgebung am 24.10. geprüft; die Release-Dateien sind fremde, uncommittete Arbeit. Die Meldung „neuere Nebenversion“ des Prüfers vergleicht `2.3` mit `2.3.0` und belegt hier kein Update. |
 | `@anthropic-ai/mcpb` (Bau) | 2.1.2 | 2.1.2 | aktuell |
 
 ## 2. Fähigkeiten und Regeln im Abgleich
@@ -49,10 +49,12 @@ Belegt am Originaltext (03.10.2026):
   **läuft in Claude Code und in Cowork-Sitzungen, nicht im normalen Chat** — dort, wo unser Panel heute erscheint.
 - Die offene MCP-Registry macht einen Server in Claude **nicht** sichtbar; nur ein Verzeichnis-Eintrag lässt Claude ihn vorschlagen.
 
-**Folge:** Unsere Doppelklick-Extension bleibt der Weg für das Panel im Chat. Ein Verzeichnis-Eintrag brächte Reichweite,
-aber kein Panel im Chat. **Entscheidung offen für Jay:** Eine **gehostete Variante** (Server im Netz, mit Panel in allen Oberflächen
-und Verzeichnis-Eintrag möglich) wäre ein anderes Produkt: RDKit läuft dann bei uns, nicht beim Nutzer, mit Kosten und
-Betrieb. Nicht jetzt; hier festgehalten, damit es nicht verloren geht.
+**Folge (präzisiert am 24.10.):** Die Doppelklick-Extension ist ein dokumentierter lokaler Panel-Weg,
+hat aber einen gemeldeten Desktop-Routingfehler (Abschnitt 5). Die Aussage „kein Panel im Chat“ oben
+betrifft lokale Plugin-Server, nicht Remote-Connectors: Diese können auch ohne Verzeichnis-Eintrag
+als Custom Connector Panels in Web und Desktop liefern. Eine **gehostete Variante** wäre eine eigene
+Betriebsentscheidung; zum Entwicklertest reicht auch ein lokal laufender HTTP-Server mit öffentlichem
+Tunnel. In diesem Abgleich wurde weder Hosting eingerichtet noch ein Tunnel geöffnet.
 
 Zwei Dinge aus den Prüfkriterien, die nur bei einer Einreichung zählen: Beschreibungen dürfen Claudes Verhalten nicht
 lenken (unsere `instructions` „Reach for these tools …" tun das bewusst und sind gemessen); Diagramme und Charts sind erlaubt.
@@ -64,3 +66,86 @@ lenken (unsere `instructions` „Reach for these tools …" tun das bewusst und 
 3. Danach die Reiter und der Rest aus `plans/panel-ausbau.md`.
 
 - 21.10.2026: 12 Spezifikationsseiten (tools, resources, changelog, stdio, deprecated) als GEÄNDERT gemeldet; Stichprobe tools.md/changelog.md: nur Umstellung MDX → Markdown (`<Note>` → `> [!NOTE]`), kein inhaltlicher Unterschied. Kein Handlungsbedarf für die Panel-Knöpfe (Faden 1, plans/workflows.md).
+
+## 5. Nachprüfung am 24.10.2026: Remote-Connector und lokales Panel
+
+### Umfang der Quellenänderung
+
+Die fünf Pflichtseiten wurden vollständig gelesen: [Custom Connector hinzufügen](https://claude.com/docs/connectors/custom/add-unlisted.md),
+[Panel-Fehlersuche](https://claude.com/docs/connectors/building/mcp-apps/troubleshooting.md),
+[MCP-Apps-Einstieg](https://claude.com/docs/connectors/building/mcp-apps/getting-started.md),
+[Connector testen](https://claude.com/docs/connectors/building/testing.md) und
+[MCP-Standard: App bauen](https://modelcontextprotocol.io/extensions/apps/build.md).
+Der verkürzte Auftragspfad `mcp-apps/getting-started.md` entspricht im Quellenindex
+`connectors/building/mcp-apps/getting-started.md`.
+
+`--diff URL` für alle fünf sowie `authentication.md` und `submission.md`:
+Die Pflichtseiten ändern Links von relativen Pfaden zu absoluten Markdown-URLs;
+die MCP-Bauanleitung exportiert zusätzlich Bildunterschriften. Darüber hinaus wurden
+die alten und aktuellen Texte aller 58 erfassten Seiten verglichen. Inhaltliche
+Reständerungen liegen in vier Seiten: `authentication.md`, `directory-vs-custom.md`,
+`managing-your-listing.md`, `submission.md`:
+
+- **OAuth-Verwaltung:** Anthropic-gehaltene Client-ID/Secrets werden nun im Entwicklerportal
+  eingetragen und bearbeitet; dokumentiert sind Vorrangregeln zwischen Organisations-,
+  Entwickler- und Anthropic-Client sowie Einschränkungen älterer Verbindungen. Custom
+  Connectors verwenden das im Verzeichnisportal hinterlegte Client-Secret nicht.
+- **Verzeichnis:** Listings mit mehreren URLs oder URL-Muster können erst mit dem
+  Verified-Label veröffentlicht werden. Das betrifft keine einzelne Custom-Connector-URL.
+
+Quellen: [Authentifizierung](https://claude.com/docs/connectors/building/authentication.md),
+[Custom vs. Verzeichnis](https://claude.com/docs/connectors/building/directory-vs-custom.md),
+[Listing verwalten](https://claude.com/docs/connectors/building/managing-your-listing.md),
+[Einreichung](https://claude.com/docs/connectors/building/submission.md).
+Damit ist „nur Massen-Formatänderung“ für den gesamten Abgleich falsch; für die fünf
+Pflichtseiten wurde keine neue Funktionsaussage gefunden. Die Paketstände bleiben
+ext-apps 2.0.3, mcpb 2.1.2 und Python mcp 2.3.0.
+
+### a) Remote-MCP per HTTPS, ohne Anmeldung: Panels in Web und Desktop?
+
+**Ja, als dokumentierter Weg.** Die [MCP-Bauanleitung, „Testing with Claude“](https://modelcontextprotocol.io/extensions/apps/build.md#testing-with-claude)
+sagt ausdrücklich: „[Claude](https://claude.ai) (web) and [Claude Desktop](https://claude.ai/download) support MCP Apps.“
+Sie führt anschließend über eine öffentliche Tunnel-URL zu **Add custom connector**;
+ihr HTTP-Beispiel implementiert keine Authentifizierung.
+Anthropics [Testanleitung](https://claude.com/docs/connectors/building/testing.md) bestätigt:
+„Custom connectors use the exact same runtime as directory connectors“ und empfiehlt
+den Tunnelweg auch für MCP Apps. Ein Directory-Listing ist somit keine Voraussetzung.
+
+Die [Custom-Connector-Anleitung, „Choose authentication settings“](https://claude.com/docs/connectors/custom/add-unlisted.md#choose-authentication-settings)
+nennt eine HTTPS-MCP-Adresse und die Option **No sign-in**: „anyone with access to the server URL can use the connector“.
+Folgerung aus diesen Quellen: OAuth ist keine Panel-Voraussetzung. Das bestätigt den
+vorgesehenen Integrationsweg, noch keinen realen chemdraw-Paneltest in beiden Clients.
+Anthropics Testanleitung empfiehlt für öffentliche Tunnel weiterhin Authentifizierung.
+Die MCP-Bauanleitung beschränkt Custom Connectors noch auf bezahlte Tarife; die aktuellen
+Anthropic-Seiten nennen auch Free (dort ein Custom Connector). Bei diesem Widerspruch
+gilt für die Tarifauskunft die aktuelle Anbieter-Dokumentation.
+
+### b) Lokale stdio-Server, Cowork und `local-agent-mode`
+
+**Offiziell weiterhin dokumentiert, mit offenem Fehlerbericht zum Host-Routing.**
+Anthropics [MCP-Apps-Einstieg](https://claude.com/docs/connectors/building/mcp-apps/getting-started.md)
+zeigt lokale `npx … --stdio`-Einträge in `claude_desktop_config.json` und sagt nach
+der Freigabe: „the MCP App renders inline in the conversation“.
+Die [Fehlersuche](https://claude.com/docs/connectors/building/mcp-apps/troubleshooting.md#ui-domain-validation-fails)
+behandelt lokale stdio-Connectors ausdrücklich; ohne Server-URL muss `ui.domain` entfallen.
+Keine der fünf Pflichtseiten dokumentiert ein absichtliches Verwerfen von `_meta.ui`
+oder verspricht eine funktionierende Panel-Weiterleitung über `local-agent-mode`/Cowork.
+
+[Issue #1069](https://github.com/anthropics/claude-ai-mcp/issues/1069) ist am Prüftag offen.
+Der ursprüngliche Windows-Bericht beschreibt, dass die lokale Bridge Tool-Metadaten
+neu aufbaut: „The server's `_meta.ui` is not carried over.“ Die Resource wird deshalb
+nicht angefordert; derselbe Server rendere über den HTTP-Custom-Connector-Weg.
+Ein [macOS-Bericht vom 15.10.](https://github.com/anthropics/claude-ai-mcp/issues/1069#issuecomment-6203695984)
+für Desktop 2.42304.0 unterscheidet zwei Verbindungen zur gleichen Python-stdio-Extension:
+`claude-ai` fordert die UI an und rendert, `local-agent-mode-<name>` dagegen nicht;
+das Log dazu lautet „text only, no view“. Beide melden UI-Fähigkeit im Handshake.
+Der Bericht beobachtet einen Wechsel im selben Chat sowie funktionierende Panels im
+Inkognito-Chat. Ein [weiterer macOS-Kommentar](https://github.com/anthropics/claude-ai-mcp/issues/1069#issuecomment-6201871260)
+vermutet einen Zusammenhang mit dem automatischen Chat-/Cowork-Wechsel.
+
+**Beweisgrenze:** Das sind konkrete Nutzerberichte, keine Anthropic-Bestätigung der
+Ursache, kein zugesagter Fix und keine hier wiederholte Messung an Jays Desktop.
+Insbesondere sind „stdio grundsätzlich nicht unterstützt“ und „Cowork verwirft immer
+`_meta.ui`“ nicht belegt. Nächste technische Abnahme: denselben Panel-Aufruf je Clientpfad
+mit `resources/read ui://…` im Serverlog und sichtbarem Panel prüfen; ein erfolgreicher
+Handshake oder Referenzhost allein beweist diese Desktop-Strecke nicht.
