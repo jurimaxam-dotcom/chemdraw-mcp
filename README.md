@@ -313,9 +313,10 @@ caffeine"*.
 **Option 0 — the bundle** (macOS/Linux, no terminal): download
 `chemdraw-mcp-<version>.mcpb` from the
 [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
-double-click it, confirm in Claude Desktop, restart. The first start fetches
+double-click it and confirm in Claude Desktop. The first start fetches
 the package from PyPI via [uv](https://docs.astral.sh/uv/) (installed for you
 if missing) — about 40 MB, give it a minute; every later start is offline.
+Restart Claude Desktop once after installation.
 If you already installed via option 1 or 2, remove that entry first.
 
 **Option 1 — clone the repo** (recommended if you want to read or change the
