@@ -15,6 +15,7 @@ sich mit der Karte.
 - [x] `export_anki_deck` zurück ins MVP (Chat-Weg „mach mir Karten zu den Analgetika"),
       Profil-/Taxonomie-/Snapshot-Tests, Handshake-Zahlen anpassen
 - [x] Desktop-Neustart und Test durch Jay im NORMALEN Chat bestanden (24.10.2026 23:55, Desktop 3.6556.2): Panel mit Structure, Data, Export PNG, Add to Anki sichtbar; Log zeigt tools/call, dann resources/read. Die Inkognito-Einschränkung vom 21.10. gilt nicht mehr; Issues anthropics/claude-ai-mcp 1168 und 1069 bleiben Beobachtungspunkt.
+- [x] Release 0.5.1 veröffentlicht 25.10.2026 (PyPI, Registry isLatest, Bundle); enthält Knopf, Anki im MVP und die neue Karte nach Design-Entwurf.
 
 ### Faden 1b: eigene Karten (Jay 21.10., nach dem Standardknopf)
 - [ ] Rückseite selbst füllen: im Chat Hinweise/Merksätze diktieren („schreib dazu: hemmt COX-1/2")
