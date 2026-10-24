@@ -189,7 +189,7 @@ def _side_html(
             media[name] = media_dir / name
         parts.append(f'<img src="{name}">')
         if prompt and not side.text:
-            parts.append("<div class='prompt'>Welches Molekül?</div>")
+            parts.append("<div class='prompt'>Which molecule?</div>")
     return "\n".join(parts)
 
 

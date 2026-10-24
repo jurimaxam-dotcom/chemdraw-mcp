@@ -285,7 +285,7 @@ def test_front_with_only_a_structure_asks_which_molecule(tmp_path):
     card = AnkiCard(front=CardSide(structure="CCO"), back=CardSide(text="Ethanol"))
     html = _front_html(card, tmp_path)
     assert "<img" in html
-    assert "class='prompt'>Welches Molekül?<" in html
+    assert "class='prompt'>Which molecule?<" in html
 
 
 def test_front_with_own_text_gets_no_extra_prompt(tmp_path):
