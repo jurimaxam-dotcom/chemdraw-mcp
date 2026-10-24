@@ -95,7 +95,7 @@ export default function MoleculeView({ data }) {
         <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
           {data.svg && <ExportPngButton svg={data.svg} filename={data.name || "molecule"} />}
-          {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} />}
+          {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
         </div>
       </header>
       {view === "structure" ? (

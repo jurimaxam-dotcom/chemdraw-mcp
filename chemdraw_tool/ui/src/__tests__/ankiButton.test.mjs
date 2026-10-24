@@ -59,6 +59,25 @@ test("ein Klick ruft export_anki_deck mit einer Karte: Struktur vorn, Name und F
   unmount();
 });
 
+test("die Rückseite trägt Name, Formel und CAS in eigenen Zeilen", async () => {
+  const { button, calls, unmount } = setup();
+  await click(button());
+  const back = calls[0].arguments.cards[0].back.text;
+  assert.match(back, /<div class='name'>Aspirin<\/div>/);
+  assert.match(back, /<div class='formula'>C<sub>9<\/sub>H<sub>8<\/sub>O<sub>4<\/sub><\/div>/);
+  assert.match(back, /<div class='meta'>CAS 50-78-2<\/div>/);
+  unmount();
+});
+
+test("ohne CAS im Payload bleibt die graue Zeile weg", async () => {
+  const data = { ...MOLECULE, properties: { ...MOLECULE.properties, cas: undefined } };
+  const { button, calls, unmount } = setup(undefined, data);
+  await click(button());
+  const back = calls[0].arguments.cards[0].back.text;
+  assert.doesNotMatch(back, /CAS|class='meta'/);
+  unmount();
+});
+
 test("Erfolg meldet sich kurz als Added", async () => {
   const { button, unmount } = setup();
   await click(button());

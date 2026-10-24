@@ -32,20 +32,46 @@ CLOZE_MODEL_ID = 1716400003
 
 ANKICONNECT_URL = "http://127.0.0.1:8765"
 
+# Kartenbild nach dem Design-Entwurf vom 25.10.2026: vorn nur Struktur und
+# Frage, hinten das Bild klein über Name, Formel, CAS. Die Templates bleiben
+# unverändert (sonst legt Anki beim Import einen zweiten Notiztyp an) — die
+# Antwortseite erkennt das CSS an hr#answer, das nur dort steht.
+# Nachtmodus: Anki setzt .nightMode (älter: .night_mode) auf .card bzw. body;
+# das weißgrundige PNG wird invertiert, hue-rotate holt die Elementfarben
+# (O rot, N blau) zurück — kein weißer Kasten mehr.
 _CSS = """\
 .card {
   font-family: -apple-system, system-ui, sans-serif;
   font-size: 18px;
   text-align: center;
-  color: #1a1a1a;
-  background-color: #fafafa;
+  color: #1C1C1E;
+  background-color: #FAFAF7;
 }
 .text { margin: 10px 0; }
 img {
   max-width: 100%;
-  background: #ffffff;
-  padding: 8px;
-  border-radius: 8px;
+  max-height: 300px;
+}
+.prompt { margin-top: 24px; font-size: 15px; color: #6B6B6B; }
+.card:has(#answer) img { max-height: 180px; }
+.card:has(#answer) .prompt { display: none; }
+hr#answer { border: 0; border-top: 1px solid #DADAD5; margin: 20px 0; }
+.name { font-size: 40px; font-weight: 700; line-height: 1.1; }
+.formula { font-size: 22px; margin-top: 8px; }
+.meta { font-size: 14px; color: #6B6B6B; margin-top: 8px; line-height: 1.4; }
+.card.nightMode, .card.night_mode, .nightMode .card, .night_mode .card {
+  color: #F2F2F2;
+  background-color: #1C1C1E;
+}
+.card.nightMode img, .card.night_mode img, .nightMode .card img, .night_mode .card img {
+  filter: invert(1) hue-rotate(180deg);
+}
+.card.nightMode .prompt, .card.night_mode .prompt, .nightMode .card .prompt, .night_mode .card .prompt,
+.card.nightMode .meta, .card.night_mode .meta, .nightMode .card .meta, .night_mode .card .meta {
+  color: #9A9A9A;
+}
+.card.nightMode hr#answer, .card.night_mode hr#answer, .nightMode .card hr#answer, .night_mode .card hr#answer {
+  border-top-color: #3A3A3C;
 }
 """
 
@@ -144,9 +170,12 @@ def _render_visual(side: CardSide) -> bytes | None:
     return None
 
 
-def _side_html(side: CardSide, media_dir: Path, media: dict[str, Path]) -> str:
+def _side_html(
+    side: CardSide, media_dir: Path, media: dict[str, Path], prompt: bool = False
+) -> str:
     """HTML einer Kartenseite; schreibt das Visual content-addressed nach
-    media_dir und dedupliziert identische Bilder über den Inhalts-Hash."""
+    media_dir und dedupliziert identische Bilder über den Inhalts-Hash.
+    prompt: eine Vorderseite, die nur ein Bild ist, bekommt die Frage darunter."""
     parts = []
     if side.text:
         # Anki-Konvention: Felder dürfen HTML enthalten — bewusst nicht escaped.
@@ -159,6 +188,8 @@ def _side_html(side: CardSide, media_dir: Path, media: dict[str, Path]) -> str:
             (media_dir / name).write_bytes(png)
             media[name] = media_dir / name
         parts.append(f'<img src="{name}">')
+        if prompt and not side.text:
+            parts.append("<div class='prompt'>Welches Molekül?</div>")
     return "\n".join(parts)
 
 
@@ -180,7 +211,9 @@ def build_package(
     media: dict[str, Path] = {}
     for card in cards:
         model = _model_for(card)
-        front_html = _side_html(card.front, media_dir, media)
+        front_html = _side_html(
+            card.front, media_dir, media, prompt=model is _MODEL
+        )
         back_html = _side_html(card.back, media_dir, media)
         note = genanki.Note(
             model=model,

@@ -237,3 +237,71 @@ def test_ankiconnect_unreachable_degrades_gracefully(tmp_path, monkeypatch):
     monkeypatch.setattr(anki_export.requests, "post", boom)
     status = anki_export.push_via_ankiconnect(tmp_path / "x.apkg")
     assert status == "ankiconnect-unreachable"
+
+
+# ---------------------------------------------------------------------------
+# Kartenbild nach Design-Entwurf (25.10.2026, Canvas „Anki-Karte Entwurf"):
+# vorn nur Struktur + Frage, hinten klein das Bild, Name, Formel, CAS;
+# Nachtmodus über Ankis Klasse statt weißem Kasten ums Bild.
+# ---------------------------------------------------------------------------
+
+
+def _front_html(card: AnkiCard, tmp_path) -> str:
+    return build_package("D", [card], tmp_path / "m").decks[0].notes[0].fields[0]
+
+
+def test_css_has_a_night_mode_rule_that_inverts_the_picture():
+    from chemdraw_tool.anki_export import _CSS
+
+    assert ".nightMode" in _CSS and ".night_mode" in _CSS
+    assert "#1C1C1E" in _CSS and "#F2F2F2" in _CSS
+    assert "invert(1) hue-rotate(180deg)" in _CSS
+
+
+def test_css_puts_no_white_box_around_the_picture():
+    import re
+
+    from chemdraw_tool.anki_export import _CSS
+
+    img_rules = re.findall(r"img\s*\{([^}]*)\}", _CSS)
+    assert img_rules, "keine img-Regel"
+    for rule in img_rules:
+        assert "background" not in rule
+        assert "padding" not in rule
+        assert "border" not in rule
+    assert "max-height: 300px" in _CSS
+    assert "#FAFAF7" in _CSS
+
+
+def test_answer_side_shrinks_the_picture_and_hides_the_prompt():
+    from chemdraw_tool.anki_export import _CSS
+
+    # Die Antwortseite wiederholt {{FrontSide}}; nur sie trägt hr#answer.
+    assert ":has(#answer) img" in _CSS and "max-height: 180px" in _CSS
+    assert ":has(#answer) .prompt" in _CSS
+
+
+def test_front_with_only_a_structure_asks_which_molecule(tmp_path):
+    card = AnkiCard(front=CardSide(structure="CCO"), back=CardSide(text="Ethanol"))
+    html = _front_html(card, tmp_path)
+    assert "<img" in html
+    assert "class='prompt'>Welches Molekül?<" in html
+
+
+def test_front_with_own_text_gets_no_extra_prompt(tmp_path):
+    assert "prompt" not in _front_html(_structure_card(), tmp_path)
+
+
+def test_reversed_card_gets_no_prompt(tmp_path):
+    card = AnkiCard(
+        front=CardSide(structure="CCO"), back=CardSide(text="Ethanol"), reversed=True
+    )
+    assert "prompt" not in _front_html(card, tmp_path)
+
+
+def test_templates_stay_unchanged_so_anki_keeps_one_note_type():
+    from chemdraw_tool import anki_export
+
+    assert anki_export.MODEL_ID == 1716400001
+    assert anki_export._MODEL.templates[0]["afmt"] == "{{FrontSide}}<hr id=answer>{{Back}}"
+    assert [f["name"] for f in anki_export._MODEL.fields] == ["Front", "Back"]

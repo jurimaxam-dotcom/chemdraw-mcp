@@ -10,17 +10,19 @@ function escapeHtml(text) {
   return String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
-// Rückseite als Anki-HTML: Name fett, darunter die Formel mit tiefgestellten
-// Zahlen. Anki-Felder werden nicht escaped, also hier selbst escapen.
-function backText(name, formula) {
-  const parts = [`<b>${escapeHtml(name || "Molecule")}</b>`];
-  if (formula) parts.push(escapeHtml(formula).replace(/(\d+)/g, "<sub>$1</sub>"));
-  return parts.join("<br>");
+// Rückseite als Anki-HTML nach dem Design-Entwurf: Name, Formel mit
+// tiefgestellten Zahlen, graue CAS-Zeile; die Klassen gestaltet das Karten-CSS
+// in anki_export.py. Anki-Felder werden nicht escaped, also hier selbst escapen.
+function backText(name, formula, cas) {
+  const parts = [`<div class='name'>${escapeHtml(name || "Molecule")}</div>`];
+  if (formula) parts.push(`<div class='formula'>${escapeHtml(formula).replace(/(\d+)/g, "<sub>$1</sub>")}</div>`);
+  if (cas) parts.push(`<div class='meta'>CAS ${escapeHtml(cas)}</div>`);
+  return parts.join("");
 }
 
 // idle → busy (deaktiviert) → (added | saved | error); Erfolg blinkt kurz,
 // ein Fehler bleibt stehen, bis der nächste Klick ihn neu versucht.
-export default function AddToAnkiButton({ smiles, name, formula, size }) {
+export default function AddToAnkiButton({ smiles, name, formula, cas, size }) {
   const app = useAppBridge();
   const [status, setStatus] = useState("idle");
   const [file, setFile] = useState("");
@@ -45,7 +47,7 @@ export default function AddToAnkiButton({ smiles, name, formula, size }) {
         arguments: {
           deck_name: ANKI_DECK,
           // SMILES statt Name: kein Netz nötig, und die Karte hängt am Molekül.
-          cards: [{ front: { structure: smiles }, back: { text: backText(name, formula) } }],
+          cards: [{ front: { structure: smiles }, back: { text: backText(name, formula, cas) } }],
           deliver: "open",
         },
       });

@@ -14,6 +14,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   the same molecule updates the card instead of duplicating it.
 - **`export_anki_deck` is part of the default profile** (now 7 tools, 6 with a
   panel) and accepts `deliver="open"` to open the deck file in Anki on macOS.
+- **Cleaner Anki card:** front shows only the structure, back name, formula and
+  CAS; night-mode aware.
 
 ## [0.5.0] — 2026-10-20
 
