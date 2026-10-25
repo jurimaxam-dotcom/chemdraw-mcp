@@ -4,7 +4,12 @@ Ziel: Jeder Workflow läuft im echten Claude Desktop vom Tippen bis zum Ergebnis
 Zielanwendung, ohne Umweg.
 
 Stand Panel heute: Struktur/Daten-Umschalter, „Export PNG", Kopierknöpfe an den Daten.
-`export_anki_deck` + zwei kuratierte Decks + `AnkiDeckView` existieren, aber nur im Profil `full`.
+`export_anki_deck` ist seit 0.5.1 auch im Standardprofil (`mvp`); der Panel-Knopf
+„Add to Anki“ ist verfügbar. 0.5.2 macht das Struktur-PNG auf der Karte transparent.
+
+Launch-Reihenfolge (Jay, 25.10.2026): Faden 1 reicht für den ersten Post. Faden 2 Word
+und Faden 3 folgen nach Launch, Stück für Stück. Auch die Rückkehr ins Standardprofil
+(3D → Mechanismus → Laborgrafiken, je Minor-Release) beginnt nach dem ersten Post.
 
 ## Faden 1: Lernen – Molekül → Anki
 „Hey Claude, draw me ibuprofen" → Panel in Sekunden → Knopf **Add to Anki** am Panel → Anki öffnet
@@ -29,13 +34,13 @@ sich mit der Karte.
 - [ ] Mehr Kartenformate: Name→Struktur (umgekehrt), funktionelle Gruppen markieren, Lückentext,
       Reaktion; Auswahl am Knopf (Formate gibt es in `AnkiCard` schon: reversed, cloze, reaction)
 
-## Faden 2: Praktikumsbericht – Molekül → Word
+## Faden 2: Praktikumsbericht – Molekül → Word (nach Launch)
 Panel → Knopf **Copy for Word** → in Word einfügen, Bild in Druckqualität.
 - [ ] Weg klären: Bild in die Zwischenablage über den Server (macOS: osascript, PNG in hoher
       Auflösung), weil die Sandbox des Panels Bild-Zwischenablage nicht sicher erlaubt
 - [ ] Knopf + Test, Jay prüft in Word
 
-## Faden 3: Tiefer ins Molekül
+## Faden 3: Tiefer ins Molekül (nach Launch)
 Auswahlknöpfe im Panel: andere Darstellungen (Stereo R/S, 3D, funktionelle Gruppen, Daten).
 - [ ] Designrunde am iPad: welche Knöpfe, wo (Ablauf `~/.claude/docs/designrunden-ipad.md`)
 - [ ] Bauen nach dem Entwurf
