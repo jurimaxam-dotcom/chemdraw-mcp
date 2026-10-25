@@ -87,13 +87,15 @@ try {
       if (z !== 1) { el.style.transform = `scale(${z})`; el.style.transformOrigin = "0 0"; }
     }, [W, H, ZOOM]);
     // Zeiger im Elternfenster: Playwright-Videos zeigen den echten Mauszeiger nicht
-    await page.evaluate((z) => {
+    await page.evaluate(([z, mitKlicks]) => {
       const c = document.createElement("div");
       c.id = "demo-cursor";
+      // Shorts zeichnen den Zeiger verlustfrei in Remotion. Standardvideos behalten den Kreis.
       c.style.cssText = "position:fixed;left:-40px;top:-40px;width:18px;height:18px;border-radius:50%;background:rgba(20,20,20,.55);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);pointer-events:none;z-index:9;transition:left .45s ease,top .45s ease,transform .12s";
+      if (mitKlicks) c.style.display = "none";
       if (z !== 1) c.style.scale = String(z);
       document.body.appendChild(c);
-    }, ZOOM);
+    }, [ZOOM, mitKlicks]);
     const frame = page.frames().find((f) => f !== page.mainFrame());
     // Hover = Ereignis ohne tDownMs (Fokus-Beat), Klick = mit tDownMs
     const zeigeAuf = async (locator, label, content) => {
