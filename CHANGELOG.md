@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/).
 
+## [0.5.2] — 2026-10-25
+
+### Fixed
+
+- **Anki card: the structure sits directly on the card.** The picture now has
+  a transparent background, so there is no white box in light mode and no
+  black box in night mode. Exported PNG/SVG files keep their white background.
+
 ## [0.5.1] — 2026-10-24
 
 ### Added
