@@ -59,13 +59,21 @@ def _reaction_metrics(style: str) -> tuple[float, float]:
 
 
 def _draw_molecule(
-    drawer, mol, legend: str, annotate_stereo: bool = False, style: str = ""
+    drawer,
+    mol,
+    legend: str,
+    annotate_stereo: bool = False,
+    style: str = "",
+    transparent: bool = False,
 ) -> None:
     # Gleiche Strichstärke wie die UI-Vorschau (gemeinsame Konstante) — die Datei
     # darf nicht anders aussehen als das, was der Nutzer im Chat gesehen hat.
     # Bewusst NICHT übernommen: fixedBondLength (Datei soll die Canvas füllen)
-    # und clearBackground=False (Datei braucht weißen Hintergrund).
+    # und clearBackground=False (Datei braucht weißen Hintergrund). Ausnahme
+    # per Opt-in: die Anki-Karte legt das Bild auf ihren eigenen Hintergrund.
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    if transparent:
+        drawer.drawOptions().clearBackground = False
     if annotate_stereo:
         drawer.drawOptions().addStereoAnnotation = True
     # Nach der Basis, damit ein Preset die Strichstärke überschreiben kann,
@@ -82,9 +90,10 @@ def render_molecule_png(
     size: tuple[int, int] = MOL_PNG_SIZE,
     annotate_stereo: bool = False,
     style: str = "",
+    transparent: bool = False,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    _draw_molecule(drawer, mol, legend, annotate_stereo, style)
+    _draw_molecule(drawer, mol, legend, annotate_stereo, style, transparent)
     return drawer.GetDrawingText()
 
 
@@ -170,7 +179,7 @@ def _compose_reaction(
 
 
 def _draw_reaction(
-    drawer, reactants, products, style: str = ""
+    drawer, reactants, products, style: str = "", transparent: bool = False
 ) -> tuple[tuple[float, float], float]:
     """Zeichnet das Schema (ohne Conditions) und liefert die Pixel-Position
     der Pfeilmitte plus die Skala (Pixel pro Mol-Koordinaten-Einheit).
@@ -183,6 +192,8 @@ def _draw_reaction(
     arrow_length, _ = _reaction_metrics(style)
     layout = _compose_reaction(reactants, products, arrow_length)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
+    if transparent:
+        drawer.drawOptions().clearBackground = False
     apply_style(drawer.drawOptions(), style)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, layout.mol)
     drawer.SetColour((0.0, 0.0, 0.0))
@@ -204,9 +215,12 @@ def render_reaction_png(
     conditions: str = "",
     size: tuple[int, int] = RXN_PNG_SIZE,
     style: str = "",
+    transparent: bool = False,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products, style)
+    (mid_x, mid_y), scale = _draw_reaction(
+        drawer, reactants, products, style, transparent
+    )
     drawer.FinishDrawing()
     png = drawer.GetDrawingText()
     if not conditions:
@@ -217,7 +231,8 @@ def render_reaction_png(
     from matplotlib import font_manager
     from PIL import Image, ImageDraw, ImageFont
 
-    image = Image.open(io.BytesIO(png)).convert("RGB")
+    # RGBA nur beim transparenten Opt-in — die Datei bleibt bytegleich RGB.
+    image = Image.open(io.BytesIO(png)).convert("RGBA" if transparent else "RGB")
     draw = ImageDraw.Draw(image)
     # Pillows Default-Font fehlen ₂/₄/Δ (Tofu-Boxen). matplotlib (ohnehin
     # Dependency) bündelt DejaVu Sans mit vollem Glyphen-Satz auf allen OS.

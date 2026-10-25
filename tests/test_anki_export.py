@@ -305,3 +305,64 @@ def test_templates_stay_unchanged_so_anki_keeps_one_note_type():
     assert anki_export.MODEL_ID == 1716400001
     assert anki_export._MODEL.templates[0]["afmt"] == "{{FrontSide}}<hr id=answer>{{Back}}"
     assert [f["name"] for f in anki_export._MODEL.fields] == ["Front", "Back"]
+
+
+# ---------------------------------------------------------------------------
+# Transparentes Kartenbild (25.10.2026): Struktur ohne weißen/schwarzen Kasten
+# ---------------------------------------------------------------------------
+
+
+def _media_image(pkg):
+    import io
+
+    from PIL import Image
+
+    assert len(pkg.media_files) == 1
+    return Image.open(io.BytesIO(open(pkg.media_files[0], "rb").read()))
+
+
+def _assert_transparent_background(image):
+    assert image.mode == "RGBA", f"kein Alphakanal: {image.mode}"
+    assert image.getpixel((0, 0))[3] == 0, "Eckpixel nicht transparent"
+    # Die Striche bleiben deckend — sonst wäre das Bild leer.
+    assert image.getchannel("A").getextrema()[1] == 255
+
+
+def test_structure_media_png_has_a_transparent_background(tmp_path):
+    pkg = build_package("Deck", [_structure_card()], tmp_path / "media")
+    _assert_transparent_background(_media_image(pkg))
+
+
+def test_reaction_media_png_has_a_transparent_background(tmp_path):
+    card = AnkiCard(
+        front=CardSide(text="Veresterung?"),
+        back=CardSide(
+            reaction=ReactionSpec(
+                reactants=["CCO", "CC(=O)O"],
+                products=["CCOC(C)=O", "O"],
+                conditions="H₂SO₄ (cat.), Δ",
+            ),
+        ),
+    )
+    _assert_transparent_background(
+        _media_image(build_package("Deck", [card], tmp_path / "media"))
+    )
+
+
+def test_file_export_keeps_its_white_background():
+    """Opt-in: generate_molecule & Co. schreiben weiter weißgrundige Dateien."""
+    import io
+
+    from PIL import Image
+    from rdkit import Chem
+
+    from chemdraw_tool.generator import generate_2d
+    from chemdraw_tool.image_export import render_molecule_png, render_reaction_png
+
+    mol = generate_2d(Chem.MolFromSmiles("CCO"))
+    for png in (
+        render_molecule_png(mol),
+        render_reaction_png([mol], [mol], "Δ"),
+    ):
+        image = Image.open(io.BytesIO(png)).convert("RGBA")
+        assert image.getpixel((0, 0)) == (255, 255, 255, 255)

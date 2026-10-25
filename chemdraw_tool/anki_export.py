@@ -37,8 +37,9 @@ ANKICONNECT_URL = "http://127.0.0.1:8765"
 # unverändert (sonst legt Anki beim Import einen zweiten Notiztyp an) — die
 # Antwortseite erkennt das CSS an hr#answer, das nur dort steht.
 # Nachtmodus: Anki setzt .nightMode (älter: .night_mode) auf .card bzw. body;
-# das weißgrundige PNG wird invertiert, hue-rotate holt die Elementfarben
-# (O rot, N blau) zurück — kein weißer Kasten mehr.
+# das PNG wird invertiert, hue-rotate holt die Elementfarben (O rot, N blau)
+# zurück. Strukturen und Reaktionen kommen mit transparentem Hintergrund
+# (_render_visual), damit kein heller bzw. dunkler Kasten auf der Karte liegt.
 _CSS = """\
 .card {
   font-family: -apple-system, system-ui, sans-serif;
@@ -139,7 +140,7 @@ def _render_visual(side: CardSide) -> bytes | None:
         from chemdraw_tool.resolver import resolve
 
         _, mol = resolve(side.structure)
-        return render_molecule_png(generate_2d(mol))
+        return render_molecule_png(generate_2d(mol), transparent=True)
 
     if side.reaction is not None:
         from chemdraw_tool.generator import generate_2d
@@ -157,6 +158,7 @@ def _render_visual(side: CardSide) -> bytes | None:
             mols(side.reaction.reactants),
             mols(side.reaction.products),
             side.reaction.conditions,
+            transparent=True,
         )
 
     if side.spectrum is not None:
