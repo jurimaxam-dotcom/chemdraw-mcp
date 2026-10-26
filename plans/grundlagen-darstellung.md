@@ -99,7 +99,11 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     (Skelettformel, Gruppen, Formel/Masse aus RDKit, kein PubChem, keine Dateien) plus `initialView`/`viewSvg`; das Panel
     startet auf der Ansicht. Beschreibung: view nur, wenn der Nutzer die Projektion nennt; Eval-Fall `draw-sugar-as-typed`
     (forbidden_args: view). Codex' übrige Punkte ja: Ibuprofen 10,9 KB, +1 Aufruf beim Klick, Cache, Export.
-  - [ ] Desktop-Abnahme 3 (Codex): „Zeichne beta-D-Glucose“ und „Zeige die Haworth-Projektion von beta-D-Glucose“
+  - [x] Desktop-Abnahme 3 (Codex, Faden 20261026-185147, e98bff8): „Zeichne beta-D-Glucose“ → kein view, Haworth per
+        Klick ja; erzwungenes view=haworth → Panel mit Name, Knöpfen, Hinweis, Formel, Masse, Rückweg ja; Ibuprofen ja.
+  - [ ] Routing: „Zeige die Haworth-Projektion von beta-D-Glucose“ geht an Desktops eingebautes visualize, nicht an
+        generate_molecule. Kandidat: im „Use this tool when“-Satz „Fischer/Haworth projection“ nennen (Beschreibung steht
+        bei 2040 von 2048 Bytes → anderswo kürzen) + positiver Eval-Fall mit erwartetem view=haworth.
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
 
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)
