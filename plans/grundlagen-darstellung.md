@@ -78,3 +78,12 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
   - [ ] Später, nur auf Ansage: Parameter `projection` für die Chat-Route und die Dateien auf der Platte; Ile/Thr mit
         zweitem Kreuz; Glykoside in Haworth
   - [ ] Desktop-Abnahme durch Codex (Auftrag siehe Tisch-Faden)
+
+## Payload schlank halten (Jay 26.10.2026)
+Messung: „All H“ (`svgAllH` + `atomsAllH`) ist 55–60 % jeder Molekül-Antwort (Ibuprofen 17,5 von 29,4 KB, Koffein 17,0 von
+31,1 KB). Desktop verwirft structuredContent, das Modell liest den ganzen Text. **Jay: „Erst auf Klick“.** Regel: Was nur
+auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt), nie eager ins Payload.
+- [ ] All H, Fischer, Haworth lazy: Panel holt die Ansicht per `callServerTool` beim ersten Klick, cacht sie; das Payload
+      trägt nur, OB es die Ansicht gibt (Flags/Knopf-Sichtbarkeit), nicht die SVGs. Beschreibung < 2 KB, Snapshot segnen,
+      test:host anpassen. Abnahme: Ibuprofen-Antwort < 15 KB (vorher 29,4), Klick auf All H < 1 s.
+- Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
