@@ -1,5 +1,13 @@
 # Grundlagen zuerst: Schreibweisen und Gleichungen (Jay, 26.10.2026)
 
+## Weiter bei (26.10.2026, ~20:00)
+1. Glama-Build von 0.6.0 prüfen (Abschnitt „Release 0.6.0“): „Haworth“ in der generate_molecule-Beschreibung auf
+   glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp. Glama-API braucht einen Key → Seite per WebFetch lesen.
+2. Offene Jay-Entscheidung: doppelte Formel bei Kleinstmolekülen (Zeichnung „H₂O“ + Label „H₂O“), Übergabe Punkt 3.
+3. Danach Thema „Prüfungsfragen“ (OC-Grundlagen, kein achtes Tool; plans/mcp-server.md).
+Codex-Kontingent ist leer (Jay 26.10.) — Desktop-Tests bis auf Weiteres selbst (vermarktung/ax-claude.swift) oder liegen lassen.
+Tisch: Fäden 20261026-190644 und 20261026-193309 erledigt; d.html (untracked) gehört Codex, nicht anfassen.
+
 Jay: „ich will erst die Grundlagen abdecken.“ Reihenfolge = Grundlage → Spezialfall. Nichts davon ist schon freigegeben
 zum Bauen; Jay gibt je Etappe frei. Bausteine von heute: Isomer-Auswahl (0a1d29a), Stereo-Warnung (42768a8),
 Reaktionsbilanz (3525cdf). Regeln aus CLAUDE.md: MVP bleibt 7 Tools (Parameter/Panel-Knopf statt Tool), opt-in, TDD,
