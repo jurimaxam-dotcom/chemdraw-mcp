@@ -139,13 +139,11 @@ export default function MoleculeView({ data }) {
 
   if (showVariants && variants) {
     return (
-      <div className="ambiguous-chosen">
-        <button type="button" className="candidate-back" onClick={() => setShowVariants(false)}>
+      <AmbiguousView data={variants}
+        subtitle={`${variants.candidates.length} stereoisomers. Pick one to draw it with wedges.`}
+        backBar={<button type="button" className="candidate-back" onClick={() => setShowVariants(false)}>
           Back to the structure
-        </button>
-        <AmbiguousView data={variants}
-          subtitle={`${variants.candidates.length} stereoisomers. Pick one to draw it with wedges.`} />
-      </div>
+        </button>} />
     );
   }
 

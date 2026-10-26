@@ -154,3 +154,20 @@ test("Doppelklick waehrend des Ladens loest nur einen Aufruf aus", async () => {
   assert.equal(container.querySelectorAll("button.candidate").length, 2);
   unmount();
 });
+
+test("nach der Auswahl stehen beide Rueckwege in einer Leiste, nicht uebereinander", async () => {
+  const drawn = { ...MOLECULE, name: "(S)-Ibuprofen", properties: { smiles: VARIANTS.candidates[1].smiles } };
+  const { container, unmount } = setup(RACEMATE, (req) =>
+    lookupSuccess(req.arguments.stereo_variants ? VARIANTS : drawn)
+  );
+  await click(showButton(container));
+  assert.equal(container.querySelectorAll(".back-bar").length, 1, "Auswahl: genau eine Leiste");
+  await click([...container.querySelectorAll("button.candidate")][1]);
+  const bars = container.querySelectorAll(".back-bar");
+  assert.equal(bars.length, 1, "Zeichnung: genau eine Leiste");
+  assert.deepEqual(
+    [...bars[0].querySelectorAll("button")].map((b) => textOf(b)),
+    ["Back to the structure", "All candidates"]
+  );
+  unmount();
+});

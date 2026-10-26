@@ -13,8 +13,10 @@ export const CANDIDATE_LOAD_ERROR =
 // Das Ergebnis zeigt diese Ansicht selbst an: ein vom Panel ausgeloester
 // Toolaufruf kommt nicht als toolresult-Notification zurueck.
 // `subtitle` ersetzt den Satz unter dem Titel — die Stereo-Varianten sind
-// keine verschiedenen Verbindungen, sondern Isomere einer.
-export default function AmbiguousView({ data, subtitle }) {
+// keine verschiedenen Verbindungen, sondern Isomere einer. `backBar` ist ein
+// Rueckweg des Aufrufers (Stereo-Varianten: „Back to the structure"); er steht
+// mit „All candidates" in EINER Leiste statt in zwei Zeilen uebereinander.
+export default function AmbiguousView({ data, subtitle, backBar }) {
   const app = useAppBridge();
   const candidates = data.candidates || [];
   const [drawn, setDrawn] = useState(null); // gezeichnetes MoleculePayload
@@ -47,9 +49,12 @@ export default function AmbiguousView({ data, subtitle }) {
   if (drawn) {
     return (
       <div className="ambiguous-chosen">
-        <button type="button" className="candidate-back" onClick={() => setDrawn(null)}>
-          All candidates
-        </button>
+        <div className="back-bar">
+          {backBar}
+          <button type="button" className="candidate-back" onClick={() => setDrawn(null)}>
+            All candidates
+          </button>
+        </div>
         <MoleculeView key={drawn.properties?.smiles || drawn.name} data={drawn} />
       </div>
     );
@@ -57,6 +62,7 @@ export default function AmbiguousView({ data, subtitle }) {
 
   return (
     <article className="ambiguous-panel">
+      {backBar && <div className="back-bar">{backBar}</div>}
       <header className="panel-header">
         <div className="panel-heading">
           <h2 className="panel-title">{data.name}</h2>
