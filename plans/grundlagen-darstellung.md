@@ -46,4 +46,19 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
   - [ ] Jays Handtest in Desktop: „Zeichne Ibuprofen“ → Show variants → (S) klicken
 
 ## Etappe 4: Fischer-/Haworth-Projektion (M–L, später)
-- [ ] Erst messen, ob RDKit/eine Bibliothek das kann (github-first); sonst eigener Zeichner nur für Zucker/Aminosäuren
+- [x] Erst messen, ob RDKit/eine Bibliothek das kann (github-first); sonst eigener Zeichner nur für Zucker/Aminosäuren
+  - Verdikt 26.10. (Scout): **Eigenbau.** RDKit 2026.03.6 hat keine Projektions-API (nur `rdDepictor.SetRingSystemTemplates`,
+    normales Layout). CDK `FischerRecognition`, Indigo `haworth_projection_finder`, Kekule.js nur *Erkennung*.
+    `pychemprojections` (BSD-3, 17★) nur Fischer, keine Ringe, parst den SMILES-String → ignorieren.
+  - Regel (gemessen, ohne CIP/3D): `Chem.AddHs`, Chiralitätstag in fester Nachbarreihenfolge lesen
+    (`cw ^ parity(GetBonds-Reihenfolge → Zielreihenfolge)`). Fischer: Hauptkette von C1 (Carbonyl/COOH oben), Ziel
+    (oben, unten, X, H), gleich Referenz D-Glycerinaldehyd ⇒ X rechts. Stimmt für D-Glc RLRR, D-Gal RLLR, D-Rib RRR,
+    D-Fru (C3–5) LRR, L-Ala/L-Ser NH₂ links. Haworth: Ring ab Ring-O über das anomere C im Uhrzeigersinn (O hinten
+    rechts), Ziel (Vorgänger, Nachfolger, s0, s1), gleich Referenz β-D-Glcp ⇒ s0 oben. Stimmt für α/β-Glc, β-Gal, β-Ribf.
+  - Prototypen: `plans/anhang/fischer-prototyp.py.txt`, `plans/anhang/haworth-prototyp.py.txt` (Skizzen, nicht lint-fest).
+- [ ] Bauen: `chemdraw_tool/projection.py` (keine neue Dependency), Panel-Umschalter „Fischer“/„Haworth“ nur bei passenden
+      Stoffen (offenkettige Zucker/Aminosäuren bzw. Pyranose/Furanose), opt-in, Standardausgabe unverändert.
+      Fischer: Kreuzkoordinaten als Conformer → bestehender svg_renderer, ohne Keile. Haworth: feste Ring-Koordinaten,
+      dicke Vorderkante als eigenes SVG, Substituenten als senkrechte Striche (OH, H, CH₂OH). TDD mit den neun Fällen
+      oben + α-Anomer als Gegenprobe gegen CIP (selbst getipptes SMILES kippt das Anomer still).
+      Offene Bauentscheidung für die bauende Session: Ringzucker in Fischer (Ring öffnen) oder klarer Hinweis.

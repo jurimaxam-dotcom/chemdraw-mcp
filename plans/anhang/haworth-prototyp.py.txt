@@ -1,0 +1,38 @@
+import sys; sys.path.insert(0,'/private/tmp/claude-501/-Users-tom-Documents-projects-chemdraw-mcp/58e043e8-6fd2-4046-a358-5bca66c10c96/scratchpad')
+from rdkit import Chem
+CW=Chem.ChiralType.CHI_TETRAHEDRAL_CW
+def parity(src,dst):
+    p=[src.index(x) for x in dst]; return sum(p[i]>p[j] for i in range(4) for j in range(i+1,4))%2
+def tag(m,a,order):
+    at=m.GetAtomWithIdx(a); nb=[b.GetOtherAtomIdx(a) for b in at.GetBonds()]
+    return (at.GetChiralTag()==CW) ^ bool(parity(nb,order))
+def ringorder(m):
+    ri=m.GetRingInfo(); ring=[r for r in ri.AtomRings() if any(m.GetAtomWithIdx(i).GetSymbol()=='O' for i in r)][0]
+    O=[i for i in ring if m.GetAtomWithIdx(i).GetSymbol()=='O'][0]
+    # anomeres C: Ring-Nachbar von O mit exocyclischem O
+    nO=[n.GetIdx() for n in m.GetAtomWithIdx(O).GetNeighbors() if n.GetIdx() in ring]
+    c1=[c for c in nO if any(x.GetSymbol()=='O' and x.GetIdx() not in ring for x in m.GetAtomWithIdx(c).GetNeighbors())][0]
+    order=[O,c1]
+    while len(order)<len(ring):
+        nxt=[n.GetIdx() for n in m.GetAtomWithIdx(order[-1]).GetNeighbors() if n.GetIdx() in ring and n.GetIdx() not in order][0]; order.append(nxt)
+    return order  # O, C1(anomer), C2, ... im Uhrzeigersinn von oben gezeichnet
+def haworth(smi,ref):
+    m=Chem.AddHs(Chem.MolFromSmiles(smi)); r=ringorder(m); out=[]
+    for k in range(1,len(r)):
+        a=r[k]; at=m.GetAtomWithIdx(a)
+        if at.GetChiralTag()==Chem.ChiralType.CHI_UNSPECIFIED: out.append('-'); continue
+        prev,nxt=r[k-1],r[(k+1)%len(r)]
+        subs=[n.GetIdx() for n in at.GetNeighbors() if n.GetIdx() not in (prev,nxt)]
+        s0,s1=subs; up= s0 if tag(m,a,[prev,nxt,s0,s1])==ref else s1
+        lab=lambda i: 'H' if m.GetAtomWithIdx(i).GetAtomicNum()==1 else ('OH' if m.GetAtomWithIdx(i).GetSymbol()=='O' else 'CH2OH')
+        out.append(f"C{k}:{lab(up)} oben")
+    return out
+# Referenz: beta-D-Glucopyranose, C1-OH oben
+b='OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O'
+m=Chem.AddHs(Chem.MolFromSmiles(b)); r=ringorder(m); a=r[1]
+OH=[n.GetIdx() for n in m.GetAtomWithIdx(a).GetNeighbors() if n.GetSymbol()=='O' and n.GetIdx()!=r[0]][0]
+H=[n.GetIdx() for n in m.GetAtomWithIdx(a).GetNeighbors() if n.GetAtomicNum()==1][0]
+REF=tag(m,a,[r[0],r[2],OH,H])
+for n,s in [('b-Glc',b),('a-Glc','OC[C@H]1O[C@H](O)[C@H](O)[C@@H](O)[C@@H]1O'),('b-Gal','OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@H]1O'),
+            ('b-Rib-f','OC[C@H]1O[C@@H](O)[C@H](O)[C@@H]1O'),('b-Fru-f','OC[C@H]1O[C@@](O)(CO)[C@@H](O)[C@@H]1O')]:
+    print(n,haworth(s,REF))

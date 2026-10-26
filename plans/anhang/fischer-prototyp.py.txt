@@ -1,0 +1,51 @@
+from rdkit import Chem
+CW=Chem.ChiralType.CHI_TETRAHEDRAL_CW
+def parity(src,dst):
+    p=[src.index(x) for x in dst]; n=0
+    for i in range(len(p)):
+        for j in range(i+1,len(p)):
+            n+= p[i]>p[j]
+    return n%2
+def tag_in_order(mol,a,order):
+    """Chiral tag (True=CW) wenn Nachbarn in 'order' gelesen werden."""
+    at=mol.GetAtomWithIdx(a); nb=[b.GetOtherAtomIdx(a) for b in at.GetBonds()]
+    cw = at.GetChiralTag()==CW
+    return cw ^ bool(parity(nb,order))
+# Fischer: Ordnung (oben, unten, rechts, links). Referenz: D-Glycerinaldehyd, OH rechts.
+def fischer(smi, chain):
+    m=Chem.AddHs(Chem.MolFromSmiles(smi)); out=[]
+    for k in range(1,len(chain)-1):
+        a=chain[k]; at=m.GetAtomWithIdx(a)
+        if at.GetChiralTag()==Chem.ChiralType.CHI_UNSPECIFIED: out.append('-'); continue
+        subs=[n.GetIdx() for n in at.GetNeighbors() if n.GetIdx() not in (chain[k-1],chain[k+1])]
+        X=[s for s in subs if m.GetAtomWithIdx(s).GetAtomicNum()!=1][0]; H=[s for s in subs if s!=X][0]
+        out.append((m.GetAtomWithIdx(X).GetSymbol(), 'R' if tag_in_order(m,a,[chain[k-1],chain[k+1],X,H])==REF else 'L'))
+    return out
+def mainchain(m,start):  # Kohlenstoffkette ab Atom start (einfach: längster C-Pfad)
+    import itertools
+    best=None
+    for end in range(m.GetNumAtoms()):
+        if m.GetAtomWithIdx(end).GetSymbol()!='C': continue
+        p=Chem.GetShortestPath(m,start,end) if end!=start else (start,)
+        if all(m.GetAtomWithIdx(i).GetSymbol()=='C' for i in p) and (best is None or len(p)>len(best)): best=p
+    return list(best)
+# Referenz bestimmen
+g=Chem.MolFromSmiles('O=C[C@H](O)CO')  # D-Glycerinaldehyd (R)
+gh=Chem.AddHs(g); ch=mainchain(gh,1)
+at=gh.GetAtomWithIdx(2); X=3; H=[n.GetIdx() for n in at.GetNeighbors() if n.GetAtomicNum()==1][0]
+REF=tag_in_order(gh,2,[ch[0],ch[2],X,H])
+from rdkit.Chem import rdCIPLabeler
+rdCIPLabeler.AssignCIPLabels(g); print('Glycerinaldehyd CIP', g.GetAtomWithIdx(2).GetProp('_CIPCode'))
+for name,smi in [('D-Glucose offen','O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO'),
+                 ('D-Glucose PubChem offen','C([C@H]([C@H]([C@@H]([C@H](C=O)O)O)O)O)O'),
+                 ('D-Fructose PubChem','C([C@H]([C@H]([C@@H](C(=O)CO)O)O)O)O'),
+                 ('D-Ribose PubChem','C([C@H]([C@H]([C@H](C=O)O)O)O)O'),
+                 ('D-Galactose PubChem','C([C@H]([C@@H]([C@@H]([C@H](C=O)O)O)O)O)O')]:
+    m=Chem.AddHs(Chem.MolFromSmiles(smi))
+    # Start = Carbonyl-C bzw. C1 (Aldehyd-C oder CH2OH neben Keton)
+    ald=[a.GetIdx() for a in m.GetAtoms() if a.GetSymbol()=='C' and any(b.GetBondTypeAsDouble()==2 for b in a.GetBonds()) and a.GetTotalNumHs(includeNeighbors=True)==1]
+    start=ald[0] if ald else [a.GetIdx() for a in m.GetAtoms() if a.GetSymbol()=='C' and any(n.GetSymbol()=='C' and any(b.GetBondTypeAsDouble()==2 for b in n.GetBonds()) for n in a.GetNeighbors()) and a.GetDegree()==4 and sum(x.GetSymbol()=='C' for x in a.GetNeighbors())==1][0]
+    ch=mainchain(m,start); print(name, fischer(smi,ch))
+# Aminosäure: oben COOH, unten R
+for name,smi,top,bot in [('L-Alanin','C[C@@H](C(=O)O)N',2,0),('L-Serin','C([C@@H](C(=O)O)N)O',2,0)]:
+    m=Chem.AddHs(Chem.MolFromSmiles(smi)); print(name, fischer(smi,[top,1,bot]))
