@@ -160,14 +160,7 @@ def test_walk_sections_skips_information_without_value():
     assert results == []
 
 
-# --- pubchem_safety / pubchem_physical_properties ---------------------------
-
-
-def test_pubchem_safety_returns_empty_on_error():
-    with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("503")
-    ):
-        assert databases.pubchem_safety(2244) == []
+# --- pubchem_physical_properties (GHS: tests/test_ghs.py) ---------------------------
 
 
 def test_pubchem_physical_properties_returns_empty_on_error():

@@ -29,9 +29,9 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [x] RDKit `FindPotentialStereo` in `generator.py` → Warnung im `MoleculePayload`; Panel hebt betroffene Atome mit dem vorhandenen Hover-Highlight hervor (Bezug: Memory „manual-smiles-stereo-trap“)
 
 ## Etappe 5: GHS-Datenblatt nach Quelle geordnet (S–M)
-- [ ] Messung zuerst: Koffein CID 2519 (heute 18 flache Zeilen, 4 Signalwörter) und NaCl („Not Classified“?)
-- [ ] `databases.py`: nach `ReferenceNumber` gruppieren, Zustimmungs-% lesen, „Not Classified“ als eigener Befund; Leitquelle vorn (EU-harmonisiert, sonst ECHA-Aggregat), H-Sätze nach % sortiert, Rest zugeklappt
-- [ ] `payloads.py` (`DatabaseSource` je Quelle), DataSheet-View, Test
+- [x] Messung zuerst: Koffein CID 2519 (heute 18 flache Zeilen, 4 Signalwörter) und NaCl („Not Classified“?)
+- [x] `databases.py`: nach `ReferenceNumber` gruppieren, Zustimmungs-% lesen, „Not Classified“ als eigener Befund; Leitquelle vorn (EU-harmonisiert, sonst ECHA-Aggregat), H-Sätze nach % sortiert, Rest zugeklappt
+- [x] `payloads.py` (`DatabaseSource` je Quelle), DataSheet-View, Test
 
 ## Etappe 6: Reaktionsbilanz-Prüfung (M)
 - [ ] `chemdraw_tool/reaction_balance.py` (eigene Umsetzung: Elementmatrix, rationaler Nullraum mit `fractions.Fraction`, keine neue Abhängigkeit)

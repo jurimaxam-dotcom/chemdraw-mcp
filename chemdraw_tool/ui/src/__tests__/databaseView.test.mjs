@@ -51,3 +51,56 @@ test("und wieder zurueck, ebenfalls ohne Aufruf", async () => {
   assert.equal(calls.length, 0);
   unmount();
 });
+
+// --- GHS je Quelle (Etappe 5) ------------------------------------------------
+import { DATABASE_GHS, DATABASE_GHS_FAILED } from "./fixtures.mjs";
+
+async function openGhs(data) {
+  const view = setup(data);
+  await click(buttonByText(view.container, "GHS"));
+  return view;
+}
+
+test("GHS: Leitquelle offen, die anderen zugeklappt", async () => {
+  const { panel, unmount } = await openGhs(DATABASE_GHS);
+  const text = textOf(panel("data"));
+  assert.match(text, /EU harmonised/);
+  assert.match(text, /Lead source/);
+  assert.match(text, /Harmful if swallowed/);
+  // zweite und dritte Quelle: Kopfzeile sichtbar, Inhalt nicht
+  assert.match(text, /ECHA C&L notifications/);
+  assert.match(text, /NITE-CMC/);
+  assert.doesNotMatch(text, /98\.9/);
+  assert.doesNotMatch(text, /May damage fertility/);
+  unmount();
+});
+
+test("GHS: zweite Quelle aufklappen zeigt ihre Anteile — und nur ihre", async () => {
+  const { container, panel, unmount } = await openGhs(DATABASE_GHS);
+  const toggle = container.querySelector('[data-ghs-id="ghs-51"] button[aria-expanded]');
+  assert.ok(toggle, "kein Aufklapp-Knopf für ECHA");
+  assert.equal(toggle.getAttribute("aria-expanded"), "false");
+  await click(toggle);
+
+  assert.equal(toggle.getAttribute("aria-expanded"), "true");
+  const echa = textOf(container.querySelector('[data-ghs-id="ghs-51"]'));
+  assert.match(echa, /98\.9%/);
+  assert.match(echa, /Not classified/);
+  assert.match(echa, /0\.6% of all reports \(13 of 2217\)/);
+  assert.doesNotMatch(textOf(panel("data")), /May damage fertility/, "NITE blieb zu");
+  unmount();
+});
+
+test("GHS: ohne Prozent wird keiner behauptet", async () => {
+  const { container, unmount } = await openGhs(DATABASE_GHS);
+  const eu = textOf(container.querySelector('[data-ghs-id="ghs-272"]'));
+  assert.match(eu, /H302/, "Leitgruppe fehlt");
+  assert.doesNotMatch(eu, /%/);
+  unmount();
+});
+
+test("GHS: gescheiterter Abruf sagt das, statt leer zu sein", async () => {
+  const { panel, unmount } = await openGhs(DATABASE_GHS_FAILED);
+  assert.match(textOf(panel("data")), /could not be retrieved/);
+  unmount();
+});

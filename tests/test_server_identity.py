@@ -138,7 +138,7 @@ def test_data_sheet_goes_by_structure_not_by_name(monkeypatch):
 
     monkeypatch.setattr(server, "pubchem_properties", per_name)
     monkeypatch.setattr(server, "pubchem_synonyms", per_name)
-    monkeypatch.setattr(server, "pubchem_safety", lambda cid: [])
+    monkeypatch.setattr(server, "pubchem_ghs", lambda cid: {"status": "empty", "record_title": "", "sources": []})
 
     sheet = server.lookup_molecule_data(_SMILES)
 

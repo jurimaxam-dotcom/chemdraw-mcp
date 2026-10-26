@@ -12,7 +12,9 @@ jeder Test erlaubt genau die URLs, die er erwartet — unerwartete URLs landen i
 Exceptions, ein blosses `raise` bliebe unsichtbar).
 """
 
+import json
 from contextlib import contextmanager
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -527,25 +529,66 @@ def test_lookup_compound_keeps_markdown_valid_on_partial_outage():
 
 
 # --- lookup_safety ----------------------------------------------------------
+#
+# Seit Etappe 5 (26.10.2026) nach Quelle getrennt, gegen echte, eingefrorene
+# PUG-View-Antworten (Koffein, Natriumchlorid als Negativ-Fixture).
+
+_FIXTURES = Path(__file__).parent / "__fixtures__"
 
 
-def test_lookup_safety_formats_ghs_table():
+def _ghs_json(name):
+    return json.loads((_FIXTURES / name).read_text(encoding="utf-8"))
+
+
+def _safety(name, cid, ghs_resp):
     with http(
         {
-            "/cids/JSON": _Resp(json_data={"IdentifierList": {"CID": [2244]}}),
-            "heading=GHS": _Resp(json_data=PUBCHEM_GHS_ASPIRIN),
+            "/cids/JSON": _Resp(json_data={"IdentifierList": {"CID": [cid]}}),
+            "heading=GHS": ghs_resp,
         }
     ):
-        out = lookup_safety("Aspirin")
+        return lookup_safety(name)
 
-    assert out.startswith("## Aspirin — Sicherheitsdaten (GHS)")
-    assert "| **Pictogram(s)** | Irritant; Health Hazard |" in out
-    assert "| **Signal** | Warning |" in out
-    assert "| **GHS Hazard Statements** | H302: Harmful if swallowed |" in out
-    # Information ohne "Value" darf keine leere Zeile erzeugen
-    assert "ECHA C&L Notifications Summary" not in out
+
+def test_lookup_safety_caffeine_lead_source_first():
+    out = _safety("Caffeine", 2519, _Resp(json_data=_ghs_json("pubchem_ghs_2519_caffeine.json")))
+
+    assert out.startswith("## Caffeine — GHS classification (PubChem CID 2519)")
+    lead = out.index("**Lead source:** EU harmonised")
+    assert lead < out.index("ECHA") < out.index("NITE-CMC")
+    lead_block = out[lead : out.index("**Other sources")]
+    assert "Signal word: Warning" in lead_block
+    assert "H302: Harmful if swallowed" in lead_block
+    assert "%" not in lead_block, "die EU-Verordnung nennt keinen Anteil"
+    assert "Pictograms: Irritant" in lead_block
+    assert "P-codes: P264, P270, P301+P317, P330, P501" in lead_block
+    assert "Danger" not in lead_block
+    others = out[out.index("**Other sources") :]
+    assert "H302 98.9%" in others and "not classified 0.6%" in others
+    assert "Danger · H301, H332, H360" in others
     assert "#section=Safety-and-Hazards" in out
-    assert "compound/2244" in out
+
+
+def test_lookup_safety_nacl_never_leads_with_the_mislinked_entry():
+    out = _safety(
+        "Sodium chloride", 5234,
+        _Resp(json_data=_ghs_json("pubchem_ghs_5234_sodium_chloride.json")),
+    )
+
+    lead = out.index("**Lead source:** ECHA")
+    lead_block = out[lead : out.index("**Other sources")]
+    assert "Not classified: 89.2% of all reports (1840 of 2063)" in lead_block
+    assert lead_block.index("Not classified") < lead_block.index("H319")
+    assert "H318" not in lead_block and "Danger" not in lead_block
+    assert out.index("record name differs: product-by-process") < out.index("H318")
+
+
+def test_lookup_safety_without_references_still_reads():
+    """Synthetische Antwort ohne Reference-Liste: kein Absturz, keine Leitquelle."""
+    out = _safety("Aspirin", 2244, _Resp(json_data=PUBCHEM_GHS_ASPIRIN))
+    assert "Warning" in out and "H302" in out
+    assert "**Lead source:**" not in out
+    assert "record name missing" in out
 
 
 def test_lookup_safety_reports_unknown_compound():
@@ -555,30 +598,24 @@ def test_lookup_safety_reports_unknown_compound():
     assert out == "Verbindung 'Xyzzyol' nicht in PubChem gefunden."
 
 
-def test_lookup_safety_reports_missing_ghs_section():
-    """CID existiert, aber PubChem hat keine GHS-Daten (leere Section)."""
-    empty = {"Record": {"Section": [{"TOCHeading": "Safety and Hazards"}]}}
-    with http(
-        {
-            "/cids/JSON": _Resp(json_data={"IdentifierList": {"CID": [962]}}),
-            "heading=GHS": _Resp(json_data=empty),
-        }
-    ):
-        out = lookup_safety("Wasser")
+@pytest.mark.parametrize(
+    "resp",
+    [
+        _Resp(status=404),
+        _Resp(json_data={"Record": {"Section": [{"TOCHeading": "Safety and Hazards"}]}}),
+    ],
+)
+def test_lookup_safety_reports_missing_ghs_data(resp):
+    """CID existiert, PubChem hat keine GHS-Daten — das ist nicht „not classified“."""
+    out = _safety("Water", 962, resp)
+    assert "no GHS classification" in out
+    assert "not the same as" in out
 
-    assert out == "Keine GHS-Sicherheitsdaten für 'Wasser' in PubChem."
 
-
-def test_lookup_safety_degrades_on_pug_view_error():
-    with http(
-        {
-            "/cids/JSON": _Resp(json_data={"IdentifierList": {"CID": [2244]}}),
-            "heading=GHS": _Resp(status=503),
-        }
-    ):
-        out = lookup_safety("Aspirin")
-
-    assert out == "Keine GHS-Sicherheitsdaten für 'Aspirin' in PubChem."
+def test_lookup_safety_failure_is_not_reported_as_no_data():
+    out = _safety("Aspirin", 2244, _Resp(status=503))
+    assert "could not be retrieved" in out
+    assert "no GHS classification" not in out
 
 
 # --- lookup_physical --------------------------------------------------------

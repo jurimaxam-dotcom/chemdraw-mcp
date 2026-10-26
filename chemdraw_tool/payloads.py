@@ -184,11 +184,49 @@ class DatabaseRow(BaseModel):
     val: str
 
 
+class GhsHazard(BaseModel):
+    code: str  # "H302", "H300+H310"
+    text: str = ""
+    # Nur ECHA-Aggregate nennen einen Anteil; None heisst "nicht angegeben",
+    # nie 0 %.
+    percent: float | None = None
+
+
+class GhsNotClassified(BaseModel):
+    """Eine Quelle meldet ausdruecklich "erfuellt die GHS-Kriterien nicht"."""
+
+    percent: float | None = None
+    reports: int | None = None
+    total: int | None = None
+
+
+class GhsGroup(BaseModel):
+    """Die Einstufung EINER Quelle (PubChem ReferenceNumber)."""
+
+    id: str  # stabil: "ghs-<ReferenceNumber>"
+    source: str  # lesbarer Quellenname
+    record_name: str = ""
+    url: str = ""
+    lead: bool = False
+    note: str = ""  # z. B. "record name differs: …"
+    signal: str = ""
+    hazards: list[GhsHazard] = []
+    pictograms: list[str] = []
+    p_codes: list[str] = []
+    not_classified: GhsNotClassified | None = None
+    reports_total: int | None = None
+
+
 class DatabaseSource(BaseModel):
-    type: str  # "PubChem" | "GHS"
+    type: str  # "PubChem" | "GHS" — zugleich der Reiter im Panel, je Typ einer
     source: str
     url: str
     rows: list[DatabaseRow] = []
+    # GHS: eine Gruppe je Quelle, Leitquelle zuerst. Leer + `note`, wenn PubChem
+    # nichts hat oder der Abruf scheiterte (status "empty" / "error").
+    groups: list[GhsGroup] = []
+    status: str = ""
+    note: str = ""
 
 
 class DatabasePayload(BaseModel):

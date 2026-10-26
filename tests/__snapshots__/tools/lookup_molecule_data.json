@@ -74,6 +74,19 @@
       },
       "DatabaseSource": {
         "properties": {
+          "groups": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/GhsGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
           "rows": {
             "default": [],
             "items": {
@@ -84,6 +97,11 @@
           },
           "source": {
             "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
             "type": "string"
           },
           "type": {
@@ -132,6 +150,170 @@
           "name"
         ],
         "title": "FunctionalGroup",
+        "type": "object"
+      },
+      "GhsGroup": {
+        "description": "Die Einstufung EINER Quelle (PubChem ReferenceNumber).",
+        "properties": {
+          "hazards": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/GhsHazard"
+            },
+            "title": "Hazards",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "lead": {
+            "default": false,
+            "title": "Lead",
+            "type": "boolean"
+          },
+          "not_classified": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/GhsNotClassified"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "p_codes": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "P Codes",
+            "type": "array"
+          },
+          "pictograms": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Pictograms",
+            "type": "array"
+          },
+          "record_name": {
+            "default": "",
+            "title": "Record Name",
+            "type": "string"
+          },
+          "reports_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reports Total"
+          },
+          "signal": {
+            "default": "",
+            "title": "Signal",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "url": {
+            "default": "",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source"
+        ],
+        "title": "GhsGroup",
+        "type": "object"
+      },
+      "GhsHazard": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Percent"
+          },
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "GhsHazard",
+        "type": "object"
+      },
+      "GhsNotClassified": {
+        "description": "Eine Quelle meldet ausdruecklich \"erfuellt die GHS-Kriterien nicht\".",
+        "properties": {
+          "percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Percent"
+          },
+          "reports": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reports"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Total"
+          }
+        },
+        "title": "GhsNotClassified",
         "type": "object"
       },
       "StereoWarning": {

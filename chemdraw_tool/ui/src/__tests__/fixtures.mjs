@@ -72,3 +72,82 @@ export const AMBIGUOUS = {
     { label: "p-xylene", name: "1,4-dimethylbenzene", smiles: "Cc1ccc(C)cc1", svg: SVG },
   ],
 };
+
+/** Datenblatt mit GHS je Quelle (Etappe 5) — Form wie lookup_molecule_data
+ *  sie für Koffein liefert, auf zwei Quellen gekürzt. */
+export const DATABASE_GHS = {
+  ...DATABASE,
+  name: "Caffeine",
+  sources: [
+    DATABASE.sources[0],
+    {
+      type: "GHS",
+      source: "PubChem CID 2519 — Safety",
+      url: "https://pubchem.ncbi.nlm.nih.gov/compound/2519#section=Safety-and-Hazards",
+      rows: [],
+      status: "ok",
+      note: "",
+      groups: [
+        {
+          id: "ghs-272",
+          source: "EU harmonised classification (CLP, Regulation (EC) No 1272/2008)",
+          record_name: "caffeine",
+          url: "https://eur-lex.europa.eu/eli/reg/2008/1272/oj",
+          lead: true,
+          note: "",
+          signal: "Warning",
+          hazards: [{ code: "H302", text: "Harmful if swallowed", percent: null }],
+          pictograms: ["Irritant"],
+          p_codes: ["P264", "P270"],
+          not_classified: null,
+          reports_total: null,
+        },
+        {
+          id: "ghs-51",
+          source: "ECHA C&L notifications (company self-classification)",
+          record_name: "Caffeine (EC: 200-362-1)",
+          url: "",
+          lead: false,
+          note: "",
+          signal: "Warning",
+          hazards: [{ code: "H302", text: "Harmful if swallowed", percent: 98.9 }],
+          pictograms: ["Irritant"],
+          p_codes: [],
+          not_classified: { percent: 0.6, reports: 13, total: 2217 },
+          reports_total: 2217,
+        },
+        {
+          id: "ghs-262",
+          source: "NITE-CMC (Japan)",
+          record_name: "caffeine - FY2008",
+          url: "",
+          lead: false,
+          note: "",
+          signal: "Danger",
+          hazards: [{ code: "H360", text: "May damage fertility or the unborn child", percent: null }],
+          pictograms: ["Health Hazard"],
+          p_codes: [],
+          not_classified: null,
+          reports_total: null,
+        },
+      ],
+    },
+  ],
+};
+
+/** GHS-Reiter, wenn der Abruf scheiterte. */
+export const DATABASE_GHS_FAILED = {
+  ...DATABASE,
+  sources: [
+    DATABASE.sources[0],
+    {
+      type: "GHS",
+      source: "PubChem CID 2244 — Safety",
+      url: "https://pubchem.ncbi.nlm.nih.gov/compound/2244#section=Safety-and-Hazards",
+      rows: [],
+      groups: [],
+      status: "error",
+      note: "GHS data could not be retrieved from PubChem (network or service error).",
+    },
+  ],
+};

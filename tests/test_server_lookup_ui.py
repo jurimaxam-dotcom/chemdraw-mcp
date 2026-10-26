@@ -1,13 +1,24 @@
 """Tests for lookup_molecule_data tool — DatabaseView payload."""
 
+import json
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+from chemdraw_tool import databases
 from chemdraw_tool.payloads import DatabasePayload
 from chemdraw_tool.server import lookup_molecule_data
+
+FIXTURES = Path(__file__).parent / "__fixtures__"
+_NO_GHS = {"status": "empty", "record_title": "", "sources": []}
+
+
+def _ghs_fixture(name: str) -> dict:
+    data = json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+    return {"status": "ok", **databases.parse_ghs(data)}
 
 
 @pytest.fixture(autouse=True)
@@ -27,7 +38,7 @@ def _make_mol(smiles: str) -> Chem.Mol:
     return mol
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -49,10 +60,7 @@ def test_lookup_molecule_data_returns_database_payload(
         "InChIKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N",
     }
     mock_synonyms.return_value = ("50-78-2", ["Aspirin", "Acetylsalicylic acid"])
-    mock_safety.return_value = [
-        {"name": "GHS-Gefahrensymbol", "value": "GHS07"},
-        {"name": "H-Sätze", "value": "H302, H317, H332"},
-    ]
+    mock_safety.return_value = _NO_GHS
 
     result = lookup_molecule_data("Aspirin")
 
@@ -62,7 +70,7 @@ def test_lookup_molecule_data_returns_database_payload(
     assert len(result.sources) == 2
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -82,7 +90,7 @@ def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safet
         "InChIKey": "UHOVQNZJYSORNB-UHFFFAOYSA-N",
     }
     mock_synonyms.return_value = ("71-43-2", [])
-    mock_safety.return_value = []
+    mock_safety.return_value = _NO_GHS
 
     result = lookup_molecule_data("Benzol")
 
@@ -111,40 +119,90 @@ def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safet
     assert row_map["H-bond acceptors"] == "2"
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+def _sheet(mock_resolve, mock_props, mock_synonyms, mock_safety, ghs, title, smiles):
+    mol = _make_mol(smiles)
+    mock_resolve.return_value = (smiles, mol)
+    mock_props.return_value = {"CID": 1, "Title": title}
+    mock_synonyms.return_value = (None, [])
+    mock_safety.return_value = ghs
+    return lookup_molecule_data(title)
+
+
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
-def test_ghs_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safety):
-    """GHS source must contain safety rows when available."""
-    mol = _make_mol("CC(=O)Oc1ccccc1C(=O)O")
-    mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
-    mock_props.return_value = {"CID": 2244}
-    mock_synonyms.return_value = (None, [])
-    mock_safety.return_value = [
-        {"name": "GHS-Gefahrensymbol", "value": "GHS07"},
-        {"name": "Signalwort", "value": "Achtung"},
-        {"name": "H-Sätze", "value": "H302"},
-        {"name": "P-Sätze", "value": ""},  # empty — should be excluded
-    ]
+def test_ghs_source_groups_caffeine(mock_resolve, mock_props, mock_synonyms, mock_safety):
+    """Eine GHS-Quelle (ein Reiter), darin eine Gruppe je PubChem-Referenz."""
+    result = _sheet(
+        mock_resolve, mock_props, mock_synonyms, mock_safety,
+        _ghs_fixture("pubchem_ghs_2519_caffeine.json"), "Caffeine",
+        "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    )
 
-    result = lookup_molecule_data("Aspirin")
-
-    assert len(result.sources) == 2
-    ghs_src = result.sources[1]
-    assert ghs_src.type == "GHS"
+    ghs = [s for s in result.sources if s.type == "GHS"]
+    assert len(ghs) == 1, "genau ein GHS-Reiter, sonst sind Quellen unanwählbar"
+    ghs_src = ghs[0]
+    assert ghs_src.status == "ok"
     assert "Safety" in ghs_src.url
-    assert "2244" in ghs_src.url
+    ids = [g.id for g in ghs_src.groups]
+    assert ids == ["ghs-272", "ghs-51", "ghs-262", "ghs-65"]
+    assert len(set(ids)) == len(ids)
+    lead = ghs_src.groups[0]
+    assert lead.lead is True
+    assert lead.source.startswith("EU harmonised")
+    assert lead.signal == "Warning"
+    assert [h.code for h in lead.hazards] == ["H302"]
+    assert lead.hazards[0].percent is None
+    echa = ghs_src.groups[1]
+    assert echa.hazards[0].percent == 98.9
+    assert echa.not_classified.percent == 0.6
+    assert [g.lead for g in ghs_src.groups[1:]] == [False, False, False]
 
-    row_keys = [r.key for r in ghs_src.rows]
-    assert "GHS-Gefahrensymbol" in row_keys
-    assert "Signalwort" in row_keys
-    assert "H-Sätze" in row_keys
-    # empty value must be excluded
-    assert "P-Sätze" not in row_keys
+
+@patch("chemdraw_tool.server.pubchem_ghs")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
+@patch("chemdraw_tool.server.resolve")
+def test_ghs_source_groups_nacl_negative(mock_resolve, mock_props, mock_synonyms, mock_safety):
+    """Der falsch verknüpfte EU-Eintrag (Azofarbstoff) darf nie vorn stehen."""
+    result = _sheet(
+        mock_resolve, mock_props, mock_synonyms, mock_safety,
+        _ghs_fixture("pubchem_ghs_5234_sodium_chloride.json"), "Sodium chloride",
+        "[Na+].[Cl-]",
+    )
+    ghs_src = next(s for s in result.sources if s.type == "GHS")
+    lead, other = ghs_src.groups
+    assert lead.id == "ghs-52" and lead.lead
+    assert lead.signal == "Warning"
+    assert lead.not_classified.percent == 89.2
+    assert other.id == "ghs-97" and not other.lead
+    assert other.note.startswith("record name differs: product-by-process")
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@pytest.mark.parametrize(
+    "status, needle",
+    [("empty", "no GHS classification"), ("error", "could not be retrieved")],
+)
+@patch("chemdraw_tool.server.pubchem_ghs")
+@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
+@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
+@patch("chemdraw_tool.server.resolve")
+def test_ghs_empty_and_error_are_told_apart(
+    mock_resolve, mock_props, mock_synonyms, mock_safety, status, needle
+):
+    result = _sheet(
+        mock_resolve, mock_props, mock_synonyms, mock_safety,
+        {"status": status, "record_title": "", "sources": []}, "Aspirin",
+        "CC(=O)Oc1ccccc1C(=O)O",
+    )
+    ghs_src = next(s for s in result.sources if s.type == "GHS")
+    assert ghs_src.status == status
+    assert ghs_src.groups == []
+    assert needle in ghs_src.note
+
+
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -172,7 +230,7 @@ def test_no_ghs_when_no_cid_in_props(
 # kein zusaetzlicher Netzabruf, keine zweite Aufloesung des Namens.
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -184,7 +242,7 @@ def test_payload_carries_atoms_for_the_hover(
     mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
     mock_props.return_value = {}
     mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
-    mock_safety.return_value = []
+    mock_safety.return_value = _NO_GHS
 
     result = lookup_molecule_data("Aspirin")
 
@@ -194,7 +252,7 @@ def test_payload_carries_atoms_for_the_hover(
     assert any(a.hCount > 0 for a in result.atoms)
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -206,7 +264,7 @@ def test_payload_carries_functional_groups(
     mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
     mock_props.return_value = {}
     mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
-    mock_safety.return_value = []
+    mock_safety.return_value = _NO_GHS
 
     result = lookup_molecule_data("Aspirin")
 
@@ -214,7 +272,7 @@ def test_payload_carries_functional_groups(
     assert "Ester" in names and "Aromat" in names, f"Gruppen fehlen: {names}"
 
 
-@patch("chemdraw_tool.server.pubchem_safety")
+@patch("chemdraw_tool.server.pubchem_ghs")
 @patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
 @patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
 @patch("chemdraw_tool.server.resolve")
@@ -226,7 +284,7 @@ def test_payload_names_its_compound(
     mock_resolve.return_value = ("CC(=O)Oc1ccccc1C(=O)O", mol)
     mock_props.return_value = {}
     mock_synonyms.return_value = ("50-78-2", ["Aspirin"])
-    mock_safety.return_value = []
+    mock_safety.return_value = _NO_GHS
 
     result = lookup_molecule_data("Aspirin")
 

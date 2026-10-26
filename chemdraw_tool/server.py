@@ -20,11 +20,12 @@ from chemdraw_tool.databases import (
     chebi_lookup,
     kegg_compound,
     kegg_find,
+    order_ghs_sources,
+    pubchem_ghs,
     pubchem_physical_properties,
     pubchem_properties,
     pubchem_properties_by_inchikey,
     pubchem_properties_by_smiles,
-    pubchem_safety,
     pubchem_synonyms,
     pubchem_synonyms_by_inchikey,
     pubchem_synonyms_by_smiles,
@@ -48,6 +49,9 @@ from chemdraw_tool.payloads import (
     DatabaseRow,
     DatabaseSource,
     FunctionalGroup,
+    GhsGroup,
+    GhsHazard,
+    GhsNotClassified,
     IsomerCandidate,
     LipinskiData,
     MechanismPayload,
@@ -2584,30 +2588,141 @@ def _lookup_compound(name: str) -> str:
     return "\n".join(lines)
 
 
+# --- GHS je Quelle (Etappe 5) -----------------------------------------------
+#
+# Beide Verbraucher (Panel und Text-`lookup(safety)`) bauen auf denselben
+# Gruppen auf: databases.pubchem_ghs liefert Quellen je ReferenceNumber,
+# order_ghs_sources stellt die Leitquelle nach vorn. Hier nur Darstellung.
+
+_GHS_NO_DATA = (
+    "PubChem lists no GHS classification for this compound. That is not the "
+    "same as 'not classified' — no source in PubChem reports on it."
+)
+_GHS_FAILED = (
+    "GHS data could not be retrieved from PubChem (network or service error). "
+    "This says nothing about the hazards — try again later."
+)
+
+
+def _ghs_source_label(source_name: str) -> str:
+    if "1272/2008" in source_name:
+        return "EU harmonised classification (CLP, Regulation (EC) No 1272/2008)"
+    if "European Chemicals Agency" in source_name:
+        return "ECHA C&L notifications (company self-classification)"
+    if source_name.startswith("NITE-CMC"):
+        return "NITE-CMC (Japan)"
+    if "HCIS" in source_name:
+        return "HCIS (Safe Work Australia)"
+    return source_name or "Unnamed source"
+
+
+def _ghs_groups(ghs: dict, names: list[str]) -> list[GhsGroup]:
+    ordered = order_ghs_sources(ghs.get("sources", []), [ghs.get("record_title", ""), *names])
+    groups = []
+    for i, src in enumerate(ordered):
+        ref = src.get("ref")
+        nc = src.get("not_classified")
+        groups.append(
+            GhsGroup(
+                id=f"ghs-{ref}" if ref is not None else f"ghs-unref-{i}",
+                source=_ghs_source_label(src.get("source_name", "")),
+                record_name=src.get("record_name", ""),
+                url=src.get("url", ""),
+                lead=src.get("lead", False),
+                note=src.get("note", ""),
+                signal=src.get("signal", ""),
+                hazards=[GhsHazard(**h) for h in src.get("hazards", [])],
+                pictograms=src.get("pictograms", []),
+                p_codes=src.get("p_codes", []),
+                not_classified=GhsNotClassified(**nc) if nc else None,
+                reports_total=src.get("reports_total"),
+            )
+        )
+    return groups
+
+
+def _ghs_findings(group: GhsGroup) -> list[tuple[str, str]]:
+    """H-Sätze und „not classified“ als (Kurzform, Langform), nach Anteil sortiert.
+
+    Ein Befund ohne Prozent behält seinen Platz; „not classified“ ohne Prozent
+    steht hinten — ihm einen Rang zu geben hieße, eine Zahl zu erfinden.
+    """
+    items: list[tuple[float | None, str, str]] = []
+    for h in group.hazards:
+        if h.percent is not None:
+            short = f"{h.code} {h.percent:g}%"
+            long = f"{h.code} ({h.percent:g}% of reports with hazard codes): {h.text}"
+        else:
+            short, long = h.code, f"{h.code}: {h.text}"
+        items.append((h.percent, short, long))
+    nc = group.not_classified
+    if nc is not None:
+        counts = f" ({nc.reports} of {nc.total})" if nc.reports is not None and nc.total else ""
+        if nc.percent is not None:
+            items.append((nc.percent, f"not classified {nc.percent:g}%",
+                          f"Not classified: {nc.percent:g}% of all reports{counts}"))
+        else:
+            items.append((None, "not classified", f"Not classified{counts}"))
+    if any(p is not None for p, _, _ in items):
+        items = sorted(items, key=lambda t: -(t[0] if t[0] is not None else -1))
+    return [(short, long) for _, short, long in items]
+
+
+def _ghs_compact(group: GhsGroup) -> str:
+    parts = [group.signal] if group.signal else []
+    findings = _ghs_findings(group)
+    if findings and all("%" not in short for short, _ in findings):
+        parts.append(", ".join(short for short, _ in findings))
+    else:
+        parts.extend(short for short, _ in findings)
+    return " · ".join(parts) or "no hazard data"
+
+
 def _lookup_safety(name: str) -> str:
-    """GHS-Gefahrstoffdaten als Markdown — Thema "safety" von `lookup`."""
+    """GHS-Einstufung als Markdown — Thema "safety" von `lookup`. Leitquelle zuerst."""
     cid = _get_cid(name)
     if cid is None:
         return f"Verbindung '{name}' nicht in PubChem gefunden."
 
-    safety = pubchem_safety(cid)
-    if not safety:
-        return f"Keine GHS-Sicherheitsdaten für '{name}' in PubChem."
-
-    lines = [f"## {name} — Sicherheitsdaten (GHS)\n"]
-    lines.append("| Kategorie | Information |")
-    lines.append("|-----------|------------|")
-
-    for entry in safety:
-        n = entry.get("name", "")
-        v = entry.get("value", "")
-        if v:
-            lines.append(f"| **{n}** | {v} |")
-
-    lines.append(
-        f"\n*Quelle: [PubChem CID {cid}]"
+    ghs = pubchem_ghs(cid)
+    head = f"## {name} — GHS classification (PubChem CID {cid})\n"
+    link = (
+        f"\n*Source: [PubChem CID {cid}]"
         f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid}#section=Safety-and-Hazards)*"
     )
+    if ghs["status"] == "error":
+        return f"{head}\n{_GHS_FAILED}{link}"
+    if ghs["status"] != "ok":
+        return f"{head}\n{_GHS_NO_DATA}{link}"
+
+    groups = _ghs_groups(ghs, [name])
+    lines = [head]
+    rest = groups
+    if groups and groups[0].lead:
+        lead, rest = groups[0], groups[1:]
+        lines.append(f'**Lead source:** {lead.source} — record "{lead.record_name}"')
+        if lead.signal:
+            lines.append(f"- Signal word: {lead.signal}")
+        lines.extend(f"- {long}" for _, long in _ghs_findings(lead))
+        if lead.pictograms:
+            lines.append(f"- Pictograms: {', '.join(lead.pictograms)}")
+        if lead.p_codes:
+            lines.append(f"- P-codes: {', '.join(lead.p_codes)}")
+        if lead.reports_total:
+            lines.append(f"- Based on {lead.reports_total} company reports")
+    if rest:
+        lines.append(
+            f"\n**Other sources** ({len(rest)}; percentages apply only within their own source):"
+            if groups[0].lead
+            else "**Sources** (no record name matches this compound; none is used as lead):"
+        )
+        for g in rest:
+            label = g.source + (f", {g.reports_total} reports" if g.reports_total else "")
+            if g.note:
+                lines.append(f"- {label} — {g.note}; not attributed to this compound: {_ghs_compact(g)}")
+            else:
+                lines.append(f"- {label}: {_ghs_compact(g)}")
+    lines.append(link)
     return "\n".join(lines)
 
 
@@ -2790,23 +2905,23 @@ with predict_spectrum or repeat those facts via lookup unless asked.
         )
     )
 
-    # --- GHS safety source (reuses CID from properties, no extra network call) ---
+    # --- GHS: ein Reiter, darin eine Gruppe je Quelle (Leitquelle zuerst) ---
+    # Auch ohne Daten oder bei Fehlschlag gibt es den Reiter — mit Hinweis, damit
+    # „keine GHS-Daten“ und „Abruf gescheitert“ nicht beide wie Leere aussehen.
     if cid_int:
-        safety = pubchem_safety(cid_int)
-        if safety:
-            safety_rows = [
-                DatabaseRow(key=e["name"], val=e["value"])
-                for e in safety
-                if e.get("value")
-            ]
-            sources.append(
-                DatabaseSource(
-                    type="GHS",
-                    source=f"PubChem CID {cid_int} — Safety",
-                    url=f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid_int}#section=Safety-and-Hazards",
-                    rows=safety_rows,
-                )
+        ghs = pubchem_ghs(cid_int)
+        names = [name, props.get("Title") or "", props.get("IUPACName") or ""]
+        status = ghs.get("status", "error")
+        sources.append(
+            DatabaseSource(
+                type="GHS",
+                source=f"PubChem CID {cid_int} — Safety",
+                url=f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid_int}#section=Safety-and-Hazards",
+                groups=_ghs_groups(ghs, names) if status == "ok" else [],
+                status=status,
+                note={"empty": _GHS_NO_DATA, "error": _GHS_FAILED}.get(status, ""),
             )
+        )
 
     return DatabasePayload(
         type="database",

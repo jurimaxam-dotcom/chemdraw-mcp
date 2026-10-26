@@ -135,7 +135,7 @@ def test_batch_generate_carries_warnings_per_molecule():
     assert by_name[ASPIRIN].stereoWarnings == []
 
 
-@patch("chemdraw_tool.server.pubchem_safety", return_value=None)
+@patch("chemdraw_tool.server.pubchem_ghs", return_value={"status": "empty", "record_title": "", "sources": []})
 def test_lookup_molecule_data_carries_the_same_warnings(_safety):
     payload = srv.lookup_molecule_data(IBUPROFEN)
     assert isinstance(payload, DatabasePayload)

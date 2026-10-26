@@ -191,17 +191,221 @@ def _walk_sections(section: dict, results: list):
         _walk_sections(sub, results)
 
 
-def pubchem_safety(cid: int) -> list[dict]:
+# --- GHS nach Quelle (Etappe 5) ---
+#
+# Eigener Parser statt `_walk_sections`: der verliert die ReferenceNumber und
+# alle StringWithMarkup-Eintraege nach [0] — bei Koffein standen so vier
+# Signalwoerter ohne Herkunft untereinander, NITE-CMC nur mit H301 statt
+# H301/H332/H360. `_walk_sections` bleibt fuer die physikalischen Eigenschaften.
+
+_H_STATEMENT = re.compile(
+    r"^\s*((?:EU)?H\d{3}[A-Za-z]*(?:\s*\+\s*(?:EU)?H\d{3}[A-Za-z]*)*)"
+    r"\s*(?:\((\d+(?:\.\d+)?)\s*%\))?\s*:?\s*(.*)$"
+)
+# "does not meet GHS hazard criteria for 0.6% (13  of 2217) of reports."
+# "... for 89.2% (1840 of 2063) of all reports."
+_NOT_CLASSIFIED_NOTE = re.compile(
+    r"not meet GHS hazard criteria for\s+(\d+(?:\.\d+)?)\s*%"
+    r"(?:\s*\(\s*(\d+)\s+of\s+(\d+)\s*\))?",
+    re.IGNORECASE,
+)
+_NOT_CLASSIFIED_COUNTS = re.compile(
+    r"not meeting GHS hazard criteria (?:per|by)\s+(\d+)\s+of\s+(\d+)", re.IGNORECASE
+)
+_REPORTS_TOTAL = re.compile(r"provided per\s+(\d+)\s+reports", re.IGNORECASE)
+_EU_HARMONISED = "1272/2008"
+_ECHA = "European Chemicals Agency"
+
+
+def _ghs_strings(info: dict) -> list[dict]:
+    return (info.get("Value") or {}).get("StringWithMarkup") or []
+
+
+def _ghs_info_items(section: dict):
+    """Alle Information-Eintraege unter der GHS-Ueberschrift, in Reihenfolge."""
+    yield from section.get("Information", []) or []
+    for sub in section.get("Section", []) or []:
+        yield from _ghs_info_items(sub)
+
+
+def _empty_ghs_source(ref, meta: dict) -> dict:
+    return {
+        "ref": ref,
+        "source_name": meta.get("SourceName", "") or "",
+        "record_name": meta.get("Name", "") or "",
+        "url": meta.get("URL", "") or "",
+        "signal": "",
+        "hazards": [],
+        "pictograms": [],
+        "p_codes": [],
+        "not_classified": None,
+        "reports_total": None,
+    }
+
+
+def _set_not_classified(src: dict, percent=None, reports=None, total=None) -> None:
+    # Prozent und Zaehler kommen in zwei Saetzen derselben Quelle — mergen,
+    # nie einen fehlenden Wert als 0 eintragen.
+    nc = src["not_classified"] or {"percent": None, "reports": None, "total": None}
+    for key, val in (("percent", percent), ("reports", reports), ("total", total)):
+        if val is not None and nc[key] is None:
+            nc[key] = val
+    src["not_classified"] = nc
+
+
+def _parse_ghs_info(src: dict, info: dict) -> None:
+    name = info.get("Name", "")
+    strings = _ghs_strings(info)
+    if name == "Pictogram(s)":
+        for s in strings:
+            for m in s.get("Markup", []) or []:
+                label = m.get("Extra")
+                if label and label not in src["pictograms"]:
+                    src["pictograms"].append(label)
+    elif name == "Signal":
+        if strings and not src["signal"]:
+            src["signal"] = strings[0].get("String", "").strip()
+    elif name == "GHS Hazard Statements":
+        for s in strings:
+            text = s.get("String", "").strip()
+            if text.casefold().startswith("not classified"):
+                _set_not_classified(src)
+                continue
+            m = _H_STATEMENT.match(text)
+            if not m:
+                continue
+            statement = m.group(3).split(" [", 1)[0].strip()
+            src["hazards"].append(
+                {
+                    "code": re.sub(r"\s+", "", m.group(1)),
+                    "percent": float(m.group(2)) if m.group(2) else None,
+                    "text": statement,
+                }
+            )
+    elif name == "Precautionary Statement Codes":
+        for s in strings:
+            text = s.get("String", "").split("(click", 1)[0]
+            for part in re.split(r",|\band\b", text):
+                code = part.strip()
+                if code and code not in src["p_codes"]:
+                    src["p_codes"].append(code)
+    elif name in ("Note", "ECHA C&L Notifications Summary"):
+        for s in strings:
+            text = s.get("String", "")
+            if m := _NOT_CLASSIFIED_NOTE.search(text):
+                _set_not_classified(
+                    src,
+                    percent=float(m.group(1)),
+                    reports=int(m.group(2)) if m.group(2) else None,
+                    total=int(m.group(3)) if m.group(3) else None,
+                )
+            elif m := _NOT_CLASSIFIED_COUNTS.search(text):
+                _set_not_classified(src, reports=int(m.group(1)), total=int(m.group(2)))
+            if (m := _REPORTS_TOTAL.search(text)) and src["reports_total"] is None:
+                src["reports_total"] = int(m.group(1))
+
+
+def parse_ghs(data: dict) -> dict:
+    """PUG-View-Antwort (heading=GHS Classification) → Quellen je ReferenceNumber.
+
+    Rueckgabe: {"record_title", "sources": [...]}, Quellen in der Reihenfolge,
+    in der PubChem sie zuerst nennt. Prozente gelten nur innerhalb ihrer Quelle.
+    """
+    record = data.get("Record", {}) or {}
+    refs = {
+        r.get("ReferenceNumber"): r
+        for r in record.get("Reference", []) or []
+        if isinstance(r, dict)
+    }
+    sources: dict = {}
+    for section in record.get("Section", []) or []:
+        for info in _ghs_info_items(section):
+            ref = info.get("ReferenceNumber")
+            if ref not in sources:
+                sources[ref] = _empty_ghs_source(ref, refs.get(ref, {}))
+            _parse_ghs_info(sources[ref], info)
+
+    result = []
+    for src in sources.values():
+        # Stabil nach Prozent absteigend; ohne Prozent bleibt die PubChem-Reihenfolge.
+        if any(h["percent"] is not None for h in src["hazards"]):
+            src["hazards"].sort(
+                key=lambda h: -(h["percent"] if h["percent"] is not None else -1)
+            )
+        if (
+            src["signal"]
+            or src["hazards"]
+            or src["pictograms"]
+            or src["p_codes"]
+            or src["not_classified"]
+        ):
+            result.append(src)
+    return {"record_title": record.get("RecordTitle", "") or "", "sources": result}
+
+
+def _ghs_name_key(name: str) -> str:
+    # ECHA: "Caffeine (EC: 200-362-1)", NITE: "caffeine - FY2008 (New/…)" —
+    # verglichen wird der Stoffname davor.
+    name = name.split(" (", 1)[0].split(" - ", 1)[0]
+    return " ".join(name.split()).casefold()
+
+
+def order_ghs_sources(sources: list[dict], names: list[str]) -> list[dict]:
+    """Leitquelle vorn: EU-harmonisiert, sonst ECHA-Aggregat, sonst die erste.
+
+    Leitquelle wird nur, wessen Stoffname zum gesuchten Stoff passt. Fremd oder
+    gar nicht benannte Eintraege (NaCl: ein Azofarbstoff unter der
+    EU-Verordnung) wandern ans Ende und tragen einen Hinweis.
+    """
+    wanted = {_ghs_name_key(n) for n in names if n and n.strip()}
+    out = []
+    for src in sources:
+        s = dict(src)
+        key = _ghs_name_key(s.get("record_name", "") or "")
+        s["name_matches"] = bool(key) and key in wanted
+        if s["name_matches"]:
+            s["note"] = ""
+        elif not key:
+            s["note"] = "record name missing"
+        else:
+            s["note"] = f"record name differs: {s['record_name']}"
+        s["lead"] = False
+        out.append(s)
+
+    matching = [s for s in out if s["name_matches"]]
+    lead = (
+        next((s for s in matching if _EU_HARMONISED in s.get("source_name", "")), None)
+        or next((s for s in matching if _ECHA in s.get("source_name", "")), None)
+        or (matching[0] if matching else None)
+    )
+    if lead is None:
+        return out
+    lead["lead"] = True
+    rest = [s for s in out if s is not lead]
+    return [lead] + [s for s in rest if s["name_matches"]] + [
+        s for s in rest if not s["name_matches"]
+    ]
+
+
+def pubchem_ghs(cid: int) -> dict:
+    """GHS-Einstufung je Quelle. status: "ok" | "empty" | "error".
+
+    "empty" (PubChem kennt keine GHS-Daten, 404 oder leere Section) und
+    "error" (Abruf gescheitert) sind verschiedene Befunde — beide sind etwas
+    anderes als "not classified", das eine Quelle ausdruecklich meldet.
+    """
+    url = _PUBCHEM_VIEW_URL.format(cid=cid, heading="GHS+Classification")
     try:
-        url = _PUBCHEM_VIEW_URL.format(cid=cid, heading="GHS+Classification")
         resp = requests.get(url, timeout=_TIMEOUT)
+        if resp.status_code == 404:
+            return {"status": "empty", "record_title": "", "sources": []}
         resp.raise_for_status()
-        results = []
-        _walk_sections(resp.json().get("Record", {}).get("Section", [{}])[0], results)
-        return results
+        parsed = parse_ghs(resp.json())
     except Exception:
-        logger.warning("PubChem safety lookup failed for CID %s", cid, exc_info=True)
-        return []
+        logger.warning("PubChem GHS lookup failed for CID %s", cid, exc_info=True)
+        return {"status": "error", "record_title": "", "sources": []}
+    status = "ok" if parsed["sources"] else "empty"
+    return {"status": status, **parsed}
 
 
 def pubchem_physical_properties(cid: int) -> list[dict]:
