@@ -17,6 +17,12 @@ Golden-SVGs nie zum Grünmachen neu erzeugen. Desktop-Test läuft über den Repo
   - Gebaut 26.10.: Parameter `coefficients` (eine Zahl je Stoff, 1 wird nicht gezeichnet) in PNG/SVG/CDXML und Panel;
     Bilanz zählt mit Koeffizienten; Payload `request` wiederholt den Aufruf. Eigene Datei je Koeffizientensatz.
 
+- Befunde Desktop-Test 26.10. (Jay, Bild „Knallgasreaktion“):
+  - [ ] Modell setzt `coefficients` schon beim ersten Aufruf selbst; der Knopf wurde nicht gebraucht. Widerspricht „nie ungefragt“?
+        Jay entscheidet: so lassen (Modell erklärt es im Text) oder Beschreibung „only when the user asks for a balanced equation“
+  - [ ] Unter den Molekülen steht der SMILES-Eingabetext ([H][H], O=O, O) statt eines Namens/einer Formel → bei SMILES-Eingabe Summenformel (H₂, O₂, H₂O) als Label
+  - [ ] Knopf „Apply coefficients“ einmal in Desktop von Hand klicken (bisher nur DOM-Test + test:host ohne diesen Pfad)
+
 ## Etappe 3: Stereo-Auswahl R/S, E/Z (S–M)
 - [ ] Stereo-Hinweis bekommt „Show variants“: alle Stereoisomere (EnumerateStereoisomers, Obergrenze 3 Zentren = 8) als Vorschaubilder mit R/S- bzw. E/Z-Label, Klick zeichnet mit Keilen — Muster der Isomer-Auswahl
 
