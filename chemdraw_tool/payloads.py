@@ -93,6 +93,25 @@ class MolEntry(BaseModel):
     name: str = ""
 
 
+class ReactionBalance(BaseModel):
+    """Atom and charge balance of the equation as drawn (all coefficients 1)."""
+
+    # Docstring steht im Ausgabeschema (Modell liest es) → Englisch.
+    # Bewusst ohne `type`: kein eigenes Panel, nur ein Teil von ReactionPayload.
+
+    balanced: bool
+    # Element → (rechts − links); + = rechts mehr. Leer, wenn ausgeglichen.
+    difference: dict[str, int] = {}
+    chargeDifference: int = 0  # Gesamtladung rechts − links
+    # Kleinste ganzzahlige Koeffizienten, Edukte dann Produkte; None, wenn die
+    # Eingabe ausgeglichen ist oder es keinen eindeutigen positiven Satz gibt.
+    suggestedCoefficients: list[int] | None = None
+    formulas: list[str] = []  # Hill-Formeln, gleiche Reihenfolge
+    summary: str = ""  # Badge-Text fürs Panel, z. B. "right side lacks H₂O"
+    suggestedEquation: str = ""  # z. B. "2 H₂ + O₂ → 2 H₂O"
+    note: str = ""  # derselbe Befund als Satz fürs Modell
+
+
 class ReactionPayload(BaseModel):
     type: str = "reaction"
     name: str = ""
@@ -103,6 +122,8 @@ class ReactionPayload(BaseModel):
     products: list[MolEntry] = []
     files: dict[str, str] = {}
     cdxml_path: str = ""
+    # None, wenn sich die Bilanz nicht prüfen lässt (Platzhalteratome).
+    balance: ReactionBalance | None = None
 
 
 class BatchPayload(BaseModel):

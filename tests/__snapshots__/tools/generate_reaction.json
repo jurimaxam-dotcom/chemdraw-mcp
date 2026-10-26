@@ -92,6 +92,71 @@
         },
         "title": "MolEntry",
         "type": "object"
+      },
+      "ReactionBalance": {
+        "description": "Atom and charge balance of the equation as drawn (all coefficients 1).",
+        "properties": {
+          "balanced": {
+            "title": "Balanced",
+            "type": "boolean"
+          },
+          "chargeDifference": {
+            "default": 0,
+            "title": "Chargedifference",
+            "type": "integer"
+          },
+          "difference": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "default": {},
+            "title": "Difference",
+            "type": "object"
+          },
+          "formulas": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Formulas",
+            "type": "array"
+          },
+          "note": {
+            "default": "",
+            "title": "Note",
+            "type": "string"
+          },
+          "suggestedCoefficients": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Suggestedcoefficients"
+          },
+          "suggestedEquation": {
+            "default": "",
+            "title": "Suggestedequation",
+            "type": "string"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "balanced"
+        ],
+        "title": "ReactionBalance",
+        "type": "object"
       }
     },
     "properties": {
@@ -99,6 +164,17 @@
         "default": "forward",
         "title": "Arrow",
         "type": "string"
+      },
+      "balance": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ReactionBalance"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
       },
       "cdxml_path": {
         "default": "",

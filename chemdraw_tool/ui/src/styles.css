@@ -286,3 +286,10 @@ button:active { filter: brightness(0.92); }
 .stereo-note-button { font: inherit; color: inherit; background: none; border: 1px dashed var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .stereo-note-button[aria-pressed="true"] { border-style: solid; border-color: color-mix(in srgb, var(--stereo-color) 45%, transparent); background: color-mix(in srgb, var(--stereo-color) 9%, var(--bg)); color: var(--fg); }
 .stereo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--stereo-color); flex: none; }
+
+/* Reaktionsbilanz: grün = ausgeglichen, gedämpft = Befund, gestrichelt = Vorschlag (nicht gezeichnet). */
+.balance-row { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; }
+.balance-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--fg-muted); }
+.balance-ok { color: var(--copy-success); background: var(--copy-success-bg); border-color: color-mix(in srgb, var(--copy-success) 40%, transparent); }
+.balance-off { color: var(--fg); }
+.balance-suggest { border-style: dashed; }

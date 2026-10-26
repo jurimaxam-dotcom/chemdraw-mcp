@@ -3072,6 +3072,12 @@ def generate_reaction(
 
     r_w, r_h = 250, 200
     from chemdraw_tool.payloads import MolEntry
+    from chemdraw_tool.reaction_balance import check_balance
+
+    # Bilanz an den vollen Molekülen (nicht an den abgekürzten), nur Stoffe
+    # links/rechts — Reagenzien im Pfeiltext zählen nicht. Die Zeichnung
+    # bleibt, wie bestellt; ein Vorschlag steht nur im Payload.
+    balance = check_balance(reactant_mols, product_mols, arrow=arrow)
 
     return ReactionPayload(
         type="reaction",
@@ -3089,6 +3095,7 @@ def generate_reaction(
         ],
         files=files,
         cdxml_path=cdxml_path,
+        balance=balance,
     )
 
 

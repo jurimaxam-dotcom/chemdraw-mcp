@@ -34,8 +34,8 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [x] `payloads.py` (`DatabaseSource` je Quelle), DataSheet-View, Test
 
 ## Etappe 6: Reaktionsbilanz-Prüfung (M)
-- [ ] `chemdraw_tool/reaction_balance.py` (eigene Umsetzung: Elementmatrix, rationaler Nullraum mit `fractions.Fraction`, keine neue Abhängigkeit)
-- [ ] Aus `generate_reaction` aufrufen; Panel-Badge („ausgeglichen“ / „rechts fehlt H₂O“ / vorgeschlagene Koeffizienten); nie die Zeichnung still ändern
+- [x] `chemdraw_tool/reaction_balance.py` (eigene Umsetzung: Elementmatrix, rationaler Nullraum mit `fractions.Fraction`, keine neue Abhängigkeit)
+- [x] Aus `generate_reaction` aufrufen; Panel-Badge („ausgeglichen“ / „rechts fehlt H₂O“ / vorgeschlagene Koeffizienten); nie die Zeichnung still ändern
 
 ## Zur Auswahl (Nachtrag 26.10., NICHT freigegeben — nicht bauen ohne Jays Ja)
 - Gleiche Bindungslänge über alle Abbildungen als opt-in-Stil `acs1996` (gemessen: Ethanol 423 px vs. Cholesterin 84 px im selben PNG)

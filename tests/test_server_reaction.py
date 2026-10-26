@@ -133,3 +133,64 @@ def test_default_filename_unchanged_and_new_options_get_their_own(mock_resolve, 
     eq = run(arrow="equilibrium").files["png"]
     below = run(conditions_below="2 h").files["png"]
     assert len({plain.files["png"], eq, below}) == 3
+
+
+# --- Etappe 6: Stoffbilanz --------------------------------------------------
+
+
+@patch("chemdraw_tool.server.resolve")
+def test_reaction_payload_carries_balance(mock_resolve):
+    mock_resolve.side_effect = _fischer_mols()
+    result = generate_reaction(
+        reactants=["ethanol", "acetic acid"],
+        products=["ethyl acetate", "water"],
+        conditions="H2SO4 (cat.)",
+    )
+    assert result.balance is not None
+    assert result.balance.balanced is True
+    # Der Satz steht im JSON, das das Modell liest.
+    assert "both sides" in result.model_dump_json()
+
+
+@patch("chemdraw_tool.server.resolve")
+def test_balance_ignores_conditions_and_does_not_change_drawing(mock_resolve):
+    """Reagenzien im Pfeiltext zählen nicht; der Vorschlag ändert die
+    Zeichnung nicht (gleiche SVG-Bytes wie ohne Bilanz-Fall)."""
+    mock_resolve.side_effect = [
+        ("[H][H]", _make_mol("[H][H]")),
+        ("O=O", _make_mol("O=O")),
+        ("O", _make_mol("O")),
+    ]
+    result = generate_reaction(
+        reactants=["[H][H]", "O=O"], products=["O"], conditions="Pt, H2O"
+    )
+    assert result.balance.suggestedCoefficients == [2, 1, 2]
+    assert len(result.reactants) == 2 and len(result.products) == 1
+    svg = open(result.files["svg"], encoding="utf-8").read()
+    assert "2 H" not in svg and "suggested" not in svg
+
+
+@patch("chemdraw_tool.server.resolve")
+def test_balance_uses_full_molecules_with_abbreviated_groups(mock_resolve):
+    def run(**kw):
+        mock_resolve.side_effect = [
+            ("c1ccccc1C(=O)O", _make_mol("c1ccccc1C(=O)O")),
+            ("CO", _make_mol("CO")),
+            ("c1ccccc1C(=O)OC", _make_mol("c1ccccc1C(=O)OC")),
+        ]
+        return generate_reaction(
+            reactants=["benzoic acid", "methanol"], products=["methyl benzoate"], **kw
+        )
+
+    plain = run()
+    short = run(abbreviate_groups=True)
+    assert plain.balance.summary == "right side lacks H₂O"
+    assert short.balance == plain.balance
+
+
+@patch("chemdraw_tool.server.resolve")
+def test_placeholder_reaction_still_draws_without_balance(mock_resolve):
+    mock_resolve.side_effect = [("*CO", _make_mol("*CO")), ("*C=O", _make_mol("*C=O"))]
+    result = generate_reaction(reactants=["*CO"], products=["*C=O"])
+    assert result.balance is None
+    assert set(result.files) == {"png", "svg"}

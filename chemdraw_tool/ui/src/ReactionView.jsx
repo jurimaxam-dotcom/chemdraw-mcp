@@ -236,6 +236,29 @@ function ScaledRow({ children }) {
   );
 }
 
+// Stoffbilanz der gezeichneten Gleichung. Befund und Vorschlag stehen
+// getrennt: der Vorschlag ist nicht gezeichnet, die Zeichnung bleibt.
+function BalanceBadge({ balance }) {
+  if (!balance) return null;
+  const ok = Boolean(balance.balanced);
+  return (
+    <div className="balance-row" role="note" title={balance.note || undefined}>
+      <span
+        className={`balance-badge ${ok ? "balance-ok" : "balance-off"}`}
+        data-testid="balance-badge"
+        data-state={ok ? "balanced" : "unbalanced"}
+      >
+        {ok ? "balanced" : `not balanced: ${balance.summary || ""}`}
+      </span>
+      {!ok && balance.suggestedEquation && (
+        <span className="balance-badge balance-suggest" data-testid="balance-suggestion">
+          {`suggested: ${balance.suggestedEquation}`}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function ReactionView({ data }) {
   const reactants = data.reactants || [];
   const products = data.products || [];
@@ -260,6 +283,7 @@ export default function ReactionView({ data }) {
           {products.length > 0 && <MoleculeGroup molecules={products} />}
         </ScaledRow>
       </div>
+      <BalanceBadge balance={data.balance} />
     </div>
   );
 }

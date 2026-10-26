@@ -82,3 +82,55 @@ test("die drei Pfeiltypen sehen verschieden aus", () => {
   });
   assert.equal(new Set(markup).size, 3);
 });
+
+// --- Etappe 6: Stoffbilanz als Badge ---------------------------------------
+
+test("ausgeglichen: gruenes Badge 'balanced'", () => {
+  const { container, unmount } = view({
+    balance: { balanced: true, difference: {}, summary: "", suggestedEquation: "" },
+  });
+  const badge = container.querySelector("[data-testid='balance-badge']");
+  assert.equal(badge.textContent, "balanced");
+  assert.equal(badge.dataset.state, "balanced");
+  assert.equal(container.querySelector("[data-testid='balance-suggestion']"), null);
+  unmount();
+});
+
+test("nicht ausgeglichen: Differenz im Badge, kein Vorschlag", () => {
+  const { container, unmount } = view({
+    balance: { balanced: false, summary: "right side lacks H₂O", suggestedEquation: "" },
+  });
+  const badge = container.querySelector("[data-testid='balance-badge']");
+  assert.equal(badge.textContent, "not balanced: right side lacks H₂O");
+  assert.equal(badge.dataset.state, "unbalanced");
+  assert.equal(container.querySelector("[data-testid='balance-suggestion']"), null);
+  unmount();
+});
+
+test("Vorschlag steht getrennt vom Befund", () => {
+  const { container, unmount } = view({
+    balance: {
+      balanced: false,
+      summary: "left: +1 O",
+      suggestedCoefficients: [2, 1, 2],
+      suggestedEquation: "2 H₂ + O₂ → 2 H₂O",
+    },
+  });
+  assert.equal(
+    container.querySelector("[data-testid='balance-badge']").textContent,
+    "not balanced: left: +1 O"
+  );
+  assert.equal(
+    container.querySelector("[data-testid='balance-suggestion']").textContent,
+    "suggested: 2 H₂ + O₂ → 2 H₂O"
+  );
+  unmount();
+});
+
+test("ohne Bilanz (Platzhalter, alte Payloads): kein Badge", () => {
+  for (const extra of [{}, { balance: null }]) {
+    const { container, unmount } = view(extra);
+    assert.equal(container.querySelector("[data-testid='balance-badge']"), null);
+    unmount();
+  }
+});
