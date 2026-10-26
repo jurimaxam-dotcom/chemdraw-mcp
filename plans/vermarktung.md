@@ -125,6 +125,14 @@ Nur Entwurf: kein Rendern, Desktop nicht anfassen, solange Codex dort abnimmt. A
 (`aufnahme-desktop.sh`, `ax-claude.swift`) gehört Codex, Montage `vermarktung/video/` (Remotion, Komposition
 `DesktopWorkflow`). Alle Shorts: 9:16, 1080×1920, 30 fps, 15–30 s, echte Desktop-Pixel, englischer Prompt.
 
+### Vorgehen (Jay 27.10.2026 00:00): „Erst ein Test-Short für den Ablauf, wir brauchen ein Schema, nach dem dann alle erstellt werden“
+- [ ] **Schema** festlegen und in `vermarktung/video/SCHEMA.md` + Props-Typ gießen: feste Abschnitte mit Dauer
+      (Aufhänger · Prompt tippen · Panel erscheint · Beats · Schluss-Bild · Abspann), Schrift, Farben, Musik, Ausschnitt,
+      Aufnahme-Checkliste (Sprache EN, Version 0.6.0, kein Name im Bild). Ein Short = nur ein Datensatz.
+- [ ] **Test-Short** nach dem Schema: S1 Anki (fertige Aufnahme reicht für den Ablauf-Test) → Jays Sichtprüfung → Schema
+      anpassen, bis es passt.
+- [ ] Erst danach S2–S7 als Datensätze aufnehmen und rendern.
+
 ### a) Workflows, die in 0.6.0 laufen (Beleg)
 | # | Workflow | Beleg |
 |---|---|---|
