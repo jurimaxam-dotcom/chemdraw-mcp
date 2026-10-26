@@ -115,8 +115,11 @@ def test_resolve_name_input(mock_get):
 
 
 def test_resolve_invalid_smiles_raises():
-    with pytest.raises(ValueError, match="Could not resolve"):
+    # Seit Etappe 1 (26.10.2026): fünfbindiger Kohlenstoff geht nicht mehr als
+    # Name ins Netz, sondern scheitert lokal als invalid_smiles.
+    with pytest.raises(NameResolutionError, match="Could not read") as exc:
         resolve("C(C)(C)(C)(C)(C)")
+    assert exc.value.kind == "invalid_smiles"
 
 
 def test_is_smiles_rejects_stereo_prefix_names():
@@ -410,3 +413,88 @@ def test_cache_is_clearable(mock_get, _opsin):
     resolver.resolve_name.cache_clear()
     resolve_name("Aspirin")
     assert mock_get.call_count == 2
+
+
+# --- Kaputtes SMILES nie in die Namenskaskade (Etappe 1, 26.10.2026) ---------
+# Gemessen: "c1cccc1" wurde über NCI still zu Cyclopentan, "C1CCC" bekam
+# „retry once the connection is stable“, "CN(C)(C)C" „Use the English name“.
+# Beweis, dass keine Namensquelle gefragt wird: resolve_name ist der einzige
+# Eingang in die Kaskade und wirft hier sofort.
+
+
+@pytest.fixture
+def _no_cascade(monkeypatch):
+    def forbidden(name):
+        raise AssertionError(f"Namenskaskade betreten für {name!r}")
+
+    monkeypatch.setattr(resolver, "resolve_name", forbidden)
+
+
+@pytest.mark.parametrize(
+    "smiles, fragments",
+    [
+        ("c1cccc1", ["kekulize", "c1ccccc1", "C1CCCC1"]),
+        ("CN(C)(C)C", ["valence", "atom 2 (N)", "C[N+](C)(C)C"]),
+        ("C1CCC", ["ring bond 1", "never closed", "C1CCC1"]),
+        ("C(C)(C)(C)(C)(C)", ["valence", "atom 1 (C)"]),
+        ("CC(C", ["parenthesis"]),
+        ("CC)C", ["parenthesis"]),
+    ],
+)
+def test_broken_smiles_is_invalid_smiles_not_a_name(_no_cascade, smiles, fragments):
+    with pytest.raises(NameResolutionError) as exc:
+        resolve(smiles)
+    assert exc.value.kind == "invalid_smiles"
+    message = str(exc.value)
+    assert smiles in message
+    for fragment in fragments:
+        assert fragment in message, message
+
+
+def test_invalid_smiles_error_is_still_a_valueerror(_no_cascade):
+    with pytest.raises(ValueError):
+        resolve("c1cccc1")
+
+
+# Gegenprobe: Element­symbole, Summenformeln und Namen sehen teils aus wie
+# SMILES-Zeichen ("Co" = c + aromatisches o, "CO2" = offener Ring 2), sind aber
+# Namen — sie müssen weiter in die Kaskade.
+@pytest.mark.parametrize(
+    "name",
+    ["Co", "Cs", "Sn", "Pb", "NaCl", "Fe", "CO2", "SO2", "NO2", "N2O", "N2",
+     "O3", "Cl2", "CS2", "PCl5", "SF6", "BF3", "H2O", "2-Propanol", "Coffein",
+     "Aspirin", "(R)-Limonene", "[2.2]paracyclophane"],
+)
+def test_names_and_formulas_still_go_to_the_cascade(monkeypatch, name):
+    seen = []
+
+    def fake(n):
+        seen.append(n)
+        return "C"
+
+    monkeypatch.setattr(resolver, "resolve_name", fake)
+    smiles, _ = resolve(name)
+    assert seen == [name]
+    assert smiles == "C"
+
+
+def test_fixture_inputs_are_never_classified_invalid_smiles(monkeypatch):
+    """Alle Eingaben aus tests/identity/stoffe.json, die auflösbar sein sollen,
+    erreichen die Kaskade oder parsen als SMILES — keine wird invalid_smiles."""
+    import json
+    from pathlib import Path
+
+    fixture = Path(__file__).parent / "identity" / "stoffe.json"
+    entries = json.loads(fixture.read_text(encoding="utf-8"))["stoffe"]
+    monkeypatch.setattr(resolver, "resolve_name", lambda n: "C")
+    for entry in entries:
+        if "fehler" in entry:
+            continue
+        resolve(entry["eingabe"])  # wirft nicht
+
+
+def test_two_open_rings_get_no_append_suggestion(_no_cascade):
+    with pytest.raises(NameResolutionError) as exc:
+        resolve("C1CC2")
+    assert "ring bond 2" in str(exc.value)
+    assert "Suggestion" not in str(exc.value)

@@ -3178,7 +3178,8 @@ def _user_facing_errors(fn):
     Seit mcp 2.1 kommt von jeder anderen Exception beim Client nur
     "Error executing tool <name>" an. Die ValueErrors dieses Servers sind aber
     Bedienhinweise — allen voran `NameResolutionError` mit seinem `kind`
-    (not_found/offline/sources_down/partial), der sagt, was tatsächlich hilft.
+    (not_found/offline/sources_down/partial/invalid_smiles), der sagt, was
+    tatsächlich hilft.
     Echte Abstürze (alles andere) bleiben bewusst pauschal. `functools.wraps`
     hält Name, Docstring und Signatur gleich, also auch die Schemas.
     """

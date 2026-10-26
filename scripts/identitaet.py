@@ -21,6 +21,10 @@ Gruenden rot wird, wird ignoriert. Deshalb trennt der Lauf hart:
     GELB  — Quelle weg (offline/sources_down/partial) oder eine bekannte
             Luecke, die sich bewegt hat. Kein Fehler, aber sichtbar.
 
+Eintraege mit "fehler" (z. B. "invalid_smiles") muessen genau mit dieser
+Fehlerart scheitern — loest der Server sie doch auf, ist das ROT: dann hat er
+eine kaputte Eingabe still zu irgendeinem Stoff gemacht.
+
 Aufruf:  uv run python scripts/identitaet.py [--json]
 Exit 1 nur bei ROT.
 """
@@ -55,10 +59,18 @@ def pruefe(eintrag: dict) -> dict:
     eingabe = eintrag["eingabe"]
     luecke = eintrag.get("luecke", False)
     erwartet = eintrag.get("inchikey")
+    erwarteter_fehler = eintrag.get("fehler")
 
     try:
         _, mol = resolve(eingabe)
     except NameResolutionError as fehler:
+        if erwarteter_fehler:
+            if fehler.kind == erwarteter_fehler:
+                return {"status": GRUEN, "text": f"scheitert wie erwartet ({fehler.kind})"}
+            return {
+                "status": ROT,
+                "text": f"falsche Fehlerart: {fehler.kind} statt {erwarteter_fehler}",
+            }
         if fehler.kind in ("offline", "sources_down", "partial"):
             return {"status": GELB, "text": f"Quelle weg ({fehler.kind})"}
         if luecke:
@@ -68,6 +80,11 @@ def pruefe(eintrag: dict) -> dict:
         return {"status": ROT, "text": f"{type(fehler).__name__}: {fehler}"}
 
     schluessel = inchi.MolToInchiKey(mol)
+    if erwarteter_fehler:
+        return {
+            "status": ROT,
+            "text": f"sollte scheitern ({erwarteter_fehler}), lieferte {schluessel}",
+        }
     if luecke:
         return {
             "status": GELB,
@@ -102,7 +119,7 @@ def main() -> int:
     else:
         print(
             f"\n{len(ergebnisse) - len(rot) - len(gelb)} grün · "
-            f"{len(gelb)} gelb (Quelle/Luecke) · {len(rot)} rot (falscher Stoff)"
+            f"{len(gelb)} gelb (Quelle/Luecke) · {len(rot)} rot (falscher Stoff/Fehler)"
         )
         if rot:
             print("\nROT — hier zeigt der Server etwas anderes an, als der Name sagt:")

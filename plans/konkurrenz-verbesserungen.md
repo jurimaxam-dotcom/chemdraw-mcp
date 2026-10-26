@@ -11,8 +11,8 @@ Beschreibungen < 2 KB, MVP bleibt 7 Tools (alles als Parameter/besseres Ergebnis
 grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop neu starten + Handshake.
 
 ## Etappe 1: Kaputtes SMILES nie in die Namenssuche (S)
-- [ ] Rot: `stoffe.json`/Resolver-Test — `c1cccc1` muss Fehler `kind="invalid_smiles"` geben (heute: still Cyclopentan via NCI), `C1CCC` und `CN(C)(C)C` ebenso statt „Verbindung instabil“/„Name unbekannt“
-- [ ] `resolver.py:resolve()`: SMILES-artig + Parse-Fehler → nicht in die Namenskaskade; Meldung mit RDKit-Fehlerstelle; Reparaturvorschlag (Großschreibung, `[N+]`) nur als Text-Angebot, nie automatisch zeichnen
+- [x] Rot: `stoffe.json`/Resolver-Test — `c1cccc1` muss Fehler `kind="invalid_smiles"` geben (heute: still Cyclopentan via NCI), `C1CCC` und `CN(C)(C)C` ebenso statt „Verbindung instabil“/„Name unbekannt“
+- [x] `resolver.py:resolve()`: SMILES-artig + Parse-Fehler → nicht in die Namenskaskade; Meldung mit RDKit-Fehlerstelle; Reparaturvorschlag (Großschreibung, `[N+]`) nur als Text-Angebot, nie automatisch zeichnen
 
 ## Etappe 2: Mehrdeutige Namen zeigen alle Isomere (S–M)
 - [ ] Rot: `xylene`/`Xylol`/`cresol`/`Kresol`/`toluidine` → `kind="ambiguous"` mit Kandidaten (heute: OPSIN wählt still ortho)

@@ -29,7 +29,9 @@ def _text(result) -> str:
     return "\n".join(getattr(block, "text", "") for block in result.content)
 
 
-@pytest.mark.parametrize("kind", ["not_found", "offline", "sources_down", "partial"])
+@pytest.mark.parametrize(
+    "kind", ["not_found", "offline", "sources_down", "partial", "invalid_smiles"]
+)
 def test_resolver_message_reaches_the_client(monkeypatch, kind):
     message = f"Kein Treffer für 'Xyzzolin' ({kind}) — Schreibweise prüfen."
 

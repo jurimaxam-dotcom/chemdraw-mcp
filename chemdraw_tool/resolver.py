@@ -80,7 +80,9 @@ class NameResolutionError(ValueError):
     """Namensauflösung fehlgeschlagen — mit Ursache statt Pauschalmeldung.
 
     Bleibt eine ValueError: server.py und andere Aufrufer fangen darauf.
-    `kind` ist einer von 'not_found' | 'offline' | 'sources_down' | 'partial'.
+    `kind` ist einer von 'not_found' | 'offline' | 'sources_down' | 'partial'
+    | 'invalid_smiles' (Eingabe ist kaputtes SMILES, die Kaskade wurde nie
+    betreten — `attempts` ist dann leer).
     """
 
     def __init__(self, message: str, *, name: str, kind: str, attempts: list):
@@ -545,6 +547,184 @@ def _resolution_error(name: str, attempts: list) -> NameResolutionError:
     return NameResolutionError(message, name=name, kind=kind, attempts=attempts)
 
 
+# --- Kaputtes SMILES erkennen (Etappe 1, 26.10.2026) -------------------------
+# Früher ging eine Eingabe, die wie SMILES aussah, aber nicht parste, in die
+# Namenskaskade: "c1cccc1" machte NCI still zu Cyclopentan, "C1CCC" bekam einen
+# Netz-Rat. Jetzt entscheidet _smiles_fault(), ob die Eingabe SMILES-Schreibweise
+# ist. Die Grenze ist eng gezogen, weil ein falsches invalid_smiles einen
+# auflösbaren Namen blockiert:
+#   - die Eingabe muss vollständig aus SMILES-Token bestehen (Fe, NaCl, Coffein,
+#     2-Propanol scheitern daran und bleiben Namen),
+#   - sie muss ein eindeutiges SMILES-Merkmal tragen (Klammer, Bindungszeichen,
+#     Ringziffer) — "Co"/"Cs" parsen unsanitisiert als C + aromatisches o/s,
+#     sind aber Cobalt/Caesium,
+#   - Summenformeln ohne H (CO2, N2O, SO2, PCl5) haben eine "offene Ringziffer"
+#     wie C1CCC; sie unterscheiden sich durch lauter verschiedene Elemente.
+
+_SMILES_TOKEN = re.compile(
+    r"\[[^\[\]]*\]|Cl|Br|[BCNOPSFI]|[bcnops]|\*|%\d\d|\d|[-=#$:/\\.~]|[()]"
+)
+_SMILES_MARKER = re.compile(r"[()\[\]=#$%/\\\d]")
+_FORMULA = re.compile(r"(?:[A-Z][a-z]?\d*)+")
+_FORMULA_ELEMENT = re.compile(r"([A-Z][a-z]?)\d*")
+_VALENCE_COUNT = re.compile(r", (\d+), is greater than permitted")
+# Häufigste Valenzfehler mit eindeutiger geladener Schreibweise.
+_CHARGED_FORM = {("N", 4): "[N+]", ("O", 3): "[O+]", ("S", 3): "[S+]"}
+
+
+def _smiles_tokens(text: str) -> list[tuple[str, int]] | None:
+    """(Token, Startindex) — oder None, wenn etwas kein SMILES-Token ist."""
+    tokens, pos = [], 0
+    while pos < len(text):
+        match = _SMILES_TOKEN.match(text, pos)
+        if not match:
+            return None
+        tokens.append((match.group(), pos))
+        pos = match.end()
+    return tokens
+
+
+def _is_atom_token(token: str) -> bool:
+    return token[0] in "[*" or token[0].isalpha()
+
+
+def _looks_like_formula(text: str) -> bool:
+    """CO2, N2O, PCl5: Summenformel mit Ziffer und jedem Element nur einmal."""
+    if not _FORMULA.fullmatch(text) or not any(ch.isdigit() for ch in text):
+        return False
+    elements = _FORMULA_ELEMENT.findall(text)
+    return len(elements) == len(set(elements))
+
+
+def _replace_token(tokens, index: int, new: str) -> str:
+    return "".join(new if i == index else tok for i, (tok, _) in enumerate(tokens))
+
+
+def _aliphatic(tokens) -> str:
+    """Aromatische Kleinbuchstaben außerhalb eckiger Klammern groß schreiben."""
+    return "".join(
+        tok.upper() if tok in ("b", "c", "n", "o", "p", "s") else tok
+        for tok, _ in tokens
+    )
+
+
+def _structure_faults(tokens) -> tuple[list[str], str | None]:
+    """Offene Ringe und unbalancierte Klammern — mit Stelle und Vorschlag."""
+    paren_faults: list[str] = []
+    open_rings: dict[str, int] = {}
+    stack: list[int] = []
+    for tok, pos in tokens:
+        if tok.isdigit() or tok.startswith("%"):
+            if tok in open_rings:
+                del open_rings[tok]
+            else:
+                open_rings[tok] = pos
+        elif tok == "(":
+            stack.append(pos)
+        elif tok == ")":
+            if stack:
+                stack.pop()
+            else:
+                paren_faults.append(
+                    f"unbalanced parenthesis: ')' at character {pos + 1} has no "
+                    f"matching '('"
+                )
+    for pos in stack:
+        paren_faults.append(
+            f"unbalanced parenthesis: '(' at character {pos + 1} is never closed"
+        )
+    ring_faults = [
+        f"ring bond {digit} opened at character {pos + 1} is never closed"
+        for digit, pos in open_rings.items()
+    ]
+    faults = paren_faults + ring_faults
+    suggestion = None
+    # Nur bei genau einem offenen Ring ist "Ziffer anhängen" eindeutig — bei
+    # zweien ergäbe das Anhängen beider Ziffern eine Bindung mit sich selbst.
+    if len(ring_faults) == 1 and not paren_faults:
+        text = "".join(tok for tok, _ in tokens)
+        (digit,) = open_rings
+        suggestion = f"if you meant a ring, close it with the same digit: {text}{digit}"
+    return faults, suggestion
+
+
+def _chemistry_fault(mol, tokens) -> tuple[str, str | None]:
+    """Sanitize-Fehler von RDKit in Klartext: Ursache, Stelle, Vorschlag."""
+    atoms = [(tok, pos, i) for i, (tok, pos) in enumerate(tokens) if _is_atom_token(tok)]
+    problem = Chem.DetectChemistryProblems(mol)[0]
+    kind, rdkit_message = problem.GetType(), problem.Message().replace("  ", " ")
+
+    if kind == "AtomValenceException":
+        idx = problem.GetAtomIdx()
+        tok, pos, tok_index = atoms[idx]
+        symbol = mol.GetAtomWithIdx(idx).GetSymbol()
+        count = _VALENCE_COUNT.search(rdkit_message)
+        bonds = int(count.group(1)) if count else None
+        cause = (
+            f"valence error at atom {idx + 1} ({symbol}) at character {pos + 1}"
+            + (f": {bonds} bonds, more than {symbol} allows" if bonds else "")
+            + f" (RDKit: {rdkit_message})"
+        )
+        charged = _CHARGED_FORM.get((symbol, bonds))
+        if charged and not tok.startswith("["):
+            return cause, (
+                f"if a charged atom is meant, write it in brackets: "
+                f"{_replace_token(tokens, tok_index, charged)}"
+            )
+        return cause, f"check the bonds and branches around atom {idx + 1} ({symbol})"
+
+    if kind == "KekulizeException":
+        indices = list(problem.GetAtomIndices())
+        symbols = " ".join(mol.GetAtomWithIdx(i).GetSymbol().lower() for i in indices)
+        cause = (
+            f"the aromatic ring (atoms {', '.join(str(i + 1) for i in indices)}: "
+            f"{symbols}) has no valid alternating double-bond pattern "
+            f"(RDKit: {rdkit_message})"
+        )
+        hints = ["benzene is c1ccccc1 (six aromatic atoms)"]
+        if any(mol.GetAtomWithIdx(i).GetSymbol() == "N" for i in indices):
+            hints.append("an aromatic nitrogen carrying H is written [nH], as in c1cc[nH]c1")
+        hints.append(f"for the saturated ring write uppercase: {_aliphatic(tokens)}")
+        return cause, "; ".join(hints)
+
+    if kind == "AtomKekulizeException":
+        idx = problem.GetAtomIdx()
+        _, pos, _ = atoms[idx]
+        cause = (
+            f"atom {idx + 1} (character {pos + 1}) is written aromatic (lowercase) "
+            f"outside a ring (RDKit: {rdkit_message})"
+        )
+        return cause, f"write it uppercase: {_aliphatic(tokens)}"
+
+    return f"RDKit: {rdkit_message}", None
+
+
+def _smiles_fault(text: str) -> str | None:
+    """Klartext-Diagnose, wenn `text` kaputtes SMILES ist — sonst None (Name).
+
+    Wird nur für Eingaben aufgerufen, die als SMILES schon gescheitert sind.
+    """
+    tokens = _smiles_tokens(text)
+    if tokens is None or not _SMILES_MARKER.search(text) or _looks_like_formula(text):
+        return None
+
+    mol = Chem.MolFromSmiles(text, sanitize=False)
+    suggestion = None
+    if mol is not None and Chem.DetectChemistryProblems(mol):
+        cause, suggestion = _chemistry_fault(mol, tokens)
+    else:
+        faults, suggestion = _structure_faults(tokens)
+        cause = "; ".join(faults) if faults else "RDKit reports a SMILES syntax error"
+
+    message = (
+        f"Could not read '{text}' as SMILES: {cause}. It was not looked up as a "
+        f"compound name because it is written in SMILES notation."
+    )
+    if suggestion:
+        message += f" Suggestion (nothing was drawn): {suggestion}."
+    return message + " To search by name instead, type the compound name."
+
+
 @functools.lru_cache(maxsize=512)
 def resolve_name(name: str) -> str:
     """Resolve a compound name to SMILES via fallback cascade.
@@ -601,10 +781,12 @@ def resolve(input_str: str) -> tuple[str, Chem.Mol]:
         mol = validate_smiles(candidate)
         if mol is not None:
             return candidate, mol
-        if is_smiles(candidate):
-            logger.info(
-                "Looked like SMILES but failed to parse, trying name resolution: %r",
-                input_str,
+        # Kaputtes SMILES bekommt eine eigene Diagnose und geht NIE in die
+        # Namenskaskade — dort würde es still zu einem anderen Stoff (NCI:
+        # "c1cccc1" → Cyclopentan) oder bekäme einen falschen Rat.
+        if fault := _smiles_fault(candidate):
+            raise NameResolutionError(
+                fault, name=input_str, kind="invalid_smiles", attempts=[]
             )
 
     smiles = resolve_name(input_str)

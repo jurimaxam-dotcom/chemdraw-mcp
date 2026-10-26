@@ -1,5 +1,5 @@
 {
-  "zweck": "Eingabe → erwarteter InChIKey. Gefahren von scripts/identitaet.py, NICHT vom Auto-Gate (braucht Netz).",
+  "zweck": "Eingabe → erwarteter InChIKey (oder mit 'fehler' die erwartete Fehlerart). Gefahren von scripts/identitaet.py, NICHT vom Auto-Gate (braucht Netz).",
   "aufgenommen": "2026-09-12",
   "herkunft": "Live ueber die Kaskade aufgeloest und einzeln gegen PubChem-Titel, CID und CAS gesichtet. Auffaelligkeiten stehen als 'notiz' am Eintrag — sie sind der eigentliche Ertrag der Liste.",
   "stoffe": [
@@ -38,6 +38,12 @@
      "notiz": "deutscher Name, PubChem 404 — haengt an NCI CIR. Am 12.09.2026 war CIR aus (HTTP 500): gelb"},
     {"eingabe": "methylphenidate", "inchikey": "DUGOZIWVEXMGBE-UHFFFAOYSA-N", "formel": "C14H19NO2"},
     {"eingabe": "Natriumchlorid", "inchikey": "FAPWRFPIFSIZLT-UHFFFAOYSA-M", "formel": "ClNa",
-     "notiz": "Salz: der InChIKey endet auf -M, nicht auf -N"}
+     "notiz": "Salz: der InChIKey endet auf -M, nicht auf -N"},
+    {"eingabe": "c1cccc1", "fehler": "invalid_smiles",
+     "notiz": "kaputtes SMILES (5-Ring nicht kekulisierbar). Bis 26.10.2026 machte NCI CIR still Cyclopentan daraus"},
+    {"eingabe": "C1CCC", "fehler": "invalid_smiles",
+     "notiz": "offener Ring 1. Bekam vorher den Netz-Rat 'retry once the connection is stable'"},
+    {"eingabe": "CN(C)(C)C", "fehler": "invalid_smiles",
+     "notiz": "vierbindiger Stickstoff ohne Ladung; gemeint ist meist C[N+](C)(C)C. Bekam vorher 'Use the English or IUPAC name'"}
   ]
 }
