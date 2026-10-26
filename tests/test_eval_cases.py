@@ -201,3 +201,48 @@ def test_config_turns_forbidden_args_into_not_contains():
         "value": '"coefficients"',
         "metric": "kein-ungefragtes-Argument",
     } in asserts
+
+
+# --- Argumente, die das Modell setzen MUSS (Jay 26.10.2026) -----------------
+#
+# Gegenstück zu `forbidden_args`: „Zeige die Haworth-Projektion von …“ ging in
+# Desktop an das eingebaute visualize. Der Fall prüft, dass das Modell mit
+# unseren Tools `view=haworth` setzt. Desktops eigenes visualize steht nicht in
+# tools.json — die Fehlleitung selbst sieht nur der Desktop-Test.
+
+
+@pytest.mark.parametrize(
+    "case", [c for c in _cases() if "required_args" in c], ids=lambda c: c["id"]
+)
+def test_required_args_are_parameters_of_the_expected_tool(case):
+    unknown = set(case["required_args"]) - _tool_params(case["expect"])
+    assert not unknown, f"{case['id']}: {sorted(unknown)} gibt es nicht als Parameter"
+
+
+def test_named_projections_are_covered():
+    views = {c.get("required_args", {}).get("view") for c in _cases()}
+    assert {"haworth", "fischer"} <= views, (
+        "Kein Fall prueft, dass eine genannte Projektion `view` setzt"
+    )
+
+
+def test_config_turns_required_args_into_contains():
+    import importlib.util
+
+    path = CASES_FILE.parent / "build_config.py"
+    spec = importlib.util.spec_from_file_location("build_config", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    case = {
+        "id": "x",
+        "prompt": "p",
+        "expect": "generate_molecule",
+        "forbidden": ["batch_generate"],
+        "required_args": {"view": "haworth"},
+        "why": "w",
+    }
+    assert {
+        "type": "contains",
+        "value": '"view":"haworth"',
+        "metric": "verlangtes-Argument",
+    } in module.case_asserts(case)

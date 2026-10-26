@@ -101,9 +101,13 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     (forbidden_args: view). Codex' übrige Punkte ja: Ibuprofen 10,9 KB, +1 Aufruf beim Klick, Cache, Export.
   - [x] Desktop-Abnahme 3 (Codex, Faden 20261026-185147, e98bff8): „Zeichne beta-D-Glucose“ → kein view, Haworth per
         Klick ja; erzwungenes view=haworth → Panel mit Name, Knöpfen, Hinweis, Formel, Masse, Rückweg ja; Ibuprofen ja.
-  - [ ] Routing: „Zeige die Haworth-Projektion von beta-D-Glucose“ geht an Desktops eingebautes visualize, nicht an
-        generate_molecule. Kandidat: im „Use this tool when“-Satz „Fischer/Haworth projection“ nennen (Beschreibung steht
-        bei 2040 von 2048 Bytes → anderswo kürzen) + positiver Eval-Fall mit erwartetem view=haworth.
+  - [x] Routing: „Zeige die Haworth-Projektion von beta-D-Glucose“ geht an Desktops eingebautes visualize, nicht an
+        generate_molecule. Gebaut 26.10.: MVP-Beschreibung (die Desktop sieht; 1652 → 1804 B, die 2040 B galten dem
+        Vollprofil) nennt Fischer/Haworth/all-H mit `view`; Eval-Feld `required_args` (contains `"view":"haworth"`),
+        Fälle `haworth-projection-named` (de) und `fischer-projection-named` (en); MVP-Beschreibungen jetzt eigens
+        auf ≤ 2 KB geprüft. Grenze des Evals: Desktops visualize steht nicht in tools.json — Beweis nur per Desktop-Test.
+    - [ ] Desktop-Abnahme 4 durch Codex (Haworth-/Fischer-Prompt setzt view, „Zeichne beta-D-Glucose“ weiter ohne view)
+    - [ ] Später: Vollprofil-Beschreibung hat den Satz nicht (2040 B, dort erst kürzen)
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
 
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)

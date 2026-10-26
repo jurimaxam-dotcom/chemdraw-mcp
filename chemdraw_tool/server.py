@@ -294,6 +294,8 @@ Writes PNG/SVG files and returns an interactive panel with the structure,
 properties and functional groups. A bare compound name ("caffeine") also
 means this tool, and so does a question about why one compound behaves as it
 does (acidity, solubility) — the answer is in its structure. No ChemDraw required.
+A Fischer or Haworth projection of a sugar or amino acid, or a drawing with
+all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use

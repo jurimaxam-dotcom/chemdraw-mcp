@@ -28,7 +28,7 @@ MODEL = "claude-opus-5"
 
 
 def case_asserts(case: dict) -> list[dict]:
-    """Prüfungen eines Falls: richtiges Tool, kein falsches, kein ungefragtes Argument."""
+    """Prüfungen eines Falls: richtiges Tool, kein falsches, Argumente verlangt bzw. verboten."""
     asserts = [
         {
             "type": "contains",
@@ -51,6 +51,15 @@ def case_asserts(case: dict) -> list[dict]:
                 "type": "not-contains",
                 "value": f'"{arg}"',
                 "metric": "kein-ungefragtes-Argument",
+            }
+        )
+    # Kompaktes JSON wie beim Toolnamen: der Provider serialisiert ohne Leerzeichen.
+    for arg, value in case.get("required_args", {}).items():
+        asserts.append(
+            {
+                "type": "contains",
+                "value": f'"{arg}":{json.dumps(value)}',
+                "metric": "verlangtes-Argument",
             }
         )
     return asserts

@@ -110,6 +110,25 @@ cases:
       Gezeichnet wird die Strukturformel; Fischer/Haworth bietet das Panel als
       Knopf an. `view` nur, wenn der Nutzer die Projektion selbst nennt.
 
+  - id: haworth-projection-named
+    prompt: "Zeige die Haworth-Projektion von beta-D-Glucose"
+    expect: generate_molecule
+    forbidden: [batch_generate, lookup_molecule_data]
+    required_args: {view: haworth}
+    why: >
+      Befund Desktop-Abnahme 3 (26.10.2026): der Prompt ging an Desktops
+      eingebautes visualize, das selbst zeichnet. Nennt der Nutzer die Projektion,
+      setzt generate_molecule `view` — Gegenstück zu draw-sugar-as-typed.
+
+  - id: fischer-projection-named
+    prompt: "Fischer projection of L-alanine, please"
+    expect: generate_molecule
+    forbidden: [batch_generate, compare_molecules]
+    required_args: {view: fischer}
+    why: >
+      Zweite, englische Formulierung derselben Grenze: eine genannte
+      Fischer-Projektion ist ein Panel-View, kein eigenes Bild des Modells.
+
   - id: draw-racemate-as-typed
     prompt: "Zeichne Ibuprofen"
     expect: generate_molecule

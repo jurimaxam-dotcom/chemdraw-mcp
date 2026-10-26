@@ -83,6 +83,21 @@ def test_mvp_instructions_and_descriptions_reference_only_available_tools():
     assert len(data["instructions"].encode()) <= 2048
 
 
+def test_mvp_descriptions_stay_under_the_client_cut():
+    # Der Taxonomie-Test misst nur den Vollkatalog; Desktop sieht diese Texte.
+    for tool in _data()["tools"]:
+        size = len(tool["description"].encode())
+        assert size <= 2048, f"{tool['name']}: {size} B"
+
+
+def test_mvp_molecule_tool_claims_named_projections():
+    # Desktop-Befund 26.10.2026: „Haworth-Projektion von …“ ging an Desktops
+    # eingebautes visualize, weil keine Beschreibung Projektionen nannte.
+    tool = next(t for t in _data()["tools"] if t["name"] == "generate_molecule")
+    summary = tool["description"].split("Args:")[0]
+    assert "Haworth" in summary and "Fischer" in summary
+
+
 def test_mvp_keeps_the_panel_resource_and_metadata():
     data = _data()
     uri = "ui://chem-app/index.html"
