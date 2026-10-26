@@ -167,7 +167,7 @@ W3 und W5 erst nach einer Desktop-Probe drehen.
       antwortet dann mit seinem eigenen Visualizer)
 
 ### c) Gemeinsame Fixes vor dem nächsten Dreh (Befund an short-desktop-v2 + short-2026-10-25)
-- [ ] **Persönlicher Name im Bild:** prompt.png zeigt „Guten Abend, Juri“ (Desktop-Begrüßung) → vor dem Tippen in einen
+- [~] **Jay 27.10.: Name darf im Bild stehen** (kein Blocker mehr). War: **Persönlicher Name im Bild:** prompt.png zeigt „Guten Abend, Juri“ (Desktop-Begrüßung) → vor dem Tippen in einen
       bestehenden leeren Chat wechseln oder Begrüßung aus dem Ausschnitt nehmen. Blocker für jeden Upload.
 - [ ] **Sprachmix:** Desktop-UI deutsch („Guten Abend“, Anki „Importieren“), Panel englisch, Titel „Aspirin
       (Acetylsalicylsäure)“ → Desktop- und Anki-Sprache für die Aufnahme auf Englisch, oder Ausschnitt ohne Host-Text.
@@ -177,7 +177,7 @@ W3 und W5 erst nach einer Desktop-Probe drehen.
       zu sehen → Import bestätigen und die Karte zeigen, Dialog nicht als Schluss-Bild.
 - [ ] **Überlagerung im Panel:** hover.png zeigt den Desktop-Scroll-Pfeil (↓) über dem Gruppen-Detail → Chat so scrollen,
       dass das Panel unten frei endet, oder Ausschnitt oberhalb enden lassen.
-- [ ] **Kein Ton:** `vermarktung/video/public/` ist leer, `musik.mp3` fehlt seit 25.10. → **Jay:** einen Track aus der
+- [~] **Jay 27.10.: Test-Short und erste Fassung ohne Ton.** War: **Kein Ton:** `vermarktung/video/public/` ist leer, `musik.mp3` fehlt seit 25.10. → **Jay:** einen Track aus der
       YouTube Audio Library wählen (gilt dann für alle Shorts).
 - [ ] **Aufhänger je Short:** `HOOK_TEXT`/`PROMPT_TEXT` sind Konstanten in `timeline.ts` („Still drawing molecules by
       hand?“, „draw aspirin“) → als Props je Short, damit S1–S7 eine Komposition teilen.
