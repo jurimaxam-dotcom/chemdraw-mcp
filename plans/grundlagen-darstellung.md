@@ -95,3 +95,14 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     ohne Dateien, ohne Netz. Gemessen: Ibuprofen 27,0 → 9,3 KB (model_dump_json), Methylphenidat-Text 13,5 KB,
     All H per Klick 71 ms in test:host, zweiter Klick aus dem Cache. Fehlschlag bleibt sichtbar und wiederholbar.
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
+
+## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)
+Fertig und in Desktop von Codex abgenommen: Etappe 1–3 (All H, Koeffizienten nur auf Wunsch, SMILES-Labels als Formel,
+Show variants, Zurück-Leiste a475eae). Etappe 4 Fischer/Haworth (f20b31a, 7cf2f71) und Lazy-Umbau (ddc2f4c) gebaut von
+Session ec41d68c (Faden 20261026-181107-grundlagen-etappe-4-fischer); Desktop-Abnahmen durch Codex laufen in den Fäden
+20261026-182553 (Etappe 4) und 20261026-184042 (Lazy; erste Messung Ibuprofen 10,9 KB statt 29,4 KB).
+Nächste Schritte für die neue Haupt-Session:
+1. Beide Codex-Berichte abnehmen (Screenshots selbst ansehen, nicht nur glauben), Befunde an die bauende Session oder selbst fixen.
+2. Thema „Prüfungsfragen“: Jay entschied OC-Grundlagen zuerst (plans/mcp-server.md); kein achtes Tool.
+3. Kleinigkeit, offen für Jay: bei Kleinstmolekülen steht die Formel doppelt (Zeichnung „H₂O“ + Label „H₂O“).
+Arbeitsweise unverändert: Claude baut, Codex testet in Desktop (§ Arbeitsweise oben).
