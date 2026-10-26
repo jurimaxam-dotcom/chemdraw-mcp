@@ -36,6 +36,13 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [ ] `chemdraw_tool/reaction_balance.py` (eigene Umsetzung: Elementmatrix, rationaler Nullraum mit `fractions.Fraction`, keine neue Abhängigkeit)
 - [ ] Aus `generate_reaction` aufrufen; Panel-Badge („ausgeglichen“ / „rechts fehlt H₂O“ / vorgeschlagene Koeffizienten); nie die Zeichnung still ändern
 
+## Zur Auswahl (Nachtrag 26.10., NICHT freigegeben — nicht bauen ohne Jays Ja)
+- Gleiche Bindungslänge über alle Abbildungen als opt-in-Stil `acs1996` (gemessen: Ethanol 423 px vs. Cholesterin 84 px im selben PNG)
+- Herkunfts- und Prüfzeile im Panel (Quelle, InChIKey, Warnungen) — überschneidet sich mit Etappe 4
+- Vorschaubild als Fallback ohne Panel (vorher messen, ob Desktop doppelt zeigt)
+- Layout-Integritätstest (kein Atom in einem Ring), CoordGen nur wenn messbar besser
+- Resonanzstrukturen (nach dem MVP)
+
 ## Später / blockiert
 - Struktur→Name (einzige frisch belegte Nachfrage): Orthonym pinnt exakt rdkit 2026.3.5 / lxml 6.1.3 + JVM — erst wenn das gelöst ist, dann nur optional wie OPSIN.
 
