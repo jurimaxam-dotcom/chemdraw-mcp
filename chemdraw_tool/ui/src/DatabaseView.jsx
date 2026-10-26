@@ -3,6 +3,7 @@ import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import FunctionalGroupList from "./components/FunctionalGroupList";
 import SourceList from "./components/SourceList";
+import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 
@@ -12,6 +13,8 @@ export default function DatabaseView({ data }) {
   const [hoveredGroup, setHoveredGroup] = useState(null);
 
   const groups = data.functionalGroups || [];
+  const stereoWarnings = data.stereoWarnings || [];
+  const stereo = useStereoHighlight(stereoWarnings);
   // Der Weg zur Struktur ist IMMER lokal: Atomliste und Gruppen reisen im
   // Payload mit (DatabasePayload), RDKit hat sie ohnehin gerechnet. Kein
   // Toolaufruf, kein Ladezustand — deshalb hat dieser View auch keinen.
@@ -43,7 +46,7 @@ export default function DatabaseView({ data }) {
           role="tabpanel"
           aria-labelledby={`${uid}-tab-structure`}
           data-view="structure"
-          className={groups.length ? "structure-layout" : "structure-layout structure-only"}
+          className={groups.length || stereoWarnings.length ? "structure-layout" : "structure-layout structure-only"}
         >
           <StructureCanvas
             svg={data.molecule_svg}
@@ -51,16 +54,20 @@ export default function DatabaseView({ data }) {
             groups={groups}
             hoveredGroup={hoveredGroup}
             onHoverGroup={setHoveredGroup}
-            style={groups.length > 0 ? undefined : { flex: "1 1 100%" }}
+            highlightAtoms={stereo.highlightAtoms}
+            style={groups.length > 0 || stereoWarnings.length > 0 ? undefined : { flex: "1 1 100%" }}
           />
-          {groups.length > 0 && (
+          {(groups.length > 0 || stereoWarnings.length > 0) && (
             <aside className="molecule-info">
-              <h3 className="section-label">Functional groups</h3>
-              <FunctionalGroupList
-                groups={groups}
-                hoveredGroup={hoveredGroup}
-                onHoverGroup={setHoveredGroup}
-              />
+              <StereoNote {...stereo.noteProps} />
+              {groups.length > 0 && <>
+                <h3 className="section-label">Functional groups</h3>
+                <FunctionalGroupList
+                  groups={groups}
+                  hoveredGroup={hoveredGroup}
+                  onHoverGroup={setHoveredGroup}
+                />
+              </>}
             </aside>
           )}
         </div>

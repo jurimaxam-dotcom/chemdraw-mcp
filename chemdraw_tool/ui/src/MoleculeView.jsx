@@ -4,6 +4,7 @@ import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList
 import ExportPngButton from "./components/ExportPngButton";
 import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
+import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 import { useAppBridge } from "./AppContext";
@@ -39,6 +40,7 @@ export default function MoleculeView({ data }) {
     ? `PubChem: ${props.pubchemTitle}${props.cid ? ` (CID ${props.cid})` : ""}`
     : "";
   const groups = data.functionalGroups || [];
+  const stereo = useStereoHighlight(data.stereoWarnings || []);
   const formula = data.formula ?? props.formula;
   const smiles = data.smiles ?? props.smiles;
   // SMILES zuerst: die sind laut Tool-Doku immer aufloesbar, ein Name kann
@@ -101,13 +103,14 @@ export default function MoleculeView({ data }) {
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
           <div className="structure-layout">
-            <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+            <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
               <Fact label="Molar mass" value={molarMass(props.mw)} />
               <Fact label="CAS" value={props.cas} copy={props.cas} />
             </dl>
           </div>
+          <StereoNote {...stereo.noteProps} />
           {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
             <h3 className="section-label">Functional groups</h3>
             <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />

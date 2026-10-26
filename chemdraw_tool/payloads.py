@@ -23,6 +23,16 @@ class FunctionalGroup(BaseModel):
     color: str = "#999999"
 
 
+class StereoWarning(BaseModel):
+    """Ein Stereoelement, dessen Konfiguration die Eingabe offen lässt."""
+
+    kind: str  # "atom" | "double_bond"
+    # Indizes in `atoms` desselben Payloads. Leer, wenn die Zeichnung die
+    # Atome nicht mehr zeigt (abgekürzte Gruppen) — der Hinweis bleibt dann.
+    atoms: list[int] = []
+    label: str = ""
+
+
 class LipinskiData(BaseModel):
     mw: float | None = None
     logP: float | None = None
@@ -49,6 +59,10 @@ class MoleculePayload(BaseModel):
     subtitle: str = ""
     properties: dict[str, str] = {}
     functionalGroups: list[FunctionalGroup] = []
+    # Unbestimmte Stereozentren/Doppelbindungen; stereoNote ist derselbe
+    # Befund als Satz fürs Modell, falls kein Panel angezeigt wird.
+    stereoWarnings: list[StereoWarning] = []
+    stereoNote: str = ""
     lipinski: LipinskiData | None = None
     # Geschriebene Dateien: {"png": pfad, "svg": pfad, "cdxml": pfad}.
     # PNG/SVG sind die Primärformate; cdxml nur auf Anforderung (dann ist
@@ -187,6 +201,8 @@ class DatabasePayload(BaseModel):
     # steckt in `sources`, die ohnehin schon geholt wurden.
     atoms: list[AtomData] = []
     functionalGroups: list[FunctionalGroup] = []
+    stereoWarnings: list[StereoWarning] = []
+    stereoNote: str = ""
     name: str = ""
     smiles: str = ""
 

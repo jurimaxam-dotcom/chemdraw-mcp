@@ -212,6 +212,33 @@
         },
         "title": "LipinskiData",
         "type": "object"
+      },
+      "StereoWarning": {
+        "description": "Ein Stereoelement, dessen Konfiguration die Eingabe offen lässt.",
+        "properties": {
+          "atoms": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atoms",
+            "type": "array"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "StereoWarning",
+        "type": "object"
       }
     },
     "properties": {
@@ -280,6 +307,19 @@
         "default": {},
         "title": "Properties",
         "type": "object"
+      },
+      "stereoNote": {
+        "default": "",
+        "title": "Stereonote",
+        "type": "string"
+      },
+      "stereoWarnings": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/StereoWarning"
+        },
+        "title": "Stereowarnings",
+        "type": "array"
       },
       "subtitle": {
         "default": "",

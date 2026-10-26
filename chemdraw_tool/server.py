@@ -30,7 +30,7 @@ from chemdraw_tool.databases import (
     pubchem_synonyms_by_smiles,
     uniprot_search,
 )
-from chemdraw_tool.generator import generate_2d
+from chemdraw_tool.generator import find_unspecified_stereo, generate_2d, stereo_note
 from chemdraw_tool.image_export import (
     render_molecule_png,
     render_molecule_svg,
@@ -61,6 +61,7 @@ from chemdraw_tool.payloads import (
     ScopePayload,
     SpectrumPayload,
     SpectrumPeak,
+    StereoWarning,
     TlcLane,
     TlcPayload,
 )
@@ -427,6 +428,27 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
     return properties
 
 
+def _stereo_fields(mol, atoms: list) -> dict:
+    """stereoWarnings + stereoNote fürs Payload, passend zur Atomliste `atoms`.
+
+    `mol` ist dasselbe Mol, aus dem `atoms` gebaut wurde. Zeigt die Zeichnung
+    ein Atom nicht (abgekürzte Gruppen → `atoms` leer), verliert die Warnung
+    nur ihre Hervorhebung, nicht den Hinweis: ein Overlay an der falschen
+    Stelle wäre schlimmer als keins.
+    """
+    raw = find_unspecified_stereo(mol)
+    drawn = {a["idx"] if isinstance(a, dict) else a.idx for a in atoms}
+    warnings = [
+        StereoWarning(
+            kind=w["kind"],
+            atoms=w["atoms"] if set(w["atoms"]) <= drawn else [],
+            label=w["label"],
+        )
+        for w in raw
+    ]
+    return {"stereoWarnings": warnings, "stereoNote": stereo_note(raw)}
+
+
 def _build_lipinski(props: dict[str, str]) -> LipinskiData | None:
     """Build Lipinski Rule of 5 data from enriched properties."""
     try:
@@ -605,6 +627,10 @@ def generate_molecule(
     fg_raw = extract_functional_groups(mol)
     groups = [FunctionalGroup(**g) for g in fg_raw]
     lipinski = _build_lipinski(properties)
+    # Die Atomliste positioniert Tooltip und Gruppen-Highlight über dem SVG.
+    # Nach dem Abkürzen zeigt das SVG andere Atome als das analysierte
+    # Molekül — falsch platzierte Overlays wären schlimmer als keine.
+    atoms = [] if abbreviate_groups else extract_atom_data(mol)
 
     return MoleculePayload(
         type="molecule",
@@ -614,13 +640,11 @@ def generate_molecule(
             annotate_stereo=annotate_stereo,
             style=render_style,
         ),
-        # Die Atomliste positioniert Tooltip und Gruppen-Highlight über dem SVG.
-        # Nach dem Abkürzen zeigt das SVG andere Atome als das analysierte
-        # Molekül — falsch platzierte Overlays wären schlimmer als keine.
-        atoms=[] if abbreviate_groups else extract_atom_data(mol),
+        atoms=atoms,
         name=display_name,
         properties=properties,
         functionalGroups=groups,
+        **_stereo_fields(mol, atoms),
         lipinski=lipinski,
         files=files,
         cdxml_path=cdxml_path,
@@ -2790,6 +2814,7 @@ with predict_spectrum or repeat those facts via lookup unless asked.
         sources=sources,
         atoms=atoms,
         functionalGroups=groups,
+        **_stereo_fields(mol, atoms),
         name=name,
         smiles=smiles,
     )
@@ -3057,6 +3082,7 @@ def batch_generate(
         fg_raw = extract_functional_groups(mol)
         groups = [FunctionalGroup(**g) for g in fg_raw]
         lipinski = _build_lipinski(properties)
+        atoms = [] if abbreviate_groups else extract_atom_data(mol)
 
         mol_payloads.append(
             MoleculePayload(
@@ -3067,10 +3093,11 @@ def batch_generate(
                     annotate_stereo=annotate_stereo,
                     style=render_style,
                 ),
-                atoms=[] if abbreviate_groups else extract_atom_data(mol),
+                atoms=atoms,
                 name=display_name,
                 properties=properties,
                 functionalGroups=groups,
+                **_stereo_fields(mol, atoms),
                 lipinski=lipinski,
                 files=files,
                 cdxml_path=cdxml_path,

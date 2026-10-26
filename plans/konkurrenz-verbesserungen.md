@@ -26,7 +26,7 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [x] README-Demo Fischer-Veresterung auf Gleichgewichtspfeil umstellen
 
 ## Etappe 4: Unbestimmte Stereozentren markieren (S)
-- [ ] RDKit `FindPotentialStereo` in `generator.py` → Warnung im `MoleculePayload`; Panel hebt betroffene Atome mit dem vorhandenen Hover-Highlight hervor (Bezug: Memory „manual-smiles-stereo-trap“)
+- [x] RDKit `FindPotentialStereo` in `generator.py` → Warnung im `MoleculePayload`; Panel hebt betroffene Atome mit dem vorhandenen Hover-Highlight hervor (Bezug: Memory „manual-smiles-stereo-trap“)
 
 ## Etappe 5: GHS-Datenblatt nach Quelle geordnet (S–M)
 - [ ] Messung zuerst: Koffein CID 2519 (heute 18 flache Zeilen, 4 Signalwörter) und NaCl („Not Classified“?)

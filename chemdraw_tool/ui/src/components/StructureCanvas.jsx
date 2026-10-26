@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import AtomHighlights from "./AtomHighlights";
 import AtomTooltip from "./AtomTooltip";
+import { resolveHighlight } from "../utils/highlight";
 import { clientToViewBox, getSvgTransform, viewBoxToScreen } from "../utils/svgCoords";
 
 // Die Struktur mit Atom-Hover — aus MoleculeView herausgeloest, damit das
@@ -27,6 +28,8 @@ export default function StructureCanvas({
   groups,
   hoveredGroup,
   onHoverGroup,
+  // Explizite Atomliste (Stereo-Hinweis) — schlaegt die gehoverte Gruppe.
+  highlightAtoms,
   style,
 }) {
   const [hoveredAtom, setHoveredAtom] = useState(null);
@@ -100,8 +103,7 @@ export default function StructureCanvas({
       )}
       <AtomHighlights
         atoms={atoms}
-        groups={groups}
-        hoveredGroup={hoveredGroup}
+        highlight={resolveHighlight({ groups, hoveredGroup, atomIndices: highlightAtoms })}
         svgContainerRef={svgContainerRef}
       />
       <AtomTooltip atom={hoveredAtom} position={tooltipPos} />

@@ -2,30 +2,24 @@ import React from "react";
 import { getSvgTransform, viewBoxToScreen } from "../utils/svgCoords";
 import { groupBonds } from "../utils/groupInfo";
 
-// Glow statt Kreisen: die Bindungen der Gruppe leuchten weich in ihrer Farbe.
-// Ein Atom ohne Bindungspartner in der Gruppe (z. B. ein einzelnes Halogen)
-// bekommt einen weichen Fleck, damit es nicht unsichtbar bleibt.
-export default function AtomHighlights({
-  atoms,
-  groups,
-  hoveredGroup,
-  svgContainerRef,
-}) {
-  if (!hoveredGroup || !atoms || !groups) return null;
-
-  const group = groups.find((g) => g.name === hoveredGroup);
-  if (!group) return null;
+// Glow statt Kreisen: die Bindungen zwischen den markierten Atomen leuchten
+// weich in ihrer Farbe. Ein Atom ohne markierten Bindungspartner (ein
+// einzelnes Halogen, ein Stereozentrum) bekommt einen weichen Fleck, damit es
+// nicht unsichtbar bleibt. Was markiert ist, entscheidet resolveHighlight.
+export default function AtomHighlights({ atoms, highlight, svgContainerRef }) {
+  if (!highlight || !atoms?.length || !highlight.atomIndices?.length) return null;
 
   const t = getSvgTransform(svgContainerRef);
   if (!t) return null;
 
-  const bonds = groupBonds(atoms, group.atomIndices);
+  const { atomIndices, color } = highlight;
+  const bonds = groupBonds(atoms, atomIndices);
   const bonded = new Set(bonds.flat().map((a) => a.idx));
-  const lone = atoms.filter((a) => group.atomIndices.includes(a.idx) && !bonded.has(a.idx));
+  const lone = atoms.filter((a) => atomIndices.includes(a.idx) && !bonded.has(a.idx));
   const screen = (a) => viewBoxToScreen(t, a.x, a.y);
 
   return (
-    <svg className="group-glow" aria-hidden="true" style={{ "--group-color": group.color }}>
+    <svg className="group-glow" aria-hidden="true" style={{ "--group-color": color }}>
       {bonds.map(([a, b]) => {
         const p = screen(a);
         const q = screen(b);
