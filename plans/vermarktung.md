@@ -84,10 +84,9 @@ Faden 3 folgen nach dem ersten Post, Stück für Stück; die bisherige Bedingung
 - [ ] Bluesky/X-Thread mit Bildern, RDKit erwähnen
 - [x] **Jay:** Entscheidung Directory: (a) Plugin-Bundle für Cowork/Code einreichen, (b) Remote-HTTPS-Variante des Servers bauen, (c) Directory auslassen und bei GitHub/PyPI/.mcpb bleiben — Jay 25.10.2026: Weg C, Directory auslassen; Panel im Desktop-Chat ist das Kernmerkmal, nur Weg C behält es kostenlos. Remote-HTTPS bleibt spätere Option, falls Nutzer die App-Suche vermissen. Diagramm: https://claude.ai/artifact/GCRB45BTEVHYXVfZEUsHo9
 - [ ] Etappe-5-Hinweis: Traffic-Zahlen sind 14-Tage-Aggregate, Post-Wirkung nur über die tägliche UTC-Zeitreihe in views/clones ablesbar
-- [ ] Auffindbarkeit (Messung 26.10.2026, Bericht `docs/distribution/auffindbarkeit-2026-10-26.md`): punkpeye/awesome-mcp-servers neu einreichen — PR #7814 wurde am 25.07. nur wegen fehlendem Glama-Badge geschlossen; Glama listet das Repo inzwischen (Badge vorhanden, Listung ungeclaimt). Erst Glama claimen (**Jay:** Login), dann PR mit Badge (Helfer)
-
+- [ ] **Jay:** Glama claimen (https://glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp → Claim), dann PR-Befehl aus `vermarktung/punkpeye-eintrag.md` freigeben — Branch `add-chemdraw-mcp-glama` liegt fertig im Fork-Klon `~/GitHub/awesome-mcp-servers` (3c691e44). Ungeprüft: ob Glama für die Checks ein Dockerfile verlangt (Messung 26.10.2026, `docs/distribution/auffindbarkeit-2026-10-26.md`)
 - [ ] **Jay:** mcpservers.org/submit ausfüllen (wong2-Liste nimmt nur noch das Formular; mcpservers.org steht in Bing auf Platz 1 und 7 für „chemistry mcp server“) – 5 min
-- [ ] GitHub Community Exchange „Collaborate“: Opus legt CONTRIBUTING.md + 2–3 Good-first-Issue-Entwürfe an (Faden 20261026-082156), **Jay:** Studentenstatus im Education-Dashboard prüfen und einreichen
+- [ ] **Jay:** 3 Issues aus `vermarktung/issues-entwuerfe.md` anlegen, Studentenstatus im Education-Dashboard prüfen, Repo bei GitHub Community Exchange als „Collaborate“ einreichen (CONTRIBUTING.md ist da, 4c1c59a)
 
 ## Etappe 5: Messen
 - [x] Täglicher Snapshot von Traffic und Referrern in eine Datei. GitHub behält nur 14 Tage;
