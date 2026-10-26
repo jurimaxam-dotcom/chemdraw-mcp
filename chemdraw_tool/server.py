@@ -2960,6 +2960,7 @@ def generate_reaction(
     render_style: str = "",
     arrow: Literal["forward", "equilibrium", "retro"] = "forward",
     conditions_below: str = "",
+    coefficients: list[int] | None = None,
 ) -> ReactionPayload:
     """Generate a reaction scheme (educts → products) as image files.
 
@@ -2995,15 +2996,25 @@ def generate_reaction(
         abbreviate_groups: Set True to draw common substituents as short labels
             (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.
             The CDXML export still contains the full structures.
-        render_style: Named look for the scheme. Empty = standard style.
-            "compact" = thin bonds, tight margins for small print,
-            "presentation" = thick bonds and large labels for slides,
-            "grayscale" = black-and-white atom palette.
+        render_style: "" standard · "compact" small print · "presentation"
+            slides · "grayscale" b/w palette.
+        coefficients: One integer per species, reactants then products
+            ([2, 1, 2] draws 2 H2 + O2 → 2 H2O).
     """
     from chemdraw_tool.svg_renderer import render_svg
 
     fmts = _normalize_formats(formats)
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
+    if coefficients is not None:
+        if len(coefficients) != len(reactants) + len(products):
+            raise ValueError(
+                f"coefficients needs one number per species: {len(reactants)} "
+                f"reactant(s) + {len(products)} product(s), got {len(coefficients)}."
+            )
+        if any(c < 1 for c in coefficients):
+            raise ValueError("coefficients must be whole numbers of 1 or more.")
+        if all(c == 1 for c in coefficients):
+            coefficients = None  # alle 1 = wie ohne: gleiche Datei, gleiches Bild
 
     reactant_mols = []
     for r in reactants:
@@ -3030,6 +3041,8 @@ def generate_reaction(
     slug_inputs: list[object] = [reactants, products, conditions]
     if arrow != "forward" or conditions_below:
         slug_inputs += [arrow, conditions_below]
+    if coefficients:
+        slug_inputs.append(coefficients)
     slug = _slugify(name) if name else _default_slug("reaktion", *slug_inputs)
     out_dir = REACTION_DIR / slug
 
@@ -3054,6 +3067,7 @@ def generate_reaction(
             style=render_style,
             arrow=arrow,
             conditions_below=shown_below,
+            coefficients=coefficients,
         )
     if "svg" in fmts:
         artifacts["svg"] = render_reaction_svg(
@@ -3063,6 +3077,7 @@ def generate_reaction(
             style=render_style,
             arrow=arrow,
             conditions_below=shown_below,
+            coefficients=coefficients,
         )
     files = write_files(out_dir / slug, artifacts)
 
@@ -3080,6 +3095,7 @@ def generate_reaction(
             product_names=products,
             arrow=arrow,
             conditions_below=conditions_below,
+            coefficients=coefficients,
         )
         cdxml_path = str(filepath)
         files["cdxml"] = cdxml_path
@@ -3091,7 +3107,14 @@ def generate_reaction(
     # Bilanz an den vollen Molekülen (nicht an den abgekürzten), nur Stoffe
     # links/rechts — Reagenzien im Pfeiltext zählen nicht. Die Zeichnung
     # bleibt, wie bestellt; ein Vorschlag steht nur im Payload.
-    balance = check_balance(reactant_mols, product_mols, arrow=arrow)
+    balance = check_balance(
+        reactant_mols, product_mols, arrow=arrow, coefficients=coefficients
+    )
+    factors = coefficients or [1] * (len(reactants) + len(products))
+
+    def entry(mol: Chem.Mol, label: str, factor: int) -> MolEntry:
+        svg = render_svg(mol, r_w, r_h, style=render_style)
+        return MolEntry(svg=svg, name=label, coefficient=factor)
 
     return ReactionPayload(
         type="reaction",
@@ -3100,16 +3123,26 @@ def generate_reaction(
         conditions_below=shown_below,
         arrow=arrow,
         reactants=[
-            MolEntry(svg=render_svg(m, r_w, r_h, style=render_style), name=n)
-            for m, n in zip(drawn_reactants, reactants)
+            entry(m, n, f) for m, n, f in zip(drawn_reactants, reactants, factors)
         ],
         products=[
-            MolEntry(svg=render_svg(m, r_w, r_h, style=render_style), name=n)
-            for m, n in zip(drawn_products, products)
+            entry(m, n, f)
+            for m, n, f in zip(drawn_products, products, factors[len(reactants) :])
         ],
         files=files,
         cdxml_path=cdxml_path,
         balance=balance,
+        coefficients=coefficients or [],
+        request={
+            "reactants": list(reactants),
+            "products": list(products),
+            "conditions": conditions,
+            "conditions_below": conditions_below,
+            "arrow": arrow,
+            "name": name,
+            "abbreviate_groups": abbreviate_groups,
+            "render_style": render_style,
+        },
     )
 
 

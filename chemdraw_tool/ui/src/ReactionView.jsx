@@ -1,5 +1,9 @@
 import React, { useRef, useState, useLayoutEffect, useCallback } from "react";
 import SectionHeader from "./components/SectionHeader";
+import { useAppBridge } from "./AppContext";
+import { extractToolData } from "./utils/toolData";
+
+export const APPLY_ERROR = "The coefficients could not be applied. Click again to retry.";
 
 const MIN_SCALE = 0.4;
 
@@ -102,8 +106,21 @@ function Plus() {
   );
 }
 
+// Stoechiometrischer Koeffizient vor dem Molekuel; 1 schreibt niemand hin.
+function Coefficient({ value }) {
+  if (!value || value === 1) return null;
+  return (
+    <div data-coefficient style={{ fontSize: 22, color: "var(--fg)", padding: "0 6px 0 2px",
+      alignSelf: "center", flexShrink: 0 }}>
+      {value}
+    </div>
+  );
+}
+
 function MoleculeCard({ molecule }) {
   return (
+    <>
+    <Coefficient value={molecule.coefficient} />
     <div
       style={{
         display: "flex",
@@ -152,6 +169,7 @@ function MoleculeCard({ molecule }) {
         </div>
       )}
     </div>
+    </>
   );
 }
 
@@ -238,7 +256,7 @@ function ScaledRow({ children }) {
 
 // Stoffbilanz der gezeichneten Gleichung. Befund und Vorschlag stehen
 // getrennt: der Vorschlag ist nicht gezeichnet, die Zeichnung bleibt.
-function BalanceBadge({ balance }) {
+function BalanceBadge({ balance, onApply, applying, failed }) {
   if (!balance) return null;
   const ok = Boolean(balance.balanced);
   return (
@@ -255,11 +273,46 @@ function BalanceBadge({ balance }) {
           {`suggested: ${balance.suggestedEquation}`}
         </span>
       )}
+      {!ok && onApply && balance.suggestedCoefficients && (
+        <button type="button" className="chip-toggle" onClick={onApply} disabled={applying}
+          aria-busy={applying || undefined} title="Redraw the equation with the suggested coefficients">
+          Apply coefficients
+        </button>
+      )}
+      {failed && <span className="balance-error" role="status">{APPLY_ERROR}</span>}
     </div>
   );
 }
 
-export default function ReactionView({ data }) {
+export default function ReactionView({ data: initial }) {
+  const app = useAppBridge();
+  // Nach „Apply coefficients“ zeigt das Panel die neu gezeichnete Gleichung.
+  const [applied, setApplied] = useState(null);
+  const [applying, setApplying] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const data = applied || initial;
+
+  const handleApply = useCallback(async () => {
+    const coefficients = data.balance?.suggestedCoefficients;
+    if (applying || !coefficients || !data.request) return;
+    setApplying(true);
+    setFailed(false);
+    try {
+      if (!app?.callServerTool) throw new Error("keine App-Bruecke");
+      const result = await app.callServerTool({
+        name: "generate_reaction",
+        arguments: { ...data.request, coefficients },
+      });
+      const payload = extractToolData(result);
+      if (!payload || payload.type !== "reaction") throw new Error("kein Reaktions-Payload");
+      setApplied(payload);
+    } catch {
+      setFailed(true);
+    } finally {
+      setApplying(false);
+    }
+  }, [app, applying, data]);
+
   const reactants = data.reactants || [];
   const products = data.products || [];
   const conditions = data.conditions || null;
@@ -283,7 +336,8 @@ export default function ReactionView({ data }) {
           {products.length > 0 && <MoleculeGroup molecules={products} />}
         </ScaledRow>
       </div>
-      <BalanceBadge balance={data.balance} />
+      <BalanceBadge balance={data.balance} onApply={data.request ? handleApply : null}
+        applying={applying} failed={failed} />
     </div>
   );
 }

@@ -213,11 +213,23 @@ def _equation(coeffs: list[int], displays: list[str], n_left: int, arrow: str) -
     return f"{' + '.join(terms[:n_left])} {_ARROWS.get(arrow, '→')} {' + '.join(terms[n_left:])}"
 
 
+def _scaled(species: Counts, factor: int) -> Counts:
+    elements, q = species
+    return {el: n * factor for el, n in elements.items()}, q * factor
+
+
 def check_balance(
-    left_mols: list[Chem.Mol], right_mols: list[Chem.Mol], arrow: str = "forward"
+    left_mols: list[Chem.Mol],
+    right_mols: list[Chem.Mol],
+    arrow: str = "forward",
+    coefficients: list[int] | None = None,
 ) -> ReactionBalance | None:
     """Bilanz links gegen rechts; None, wenn sie sich nicht prüfen lässt
-    (eine Seite leer, Platzhalteratome wie R/*)."""
+    (eine Seite leer, Platzhalteratome wie R/*).
+
+    `coefficients` (Edukte, dann Produkte) sind die gezeichneten Koeffizienten;
+    ohne sie zählt jeder Stoff einfach. Der Vorschlag rechnet immer ab den
+    reinen Stoffen, ist also ein absoluter Koeffizientensatz."""
     if not left_mols or not right_mols:
         return None
     mols = list(left_mols) + list(right_mols)
@@ -229,7 +241,9 @@ def check_balance(
     formulas = [formula(c) for c in left + right]
     displays = [_display(c) for c in left + right]
 
-    (l_el, l_q), (r_el, r_q) = _sum(left), _sum(right)
+    factors = coefficients or [1] * (len(left) + len(right))
+    l_el, l_q = _sum([_scaled(c, f) for c, f in zip(left, factors)])
+    r_el, r_q = _sum([_scaled(c, f) for c, f in zip(right, factors[len(left) :])])
     difference = {
         el: r_el.get(el, 0) - l_el.get(el, 0)
         for el in _hill_order(set(l_el) | set(r_el))

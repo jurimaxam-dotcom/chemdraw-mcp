@@ -297,3 +297,4 @@ button:active { filter: brightness(0.92); }
 .balance-ok { color: var(--copy-success); background: var(--copy-success-bg); border-color: color-mix(in srgb, var(--copy-success) 40%, transparent); }
 .balance-off { color: var(--fg); }
 .balance-suggest { border-style: dashed; }
+.balance-error { align-self: center; color: var(--fg-muted); }

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel
 
 
@@ -97,6 +99,8 @@ class AmbiguousPayload(MoleculePayload):
 class MolEntry(BaseModel):
     svg: str = ""
     name: str = ""
+    # Stöchiometrischer Koeffizient in einer Reaktion; 1 wird nicht gezeigt.
+    coefficient: int = 1
 
 
 class ReactionBalance(BaseModel):
@@ -130,6 +134,11 @@ class ReactionPayload(BaseModel):
     cdxml_path: str = ""
     # None, wenn sich die Bilanz nicht prüfen lässt (Platzhalteratome).
     balance: ReactionBalance | None = None
+    # Gezeichnete Koeffizienten (Edukte, dann Produkte); leer = alle 1.
+    coefficients: list[int] = []
+    # Die Aufrufargumente ohne `formats`/`coefficients`: der Knopf „Apply
+    # coefficients“ wiederholt damit denselben Aufruf mit Koeffizienten.
+    request: dict[str, Any] = {}
 
 
 class BatchPayload(BaseModel):

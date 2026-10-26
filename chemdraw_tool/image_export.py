@@ -38,6 +38,8 @@ RXN_SVG_SIZE = (900, 270)
 # und Pfeil nie mit Labels kollidieren (RDKits DrawReaction tat genau das).
 LABEL_PAD = 0.9
 PLUS_GAP = 1.2
+# Platz für einen Koeffizienten („2“) vor dem Molekül, Mol-Einheiten.
+COEF_GAP = 0.8
 ARROW_LENGTH = 4.0
 ARROW_PAD = 0.9
 # Texthöhe der Conditions-Zeile in Mol-Koordinaten (Atomlabels sind ~0.7).
@@ -210,6 +212,8 @@ class ReactionLayout:
     mol: Chem.Mol
     plus_positions: list[tuple[float, float]]
     arrow: tuple[tuple[float, float], tuple[float, float]]
+    # Stöchiometrische Koeffizienten > 1: (x, y, Text) vor dem Molekül.
+    coefficient_positions: tuple[tuple[float, float, str], ...] = ()
 
 
 def _shifted_copy(mol: Chem.Mol, dx: float, dy: float) -> Chem.Mol:
@@ -221,10 +225,25 @@ def _shifted_copy(mol: Chem.Mol, dx: float, dy: float) -> Chem.Mol:
     return copy
 
 
+def _with_invisible_anchors(
+    mol: Chem.Mol, points: list[tuple[float, float, str]]
+) -> Chem.Mol:
+    """Leere Dummy-Atome an den Koeffizienten: RDKit schneidet das Bild auf
+    die Atome zu, ein Koeffizient ganz links fiele sonst heraus."""
+    rw = Chem.RWMol(mol)
+    conf = rw.GetConformer()
+    for x, y, _ in points:
+        idx = rw.AddAtom(Chem.Atom(0))
+        rw.GetAtomWithIdx(idx).SetProp("atomLabel", " ")
+        conf.SetAtomPosition(idx, Point3D(x, y, 0.0))
+    return rw.GetMol()
+
+
 def _compose_reaction(
     reactants: list[Chem.Mol],
     products: list[Chem.Mol],
     arrow_length: float = ARROW_LENGTH,
+    coefficients: list[int] | None = None,
 ) -> ReactionLayout:
     """Layoutet Edukte + Produkte auf einer Mittellinie (y=0).
 
@@ -235,10 +254,17 @@ def _compose_reaction(
     """
     placed: list[Chem.Mol] = []
     plus_positions: list[tuple[float, float]] = []
+    coefficient_positions: list[tuple[float, float, str]] = []
+    factors = iter(coefficients or [])
     cursor = 0.0
 
     def place(mol: Chem.Mol) -> None:
         nonlocal cursor
+        # Koeffizient 1 schreibt niemand hin — dann bleibt das Layout bytegleich.
+        factor = next(factors, 1)
+        if factor != 1:
+            coefficient_positions.append((cursor + COEF_GAP / 2, 0.0, str(factor)))
+            cursor += COEF_GAP
         conf = mol.GetConformer()
         xs = [conf.GetAtomPosition(i).x for i in range(mol.GetNumAtoms())]
         ys = [conf.GetAtomPosition(i).y for i in range(mol.GetNumAtoms())]
@@ -266,8 +292,13 @@ def _compose_reaction(
     combined = placed[0]
     for m in placed[1:]:
         combined = Chem.CombineMols(combined, m)
+    if coefficient_positions:
+        combined = _with_invisible_anchors(combined, coefficient_positions)
     return ReactionLayout(
-        combined, plus_positions, ((arrow_tail, 0.0), (arrow_head, 0.0))
+        combined,
+        plus_positions,
+        ((arrow_tail, 0.0), (arrow_head, 0.0)),
+        tuple(coefficient_positions),
     )
 
 
@@ -278,6 +309,7 @@ def _draw_reaction(
     style: str = "",
     transparent: bool = False,
     arrow: str = "forward",
+    coefficients: list[int] | None = None,
 ) -> tuple[tuple[float, float], float]:
     """Zeichnet das Schema (ohne Conditions) und liefert die Pixel-Position
     der Pfeilmitte plus die Skala (Pixel pro Mol-Koordinaten-Einheit).
@@ -288,7 +320,7 @@ def _draw_reaction(
     Text selbst (SVG: <text>, PNG: Pillow).
     """
     arrow_length, _ = _reaction_metrics(style)
-    layout = _compose_reaction(reactants, products, arrow_length)
+    layout = _compose_reaction(reactants, products, arrow_length, coefficients)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
     if transparent:
         drawer.drawOptions().clearBackground = False
@@ -297,6 +329,8 @@ def _draw_reaction(
     drawer.SetColour((0.0, 0.0, 0.0))
     for px, py in layout.plus_positions:
         drawer.DrawString("+", Point2D(px, py))
+    for cx, cy, text in layout.coefficient_positions:
+        drawer.DrawString(text, Point2D(cx, cy))
     (tx, ty), (hx, hy) = layout.arrow
     _draw_arrow_glyph(drawer, (tx, ty), (hx, hy), arrow, arrow_length)
 
@@ -317,11 +351,12 @@ def render_reaction_png(
     *,
     arrow: str = "forward",
     conditions_below: str = "",
+    coefficients: list[int] | None = None,
 ) -> bytes:
     _check_arrow(arrow)
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
     (mid_x, mid_y), scale = _draw_reaction(
-        drawer, reactants, products, style, transparent, arrow
+        drawer, reactants, products, style, transparent, arrow, coefficients
     )
     drawer.FinishDrawing()
     png = drawer.GetDrawingText()
@@ -365,11 +400,12 @@ def render_reaction_svg(
     *,
     arrow: str = "forward",
     conditions_below: str = "",
+    coefficients: list[int] | None = None,
 ) -> str:
     _check_arrow(arrow)
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
     (mid_x, mid_y), scale = _draw_reaction(
-        drawer, reactants, products, style, arrow=arrow
+        drawer, reactants, products, style, arrow=arrow, coefficients=coefficients
     )
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()

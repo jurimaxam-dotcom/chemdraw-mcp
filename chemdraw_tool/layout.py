@@ -14,6 +14,8 @@ MOL_GAP = 40.0
 PLUS_WIDTH = 20.0
 ARROW_LENGTH = 60.0
 ARROW_GAP = 20.0
+# Breite eines Koeffizienten („2“) samt Abstand zum Molekül.
+COEF_WIDTH = 16.0
 # Zeilenhöhe der Bedingungen (size 8 → ChemDraw "LineHeight auto" ≈ 1.25 × 8).
 CONDITIONS_LINE = 10.0
 
@@ -64,6 +66,20 @@ def _conditions_text(page, next_id: int, x: float, y: float, text: str) -> int:
     return next_id + 1
 
 
+def _coefficient_text(page, next_id: int, x: float, y: float, factor: int) -> int:
+    """Stöchiometrischer Koeffizient vor einem Molekül, so groß wie das „+“."""
+    t = etree.SubElement(
+        page,
+        "t",
+        id=str(next_id),
+        p=f"{x + COEF_WIDTH / 2:.2f} {y:.2f}",
+        Justification="Center",
+    )
+    s = etree.SubElement(t, "s", font="3", size="10")
+    s.text = str(factor)
+    return next_id + 1
+
+
 def _mol_width(mol: Chem.Mol) -> float:
     conf = mol.GetConformer()
     xs = [conf.GetAtomPosition(i).x * SCALE for i in range(mol.GetNumAtoms())]
@@ -79,6 +95,7 @@ def reaction_to_cdxml(
     product_names: list[str] | None = None,
     arrow: str = "forward",
     conditions_below: str = "",
+    coefficients: list[int] | None = None,
 ) -> str:
     if arrow not in _ARROW_ATTRS:
         raise ValueError(
@@ -100,8 +117,15 @@ def reaction_to_cdxml(
     n_plus_r = max(0, len(reactants) - 1)
     n_plus_p = max(0, len(products) - 1)
 
+    # Koeffizient 1 schreibt niemand hin — dann bleibt die Datei bytegleich.
+    factors = list(coefficients or [])
+    factors += [1] * (len(reactants) + len(products) - len(factors))
+    coef_r, coef_p = factors[: len(reactants)], factors[len(reactants) :]
+    n_coef = sum(f != 1 for f in factors)
+
     total_width = (
-        sum(widths_r)
+        n_coef * COEF_WIDTH
+        + sum(widths_r)
         + n_plus_r * (PLUS_WIDTH + 2 * MOL_GAP)
         + ARROW_GAP
         + ARROW_LENGTH
@@ -120,6 +144,9 @@ def reaction_to_cdxml(
     p_names = product_names or []
 
     for i, mol in enumerate(reactants):
+        if coef_r[i] != 1:
+            next_id = _coefficient_text(page, next_id, cursor_x, center_y, coef_r[i])
+            cursor_x += COEF_WIDTH
         w = widths_r[i]
         cx = cursor_x + w / 2
         frag, next_id, bounds = _create_fragment(
@@ -188,6 +215,9 @@ def reaction_to_cdxml(
         )
 
     for i, mol in enumerate(products):
+        if coef_p[i] != 1:
+            next_id = _coefficient_text(page, next_id, cursor_x, center_y, coef_p[i])
+            cursor_x += COEF_WIDTH
         w = widths_p[i]
         cx = cursor_x + w / 2
         frag, next_id, bounds = _create_fragment(
@@ -261,6 +291,7 @@ def write_reaction_cdxml(
     product_names: list[str] | None = None,
     arrow: str = "forward",
     conditions_below: str = "",
+    coefficients: list[int] | None = None,
 ) -> None:
     content = reaction_to_cdxml(
         reactants,
@@ -271,6 +302,7 @@ def write_reaction_cdxml(
         product_names=product_names,
         arrow=arrow,
         conditions_below=conditions_below,
+        coefficients=coefficients,
     )
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
