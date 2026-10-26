@@ -1,6 +1,6 @@
 [project]
 name = "chemdraw-mcp"
-version = "0.5.2"
+version = "0.6.0"
 description = "Chemical structures, comparisons and reaction schemes as PNG/SVG via RDKit, with interactive data sheets. MVP by default; full profile optional. Unofficial, not affiliated with Revvity."
 readme = "README.md"
 license = "Apache-2.0"

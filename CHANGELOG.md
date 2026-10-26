@@ -6,7 +6,25 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-10-26
+
 ### Added
+
+- **All H view.** A button under the structure switches between the skeletal
+  formula and a drawing with every hydrogen; Export PNG takes the visible one.
+- **Fischer and Haworth projections.** Open-chain sugars and amino acids get
+  a Fischer button, pyranoses and furanoses a Haworth button. Drawn in the
+  textbook style (CHO, CH₂OH, HO/H). Isoleucine, threonine, glycosides and
+  alditols are not covered; a ring sugar explains how to get its Fischer form
+  instead of silently opening the ring.
+- **Stereoisomers to choose from.** "Show variants" next to the stereo hint
+  lists every stereoisomer of the open centers (up to 3) with R/S or E/Z
+  labels; one click draws it with wedges. Parameter `stereo_variants`.
+- **Apply coefficients.** The balance badge's suggestion can be applied with
+  one click ("2 H₂ + O₂ → 2 H₂O"). Parameter `coefficients`, set only when
+  the user asks for a balanced equation.
+- Parameter `view` (`fischer`, `haworth`, `all_h`) opens the molecule panel
+  on that drawing.
 
 - **Isomer picker for family names.** "xylene", "Kresol", "toluidine",
   "butanol" or "Glucose" no longer silently become one isomer. The panel
@@ -23,6 +41,9 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Smaller responses.** All H, Fischer and Haworth are fetched on the first
+  click instead of riding along in every answer (ibuprofen: 27 KB → 9 KB of
+  text the model has to read).
 - **GHS safety data grouped by source.** The EU harmonised classification
   (or the ECHA aggregate) leads, hazard statements are sorted by agreement,
   "not classified" is its own finding, other sources are collapsed. A source
@@ -30,9 +51,18 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **Reactions entered as SMILES are labelled with their formula** (H₂, O₂,
+  H₂O) instead of the SMILES text.
 - **Broken SMILES are reported, not guessed.** `c1cccc1` used to come back
   as cyclopentane via a name lookup; now it fails with the RDKit cause, the
   position and a suggested fix (nothing is drawn).
+
+### Known limitations
+
+- In Claude Desktop a request that names the projection ("show the Haworth
+  projection of …") is usually answered by Desktop's built-in visualizer:
+  Desktop decides before it loads this server's tools. "Draw beta-D-glucose"
+  opens the panel, whose Haworth button gives the projection.
 
 ## [0.5.2] — 2026-10-25
 
