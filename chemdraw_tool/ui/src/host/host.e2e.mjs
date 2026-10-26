@@ -140,6 +140,24 @@ try {
   const apkg = join(wegwerfHome, "ChemDraw-Output", "anki", "chemdraw.apkg");
   prüfe(existsSync(apkg), `Server hat ${apkg} geschrieben`);
 
+  // 3c. Show variants (Etappe 3): Panel → echter Server zählt die Stereoisomere auf,
+  // ein Klick zeichnet eines davon mit Keilen
+  await frame.getByText("Structure", { exact: true }).click();
+  await frame.getByRole("button", { name: "Show variants" }).click();
+  await frame.locator("button.candidate").first().waitFor({ timeout: 30000 });
+  const labels = await frame.locator("button.candidate .candidate-label").allInnerTexts();
+  prüfe(labels.length === 4 && labels.every((l) => /^\([RS],[RS]\)-methylphenidate$/i.test(l)),
+    `Show variants zeigt 4 Stereoisomere: ${labels.join(" · ")}`);
+  await page.screenshot({ path: join(tmpdir(), "panel-host-variants.png") });
+  await frame.locator("button.candidate").first().click();
+  await frame.getByRole("button", { name: "All candidates" }).waitFor({ timeout: 30000 });
+  const drawnTitle = await frame.locator(".panel-title").first().innerText();
+  prüfe(drawnTitle === labels[0] && !(await frame.locator("[data-testid='stereo-note']").count()),
+    `Klick zeichnet ${drawnTitle} — ohne offenen Stereo-Hinweis`);
+  await frame.getByRole("button", { name: "All candidates" }).click();
+  await frame.getByRole("button", { name: "Back to the structure" }).click();
+  prüfe((await text()).includes("CID 4158"), "Zurück zeigt wieder Methylphenidate");
+
   // 4. Spalten-Ansicht (Vergleich → PlotView): Die Überschrift darf nicht in die Höhe wachsen,
   // sonst schrumpft das Bild auf einen Streifen (Regression aus adccc04, gefunden per Demo-Aufnahme)
   const cmpInput = { structures: ["ibuprofen", "naproxen", "ketoprofen"] };

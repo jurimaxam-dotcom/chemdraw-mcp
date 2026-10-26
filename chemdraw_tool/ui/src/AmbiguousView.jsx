@@ -12,7 +12,9 @@ export const CANDIDATE_LOAD_ERROR =
 // generate_molecule mit dem SMILES — der Name selbst waere wieder mehrdeutig.
 // Das Ergebnis zeigt diese Ansicht selbst an: ein vom Panel ausgeloester
 // Toolaufruf kommt nicht als toolresult-Notification zurueck.
-export default function AmbiguousView({ data }) {
+// `subtitle` ersetzt den Satz unter dem Titel — die Stereo-Varianten sind
+// keine verschiedenen Verbindungen, sondern Isomere einer.
+export default function AmbiguousView({ data, subtitle }) {
   const app = useAppBridge();
   const candidates = data.candidates || [];
   const [drawn, setDrawn] = useState(null); // gezeichnetes MoleculePayload
@@ -59,7 +61,7 @@ export default function AmbiguousView({ data }) {
         <div className="panel-heading">
           <h2 className="panel-title">{data.name}</h2>
           <p className="panel-subtitle">
-            This name covers {candidates.length} different compounds. Pick one to draw it.
+            {subtitle || `This name covers ${candidates.length} different compounds. Pick one to draw it.`}
           </p>
         </div>
       </header>

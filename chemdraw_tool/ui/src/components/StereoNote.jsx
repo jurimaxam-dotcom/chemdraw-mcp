@@ -31,11 +31,13 @@ export function useStereoHighlight(warnings) {
   };
 }
 
-export default function StereoNote({ warnings, hovered, pinned, onHover, onTogglePin }) {
+// onShowVariants kommt nur vom Molekuel-Panel (das Datenblatt gibt keins);
+// variantsBusy markiert den laufenden Aufruf.
+export default function StereoNote({ warnings, hovered, pinned, onHover, onTogglePin, onShowVariants, variantsBusy }) {
   if (!warnings?.length) return null;
   const text = stereoSummary(warnings);
   const title = "The input does not specify these, so the drawing leaves their configuration open.";
-  return (
+  const note = (
     <div className="stereo-note" data-testid="stereo-note" role="note" title={title}>
       {stereoAtoms(warnings).length > 0 ? (
         <button type="button" className="stereo-note-button" aria-pressed={hovered || pinned}
@@ -47,6 +49,15 @@ export default function StereoNote({ warnings, hovered, pinned, onHover, onToggl
       ) : (
         <span><span className="stereo-dot" aria-hidden="true" />{text}</span>
       )}
+    </div>
+  );
+  if (!onShowVariants) return note;
+  // Neben dem Hinweis, nicht darin: der Hinweistext bleibt, was er war.
+  return (
+    <div className="stereo-row">
+      {note}
+      <button type="button" className="chip-toggle" aria-busy={Boolean(variantsBusy)} onClick={onShowVariants}
+        title="Draw every stereoisomer and pick one">Show variants</button>
     </div>
   );
 }

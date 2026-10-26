@@ -31,7 +31,14 @@ from chemdraw_tool.databases import (
     pubchem_synonyms_by_smiles,
     uniprot_search,
 )
-from chemdraw_tool.generator import find_unspecified_stereo, generate_2d, stereo_note
+from chemdraw_tool.generator import (
+    MAX_OPEN_STEREO,
+    MAX_STEREO_VARIANTS,
+    find_unspecified_stereo,
+    generate_2d,
+    stereo_note,
+    stereo_variants,
+)
 from chemdraw_tool.image_export import (
     render_molecule_png,
     render_molecule_svg,
@@ -544,6 +551,57 @@ def _ambiguous_payload(query: str, candidates: list) -> AmbiguousPayload:
     return AmbiguousPayload(name=query.strip(), message=message, candidates=entries)
 
 
+def _stereo_variants_payload(
+    query: str, label: str, smiles: str, mol: Chem.Mol
+) -> AmbiguousPayload:
+    """Offene Stereoelemente → Auswahl aller Isomere (Etappe 3).
+
+    Dieselbe Form wie die Isomer-Auswahl eines Familiennamens: Vorschaubilder,
+    gezeichnet wird erst per Klick (generate_molecule mit dem isomeren SMILES,
+    das dann Keile trägt). Die Vorschau trägt die CIP-Annotation, weil „(R,S)“
+    ohne Lokanten erst am Bild eindeutig wird.
+    """
+    from chemdraw_tool.svg_renderer import render_svg
+
+    open_count = len(find_unspecified_stereo(mol))
+    shown = query.strip()
+    if open_count == 0:
+        raise ValueError(
+            f"'{shown}' has no unspecified stereo elements; it is drawn as given."
+        )
+    if open_count > MAX_OPEN_STEREO:
+        raise ValueError(
+            f"'{shown}' has {open_count} unspecified stereo elements — at most "
+            f"{MAX_OPEN_STEREO} ({MAX_STEREO_VARIANTS} isomers) can be shown as "
+            f"variants. Fix some configurations in the SMILES first."
+        )
+    # Ein SMILES als Name vor dem Deskriptor wäre unlesbar: dann nur „(S)“.
+    name = label or ("" if smiles == shown else shown)
+    entries = []
+    for v in stereo_variants(mol):
+        drawn = generate_2d(Chem.MolFromSmiles(v["smiles"]))
+        entries.append(
+            IsomerCandidate(
+                label=f"{v['descriptor']}-{name}" if name else v["descriptor"],
+                smiles=v["smiles"],
+                svg=render_svg(
+                    drawn,
+                    width=150,
+                    height=120,
+                    fill_container=True,
+                    annotate_stereo=True,
+                ),
+            )
+        )
+    listing = "; ".join(f"{c.label}, SMILES {c.smiles}" for c in entries)
+    message = (
+        f"'{shown}' has {len(entries)} stereoisomers ({listing}). Nothing was "
+        f"drawn; the panel shows all of them and draws the one the user clicks. "
+        f"To draw one from the chat, call generate_molecule with its SMILES."
+    )
+    return AmbiguousPayload(name=label or shown, message=message, candidates=entries)
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
     name_or_smiles: str,
@@ -552,6 +610,7 @@ def generate_molecule(
     annotate_stereo: bool = False,
     abbreviate_groups: bool = False,
     render_style: str = "",
+    stereo_variants: bool = False,
 ) -> MoleculePayload:
     """Draw one compound as a 2D structure — the default for a single substance.
 
@@ -586,6 +645,8 @@ def generate_molecule(
             switched off for abbreviated drawings.
         render_style: "" standard · "compact" thin bonds for small print ·
             "presentation" thick bonds for slides · "grayscale" b/w palette.
+        stereo_variants: True returns every stereoisomer of the open centers
+            (max 3) as a pick list instead of a drawing; only on request.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -604,6 +665,8 @@ def generate_molecule(
         # Erfolgsantwort statt Fehler: der Host verwirft isError-Antworten
         # (toolData.js), die Vorschaubilder brauchen ein Payload.
         return _ambiguous_payload(name_or_smiles, exc.candidates)
+    if stereo_variants:
+        return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
     mol = generate_2d(mol)
 
     input_issues = validate_input(mol)

@@ -1,4 +1,5 @@
 import React, { useCallback, useId, useRef, useState } from "react";
+import AmbiguousView from "./AmbiguousView";
 import CopyButton from "./components/CopyButton";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
@@ -14,6 +15,12 @@ import { extractToolData } from "./utils/toolData";
 // sonst sieht ein Fehlschlag aus wie ein toter Knopf.
 export const DATA_LOAD_ERROR =
   "The data sheet could not be loaded. Click Data again to retry.";
+export const VARIANTS_LOAD_ERROR =
+  "The stereoisomers could not be loaded. Click Show variants again to retry.";
+
+// Spiegel der Server-Grenze (generator.MAX_OPEN_STEREO): mehr offene Elemente
+// waeren 16+ Bilder, der Server lehnt ab — dann gar kein Knopf.
+const MAX_OPEN_STEREO = 3;
 
 export default function MoleculeView({ data }) {
   const app = useAppBridge();
@@ -34,6 +41,12 @@ export default function MoleculeView({ data }) {
   // ihm die Ansicht dann nicht wieder wegziehen. Bei PubChem-Latenz ist das
   // kein Randfall.
   const wanted = useRef("structure");
+  // Stereo-Varianten: einmal geholt, dann gecacht wie das Datenblatt.
+  const [variants, setVariants] = useState(null);
+  const [showVariants, setShowVariants] = useState(false);
+  const [variantsLoading, setVariantsLoading] = useState(false);
+  const [variantsFailed, setVariantsFailed] = useState(false);
+  const variantsInFlight = useRef(false);
 
   const props = data.properties || {};
   // Welchen PubChem-Datensatz die Zahlen beschreiben. Steht im Kopf, weil ein
@@ -94,6 +107,48 @@ export default function MoleculeView({ data }) {
     [app, query, sheet]
   );
 
+  const stereoCount = (data.stereoWarnings || []).length;
+  const canShowVariants = Boolean(query) && stereoCount > 0 && stereoCount <= MAX_OPEN_STEREO;
+
+  async function openVariants() {
+    if (variants) {
+      setShowVariants(true);
+      return;
+    }
+    if (variantsInFlight.current) return;
+    variantsInFlight.current = true;
+    setVariantsLoading(true);
+    setVariantsFailed(false);
+    try {
+      if (!app?.callServerTool) throw new Error("keine App-Bruecke");
+      const args = { name_or_smiles: query, stereo_variants: true };
+      // Ein SMILES als Name vor „(S)-“ waere unlesbar — dann nur der Deskriptor.
+      if (data.name && data.name !== smiles) args.label = data.name;
+      const result = await app.callServerTool({ name: "generate_molecule", arguments: args });
+      const payload = extractToolData(result);
+      if (!payload || payload.type !== "ambiguous") throw new Error("keine Varianten");
+      setVariants(payload);
+      setShowVariants(true);
+    } catch {
+      setVariantsFailed(true);
+    } finally {
+      setVariantsLoading(false);
+      variantsInFlight.current = false;
+    }
+  }
+
+  if (showVariants && variants) {
+    return (
+      <div className="ambiguous-chosen">
+        <button type="button" className="candidate-back" onClick={() => setShowVariants(false)}>
+          Back to the structure
+        </button>
+        <AmbiguousView data={variants}
+          subtitle={`${variants.candidates.length} stereoisomers. Pick one to draw it with wedges.`} />
+      </div>
+    );
+  }
+
   return (
     <article className="molecule-panel">
       <header className="panel-header">
@@ -121,7 +176,9 @@ export default function MoleculeView({ data }) {
             <button type="button" className="chip-toggle" aria-pressed={showAllH} onClick={() => setAllH((v) => !v)}
               title={showAllH ? "Back to the skeletal formula" : "Draw every hydrogen atom"}>All H</button>
           </div>}
-          <StereoNote {...stereo.noteProps} />
+          <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
+            variantsBusy={variantsLoading} />
+          {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
           {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
             <h3 className="section-label">Functional groups</h3>
             <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />

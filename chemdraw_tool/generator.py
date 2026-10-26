@@ -72,3 +72,59 @@ def stereo_note(warnings: list) -> str:
         f"{' and '.join(parts)} {verb} unspecified; "
         f"the drawing does not fix {pronoun} configuration."
     )
+
+
+# Stereo-Varianten (Grundlagen, Etappe 3): alle Isomere der OFFENEN Elemente,
+# die festgelegten bleiben. Mehr als drei offene Elemente wären 16+ Bilder —
+# dann gibt es keine Auswahl, sondern den Rat, das SMILES festzulegen.
+MAX_OPEN_STEREO = 3
+MAX_STEREO_VARIANTS = 2**MAX_OPEN_STEREO
+
+
+def _cip_descriptor(mol: Chem.Mol) -> str:
+    """„(R)“, „(R,S)“, „(E)“ — CIP-Codes in Atom-/Bindungsreihenfolge.
+
+    Ohne Lokanten (Atomindizes sind keine IUPAC-Ziffern); welches Zentrum
+    welches ist, zeigt das annotierte Vorschaubild.
+    """
+    from rdkit.Chem import rdCIPLabeler
+
+    rdCIPLabeler.AssignCIPLabels(mol)
+    codes = []
+    for info in Chem.FindPotentialStereo(mol):
+        if info.type == Chem.StereoType.Atom_Tetrahedral:
+            item = mol.GetAtomWithIdx(info.centeredOn)
+        elif info.type == Chem.StereoType.Bond_Double:
+            item = mol.GetBondWithIdx(info.centeredOn)
+        else:
+            continue
+        if item.HasProp("_CIPCode"):
+            codes.append(item.GetProp("_CIPCode"))
+    return f"({','.join(codes)})" if codes else ""
+
+
+def stereo_variants(mol: Chem.Mol) -> list[dict]:
+    """Alle Stereoisomere der unbestimmten Elemente von `mol`.
+
+    Je Eintrag {"smiles": isomeres SMILES, "descriptor": "(R)"}. Leer, wenn
+    nichts offen ist oder mehr als MAX_OPEN_STEREO Elemente offen sind.
+    Meso-Formen zählen einmal (kanonisches SMILES entscheidet).
+    """
+    from rdkit.Chem.EnumerateStereoisomers import (
+        EnumerateStereoisomers,
+        StereoEnumerationOptions,
+    )
+
+    open_count = len(find_unspecified_stereo(mol))
+    if not 0 < open_count <= MAX_OPEN_STEREO:
+        return []
+    options = StereoEnumerationOptions(onlyUnassigned=True, unique=True)
+    variants, seen = [], set()
+    for isomer in EnumerateStereoisomers(Chem.Mol(mol), options=options):
+        smiles = Chem.MolToSmiles(isomer)
+        if smiles in seen:
+            continue
+        seen.add(smiles)
+        probe = Chem.MolFromSmiles(smiles)
+        variants.append({"smiles": smiles, "descriptor": _cip_descriptor(probe)})
+    return variants

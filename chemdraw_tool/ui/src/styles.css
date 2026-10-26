@@ -283,6 +283,8 @@ button:active { filter: brightness(0.92); }
 /* Unbestimmte Stereoelemente: ruhige Hinweiszeile, Hover/Klick lässt die Atome leuchten. */
 .stereo-note { margin-top: 10px; font-size: 13px; color: var(--fg-muted); --stereo-color: #d6336c; }
 .structure-tools { display: flex; gap: 8px; padding-top: 8px; }
+.stereo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.stereo-row > .stereo-note { margin-top: 0; }
 .chip-toggle { font: inherit; font-size: 12px; color: var(--fg-muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .chip-toggle[aria-pressed="true"] { color: var(--fg); background: var(--bg-alt); }
 .chip-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }

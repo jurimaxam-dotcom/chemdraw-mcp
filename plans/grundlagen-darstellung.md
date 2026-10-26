@@ -26,7 +26,12 @@ Golden-SVGs nie zum Grünmachen neu erzeugen. Desktop-Test läuft über den Repo
   - [ ] Knopf „Apply coefficients“ einmal in Desktop von Hand klicken (bisher nur DOM-Test + test:host ohne diesen Pfad)
 
 ## Etappe 3: Stereo-Auswahl R/S, E/Z (S–M)
-- [ ] Stereo-Hinweis bekommt „Show variants“: alle Stereoisomere (EnumerateStereoisomers, Obergrenze 3 Zentren = 8) als Vorschaubilder mit R/S- bzw. E/Z-Label, Klick zeichnet mit Keilen — Muster der Isomer-Auswahl
+- [x] Stereo-Hinweis bekommt „Show variants“: alle Stereoisomere (EnumerateStereoisomers, Obergrenze 3 Zentren = 8) als Vorschaubilder mit R/S- bzw. E/Z-Label, Klick zeichnet mit Keilen — Muster der Isomer-Auswahl
+  - Gebaut 26.10.: Parameter `stereo_variants` an generate_molecule (lazy, nur per Klick oder auf Bitte — eager hätte
+    bis zu 8 Vorschaubilder in jeden Modellkontext gelegt; Payload ist schon 29 KB Text). Antwort = AmbiguousPayload,
+    Knopf neben dem Hinweis, Vorschau mit CIP-Annotation, Meso zählt einmal. Eval-Fälle `draw-racemate-as-typed`,
+    `all-stereoisomers`; test:host klickt Methylphenidat → 4 Varianten → (S,S) mit Keilen.
+  - [ ] Jays Handtest in Desktop: „Zeichne Ibuprofen“ → Show variants → (S) klicken
 
 ## Etappe 4: Fischer-/Haworth-Projektion (M–L, später)
 - [ ] Erst messen, ob RDKit/eine Bibliothek das kann (github-first); sonst eigener Zeichner nur für Zucker/Aminosäuren

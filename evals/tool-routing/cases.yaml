@@ -100,6 +100,24 @@ cases:
       ersten Aufruf. Jay: Ausgleichen entscheidet der Nutzer — gezeichnet wird wie
       eingegeben, der Knopf „Apply coefficients" im Panel übernimmt den Vorschlag.
 
+  - id: draw-racemate-as-typed
+    prompt: "Zeichne Ibuprofen"
+    expect: generate_molecule
+    forbidden: [batch_generate, compare_molecules]
+    forbidden_args: [stereo_variants]
+    why: >
+      Etappe 3 (26.10.2026): `stereo_variants` liefert eine Auswahl statt einer
+      Zeichnung. Ein schlichter Zeichenauftrag darf sie nicht ausloesen; die
+      Varianten holt der Knopf „Show variants" im Panel.
+
+  - id: all-stereoisomers
+    prompt: "Zeig mir alle Stereoisomere der Weinsäure"
+    expect: generate_molecule
+    forbidden: [batch_generate, compare_molecules]
+    why: >
+      Gegenrichtung: alle Stereoisomere eines Stoffs sind ein Parameter von
+      generate_molecule (stereo_variants), keine Liste fuer batch_generate.
+
   - id: draw-mechanism
     prompt: "Zeig mir den Mechanismus der SN2-Reaktion Schritt fuer Schritt"
     expect: generate_mechanism
