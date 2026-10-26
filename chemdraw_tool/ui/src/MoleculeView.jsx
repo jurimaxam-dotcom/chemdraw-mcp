@@ -34,12 +34,15 @@ export default function MoleculeView({ data }) {
   // Klick holt die Zeichnung, danach Cache wie beim Datenblatt (Jay 26.10.:
   // eager waren sie mehr als die Hälfte jeder Antwort). Ein zweiter Klick auf
   // denselben Knopf führt zur Skelettformel zurück.
-  const [drawing, setDrawing] = useState("skeletal");
-  const [drawingCache, setDrawingCache] = useState({});
+  // Hat das Modell eine Ansicht selbst angefordert (view=…), liegt sie schon
+  // im Payload: das Panel startet dort und lädt sie nicht noch einmal.
+  const [drawing, setDrawing] = useState(() => (data.initialView && data.viewSvg ? data.initialView : "skeletal"));
+  const [drawingCache, setDrawingCache] = useState(() => (data.initialView && data.viewSvg
+    ? { [data.initialView]: { svg: data.viewSvg, atoms: data.viewAtoms || [] } } : {}));
   const [drawingBusy, setDrawingBusy] = useState("");
   const [drawingFailed, setDrawingFailed] = useState(false);
   const drawingInFlight = useRef(false);
-  const wantedDrawing = useRef("skeletal");
+  const wantedDrawing = useRef(drawing);
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
   const [sheet, setSheet] = useState(null);
@@ -100,8 +103,8 @@ export default function MoleculeView({ data }) {
         arguments: { ...data.viewRequest, view: next },
       });
       const payload = extractToolData(result);
-      if (!payload?.svg) throw new Error("keine Zeichnung");
-      setDrawingCache((c) => ({ ...c, [next]: { svg: payload.svg, atoms: payload.atoms || [] } }));
+      if (!payload?.viewSvg) throw new Error("keine Zeichnung");
+      setDrawingCache((c) => ({ ...c, [next]: { svg: payload.viewSvg, atoms: payload.viewAtoms || [] } }));
       // Wer inzwischen anderswohin geklickt hat, behält seine Ansicht.
       if (wantedDrawing.current === next) setDrawing(next);
     } catch {

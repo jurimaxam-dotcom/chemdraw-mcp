@@ -631,31 +631,31 @@ def _projection_note(mol: Chem.Mol) -> str:
         return ""
 
 
-def _view_payload(
+def _view_drawing(
     view: str, query: str, mol: Chem.Mol, annotate_stereo: bool, render_style: str
-) -> MoleculePayload:
-    """Eine Zusatzansicht für das Panel, ohne Dateien und ohne Netz."""
+) -> tuple[str, list]:
+    """Zeichnung und Atomliste einer Zusatzansicht (all_h, fischer, haworth)."""
     from chemdraw_tool import projection
     from chemdraw_tool.svg_renderer import extract_atom_data, render_svg
 
     if view == "all_h":
         # addCoords hält das Schweratom-Gerüst fest: der Umschalter ordnet das
         # Molekül nicht neu an, die Highlights landen an derselben Stelle.
-        mol_h = Chem.AddHs(generate_2d(mol), addCoords=True)
+        mol_h = Chem.AddHs(mol, addCoords=True)
         svg = render_svg(
             mol_h,
             fill_container=True,
             annotate_stereo=annotate_stereo,
             style=render_style,
         )
-        return MoleculePayload(svg=svg, atoms=extract_atom_data(mol_h), name=query)
+        return svg, extract_atom_data(mol_h)
     drawers = {"fischer": projection.fischer_svg, "haworth": projection.haworth_svg}
     if view not in drawers:
         raise ValueError(f"Unknown view '{view}' — use all_h, fischer or haworth.")
     svg = drawers[view](mol)
     if not svg:
         raise ValueError(f"'{query}' has no {view} view.")
-    return MoleculePayload(svg=svg, name=query)
+    return svg, []
 
 
 @_tool(structured_output=True, meta=_UI_META)
@@ -703,7 +703,8 @@ def generate_molecule(
             "presentation" thick bonds for slides · "grayscale" b/w palette.
         stereo_variants: True returns every stereoisomer of the open centers
             (max 3) as a pick list instead of a drawing; only on request.
-        view: Panel-internal ("all_h", "fischer", "haworth"); leave empty.
+        view: "fischer"/"haworth"/"all_h" opens on that drawing, only if
+            the user names it.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -724,8 +725,8 @@ def generate_molecule(
         return _ambiguous_payload(name_or_smiles, exc.candidates)
     if stereo_variants:
         return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
-    if view:
-        return _view_payload(view, name_or_smiles, mol, annotate_stereo, render_style)
+    if view and view not in ("all_h", "fischer", "haworth"):
+        raise ValueError(f"Unknown view '{view}' — use all_h, fischer or haworth.")
     mol = generate_2d(mol)
 
     input_issues = validate_input(mol)
@@ -739,17 +740,33 @@ def generate_molecule(
     # Properties, Validierung) und CDXML laufen weiter am vollen Molekül.
     drawn = condense_groups(mol) if abbreviate_groups else mol
 
-    files, cdxml_path = _write_structure_files(
-        mol,
-        slug,
-        display_name,
-        fmts,
-        annotate_stereo=annotate_stereo,
-        render_mol=drawn,
-        style=render_style,
-    )
+    # Eine Zusatzansicht (Panel-Klick oder Modell) bleibt lokal: keine
+    # Dateien, kein PubChem — der Klick muss in unter einer Sekunde stehen.
+    view_svg, view_atoms = "", []
+    if view:
+        if view == "all_h" and abbreviate_groups:
+            raise ValueError("All H is not available for abbreviated drawings.")
+        view_svg, view_atoms = _view_drawing(
+            view, name_or_smiles, mol, annotate_stereo, render_style
+        )
+        from rdkit.Chem import Descriptors, rdMolDescriptors
 
-    properties = _enrich_properties(smiles)
+        files, cdxml_path = {}, ""
+        properties = {
+            "formula": rdMolDescriptors.CalcMolFormula(mol),
+            "mw": f"{Descriptors.MolWt(mol):.2f} g/mol",
+        }
+    else:
+        files, cdxml_path = _write_structure_files(
+            mol,
+            slug,
+            display_name,
+            fmts,
+            annotate_stereo=annotate_stereo,
+            render_mol=drawn,
+            style=render_style,
+        )
+        properties = _enrich_properties(smiles)
     fg_raw = extract_functional_groups(mol)
     groups = [FunctionalGroup(**g) for g in fg_raw]
     lipinski = _build_lipinski(properties)
@@ -784,6 +801,9 @@ def generate_molecule(
         lipinski=lipinski,
         files=files,
         cdxml_path=cdxml_path,
+        initialView=view,
+        viewSvg=view_svg,
+        viewAtoms=view_atoms,
     )
 
 

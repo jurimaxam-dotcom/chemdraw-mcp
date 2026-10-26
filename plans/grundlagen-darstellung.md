@@ -94,6 +94,12 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     gleich bleiben, plus annotate_stereo/render_style); Parameter `view` an generate_molecule („Panel-internal“),
     ohne Dateien, ohne Netz. Gemessen: Ibuprofen 27,0 → 9,3 KB (model_dump_json), Methylphenidat-Text 13,5 KB,
     All H per Klick 71 ms in test:host, zweiter Klick aus dem Cache. Fehlschlag bleibt sichtbar und wiederholbar.
+  - Befund Desktop-Abnahme 2 (Faden 20261026-184042): Modell setzte bei „Zeichne beta-D-Glucose“ `view=haworth` selbst →
+    Panel ohne Titel, Knöpfe, Hinweis. Fix 26.10.: ein view-Aufruf liefert jetzt ein vollständiges, lokales Panel
+    (Skelettformel, Gruppen, Formel/Masse aus RDKit, kein PubChem, keine Dateien) plus `initialView`/`viewSvg`; das Panel
+    startet auf der Ansicht. Beschreibung: view nur, wenn der Nutzer die Projektion nennt; Eval-Fall `draw-sugar-as-typed`
+    (forbidden_args: view). Codex' übrige Punkte ja: Ibuprofen 10,9 KB, +1 Aufruf beim Klick, Cache, Export.
+  - [ ] Desktop-Abnahme 3 (Codex): „Zeichne beta-D-Glucose“ und „Zeige die Haworth-Projektion von beta-D-Glucose“
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
 
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)

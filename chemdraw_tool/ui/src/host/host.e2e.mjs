@@ -200,6 +200,25 @@ try {
     await p.close();
   }
 
+  // 3f. Modell setzt view selbst (Befund Desktop 26.10.): Panel startet auf Haworth, mit Titel, Knöpfen, Hinweis
+  {
+    const input = { name_or_smiles: "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O", label: "β-D-Glucopyranose", view: "haworth" };
+    const result = await client.callTool({ name: "generate_molecule", arguments: input });
+    const p = await browser.newPage({ viewport: { width: 700, height: 700 } });
+    await p.exposeFunction("__callTool", (req) => client.callTool(req));
+    await p.setContent("<body></body>");
+    await p.addScriptTag({ path: out });
+    await p.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result });
+    await p.locator("iframe").evaluate((el) => { el.style.width = "680px"; el.style.height = "660px"; });
+    const f = p.frames().find((x) => x !== p.mainFrame());
+    await f.locator('button[aria-pressed="true"]', { hasText: "Haworth" }).waitFor({ timeout: 10000 });
+    const body = await f.locator("body").innerText();
+    prüfe(body.includes("β-D-Glucopyranose") && body.includes("open-chain") && await f.getByRole("button", { name: "All H" }).count() === 1,
+      "view=haworth vom Modell: Panel startet auf Haworth, mit Titel, All-H-Knopf und Hinweis");
+    await p.screenshot({ path: join(tmpdir(), "panel-host-model-view.png") });
+    await p.close();
+  }
+
   // 4. Spalten-Ansicht (Vergleich → PlotView): Die Überschrift darf nicht in die Höhe wachsen,
   // sonst schrumpft das Bild auf einen Streifen (Regression aus adccc04, gefunden per Demo-Aufnahme)
   const cmpInput = { structures: ["ibuprofen", "naproxen", "ketoprofen"] };

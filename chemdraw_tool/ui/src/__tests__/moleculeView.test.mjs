@@ -209,8 +209,8 @@ function renderMolecule(data, respond) {
   const app = { callServerTool: async (req) => {
     calls.push(req);
     if (respond) return respond(req);
-    const svg = VIEW_SVG[req.arguments.view];
-    return lookupSuccess({ type: "molecule", svg, atoms: [] });
+    const viewSvg = VIEW_SVG[req.arguments.view];
+    return lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: req.arguments.view, viewSvg, viewAtoms: [] });
   } };
   const view = render(
     React.createElement(AppContext.Provider, { value: app },
@@ -276,7 +276,7 @@ test("ein Fehlschlag bleibt sichtbar und wiederholbar", async () => {
   let fail = true;
   const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
   const { container, calls, unmount } = renderMolecule(data, (req) =>
-    fail ? lookupFailure() : lookupSuccess({ type: "molecule", svg: VIEW_SVG[req.arguments.view] }));
+    fail ? lookupFailure() : lookupSuccess({ type: "molecule", svg: "<svg/>", viewSvg: VIEW_SVG[req.arguments.view] }));
   await click(buttonByText(container, "All H"));
   assert.match(textOf(container), new RegExp(VIEW_LOAD_ERROR.slice(0, 20)));
   assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "false");
@@ -284,5 +284,21 @@ test("ein Fehlschlag bleibt sichtbar und wiederholbar", async () => {
   await click(buttonByText(container, "All H"));
   assert.ok(container.querySelector(".structure-drawing [data-all-h]"));
   assert.equal(calls.length, 2);
+  unmount();
+});
+
+test("ruft das Modell view selbst, startet das Panel auf der Ansicht — mit Knöpfen und Rückweg", async () => {
+  const data = { ...MOLECULE, views: ["all_h", "haworth"], viewRequest: REQUEST, initialView: "haworth",
+    viewSvg: SVG_HAWORTH, viewAtoms: [], projectionNote: "The Fischer projection shows the open-chain form." };
+  const { container, calls, unmount } = renderMolecule(data);
+  const drawing = () => container.querySelector(".structure-drawing");
+  assert.ok(drawing().querySelector("[data-haworth]"), "startet nicht auf Haworth");
+  assert.equal(buttonByText(container, "Haworth").getAttribute("aria-pressed"), "true");
+  assert.match(textOf(container), /open-chain/);
+  await click(buttonByText(container, "Haworth"));
+  assert.equal(drawing().querySelector("[data-haworth]"), null, "Rückweg zur Skelettformel fehlt");
+  await click(buttonByText(container, "Haworth"));
+  assert.ok(drawing().querySelector("[data-haworth]"));
+  assert.equal(calls.length, 0, "mitgelieferte Ansicht darf nicht nachgeladen werden");
   unmount();
 });

@@ -100,6 +100,16 @@ cases:
       ersten Aufruf. Jay: Ausgleichen entscheidet der Nutzer — gezeichnet wird wie
       eingegeben, der Knopf „Apply coefficients" im Panel übernimmt den Vorschlag.
 
+  - id: draw-sugar-as-typed
+    prompt: "Zeichne beta-D-Glucose"
+    expect: generate_molecule
+    forbidden: [lookup, batch_generate]
+    forbidden_args: [view]
+    why: >
+      Befund Desktop-Test 26.10.2026: das Modell setzte `view=haworth` ungefragt.
+      Gezeichnet wird die Strukturformel; Fischer/Haworth bietet das Panel als
+      Knopf an. `view` nur, wenn der Nutzer die Projektion selbst nennt.
+
   - id: draw-racemate-as-typed
     prompt: "Zeichne Ibuprofen"
     expect: generate_molecule

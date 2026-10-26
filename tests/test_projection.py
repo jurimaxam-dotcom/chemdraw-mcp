@@ -236,8 +236,8 @@ def test_open_chain_sugar_announces_fischer_only(server):
     assert "fischer" in payload.views and "haworth" not in payload.views
     assert payload.projectionNote == ""
     view = server.generate_molecule(**payload.viewRequest, view="fischer")
-    assert view.svg == fischer_svg(mol(D_GLUCOSE))
-    assert view.atoms == [] and view.files == {}
+    assert view.viewSvg == fischer_svg(mol(D_GLUCOSE))
+    assert view.viewAtoms == [] and view.files == {}
 
 
 def test_ring_sugar_announces_haworth_and_a_note(server):
@@ -245,13 +245,35 @@ def test_ring_sugar_announces_haworth_and_a_note(server):
     assert "haworth" in payload.views and "fischer" not in payload.views
     assert "open-chain" in payload.projectionNote
     view = server.generate_molecule(**payload.viewRequest, view="haworth")
-    assert view.svg.startswith("<svg")
+    assert view.viewSvg.startswith("<svg")
 
 
 def test_other_molecules_have_no_projection(server):
     payload = server.generate_molecule(NOT_PROJECTABLE["methylphenidate"])
     assert payload.views == ["all_h"]
     assert payload.projectionNote == ""
+
+
+def test_model_may_open_the_panel_on_a_projection(server, monkeypatch):
+    """Befund Desktop 26.10.: das Modell setzte view=haworth selbst. Dann
+    soll ein vollständiges Panel kommen, das auf Haworth startet — mit Titel,
+    Knöpfen und Hinweis, ohne PubChem und ohne Dateien."""
+
+    def no_network(_smiles):
+        raise AssertionError("view-Aufruf darf nicht ins Netz")
+
+    monkeypatch.setattr(server, "_enrich_properties", no_network)
+    payload = server.generate_molecule(
+        BETA_GLCP, label="β-D-Glucopyranose", view="haworth"
+    )
+    assert payload.name == "β-D-Glucopyranose"
+    assert payload.initialView == "haworth"
+    assert payload.viewSvg == haworth_svg(mol(BETA_GLCP))
+    assert payload.svg.startswith("<") and payload.atoms
+    assert payload.views == ["all_h", "haworth"]
+    assert "open-chain" in payload.projectionNote
+    assert payload.properties["formula"] == "C6H12O6"
+    assert payload.files == {}
 
 
 def test_unknown_or_missing_view_is_an_error(server):

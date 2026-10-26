@@ -250,6 +250,11 @@
             "title": "Functionalgroups",
             "type": "array"
           },
+          "initialView": {
+            "default": "",
+            "title": "Initialview",
+            "type": "string"
+          },
           "lipinski": {
             "anyOf": [
               {
@@ -312,11 +317,24 @@
             "title": "Type",
             "type": "string"
           },
+          "viewAtoms": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/AtomData"
+            },
+            "title": "Viewatoms",
+            "type": "array"
+          },
           "viewRequest": {
             "additionalProperties": true,
             "default": {},
             "title": "Viewrequest",
             "type": "object"
+          },
+          "viewSvg": {
+            "default": "",
+            "title": "Viewsvg",
+            "type": "string"
           },
           "views": {
             "default": [],

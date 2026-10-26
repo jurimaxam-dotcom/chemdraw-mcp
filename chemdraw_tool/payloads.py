@@ -65,6 +65,12 @@ class MoleculePayload(BaseModel):
     # Aufruf, der dieselbe Zeichnung wiederholt: das SMILES aus resolve()
     # (gleiche Atomreihenfolge → Highlights bleiben gültig) plus Zeichenoptionen.
     viewRequest: dict[str, Any] = {}
+    # Nur bei generate_molecule(view=…): die angeforderte Zusatzansicht. Das
+    # Panel holt sie so per Klick; ruft das Modell view selbst, startet das
+    # Panel auf ihr (initialView), alles andere bleibt wie gewohnt.
+    initialView: str = ""
+    viewSvg: str = ""
+    viewAtoms: list[AtomData] = []
     # Ringzucker: warum es keine Fischer-Projektion gibt (ein Satz).
     projectionNote: str = ""
     name: str = ""

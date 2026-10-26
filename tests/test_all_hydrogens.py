@@ -43,22 +43,22 @@ def test_payload_only_announces_the_hydrogen_view():
 
 def test_hydrogen_view_is_fetched_on_click(_isolate):
     view = all_h(ETHANOL)
-    assert "<svg" in view.svg
-    assert view.svg != srv.generate_molecule(ETHANOL).svg
+    assert "<svg" in view.viewSvg
+    assert view.viewSvg != view.svg == srv.generate_molecule(ETHANOL).svg
     # Ethanol: 3 Schweratome + 6 H
-    assert len(view.atoms) == 9
-    assert sum(a.el == "H" for a in view.atoms) == 6
+    assert len(view.viewAtoms) == 9
+    assert sum(a.el == "H" for a in view.viewAtoms) == 6
     assert view.files == {}
 
 
 def test_heavy_atom_indices_survive_so_highlights_stay_valid():
     payload = srv.generate_molecule(ETHANOL)
     heavy = [(a.idx, a.el) for a in payload.atoms]
-    assert [(a.idx, a.el) for a in all_h(ETHANOL).atoms[: len(heavy)]] == heavy
+    assert [(a.idx, a.el) for a in all_h(ETHANOL).viewAtoms[: len(heavy)]] == heavy
 
 
 def test_tooltip_still_counts_hydrogens_on_heavy_atoms():
-    assert [a.hCount for a in all_h(ETHANOL).atoms[:3]] == [3, 2, 1]
+    assert [a.hCount for a in all_h(ETHANOL).viewAtoms[:3]] == [3, 2, 1]
 
 
 def test_skeletal_drawing_is_unchanged():
@@ -70,7 +70,7 @@ def test_skeletal_drawing_is_unchanged():
 def test_stereocenter_gets_exactly_one_hydrogen():
     view = all_h(IBUPROFEN_S, annotate_stereo=True)
     # Ibuprofen C13H18O2: 18 H, keins doppelt am Stereozentrum
-    assert sum(a.el == "H" for a in view.atoms) == 18
+    assert sum(a.el == "H" for a in view.viewAtoms) == 18
 
 
 def test_view_request_repeats_the_drawing_options():
