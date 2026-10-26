@@ -14,6 +14,7 @@ from rdkit import Chem
 from rdkit.Chem.inchi import MolToInchiKey
 
 from chemdraw_tool.cdxml_writer import write_cdxml
+from chemdraw_tool.condition_text import subscript_formulas
 from chemdraw_tool.databases import (
     _get_cid,
     chebi_lookup,
@@ -298,7 +299,8 @@ differences (use compare_molecules), or a reaction scheme (use generate_reaction
 """,
     "generate_reaction": """Draw a reaction scheme from reactants, products and conditions.
 
-Writes PNG/SVG files and returns a panel with conditions above the arrow.
+Writes PNG/SVG files and returns a panel with conditions above and below the
+arrow. arrow: "forward" (→), "equilibrium" (⇌, reversible) or "retro" (⇒).
 Use it when explaining a reaction as well as for explicit drawing requests.
 This draws the net reaction, without step-by-step electron-flow mechanisms.
 Pass English or IUPAC compound names, or SMILES.
@@ -2802,11 +2804,14 @@ def generate_reaction(
     formats: list[str] | None = None,
     abbreviate_groups: bool = False,
     render_style: str = "",
+    arrow: Literal["forward", "equilibrium", "retro"] = "forward",
+    conditions_below: str = "",
 ) -> ReactionPayload:
     """Generate a reaction scheme (educts → products) as image files.
 
     Writes the scheme as PNG and/or SVG (default both) to the output folder —
-    no ChemDraw required. Conditions appear above the arrow in the UI preview.
+    no ChemDraw required. Conditions appear above the arrow, conditions_below
+    under it.
 
     Use this when the user describes a chemical reaction with educts and
     products — including in conversation: "how does the esterification of
@@ -2823,19 +2828,23 @@ def generate_reaction(
     Args:
         reactants: List of English/IUPAC reactant names or SMILES strings.
         products: List of English/IUPAC product names or SMILES strings.
-        conditions: Reaction conditions shown above the arrow (e.g. 'HCl, 0-5 °C').
+        conditions: Text above the arrow (e.g. 'H2SO4, 0-5 °C'); formula
+            digits are subscripted, a line break starts a new line.
+        conditions_below: Text under the arrow (e.g. 'reflux, 2 h').
+        arrow: "forward" (→), "equilibrium" (⇌, reversible reaction) or
+            "retro" (⇒, retrosynthesis: target as reactants, precursors as
+            products).
         name: Display name for the reaction step (can be localized).
         formats: Output file formats, any of "png", "svg", "cdxml"
             (default: ["png", "svg"]). Include "cdxml" ONLY when the user
             wants to edit the scheme in ChemDraw or asks to open it there.
         abbreviate_groups: Set True to draw common substituents as short labels
             (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.
-            Keeps a multi-step scheme narrow enough to stay readable. The
-            CDXML export still contains the full structures.
+            The CDXML export still contains the full structures.
         render_style: Named look for the scheme. Empty = standard style.
-            "compact" = thin bonds and tight margins for a small printed
-            figure, "presentation" = thick bonds and large labels for slides,
-            "grayscale" = black-and-white atom palette for grayscale printing.
+            "compact" = thin bonds, tight margins for small print,
+            "presentation" = thick bonds and large labels for slides,
+            "grayscale" = black-and-white atom palette.
     """
     from chemdraw_tool.svg_renderer import render_svg
 
@@ -2862,7 +2871,12 @@ def generate_reaction(
                 raise ValueError(f"Product '{p}' validation failed: {issue.message}")
         product_mols.append(mol)
 
-    slug = _slugify(name) if name else _default_slug("reaktion", reactants, products, conditions)
+    # Neue Optionen nur bei Abweichung in den Fingerabdruck — so behalten
+    # Altaufrufe ihren Dateinamen, ein anderer Pfeil überschreibt aber nichts.
+    slug_inputs: list[object] = [reactants, products, conditions]
+    if arrow != "forward" or conditions_below:
+        slug_inputs += [arrow, conditions_below]
+    slug = _slugify(name) if name else _default_slug("reaktion", *slug_inputs)
     out_dir = REACTION_DIR / slug
 
     # Abkürzen betrifft nur die Zeichnung — das CDXML unten wird aus den
@@ -2873,14 +2887,28 @@ def generate_reaction(
     else:
         drawn_reactants, drawn_products = reactant_mols, product_mols
 
+    # Tiefstellen einmal hier: PNG, SVG und Panel zeigen dieselben Unicode-
+    # Ziffern; das CDXML bekommt den Rohtext und stellt per face="32" tief.
+    shown_above = subscript_formulas(conditions)
+    shown_below = subscript_formulas(conditions_below)
     artifacts: dict[str, bytes | str] = {}
     if "png" in fmts:
         artifacts["png"] = render_reaction_png(
-            drawn_reactants, drawn_products, conditions, style=render_style
+            drawn_reactants,
+            drawn_products,
+            shown_above,
+            style=render_style,
+            arrow=arrow,
+            conditions_below=shown_below,
         )
     if "svg" in fmts:
         artifacts["svg"] = render_reaction_svg(
-            drawn_reactants, drawn_products, conditions, style=render_style
+            drawn_reactants,
+            drawn_products,
+            shown_above,
+            style=render_style,
+            arrow=arrow,
+            conditions_below=shown_below,
         )
     files = write_files(out_dir / slug, artifacts)
 
@@ -2896,6 +2924,8 @@ def generate_reaction(
             name=name,
             reactant_names=reactants,
             product_names=products,
+            arrow=arrow,
+            conditions_below=conditions_below,
         )
         cdxml_path = str(filepath)
         files["cdxml"] = cdxml_path
@@ -2906,7 +2936,9 @@ def generate_reaction(
     return ReactionPayload(
         type="reaction",
         name=name,
-        conditions=conditions,
+        conditions=shown_above,
+        conditions_below=shown_below,
+        arrow=arrow,
         reactants=[
             MolEntry(svg=render_svg(m, r_w, r_h, style=render_style), name=n)
             for m, n in zip(drawn_reactants, reactants)

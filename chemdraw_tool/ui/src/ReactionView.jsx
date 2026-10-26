@@ -3,44 +3,84 @@ import SectionHeader from "./components/SectionHeader";
 
 const MIN_SCALE = 0.4;
 
-function ReactionArrow() {
+// Pfeilformen im 110×18-Raster. Vorwaerts bleibt der bisherige Pfeil;
+// Gleichgewicht = zwei Halbpfeile (⇌), Retro = Doppelschaft mit offener Spitze (⇒).
+function ArrowGlyph({ kind }) {
+  const stroke = "var(--fg-muted)";
+  if (kind === "equilibrium") {
+    return (
+      <>
+        <line x1="2" y1="6" x2="108" y2="6" stroke={stroke} strokeWidth="1.6" />
+        <polygon points="108,6 96,6 96,1" fill={stroke} />
+        <line x1="2" y1="12" x2="108" y2="12" stroke={stroke} strokeWidth="1.6" />
+        <polygon points="2,12 14,12 14,17" fill={stroke} />
+      </>
+    );
+  }
+  if (kind === "retro") {
+    return (
+      <>
+        <line x1="2" y1="6" x2="103" y2="6" stroke={stroke} strokeWidth="1.6" />
+        <line x1="2" y1="12" x2="103" y2="12" stroke={stroke} strokeWidth="1.6" />
+        <polyline points="97,1 108,9 97,17" fill="none" stroke={stroke} strokeWidth="1.6" />
+      </>
+    );
+  }
+  return (
+    <>
+      <line x1="2" y1="9" x2="98" y2="9" stroke={stroke} strokeWidth="1.8" />
+      <polygon points="98,4 110,9 98,14" fill={stroke} />
+    </>
+  );
+}
+
+function ArrowText({ text, position }) {
+  if (!text) return null;
   return (
     <div
+      data-conditions={position}
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "0 12px",
-        flexShrink: 0,
+        fontSize: 13,
+        color: "var(--fg)",
+        textAlign: "center",
+        whiteSpace: "pre-wrap",
+        lineHeight: 1.3,
+        maxWidth: 200,
+        padding: position === "above" ? "0 0 4px" : "4px 0 0",
       }}
     >
-      <svg width="110" height="14" viewBox="0 0 110 14" style={{ display: "block" }}>
-        <line x1="2" y1="7" x2="98" y2="7" stroke="var(--fg-muted)" strokeWidth="1.8" />
-        <polygon points="98,2 110,7 98,12" fill="var(--fg-muted)" />
-      </svg>
+      {text}
     </div>
   );
 }
 
-function ConditionsCaption({ conditions }) {
-  if (!conditions) return null;
+// Pfeilspalte: Bedingungen oben ueber, unten unter dem Pfeil — wie im
+// exportierten Bild und im CDXML.
+function ReactionArrow({ kind, above, below }) {
+  const known = ["forward", "equilibrium", "retro"].includes(kind) ? kind : "forward";
   return (
     <div
       style={{
-        fontSize: 13,
-        color: "var(--fg-muted)",
-        textAlign: "center",
-        padding: "6px 12px",
-        background: "var(--bg-alt)",
-        borderTopLeftRadius: "var(--radius-md)",
-        borderTopRightRadius: "var(--radius-md)",
-        borderBottom: "1px solid var(--border)",
-        whiteSpace: "pre-wrap",
-        lineHeight: 1.4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 12px",
+        minWidth: 110,
+        flexShrink: 0,
       }}
     >
-      <span style={{ color: "var(--fg-muted)", marginRight: 6, fontSize: 12 }}>Conditions</span>
-      <span style={{ color: "var(--fg)" }}>{conditions}</span>
+      <ArrowText text={above} position="above" />
+      <svg
+        data-arrow={known}
+        width="110"
+        height="18"
+        viewBox="0 0 110 18"
+        style={{ display: "block" }}
+      >
+        <ArrowGlyph kind={known} />
+      </svg>
+      <ArrowText text={below} position="below" />
     </div>
   );
 }
@@ -200,6 +240,7 @@ export default function ReactionView({ data }) {
   const reactants = data.reactants || [];
   const products = data.products || [];
   const conditions = data.conditions || null;
+  const conditionsBelow = data.conditions_below || null;
   const name = data.name || null;
 
   return (
@@ -213,10 +254,9 @@ export default function ReactionView({ data }) {
           overflow: "hidden",
         }}
       >
-        <ConditionsCaption conditions={conditions} />
         <ScaledRow>
           {reactants.length > 0 && <MoleculeGroup molecules={reactants} />}
-          <ReactionArrow />
+          <ReactionArrow kind={data.arrow} above={conditions} below={conditionsBelow} />
           {products.length > 0 && <MoleculeGroup molecules={products} />}
         </ScaledRow>
       </div>

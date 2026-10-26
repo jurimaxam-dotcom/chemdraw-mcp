@@ -30,7 +30,7 @@ mkdirSync(outDir, { recursive: true });
 const SZENEN = {
   molecule: { tool: "generate_molecule", args: { name_or_smiles: "aspirin" }, ablauf: "struktur-gruppen-daten" },
   compare: { tool: "compare_molecules", args: { structures: ["ibuprofen", "naproxen", "ketoprofen"] }, ablauf: "ansehen" },
-  reaction: { tool: "generate_reaction", args: { reactants: ["acetic acid", "ethanol"], products: ["ethyl acetate", "water"], conditions: "H2SO4, heat" }, ablauf: "ansehen" },
+  reaction: { tool: "generate_reaction", args: { reactants: ["acetic acid", "ethanol"], products: ["ethyl acetate", "water"], conditions: "H2SO4 (cat.)", conditions_below: "reflux", arrow: "equilibrium" }, ablauf: "ansehen" },
   "3d": { tool: "generate_3d", args: { name_or_smiles: "caffeine", label: "Caffeine" }, ablauf: "drehen" },
   mechanism: { tool: "generate_mechanism", args: { reaction_type: "fischer_ester", substrates: ["acetic acid", "ethanol"] }, ablauf: "schritte" },
 };

@@ -21,9 +21,9 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [x] `generate_molecule` antwortet mit den Kandidaten; Panel zeigt o/m/p als Vorschaubilder, Klick ruft `generate_molecule` über `callServerTool` (Muster `ExportPngButton`/Data-Knopf)
 
 ## Etappe 3: Pfeiltypen + Text unter dem Pfeil (S)
-- [ ] `generate_reaction`: Parameter `arrow` (`forward`|`equilibrium`|`retro`, Standard forward) + `conditions_below`; Formeln in Bedingungen tiefstellen (H2SO4 → H₂SO₄)
-- [ ] Durch alle Pfade: `image_export.py`, `svg_renderer.py`, `layout.py`/`cdxml_writer.py` (Pfeiltyp in CDXML), Reaktionsansicht `ui/src`, Bundle neu
-- [ ] README-Demo Fischer-Veresterung auf Gleichgewichtspfeil umstellen
+- [x] `generate_reaction`: Parameter `arrow` (`forward`|`equilibrium`|`retro`, Standard forward) + `conditions_below`; Formeln in Bedingungen tiefstellen (H2SO4 → H₂SO₄)
+- [x] Durch alle Pfade: `image_export.py`, `svg_renderer.py`, `layout.py`/`cdxml_writer.py` (Pfeiltyp in CDXML), Reaktionsansicht `ui/src`, Bundle neu
+- [x] README-Demo Fischer-Veresterung auf Gleichgewichtspfeil umstellen
 
 ## Etappe 4: Unbestimmte Stereozentren markieren (S)
 - [ ] RDKit `FindPotentialStereo` in `generator.py` → Warnung im `MoleculePayload`; Panel hebt betroffene Atome mit dem vorhandenen Hover-Highlight hervor (Bezug: Memory „manual-smiles-stereo-trap“)

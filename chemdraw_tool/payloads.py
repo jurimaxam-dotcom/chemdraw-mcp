@@ -83,6 +83,8 @@ class ReactionPayload(BaseModel):
     type: str = "reaction"
     name: str = ""
     conditions: str = ""
+    conditions_below: str = ""
+    arrow: str = "forward"
     reactants: list[MolEntry] = []
     products: list[MolEntry] = []
     files: dict[str, str] = {}

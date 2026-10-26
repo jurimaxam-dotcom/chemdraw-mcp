@@ -1,5 +1,5 @@
 {
-  "description": "Generate a reaction scheme (educts → products) as image files.\n\nWrites the scheme as PNG and/or SVG (default both) to the output folder —\nno ChemDraw required. Conditions appear above the arrow in the UI preview.\n\nUse this when the user describes a chemical reaction with educts and\nproducts — including in conversation: \"how does the esterification of\nacetic acid with ethanol work?\" asks for this scheme, not for prose.\nDraw it and explain alongside.\n\nNot this tool for: the step-by-step course with electron-flow arrows —\nthat is generate_mechanism. Also not for many products of one reaction\nwith yields (generate_scope_table).\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames — 'Aspirin' not 'Acetylsalicylsäure'. SMILES are always safe.\n\nArgs:\n    reactants: List of English/IUPAC reactant names or SMILES strings.\n    products: List of English/IUPAC product names or SMILES strings.\n    conditions: Reaction conditions shown above the arrow (e.g. 'HCl, 0-5 °C').\n    name: Display name for the reaction step (can be localized).\n    formats: Output file formats, any of \"png\", \"svg\", \"cdxml\"\n        (default: [\"png\", \"svg\"]). Include \"cdxml\" ONLY when the user\n        wants to edit the scheme in ChemDraw or asks to open it there.\n    abbreviate_groups: Set True to draw common substituents as short labels\n        (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.\n        Keeps a multi-step scheme narrow enough to stay readable. The\n        CDXML export still contains the full structures.\n    render_style: Named look for the scheme. Empty = standard style.\n        \"compact\" = thin bonds and tight margins for a small printed\n        figure, \"presentation\" = thick bonds and large labels for slides,\n        \"grayscale\" = black-and-white atom palette for grayscale printing.",
+  "description": "Generate a reaction scheme (educts → products) as image files.\n\nWrites the scheme as PNG and/or SVG (default both) to the output folder —\nno ChemDraw required. Conditions appear above the arrow, conditions_below\nunder it.\n\nUse this when the user describes a chemical reaction with educts and\nproducts — including in conversation: \"how does the esterification of\nacetic acid with ethanol work?\" asks for this scheme, not for prose.\nDraw it and explain alongside.\n\nNot this tool for: the step-by-step course with electron-flow arrows —\nthat is generate_mechanism. Also not for many products of one reaction\nwith yields (generate_scope_table).\n\nIMPORTANT: Always pass English or IUPAC compound names, never localized\nnames — 'Aspirin' not 'Acetylsalicylsäure'. SMILES are always safe.\n\nArgs:\n    reactants: List of English/IUPAC reactant names or SMILES strings.\n    products: List of English/IUPAC product names or SMILES strings.\n    conditions: Text above the arrow (e.g. 'H2SO4, 0-5 °C'); formula\n        digits are subscripted, a line break starts a new line.\n    conditions_below: Text under the arrow (e.g. 'reflux, 2 h').\n    arrow: \"forward\" (→), \"equilibrium\" (⇌, reversible reaction) or\n        \"retro\" (⇒, retrosynthesis: target as reactants, precursors as\n        products).\n    name: Display name for the reaction step (can be localized).\n    formats: Output file formats, any of \"png\", \"svg\", \"cdxml\"\n        (default: [\"png\", \"svg\"]). Include \"cdxml\" ONLY when the user\n        wants to edit the scheme in ChemDraw or asks to open it there.\n    abbreviate_groups: Set True to draw common substituents as short labels\n        (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.\n        The CDXML export still contains the full structures.\n    render_style: Named look for the scheme. Empty = standard style.\n        \"compact\" = thin bonds, tight margins for small print,\n        \"presentation\" = thick bonds and large labels for slides,\n        \"grayscale\" = black-and-white atom palette.",
   "inputSchema": {
     "properties": {
       "abbreviate_groups": {
@@ -7,9 +7,24 @@
         "title": "Abbreviate Groups",
         "type": "boolean"
       },
+      "arrow": {
+        "default": "forward",
+        "enum": [
+          "forward",
+          "equilibrium",
+          "retro"
+        ],
+        "title": "Arrow",
+        "type": "string"
+      },
       "conditions": {
         "default": "",
         "title": "Conditions",
+        "type": "string"
+      },
+      "conditions_below": {
+        "default": "",
+        "title": "Conditions Below",
         "type": "string"
       },
       "formats": {
@@ -80,6 +95,11 @@
       }
     },
     "properties": {
+      "arrow": {
+        "default": "forward",
+        "title": "Arrow",
+        "type": "string"
+      },
       "cdxml_path": {
         "default": "",
         "title": "Cdxml Path",
@@ -88,6 +108,11 @@
       "conditions": {
         "default": "",
         "title": "Conditions",
+        "type": "string"
+      },
+      "conditions_below": {
+        "default": "",
+        "title": "Conditions Below",
         "type": "string"
       },
       "files": {

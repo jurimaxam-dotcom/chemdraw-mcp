@@ -4,6 +4,10 @@ Das ist der ChemDraw-unabhängige Primärpfad: RDKit rendert PNG (Cairo) und
 SVG direkt, ohne dass ChemDraw installiert sein muss. Kein Netz.
 """
 
+import io
+import re
+
+import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
@@ -179,3 +183,147 @@ def test_render_molecule_svg_with_stereo_annotation():
     AllChem.Compute2DCoords(mol)
     assert "CIP_Code" in render_molecule_svg(mol, annotate_stereo=True)
     assert "CIP_Code" not in render_molecule_svg(mol)
+
+
+# ---------------------------------------------------------------------------
+# Etappe 3: Pfeiltypen + Bedingungen unter dem Pfeil (Opt-in)
+# ---------------------------------------------------------------------------
+
+ARROWS = ("forward", "equilibrium", "retro")
+
+
+def _fischer():
+    return _mols(*FISCHER_REACTANTS), _mols(*FISCHER_PRODUCTS)
+
+
+def _text_ys(svg):
+    return [float(y) for y in re.findall(r"<text x='[\d.]+' y='([\d.-]+)'", svg)]
+
+
+def _svg_height(svg):
+    return float(re.search(r"height='([\d.]+)px'", svg).group(1))
+
+
+@pytest.mark.parametrize("render", [render_reaction_png, render_reaction_svg])
+def test_default_arrow_is_byte_identical_to_explicit_forward(render):
+    """Opt-in: die Standardwerte dürfen nichts am bisherigen Bild ändern."""
+    r, p = _fischer()
+    assert render(r, p, "Δ") == render(r, p, "Δ", arrow="forward", conditions_below="")
+
+
+@pytest.mark.parametrize("render", [render_reaction_png, render_reaction_svg])
+def test_each_arrow_type_draws_differently(render):
+    r, p = _fischer()
+    outputs = {a: render(r, p, arrow=a) for a in ARROWS}
+    assert len(set(outputs.values())) == 3
+
+
+@pytest.mark.parametrize("render", [render_reaction_png, render_reaction_svg])
+def test_unknown_arrow_is_rejected(render):
+    r, p = _fischer()
+    with pytest.raises(ValueError, match="arrow"):
+        render(r, p, arrow="resonance")
+
+
+def test_equilibrium_svg_has_two_shafts_and_two_half_heads():
+    """⇌: zwei parallele Schäfte, je eine gefüllte Halbspitze — statt eines
+    Schafts mit Vollspitze. Gezählt wird gegen den Vorwärtspfeil."""
+    r, p = _fischer()
+    fwd = render_reaction_svg(r, p)
+    eq = render_reaction_svg(r, p, arrow="equilibrium")
+    assert eq.count("<path") > fwd.count("<path")
+
+
+@pytest.mark.parametrize("arrow", ARROWS)
+def test_svg_conditions_above_and_below_the_arrow(arrow):
+    r, p = _fischer()
+    svg = render_reaction_svg(
+        r, p, "H₂SO₄ (cat.)", arrow=arrow, conditions_below="80 °C, 2 h"
+    )
+    above, below = _text_ys(svg)
+    mid = _svg_height(svg) / 2
+    assert above < mid < below
+    assert "H₂SO₄ (cat.)" in svg and "80 °C, 2 h" in svg
+
+
+def test_svg_only_below_text():
+    """Leerer Obertext + Untertext: genau ein <text>, und der liegt unten."""
+    r, p = _fischer()
+    svg = render_reaction_svg(r, p, "", arrow="equilibrium", conditions_below="Δ")
+    ys = _text_ys(svg)
+    assert len(ys) == 1
+    assert ys[0] > _svg_height(svg) / 2
+
+
+def test_svg_multiline_conditions_stack_away_from_the_arrow():
+    """Zeilenumbrüche werden echte Zeilen (ein <text> je Zeile, SVG würde
+    '\\n' zu einem Leerzeichen zusammenfalten), oben nach oben gestapelt,
+    unten nach unten — und alles bleibt auf der Leinwand."""
+    r, p = _fischer()
+    svg = render_reaction_svg(
+        r,
+        p,
+        "H₂SO₄ (cat.)\nEtOH (excess)\nreflux",
+        arrow="equilibrium",
+        conditions_below="80 °C\n12 h",
+    )
+    ys = _text_ys(svg)
+    assert len(ys) == 5
+    above, below = ys[:3], ys[3:]
+    assert above == sorted(above)  # erste Zeile zuoberst
+    assert below == sorted(below)
+    mid = _svg_height(svg) / 2
+    assert max(above) < mid < min(below)
+    assert all(0 < y < _svg_height(svg) for y in ys)
+    assert "\n</text>" not in svg.replace("</text>\n", "")
+
+
+def test_svg_long_conditions_are_kept_whole():
+    r, p = _fischer()
+    long = "Pd(PPh₃)₄ (5 mol%), K₂CO₃ (2 eq), toluene/H₂O 4:1, 100 °C, 18 h"
+    svg = render_reaction_svg(r, p, long, conditions_below=long)
+    assert svg.count(long) == 2
+
+
+def _ink_rows(png_with, png_without):
+    """Zeilen (y), in denen sich zwei PNGs unterscheiden."""
+    from PIL import Image, ImageChops
+
+    a = Image.open(io.BytesIO(png_with)).convert("RGB")
+    b = Image.open(io.BytesIO(png_without)).convert("RGB")
+    box = ImageChops.difference(a, b).getbbox()
+    assert box is not None, "Text hat keine Tinte hinterlassen"
+    return box[1], box[3], a.height
+
+
+@pytest.mark.parametrize("arrow", ARROWS)
+def test_png_below_text_lands_below_the_arrow(arrow):
+    r, p = _fischer()
+    bare = render_reaction_png(r, p, arrow=arrow)
+    top, bottom, height = _ink_rows(
+        render_reaction_png(r, p, arrow=arrow, conditions_below="80 °C"), bare
+    )
+    assert top > height / 2
+    assert bottom <= height
+
+
+@pytest.mark.parametrize("arrow", ARROWS)
+def test_png_above_text_lands_above_the_arrow(arrow):
+    r, p = _fischer()
+    bare = render_reaction_png(r, p, arrow=arrow)
+    top, bottom, height = _ink_rows(
+        render_reaction_png(r, p, "H₂SO₄", arrow=arrow), bare
+    )
+    assert bottom < height / 2
+    assert top >= 0
+
+
+def test_png_multiline_both_sides_is_valid_and_inside_the_canvas():
+    r, p = _fischer()
+    bare = render_reaction_png(r, p, arrow="equilibrium")
+    png = render_reaction_png(
+        r, p, "H₂SO₄ (cat.)\nreflux", arrow="equilibrium", conditions_below="80 °C\n12 h"
+    )
+    assert png[: len(PNG_MAGIC)] == PNG_MAGIC
+    top, bottom, height = _ink_rows(png, bare)
+    assert 0 < top < height / 2 < bottom < height

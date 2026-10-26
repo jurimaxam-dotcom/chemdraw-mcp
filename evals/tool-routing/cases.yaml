@@ -81,6 +81,15 @@ cases:
     forbidden: [generate_mechanism, generate_molecule]
     why: Gleichung mit Pfeil, nicht Mechanismus mit Zwischenstufen.
 
+  - id: draw-equilibrium
+    prompt: "Zeichne das Ammoniak-Gleichgewicht N2 + 3 H2 mit Gleichgewichtspfeil"
+    expect: generate_reaction
+    forbidden: [generate_mechanism, generate_molecule, batch_generate]
+    why: >
+      Gleichgewichtspfeil ist ein Parameter von generate_reaction (arrow=
+      "equilibrium", Etappe 3), kein eigenes Tool. Ohne den Fall koennte ein
+      Modell das Wort „Gleichgewicht" fuer einen Einzelstoff oder Mechanismus halten.
+
   - id: draw-mechanism
     prompt: "Zeig mir den Mechanismus der SN2-Reaktion Schritt fuer Schritt"
     expect: generate_mechanism

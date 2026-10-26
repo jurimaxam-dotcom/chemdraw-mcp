@@ -57,10 +57,10 @@ If it saves you time, a ⭐ helps other students find it.
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-compare.gif" alt="Ibuprofen, naproxen and ketoprofen side by side with differences highlighted in the chat panel" width="640"></p>
 
 *"Show the Fischer esterification of ethanol with acetic acid"* —
-`generate_reaction` renders the scheme with conditions above the arrow,
-live in the chat panel:
+`generate_reaction` renders the scheme with an equilibrium arrow (⇌) and the
+conditions above and below it, live in the chat panel:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-reaction.gif" alt="Reaction scheme with conditions appearing live in the chat panel" width="640"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-reaction.gif" alt="Fischer esterification with an equilibrium arrow and conditions above and below it in the chat panel" width="640"></p>
 
 <details>
 <summary>Additional examples — full profile only</summary>
@@ -152,7 +152,8 @@ every drawing tool also returns a live preview for the in-chat panel.
   Lipinski rule-of-five check
 - **`batch_generate`** — a whole list of structures in one call
 - **`generate_reaction`** — educts + products + conditions → reaction scheme
-  with the conditions set above the arrow
+  with conditions above and below the arrow; forward (→), equilibrium (⇌) or
+  retrosynthetic (⇒) arrow, formula digits subscripted (H2SO4 → H₂SO₄)
 - **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
   esterification) step by step
 - **`generate_scope_table`** — the substrate-scope figure of the methodology

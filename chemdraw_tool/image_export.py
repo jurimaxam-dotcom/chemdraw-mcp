@@ -43,6 +43,99 @@ ARROW_PAD = 0.9
 # Texthöhe der Conditions-Zeile in Mol-Koordinaten (Atomlabels sind ~0.7).
 CONDITIONS_FONT = 0.55
 
+# Pfeiltypen (Etappe 3). "forward" ist der bisherige Pfeil und bleibt
+# bytegleich; die beiden anderen sind Opt-in.
+ARROW_TYPES = ("forward", "equilibrium", "retro")
+# Vorwärtspfeil: RDKit DrawArrow mit frac=0.12, Winkel 30° — halbe Kopfbreite.
+_HEAD_FRAC = 0.12
+_TAN30 = 0.5773502691896257
+# Abstand der Bedingungs-Grundlinie über der Pfeilachse beim Vorwärtspfeil
+# (Mol-Koordinaten). Andere Pfeile ragen höher und schieben den Text mit.
+_ABOVE_BASELINE = 0.35
+_LINE_SPACING = 1.25
+
+
+def _check_arrow(arrow: str) -> None:
+    if arrow not in ARROW_TYPES:
+        raise ValueError(
+            f"Unknown arrow {arrow!r}; use one of {', '.join(ARROW_TYPES)}."
+        )
+
+
+def _arrow_extent(arrow: str, arrow_length: float) -> float:
+    """Wie weit der Pfeil über/unter seine Achse ragt (Mol-Koordinaten)."""
+    f = arrow_length / ARROW_LENGTH
+    if arrow == "equilibrium":
+        return 0.15 * f + _HEAD_FRAC * arrow_length * _TAN30
+    if arrow == "retro":
+        return 0.3 * f
+    return _HEAD_FRAC * arrow_length * _TAN30
+
+
+def _draw_arrow_glyph(drawer, tail, head, arrow: str, arrow_length: float) -> None:
+    """Zeichnet den Pfeil in Mol-Koordinaten — PNG und SVG gehen durch
+    dieselben Aufrufe, die Parität bleibt also ohne Backend-Sonderwege.
+
+    equilibrium (⇌): oberer Schaft nach rechts mit Halbspitze oben, unterer
+    nach links mit Halbspitze unten. retro (⇒): Doppelschaft mit offener
+    Winkelspitze, die Schäfte enden auf den Spitzenschenkeln.
+    """
+    (tx, ty), (hx, hy) = tail, head
+    if arrow == "forward":
+        drawer.DrawArrow(Point2D(tx, ty), Point2D(hx, hy), True, 0.12)
+        return
+    f = arrow_length / ARROW_LENGTH
+    if arrow == "equilibrium":
+        d = 0.15 * f
+        h = _HEAD_FRAC * arrow_length
+        w = h * _TAN30
+        drawer.SetFillPolys(True)
+        drawer.DrawLine(Point2D(tx, ty + d), Point2D(hx, hy + d))
+        drawer.DrawPolygon(
+            [Point2D(hx, hy + d), Point2D(hx - h, hy + d), Point2D(hx - h, hy + d + w)]
+        )
+        drawer.DrawLine(Point2D(hx, hy - d), Point2D(tx, ty - d))
+        drawer.DrawPolygon(
+            [Point2D(tx, ty - d), Point2D(tx + h, ty - d), Point2D(tx + h, ty - d - w)]
+        )
+        return
+    # retro
+    d = 0.12 * f
+    h = 0.45 * f
+    w = 0.3 * f
+    shaft_end = hx - h * d / w
+    drawer.DrawLine(Point2D(tx, ty + d), Point2D(shaft_end, hy + d))
+    drawer.DrawLine(Point2D(tx, ty - d), Point2D(shaft_end, hy - d))
+    drawer.DrawLine(Point2D(hx - h, hy + w), Point2D(hx, hy))
+    drawer.DrawLine(Point2D(hx, hy), Point2D(hx - h, hy - w))
+
+
+def _text_baselines(
+    above: str, below: str, arrow: str, style: str
+) -> tuple[list[tuple[str, float]], list[tuple[str, float]]]:
+    """Zeilen mit Grundlinien-Abstand zur Pfeilachse (Mol-Koordinaten,
+    positiv = nach oben). Oben stapeln die Zeilen nach oben, unten nach unten;
+    die erste Zeile steht jeweils oben."""
+    arrow_length, font = _reaction_metrics(style)
+    line = font * _LINE_SPACING
+    if arrow == "forward":
+        first_above = _ABOVE_BASELINE
+    else:
+        first_above = _ABOVE_BASELINE + (
+            _arrow_extent(arrow, arrow_length) - _arrow_extent("forward", arrow_length)
+        )
+    above_lines = above.split("\n") if above else []
+    n = len(above_lines)
+    out_above = [
+        (text, first_above + (n - 1 - i) * line) for i, text in enumerate(above_lines)
+    ]
+    first_below = _arrow_extent(arrow, arrow_length) + 0.1 + 0.75 * font
+    out_below = [
+        (text, -(first_below + i * line))
+        for i, text in enumerate(below.split("\n") if below else [])
+    ]
+    return out_above, out_below
+
 
 def _reaction_metrics(style: str) -> tuple[float, float]:
     """(Pfeillänge, Conditions-Schriftgröße) in Mol-Koordinaten für einen Stil.
@@ -179,7 +272,12 @@ def _compose_reaction(
 
 
 def _draw_reaction(
-    drawer, reactants, products, style: str = "", transparent: bool = False
+    drawer,
+    reactants,
+    products,
+    style: str = "",
+    transparent: bool = False,
+    arrow: str = "forward",
 ) -> tuple[tuple[float, float], float]:
     """Zeichnet das Schema (ohne Conditions) und liefert die Pixel-Position
     der Pfeilmitte plus die Skala (Pixel pro Mol-Koordinaten-Einheit).
@@ -200,7 +298,7 @@ def _draw_reaction(
     for px, py in layout.plus_positions:
         drawer.DrawString("+", Point2D(px, py))
     (tx, ty), (hx, hy) = layout.arrow
-    drawer.DrawArrow(Point2D(tx, ty), Point2D(hx, hy), True, 0.12)
+    _draw_arrow_glyph(drawer, (tx, ty), (hx, hy), arrow, arrow_length)
 
     mid = drawer.GetDrawCoords(Point2D((tx + hx) / 2, 0.0))
     origin = drawer.GetDrawCoords(Point2D(0.0, 0.0))
@@ -216,14 +314,18 @@ def render_reaction_png(
     size: tuple[int, int] = RXN_PNG_SIZE,
     style: str = "",
     transparent: bool = False,
+    *,
+    arrow: str = "forward",
+    conditions_below: str = "",
 ) -> bytes:
+    _check_arrow(arrow)
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
     (mid_x, mid_y), scale = _draw_reaction(
-        drawer, reactants, products, style, transparent
+        drawer, reactants, products, style, transparent, arrow
     )
     drawer.FinishDrawing()
     png = drawer.GetDrawingText()
-    if not conditions:
+    if not conditions and not conditions_below:
         return png
 
     import io
@@ -240,13 +342,15 @@ def render_reaction_png(
         font_manager.findfont("DejaVu Sans"),
         size=max(10, round(_reaction_metrics(style)[1] * scale)),
     )
-    draw.text(
-        (mid_x, mid_y - 0.35 * scale),
-        conditions,
-        fill=(0, 0, 0),
-        font=font,
-        anchor="ms",  # zentriert über dem Pfeil, Baseline oberhalb
-    )
+    above, below = _text_baselines(conditions, conditions_below, arrow, style)
+    for text, offset in above + below:
+        draw.text(
+            (mid_x, mid_y - offset * scale),
+            text,
+            fill=(0, 0, 0),
+            font=font,
+            anchor="ms",  # horizontal zentriert am Pfeil, y = Grundlinie
+        )
     out = io.BytesIO()
     image.save(out, format="PNG")
     return out.getvalue()
@@ -258,23 +362,32 @@ def render_reaction_svg(
     conditions: str = "",
     size: tuple[int, int] = RXN_SVG_SIZE,
     style: str = "",
+    *,
+    arrow: str = "forward",
+    conditions_below: str = "",
 ) -> str:
+    _check_arrow(arrow)
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    (mid_x, mid_y), scale = _draw_reaction(drawer, reactants, products, style)
+    (mid_x, mid_y), scale = _draw_reaction(
+        drawer, reactants, products, style, arrow=arrow
+    )
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()
-    if not conditions:
+    if not conditions and not conditions_below:
         return svg
 
     from xml.sax.saxutils import escape
 
-    text_el = (
-        f"<text x='{mid_x:.1f}' y='{mid_y - 0.35 * scale:.1f}' "
+    # Ein <text> je Zeile: SVG faltet "\n" sonst zu einem Leerzeichen.
+    above, below = _text_baselines(conditions, conditions_below, arrow, style)
+    text_els = "".join(
+        f"<text x='{mid_x:.1f}' y='{mid_y - offset * scale:.1f}' "
         f"text-anchor='middle' font-family='sans-serif' "
         f"font-size='{_reaction_metrics(style)[1] * scale:.1f}px' fill='#000000'>"
-        f"{escape(conditions)}</text>\n"
+        f"{escape(text)}</text>\n"
+        for text, offset in above + below
     )
-    return svg.replace("</svg>", text_el + "</svg>")
+    return svg.replace("</svg>", text_els + "</svg>")
 
 
 def write_files(base: Path, artifacts: dict[str, bytes | str]) -> dict[str, str]:
