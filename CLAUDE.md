@@ -109,8 +109,8 @@ and the runner separates **red** (resolved to something else) from **yellow**
 hiccups is a check that gets ignored. It paid for itself on the first run:
 PubChem answered the metformin SMILES with its `[14C]` record (no CAS), which is
 why properties are now fetched by InChIKey with the SMILES route as fallback.
-The open question it also surfaced is noted in the fixture: "Glucose" resolves to
-the open-chain aldehyde, not the pyranose.
+"Glucose" (like Xylol, Kresol, Toluidin, Butanol) is now pinned as `ambiguous`:
+`generate_molecule` returns an isomer picker instead of silently choosing one.
 
 A third frozen set covers the text the model actually reads:
 `tests/__snapshots__/tools/*.json` pins each tool's name, description and schemas.
@@ -189,7 +189,8 @@ chemdraw_tool/
 │                            needs Java; degrades gracefully) → PubChem →
 │                            PubChem transliterated (ä→ae) → NCI CIR ×2.
 │                            Errors carry a `kind`: not_found / offline /
-│                            sources_down / partial — the message tells the user
+│                            sources_down / partial / invalid_smiles /
+│                            ambiguous (family names → isomer picker) — the message tells the user
 │                            what actually helps
 ├── generator.py           — RDKit 2D coordinates
 ├── image_export.py        — PNG/SVG file rendering (primary output path)

@@ -82,14 +82,24 @@ class NameResolutionError(ValueError):
     Bleibt eine ValueError: server.py und andere Aufrufer fangen darauf.
     `kind` ist einer von 'not_found' | 'offline' | 'sources_down' | 'partial'
     | 'invalid_smiles' (Eingabe ist kaputtes SMILES, die Kaskade wurde nie
-    betreten — `attempts` ist dann leer).
+    betreten — `attempts` ist dann leer) | 'ambiguous' (Familienname wie
+    "xylene": mehrere Isomere, keins gewählt — `candidates` nennt sie).
     """
 
-    def __init__(self, message: str, *, name: str, kind: str, attempts: list):
+    def __init__(
+        self,
+        message: str,
+        *,
+        name: str,
+        kind: str,
+        attempts: list,
+        candidates: tuple = (),
+    ):
         super().__init__(message)
         self.name = name
         self.kind = kind
         self.attempts = attempts
+        self.candidates = list(candidates)
 
 
 class _Attempt:
@@ -725,10 +735,113 @@ def _smiles_fault(text: str) -> str | None:
     return message + " To search by name instead, type the compound name."
 
 
+# --- Mehrdeutige Familiennamen (Etappe 2, 26.10.2026) -------------------------
+# "xylene", "Kresol", "toluidine" nennen keinen Stoff, sondern eine Familie.
+# OPSIN wählte dafür still das ortho-Isomer, "Glucose" wurde die offenkettige
+# Aldehydform — Zeichnung, Formel und Datenblatt passten dann perfekt zum
+# falschen Stoff. Deshalb stehen die Familien hier fest, geprüft NACH dem
+# SMILES-Weg und VOR OPSIN, mit fertigem SMILES je Kandidat (am 26.10.2026 bei
+# PubChem nachgeschlagen, InChIKeys in tests/test_ambiguous_names.py gepinnt).
+# Verglichen wird der ganze Name (strip + casefold), nie ein Teilstring:
+# "o-Xylol", "m-cresol", "1-Butanol", "D-Glucose" lösen weiter normal auf.
+
+
+class IsomerCandidate:
+    """Ein Stoff, den ein Familienname meinen kann."""
+
+    __slots__ = ("label", "name", "smiles")
+
+    def __init__(self, label: str, name: str, smiles: str):
+        self.label = label  # kurz, wie im Hörsaal: "o-xylene"
+        self.name = name  # ausgeschrieben (IUPAC): "1,2-dimethylbenzene"
+        self.smiles = smiles
+
+    def __repr__(self) -> str:
+        return f"IsomerCandidate({self.label!r}, {self.smiles!r})"
+
+    def __eq__(self, other) -> bool:
+        return isinstance(other, IsomerCandidate) and (
+            self.label, self.name, self.smiles
+        ) == (other.label, other.name, other.smiles)
+
+
+def _family(*members: tuple[str, str, str]) -> tuple[IsomerCandidate, ...]:
+    return tuple(IsomerCandidate(*m) for m in members)
+
+
+_XYLENE = _family(
+    ("o-xylene", "1,2-dimethylbenzene", "Cc1ccccc1C"),
+    ("m-xylene", "1,3-dimethylbenzene", "Cc1cccc(C)c1"),
+    ("p-xylene", "1,4-dimethylbenzene", "Cc1ccc(C)cc1"),
+)
+_CRESOL = _family(
+    ("o-cresol", "2-methylphenol", "Cc1ccccc1O"),
+    ("m-cresol", "3-methylphenol", "Cc1cccc(O)c1"),
+    ("p-cresol", "4-methylphenol", "Cc1ccc(O)cc1"),
+)
+_TOLUIDINE = _family(
+    ("o-toluidine", "2-methylaniline", "Cc1ccccc1N"),
+    ("m-toluidine", "3-methylaniline", "Cc1cccc(N)c1"),
+    ("p-toluidine", "4-methylaniline", "Cc1ccc(N)cc1"),
+)
+_BUTANOL = _family(
+    ("1-butanol", "butan-1-ol", "CCCCO"),
+    # Ohne Stereo-Angabe: "2-Butanol" meint das Racemat.
+    ("2-butanol", "butan-2-ol", "CCC(C)O"),
+    ("isobutanol", "2-methylpropan-1-ol", "CC(C)CO"),
+    ("tert-butanol", "2-methylpropan-2-ol", "CC(C)(C)O"),
+)
+# Glucose ist keine Stellungsfamilie: offenkettig gegen die beiden Anomere.
+_GLUCOSE = _family(
+    (
+        "D-glucose (open chain)",
+        "(2R,3S,4R,5R)-2,3,4,5,6-pentahydroxyhexanal",
+        "O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO",
+    ),
+    (
+        "α-D-glucopyranose",
+        "alpha-D-glucopyranose",
+        "OC[C@H]1O[C@H](O)[C@H](O)[C@@H](O)[C@@H]1O",
+    ),
+    (
+        "β-D-glucopyranose",
+        "beta-D-glucopyranose",
+        "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O",
+    ),
+)
+
+_AMBIGUOUS_FAMILIES: dict[str, tuple[IsomerCandidate, ...]] = {
+    **dict.fromkeys(("xylene", "xylenes", "xylol", "xylole"), _XYLENE),
+    **dict.fromkeys(("cresol", "cresols", "kresol", "kresole"), _CRESOL),
+    **dict.fromkeys(("toluidine", "toluidines", "toluidin"), _TOLUIDINE),
+    **dict.fromkeys(("butanol", "butanols", "butanole"), _BUTANOL),
+    **dict.fromkeys(("glucose", "glukose"), _GLUCOSE),
+}
+
+
+def ambiguous_candidates(name: str) -> list[IsomerCandidate] | None:
+    """Die Kandidaten, wenn `name` ein bekannter Familienname ist — sonst None."""
+    family = _AMBIGUOUS_FAMILIES.get(name.strip().casefold())
+    return list(family) if family else None
+
+
+def _ambiguous_error(name: str, candidates: list[IsomerCandidate]) -> NameResolutionError:
+    listing = ", ".join(f"{c.label} ({c.smiles})" for c in candidates)
+    message = (
+        f"'{name.strip()}' is ambiguous: it names {len(candidates)} different "
+        f"compounds — {listing}. Nothing was drawn for it. Pass the specific "
+        f"isomer by name or by its SMILES."
+    )
+    return NameResolutionError(
+        message, name=name, kind="ambiguous", attempts=[], candidates=candidates
+    )
+
+
 @functools.lru_cache(maxsize=512)
 def resolve_name(name: str) -> str:
     """Resolve a compound name to SMILES via fallback cascade.
 
+    0. Known family names ("xylene", "Glucose") raise kind="ambiguous"
     1. OPSIN (offline, rule-based — systematic IUPAC names, no DB index needed)
     2. PubChem direct (handles English names + many synonyms)
     3. PubChem with umlaut transliteration (ä→ae etc.)
@@ -740,6 +853,11 @@ def resolve_name(name: str) -> str:
     wird nicht festgeschrieben, sobald das Netz zurück ist greift der nächste
     Versuch wieder. `resolve_name.cache_clear()` leert den Cache.
     """
+    # Familienname zuerst: OPSIN würde ihn still zum ortho-Isomer machen.
+    # lru_cache speichert keine Ausnahmen — der Fehler wird nie festgeschrieben.
+    if candidates := ambiguous_candidates(name):
+        raise _ambiguous_error(name, candidates)
+
     report: list[_Attempt] = []
 
     if smiles := _opsin_lookup(name):

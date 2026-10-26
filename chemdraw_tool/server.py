@@ -39,6 +39,7 @@ from chemdraw_tool.image_export import (
 )
 from chemdraw_tool.layout import write_reaction_cdxml
 from chemdraw_tool.payloads import (
+    AmbiguousPayload,
     AnkiCard,
     AnkiDeckPayload,
     BatchPayload,
@@ -46,6 +47,7 @@ from chemdraw_tool.payloads import (
     DatabaseRow,
     DatabaseSource,
     FunctionalGroup,
+    IsomerCandidate,
     LipinskiData,
     MechanismPayload,
     MechanismStepPayload,
@@ -62,7 +64,7 @@ from chemdraw_tool.payloads import (
     TlcPayload,
 )
 from chemdraw_tool.render_style import condense_groups, get_style
-from chemdraw_tool.resolver import resolve
+from chemdraw_tool.resolver import NameResolutionError, resolve
 from chemdraw_tool.spectrum import (
     SPECTRUM_TYPES,
     render_spectrum_png,
@@ -485,6 +487,35 @@ def _molecule_slug(display_name: str, smiles: str) -> str:
     return slug
 
 
+def _ambiguous_payload(query: str, candidates: list) -> AmbiguousPayload:
+    """Familienname → Auswahl: je Kandidat ein kleines Vorschaubild.
+
+    Keine Dateien, kein PubChem — gezeichnet wird erst das gewählte Isomer,
+    per Klick im Panel (generate_molecule mit dessen SMILES) oder im Chat.
+    """
+    from chemdraw_tool.svg_renderer import render_svg
+
+    entries = []
+    for cand in candidates:
+        mol = generate_2d(Chem.MolFromSmiles(cand.smiles))
+        entries.append(
+            IsomerCandidate(
+                label=cand.label,
+                name=cand.name,
+                smiles=cand.smiles,
+                svg=render_svg(mol, width=150, height=120, fill_container=True),
+            )
+        )
+    listing = "; ".join(f"{c.label} = {c.name}, SMILES {c.smiles}" for c in entries)
+    message = (
+        f"'{query.strip()}' is ambiguous: it names {len(entries)} different "
+        f"compounds ({listing}). Nothing was drawn. Ask the user which one is "
+        f"meant; the panel shows all of them and draws the one the user clicks. "
+        f"To draw one from the chat, call generate_molecule with its SMILES."
+    )
+    return AmbiguousPayload(name=query.strip(), message=message, candidates=entries)
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
     name_or_smiles: str,
@@ -537,7 +568,14 @@ def generate_molecule(
     fmts = _normalize_formats(formats)
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
-    smiles, mol = resolve(name_or_smiles)
+    try:
+        smiles, mol = resolve(name_or_smiles)
+    except NameResolutionError as exc:
+        if exc.kind != "ambiguous":
+            raise
+        # Erfolgsantwort statt Fehler: der Host verwirft isError-Antworten
+        # (toolData.js), die Vorschaubilder brauchen ein Payload.
+        return _ambiguous_payload(name_or_smiles, exc.candidates)
     mol = generate_2d(mol)
 
     input_issues = validate_input(mol)
@@ -2938,6 +2976,18 @@ def batch_generate(
     for name_or_smiles in molecules:
         try:
             smiles, mol = resolve(name_or_smiles)
+        except NameResolutionError as exc:
+            logging.getLogger(__name__).warning(
+                "Could not resolve %r (%s), skipping", name_or_smiles, exc.kind
+            )
+            # Bei einem Familiennamen gehören die Kandidaten in die Meldung —
+            # sonst sieht "xylene" in failed aus wie ein Tippfehler.
+            if exc.kind == "ambiguous":
+                labels = ", ".join(c.label for c in exc.candidates)
+                failed.append(f"{name_or_smiles} (ambiguous: {labels})")
+            else:
+                failed.append(name_or_smiles)
+            continue
         except Exception:
             logging.getLogger(__name__).warning(
                 "Could not resolve %r, skipping", name_or_smiles
@@ -3178,7 +3228,7 @@ def _user_facing_errors(fn):
     Seit mcp 2.1 kommt von jeder anderen Exception beim Client nur
     "Error executing tool <name>" an. Die ValueErrors dieses Servers sind aber
     Bedienhinweise — allen voran `NameResolutionError` mit seinem `kind`
-    (not_found/offline/sources_down/partial/invalid_smiles), der sagt, was
+    (not_found/offline/sources_down/partial/invalid_smiles/ambiguous), der sagt, was
     tatsächlich hilft.
     Echte Abstürze (alles andere) bleiben bewusst pauschal. `functools.wraps`
     hält Name, Docstring und Signatur gleich, also auch die Schemas.

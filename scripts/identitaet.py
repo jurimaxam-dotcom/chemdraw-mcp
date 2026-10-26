@@ -23,7 +23,9 @@ Gruenden rot wird, wird ignoriert. Deshalb trennt der Lauf hart:
 
 Eintraege mit "fehler" (z. B. "invalid_smiles") muessen genau mit dieser
 Fehlerart scheitern — loest der Server sie doch auf, ist das ROT: dann hat er
-eine kaputte Eingabe still zu irgendeinem Stoff gemacht.
+eine kaputte Eingabe still zu irgendeinem Stoff gemacht. Bei
+"fehler": "ambiguous" (Familienname wie "xylene") prueft optional
+"kandidaten" die InChIKeys der angebotenen Isomere in ihrer Reihenfolge.
 
 Aufruf:  uv run python scripts/identitaet.py [--json]
 Exit 1 nur bei ROT.
@@ -39,7 +41,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
-from rdkit import RDLogger  # noqa: E402
+from rdkit import Chem, RDLogger  # noqa: E402
 from rdkit.Chem import inchi  # noqa: E402
 
 from chemdraw_tool.resolver import NameResolutionError, resolve  # noqa: E402
@@ -66,6 +68,21 @@ def pruefe(eintrag: dict) -> dict:
     except NameResolutionError as fehler:
         if erwarteter_fehler:
             if fehler.kind == erwarteter_fehler:
+                erwartete_kandidaten = eintrag.get("kandidaten")
+                if erwartete_kandidaten is not None:
+                    angeboten = [
+                        inchi.MolToInchiKey(Chem.MolFromSmiles(k.smiles))
+                        for k in fehler.candidates
+                    ]
+                    if angeboten != erwartete_kandidaten:
+                        return {
+                            "status": ROT,
+                            "text": f"falsche Kandidaten: {angeboten}",
+                        }
+                    return {
+                        "status": GRUEN,
+                        "text": f"mehrdeutig wie erwartet ({len(angeboten)} Kandidaten)",
+                    }
                 return {"status": GRUEN, "text": f"scheitert wie erwartet ({fehler.kind})"}
             return {
                 "status": ROT,

@@ -60,3 +60,15 @@ export function lookupFailure() {
     content: [{ type: "text", text: "Fehler: Stoff nicht gefunden" }],
   };
 }
+
+/** Mehrdeutiger Familienname — so, wie generate_molecule ihn beantwortet. */
+export const AMBIGUOUS = {
+  type: "ambiguous",
+  name: "Xylol",
+  message: "'Xylol' is ambiguous: it names 3 different compounds. Nothing was drawn.",
+  candidates: [
+    { label: "o-xylene", name: "1,2-dimethylbenzene", smiles: "Cc1ccccc1C", svg: SVG },
+    { label: "m-xylene", name: "1,3-dimethylbenzene", smiles: "Cc1cccc(C)c1", svg: SVG },
+    { label: "p-xylene", name: "1,4-dimethylbenzene", smiles: "Cc1ccc(C)cc1", svg: SVG },
+  ],
+};

@@ -9,11 +9,14 @@ import ScopeView from "./ScopeView";
 import AnkiDeckView from "./AnkiDeckView";
 import PlotView from "./PlotView";
 import Molecule3DView from "./Molecule3DView";
+import AmbiguousView from "./AmbiguousView";
 
 export default function App({ data }) {
   switch (data.type) {
     case "molecule":
       return <MoleculeView key={data.smiles || data.properties?.smiles || data.name} data={data} />;
+    case "ambiguous":
+      return <AmbiguousView key={data.name} data={data} />;
     case "reaction":
       return <ReactionView data={data} />;
     case "database":

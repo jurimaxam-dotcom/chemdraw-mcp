@@ -32,6 +32,15 @@ class LipinskiData(BaseModel):
     violations: int = 0
 
 
+class IsomerCandidate(BaseModel):
+    """One structure a family name ("xylene", "Glucose") can mean."""
+
+    label: str
+    name: str = ""
+    smiles: str
+    svg: str = ""
+
+
 class MoleculePayload(BaseModel):
     type: str = "molecule"
     svg: str = ""
@@ -46,6 +55,23 @@ class MoleculePayload(BaseModel):
     # zusätzlich cdxml_path gesetzt — Kompatibilität für UI + open_chemdraw_file).
     files: dict[str, str] = {}
     cdxml_path: str = ""
+    # Nur bei type="ambiguous" gefüllt (AmbiguousPayload): der Name meint
+    # mehrere Isomere, gezeichnet wurde keins. Die Felder stehen hier und nicht
+    # nur in der Unterklasse, damit das outputSchema von generate_molecule sie
+    # ehrlich zeigt — die Annotation bleibt MoleculePayload (eine Union würde
+    # das SDK in {"result": …} wickeln).
+    message: str = ""
+    candidates: list[IsomerCandidate] = []
+
+
+class AmbiguousPayload(MoleculePayload):
+    """Auswahl statt Zeichnung: ein Familienname, mehrere Kandidaten.
+
+    Unterklasse, damit generate_molecule weiter `-> MoleculePayload` annotiert
+    bleibt; das SDK serialisiert die Instanz samt eigenem `type`.
+    """
+
+    type: str = "ambiguous"
 
 
 class MolEntry(BaseModel):

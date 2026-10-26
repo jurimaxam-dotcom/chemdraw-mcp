@@ -15,9 +15,10 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - [x] `resolver.py:resolve()`: SMILES-artig + Parse-Fehler → nicht in die Namenskaskade; Meldung mit RDKit-Fehlerstelle; Reparaturvorschlag (Großschreibung, `[N+]`) nur als Text-Angebot, nie automatisch zeichnen
 
 ## Etappe 2: Mehrdeutige Namen zeigen alle Isomere (S–M)
-- [ ] Rot: `xylene`/`Xylol`/`cresol`/`Kresol`/`toluidine` → `kind="ambiguous"` mit Kandidaten (heute: OPSIN wählt still ortho)
-- [ ] Kuratierte Familien DE+EN in `resolver.py` VOR OPSIN (Xylol, Kresol, Toluidin, Butanol, Glucose offenkettig/Pyranose — offene Frage aus `stoffe.json`)
-- [ ] `generate_molecule` antwortet mit den Kandidaten; Panel zeigt o/m/p als Vorschaubilder, Klick ruft `generate_molecule` über `callServerTool` (Muster `ExportPngButton`/Data-Knopf)
+- [x] Rot: `xylene`/`Xylol`/`cresol`/`Kresol`/`toluidine` → `kind="ambiguous"` mit Kandidaten (heute: OPSIN wählt still ortho)
+- [x] Kuratierte Familien DE+EN in `resolver.py` VOR OPSIN (Xylol, Kresol, Toluidin, Butanol, Glucose offenkettig/Pyranose — offene Frage aus `stoffe.json`)
+  - **Jay:** `D-Glucose` löst weiter offenkettig auf (nicht in der Familientabelle) — sollen auch dort die Ringformen angeboten werden?
+- [x] `generate_molecule` antwortet mit den Kandidaten; Panel zeigt o/m/p als Vorschaubilder, Klick ruft `generate_molecule` über `callServerTool` (Muster `ExportPngButton`/Data-Knopf)
 
 ## Etappe 3: Pfeiltypen + Text unter dem Pfeil (S)
 - [ ] `generate_reaction`: Parameter `arrow` (`forward`|`equilibrium`|`retro`, Standard forward) + `conditions_below`; Formeln in Bedingungen tiefstellen (H2SO4 → H₂SO₄)

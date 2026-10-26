@@ -118,6 +118,35 @@
         "title": "FunctionalGroup",
         "type": "object"
       },
+      "IsomerCandidate": {
+        "description": "One structure a family name (\"xylene\", \"Glucose\") can mean.",
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "smiles": {
+            "title": "Smiles",
+            "type": "string"
+          },
+          "svg": {
+            "default": "",
+            "title": "Svg",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "smiles"
+        ],
+        "title": "IsomerCandidate",
+        "type": "object"
+      },
       "LipinskiData": {
         "properties": {
           "hba": {
@@ -192,6 +221,14 @@
             "title": "Atoms",
             "type": "array"
           },
+          "candidates": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/IsomerCandidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
           "cdxml_path": {
             "default": "",
             "title": "Cdxml Path",
@@ -223,6 +260,11 @@
               }
             ],
             "default": null
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
           },
           "name": {
             "default": "",
