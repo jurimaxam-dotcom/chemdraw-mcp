@@ -127,6 +127,11 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     - [ ] Später: Vollprofil-Beschreibung hat den Satz nicht (2040 B, dort erst kürzen)
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
 
+## Release 0.6.0 (Jays Go 26.10.2026)
+- [x] v0.6.0: GitHub-Release, PyPI 0.6.0, `chemdraw-mcp-0.6.0.mcpb`, Registry 0.6.0 isLatest (Workflow publish.yml grün)
+- [ ] Glama: Auto-Build nach dem Release prüfen — Beleg ist nicht Glamas Versionsnummer, sondern „Haworth“ in der
+      generate_molecule-Beschreibung auf glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp (direkt nach dem Release: noch v0.1.0)
+
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)
 Fertig und in Desktop von Codex abgenommen: Etappe 1–3 (All H, Koeffizienten nur auf Wunsch, SMILES-Labels als Formel,
 Show variants, Zurück-Leiste a475eae). Etappe 4 Fischer/Haworth (f20b31a, 7cf2f71) und Lazy-Umbau (ddc2f4c) gebaut von
