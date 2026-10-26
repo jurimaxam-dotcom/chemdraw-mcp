@@ -3,7 +3,8 @@
 ## Weiter bei (26.10.2026, ~20:00)
 1. Glama-Build von 0.6.0 prüfen (Abschnitt „Release 0.6.0“): Parameter `stereo_variants`/`coefficients` auf
    glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp. Glama-API braucht einen Key → Seite per WebFetch lesen.
-   20:17 noch v0.1.0 (Release 20:09, 8 min alt).
+   20:17 noch v0.1.0 (Release 20:09, 8 min alt). **Erledigt 26.10. abends:** Glama zeigt v0.6.0 mit beiden Parametern
+   (Beleg im Abschnitt „Release 0.6.0“).
 2. ~~Doppelte Formel bei Kleinstmolekülen~~ — **Jay:** Label weglassen. Gebaut 26.10.: SMILES mit einem Schweratom
    (O, N, C, Cl) bekommt kein Label; H₂/O₂ und getippte Namen („water“) bleiben. Nicht in Desktop getestet.
 3. Danach Thema „Prüfungsfragen“ (OC-Grundlagen, kein achtes Tool; plans/mcp-server.md).
@@ -139,9 +140,13 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
 
 ## Release 0.6.0 (Jays Go 26.10.2026)
 - [x] v0.6.0: GitHub-Release, PyPI 0.6.0, `chemdraw-mcp-0.6.0.mcpb`, Registry 0.6.0 isLatest (Workflow publish.yml grün)
-- [ ] Glama: Auto-Build nach dem Release prüfen — Beleg ist nicht Glamas Versionsnummer, sondern die neuen Parameter
+- [x] Glama: Auto-Build nach dem Release prüfen — Beleg ist nicht Glamas Versionsnummer, sondern die neuen Parameter
       `stereo_variants` (generate_molecule) und `coefficients` (generate_reaction) im Schema („Haworth“ steht in keiner
       Beschreibung — Fischer/Haworth sind reine Panel-Knöpfe). 26.10. 20:17: beide fehlen, Glama zeigt nur v0.1.0 auf glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp (direkt nach dem Release: noch v0.1.0)
+      **26.10. abends (WebFetch der Seite):** Changelog-Eintrag v0.6.0 (Oct 26, 2026), 7 Tools; `generate_molecule`:
+      „stereo_variants: True returns every stereoisomer of the open centers (max 3) as a pick list“ (optionaler Parameter);
+      `generate_reaction`: „coefficients: One integer per species, reactants then products“ (optionaler Parameter, Input-
+      und Output-Schema). Belegt.
 
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)
 Fertig und in Desktop von Codex abgenommen: Etappe 1–3 (All H, Koeffizienten nur auf Wunsch, SMILES-Labels als Formel,

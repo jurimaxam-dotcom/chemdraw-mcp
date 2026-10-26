@@ -140,6 +140,50 @@ Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein
 - [ ] Varianten: Name verdecken, Gruppen verdecken, nur Gerüst zeigen
 - [ ] Tests: Abdeckung deckt genau die Atome der Gruppe; Aufdecken ist umkehrbar; Zustand nur im Panel (kein Server)
 
+##### Entwurf „Prüfungsfragen OC-Grundlagen“ (26.10.2026, nur Entwurf — Jay gibt je Etappe frei)
+Rahmen: Jay 26.10. OC-Grundlagen zuerst (funktionelle Gruppen, Isomerie, R/S, Reaktionstypen); MVP bleibt 7 Tools →
+Parameter oder Panel-Knopf, kein achtes Tool. Ausgangspunkt ist Modus E (verdecken, aufdecken).
+
+Was schon da ist (Bestand 26.10.):
+- `MoleculePayload.functionalGroups` (`name`, `atomIndices`, `count`; SMARTS-Liste in `svg_renderer._FUNCTIONAL_GROUPS`
+  plus „Aromat“, Namen deutsch; gemessen: Aspirin → Carbonsäure, Ester, Aromat) + `atoms` (`AtomData` idx/x/y) → genau das, was Abdecken braucht; `StructureCanvas` hebt
+  per `groups`/`highlightAtoms` schon Atomlisten hervor, `FunctionalGroupList` listet sie.
+- Isomerie: `AmbiguousPayload.candidates` (Isomer-Auswahl, 0a1d29a) und `stereo_variants` (max. 3 Stereoisomere als
+  Auswahl) liefern fertige Antwortmengen für „welches Isomer ist das?“.
+- R/S: `stereoWarnings` kennt nur **offene** Zentren; CIP-Labels der bestimmten Zentren stehen nur in der Zeichnung
+  (`annotate_stereo`), **nicht** als Daten im Payload → für R/S-Fragen fehlt ein Feld (z. B. `AtomData.cip`).
+- Reaktionstypen: `ReactionPayload` + `balance`; kein Typ-Etikett (Substitution/Addition/…) vorhanden.
+- Abfrage-Ausgang: `export_anki_deck` + `curated_decks` (2 Decks, `VERIFIED_STRUCTURES` mit Formel-Gate) →
+  „Falsch beantwortet → Karteikarten“ ohne neuen Server-Weg; `AddToAnkiButton` im Panel.
+
+Bauvarianten:
+- **A (Empfehlung) — Panel-Knopf „Quiz“ am Molekül-Panel, kein neuer Parameter.** Jede `generate_molecule`-Antwort
+  kann abgefragt werden: Klick „Quiz“ deckt alle `functionalGroups` ab (graue Flächen über `atomIndices`), Klick auf eine
+  Fläche → Auswahl aus 3–4 Gruppennamen (Distraktoren aus der SMARTS-Liste), dann Aufdecken. Zustand nur im Panel.
+  Vorteil: null Änderung an Tool-Text/Snapshots/Evals, Daten liegen schon im Payload, sofort für jedes Molekül.
+  Nachteil: Lernender muss erst „Zeichne X“ sagen; keine Fragenfolge.
+- **B — Parameter `mode="quiz"` an `generate_molecule`** (wie Phase 5 geplant): Modell kann „frag mich Aspirin ab“
+  direkt ins Quiz schicken, Panel startet abgedeckt. Kostet: Beschreibungsänderung (Snapshot neu segnen,
+  Eval-Fall für „frag mich ab“ vs. „zeichne“), Routing-Risiko gegen `export_anki_deck`.
+- **C — Fragenbestand als Datendatei + `curated_deck_id`-artiger Schlüssel** (`oc-grundlagen-1`: 15–20 geprüfte
+  Lehrbuchmoleküle je Thema, Formel-Gate wie `VERIFIED_STRUCTURES`), abgespielt über `batch_generate` oder A/B.
+  Eigentliche Fragenfolge (= Phase F). Groß; erst sinnvoll, wenn A sich im Gebrauch bewährt.
+Reihenfolge: **A → (B, nur wenn Jay „frag mich ab“ im Chat will) → C**. Themen in A-Reihenfolge: funktionelle Gruppen
+(Daten da) → Isomerie (Kandidaten da) → R/S (braucht `cip`-Feld) → Reaktionstypen (braucht Typ-Etikett, zuletzt).
+
+**Voraussetzung A0 (Inhaltsfehler, vor jedem Quiz):** `extract_functional_groups` meldet bei Paracetamol
+`['Amid', 'Sek. Amin', 'Phenol', 'Aromat']` — der Amid-Stickstoff zählt zusätzlich als sekundäres Amin. Im Panel ein
+Schönheitsfehler, im Quiz falscher Lernstoff. Fix: Amin-SMARTS ohne Carbonyl-Nachbar (`[NX3H1;!$(NC=O)]…`), Test mit
+Paracetamol/Lidocain zuerst rot; Golden-SVGs prüfen (Gruppen färben nur im Panel, Export vermutlich unberührt).
+
+Erste prüfbare Etappe (A1, Vorschlag): Knopf „Quiz“ im Molekül-Panel, deckt alle funktionellen Gruppen ab, Klick deckt
+eine auf (noch ohne Antwortauswahl), „Alle zeigen“ setzt zurück.
+- Tests zuerst: Komponententest „Abdeckung = genau die `atomIndices` der Gruppe“, „Aufdecken umkehrbar“, Molekül ohne
+  Gruppen → Knopf fehlt; `test:host` klickt Quiz bei Aspirin (3 Gruppen) durch. Bundle-Budget bleibt ≤ 650 kB.
+- Kein Python-Code, kein Tool-Text, keine Golden-SVG berührt → Gate + Host-Test + Codex-Desktop-Test.
+- 10-Sekunden-Test: „Zeichne Aspirin“ → Quiz → drei graue Flächen → eine anklicken → „Ester“ erscheint.
+- [ ] **Jay:** Freigabe A1 (oder Variante B/C zuerst)?
+
 #### Phase 6 — Prüfungsmodus (F) → 0.7.1
 - [ ] Fragenfolge (N Strukturen), Fragetypen: Gruppen benennen, Name zur Struktur wählen, Stereozentren zählen/bestimmen (R/S)
 - [ ] Kein Hinweis während der Prüfung, Auswertung nach Bereich (wie der Klausurmodus im Rechner)
