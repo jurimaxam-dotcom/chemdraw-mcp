@@ -152,3 +152,52 @@ def test_every_proactive_tool_has_an_implicit_case(tool):
         f"{tool} wird nur von expliziten Auftraegen getroffen — ungeprueft "
         "bleibt, ob es im Gespraech ueberhaupt vorkommt."
     )
+
+
+# --- Argumente, die das Modell NICHT setzen darf (Jay 26.10.2026) -----------
+#
+# Manche Fehlgriffe sind kein falsches Tool, sondern ein ungefragtes Argument:
+# „coefficients“ gleicht eine Gleichung aus, die der Nutzer so nicht bestellt
+# hat. `forbidden_args` macht daraus eine not-contains-Pruefung im Lauf.
+
+
+def _tool_params(name: str) -> set[str]:
+    tool = next(t for t in mcp._tool_manager.list_tools() if t.name == name)
+    return set(tool.parameters.get("properties", {}))
+
+
+@pytest.mark.parametrize(
+    "case", [c for c in _cases() if "forbidden_args" in c], ids=lambda c: c["id"]
+)
+def test_forbidden_args_are_parameters_of_the_expected_tool(case):
+    unknown = set(case["forbidden_args"]) - _tool_params(case["expect"])
+    assert not unknown, f"{case['id']}: {sorted(unknown)} gibt es nicht als Parameter"
+
+
+def test_unrequested_coefficients_are_covered():
+    assert any("coefficients" in c.get("forbidden_args", []) for c in _cases()), (
+        "Kein Fall prueft, dass ein schlichter Zeichenauftrag ohne Koeffizienten bleibt"
+    )
+
+
+def test_config_turns_forbidden_args_into_not_contains():
+    import importlib.util
+
+    path = CASES_FILE.parent / "build_config.py"
+    spec = importlib.util.spec_from_file_location("build_config", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    case = {
+        "id": "x",
+        "prompt": "p",
+        "expect": "generate_reaction",
+        "forbidden": ["generate_molecule"],
+        "forbidden_args": ["coefficients"],
+        "why": "w",
+    }
+    asserts = module.case_asserts(case)
+    assert {
+        "type": "not-contains",
+        "value": '"coefficients"',
+        "metric": "kein-ungefragtes-Argument",
+    } in asserts

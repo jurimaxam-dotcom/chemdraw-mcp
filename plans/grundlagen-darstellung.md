@@ -18,9 +18,11 @@ Golden-SVGs nie zum Grünmachen neu erzeugen. Desktop-Test läuft über den Repo
     Bilanz zählt mit Koeffizienten; Payload `request` wiederholt den Aufruf. Eigene Datei je Koeffizientensatz.
 
 - Befunde Desktop-Test 26.10. (Jay, Bild „Knallgasreaktion“):
-  - [ ] Modell setzt `coefficients` schon beim ersten Aufruf selbst; der Knopf wurde nicht gebraucht. Widerspricht „nie ungefragt“?
-        Jay entscheidet: so lassen (Modell erklärt es im Text) oder Beschreibung „only when the user asks for a balanced equation“
-  - [ ] Unter den Molekülen steht der SMILES-Eingabetext ([H][H], O=O, O) statt eines Namens/einer Formel → bei SMILES-Eingabe Summenformel (H₂, O₂, H₂O) als Label
+  - [x] Modell setzt `coefficients` schon beim ersten Aufruf selbst; der Knopf wurde nicht gebraucht. Widerspricht „nie ungefragt“?
+        **Jay:** (a) Auswahl liegt beim Nutzer. Umgesetzt 26.10.: Parameter-Text „Set only when the user asks for a
+        balanced equation …“, Eval-Fall `draw-reaction-as-typed` mit neuem Feld `forbidden_args: [coefficients]`.
+  - [x] Unter den Molekülen steht der SMILES-Eingabetext ([H][H], O=O, O) statt eines Namens/einer Formel → bei SMILES-Eingabe Summenformel (H₂, O₂, H₂O) als Label
+        — Gebaut 26.10. (fdaacd1): Panel + CDXML (face="32"); PNG/SVG der Reaktion hatten nie Beschriftungen, bleiben so
   - [ ] Knopf „Apply coefficients“ einmal in Desktop von Hand klicken (bisher nur DOM-Test + test:host ohne diesen Pfad)
 
 ## Etappe 3: Stereo-Auswahl R/S, E/Z (S–M)

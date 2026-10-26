@@ -90,6 +90,16 @@ cases:
       "equilibrium", Etappe 3), kein eigenes Tool. Ohne den Fall koennte ein
       Modell das Wort „Gleichgewicht" fuer einen Einzelstoff oder Mechanismus halten.
 
+  - id: draw-reaction-as-typed
+    prompt: "Zeichne die Knallgasreaktion H2 + O2 → H2O"
+    expect: generate_reaction
+    forbidden: [generate_mechanism, generate_molecule]
+    forbidden_args: [coefficients]
+    why: >
+      Befund Desktop-Test 26.10.2026: das Modell setzte `coefficients` schon beim
+      ersten Aufruf. Jay: Ausgleichen entscheidet der Nutzer — gezeichnet wird wie
+      eingegeben, der Knopf „Apply coefficients" im Panel übernimmt den Vorschlag.
+
   - id: draw-mechanism
     prompt: "Zeig mir den Mechanismus der SN2-Reaktion Schritt fuer Schritt"
     expect: generate_mechanism

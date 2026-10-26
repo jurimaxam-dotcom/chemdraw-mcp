@@ -27,6 +27,35 @@ HERE = Path(__file__).resolve().parent
 MODEL = "claude-opus-5"
 
 
+def case_asserts(case: dict) -> list[dict]:
+    """Prüfungen eines Falls: richtiges Tool, kein falsches, kein ungefragtes Argument."""
+    asserts = [
+        {
+            "type": "contains",
+            "value": f'"name":"{case["expect"]}"',
+            "metric": "richtiges-Tool",
+        }
+    ]
+    for forbidden in case["forbidden"]:
+        asserts.append(
+            {
+                "type": "not-contains",
+                "value": f'"name":"{forbidden}"',
+                "metric": "kein-Fehlgriff",
+            }
+        )
+    # Ein Argumentname steht nur im tool_use-JSON, wenn das Modell ihn setzt.
+    for arg in case.get("forbidden_args", []):
+        asserts.append(
+            {
+                "type": "not-contains",
+                "value": f'"{arg}"',
+                "metric": "kein-ungefragtes-Argument",
+            }
+        )
+    return asserts
+
+
 def main() -> int:
     cases = yaml.safe_load((HERE / "cases.yaml").read_text(encoding="utf-8"))["cases"]
     tools_file = HERE / "tools.json"
@@ -44,21 +73,7 @@ def main() -> int:
 
     tests = []
     for case in cases:
-        asserts = [
-            {
-                "type": "contains",
-                "value": f'"name":"{case["expect"]}"',
-                "metric": "richtiges-Tool",
-            }
-        ]
-        for forbidden in case["forbidden"]:
-            asserts.append(
-                {
-                    "type": "not-contains",
-                    "value": f'"name":"{forbidden}"',
-                    "metric": "kein-Fehlgriff",
-                }
-            )
+        asserts = case_asserts(case)
         tests.append(
             {
                 "description": f'{case["id"]}: {case["why"].strip().splitlines()[0]}',

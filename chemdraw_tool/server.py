@@ -3000,16 +3000,16 @@ def generate_reaction(
             "retro" (⇒, retrosynthesis: target as reactants, precursors as
             products).
         name: Display name for the reaction step (can be localized).
-        formats: Output file formats, any of "png", "svg", "cdxml"
-            (default: ["png", "svg"]). Include "cdxml" ONLY when the user
-            wants to edit the scheme in ChemDraw or asks to open it there.
-        abbreviate_groups: Set True to draw common substituents as short labels
-            (Ph, Bn, OAc, OMe, CO2H, tBu, Boc, Ts …) instead of full skeletons.
-            The CDXML export still contains the full structures.
+        formats: Any of "png", "svg", "cdxml" (default: png + svg). Add
+            "cdxml" only when the scheme is to be edited in ChemDraw.
+        abbreviate_groups: True draws common substituents as short labels
+            (Ph, OAc, OMe, CO2H, tBu, Boc …); the CDXML keeps full structures.
         render_style: "" standard · "compact" small print · "presentation"
             slides · "grayscale" b/w palette.
         coefficients: One integer per species, reactants then products
-            ([2, 1, 2] draws 2 H2 + O2 → 2 H2O).
+            ([2, 1, 2] draws 2 H2 + O2 → 2 H2O). Set only when the user asks
+            for a balanced equation; otherwise draw as given — the panel's
+            "Apply coefficients" button sets them.
     """
     from chemdraw_tool.svg_renderer import render_svg
 
