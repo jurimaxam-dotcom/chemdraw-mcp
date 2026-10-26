@@ -4,6 +4,36 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Isomer picker for family names.** "xylene", "Kresol", "toluidine",
+  "butanol" or "Glucose" no longer silently become one isomer. The panel
+  shows every candidate as a small picture; one click draws it.
+- **Equilibrium and retrosynthesis arrows** in `generate_reaction`
+  (`arrow="equilibrium"|"retro"`), plus text below the arrow
+  (`conditions_below`). Formulas in conditions are subscripted (H₂SO₄).
+  CDXML carries the arrow type.
+- **Balance check for reactions.** The panel shows whether the drawn
+  equation is balanced, what is missing, or suggested coefficients. The
+  drawing itself is never changed.
+- **Unspecified stereocenters and E/Z bonds are flagged** in the molecule
+  and data panels; hover highlights the atoms.
+
+### Changed
+
+- **GHS safety data grouped by source.** The EU harmonised classification
+  (or the ECHA aggregate) leads, hazard statements are sorted by agreement,
+  "not classified" is its own finding, other sources are collapsed. A source
+  whose record name does not match the substance is never used as the lead.
+
+### Fixed
+
+- **Broken SMILES are reported, not guessed.** `c1cccc1` used to come back
+  as cyclopentane via a name lookup; now it fails with the RDKit cause, the
+  position and a suggested fix (nothing is drawn).
+
 ## [0.5.2] — 2026-10-25
 
 ### Fixed

@@ -48,4 +48,4 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 - Struktur→Name (einzige frisch belegte Nachfrage): Orthonym pinnt exakt rdkit 2026.3.5 / lxml 6.1.3 + JVM — erst wenn das gelöst ist, dann nur optional wie OPSIN.
 
 ## Abschluss
-- [ ] Gate grün, Desktop neu gestartet, Handshake 7 Tools/6 Panel, Release-Notiz-Entwurf (Release selbst = Jays Klick)
+- [x] Gate grün, Desktop neu gestartet, Handshake 7 Tools/6 Panel, Release-Notiz-Entwurf (Release selbst = Jays Klick) — Entwurf als `[Unreleased]` in CHANGELOG.md, 26.10.
