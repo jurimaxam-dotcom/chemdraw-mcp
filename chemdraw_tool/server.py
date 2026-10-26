@@ -602,21 +602,60 @@ def _stereo_variants_payload(
     return AmbiguousPayload(name=label or shown, message=message, candidates=entries)
 
 
-def _projection_fields(mol: Chem.Mol) -> dict[str, str]:
-    """Fischer/Haworth für den Panel-Umschalter; ein Fehler kostet nur den Knopf."""
+def _projection_views(mol: Chem.Mol) -> list[str]:
+    """Welche Projektion es gibt; ein Fehler kostet nur den Knopf."""
     from chemdraw_tool import projection
 
     try:
-        return {
-            "svgFischer": projection.fischer_svg(mol),
-            "svgHaworth": projection.haworth_svg(mol),
-            "projectionNote": projection.projection_note(mol),
-        }
+        return [
+            name
+            for name, applies in (
+                ("fischer", projection.fischer_rows),
+                ("haworth", projection.haworth_ring),
+            )
+            if applies(mol) is not None
+        ]
     except Exception:  # noqa: BLE001 — Zusatzansicht, die Zeichnung geht vor
         import logging
 
         logging.getLogger(__name__).exception("Projektion fehlgeschlagen")
-        return {}
+        return []
+
+
+def _projection_note(mol: Chem.Mol) -> str:
+    from chemdraw_tool import projection
+
+    try:
+        return projection.projection_note(mol)
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _view_payload(
+    view: str, query: str, mol: Chem.Mol, annotate_stereo: bool, render_style: str
+) -> MoleculePayload:
+    """Eine Zusatzansicht für das Panel, ohne Dateien und ohne Netz."""
+    from chemdraw_tool import projection
+    from chemdraw_tool.svg_renderer import extract_atom_data, render_svg
+
+    if view == "all_h":
+        # addCoords hält das Schweratom-Gerüst fest: der Umschalter ordnet das
+        # Molekül nicht neu an, die Highlights landen an derselben Stelle.
+        mol_h = Chem.AddHs(generate_2d(mol), addCoords=True)
+        svg = render_svg(
+            mol_h,
+            fill_container=True,
+            annotate_stereo=annotate_stereo,
+            style=render_style,
+        )
+        return MoleculePayload(svg=svg, atoms=extract_atom_data(mol_h), name=query)
+    drawers = {"fischer": projection.fischer_svg, "haworth": projection.haworth_svg}
+    if view not in drawers:
+        raise ValueError(f"Unknown view '{view}' — use all_h, fischer or haworth.")
+    svg = drawers[view](mol)
+    if not svg:
+        raise ValueError(f"'{query}' has no {view} view.")
+    return MoleculePayload(svg=svg, name=query)
 
 
 @_tool(structured_output=True, meta=_UI_META)
@@ -628,6 +667,7 @@ def generate_molecule(
     abbreviate_groups: bool = False,
     render_style: str = "",
     stereo_variants: bool = False,
+    view: str = "",
 ) -> MoleculePayload:
     """Draw one compound as a 2D structure — the default for a single substance.
 
@@ -658,12 +698,12 @@ def generate_molecule(
             stereocenter.
         abbreviate_groups: True draws common substituents as the short labels
             chemists write by hand (Ph, Bn, OAc, OMe, CO2H, NO2, tBu, Boc, Ts,
-            TMS). The chemistry is unchanged; hover tooltips in the panel are
-            switched off for abbreviated drawings.
+            TMS). The chemistry is unchanged; no hover tooltips in the panel.
         render_style: "" standard · "compact" thin bonds for small print ·
             "presentation" thick bonds for slides · "grayscale" b/w palette.
         stereo_variants: True returns every stereoisomer of the open centers
             (max 3) as a pick list instead of a drawing; only on request.
+        view: Panel-internal ("all_h", "fischer", "haworth"); leave empty.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -684,6 +724,8 @@ def generate_molecule(
         return _ambiguous_payload(name_or_smiles, exc.candidates)
     if stereo_variants:
         return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
+    if view:
+        return _view_payload(view, name_or_smiles, mol, annotate_stereo, render_style)
     mol = generate_2d(mol)
 
     input_issues = validate_input(mol)
@@ -715,21 +757,15 @@ def generate_molecule(
     # Nach dem Abkürzen zeigt das SVG andere Atome als das analysierte
     # Molekül — falsch platzierte Overlays wären schlimmer als keine.
     atoms = [] if abbreviate_groups else extract_atom_data(mol)
-    # addCoords hält das Schweratom-Gerüst fest: der Umschalter ordnet das
-    # Molekül nicht neu an, die Highlights landen an derselben Stelle.
-    svg_all_h, atoms_all_h = "", []
-    if not abbreviate_groups:
-        mol_h = Chem.AddHs(mol, addCoords=True)
-        svg_all_h = render_svg(
-            mol_h,
-            fill_container=True,
-            annotate_stereo=annotate_stereo,
-            style=render_style,
-        )
-        atoms_all_h = extract_atom_data(mol_h)
+    views = [] if abbreviate_groups else ["all_h"]
+    views += _projection_views(mol)
+    view_request: dict[str, object] = {"name_or_smiles": smiles}
+    if annotate_stereo:
+        view_request["annotate_stereo"] = True
+    if render_style:
+        view_request["render_style"] = render_style
 
     return MoleculePayload(
-        **_projection_fields(mol),
         type="molecule",
         svg=render_svg(
             drawn,
@@ -738,8 +774,9 @@ def generate_molecule(
             style=render_style,
         ),
         atoms=atoms,
-        svgAllH=svg_all_h,
-        atomsAllH=atoms_all_h,
+        views=views,
+        viewRequest=view_request,
+        projectionNote=_projection_note(mol),
         name=display_name,
         properties=properties,
         functionalGroups=groups,

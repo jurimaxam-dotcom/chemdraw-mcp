@@ -6,7 +6,7 @@ import { test } from "node:test";
 import React from "react";
 
 import { AppContext } from "../AppContext";
-import MoleculeView, { DATA_LOAD_ERROR } from "../MoleculeView";
+import MoleculeView, { DATA_LOAD_ERROR, VIEW_LOAD_ERROR } from "../MoleculeView";
 import { MOLECULE, lookupFailure, lookupSuccess } from "./fixtures.mjs";
 import { act } from "react";
 
@@ -195,13 +195,23 @@ test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Stru
   unmount();
 });
 
-// Umschalter Skelettformel ⇄ alle H: lokal, ohne Toolaufruf. Ohne svgAllH
-// (alte Payloads, abgekuerzte Gruppen) gibt es keinen Knopf.
+// Zusatzansichten (All H, Fischer, Haworth): das Payload sagt nur, OB es sie
+// gibt. Der erste Klick holt die Zeichnung per generate_molecule(view=…), der
+// zweite kommt aus dem Cache (Jay 26.10.: „Erst auf Klick“).
 const SVG_ALL_H = "<svg viewBox='0 0 40 20'><path d='M1 1' data-all-h='1'/></svg>";
+const SVG_FISCHER = "<svg viewBox='0 0 40 20'><text data-fischer='1'>CHO</text></svg>";
+const SVG_HAWORTH = "<svg viewBox='0 0 40 20'><text data-haworth='1'>O</text></svg>";
+const VIEW_SVG = { all_h: SVG_ALL_H, fischer: SVG_FISCHER, haworth: SVG_HAWORTH };
+const REQUEST = { name_or_smiles: "CC(=O)Oc1ccccc1C(=O)O", annotate_stereo: true };
 
-function renderMolecule(data) {
+function renderMolecule(data, respond) {
   const calls = [];
-  const app = { callServerTool: async (req) => { calls.push(req); return lookupSuccess(); } };
+  const app = { callServerTool: async (req) => {
+    calls.push(req);
+    if (respond) return respond(req);
+    const svg = VIEW_SVG[req.arguments.view];
+    return lookupSuccess({ type: "molecule", svg, atoms: [] });
+  } };
   const view = render(
     React.createElement(AppContext.Provider, { value: app },
       React.createElement(MoleculeView, { data }))
@@ -209,73 +219,70 @@ function renderMolecule(data) {
   return { ...view, calls };
 }
 
-test("„All H“ zeigt die Zeichnung mit allen H-Atomen und schaltet zurueck", async () => {
-  const data = { ...MOLECULE, svgAllH: SVG_ALL_H, atomsAllH: MOLECULE.atoms };
+test("„All H“ holt die Zeichnung beim ersten Klick, danach aus dem Cache", async () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
   const { container, calls, unmount } = renderMolecule(data);
-  const toggle = buttonByText(container, "All H");
-  assert.ok(toggle, "kein H-Umschalter");
-  assert.equal(toggle.getAttribute("aria-pressed"), "false");
   const drawing = () => container.querySelector(".structure-drawing");
-  assert.equal(drawing().querySelector("[data-all-h]"), null, "startet nicht als Skelettformel");
+  assert.equal(calls.length, 0, "Laden ohne Klick");
 
-  await click(toggle);
+  await click(buttonByText(container, "All H"));
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, "generate_molecule");
+  assert.deepEqual(calls[0].arguments, { ...REQUEST, view: "all_h" });
   assert.ok(drawing().querySelector("[data-all-h]"), "H-Zeichnung nicht sichtbar");
   assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "true");
 
   await click(buttonByText(container, "All H"));
-  assert.equal(drawing().querySelector("[data-all-h]"), null, "Rueckweg zur Skelettformel fehlt");
-  assert.equal(calls.length, 0, "Umschalten darf kein Tool rufen");
+  assert.equal(drawing().querySelector("[data-all-h]"), null, "Rückweg zur Skelettformel fehlt");
+  await click(buttonByText(container, "All H"));
+  assert.ok(drawing().querySelector("[data-all-h]"));
+  assert.equal(calls.length, 1, "zweiter Klick muss aus dem Cache kommen");
   unmount();
 });
 
-test("ohne svgAllH kein H-Umschalter", () => {
+test("ohne Ansichten keine Knöpfe", () => {
   const { container, unmount } = renderMolecule(MOLECULE);
-  assert.ok(!buttonByText(container, "All H"), "H-Umschalter ohne svgAllH");
+  for (const label of ["All H", "Fischer", "Haworth"]) assert.ok(!buttonByText(container, label), label);
   unmount();
 });
 
-// Fischer/Haworth: dieselbe lokale Achse wie „All H“, die Ansichten schließen
-// einander aus. Knopf nur, wenn der Server eine Projektion mitliefert.
-const SVG_FISCHER = "<svg viewBox='0 0 40 20'><text data-fischer='1'>CHO</text></svg>";
-const SVG_HAWORTH = "<svg viewBox='0 0 40 20'><text data-haworth='1'>O</text></svg>";
-
-test("„Fischer“ zeigt die Projektion, „All H“ löst sie ab, zweiter Klick führt zurück", async () => {
-  const data = { ...MOLECULE, svgAllH: SVG_ALL_H, atomsAllH: MOLECULE.atoms, svgFischer: SVG_FISCHER };
-  const { container, calls, unmount } = renderMolecule(data);
+test("„Fischer“ und „All H“ schließen einander aus", async () => {
+  const data = { ...MOLECULE, views: ["all_h", "fischer"], viewRequest: REQUEST };
+  const { container, unmount } = renderMolecule(data);
   const drawing = () => container.querySelector(".structure-drawing");
-  assert.ok(!buttonByText(container, "Haworth"), "Haworth-Knopf ohne svgHaworth");
+  assert.ok(!buttonByText(container, "Haworth"), "Haworth-Knopf ohne Ansicht");
 
   await click(buttonByText(container, "Fischer"));
   assert.ok(drawing().querySelector("[data-fischer]"), "Fischer-Projektion nicht sichtbar");
-  assert.equal(buttonByText(container, "Fischer").getAttribute("aria-pressed"), "true");
-
   await click(buttonByText(container, "All H"));
   assert.equal(drawing().querySelector("[data-fischer]"), null, "Ansichten schließen einander nicht aus");
   assert.ok(drawing().querySelector("[data-all-h]"));
   assert.equal(buttonByText(container, "Fischer").getAttribute("aria-pressed"), "false");
-
-  await click(buttonByText(container, "All H"));
-  assert.equal(drawing().querySelector("[data-all-h]"), null, "Rückweg zur Skelettformel fehlt");
-  assert.equal(calls.length, 0, "Umschalten darf kein Tool rufen");
   unmount();
 });
 
 test("„Haworth“ zeigt den Ring und den Satz, warum es keine Fischer-Projektion gibt", async () => {
   const note = "The Fischer projection shows the open-chain form.";
-  const data = { ...MOLECULE, svgHaworth: SVG_HAWORTH, projectionNote: note };
+  const data = { ...MOLECULE, views: ["haworth"], viewRequest: REQUEST, projectionNote: note };
   const { container, unmount } = renderMolecule(data);
-  assert.ok(!buttonByText(container, "Fischer"), "Fischer-Knopf ohne svgFischer");
   assert.doesNotMatch(textOf(container), /open-chain/, "Hinweis vor dem Klick");
-
   await click(buttonByText(container, "Haworth"));
   assert.ok(container.querySelector(".structure-drawing [data-haworth]"), "Haworth nicht sichtbar");
   assert.match(textOf(container), /open-chain/, "Hinweis fehlt in der Haworth-Ansicht");
   unmount();
 });
 
-test("ohne Projektion keine Projektionsknöpfe", () => {
-  const { container, unmount } = renderMolecule(MOLECULE);
-  assert.ok(!buttonByText(container, "Fischer"));
-  assert.ok(!buttonByText(container, "Haworth"));
+test("ein Fehlschlag bleibt sichtbar und wiederholbar", async () => {
+  let fail = true;
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, calls, unmount } = renderMolecule(data, (req) =>
+    fail ? lookupFailure() : lookupSuccess({ type: "molecule", svg: VIEW_SVG[req.arguments.view] }));
+  await click(buttonByText(container, "All H"));
+  assert.match(textOf(container), new RegExp(VIEW_LOAD_ERROR.slice(0, 20)));
+  assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "false");
+  fail = false;
+  await click(buttonByText(container, "All H"));
+  assert.ok(container.querySelector(".structure-drawing [data-all-h]"));
+  assert.equal(calls.length, 2);
   unmount();
 });

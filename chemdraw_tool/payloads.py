@@ -57,17 +57,14 @@ class MoleculePayload(BaseModel):
     type: str = "molecule"
     svg: str = ""
     atoms: list[AtomData] = []
-    # Dieselbe Zeichnung mit allen H-Atomen, für den Umschalter im Panel.
-    # AddHs hängt die H hinten an — die Schweratom-Indizes in atomsAllH sind
-    # dieselben wie in atoms, Gruppen- und Stereo-Highlights bleiben gültig.
-    # Leer bei abgekürzten Gruppen (dann gibt es keinen Umschalter).
-    svgAllH: str = ""
-    atomsAllH: list[AtomData] = []
-    # Fischer-/Haworth-Projektion für den Umschalter im Panel, nur bei
-    # offenkettigen Zuckern/Aminosäuren bzw. Pyranosen/Furanosen; sonst leer.
-    # Eigenes SVG mit Textbeschriftung — keine Atomliste, keine Overlays.
-    svgFischer: str = ""
-    svgHaworth: str = ""
+    # Zusatzansichten des Panels ("all_h", "fischer", "haworth"): nur, OB es
+    # sie gibt. Die Zeichnungen holt das Panel beim ersten Klick per
+    # generate_molecule(**viewRequest, view=…) — eager machten sie 55–60 % der
+    # Antwort aus, und das Modell liest den ganzen Text mit (Jay 26.10.2026).
+    views: list[str] = []
+    # Aufruf, der dieselbe Zeichnung wiederholt: das SMILES aus resolve()
+    # (gleiche Atomreihenfolge → Highlights bleiben gültig) plus Zeichenoptionen.
+    viewRequest: dict[str, Any] = {}
     # Ringzucker: warum es keine Fischer-Projektion gibt (ein Satz).
     projectionNote: str = ""
     name: str = ""

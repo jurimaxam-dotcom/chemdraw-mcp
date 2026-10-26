@@ -231,30 +231,41 @@ def server(tmp_path, monkeypatch):
     return srv
 
 
-def test_open_chain_sugar_payload_carries_fischer_only(server):
+def test_open_chain_sugar_announces_fischer_only(server):
     payload = server.generate_molecule(D_GLUCOSE)
-    assert payload.svgFischer == fischer_svg(mol(D_GLUCOSE))
-    assert payload.svgHaworth == ""
+    assert "fischer" in payload.views and "haworth" not in payload.views
     assert payload.projectionNote == ""
+    view = server.generate_molecule(**payload.viewRequest, view="fischer")
+    assert view.svg == fischer_svg(mol(D_GLUCOSE))
+    assert view.atoms == [] and view.files == {}
 
 
-def test_ring_sugar_payload_carries_haworth_and_a_note(server):
+def test_ring_sugar_announces_haworth_and_a_note(server):
     payload = server.generate_molecule(BETA_GLCP)
-    assert payload.svgHaworth.startswith("<svg")
-    assert payload.svgFischer == ""
+    assert "haworth" in payload.views and "fischer" not in payload.views
     assert "open-chain" in payload.projectionNote
+    view = server.generate_molecule(**payload.viewRequest, view="haworth")
+    assert view.svg.startswith("<svg")
 
 
 def test_other_molecules_have_no_projection(server):
     payload = server.generate_molecule(NOT_PROJECTABLE["methylphenidate"])
-    assert (payload.svgFischer, payload.svgHaworth, payload.projectionNote) == ("", "", "")
+    assert payload.views == ["all_h"]
+    assert payload.projectionNote == ""
+
+
+def test_unknown_or_missing_view_is_an_error(server):
+    with pytest.raises(ValueError, match="view"):
+        server.generate_molecule(NOT_PROJECTABLE["ethanol"], view="fischer")
+    with pytest.raises(ValueError, match="view"):
+        server.generate_molecule(D_GLUCOSE, view="newman")
 
 
 def test_a_broken_projection_never_breaks_the_drawing(server, monkeypatch):
     def boom(_mol):
         raise RuntimeError("kaputt")
 
-    monkeypatch.setattr("chemdraw_tool.projection.fischer_svg", boom)
+    monkeypatch.setattr("chemdraw_tool.projection.fischer_rows", boom)
     payload = server.generate_molecule(D_GLUCOSE)
     assert payload.svg.startswith("<")
-    assert payload.svgFischer == ""
+    assert "fischer" not in payload.views

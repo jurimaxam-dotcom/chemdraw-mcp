@@ -77,13 +77,21 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
     Glykoside (Saccharose, Methylglucosid) und Alditole bekommen nichts.
   - [ ] Später, nur auf Ansage: Parameter `projection` für die Chat-Route und die Dateien auf der Platte; Ile/Thr mit
         zweitem Kreuz; Glykoside in Haworth
-  - [ ] Desktop-Abnahme durch Codex (Auftrag siehe Tisch-Faden)
+  - [x] Desktop-Abnahme durch Codex 26.10. (Faden 20261026-182553): Knöpfe, Fischer, Haworth, L-Alanin, Export-PNG,
+        Dunkelmodus, Ibuprofen ohne Projektion — alles ja.
+  - [ ] Befund Codex: Desktop-Modell (Sonnet 5.5) schreibt bei „Zeichne D-Glucose“ selbst SMILES + annotate_stereo statt
+        name_or_smiles=„D-glucose“ (auch L-Alanin, beta-D-Glucose). Diesmal stimmte die Stereochemie, aber das ist die
+        SMILES-Stereo-Falle: Routing-/Beschreibungsthema, nicht Etappe 4. Kandidat: Eval-Fall „Namen nicht selbst in SMILES übersetzen“.
 
 ## Payload schlank halten (Jay 26.10.2026)
 Messung: „All H“ (`svgAllH` + `atomsAllH`) ist 55–60 % jeder Molekül-Antwort (Ibuprofen 17,5 von 29,4 KB, Koffein 17,0 von
 31,1 KB). Desktop verwirft structuredContent, das Modell liest den ganzen Text. **Jay: „Erst auf Klick“.** Regel: Was nur
 auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt), nie eager ins Payload.
-- [ ] All H, Fischer, Haworth lazy: Panel holt die Ansicht per `callServerTool` beim ersten Klick, cacht sie; das Payload
+- [x] All H, Fischer, Haworth lazy: Panel holt die Ansicht per `callServerTool` beim ersten Klick, cacht sie; das Payload
       trägt nur, OB es die Ansicht gibt (Flags/Knopf-Sichtbarkeit), nicht die SVGs. Beschreibung < 2 KB, Snapshot segnen,
       test:host anpassen. Abnahme: Ibuprofen-Antwort < 15 KB (vorher 29,4), Klick auf All H < 1 s.
+  - Gebaut 26.10.: Payload trägt `views` + `viewRequest` (resolve-SMILES, damit Atomreihenfolge und Highlights
+    gleich bleiben, plus annotate_stereo/render_style); Parameter `view` an generate_molecule („Panel-internal“),
+    ohne Dateien, ohne Netz. Gemessen: Ibuprofen 27,0 → 9,3 KB (model_dump_json), Methylphenidat-Text 13,5 KB,
+    All H per Klick 71 ms in test:host, zweiter Klick aus dem Cache. Fehlschlag bleibt sichtbar und wiederholbar.
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.

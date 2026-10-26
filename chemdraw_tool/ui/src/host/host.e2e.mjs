@@ -158,7 +158,22 @@ try {
   await frame.getByRole("button", { name: "Back to the structure" }).click();
   prüfe((await text()).includes("CID 4158"), "Zurück zeigt wieder Methylphenidate");
 
-  // 3d. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung kommt aus dem Payload
+  // 3d. Zusatzansichten erst auf Klick (Jay 26.10.): Antwort schlank, All H kommt per Bridge in < 1 s
+  // Gezählt wird der Text, den das Modell liest (Desktop verwirft structuredContent).
+  const antwortKB = toolResult.content.map((c) => c.text || "").join("").length / 1024;
+  prüfe(antwortKB < 15, `Modell liest ${antwortKB.toFixed(1)} KB statt vorher 29,4 KB`);
+  const vorher = serverCalls.length;
+  const tAllH = Date.now();
+  await frame.getByRole("button", { name: "All H" }).click();
+  await frame.locator('button[aria-pressed="true"]', { hasText: "All H" }).waitFor({ timeout: 5000 });
+  const msAllH = Date.now() - tAllH;
+  prüfe(serverCalls.slice(vorher).join() === "generate_molecule" && msAllH < 1000, `All H holt die Zeichnung per Klick in ${msAllH} ms`);
+  await frame.getByRole("button", { name: "All H" }).click();
+  await frame.getByRole("button", { name: "All H" }).click();
+  prüfe(serverCalls.length === vorher + 1, "Zweiter All-H-Klick kommt aus dem Cache");
+  await frame.getByRole("button", { name: "All H" }).click();
+
+  // 3e. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung per Klick
   prüfe(!(await frame.getByRole("button", { name: "Fischer" }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
     "Methylphenidate hat keinen Projektionsknopf");
   for (const [stoff, knopf, fehlt, soll] of [["D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", "Fischer", "CH2OH"]]) {
@@ -166,12 +181,14 @@ try {
     const result = await client.callTool({ name: "generate_molecule", arguments: input });
     if (result.isError) throw new Error(`generate_molecule ${stoff}: ` + JSON.stringify(result.content).slice(0, 300));
     const p = await browser.newPage({ viewport: { width: 700, height: 700 } });
+    await p.exposeFunction("__callTool", (req) => client.callTool(req));
     await p.setContent("<body></body>");
     await p.addScriptTag({ path: out });
     await p.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result });
     await p.locator("iframe").evaluate((el) => { el.style.width = "680px"; el.style.height = "660px"; });
     const f = p.frames().find((x) => x !== p.mainFrame());
     await f.getByRole("button", { name: knopf }).click();
+    await f.locator(".structure-drawing svg text").first().waitFor({ timeout: 5000 });
     const labels = await f.locator(".structure-drawing svg text").allTextContents();
     prüfe(labels.includes(soll) && !(await f.getByRole("button", { name: fehlt }).count()),
       `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei), kein ${fehlt}-Knopf`);

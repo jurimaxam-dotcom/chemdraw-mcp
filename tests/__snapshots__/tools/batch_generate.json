@@ -221,14 +221,6 @@
             "title": "Atoms",
             "type": "array"
           },
-          "atomsAllH": {
-            "default": [],
-            "items": {
-              "$ref": "#/$defs/AtomData"
-            },
-            "title": "Atomsallh",
-            "type": "array"
-          },
           "candidates": {
             "default": [],
             "items": {
@@ -315,25 +307,24 @@
             "title": "Svg",
             "type": "string"
           },
-          "svgAllH": {
-            "default": "",
-            "title": "Svgallh",
-            "type": "string"
-          },
-          "svgFischer": {
-            "default": "",
-            "title": "Svgfischer",
-            "type": "string"
-          },
-          "svgHaworth": {
-            "default": "",
-            "title": "Svghaworth",
-            "type": "string"
-          },
           "type": {
             "default": "molecule",
             "title": "Type",
             "type": "string"
+          },
+          "viewRequest": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Viewrequest",
+            "type": "object"
+          },
+          "views": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Views",
+            "type": "array"
           }
         },
         "title": "MoleculePayload",

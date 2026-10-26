@@ -28,25 +28,37 @@ def _isolate(tmp_path, monkeypatch):
     yield tmp_path
 
 
-def test_payload_carries_a_second_drawing_with_all_hydrogens():
+def all_h(smiles, **kw):
+    """Was das Panel beim ersten Klick auf „All H“ holt."""
+    payload = srv.generate_molecule(smiles, **kw)
+    return srv.generate_molecule(**payload.viewRequest, view="all_h")
+
+
+def test_payload_only_announces_the_hydrogen_view():
     payload = srv.generate_molecule(ETHANOL)
-    assert "<svg" in payload.svgAllH
-    assert payload.svgAllH != payload.svg
+    assert "all_h" in payload.views
+    assert payload.viewRequest["name_or_smiles"] == ETHANOL
+    assert "svgAllH" not in payload.model_dump()
+
+
+def test_hydrogen_view_is_fetched_on_click(_isolate):
+    view = all_h(ETHANOL)
+    assert "<svg" in view.svg
+    assert view.svg != srv.generate_molecule(ETHANOL).svg
     # Ethanol: 3 Schweratome + 6 H
-    assert len(payload.atomsAllH) == 9
-    assert sum(a.el == "H" for a in payload.atomsAllH) == 6
+    assert len(view.atoms) == 9
+    assert sum(a.el == "H" for a in view.atoms) == 6
+    assert view.files == {}
 
 
 def test_heavy_atom_indices_survive_so_highlights_stay_valid():
     payload = srv.generate_molecule(ETHANOL)
     heavy = [(a.idx, a.el) for a in payload.atoms]
-    assert [(a.idx, a.el) for a in payload.atomsAllH[: len(heavy)]] == heavy
+    assert [(a.idx, a.el) for a in all_h(ETHANOL).atoms[: len(heavy)]] == heavy
 
 
 def test_tooltip_still_counts_hydrogens_on_heavy_atoms():
-    payload = srv.generate_molecule(ETHANOL)
-    counts = [a.hCount for a in payload.atomsAllH[:3]]
-    assert counts == [3, 2, 1]
+    assert [a.hCount for a in all_h(ETHANOL).atoms[:3]] == [3, 2, 1]
 
 
 def test_skeletal_drawing_is_unchanged():
@@ -56,12 +68,25 @@ def test_skeletal_drawing_is_unchanged():
 
 
 def test_stereocenter_gets_exactly_one_hydrogen():
-    payload = srv.generate_molecule(IBUPROFEN_S, annotate_stereo=True)
+    view = all_h(IBUPROFEN_S, annotate_stereo=True)
     # Ibuprofen C13H18O2: 18 H, keins doppelt am Stereozentrum
-    assert sum(a.el == "H" for a in payload.atomsAllH) == 18
+    assert sum(a.el == "H" for a in view.atoms) == 18
+
+
+def test_view_request_repeats_the_drawing_options():
+    payload = srv.generate_molecule(IBUPROFEN_S, annotate_stereo=True, render_style="compact")
+    assert payload.viewRequest["annotate_stereo"] is True
+    assert payload.viewRequest["render_style"] == "compact"
 
 
 def test_abbreviated_drawing_has_no_hydrogen_view():
     payload = srv.generate_molecule("CC(=O)Oc1ccccc1C(=O)O", abbreviate_groups=True)
-    assert payload.svgAllH == ""
-    assert payload.atomsAllH == []
+    assert "all_h" not in payload.views
+
+
+def test_molecule_answer_stays_small():
+    """Jay 26.10.: Ibuprofen war 29,4 KB, das Modell liest alles mit."""
+    import json
+
+    payload = srv.generate_molecule(IBUPROFEN_S)
+    assert len(json.dumps(payload.model_dump(exclude_defaults=True))) < 15_000

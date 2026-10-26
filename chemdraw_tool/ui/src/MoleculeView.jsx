@@ -15,6 +15,8 @@ import { extractToolData } from "./utils/toolData";
 // sonst sieht ein Fehlschlag aus wie ein toter Knopf.
 export const DATA_LOAD_ERROR =
   "The data sheet could not be loaded. Click Data again to retry.";
+export const VIEW_LOAD_ERROR =
+  "This drawing could not be loaded. Click the button again to retry.";
 export const VARIANTS_LOAD_ERROR =
   "The stereoisomers could not be loaded. Click Show variants again to retry.";
 
@@ -28,9 +30,16 @@ export default function MoleculeView({ data }) {
   const [hoveredGroup, setHoveredGroup] = useState(null);
   const [view, setView] = useState("structure");
   // Skelettformel ⇄ alle H ⇄ Fischer ⇄ Haworth — eine eigene Achse neben
-  // Struktur/Daten. Alle Zeichnungen liegen schon im Payload, der Klick bleibt
-  // lokal; ein zweiter Klick auf denselben Knopf führt zur Skelettformel zurück.
+  // Struktur/Daten. Das Payload sagt nur, welche Ansichten es gibt; der erste
+  // Klick holt die Zeichnung, danach Cache wie beim Datenblatt (Jay 26.10.:
+  // eager waren sie mehr als die Hälfte jeder Antwort). Ein zweiter Klick auf
+  // denselben Knopf führt zur Skelettformel zurück.
   const [drawing, setDrawing] = useState("skeletal");
+  const [drawingCache, setDrawingCache] = useState({});
+  const [drawingBusy, setDrawingBusy] = useState("");
+  const [drawingFailed, setDrawingFailed] = useState(false);
+  const drawingInFlight = useRef(false);
+  const wantedDrawing = useRef("skeletal");
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
   const [sheet, setSheet] = useState(null);
@@ -65,14 +74,43 @@ export default function MoleculeView({ data }) {
   const query = smiles || data.name || "";
   // Export folgt der Ansicht: der PNG-Knopf nimmt dieselbe Zeichnung wie die Flaeche.
   // Projektionen tragen keine Atomliste — dort gibt es keine Overlays.
-  const drawings = {
-    allH: data.svgAllH && { svg: data.svgAllH, atoms: data.atomsAllH },
-    fischer: data.svgFischer && { svg: data.svgFischer, atoms: [] },
-    haworth: data.svgHaworth && { svg: data.svgHaworth, atoms: [] },
-  };
-  const shown = drawings[drawing] ? drawing : "skeletal";
-  const { svg, atoms } = drawings[shown] || { svg: data.svg, atoms: data.atoms };
-  const toggleDrawing = (next) => setDrawing((cur) => (cur === next ? "skeletal" : next));
+  const views = data.viewRequest ? data.views || [] : [];
+  const shown = drawingCache[drawing] ? drawing : "skeletal";
+  const { svg, atoms } = drawingCache[shown] || { svg: data.svg, atoms: data.atoms };
+
+  async function toggleDrawing(next) {
+    if (shown === next) {
+      wantedDrawing.current = "skeletal";
+      setDrawing("skeletal");
+      return;
+    }
+    wantedDrawing.current = next;
+    if (drawingCache[next]) {
+      setDrawing(next);
+      return;
+    }
+    if (drawingInFlight.current) return;
+    drawingInFlight.current = true;
+    setDrawingBusy(next);
+    setDrawingFailed(false);
+    try {
+      if (!app?.callServerTool) throw new Error("keine App-Bruecke");
+      const result = await app.callServerTool({
+        name: "generate_molecule",
+        arguments: { ...data.viewRequest, view: next },
+      });
+      const payload = extractToolData(result);
+      if (!payload?.svg) throw new Error("keine Zeichnung");
+      setDrawingCache((c) => ({ ...c, [next]: { svg: payload.svg, atoms: payload.atoms || [] } }));
+      // Wer inzwischen anderswohin geklickt hat, behält seine Ansicht.
+      if (wantedDrawing.current === next) setDrawing(next);
+    } catch {
+      setDrawingFailed(true);
+    } finally {
+      setDrawingBusy("");
+      drawingInFlight.current = false;
+    }
+  }
 
   const handleView = useCallback(
     async (next) => {
@@ -177,12 +215,13 @@ export default function MoleculeView({ data }) {
               <Fact label="CAS" value={props.cas} copy={props.cas} />
             </dl>
           </div>
-          {(data.svgAllH || data.svgFischer || data.svgHaworth) && <div className="structure-tools">
-            {DRAWING_TOGGLES.filter((t) => drawings[t.key]).map((t) =>
+          {views.length > 0 && <div className="structure-tools">
+            {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
               <button key={t.key} type="button" className="chip-toggle" aria-pressed={shown === t.key}
-                onClick={() => toggleDrawing(t.key)}
+                aria-busy={drawingBusy === t.key} onClick={() => toggleDrawing(t.key)}
                 title={shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</button>)}
           </div>}
+          {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
           <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
             variantsBusy={variantsLoading} />
@@ -203,7 +242,7 @@ export default function MoleculeView({ data }) {
 }
 
 const DRAWING_TOGGLES = [
-  { key: "allH", label: "All H", title: "Draw every hydrogen atom" },
+  { key: "all_h", label: "All H", title: "Draw every hydrogen atom" },
   { key: "fischer", label: "Fischer", title: "Fischer projection" },
   { key: "haworth", label: "Haworth", title: "Haworth projection" },
 ];
