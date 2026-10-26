@@ -47,6 +47,7 @@
   }
   :root:not([data-theme="light"]) svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
   :root:not([data-theme="light"]) svg path[fill="#000000"]          { fill: var(--atom-c); }
+  :root:not([data-theme="light"]) svg text[fill="#000000"]          { fill: var(--atom-c); } /* Fischer/Haworth-Beschriftung */
   :root:not([data-theme="light"]) svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
   :root:not([data-theme="light"]) svg path[fill="#FF0000"]          { fill: var(--atom-o); }
   :root:not([data-theme="light"]) svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
@@ -96,6 +97,7 @@
   }
   :root[data-theme="dark"] svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
   :root[data-theme="dark"] svg path[fill="#000000"]          { fill: var(--atom-c); }
+  :root[data-theme="dark"] svg text[fill="#000000"]          { fill: var(--atom-c); }
   :root[data-theme="dark"] svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
   :root[data-theme="dark"] svg path[fill="#FF0000"]          { fill: var(--atom-o); }
   :root[data-theme="dark"] svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }

@@ -215,3 +215,46 @@ def test_ring_sugar_gets_a_note_about_the_open_chain_form():
     assert "open-chain" in note
     assert projection_note(mol(D_GLUCOSE)) == ""
     assert projection_note(mol("CCO")) == ""
+
+
+# --- Anbindung an generate_molecule ---------------------------------------
+
+
+@pytest.fixture
+def server(tmp_path, monkeypatch):
+    from chemdraw_tool import server as srv
+
+    for const in ("OUTPUT_DIR", "REACTION_DIR", "PLOT_DIR", "ANKI_DIR"):
+        monkeypatch.setattr(srv, const, tmp_path / const.lower())
+    monkeypatch.setattr(srv, "_enrich_properties", lambda smiles: {})
+    monkeypatch.setattr(srv, "_pubchem_record", lambda smiles: ({}, None))
+    return srv
+
+
+def test_open_chain_sugar_payload_carries_fischer_only(server):
+    payload = server.generate_molecule(D_GLUCOSE)
+    assert payload.svgFischer == fischer_svg(mol(D_GLUCOSE))
+    assert payload.svgHaworth == ""
+    assert payload.projectionNote == ""
+
+
+def test_ring_sugar_payload_carries_haworth_and_a_note(server):
+    payload = server.generate_molecule(BETA_GLCP)
+    assert payload.svgHaworth.startswith("<svg")
+    assert payload.svgFischer == ""
+    assert "open-chain" in payload.projectionNote
+
+
+def test_other_molecules_have_no_projection(server):
+    payload = server.generate_molecule(NOT_PROJECTABLE["methylphenidate"])
+    assert (payload.svgFischer, payload.svgHaworth, payload.projectionNote) == ("", "", "")
+
+
+def test_a_broken_projection_never_breaks_the_drawing(server, monkeypatch):
+    def boom(_mol):
+        raise RuntimeError("kaputt")
+
+    monkeypatch.setattr("chemdraw_tool.projection.fischer_svg", boom)
+    payload = server.generate_molecule(D_GLUCOSE)
+    assert payload.svg.startswith("<")
+    assert payload.svgFischer == ""

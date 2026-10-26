@@ -63,6 +63,13 @@ class MoleculePayload(BaseModel):
     # Leer bei abgekürzten Gruppen (dann gibt es keinen Umschalter).
     svgAllH: str = ""
     atomsAllH: list[AtomData] = []
+    # Fischer-/Haworth-Projektion für den Umschalter im Panel, nur bei
+    # offenkettigen Zuckern/Aminosäuren bzw. Pyranosen/Furanosen; sonst leer.
+    # Eigenes SVG mit Textbeschriftung — keine Atomliste, keine Overlays.
+    svgFischer: str = ""
+    svgHaworth: str = ""
+    # Ringzucker: warum es keine Fischer-Projektion gibt (ein Satz).
+    projectionNote: str = ""
     name: str = ""
     subtitle: str = ""
     properties: dict[str, str] = {}

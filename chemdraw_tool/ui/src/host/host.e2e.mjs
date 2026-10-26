@@ -158,6 +158,31 @@ try {
   await frame.getByRole("button", { name: "Back to the structure" }).click();
   prüfe((await text()).includes("CID 4158"), "Zurück zeigt wieder Methylphenidate");
 
+  // 3d. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung kommt aus dem Payload
+  prüfe(!(await frame.getByRole("button", { name: "Fischer" }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
+    "Methylphenidate hat keinen Projektionsknopf");
+  for (const [stoff, knopf, fehlt, soll] of [["D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", "Fischer", "CH2OH"]]) {
+    const input = { name_or_smiles: stoff };
+    const result = await client.callTool({ name: "generate_molecule", arguments: input });
+    if (result.isError) throw new Error(`generate_molecule ${stoff}: ` + JSON.stringify(result.content).slice(0, 300));
+    const p = await browser.newPage({ viewport: { width: 700, height: 700 } });
+    await p.setContent("<body></body>");
+    await p.addScriptTag({ path: out });
+    await p.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result });
+    await p.locator("iframe").evaluate((el) => { el.style.width = "680px"; el.style.height = "660px"; });
+    const f = p.frames().find((x) => x !== p.mainFrame());
+    await f.getByRole("button", { name: knopf }).click();
+    const labels = await f.locator(".structure-drawing svg text").allTextContents();
+    prüfe(labels.includes(soll) && !(await f.getByRole("button", { name: fehlt }).count()),
+      `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei), kein ${fehlt}-Knopf`);
+    if (knopf === "Haworth") prüfe((await f.locator("body").innerText()).includes("open-chain"), `${stoff}: Hinweis zur offenen Form`);
+    await p.emulateMedia({ colorScheme: "dark" });
+    const fill = await f.evaluate(() => getComputedStyle(document.querySelector(".structure-drawing svg text")).fill);
+    prüfe(fill !== "rgb(0, 0, 0)", `${stoff}: Beschriftung im Dunkelmodus hell (${fill})`);
+    await p.screenshot({ path: join(tmpdir(), `panel-host-${knopf.toLowerCase()}.png`) });
+    await p.close();
+  }
+
   // 4. Spalten-Ansicht (Vergleich → PlotView): Die Überschrift darf nicht in die Höhe wachsen,
   // sonst schrumpft das Bild auf einen Streifen (Regression aus adccc04, gefunden per Demo-Aufnahme)
   const cmpInput = { structures: ["ibuprofen", "naproxen", "ketoprofen"] };

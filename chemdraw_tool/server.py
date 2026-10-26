@@ -602,6 +602,23 @@ def _stereo_variants_payload(
     return AmbiguousPayload(name=label or shown, message=message, candidates=entries)
 
 
+def _projection_fields(mol: Chem.Mol) -> dict[str, str]:
+    """Fischer/Haworth für den Panel-Umschalter; ein Fehler kostet nur den Knopf."""
+    from chemdraw_tool import projection
+
+    try:
+        return {
+            "svgFischer": projection.fischer_svg(mol),
+            "svgHaworth": projection.haworth_svg(mol),
+            "projectionNote": projection.projection_note(mol),
+        }
+    except Exception:  # noqa: BLE001 — Zusatzansicht, die Zeichnung geht vor
+        import logging
+
+        logging.getLogger(__name__).exception("Projektion fehlgeschlagen")
+        return {}
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_molecule(
     name_or_smiles: str,
@@ -712,6 +729,7 @@ def generate_molecule(
         atoms_all_h = extract_atom_data(mol_h)
 
     return MoleculePayload(
+        **_projection_fields(mol),
         type="molecule",
         svg=render_svg(
             drawn,

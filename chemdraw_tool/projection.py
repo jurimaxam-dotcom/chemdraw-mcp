@@ -536,9 +536,7 @@ def _wrap(parts: list[str], box: _Box) -> str:
     return (
         "<svg style='width:100%;height:100%;display:block' version='1.1' "
         "xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' "
-        f"viewBox='{vx:.0f} {vy:.0f} {vw:.0f} {vh:.0f}'>"
-        f"<rect x='{vx:.0f}' y='{vy:.0f}' width='{vw:.0f}' height='{vh:.0f}' "
-        "style='fill:#FFFFFF;stroke:none' />" + "".join(parts) + "</svg>"
+        f"viewBox='{vx:.0f} {vy:.0f} {vw:.0f} {vh:.0f}'>" + "".join(parts) + "</svg>"
     )
 
 

@@ -56,9 +56,25 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
     D-Fru (C3–5) LRR, L-Ala/L-Ser NH₂ links. Haworth: Ring ab Ring-O über das anomere C im Uhrzeigersinn (O hinten
     rechts), Ziel (Vorgänger, Nachfolger, s0, s1), gleich Referenz β-D-Glcp ⇒ s0 oben. Stimmt für α/β-Glc, β-Gal, β-Ribf.
   - Prototypen: `plans/anhang/fischer-prototyp.py.txt`, `plans/anhang/haworth-prototyp.py.txt` (Skizzen, nicht lint-fest).
-- [ ] Bauen: `chemdraw_tool/projection.py` (keine neue Dependency), Panel-Umschalter „Fischer“/„Haworth“ nur bei passenden
+- [x] Bauen: `chemdraw_tool/projection.py` (keine neue Dependency), Panel-Umschalter „Fischer“/„Haworth“ nur bei passenden
       Stoffen (offenkettige Zucker/Aminosäuren bzw. Pyranose/Furanose), opt-in, Standardausgabe unverändert.
       Fischer: Kreuzkoordinaten als Conformer → bestehender svg_renderer, ohne Keile. Haworth: feste Ring-Koordinaten,
       dicke Vorderkante als eigenes SVG, Substituenten als senkrechte Striche (OH, H, CH₂OH). TDD mit den neun Fällen
       oben + α-Anomer als Gegenprobe gegen CIP (selbst getipptes SMILES kippt das Anomer still).
       Offene Bauentscheidung für die bauende Session: Ringzucker in Fischer (Ring öffnen) oder klarer Hinweis.
+  - Gebaut 26.10.: Payload `svgFischer`/`svgHaworth`/`projectionNote` (eager wie „All H“, nur bei passenden Stoffen,
+    Fehler kostet nur den Knopf), Knöpfe „Fischer“/„Haworth“ neben „All H“, drei Ansichten schließen einander aus,
+    Export nimmt die sichtbare. Kein neues Tool, kein Parameter, Beschreibung unverändert.
+  - Abweichung vom Plan: Fischer nicht als Conformer im RDKit-Renderer, sondern eigenes SVG mit Formeltext
+    (CHO, CH₂OH, COOH, HO/H) wie im Lehrbuch — Skelett-Ecken an den Kettenenden wären unlesbar.
+  - **Entscheidung Ringzucker → Hinweis, kein Ringöffnen.** Ringöffnen zeichnet einen anderen Stoff als den
+    eingegebenen und verwirft das Anomer still (dieselbe Fehlerklasse wie die SMILES-Stereo-Falle). Teuer ist es nicht:
+    „D-glucose“ löst OPSIN schon offenkettig auf, nur „beta-D-glucose“ kommt als Ring. Die Haworth-Ansicht sagt dann
+    in einem Satz, wie man die Fischer-Projektion bekommt.
+  - Befund: Der Prototyp-SMILES „b-Fru-f“ war das α-Anomer (C2 = S). Test nutzt OPSINs β-D-Fructofuranose (C2 = R).
+  - Umfang: Aldosen/Ketosen/Aldon-/Uronsäuren offen; 16 proteinogene Aminosäuren (Ile/Thr fehlen: zweites Zentrum
+    stünde als Formeltext ohne Seite); Pyranose/Furanose mit H/OH/CH₂OH/CH₃/NH₂, offenes Anomer als Schlangenlinie.
+    Glykoside (Saccharose, Methylglucosid) und Alditole bekommen nichts.
+  - [ ] Später, nur auf Ansage: Parameter `projection` für die Chat-Route und die Dateien auf der Platte; Ile/Thr mit
+        zweitem Kreuz; Glykoside in Haworth
+  - [ ] Desktop-Abnahme durch Codex (Auftrag siehe Tisch-Faden)

@@ -313,6 +313,11 @@
         "title": "Name",
         "type": "string"
       },
+      "projectionNote": {
+        "default": "",
+        "title": "Projectionnote",
+        "type": "string"
+      },
       "properties": {
         "additionalProperties": {
           "type": "string"
@@ -347,6 +352,16 @@
       "svgAllH": {
         "default": "",
         "title": "Svgallh",
+        "type": "string"
+      },
+      "svgFischer": {
+        "default": "",
+        "title": "Svgfischer",
+        "type": "string"
+      },
+      "svgHaworth": {
+        "default": "",
+        "title": "Svghaworth",
         "type": "string"
       },
       "type": {

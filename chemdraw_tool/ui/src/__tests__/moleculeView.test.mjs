@@ -233,3 +233,49 @@ test("ohne svgAllH kein H-Umschalter", () => {
   assert.ok(!buttonByText(container, "All H"), "H-Umschalter ohne svgAllH");
   unmount();
 });
+
+// Fischer/Haworth: dieselbe lokale Achse wie „All H“, die Ansichten schließen
+// einander aus. Knopf nur, wenn der Server eine Projektion mitliefert.
+const SVG_FISCHER = "<svg viewBox='0 0 40 20'><text data-fischer='1'>CHO</text></svg>";
+const SVG_HAWORTH = "<svg viewBox='0 0 40 20'><text data-haworth='1'>O</text></svg>";
+
+test("„Fischer“ zeigt die Projektion, „All H“ löst sie ab, zweiter Klick führt zurück", async () => {
+  const data = { ...MOLECULE, svgAllH: SVG_ALL_H, atomsAllH: MOLECULE.atoms, svgFischer: SVG_FISCHER };
+  const { container, calls, unmount } = renderMolecule(data);
+  const drawing = () => container.querySelector(".structure-drawing");
+  assert.ok(!buttonByText(container, "Haworth"), "Haworth-Knopf ohne svgHaworth");
+
+  await click(buttonByText(container, "Fischer"));
+  assert.ok(drawing().querySelector("[data-fischer]"), "Fischer-Projektion nicht sichtbar");
+  assert.equal(buttonByText(container, "Fischer").getAttribute("aria-pressed"), "true");
+
+  await click(buttonByText(container, "All H"));
+  assert.equal(drawing().querySelector("[data-fischer]"), null, "Ansichten schließen einander nicht aus");
+  assert.ok(drawing().querySelector("[data-all-h]"));
+  assert.equal(buttonByText(container, "Fischer").getAttribute("aria-pressed"), "false");
+
+  await click(buttonByText(container, "All H"));
+  assert.equal(drawing().querySelector("[data-all-h]"), null, "Rückweg zur Skelettformel fehlt");
+  assert.equal(calls.length, 0, "Umschalten darf kein Tool rufen");
+  unmount();
+});
+
+test("„Haworth“ zeigt den Ring und den Satz, warum es keine Fischer-Projektion gibt", async () => {
+  const note = "The Fischer projection shows the open-chain form.";
+  const data = { ...MOLECULE, svgHaworth: SVG_HAWORTH, projectionNote: note };
+  const { container, unmount } = renderMolecule(data);
+  assert.ok(!buttonByText(container, "Fischer"), "Fischer-Knopf ohne svgFischer");
+  assert.doesNotMatch(textOf(container), /open-chain/, "Hinweis vor dem Klick");
+
+  await click(buttonByText(container, "Haworth"));
+  assert.ok(container.querySelector(".structure-drawing [data-haworth]"), "Haworth nicht sichtbar");
+  assert.match(textOf(container), /open-chain/, "Hinweis fehlt in der Haworth-Ansicht");
+  unmount();
+});
+
+test("ohne Projektion keine Projektionsknöpfe", () => {
+  const { container, unmount } = renderMolecule(MOLECULE);
+  assert.ok(!buttonByText(container, "Fischer"));
+  assert.ok(!buttonByText(container, "Haworth"));
+  unmount();
+});
