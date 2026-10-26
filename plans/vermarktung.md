@@ -126,10 +126,13 @@ Nur Entwurf: kein Rendern, Desktop nicht anfassen, solange Codex dort abnimmt. A
 `DesktopWorkflow`). Alle Shorts: 9:16, 1080×1920, 30 fps, 15–30 s, echte Desktop-Pixel, englischer Prompt.
 
 ### Vorgehen (Jay 27.10.2026 00:00): „Erst ein Test-Short für den Ablauf, wir brauchen ein Schema, nach dem dann alle erstellt werden“
-- [ ] **Schema** festlegen und in `vermarktung/video/SCHEMA.md` + Props-Typ gießen: feste Abschnitte mit Dauer
+- [x] **Schema** festlegen und in `vermarktung/video/SCHEMA.md` + Props-Typ gießen: feste Abschnitte mit Dauer
       (Aufhänger · Prompt tippen · Panel erscheint · Beats · Schluss-Bild · Abspann), Schrift, Farben, Musik, Ausschnitt,
       Aufnahme-Checkliste (Sprache EN, Version 0.6.0, kein Name im Bild). Ein Short = nur ein Datensatz.
-- [ ] **Test-Short** nach dem Schema: S1 Anki (fertige Aufnahme reicht für den Ablauf-Test) → Jays Sichtprüfung → Schema
+      — 27.10.: `SCHEMA.md` + `ShortDaten`/`pruefeShort` (`src/lib/schema.ts`), Beats `src/lib/beats.ts`, Datensatz
+      `src/shorts/s1-anki.ts` → Komposition `Schema-S1`; `npm --prefix vermarktung/video test` 30/30 (neu 10, vorher rot);
+      v2-Schnitt + Kamera mit altem Code als Orakel identisch, nur der Aufhänger wächst mit der Wortzahl.
+- [ ] **Test-Short** nach dem Schema (gerendert 27.10.: `vermarktung/out/test-short-schema/s1-anki.mp4`, 24,53 s, 1080×1920/30, stumm, + 4 Standbilder; offen: Jays Sichtprüfung): S1 Anki (fertige Aufnahme reicht für den Ablauf-Test) → Jays Sichtprüfung → Schema
       anpassen, bis es passt.
 - [ ] Erst danach S2–S7 als Datensätze aufnehmen und rendern.
 
@@ -179,9 +182,9 @@ W3 und W5 erst nach einer Desktop-Probe drehen.
       dass das Panel unten frei endet, oder Ausschnitt oberhalb enden lassen.
 - [~] **Jay 27.10.: Test-Short und erste Fassung ohne Ton.** War: **Kein Ton:** `vermarktung/video/public/` ist leer, `musik.mp3` fehlt seit 25.10. → **Jay:** einen Track aus der
       YouTube Audio Library wählen (gilt dann für alle Shorts).
-- [ ] **Aufhänger je Short:** `HOOK_TEXT`/`PROMPT_TEXT` sind Konstanten in `timeline.ts` („Still drawing molecules by
+- [x] **Aufhänger je Short** (27.10.: `hook`/`prompt` im Datensatz; Remotion-Hälfte erledigt): `HOOK_TEXT`/`PROMPT_TEXT` sind Konstanten in `timeline.ts` („Still drawing molecules by
       hand?“, „draw aspirin“) → als Props je Short, damit S1–S7 eine Komposition teilen.
-- [ ] **Marks je Short:** `DesktopWorkflow`-Marks sind auf den Aspirin-Ablauf (3 Hover + Anki) zugeschnitten → generische
+- [x] **Marks je Short** (27.10.: Beat-Liste + Adapter `beatsFromMarks`; offen Codex-Hälfte: `aufnahme-desktop.sh` schreibt `beats.json`): `DesktopWorkflow`-Marks sind auf den Aspirin-Ablauf (3 Hover + Anki) zugeschnitten → generische
       Beat-Liste (Klick/Hover/Halten) aus dem Aufnahme-Log statt fester Feldnamen; zwei Teilaufnahmen + Normalisierung
       (v2-Bericht) vermeiden, indem das Fenster vorher richtig steht.
 - [ ] Alt-Short `short-2026-10-25` (Host-Nachbau, gesetzte Eingabezeile) nicht mehr verwenden — ersetzt durch echte
