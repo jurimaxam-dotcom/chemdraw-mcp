@@ -106,12 +106,18 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
         Vollprofil) nennt Fischer/Haworth/all-H mit `view`; Eval-Feld `required_args` (contains `"view":"haworth"`),
         Fälle `haworth-projection-named` (de) und `fischer-projection-named` (en); MVP-Beschreibungen jetzt eigens
         auf ≤ 2 KB geprüft. Grenze des Evals: Desktops visualize steht nicht in tools.json — Beweis nur per Desktop-Test.
-    - [ ] Desktop-Abnahme 4 durch Codex (Faden 20261026-190644): **nicht bestanden.** Haworth/Fischer-Prompt → weiter
+    - [x] Desktop-Abnahme 4 durch Codex (Faden 20261026-190644): **nicht bestanden, hingenommen (Jay → Advisor 26.10.).** Haworth/Fischer-Prompt → weiter
           visualize, Gegenprobe ja. Ursache (Screenshots): Desktop lädt unsere Tools erst auf Bedarf („Tools geladen ▸“
           fehlt bei Schritt 1) — die Beschreibung wird vor der Entscheidung nie gelesen; 6dd17f0 ist nur ein Wächter für
           `view`. Messung B (Chat 01cf13fb): vor dem Laden sieht das Modell nur die sieben Toolnamen, keine
           Beschreibungen und keine Server-Instructions (Block nennt nur claude-in-chrome; Modellauskunft, passt zu den
-          Screenshots). Kein Hebel im Server → Host-Verhalten; Entscheidung bei Jay (hinnehmen vs. Toolname).
+          Screenshots). Draht geprüft: `initialize` an den registrierten Befehl liefert `instructions` mit — Desktop
+          verwirft sie für diesen Server. Kein Hebel im Server → Host-Verhalten, hingenommen: „Zeichne X“ öffnet das
+          Panel mit Haworth-Knopf, eine ausdrücklich genannte Projektion zeichnet visualize. Toolname ändern verworfen
+          (Snapshots, Evals, UI, Wirkung ungewiss); keine `title`-Annotationen dafür.
+    - [ ] Nach dem nächsten Desktop-Update (oder M3-Annotationen): Probe B wiederholen („Welche Hinweise und Werkzeuge
+          hat der Server chemdraw-tool dir gegeben? Nichts aufrufen.“); sieht das Modell dann Instructions, Satz in
+          `_MVP_INSTRUCTIONS` nachziehen.
     - [ ] Geparkt: Modell schickte bei „Zeichne beta-D-Glucose“ wieder selbst geschriebenes SMILES + annotate_stereo (diesmal korrekt)
     - [ ] Später: Vollprofil-Beschreibung hat den Satz nicht (2040 B, dort erst kürzen)
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
