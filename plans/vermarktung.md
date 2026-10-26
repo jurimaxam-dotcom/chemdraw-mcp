@@ -84,6 +84,7 @@ Faden 3 folgen nach dem ersten Post, Stück für Stück; die bisherige Bedingung
 - [ ] Bluesky/X-Thread mit Bildern, RDKit erwähnen
 - [x] **Jay:** Entscheidung Directory: (a) Plugin-Bundle für Cowork/Code einreichen, (b) Remote-HTTPS-Variante des Servers bauen, (c) Directory auslassen und bei GitHub/PyPI/.mcpb bleiben — Jay 25.10.2026: Weg C, Directory auslassen; Panel im Desktop-Chat ist das Kernmerkmal, nur Weg C behält es kostenlos. Remote-HTTPS bleibt spätere Option, falls Nutzer die App-Suche vermissen. Diagramm: https://claude.ai/artifact/GCRB45BTEVHYXVfZEUsHo9
 - [ ] Etappe-5-Hinweis: Traffic-Zahlen sind 14-Tage-Aggregate, Post-Wirkung nur über die tägliche UTC-Zeitreihe in views/clones ablesbar
+- [ ] Glama: geclaimt 26.10., glama.json @ b80fa6c; **Jay:** Build & Release auf der Dockerfile-Seite, Related Servers eintragen (ChemMCP, ChatMol, pubchem-mcp)
 - [ ] **Jay:** `bash vermarktung/klicks.sh` ausführen (PR, Issues, Glama, mcpservers.org in einem Lauf)
 - [ ] **Jay:** Glama claimen (https://glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp → Claim), dann PR-Befehl aus `vermarktung/punkpeye-eintrag.md` freigeben — Branch `add-chemdraw-mcp-glama` liegt fertig im Fork-Klon `~/GitHub/awesome-mcp-servers` (3c691e44). Ungeprüft: ob Glama für die Checks ein Dockerfile verlangt (Messung 26.10.2026, `docs/distribution/auffindbarkeit-2026-10-26.md`)
 - [ ] **Jay:** mcpservers.org/submit ausfüllen (wong2-Liste nimmt nur noch das Formular; mcpservers.org steht in Bing auf Platz 1 und 7 für „chemistry mcp server“) – 5 min
