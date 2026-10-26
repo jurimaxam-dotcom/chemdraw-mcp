@@ -12,6 +12,10 @@ Jay: „entwickle autonom mit ihm weiter … sprecht euch ab“. Je Etappe: Clau
 → Claude fixt Befunde, Codex testet erneut. Jay bekommt das Ergebnis am Etappenende, keine Handtests.
 Eigentum: Codex `vermarktung/ax-claude.swift`, `vermarktung/aufnahme-desktop.sh` und ein wiederholbares Desktop-Testskript;
 Claude Server/UI/Tests. Bremsen bleiben: Release, Posts, Außenkommunikation = Jays Hand.
+Codex' Bedingungen (Faden 20261026-180450, #2): Testauftrag nennt Commit, exakte Prompts, Klickfolge, Sollzustände
+und ob ein Desktop-Neustart nötig ist. Während einer Abnahme fasst Claude Desktop nicht an (kein Neustart, keine
+Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex prüft gesendete Argumente im MCP-Log
+(`~/Library/Logs/Claude/mcp-server-chemdraw-tool.log`) und startet Desktop nach Serveränderungen voll neu (kein Hot-Reload).
 
 ## Etappe 1: Alle H-Atome zeigen (S)
 - [x] Panel-Umschalter „Skeletal ↔ all H“ am Molekül-Panel; Server liefert zweites SVG (RDKit AddHs) oder Parameter `explicit_h`; Export folgt der Ansicht
