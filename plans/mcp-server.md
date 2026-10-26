@@ -147,7 +147,8 @@ Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein
 - [ ] Optional: Zeitlimit
 
 #### Offene Fragen an Jay
-- [ ] **Jay:** Welche Fachrichtung für die Prüfungsfragen zuerst: **Pharmazeutische Chemie** (Strukturen, funktionelle Gruppen) oder **Pharmakologie** (Wirkstoffklassen)? Empfehlung: Pharmazeutische Chemie — die Daten dafür gibt es schon.
+- [x] **Jay:** Welche Fachrichtung für die Prüfungsfragen zuerst: **Pharmazeutische Chemie** (Strukturen, funktionelle Gruppen) oder **Pharmakologie** (Wirkstoffklassen)? Empfehlung: Pharmazeutische Chemie — die Daten dafür gibt es schon.
+  - **Jay 26.10.2026: OC-Grundlagen zuerst** (funktionelle Gruppen, Isomerie, R/S, Reaktionstypen) — breiteste Zielgruppe (Chemie, Bio, Medizin, Pharmazie, Schule), passt zu „Grundlagen zuerst“. Pharmazeutische Chemie danach als Aufbau, Pharmakologie zuletzt.
 - [ ] **Jay:** Soll der Abfragemodus auch **Reaktionen/Mechanismen** abdecken (Edukte verdecken)? Empfehlung: erst Moleküle, Reaktionen als Phase 7.
 
 #### Grundlagen der Etappe (unverändert vom 03.10.)
