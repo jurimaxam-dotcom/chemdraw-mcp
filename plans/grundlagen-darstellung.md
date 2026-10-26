@@ -6,7 +6,7 @@
    20:17 noch v0.1.0 (Release 20:09, 8 min alt). **Erledigt 26.10. abends:** Glama zeigt v0.6.0 mit beiden Parametern
    (Beleg im Abschnitt „Release 0.6.0“).
 2. ~~Doppelte Formel bei Kleinstmolekülen~~ — **Jay:** Label weglassen. Gebaut 26.10.: SMILES mit einem Schweratom
-   (O, N, C, Cl) bekommt kein Label; H₂/O₂ und getippte Namen („water“) bleiben. Nicht in Desktop getestet.
+   (O, N, C, Cl) bekommt kein Label; H₂/O₂ und getippte Namen („water“) bleiben. Desktop-Abnahme 27.10. (Codex, Faden 20261026-235156): H₂O ohne Doppel-Label, H₂/O₂ mit Label, getippte Namen behalten Labels (Kontrollaufruf; Sonnet wandelt Namen sonst selbst in SMILES). Nebenbefund offen: „chlorine“ löst als Cl-Radikal statt Cl₂ auf.
 3. Danach Thema „Prüfungsfragen“ (OC-Grundlagen, kein achtes Tool; plans/mcp-server.md).
 Codex-Kontingent ist leer (Jay 26.10.) — Desktop-Tests bis auf Weiteres selbst (vermarktung/ax-claude.swift) oder liegen lassen.
 Tisch: Fäden 20261026-190644 und 20261026-193309 erledigt; d.html (untracked) gehört Codex, nicht anfassen.
