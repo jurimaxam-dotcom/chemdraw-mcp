@@ -32,7 +32,7 @@ def _mol(smiles: str) -> Chem.Mol:
 
 
 # Wie resolve(): SMILES kommt unverändert zurück, ein Name als kanonisches SMILES.
-_NAMES = {"ethanol": "CCO", "acetic acid": "CC(=O)O", "ethyl acetate": "CCOC(C)=O"}
+_NAMES = {"water": "O", "ethanol": "CCO", "acetic acid": "CC(=O)O", "ethyl acetate": "CCOC(C)=O"}
 
 
 def _resolve(text):
@@ -43,20 +43,42 @@ def _resolve(text):
 
 @patch("chemdraw_tool.server.resolve", side_effect=_resolve)
 def test_smiles_input_is_labelled_with_its_formula(_):
-    result = generate_reaction(reactants=["[H][H]", "O=O"], products=["O"])
-    assert [m.name for m in result.reactants + result.products] == ["H₂", "O₂", "H₂O"]
+    result = generate_reaction(reactants=["[H][H]", "O=O"], products=["CCO"])
+    assert [m.name for m in result.reactants + result.products] == [
+        "H₂",
+        "O₂",
+        "C₂H₆O",
+    ]
+
+
+@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+def test_single_heavy_atom_gets_no_formula_label(_):
+    # Jay 26.10.: Die Zeichnung von „O“ ist schon „H₂O“ — die Formel darunter
+    # stünde doppelt. Ein Schweratom = keine Beschriftung; H–H und O=O behalten sie.
+    result = generate_reaction(
+        reactants=["[H][H]", "O=O", "N", "Cl"], products=["O", "C"]
+    )
+    assert [m.name for m in result.reactants + result.products] == [
+        "H₂",
+        "O₂",
+        "",
+        "",
+        "",
+        "",
+    ]
 
 
 @patch("chemdraw_tool.server.resolve", side_effect=_resolve)
 def test_names_stay_names(_):
     result = generate_reaction(
-        reactants=["acetic acid", "ethanol"], products=["ethyl acetate", "O"]
+        reactants=["acetic acid", "ethanol"], products=["ethyl acetate", "water"]
     )
+    # Ein getippter Name bleibt stehen, auch bei einem Schweratom.
     assert [m.name for m in result.reactants + result.products] == [
         "acetic acid",
         "ethanol",
         "ethyl acetate",
-        "H₂O",
+        "water",
     ]
 
 
@@ -71,18 +93,20 @@ def test_request_keeps_the_raw_input(_):
 @patch("chemdraw_tool.server.resolve", side_effect=_resolve)
 def test_cdxml_labels_use_formula_subscripts(_, tmp_path):
     result = generate_reaction(
-        reactants=["[H][H]", "O=O"], products=["O"], formats=["cdxml"]
+        reactants=["[H][H]", "O=O"], products=["CCO"], formats=["cdxml"]
     )
     cdxml = open(result.cdxml_path, encoding="utf-8").read()
     assert "[H][H]" not in cdxml
     assert "₂" not in cdxml
-    # Wasser: H, tiefgestellte 2, O — drei Läufe in einer Beschriftung.
-    water = [
-        t for t in etree.fromstring(cdxml.encode()).iter("t") if t.findtext("s") == "H"
+    # Ethanol: C, tiefgestellte 2, H, tiefgestellte 6, O — fünf Läufe.
+    ethanol = [
+        t for t in etree.fromstring(cdxml.encode()).iter("t") if t.findtext("s") == "C"
     ][-1]
-    assert [(s.text, s.get("face")) for s in water] == [
-        ("H", None),
+    assert [(s.text, s.get("face")) for s in ethanol] == [
+        ("C", None),
         ("2", "32"),
+        ("H", None),
+        ("6", "32"),
         ("O", None),
     ]
 

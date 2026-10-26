@@ -3091,9 +3091,13 @@ with predict_spectrum or repeat those facts via lookup unless asked.
 
 def _species_label(raw: str, resolved: str, mol: Chem.Mol) -> str:
     """Beschriftung eines Reaktionsstoffs: der Name, wie eingegeben — oder,
-    wenn die Eingabe ein SMILES war, die Summenformel mit Tiefziffern (H₂O)."""
+    wenn die Eingabe ein SMILES war, die Summenformel mit Tiefziffern (H₂O).
+    Bei einem einzigen Schweratom zeigt die Zeichnung die Formel schon selbst
+    (H₂O, NH₃) — dann keine Beschriftung, sonst stünde sie doppelt (Jay 26.10.)."""
     if resolved != raw.strip():
         return raw
+    if mol.GetNumHeavyAtoms() == 1:
+        return ""
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
     return subscript_formulas(CalcMolFormula(mol))

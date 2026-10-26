@@ -1,9 +1,11 @@
 # Grundlagen zuerst: Schreibweisen und Gleichungen (Jay, 26.10.2026)
 
 ## Weiter bei (26.10.2026, ~20:00)
-1. Glama-Build von 0.6.0 prüfen (Abschnitt „Release 0.6.0“): „Haworth“ in der generate_molecule-Beschreibung auf
+1. Glama-Build von 0.6.0 prüfen (Abschnitt „Release 0.6.0“): Parameter `stereo_variants`/`coefficients` auf
    glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp. Glama-API braucht einen Key → Seite per WebFetch lesen.
-2. Offene Jay-Entscheidung: doppelte Formel bei Kleinstmolekülen (Zeichnung „H₂O“ + Label „H₂O“), Übergabe Punkt 3.
+   20:17 noch v0.1.0 (Release 20:09, 8 min alt).
+2. ~~Doppelte Formel bei Kleinstmolekülen~~ — **Jay:** Label weglassen. Gebaut 26.10.: SMILES mit einem Schweratom
+   (O, N, C, Cl) bekommt kein Label; H₂/O₂ und getippte Namen („water“) bleiben. Nicht in Desktop getestet.
 3. Danach Thema „Prüfungsfragen“ (OC-Grundlagen, kein achtes Tool; plans/mcp-server.md).
 Codex-Kontingent ist leer (Jay 26.10.) — Desktop-Tests bis auf Weiteres selbst (vermarktung/ax-claude.swift) oder liegen lassen.
 Tisch: Fäden 20261026-190644 und 20261026-193309 erledigt; d.html (untracked) gehört Codex, nicht anfassen.
@@ -137,8 +139,9 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
 
 ## Release 0.6.0 (Jays Go 26.10.2026)
 - [x] v0.6.0: GitHub-Release, PyPI 0.6.0, `chemdraw-mcp-0.6.0.mcpb`, Registry 0.6.0 isLatest (Workflow publish.yml grün)
-- [ ] Glama: Auto-Build nach dem Release prüfen — Beleg ist nicht Glamas Versionsnummer, sondern „Haworth“ in der
-      generate_molecule-Beschreibung auf glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp (direkt nach dem Release: noch v0.1.0)
+- [ ] Glama: Auto-Build nach dem Release prüfen — Beleg ist nicht Glamas Versionsnummer, sondern die neuen Parameter
+      `stereo_variants` (generate_molecule) und `coefficients` (generate_reaction) im Schema („Haworth“ steht in keiner
+      Beschreibung — Fischer/Haworth sind reine Panel-Knöpfe). 26.10. 20:17: beide fehlen, Glama zeigt nur v0.1.0 auf glama.ai/mcp/servers/jurimaxam-dotcom/chemdraw-mcp (direkt nach dem Release: noch v0.1.0)
 
 ## Übergabe 26.10.2026 abends (Haupt-Session → frische Session)
 Fertig und in Desktop von Codex abgenommen: Etappe 1–3 (All H, Koeffizienten nur auf Wunsch, SMILES-Labels als Formel,
@@ -148,5 +151,5 @@ Session ec41d68c (Faden 20261026-181107-grundlagen-etappe-4-fischer); Desktop-Ab
 Nächste Schritte für die neue Haupt-Session:
 1. Beide Codex-Berichte abnehmen (Screenshots selbst ansehen, nicht nur glauben), Befunde an die bauende Session oder selbst fixen.
 2. Thema „Prüfungsfragen“: Jay entschied OC-Grundlagen zuerst (plans/mcp-server.md); kein achtes Tool.
-3. Kleinigkeit, offen für Jay: bei Kleinstmolekülen steht die Formel doppelt (Zeichnung „H₂O“ + Label „H₂O“).
+3. [x] Kleinstmoleküle: Formel stand doppelt → **Jay:** Label weglassen (gebaut 26.10., siehe „Weiter bei“ 2).
 Arbeitsweise unverändert: Claude baut, Codex testet in Desktop (§ Arbeitsweise oben).
