@@ -109,8 +109,9 @@ auf Klick gebraucht wird, kommt per Klick (wie Stereo-Varianten und Datenblatt),
     - [ ] Desktop-Abnahme 4 durch Codex (Faden 20261026-190644): **nicht bestanden.** Haworth/Fischer-Prompt → weiter
           visualize, Gegenprobe ja. Ursache (Screenshots): Desktop lädt unsere Tools erst auf Bedarf („Tools geladen ▸“
           fehlt bei Schritt 1) — die Beschreibung wird vor der Entscheidung nie gelesen; 6dd17f0 ist nur ein Wächter für
-          `view`. Messung läuft: sieht das Modell die Server-Instructions vor dem Laden? Ja → ein Satz in
-          `_MVP_INSTRUCTIONS` (Versuch 3 von 3). Nein → Host-Verhalten, als Entscheidung an Jay.
+          `view`. Messung B (Chat 01cf13fb): vor dem Laden sieht das Modell nur die sieben Toolnamen, keine
+          Beschreibungen und keine Server-Instructions (Block nennt nur claude-in-chrome; Modellauskunft, passt zu den
+          Screenshots). Kein Hebel im Server → Host-Verhalten; Entscheidung bei Jay (hinnehmen vs. Toolname).
     - [ ] Geparkt: Modell schickte bei „Zeichne beta-D-Glucose“ wieder selbst geschriebenes SMILES + annotate_stereo (diesmal korrekt)
     - [ ] Später: Vollprofil-Beschreibung hat den Satz nicht (2040 B, dort erst kürzen)
 - Prüfungsfragen (OC): kein achtes Tool — Panel-Modus oder Parameter, Fragenbestand als Datendatei.
