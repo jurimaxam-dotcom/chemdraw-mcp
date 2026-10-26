@@ -9,6 +9,7 @@ Golden-SVGs nie zum Grünmachen neu erzeugen. Desktop-Test läuft über den Repo
 - [x] Panel-Umschalter „Skeletal ↔ all H“ am Molekül-Panel; Server liefert zweites SVG (RDKit AddHs) oder Parameter `explicit_h`; Export folgt der Ansicht
   - Gebaut 26.10.: Payload `svgAllH`/`atomsAllH` (AddHs mit addCoords, Schweratom-Indizes bleiben), Knopf „All H“ unter
     der Struktur, PNG-Export nimmt die sichtbare Zeichnung. Bei `abbreviate_groups` kein Umschalter.
+  - Verworfen 26.10.: gleicher Ausschnitt für beide Ansichten. Jay will, dass die Skelettformel die Fläche füllt; der Größenwechsel beim Umschalten ist gewollt.
   - [ ] Später, nur auf Ansage: Parameter `explicit_h` für die Chat-Route („mit allen H“) und die Dateien auf der Platte
 
 ## Etappe 2: Koeffizienten in die Gleichung übernehmen (S–M)
