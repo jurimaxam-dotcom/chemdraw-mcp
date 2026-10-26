@@ -5,6 +5,14 @@ zum Bauen; Jay gibt je Etappe frei. Bausteine von heute: Isomer-Auswahl (0a1d29a
 Reaktionsbilanz (3525cdf). Regeln aus CLAUDE.md: MVP bleibt 7 Tools (Parameter/Panel-Knopf statt Tool), opt-in, TDD,
 Golden-SVGs nie zum Grünmachen neu erzeugen. Desktop-Test läuft über den Repo-Server (siehe plans/konkurrenz-verbesserungen.md).
 
+## Arbeitsweise ab 26.10.: Claude baut, Codex testet in Desktop (Jay)
+Jay: „entwickle autonom mit ihm weiter … sprecht euch ab“. Je Etappe: Claude baut (TDD, Gate, test:host, Desktop-Neustart)
+→ `tisch auftrag codex` mit dem Desktop-Test (Prompt, Klicks, Erwartung, Screenshots nach /tmp/chemdraw-desktop-test/)
+→ Codex steuert Desktop (AX-Klicks, Developer-Einstellungen: MCP-Log, Server neu laden), meldet ja/nein je Schritt
+→ Claude fixt Befunde, Codex testet erneut. Jay bekommt das Ergebnis am Etappenende, keine Handtests.
+Eigentum: Codex `vermarktung/ax-claude.swift`, `vermarktung/aufnahme-desktop.sh` und ein wiederholbares Desktop-Testskript;
+Claude Server/UI/Tests. Bremsen bleiben: Release, Posts, Außenkommunikation = Jays Hand.
+
 ## Etappe 1: Alle H-Atome zeigen (S)
 - [x] Panel-Umschalter „Skeletal ↔ all H“ am Molekül-Panel; Server liefert zweites SVG (RDKit AddHs) oder Parameter `explicit_h`; Export folgt der Ansicht
   - Gebaut 26.10.: Payload `svgAllH`/`atomsAllH` (AddHs mit addCoords, Schweratom-Indizes bleiben), Knopf „All H“ unter
