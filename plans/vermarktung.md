@@ -86,6 +86,9 @@ Faden 3 folgen nach dem ersten Post, Stück für Stück; die bisherige Bedingung
 - [ ] Etappe-5-Hinweis: Traffic-Zahlen sind 14-Tage-Aggregate, Post-Wirkung nur über die tägliche UTC-Zeitreihe in views/clones ablesbar
 - [ ] Auffindbarkeit (Messung 26.10.2026, Bericht `docs/distribution/auffindbarkeit-2026-10-26.md`): punkpeye/awesome-mcp-servers neu einreichen — PR #7814 wurde am 25.07. nur wegen fehlendem Glama-Badge geschlossen; Glama listet das Repo inzwischen (Badge vorhanden, Listung ungeclaimt). Erst Glama claimen (**Jay:** Login), dann PR mit Badge (Helfer)
 
+- [ ] **Jay:** mcpservers.org/submit ausfüllen (wong2-Liste nimmt nur noch das Formular; mcpservers.org steht in Bing auf Platz 1 und 7 für „chemistry mcp server“) – 5 min
+- [ ] GitHub Community Exchange „Collaborate“: Opus legt CONTRIBUTING.md + 2–3 Good-first-Issue-Entwürfe an (Faden 20261026-082156), **Jay:** Studentenstatus im Education-Dashboard prüfen und einreichen
+
 ## Etappe 5: Messen
 - [x] Täglicher Snapshot von Traffic und Referrern in eine Datei. GitHub behält nur 14 Tage;
   ohne Snapshot gehen ältere Messwerte verloren; auch mit Snapshots ist die Wirkung einzelner Posts nur näherungsweise sichtbar. — erledigt 25.10.: launchd de.jay.chemdraw-traffic täglich 09:00, Skript ~/.local/bin/chemdraw-traffic-snapshot.sh, Daten ~/.local/share/chemdraw-mcp/traffic/<datum>.json (außerhalb Documents, weil macOS Hintergrundprozessen Documents verweigert), vermarktung/traffic ist Symlink dorthin; Kickstart exit 0, Log ~/.claude/logs/chemdraw-traffic.log; erste Datei 2026-10-25.json: Werte sind rollierende 14-Tage-Aggregate (Codex, Faden 20261025-090414, Bericht vermarktung/traffic-snapshot-bericht-2026-10-25.md)
