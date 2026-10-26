@@ -35,7 +35,11 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
         balanced equation …“, Eval-Fall `draw-reaction-as-typed` mit neuem Feld `forbidden_args: [coefficients]`.
   - [x] Unter den Molekülen steht der SMILES-Eingabetext ([H][H], O=O, O) statt eines Namens/einer Formel → bei SMILES-Eingabe Summenformel (H₂, O₂, H₂O) als Label
         — Gebaut 26.10. (fdaacd1): Panel + CDXML (face="32"); PNG/SVG der Reaktion hatten nie Beschriftungen, bleiben so
-  - [ ] Knopf „Apply coefficients“ einmal in Desktop von Hand klicken (bisher nur DOM-Test + test:host ohne diesen Pfad)
+  - [x] Knopf „Apply coefficients“ in Desktop geklickt (Abnahme 5, Faden 20261026-193309, abnahme5-repeat-1a → 1b):
+        „not balanced“ + Knopf → Klick → 2 H₂ + O₂ → 2 H₂O, balanced.
+  - [ ] Befund Abnahme 5: Desktop-Modell (Sonnet 5.5) setzt bei „Zeichne die Knallgasreaktion H2 + O2 → H2O“ wieder
+        selbst `coefficients: [2,1,2]` (abnahme5-repeat-1), trotz „Set only when the user asks …“. Erst auf
+        „Übergib coefficients nicht“ bleibt es weg. Eval-Fall draw-reaction-as-typed deckt das; nicht release-blockierend.
 
 ## Etappe 3: Stereo-Auswahl R/S, E/Z (S–M)
 - [x] Stereo-Hinweis bekommt „Show variants“: alle Stereoisomere (EnumerateStereoisomers, Obergrenze 3 Zentren = 8) als Vorschaubilder mit R/S- bzw. E/Z-Label, Klick zeichnet mit Keilen — Muster der Isomer-Auswahl
@@ -43,7 +47,8 @@ Bedienung); Repo-Änderungen vor einem angekündigten Neustart abstimmen. Codex 
     bis zu 8 Vorschaubilder in jeden Modellkontext gelegt; Payload ist schon 29 KB Text). Antwort = AmbiguousPayload,
     Knopf neben dem Hinweis, Vorschau mit CIP-Annotation, Meso zählt einmal. Eval-Fälle `draw-racemate-as-typed`,
     `all-stereoisomers`; test:host klickt Methylphenidat → 4 Varianten → (S,S) mit Keilen.
-  - [ ] Jays Handtest in Desktop: „Zeichne Ibuprofen“ → Show variants → (S) klicken
+  - [x] Desktop: „Zeichne Ibuprofen“ → Show variants → (R)/(S) → (S)-Ibuprofen mit Keil, Rückweg-Leiste
+        (Abnahme 5, abnahme5-2b/2c). Anfangszustand war durch eine zweite, alte Codex-CUA-Sitzung verfälscht.
 
 ## Etappe 4: Fischer-/Haworth-Projektion (M–L, später)
 - [x] Erst messen, ob RDKit/eine Bibliothek das kann (github-first); sonst eigener Zeichner nur für Zucker/Aminosäuren
