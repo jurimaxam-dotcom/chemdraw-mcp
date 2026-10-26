@@ -49,3 +49,9 @@ grün je Etappe, Exit-Code nicht verpipen. Nach Server-Änderung Claude Desktop 
 
 ## Abschluss
 - [x] Gate grün, Desktop neu gestartet, Handshake 7 Tools/6 Panel, Release-Notiz-Entwurf (Release selbst = Jays Klick) — Entwurf als `[Unreleased]` in CHANGELOG.md, 26.10.
+
+## Desktop-Test vor Release (26.10.)
+Desktop lief über die Erweiterung (PyPI 0.5.1), nicht über das Repo — `handshake.sh` prüfte mangels Config-Eintrag den Repo-Befehl.
+Testweise umgestellt: Erweiterung `isEnabled: false` (Backup `Claude Extensions Settings/local.mcpb.jurimaxam-dotcom.chemdraw-mcp.json.bak-20261026`), Repo-Server per `uv run chemdraw-install` als `chemdraw-tool` registriert.
+- [ ] Jays 10-Sekunden-Test: Xylol → Auswahl, Ibuprofen → Stereo-Hinweis, Fischer ⇌ → Badge „balanced“
+- [ ] Nach Release zurück: `chemdraw-tool` aus `claude_desktop_config.json` (Backup `.bak`), Erweiterung wieder an, Launcher-Version auf das neue Release
