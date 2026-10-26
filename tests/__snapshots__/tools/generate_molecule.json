@@ -250,6 +250,14 @@
         "title": "Atoms",
         "type": "array"
       },
+      "atomsAllH": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AtomData"
+        },
+        "title": "Atomsallh",
+        "type": "array"
+      },
       "candidates": {
         "default": [],
         "items": {
@@ -329,6 +337,11 @@
       "svg": {
         "default": "",
         "title": "Svg",
+        "type": "string"
+      },
+      "svgAllH": {
+        "default": "",
+        "title": "Svgallh",
         "type": "string"
       },
       "type": {

@@ -134,7 +134,9 @@ def extract_atom_data(
                 "el": atom.GetSymbol(),
                 "x": pt.x,
                 "y": pt.y,
-                "hCount": atom.GetTotalNumHs(),
+                # includeNeighbors: bei expliziten H (AddHs) zählen die
+                # Nachbaratome mit, sonst stünde im Tooltip „0 H".
+                "hCount": atom.GetTotalNumHs(includeNeighbors=True),
                 "charge": atom.GetFormalCharge(),
             }
         )

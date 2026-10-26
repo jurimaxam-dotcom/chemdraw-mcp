@@ -194,3 +194,42 @@ test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Stru
   assert.equal(group.getAttribute("aria-pressed"), "true");
   unmount();
 });
+
+// Umschalter Skelettformel ⇄ alle H: lokal, ohne Toolaufruf. Ohne svgAllH
+// (alte Payloads, abgekuerzte Gruppen) gibt es keinen Knopf.
+const SVG_ALL_H = "<svg viewBox='0 0 40 20'><path d='M1 1' data-all-h='1'/></svg>";
+
+function renderMolecule(data) {
+  const calls = [];
+  const app = { callServerTool: async (req) => { calls.push(req); return lookupSuccess(); } };
+  const view = render(
+    React.createElement(AppContext.Provider, { value: app },
+      React.createElement(MoleculeView, { data }))
+  );
+  return { ...view, calls };
+}
+
+test("„All H“ zeigt die Zeichnung mit allen H-Atomen und schaltet zurueck", async () => {
+  const data = { ...MOLECULE, svgAllH: SVG_ALL_H, atomsAllH: MOLECULE.atoms };
+  const { container, calls, unmount } = renderMolecule(data);
+  const toggle = buttonByText(container, "All H");
+  assert.ok(toggle, "kein H-Umschalter");
+  assert.equal(toggle.getAttribute("aria-pressed"), "false");
+  const drawing = () => container.querySelector(".structure-drawing");
+  assert.equal(drawing().querySelector("[data-all-h]"), null, "startet nicht als Skelettformel");
+
+  await click(toggle);
+  assert.ok(drawing().querySelector("[data-all-h]"), "H-Zeichnung nicht sichtbar");
+  assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "true");
+
+  await click(buttonByText(container, "All H"));
+  assert.equal(drawing().querySelector("[data-all-h]"), null, "Rueckweg zur Skelettformel fehlt");
+  assert.equal(calls.length, 0, "Umschalten darf kein Tool rufen");
+  unmount();
+});
+
+test("ohne svgAllH kein H-Umschalter", () => {
+  const { container, unmount } = renderMolecule(MOLECULE);
+  assert.ok(!buttonByText(container, "All H"), "H-Umschalter ohne svgAllH");
+  unmount();
+});

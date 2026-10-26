@@ -55,6 +55,12 @@ class MoleculePayload(BaseModel):
     type: str = "molecule"
     svg: str = ""
     atoms: list[AtomData] = []
+    # Dieselbe Zeichnung mit allen H-Atomen, für den Umschalter im Panel.
+    # AddHs hängt die H hinten an — die Schweratom-Indizes in atomsAllH sind
+    # dieselben wie in atoms, Gruppen- und Stereo-Highlights bleiben gültig.
+    # Leer bei abgekürzten Gruppen (dann gibt es keinen Umschalter).
+    svgAllH: str = ""
+    atomsAllH: list[AtomData] = []
     name: str = ""
     subtitle: str = ""
     properties: dict[str, str] = {}

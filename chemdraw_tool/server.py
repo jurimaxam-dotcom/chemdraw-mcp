@@ -635,6 +635,18 @@ def generate_molecule(
     # Nach dem Abkürzen zeigt das SVG andere Atome als das analysierte
     # Molekül — falsch platzierte Overlays wären schlimmer als keine.
     atoms = [] if abbreviate_groups else extract_atom_data(mol)
+    # addCoords hält das Schweratom-Gerüst fest: der Umschalter ordnet das
+    # Molekül nicht neu an, die Highlights landen an derselben Stelle.
+    svg_all_h, atoms_all_h = "", []
+    if not abbreviate_groups:
+        mol_h = Chem.AddHs(mol, addCoords=True)
+        svg_all_h = render_svg(
+            mol_h,
+            fill_container=True,
+            annotate_stereo=annotate_stereo,
+            style=render_style,
+        )
+        atoms_all_h = extract_atom_data(mol_h)
 
     return MoleculePayload(
         type="molecule",
@@ -645,6 +657,8 @@ def generate_molecule(
             style=render_style,
         ),
         atoms=atoms,
+        svgAllH=svg_all_h,
+        atomsAllH=atoms_all_h,
         name=display_name,
         properties=properties,
         functionalGroups=groups,

@@ -20,6 +20,9 @@ export default function MoleculeView({ data }) {
   const uid = useId();
   const [hoveredGroup, setHoveredGroup] = useState(null);
   const [view, setView] = useState("structure");
+  // Skelettformel ⇄ alle H — eine eigene Achse neben Struktur/Daten. Beide
+  // Zeichnungen liegen schon im Payload, der Klick bleibt lokal.
+  const [allH, setAllH] = useState(false);
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
   const [sheet, setSheet] = useState(null);
@@ -46,6 +49,10 @@ export default function MoleculeView({ data }) {
   // SMILES zuerst: die sind laut Tool-Doku immer aufloesbar, ein Name kann
   // danebengehen.
   const query = smiles || data.name || "";
+  // Export folgt der Ansicht: der PNG-Knopf nimmt dieselbe Zeichnung wie die Flaeche.
+  const showAllH = allH && Boolean(data.svgAllH);
+  const svg = showAllH ? data.svgAllH : data.svg;
+  const atoms = showAllH ? data.atomsAllH : data.atoms;
 
   const handleView = useCallback(
     async (next) => {
@@ -96,20 +103,24 @@ export default function MoleculeView({ data }) {
         </div>
         <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
-          {data.svg && <ExportPngButton svg={data.svg} filename={data.name || "molecule"} />}
+          {svg && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
           {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
         </div>
       </header>
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
           <div className="structure-layout">
-            <StructureCanvas svg={data.svg} atoms={data.atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />
+            <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
               <Fact label="Molar mass" value={molarMass(props.mw)} />
               <Fact label="CAS" value={props.cas} copy={props.cas} />
             </dl>
           </div>
+          {data.svgAllH && <div className="structure-tools">
+            <button type="button" className="chip-toggle" aria-pressed={showAllH} onClick={() => setAllH((v) => !v)}
+              title={showAllH ? "Back to the skeletal formula" : "Draw every hydrogen atom"}>All H</button>
+          </div>}
           <StereoNote {...stereo.noteProps} />
           {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
             <h3 className="section-label">Functional groups</h3>
