@@ -119,3 +119,64 @@ Vermarktung und dieser Plan bleiben per `.git/info/exclude` ausschließlich loka
 kein Commit, kein Upload dieser lokalen Dateien. Launch mit Faden 1 allein (Jay, 25.10.2026);
 Faden 2/3 und Feature-Rückkehr folgen nach dem ersten Post. Nur `plans/workflows.md`
 ist getrackt und wird für diesen Auftrag committet (Tisch-Antwort #3).
+
+## Shorts je Workflow (Jay 26.10.2026 23:55: „zuerst die Shorts nochmal sauber, zu jedem Workflow ein Short“)
+Nur Entwurf: kein Rendern, Desktop nicht anfassen, solange Codex dort abnimmt. Aufnahme-Pipeline
+(`aufnahme-desktop.sh`, `ax-claude.swift`) gehört Codex, Montage `vermarktung/video/` (Remotion, Komposition
+`DesktopWorkflow`). Alle Shorts: 9:16, 1080×1920, 30 fps, 15–30 s, echte Desktop-Pixel, englischer Prompt.
+
+### a) Workflows, die in 0.6.0 laufen (Beleg)
+| # | Workflow | Beleg |
+|---|---|---|
+| W1 | Name → Panel → Gruppen-Hover | Desktop-Aufnahme 25.10. (short-desktop-v2), Jay-Abnahme 0.5.1 |
+| W2 | → Add to Anki → Karte in Anki | Jay-Abnahme 0.5.1 (24./25.10.), Kartenbild 0.5.2 |
+| W3 | → Data (Datenblatt, GHS nach Quelle) | test:host (Methylphenidat), Glama-Sandbox (Koffein, CID 2519); **Desktop-Handtest offen** |
+| W4 | → Export PNG | Codex-Desktop-Abnahme Etappe 4 (Faden 20261026-182553) |
+| W5 | Familienname → Isomer-Auswahl („xylene“) | test:host + Gate; **Desktop ungeprüft** |
+| W6 | Stereo-Hinweis → Show variants → (S) mit Keil | Codex-Desktop-Abnahme 5 (Ibuprofen) |
+| W7 | Reaktion → Bilanz-Badge → Apply coefficients | Codex-Desktop-Abnahme 5 (Knallgas) |
+| W8 | Zucker/Aminosäure → Fischer · Haworth · All H | Codex-Desktop-Abnahme Etappe 4 (Glucose, L-Alanin) |
+Nicht als Short: `compare_molecules`/`batch_generate` (kein Desktop-Beleg), Chat-Weg Anki-Deck (kein Panel-Moment).
+W3 und W5 erst nach einer Desktop-Probe drehen.
+
+### b) Drehbücher (Prompt · Klicks · Aufhänger · Schluss-Bild)
+- [ ] **S1 Anki (W1+W2, ersetzt short-desktop-v2)** · `draw caffeine` · Hover 2 Chips je 1,2 s → Add to Anki → Importieren
+      → Karte in Anki umdrehen (vorn Struktur, hinten Name/Formel/CAS) · Aufhänger „From a name to a flashcard in 10 seconds“
+      · Schluss: fertige Karte im Nachtmodus, dann Abspann. ~22 s
+- [ ] **S2 Datenblatt (W3)** · `draw methylphenidate` · Data → langsamer Scroll über GHS-Block → zurück Structure ·
+      Aufhänger „Structure and safety data, same panel“ · Schluss: GHS-Piktogramme + CAS. ~18 s
+- [ ] **S3 Export (W4)** · `draw ibuprofen` · Export PNG → Finder-Fenster mit der Datei (Quick Look) · Aufhänger
+      „Publication-style structures, offline“ · Schluss: PNG in Quick Look, weißer Grund. ~15 s
+- [ ] **S4 Isomere (W5)** · `draw xylene` · Auswahl mit 3 Bildchen → Klick para → Struktur · Aufhänger „Xylene is three
+      molecules. It asks which.“ · Schluss: p-Xylol gezeichnet, Rückweg-Leiste sichtbar. ~16 s
+- [ ] **S5 Stereo (W6)** · `draw ibuprofen` · Stereo-Hinweis hovern (Zentrum leuchtet) → Show variants → (S) ·
+      Aufhänger „One stereocenter, two drugs“ · Schluss: (S)-Ibuprofen mit Keil + Label. ~18 s
+- [ ] **S6 Reaktion (W7)** · `draw the reaction H2 + O2 -> H2O as typed, don't balance it` (sonst setzt Sonnet die
+      Koeffizienten selbst, Befund Abnahme 5) · Badge „not balanced“ → Apply coefficients · Aufhänger „It checks your
+      equation“ · Schluss: 2 H₂ + O₂ → 2 H₂O mit grünem „balanced“. ~16 s
+- [ ] **S7 Projektionen (W8)** · `draw beta-D-glucose` · Haworth → All H → Structure · Aufhänger „Skeletal, Haworth,
+      every H — one click each“ · Schluss: Haworth-Ring. ~18 s (nicht „show the Haworth projection“ — Desktop
+      antwortet dann mit seinem eigenen Visualizer)
+
+### c) Gemeinsame Fixes vor dem nächsten Dreh (Befund an short-desktop-v2 + short-2026-10-25)
+- [ ] **Persönlicher Name im Bild:** prompt.png zeigt „Guten Abend, Juri“ (Desktop-Begrüßung) → vor dem Tippen in einen
+      bestehenden leeren Chat wechseln oder Begrüßung aus dem Ausschnitt nehmen. Blocker für jeden Upload.
+- [ ] **Sprachmix:** Desktop-UI deutsch („Guten Abend“, Anki „Importieren“), Panel englisch, Titel „Aspirin
+      (Acetylsalicylsäure)“ → Desktop- und Anki-Sprache für die Aufnahme auf Englisch, oder Ausschnitt ohne Host-Text.
+- [ ] **Version:** Aufnahme zeigt Extension 0.5.1 → vor dem Dreh Extension 0.6.0 installieren, Manifest-Version in
+      `aufnahme-desktop.sh` als Pflicht prüfen (Abbruch bei ≠ Release), Bundle-Hash wie im Memo „stale Installation“.
+- [ ] **Anki-Schluss leer:** anki.png ist ein angeschnittener Importdialog („…ort“, Schalter, kein Kontext); keine Karte
+      zu sehen → Import bestätigen und die Karte zeigen, Dialog nicht als Schluss-Bild.
+- [ ] **Überlagerung im Panel:** hover.png zeigt den Desktop-Scroll-Pfeil (↓) über dem Gruppen-Detail → Chat so scrollen,
+      dass das Panel unten frei endet, oder Ausschnitt oberhalb enden lassen.
+- [ ] **Kein Ton:** `vermarktung/video/public/` ist leer, `musik.mp3` fehlt seit 25.10. → **Jay:** einen Track aus der
+      YouTube Audio Library wählen (gilt dann für alle Shorts).
+- [ ] **Aufhänger je Short:** `HOOK_TEXT`/`PROMPT_TEXT` sind Konstanten in `timeline.ts` („Still drawing molecules by
+      hand?“, „draw aspirin“) → als Props je Short, damit S1–S7 eine Komposition teilen.
+- [ ] **Marks je Short:** `DesktopWorkflow`-Marks sind auf den Aspirin-Ablauf (3 Hover + Anki) zugeschnitten → generische
+      Beat-Liste (Klick/Hover/Halten) aus dem Aufnahme-Log statt fester Feldnamen; zwei Teilaufnahmen + Normalisierung
+      (v2-Bericht) vermeiden, indem das Fenster vorher richtig steht.
+- [ ] Alt-Short `short-2026-10-25` (Host-Nachbau, gesetzte Eingabezeile) nicht mehr verwenden — ersetzt durch echte
+      Desktop-Aufnahmen; **Jay:** Gestaltungsrückmeldung zum Short (oben) gilt dann für S1.
+Reihenfolge: c) Fixes (Codex Pipeline, Claude Remotion-Props) → S1 drehen → Jays Sichtprüfung → S5, S6, S7, S3 → S2/S4
+nach Desktop-Probe.

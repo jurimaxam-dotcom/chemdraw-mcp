@@ -141,6 +141,7 @@ Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein
 - [ ] Tests: Abdeckung deckt genau die Atome der Gruppe; Aufdecken ist umkehrbar; Zustand nur im Panel (kein Server)
 
 ##### Entwurf „Prüfungsfragen OC-Grundlagen“ (26.10.2026, nur Entwurf — Jay gibt je Etappe frei)
+**Pausiert (Jay 26.10. 23:55): zuerst die Shorts sauber, je Workflow ein Short (plans/vermarktung.md § Shorts je Workflow).**
 Rahmen: Jay 26.10. OC-Grundlagen zuerst (funktionelle Gruppen, Isomerie, R/S, Reaktionstypen); MVP bleibt 7 Tools →
 Parameter oder Panel-Knopf, kein achtes Tool. Ausgangspunkt ist Modus E (verdecken, aufdecken).
 
