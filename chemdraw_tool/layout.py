@@ -1,3 +1,5 @@
+import re
+
 from lxml import etree
 from rdkit import Chem
 
@@ -62,6 +64,32 @@ def _conditions_text(page, next_id: int, x: float, y: float, text: str) -> int:
         s = etree.SubElement(t, "s", font="3", size="8")
         if sub:
             s.set("face", "32")
+        s.text = chunk
+    return next_id + 1
+
+
+_UNICODE_SUB = re.compile(r"([₀-₉]+)")
+_FROM_SUB = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
+
+
+def _label_text(page, next_id: int, x: float, y: float, label: str) -> int:
+    """Beschriftung unter einem Stoff. Unicode-Tiefziffern (H₂O, wie im
+    Panel) werden zur ChemDraw-Tiefstellung face="32"; ein Name ohne sie
+    bleibt ein einziger Lauf."""
+    t = etree.SubElement(
+        page,
+        "t",
+        id=str(next_id),
+        p=f"{x:.2f} {y:.2f}",
+        Justification="Center",
+    )
+    for chunk in _UNICODE_SUB.split(label):
+        if not chunk:
+            continue
+        s = etree.SubElement(t, "s", font="3", size="8")
+        if chunk[0] in "₀₁₂₃₄₅₆₇₈₉":
+            s.set("face", "32")
+            chunk = chunk.translate(_FROM_SUB)
         s.text = chunk
     return next_id + 1
 
@@ -160,17 +188,7 @@ def reaction_to_cdxml(
         fragment_id += 1
 
         if i < len(r_names) and r_names[i]:
-            label_y = bounds[3] + 18
-            t = etree.SubElement(
-                page,
-                "t",
-                id=str(next_id),
-                p=f"{cx:.2f} {label_y:.2f}",
-                Justification="Center",
-            )
-            s = etree.SubElement(t, "s", font="3", size="8")
-            s.text = r_names[i]
-            next_id += 1
+            next_id = _label_text(page, next_id, cx, bounds[3] + 18, r_names[i])
 
         cursor_x += w
 
@@ -231,17 +249,7 @@ def reaction_to_cdxml(
         fragment_id += 1
 
         if i < len(p_names) and p_names[i]:
-            label_y = bounds[3] + 18
-            t = etree.SubElement(
-                page,
-                "t",
-                id=str(next_id),
-                p=f"{cx:.2f} {label_y:.2f}",
-                Justification="Center",
-            )
-            s = etree.SubElement(t, "s", font="3", size="8")
-            s.text = p_names[i]
-            next_id += 1
+            next_id = _label_text(page, next_id, cx, bounds[3] + 18, p_names[i])
 
         cursor_x += w
 

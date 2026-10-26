@@ -2949,6 +2949,16 @@ with predict_spectrum or repeat those facts via lookup unless asked.
     )
 
 
+def _species_label(raw: str, resolved: str, mol: Chem.Mol) -> str:
+    """Beschriftung eines Reaktionsstoffs: der Name, wie eingegeben — oder,
+    wenn die Eingabe ein SMILES war, die Summenformel mit Tiefziffern (H₂O)."""
+    if resolved != raw.strip():
+        return raw
+    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+
+    return subscript_formulas(CalcMolFormula(mol))
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_reaction(
     reactants: list[str],
@@ -3016,9 +3026,13 @@ def generate_reaction(
         if all(c == 1 for c in coefficients):
             coefficients = None  # alle 1 = wie ohne: gleiche Datei, gleiches Bild
 
+    # Beschriftung: ein Name bleibt ein Name; ein SMILES (resolve gibt es
+    # unverändert zurück) wird zur Summenformel — „O“ unter Wasser sagt nichts.
+    labels: list[str] = []
     reactant_mols = []
     for r in reactants:
-        _, mol = resolve(r)
+        resolved, mol = resolve(r)
+        labels.append(_species_label(r, resolved, mol))
         mol = generate_2d(mol)
         input_issues = validate_input(mol)
         for issue in input_issues:
@@ -3028,7 +3042,8 @@ def generate_reaction(
 
     product_mols = []
     for p in products:
-        _, mol = resolve(p)
+        resolved, mol = resolve(p)
+        labels.append(_species_label(p, resolved, mol))
         mol = generate_2d(mol)
         input_issues = validate_input(mol)
         for issue in input_issues:
@@ -3091,8 +3106,8 @@ def generate_reaction(
             str(filepath),
             conditions=conditions,
             name=name,
-            reactant_names=reactants,
-            product_names=products,
+            reactant_names=labels[: len(reactants)],
+            product_names=labels[len(reactants) :],
             arrow=arrow,
             conditions_below=conditions_below,
             coefficients=coefficients,
@@ -3123,11 +3138,13 @@ def generate_reaction(
         conditions_below=shown_below,
         arrow=arrow,
         reactants=[
-            entry(m, n, f) for m, n, f in zip(drawn_reactants, reactants, factors)
+            entry(m, n, f) for m, n, f in zip(drawn_reactants, labels, factors)
         ],
         products=[
             entry(m, n, f)
-            for m, n, f in zip(drawn_products, products, factors[len(reactants) :])
+            for m, n, f in zip(
+                drawn_products, labels[len(reactants) :], factors[len(reactants) :]
+            )
         ],
         files=files,
         cdxml_path=cdxml_path,
