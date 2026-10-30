@@ -72,10 +72,16 @@ OAuth-Token dieser Arbeitsumgebung keine Workflow-Dateien schreiben darf
           done
           echo "::error::chemdraw-mcp $VERSION nach 5 min nicht auf PyPI"; exit 1
 
+      # Feste Version + Pruefsumme (Werte siehe publish.yml)
       - name: Install mcp-publisher
+        env:
+          MCP_PUBLISHER_VERSION: v1.8.6
+          MCP_PUBLISHER_SHA256: 1fbe93fc…
         run: |
-          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64.tar.gz" \
-            | tar xz mcp-publisher
+          curl -sSfL -o mcp-publisher.tar.gz \
+            "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
+          tar xzf mcp-publisher.tar.gz mcp-publisher
           sudo mv mcp-publisher /usr/local/bin/
 
       - name: Publish to MCP registry
