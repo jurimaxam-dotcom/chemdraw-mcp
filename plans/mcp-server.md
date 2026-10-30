@@ -1,5 +1,27 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Opus (Bauer), Kontext-Neustart 30.10.2026, 23:25
+
+**Nächster Schritt:** `~/.claude/bin/tisch lies --neu --ich opus`; nur auf neuen Tisch-Auftrag des
+Chefs (w4D:p1) bauen. Welle 1 + 2 serverseitig fertig (15 Tools / 12 Panels, Gate 7462 passed,
+Handshake 15/12, Desktop um 23:21 neu gestartet mit HEAD). Kein Code halbfertig.
+
+**Offen, nicht in § Welle 2 eingetragen:** Phosphorsäure-Titration setzt die Pufferpunkte auf pKa statt
+auf die Kurve (V 62,5 mL: Kurve pH 11,86, Punkt 12,35; 12,5 mL: 2,29 vs. 2,15; Beleg Codex,
+`docs/welle2-ph-desktop-2026-10-30.md`). Fix in `ph_plots.py`, TDD: Markerhöhe == `exact_ph` am
+Marker-Volumen. An Chef gemeldet, Faden `20261030-224424-welle-1-serverseitig-abgenommen` #5.
+
+**Desktop-Routing (0/19 über beide Wellen):** Modell sieht über `mcp__remote-devices__chemdraw-tool__`
+die 7 alten Tools, Desktop kündigt 15 an. Vorgeschlagene Diagnose an Chef (#4 im selben Faden):
+Konnektor aus/an → Kontrollchat; dann Server-Schlüssel in `claude_desktop_config.json` testweise
+umbenennen (mit .bak). **Jay:** Config-Eingriff erlaubt? — unbeantwortet, nicht bauen.
+
+**Weitere offene Fragen an Jay** (unbeantwortet — nicht bauen): calculate_ph in Welle 2? ·
+Welle 3 ins Standardprofil oder eigenes Profil?
+
+**Offene Tisch-Fäden:** `20261030-224424-welle-1-serverseitig-abgenommen` (Wellenbericht #4/#5, wartet
+auf Chef) · `20261030-231601-welle-2-ph-kurven` (Codex-Bericht #5 gelesen, beantwortet über Chef-Faden).
+
 ## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 23:22
 
 **Nächster Schritt:** zuerst `~/.claude/bin/tisch lies --neu --ich codex` und
