@@ -234,7 +234,7 @@ Für jede Phase: Tests zuerst und einmal rot gesehen · `./test.sh` grün · Hos
 - [x] `test:host` schreibt nicht mehr ins echte `~/ChemDraw-Output` (9a3b8d6)
 - [x] Entschieden (02.10.): `reaction-in-conversation` — Reaktion + Mechanismus ist gute Antwort, `forbidden` nur noch generate_molecule; `draw-scope-real` mit Strukturen im Prompt. Eval 28/28 in drei Wiederholungen (0e39eb0)
 - [x] Dateipfade im Panel mit `~` gekürzt (6 Views), Tooltip hat den vollen Pfad (6c9b308)
-- [x] Design-Galerie: `uv run python tests/gallery_ui.py` → /tmp/chem-gallery/sheet.png (13 Panel-Typen nebeneinander) (6c9b308)
+- [x] Design-Galerie: `uv run python tests/gallery_ui.py` → <Temp-Ordner chem-gallery-*>/sheet.png (13 Panel-Typen nebeneinander) (6c9b308)
 - [x] Speziesverteilung: Legende neben der Achse (6763642, Test rot gesehen)
 - [x] Geprüft, kein Fehler: Kalibrierkurve-Titel doppelt (der Titel im Bild gehört in die exportierten Dateien); Reaktion ohne Titel (Edukte/Produkte/Bedingungen sind beschriftet)
 - [x] Mechanismus-Overview: gleiche Bindungslänge, Spalte statt Zeile, SN2-TS mit Platz für Teilbindungen (1bfedb2, Release 0.4.7)

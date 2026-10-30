@@ -1,6 +1,6 @@
 """Galerie: alle Panel-Typen der gebauten UI als Screenshot + eine Übersichtsseite.
 
-    uv run python tests/gallery_ui.py        # → /tmp/chem-gallery/*.png und sheet.png
+    uv run python tests/gallery_ui.py        # → <frischer Temp-Ordner>/*.png und sheet.png
 
 Für den Design-Durchgang: schlechte Stellen fallen nebeneinander auf, nicht einzeln.
 HOME zeigt auf einen Wegwerf-Ordner, damit nichts in ~/ChemDraw-Output landet.
@@ -28,7 +28,6 @@ from tests.test_server_spectrum import IR_PEAKS  # noqa: E402
 from tests.test_server_tlc import ESTER_LANES  # noqa: E402
 
 DIST = Path(__file__).resolve().parent.parent / "chemdraw_tool" / "ui" / "dist" / "index.html"
-OUT = Path("/tmp/chem-gallery")
 
 
 def payloads() -> dict[str, object]:
@@ -57,9 +56,9 @@ def main() -> None:
     import json
     import subprocess
 
-    OUT.mkdir(exist_ok=True)
-    for alt in OUT.glob("*"):
-        alt.unlink()
+    # Frischer Ordner je Lauf statt fester /tmp-Pfad: ein vorab gelegter Symlink
+    # hätte das Aufräumen auf ein fremdes Ziel umgelenkt (Sicherheitsscan F3).
+    OUT = Path(tempfile.mkdtemp(prefix="chem-gallery-"))
     for name, make in payloads().items():
         try:
             data = make().model_dump()

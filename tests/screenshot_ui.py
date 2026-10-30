@@ -6,7 +6,7 @@ Usage:
     uv run python tests/screenshot_ui.py molecule aspirin
     uv run python tests/screenshot_ui.py reaction
 
-Screenshots land in /tmp/chem-ui-<type>.png
+Screenshots land in <fresh temp dir>/chem-ui-<type>.png (path is printed)
 """
 
 from __future__ import annotations
@@ -14,13 +14,15 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
 import threading
 import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
 UI_DIR = Path(__file__).resolve().parent.parent / "chemdraw_tool" / "ui"
-SCREENSHOT_DIR = Path("/tmp")
+# Eigener Ordner statt /tmp: fester Name dort ließe sich per Symlink umlenken (Sicherheitsscan F4)
+SCREENSHOT_DIR = Path(tempfile.mkdtemp(prefix="chem-ui-"))
 
 
 def _generate_payload(payload_type: str, args: list[str]) -> dict:
