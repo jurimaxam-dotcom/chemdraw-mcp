@@ -4,11 +4,18 @@
 
 > Auftrag Jay 30.10.: die 16 fürs Release zurückgenommenen Tools sauber wieder ins
 > Standardprofil holen (`MVP_TOOLS`, `chemdraw_tool/server.py:258`), danach README hochwertig,
-> danach Shorts. **Keine OC-Prüfungsfragen in dieser Runde.** Reihenfolge = Etappen unten;
-> je Etappe ein Release-Kandidat. Ziel am Ende: Standardprofil = Vollprofil (23 Tools,
-> 16 Panels) — ob `CHEMDRAW_PROFILE` dann wegfällt, entscheidet Jay nach E4.
+> danach Shorts. **Keine OC-Prüfungsfragen in dieser Runde.**
+> Reihenfolge umgestellt 30.10. (Jay): nach Breitenwirkung in drei Wellen — Strukturansichten
+> stehen, jetzt Reaktionen/Mechanismen; Rechnen ist Vertiefung und kommt später. Je Welle ein
+> Release-Kandidat.
+>
+> Aufteilung: **Opus** = `server.py`, Tool-Snapshots, `cases.yaml`, Python-Tests ·
+> **Codex** = Fälle in `host.e2e.mjs`, README-Bilder, Desktop-Handtest.
 
-**Definition of Done je Tool** (jeder Tool-Haken unten heißt: alle sieben Punkte erfüllt)
+- [ ] **Jay:** Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil? Davon hängt ab,
+  ob `CHEMDRAW_PROFILE` am Ende wegfällt.
+
+**Definition of Done je Tool** (jeder Tool-Haken unten heißt: alle Punkte erfüllt)
 
 1. Ist-Zustand im Vollprofil messen: `CHEMDRAW_PROFILE=full`, ein echter Aufruf über den Server;
    bei Panel-Tools zusätzlich das Panel in `test:host` (heute deckt `src/host/host.e2e.mjs` nur
@@ -18,6 +25,13 @@
    noch abgeschaltete Tools) · Zeile in `_MVP_INSTRUCTIONS` · `MVP`-Menge in
    `tests/test_server_profiles.py` · Handshake-Erwartung (`./scripts/handshake.sh`, Zahl leitet
    sich aus dem Profil ab — nach dem Lauf prüfen).
+   **Rückwärtszäune der Nachbarn:** die `_MVP_SUMMARIES` von `generate_molecule`,
+   `batch_generate`, `generate_reaction` (und jedem anderen Nachbarn) bekommen wieder ihre
+   „Not this tool for: … (use <neues Tool>)"-Zeile — `test_server_profiles.py` prüft nur
+   `mentioned <= MVP`, nicht dass der Zaun zurückkommt; je Zaun ein Test.
+   **Mitwandernde Texte:** Satz „Other features are temporarily disabled" in `_MVP_INSTRUCTIONS`
+   (stimmt nach Welle 3 nicht mehr) · Testname `test_default_and_explicit_mvp_offer_exactly_seven_tools`
+   · Zahlen „7 tools, 6 with a panel" in `CLAUDE.md` und README § Profiles.
 4. Routing-Fall in `evals/tool-routing/cases.yaml` mit `expect` und `forbidden` (Regel dort: drei
    verschiedenartige Prompts je kritischem Tool); `tests/test_eval_cases.py` grün.
 5. Tool-Snapshot bewusst segnen (`UPDATE_TOOLSNAPS=1 uv run pytest tests/test_tool_snapshots.py`)
@@ -34,7 +48,7 @@
 - Release-Kandidat je Etappe: Version heben, `.mcpb` bauen, Registry-Publish nicht vergessen
   (`./scripts/publish-registry.sh`); der Release-Klick bleibt Jays Hand.
 
-**Messung 30.10.2026 (Planstand, Vollprofil, `create_server("full")`)** — alle Modultests grün:
+**Messung 30.10.2026 (Vollprofil, `create_server("full")`)** — alle Modultests grün:
 
 | Tool | Beschreibung | Panel | Modultests | Routing-Fälle (`expect`) |
 |---|---|---|---|---|
@@ -66,31 +80,45 @@ Bekannte Baustellen aus der Messung:
   die `MVP`-Menge gepflegt wird.
 - Modultests grün heißt nicht „in Desktop richtig": Messung in Punkt 1 der DoD ist Pflicht.
 
-### E1 Zeichnen (Release-Kandidat danach)
+Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
+- `generate_mechanism`: zeichnet **immer** das feste Lehrbuchbeispiel des Templates
+  (sn2: CH₃Br + OH⁻); nur der Titel übernimmt die Nutzer-Substrate. Beleg: `["CBr","[OH-]"]` und
+  `["CCCCBr","[SH-]"]` liefern byte-gleiche SVGs, Titel „SN2: CCCCBr + [SH-]". Zwei
+  Fehlermeldungen deutsch (`server.py` ~3479/3493). 12 KB Text ans Modell.
+- `generate_3d`: Ibuprofen 0,5 s, 6,4 KB Text, `type: molecule3d` — sauber. Das Molekül-Panel hat
+  **keine** 3D-Ansicht (Achse nur Skelett/All H/Fischer/Haworth, `MoleculeView.jsx:248`); das Tool
+  bringt also den Chat-Weg und ist der einzige Weg zu 3D. Ein 3D-Knopf im Molekül-Panel (lazy wie
+  All H) wäre eigene Arbeit — der 10-Sekunden-Test unten („3D klicken") setzt ihn voraus.
+- `generate_scope_table`: 0,1 s, aber 36,7 KB Text ans Modell (Grid-SVG inline), wächst mit den
+  Einträgen.
+
+### Welle 1 — Reaktionen & Darstellung (Release-Kandidat danach)
+- [ ] generate_mechanism — **Entscheid 30.10.:** ehrliche Lehrbuch-Galerie (SN1, SN2,
+  Fischer-Ester). Titel und Beschreibung sagen „textbook example", `reaction_type` listet die drei
+  Typen vollständig (kein „e.g."), die Substrate prüfen nur die Passung; Fehlermeldungen englisch.
 - [ ] generate_3d
-- [ ] generate_mechanism
-- [ ] generate_scope_table
-
-### E2 Nachschlagen (Release-Kandidat danach)
 - [ ] lookup
-- [ ] predict_spectrum
 
-### E3 Laborgrafik (Release-Kandidat danach)
+### Welle 2 — Spektren & allgemeine Laborgrafik (Release-Kandidat danach)
+- [ ] predict_spectrum
 - [ ] generate_spectrum
 - [ ] generate_tlc
-- [ ] generate_titration_curve
-- [ ] generate_species_distribution
-- [ ] generate_calibration_curve
-- [ ] generate_pk_curve
-- [ ] generate_dose_response
+- [ ] generate_titration_curve + generate_species_distribution (teilen `ph_plots.exact_ph`,
+  zusammen freischalten)
+- [ ] calculate_ph — **Ausnahme** vom „Rechnen später": pH/Puffer ist Grundstudium.
+  **Jay:** bleibt es in Welle 2?
 
-### E4 Rechnen (Release-Kandidat danach)
+### Welle 3 — Vertiefung (später)
 - [ ] calculate_solution
-- [ ] calculate_ph
 - [ ] calculate_content
 - [ ] calculate_pharmacokinetics
+- [ ] generate_pk_curve
+- [ ] generate_dose_response
+- [ ] generate_calibration_curve
+- [ ] generate_scope_table (36,7 KB Modelltext vorher verschlanken)
+- [ ] generate_mechanism aus Nutzersubstraten: echte Mechanismen statt Lehrbuch-Galerie
 
-### E5 README hochwertig (nach E4)
+### README hochwertig (nach Welle 2)
 - [ ] Je Bereich (Zeichnen · Laborgrafik · Nachschlagen · Rechnen · Anki) ein echtes Bild aus
   einem echten Aufruf; heutiges „Full-profile feature reference" und „Profiles" auflösen.
 - [ ] Installationsweg Desktop-Extension (`.mcpb`) zuerst, `install.sh`/PyPI danach.
