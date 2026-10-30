@@ -1,5 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
+import ExportPngButton from "./components/ExportPngButton";
 import { displayPath } from "./utils/displayPath";
 
 export default function PlotView({ data }) {
@@ -55,19 +56,33 @@ export default function PlotView({ data }) {
           ))}
         </ul>
       )}
-      {data.files?.png && (
+      {/* Exportknopf wie im Molekül-Panel (Desktop-Befund 30.10.2026) */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          marginTop: 8,
+        }}
+      >
         <div
           style={{
             fontSize: 10,
             color: "var(--fg-muted)",
-            marginTop: 8,
             fontFamily: "ui-monospace, monospace",
             wordBreak: "break-all",
+            minWidth: 0,
           }}
         >
-          PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
+          {data.files?.png && (
+            <>
+              PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
+            </>
+          )}
         </div>
-      )}
+        <ExportPngButton svg={data.svg} filename={data.name || "plot"} size="sm" />
+      </div>
     </div>
   );
 }
