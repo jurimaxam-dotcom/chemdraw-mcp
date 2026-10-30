@@ -20,6 +20,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -33,7 +34,7 @@ REPO = HIER.parent.parent
 PREFIX = "mcp__chemdraw__"
 
 
-def gerufene_tools(prompt: str, config: str, modell: str | None) -> tuple[list[str], str]:
+def gerufene_tools(prompt: str, config: str, modell: str | None, cwd: str) -> tuple[list[str], str]:
     cmd = [
         "claude", "-p", prompt,
         "--mcp-config", config, "--strict-mcp-config", "--tools", os.environ.get("BUILTIN_TOOLS", ""),
@@ -44,7 +45,7 @@ def gerufene_tools(prompt: str, config: str, modell: str | None) -> tuple[list[s
     ]
     if modell:
         cmd += ["--model", modell]
-    out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=tempfile.gettempdir()).stdout
+    out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=cwd).stdout
     namen: list[str] = []
     text = ""
     for zeile in out.splitlines():
@@ -97,12 +98,23 @@ def main() -> int:
         "args": ["run", "--directory", str(REPO), "python", str(HIER / "stub_server.py")],
         "env": {"CHEMDRAW_PROFILE": os.environ.get("CHEMDRAW_PROFILE", "mvp")},
     }}})
-    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
-        f.write(config)
+    # Eigener Ordner (0700) statt des geteilten Temp-Ordners: `--setting-sources project`
+    # liest .claude/settings.json aus dem CWD — in /tmp könnte ein Mitnutzer dort
+    # Hooks hinterlegen (Sicherheitsscan F2).
+    arbeit = tempfile.mkdtemp(prefix="tool-routing-")
+    try:
+        config_pfad = Path(arbeit) / "mcp.json"
+        config_pfad.write_text(config)
+        return _messen(fälle, str(config_pfad), arbeit)
+    finally:
+        shutil.rmtree(arbeit, ignore_errors=True)
+
+
+def _messen(fälle: list[dict], config: str, cwd: str) -> int:
     modell = os.environ.get("MODEL")
 
     def lauf(fall: dict) -> tuple[dict, list[str], str]:
-        return (fall, *gerufene_tools(fall["prompt"].strip(), f.name, modell))
+        return (fall, *gerufene_tools(fall["prompt"].strip(), config, modell, cwd))
 
     rot = 0
     with ThreadPoolExecutor(max_workers=4) as pool:
