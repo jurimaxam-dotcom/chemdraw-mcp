@@ -366,3 +366,41 @@ def test_file_export_keeps_its_white_background():
     ):
         image = Image.open(io.BytesIO(png)).convert("RGBA")
         assert image.getpixel((0, 0)) == (255, 255, 255, 255)
+
+
+# ---------------------------------------------------------------------------
+# Kartentext ist Modell-Eingabe — kein Skript in Ankis Webview (Sicherheitsscan B1)
+# ---------------------------------------------------------------------------
+
+
+def _fields(tmp_path, front: str, back: str = "x", **kw) -> list[str]:
+    card = AnkiCard(front=CardSide(text=front), back=CardSide(text=back), **kw)
+    return build_package("Deck", [card], tmp_path / "media").decks[0].notes[0].fields
+
+
+def test_script_and_event_handlers_in_card_text_are_escaped(tmp_path):
+    evil = '<script>alert(1)</script><img src=x onerror="fetch(1)"><iframe src=x>'
+    front, back = _fields(tmp_path, evil, evil)
+    for html in (front, back):
+        assert "<script" not in html
+        assert "<img src=x" not in html
+        assert "<iframe" not in html
+        assert "&lt;script&gt;alert(1)&lt;/script&gt;" in html
+
+
+def test_whitelisted_formatting_survives(tmp_path):
+    text = "<b>H</b><sub>2</sub>O<br>Ca<sup>2+</sup> <i>cis</i><br/>&rarr; &amp;"
+    front, _ = _fields(tmp_path, text)
+    assert text in front
+
+
+def test_whitelisted_tags_lose_their_attributes(tmp_path):
+    front, _ = _fields(tmp_path, '<b onclick="x()">A</b> a < b')
+    assert "<b onclick" not in front
+    assert "&lt;b onclick" in front
+    assert "a &lt; b" in front
+
+
+def test_cloze_markup_survives_escaping(tmp_path):
+    front, _ = _fields(tmp_path, "{{c1::Benzol}} ist <b>aromatisch</b>", cloze=True)
+    assert "{{c1::Benzol}} ist <b>aromatisch</b>" in front

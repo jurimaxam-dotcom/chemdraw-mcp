@@ -14,6 +14,8 @@ deshalb weder untereinander noch in Ankis globalem Medienordner.
 from __future__ import annotations
 
 import hashlib
+import html
+import re
 import subprocess
 import sys
 import tempfile
@@ -172,6 +174,20 @@ def _render_visual(side: CardSide) -> bytes | None:
     return None
 
 
+# Kartentext kommt vom Modell und damit potenziell aus einer Prompt-Injection;
+# Anki rendert Felder als HTML in einem Webview mit JavaScript. Deshalb alles
+# escapen und nur attributlose Formatierungs-Tags plus Entities zurückholen
+# (Sicherheitsscan B1).
+_ALLOWED_TAG = re.compile(r"&lt;/?(?:b|i|sub|sup)&gt;|&lt;br\s*/?&gt;")
+_ENTITY = re.compile(r"&amp;(#\d+|#x[0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);")
+
+
+def _safe_text(text: str) -> str:
+    out = html.escape(text, quote=False)
+    out = _ALLOWED_TAG.sub(lambda m: html.unescape(m[0]), out)
+    return _ENTITY.sub(r"&\1;", out)
+
+
 def _side_html(
     side: CardSide, media_dir: Path, media: dict[str, Path], prompt: bool = False
 ) -> str:
@@ -180,8 +196,7 @@ def _side_html(
     prompt: eine Vorderseite, die nur ein Bild ist, bekommt die Frage darunter."""
     parts = []
     if side.text:
-        # Anki-Konvention: Felder dürfen HTML enthalten — bewusst nicht escaped.
-        parts.append(f"<div class='text'>{side.text}</div>")
+        parts.append(f"<div class='text'>{_safe_text(side.text)}</div>")
     png = _render_visual(side)
     if png is not None:
         name = f"chemdraw-mcp-{hashlib.sha1(png).hexdigest()[:12]}.png"
