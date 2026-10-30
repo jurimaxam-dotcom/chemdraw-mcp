@@ -8,7 +8,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { mkdtempSync, existsSync } from "node:fs";
+import { mkdtempSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -89,6 +89,69 @@ try {
   await spatial.mouse.up();
   check(JSON.stringify(await geometry()) !== before, "3D: Ziehen ändert die projizierten Atomkoordinaten");
   await spatial.close();
+
+  // Welle 2: reale Spektren im sandboxed Panel, einschließlich Dateiausgabe.
+  for (const [spectrum_type, title, peaks, axis] of [
+    ["ir", "Aspirin IR", [
+      { position: 1750, intensity: 1, label: "Ester C=O" },
+      { position: 1690, intensity: 1, label: "Acid C=O" },
+    ], "Wavenumber"],
+    ["ms", "Mass spectrum", [
+      { position: 180, intensity: 20, label: "M+" },
+      { position: 120, intensity: 100, label: "Base peak" },
+      { position: 138, intensity: 60, label: "Fragment" },
+    ], "m/z"],
+    ["nmr_1h", "Ethyl acetate 1H NMR", [
+      { position: 1.25, intensity: 3, label: "CH3 triplet" },
+      { position: 2.05, intensity: 3, label: "Acetyl singlet" },
+      { position: 4.12, intensity: 2, label: "CH2 quartet" },
+    ], "ppm"],
+  ]) {
+    const p = await browser.newPage({ viewport: { width: 530, height: 560 } });
+    await p.setContent('<body style="margin:0"></body>');
+    await p.addScriptTag({ path: out });
+    const calls = [];
+    await p.exposeFunction("__callTool", (req) => { calls.push(req); return client.callTool(req); });
+    const f = await mount(p, "generate_spectrum", { spectrum_type, title, peaks });
+    await f.locator(".spectrum-svg svg").waitFor();
+    const labels = await f.locator(".spectrum-svg svg text").allTextContents();
+    check(labels.some((t) => t.includes(axis)) && peaks.every((peak) => labels.includes(peak.label)),
+      `${spectrum_type}: echte SVG mit Achseneinheit und allen Peakbeschriftungen`);
+    if (spectrum_type !== "ms") {
+      const [left, right] = spectrum_type === "ir" ? ["4000", "500"] : ["12", "0"];
+      const tickX = async (label) => f.locator(".spectrum-svg svg text").filter({ hasText: new RegExp(`^${label}$`) }).first()
+        .evaluate((el) => el.getBoundingClientRect().x);
+      check(await tickX(left) < await tickX(right), `${spectrum_type}: Achse fällt von links nach rechts`);
+    }
+    if (spectrum_type === "ms") {
+      const bars = await f.locator('.spectrum-svg g[id^="LineCollection"] path').evaluateAll((paths) => paths.map((path) => {
+        const n = path.getAttribute("d").match(/-?[\d.]+/g).map(Number);
+        return { x: n[0], height: Math.abs(n[3] - n[1]) };
+      }));
+      bars.sort((a, b) => a.x - b.x);
+      check(bars.length === 3 && Math.abs(bars[1].height / bars[0].height - 0.6) < 0.001 &&
+        Math.abs(bars[2].height / bars[0].height - 0.2) < 0.001,
+        "MS: drei echte Balken; 120 ist Basispeak, 138 = 60 %, 180 = 20 %");
+    }
+    const png = f.locator('span[title$=".png"]');
+    const path = await png.getAttribute("title");
+    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "spektren") + "/") &&
+      readFileSync(path).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+      `${spectrum_type}: sichtbarer PNG-Pfad verweist auf echte PNG-Datei in spektren/`);
+    await p.screenshot({ path: join(tmpdir(), `panel-host-wave2-${spectrum_type}.png`) });
+    const exportButton = f.getByRole("button", { name: "Export as PNG" });
+    check(await exportButton.count() === 1, `${spectrum_type}: PNG-Exportknopf sichtbar`);
+    await exportButton.click();
+    await f.getByRole("button", { name: /Saved:|Copied as image/ }).waitFor();
+    check(calls.filter((r) => r.name === "save_png").length === 1,
+      `${spectrum_type}: sandboxed Export ruft save_png genau einmal über die Bridge`);
+    const savedTitle = await f.getByRole("button", { name: /Saved:/ }).getAttribute("title");
+    const savedPath = savedTitle.replace(/^Saved: /, "");
+    check(savedPath.startsWith(join(wegwerfHome, "ChemDraw-Output", "png") + "/") &&
+      readFileSync(savedPath).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+      `${spectrum_type}: Export-Rückfall schreibt echte PNG-Datei in png/`);
+    await p.close();
+  }
 
   const gm = tools.find((t) => t.name === "generate_molecule");
     const toolInput = { name_or_smiles: "methylphenidate" };
