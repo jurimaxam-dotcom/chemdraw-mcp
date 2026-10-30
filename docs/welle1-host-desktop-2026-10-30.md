@@ -2,7 +2,9 @@
 
 Stand nach `044e8d6` (Mechanismus und 3D im Standardprofil). Codex bearbeitete
 nur Host-Tests, README und Bilder; Serveränderungen stammen von Opus.
-**Desktop-Abnahme offen.** Automatische Gates ersetzen sie nicht.
+**Desktop-Abnahme nicht bestanden:** In der Nachprüfung ab 22:43 erfüllt nur
+Diels–Alder einen von acht Fällen. Details und Screenshots stehen unten.
+Automatische Gates ersetzen die Desktop-Prüfung nicht.
 
 ## Automatische Belege
 
@@ -72,3 +74,101 @@ Hier wurden keine Panel-Architektur und keine Abhängigkeiten geändert.
 - `5a521a2`: Host-Test auf Standardprofil umgestellt.
 - `1001027`: README mit ehrlicher Galerie, 3D-Beispiel und echten Bildern;
   zum Commitzeitpunkt 9 Tools.
+
+
+## Nachprüfung mit deaktivierter Extension (ab 22:43)
+
+Folgeauftrag: `20261030-224243-folge-zu-faden-20261030`.
+Die installierte Extension `local.mcpb.jurimaxam-dotcom.chemdraw-mcp` ist laut
+Manifest Version 0.5.1. Ihre Detailseite war beim Öffnen bereits auf
+**Deaktiviert**; sie wurde nicht deinstalliert und nicht erneut eingeschaltet.
+Beleg: `/tmp/chemdraw-desktop-test/extension-disabled.png`.
+
+Die Fensterdifferenz ließ sich in diesem Lauf durch explizites Aktivieren lösen:
+`osascript -e 'tell application "Claude" to activate'`. Danach passten Screenshot
+und AX-Baum wieder zusammen. Ein AX-Raise allein hatte vorher nicht gereicht.
+Ein vollständiger Neustart wurde über Quit, Prüfung auf Prozessende und erneutes
+`open -a Claude` durchgeführt. Neuer Prozess: PID 67054, Start 22:43:43;
+Desktop-`tools/list` abgeschlossen 21:43:49 UTC. Der unabhängige Handshake
+meldete anschließend **10 Tools / 8 Panels**, Exit 0
+(`/tmp/chemdraw-wave1-followup-handshake.log`).
+
+Jeder folgende Prompt wurde in einem neuen Chat unverändert übermittelt.
+
+| Fall | Ergebnis | Screenshot und AX-Protokoll unter `/tmp/chemdraw-desktop-test/` |
+|---|---|---|
+| (a) `Show the Fischer esterification mechanism step by step` | **Nicht bestanden:** fertige Text-/Mermaid-Antwort, kein Mechanismus-Panel; Weiter/Zurück deshalb nicht prüfbar | `a-fischer-final.png`, `a-fischer-final.txt` |
+| (b) `Zeig mir den SN2-Mechanismus von 1-Brombutan mit Hydrogensulfid` | **Nicht bestanden:** Tool-Suche, dann `generate_reaction` mit CCCCBr + [SH-] → CCCCS + [Br-]. Modell sagt, das Mechanismus-Werkzeug sei nicht geladen. Kein Lehrbuch-Panel CH3Br + OH- | `b-sn2-final.png`, `b-sn2-final.txt` |
+| (c) `Zeichne die Diels-Alder-Reaktion von Butadien mit Ethen` | **Bestanden:** `generate_reaction`, Panel Butadien + Ethen → Cyclohexen, ausgeglichene Bilanz; kein Mechanismus-Panel | `c-diels-alder-final.png`, `c-diels-alder-final.txt` |
+
+Die doppelte Installation ist damit ein plausibler früherer Einfluss, erklärt
+aber noch nicht die erneuten Abweichungen nach bestätigter Deaktivierung und
+Neustart. Der Modelltext über nicht geladene Werkzeuge bleibt eine Beobachtung;
+ein Fehler der Desktop-Indexierung ist damit noch nicht bewiesen.
+
+
+(d) `Show ibuprofen in 3D`: **Nicht bestanden**. Statt eines
+`generate_3d`-Panels lud Claude Tools und führte einen Befehl zur Berechnung
+von 3D-Koordinaten aus; außerdem wurde eine 3D-Bibliothek vom CDN geprüft.
+Nach zwei Minuten war der Befehl noch aktiv und kein ChemDraw-Panel vorhanden.
+Der abweichende Testlauf wurde gestoppt; Ziehen deshalb nicht prüfbar.
+Belege: `d-ibuprofen-no-panel.png` und `.txt` im Screenshot-Ordner.
+Das ist kein Nachweis, dass die eigene Ersatzdarstellung fertig werden würde.
+
+Vor (e)–(h) wurde Desktop erneut vollständig beendet (`pgrep -x Claude`: Exit 1)
+und gestartet. Neuer PID 73654, Start 22:49:01; `tools/list` abgeschlossen
+21:49:07 UTC. Der Screenshot `restart-before-e.png` stimmt mit dem neuen
+Chat im AX-Baum überein.
+
+
+(e) `Warum ist Wasser gewinkelt?`: **Nicht bestanden**. Abgeschlossene
+VSEPR-Erklärung mit Mermaid und Winkeltabelle, aber ohne Toolaufruf und ohne
+3D-Panel. Kein Datenblatt, jedoch das erwartete `generate_3d` fehlt ebenfalls.
+Belege: `e-water-final.png` und `.txt` im Screenshot-Ordner.
+
+
+(f) `Was ist die CAS-Nummer von Paracetamol?`: **Nicht bestanden als Routing-Test**.
+Die abgeschlossene Antwort nennt korrekt **103-90-2**, kommt aber ausdrücklich
+über vorhandenes Wissen, ohne `lookup` oder anderen Toolaufruf. Der Begleittext
+ist deutsch; eine englische `lookup`-Antwort wurde nicht erzeugt und ist daher
+hier nicht prüfbar. Belege: `f-cas-final.png` und `.txt`.
+
+
+(g) `In welchen Stoffwechselwegen kommt Glucose vor?`: **Nicht bestanden**.
+Abgeschlossene Text-/Mermaid-Antwort mit Glykolyse, Gluconeogenese,
+Glykogenstoffwechsel, Pentosephosphatweg und Nebenwegen, aber ohne `lookup`
+und ohne KEGG-ID. Die geforderte Zuordnung C00031 ist daher nicht geprüft;
+C00029 wurde ebenfalls nicht genannt. Belege: `g-glucose-final.png` und `.txt`.
+
+(h) `Coffein`: **Nicht bestanden**. Abgeschlossene pharmakologische
+Übersicht samt Mermaid und Abbauformel. Weder `generate_molecule` noch
+`lookup` wurden verwendet; keine Strukturzeichnung. Das Modell nennt die
+pharmakologische Übersicht ausdrücklich seine Annahme.
+Belege: `h-coffein-final.png` und `.txt`.
+
+### Ergebnis der Nachprüfung
+
+| Fall | Bestanden | Entscheidender Befund |
+|---|---|---|
+| a Fischer | nein | Text/Mermaid statt Mechanismus-Panel |
+| b SN2 | nein | `generate_reaction` statt ehrlichem Lehrbuch-Mechanismus |
+| c Diels–Alder | ja | Reaktionspanel mit richtigem Produkt, kein Mechanismus-Panel |
+| d Ibuprofen 3D | nein | Eigene Koordinatenberechnung; nach zwei Minuten gestoppt, kein ChemDraw-3D-Panel |
+| e Wasser-Geometrie | nein | Text/Mermaid statt `generate_3d` |
+| f Paracetamol-CAS | nein | CAS korrekt, aber ohne `lookup`; keine englische Toolantwort |
+| g Glucose pathways | nein | Text statt `lookup pathway`, keine KEGG-ID |
+| h Coffein | nein | Pharmakologieübersicht statt `generate_molecule` |
+
+README auf zehn Standard-Tools aktualisiert: `7616b96`.
+Erneute Prüfungen: `./test.sh` Exit 0 (**7.393 bestanden, 16 übersprungen**,
+Bundle und Frontend grün), `/tmp/chemdraw-wave1-final-ten-gate.log`;
+`npm --prefix chemdraw_tool/ui run test:host` Exit 0,
+`/tmp/chemdraw-wave1-final-ten-host.log`. Die Läufe starteten bei HEAD
+`7616b96`; währenddessen begann fremde Welle-2-Arbeit im Arbeitsbaum.
+Sie sind Laufbelege, keine Abnahme dieser uncommitteten Welle-2-Änderungen.
+
+Offen bleibt die Desktop-Auswahl/Entdeckung der Tools. Dieser Lauf änderte
+keine Serverlogik, keine Toolbeschreibungen und keine fremde Welle-2-Arbeit.
+Die deaktivierte Extension bleibt installiert. Die tatsächlichen
+Reaktionsaufrufe wurden im Desktop jeweils einmal erlaubt, ohne eine
+Dauerfreigabe zu setzen.
