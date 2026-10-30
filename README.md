@@ -90,10 +90,10 @@ shared bond length and a shared caption baseline:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/scope-suzuki.png" alt="Substrate scope figure: Suzuki coupling equation with conditions on top, below it four biphenyl products labeled 3a to 3d with yields and ee/dr notes" width="760"></p>
 
-*"Sketch the IR spectrum of ethyl acetate"* — `generate_spectrum` (draws the
-peaks it is given, with per-type axis conventions):
+*"Sketch the IR spectrum of aspirin"* — `generate_spectrum` (draws the
+peaks it is given, with per-type axis conventions; schematic, not measured):
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/ethyl-acetate-ir.png" alt="Schematic IR spectrum of ethyl acetate with labeled bands" width="560"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/aspirin-ir.png" alt="Schematic aspirin IR spectrum with separate ester and acid carbonyl bands" width="560"></p>
 
 *"TLC of my esterification: educt at 0.30, product at 0.65, the co-spot shows
 both, some educt left"* — `generate_tlc` draws the plate the lab report asks
