@@ -96,10 +96,10 @@ peaks it is given, with per-type axis conventions; schematic, not measured):
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/aspirin-ir.png" alt="Schematic aspirin IR spectrum with separate ester and acid carbonyl bands" width="560"></p>
 
 *"TLC of my esterification: educt at 0.30, product at 0.65, the co-spot shows
-both, some educt left"* — `generate_tlc` draws the plate the lab report asks
-for, with mobile phase and detection as its caption:
+both. Sketch it for my lab report."* — `generate_tlc` draws the plate with
+Rf values beside the spots, plus the supplied mobile phase and detection:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-esterification.png" alt="TLC plate sketch with four lanes: educt at Rf 0.30, reaction lane with a faint educt spot and the ester at 0.65, co-spot lane with both, reference lane at 0.65" width="520"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-wave2.png" alt="TLC plate sketch with three lanes: starting material at Rf 0.30, product at 0.65, co-spot with both; mobile phase Hexane/ethyl acetate 7:3" width="520"></p>
 
 *"Titration curve of phosphoric acid with NaOH, phenolphthalein as
 indicator"* — `generate_titration_curve` computes pH from the exact charge

@@ -153,6 +153,57 @@ try {
     await p.close();
   }
 
+  // Welle 2: drei DC-Eingaben, echte SVG-Geometrie und Export über die Bridge.
+  for (const [title, solvent, lanes] of [
+    ["Esterification TLC", "", [
+      { name: "Starting material", spots: [{ rf: 0.3 }] },
+      { name: "Product", spots: [{ rf: 0.65 }] },
+      { name: "Co-spot", spots: [{ rf: 0.3 }, { rf: 0.65 }] },
+    ]],
+    ["Three lanes", "Hexane/ethyl acetate 7:3", [
+      { name: "A", spots: [{ rf: 0.2 }] },
+      { name: "B", spots: [{ rf: 0.45 }] },
+      { name: "C", spots: [{ rf: 0.8 }] },
+    ]],
+    ["Distance ratios", "Ethyl acetate", [
+      { name: "A", spots: [{ rf: 2.1 / 6 }] },
+      { name: "B", spots: [{ rf: 4.2 / 6 }] },
+    ]],
+  ]) {
+    const p = await browser.newPage({ viewport: { width: 530, height: 580 } });
+    await p.setContent('<body style="margin:0"></body>');
+    await p.addScriptTag({ path: out });
+    const calls = [];
+    await p.exposeFunction("__callTool", (req) => { calls.push(req); return client.callTool(req); });
+    const f = await mount(p, "generate_tlc", { title, solvent, lanes });
+    await f.locator(".tlc-svg svg").waitFor();
+    const labels = await f.locator(".tlc-svg svg text").allTextContents();
+    check(lanes.every((lane) => labels.includes(lane.name)), `${title}: jede Bahn in echter SVG beschriftet`);
+    const rfs = lanes.flatMap((lane) => lane.spots.map((spot) => spot.rf.toFixed(2)));
+    check(rfs.every((rf) => labels.some((label) => label.includes(rf))), `${title}: Rf-Werte an der Zeichnung sichtbar`);
+    // Ellipsen enthalten kubische Kurven; Hintergrund, Platte und Pfeil nicht.
+    const spots = await f.locator('.tlc-svg g[id^="patch_"] path').evaluateAll((paths) => paths
+      .filter((path) => /C/.test(path.getAttribute("d")))
+      .map((path) => { const b = path.getBBox(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; }));
+    check(spots.length === rfs.length, `${title}: ${rfs.length} echte Flecken statt Text-Platzhalter`);
+    const xs = [...new Set(spots.map((spot) => spot.x.toFixed(2)))].sort((a, b) => Number(a) - Number(b));
+    check(xs.length === lanes.length && lanes.every((lane, i) =>
+      spots.filter((spot) => spot.x.toFixed(2) === xs[i]).length === lane.spots.length),
+      `${title}: Flecken sind den richtigen Bahnen zugeordnet, einschließlich Co-Spot`);
+    if (solvent) check(labels.some((label) => label.includes(solvent)), `${title}: Laufmittel steht auch in der exportierten SVG`);
+    const path = await f.locator('span[title$=".png"]').getAttribute("title");
+    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "dc-platten") + "/") && existsSync(path),
+      `${title}: echte PNG-Datei in dc-platten/`);
+    const exportButton = f.getByRole("button", { name: "Export as PNG" });
+    await exportButton.click();
+    await f.getByRole("button", { name: /Saved:/ }).waitFor();
+    check(calls.filter((req) => req.name === "save_png").length === 1, `${title}: Export über save_png-Bridge`);
+    const savedPath = (await f.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
+    check(readFileSync(savedPath).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])), `${title}: Exportdatei hat PNG-Magic-Bytes`);
+    await p.screenshot({ path: join(tmpdir(), `panel-host-wave2-tlc-${lanes.length}-${rfs.length}.png`) });
+    await p.close();
+  }
+
   const gm = tools.find((t) => t.name === "generate_molecule");
     const toolInput = { name_or_smiles: "methylphenidate" };
   const toolResult = await client.callTool({ name: "generate_molecule", arguments: toolInput });
