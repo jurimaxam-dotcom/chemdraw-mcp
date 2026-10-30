@@ -20,7 +20,7 @@ Sicherheitsscan B4 (29.10.2026), umgesetzt 30.10.2026 nach Jays Entscheidung (b)
 `uv tool install` kam nicht in Frage: es ignoriert Hashes in `--constraints` und in
 `--with-requirements` (gemessen mit uv 0.11.11: ein falscher Hash installierte trotzdem).
 
-`requirements.lock` erzeugt `scripts/build-mcpb.sh` aus `uv export --frozen --no-default-groups
+`requirements.lock` erzeugt `scripts/build-mcpb.sh` aus `uv export --locked --no-default-groups
 --no-emit-project` und hängt die Zeile für chemdraw-mcp aus der PyPI-JSON-API an. Das Bundle
 lässt sich deshalb erst bauen, wenn die Version auf PyPI liegt. Der Release-Job ist entsprechend
 angeordnet (`bundle` läuft nach `publish`).

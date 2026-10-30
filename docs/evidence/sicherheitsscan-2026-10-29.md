@@ -280,6 +280,13 @@ das Stub-uv wird nie ausgeführt und bleibt nicht liegen. Der Test wurde mit abg
 **Gate:** `./test.sh` rc=0 (7348 passed / 16 skipped, Frontend 31 + 82 + 2 pass). `actionlint` für
 `publish.yml` grün. `scripts/uv-pruefsummen.sh 0.13.6` erzeugt die eingecheckte Datei byte-identisch.
 
+**Nachtrag (Review):** `KIND` zeigte nach dem Umbau auf die Subshell statt auf uv, ein TERM ließ
+`uv pip install` verwaist weiterlaufen. Der Abbrichtest prüft jetzt, dass der uv-Prozess nach TERM tot ist; mit
+dem alten Stand war er rot („uv pip install lief nach TERM verwaist weiter“). Fix: jeder uv-Aufruf läuft im
+Hintergrund mit eigenem trap. `build-mcpb.sh` exportiert mit `--locked` statt `--frozen`, damit ein veraltetes
+`uv.lock` den Build bricht statt die Installation beim Nutzer. Erneuter echter Start mit neuem Bundle (frisches
+HOME, warmer Cache): 7 Tools / 6 mit Panel in 24,9 s. Gate rc=0 (7348 passed).
+
 **Restpunkte:** Python selbst holt uv mit seinen eingebauten Prüfsummen; dafür ist die feste uv-Version
 zuständig, das bleibt außerhalb von B4. Der Release-Pfad (`bundle`-Job mit `uv export` in CI) läuft erst
 beim nächsten Release wirklich.

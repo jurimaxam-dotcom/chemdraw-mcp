@@ -37,6 +37,7 @@ fi
 if [ "$1 $2" = "pip install" ]; then
   [ -n "$STUB_FAIL_INSTALL" ] && exit 1
   echo "install-start" >> "$STUB_LOG"
+  [ -n "$STUB_PIDFILE" ] && echo $$ > "$STUB_PIDFILE"
   sleep "${STUB_INSTALL_SLEEP:-0}"
   py=""; reqs=""; vor=""
   for a in "$@"; do
@@ -268,7 +269,8 @@ def _toter_pid() -> int:
 def test_abbruch_mitten_in_der_installation_gibt_die_sperre_frei(tmp_path):
     import signal
 
-    env = _env(tmp_path, STUB_INSTALL_SLEEP="30")
+    pidfile = tmp_path / "uv.pid"
+    env = _env(tmp_path, STUB_INSTALL_SLEEP="30", STUB_PIDFILE=str(pidfile))
     log = tmp_path / "calls.log"
     p = subprocess.Popen(["/bin/sh", str(_bundle(tmp_path, "9.9.1"))], env=env, stdout=subprocess.PIPE, text=True)
     try:
@@ -280,6 +282,20 @@ def test_abbruch_mitten_in_der_installation_gibt_die_sperre_frei(tmp_path):
         if p.poll() is None:
             p.kill()
     assert not _lock(tmp_path).exists(), "Sperre blieb nach TERM liegen"
+    # Läuft uv verwaist weiter, schreibt es in die Umgebung, die der nächste Start
+    # gerade neu anlegt — der Fehler vom 02.10.2026 auf neuem Weg.
+    uv_pid = int(pidfile.read_text())
+    assert _warte_bis(lambda: not _lebt(uv_pid), 3), "uv pip install lief nach TERM verwaist weiter"
+
+
+def _lebt(pid: int) -> bool:
+    import os
+
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    return True
 
 
 def test_tote_pid_in_der_sperre_wird_sofort_uebernommen(tmp_path):

@@ -144,17 +144,26 @@ if [ -z "$UV" ]; then
 fi
 
 installiere() {
+  # Jeder uv-Aufruf läuft im Hintergrund mit eigenem trap: ein TERM an diese
+  # Subshell muss uv mitnehmen. Sonst schriebe ein verwaistes `uv pip install`
+  # in die Umgebung, die der nächste Start gerade neu anlegt (02.10.2026).
+  uvpid=""
+  trap '[ -n "$uvpid" ] && kill "$uvpid" 2>/dev/null; exit 143' TERM INT HUP
   rm -rf "$UMGEBUNG"
   # Python 3.12 fest: dafür hat jede gelockte Abhängigkeit (RDKit!) Wheels. Fehlt
   # es, lädt uv ein verwaltetes Python und prüft dessen Hash selbst.
-  "$UV" venv --quiet --python 3.12 "$UMGEBUNG" &&
+  "$UV" venv --quiet --python 3.12 "$UMGEBUNG" &
+  uvpid=$!
+  wait "$uvpid" || return 1
   # --refresh-package: Direkt nach einem Release kennt uvs zwischengespeicherter
   # PyPI-Index die neue Version noch nicht ("there is no version of
   # chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026).
   "$UV" pip install --quiet --python "$UMGEBUNG/bin/python" \
-    --require-hashes --refresh-package chemdraw-mcp -r "$REQS" &&
-  [ -x "$SERVER" ] &&
-  printf '%s\n' "$VERSION" > "$STEMPEL"
+    --require-hashes --refresh-package chemdraw-mcp -r "$REQS" &
+  uvpid=$!
+  wait "$uvpid" || return 1
+  uvpid=""
+  [ -x "$SERVER" ] && printf '%s\n' "$VERSION" > "$STEMPEL"
 }
 
 log "installiere chemdraw-mcp $VERSION über $UV (einmalig, Hashes geprüft; danach startet es ohne uv und offline)"

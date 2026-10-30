@@ -25,7 +25,7 @@ rm -f "$STAGE"/manifest.json.bak "$STAGE"/server/run.sh.bak
 chmod +x "$STAGE/server/run.sh"
 
 REQS="$STAGE/server/requirements.lock"
-uv export --frozen --format requirements-txt --no-default-groups --no-emit-project \
+uv export --locked --format requirements-txt --no-default-groups --no-emit-project \
   --no-header --output-file "$REQS" >/dev/null
 # PyPI braucht nach dem Upload ein paar Sekunden — bis zu 5 min warten.
 for _ in $(seq 1 30); do

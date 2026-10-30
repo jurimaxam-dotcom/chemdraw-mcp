@@ -315,8 +315,10 @@ caffeine"*.
 `chemdraw-mcp-<version>.mcpb` from the
 [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
 double-click it and confirm in Claude Desktop. The first start fetches
-the package from PyPI via [uv](https://docs.astral.sh/uv/) (installed for you
-if missing) — about 40 MB, give it a minute; every later start is offline.
+the package from PyPI via [uv](https://docs.astral.sh/uv/), every file checked
+against hashes pinned at release time (if uv is missing, a fixed uv version is
+downloaded and its SHA-256 verified) — about 40 MB, give it a minute; every
+later start is offline.
 Restart Claude Desktop once after installation.
 If you already installed via option 1 or 2, remove that entry first.
 
