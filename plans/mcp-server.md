@@ -1,5 +1,102 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
+
+> Auftrag Jay 30.10.: die 16 fürs Release zurückgenommenen Tools sauber wieder ins
+> Standardprofil holen (`MVP_TOOLS`, `chemdraw_tool/server.py:258`), danach README hochwertig,
+> danach Shorts. **Keine OC-Prüfungsfragen in dieser Runde.** Reihenfolge = Etappen unten;
+> je Etappe ein Release-Kandidat. Ziel am Ende: Standardprofil = Vollprofil (23 Tools,
+> 16 Panels) — ob `CHEMDRAW_PROFILE` dann wegfällt, entscheidet Jay nach E4.
+
+**Definition of Done je Tool** (jeder Tool-Haken unten heißt: alle sieben Punkte erfüllt)
+
+1. Ist-Zustand im Vollprofil messen: `CHEMDRAW_PROFILE=full`, ein echter Aufruf über den Server;
+   bei Panel-Tools zusätzlich das Panel in `test:host` (heute deckt `src/host/host.e2e.mjs` nur
+   `generate_molecule` ab → je Panel-Tool einen Host-Fall ergänzen).
+2. Befunde fixen, TDD (Test erst rot, dann grün).
+3. Freischalten: Name in `MVP_TOOLS` · Eintrag in `_MVP_SUMMARIES` (Auswahltext ohne Verweis auf
+   noch abgeschaltete Tools) · Zeile in `_MVP_INSTRUCTIONS` · `MVP`-Menge in
+   `tests/test_server_profiles.py` · Handshake-Erwartung (`./scripts/handshake.sh`, Zahl leitet
+   sich aus dem Profil ab — nach dem Lauf prüfen).
+4. Routing-Fall in `evals/tool-routing/cases.yaml` mit `expect` und `forbidden` (Regel dort: drei
+   verschiedenartige Prompts je kritischem Tool); `tests/test_eval_cases.py` grün.
+5. Tool-Snapshot bewusst segnen (`UPDATE_TOOLSNAPS=1 uv run pytest tests/test_tool_snapshots.py`)
+   im selben Commit wie der Textwechsel; 2-KB-Grenze (`MAX_DESCRIPTION_BYTES`) bleibt grün.
+6. README-Abschnitt mit echtem Bild aus einem echten Aufruf (kein Mock).
+7. Codex-Handtest in Desktop per `tisch auftrag codex` (Prompt, Klicks, Erwartung je Schritt,
+   Screenshots nach `/tmp/chemdraw-desktop-test/`); Gate `./test.sh` + `test:host` + Handshake grün.
+
+**Rahmen, der für alle gilt**
+
+- Toolzahl-Obergrenze: `tests/test_server_taxonomy.py:127` (`<= 23`). Die 16 Tools passen
+  hinein; kein neues Tool in dieser Runde, sonst Grenze bewusst mit Begründung heben.
+- Desktop nach jeder Server-Änderung neu starten (CLAUDE.md); Handshake ist der harte Beweis.
+- Release-Kandidat je Etappe: Version heben, `.mcpb` bauen, Registry-Publish nicht vergessen
+  (`./scripts/publish-registry.sh`); der Release-Klick bleibt Jays Hand.
+
+**Messung 30.10.2026 (Planstand, Vollprofil, `create_server("full")`)** — alle Modultests grün:
+
+| Tool | Beschreibung | Panel | Modultests | Routing-Fälle (`expect`) |
+|---|---|---|---|---|
+| generate_3d | 614 B | ja | 5 grün (`test_structure3d`) + `test_server_anki` | **0** |
+| generate_mechanism | 851 B | ja | 41 grün | 2 |
+| generate_scope_table | 1964 B | ja | 57 grün | 1 |
+| lookup | 1143 B | nein | 68 grün (databases + server_lookups/_lookup_ui) | 3 |
+| predict_spectrum | 1349 B | nein | 32 grün (`spectro`) | 1 |
+| generate_spectrum | 1606 B | ja | 36 grün | 1 |
+| generate_tlc | 1833 B | ja | 37 grün | **0** |
+| generate_titration_curve | 1167 B | ja | 19 grün (ph_plots + server_plots, mit species) | 1 |
+| generate_species_distribution | 967 B | ja | (s. o.) | **0** |
+| generate_calibration_curve | 1459 B | ja | 26 grün | 1 |
+| generate_pk_curve | 1290 B | ja | 10 grün (`server_pk_plots`, mit dose) | 1 |
+| generate_dose_response | 1125 B | ja | (s. o.) | 2 |
+| calculate_solution | 2030 B | nein | 36 grün | 1 |
+| calculate_ph | 1994 B | nein | 39 grün | 2 |
+| calculate_content | **2041 B** | nein | 84 grün (calculator_* + server_content) | 1 |
+| calculate_pharmacokinetics | 1803 B | nein | 35 grün | 3 |
+
+Bekannte Baustellen aus der Messung:
+- **2-KB-Kante:** `calculate_content` 2041 B, `calculate_solution` 2030 B, `calculate_ph` 1994 B,
+  `generate_scope_table` 1964 B — unter 2048, aber jede neue Abgrenzungszeile kippt sie.
+  Parameter-Doku kürzen, nie die Abgrenzung.
+- **Routing-Lücken:** `generate_3d`, `generate_tlc`, `generate_species_distribution` haben keinen
+  `expect`-Fall; alle übrigen nur 1–3, meist weniger als die geforderten drei verschiedenartigen.
+- **Host-Test** kennt nur `generate_molecule`; die 12 Panel-Tools sind dort ungeprüft.
+- `test_server_profiles.py` prüft `panel == MVP - {"save_png"}` — wächst automatisch mit, wenn
+  die `MVP`-Menge gepflegt wird.
+- Modultests grün heißt nicht „in Desktop richtig": Messung in Punkt 1 der DoD ist Pflicht.
+
+### E1 Zeichnen (Release-Kandidat danach)
+- [ ] generate_3d
+- [ ] generate_mechanism
+- [ ] generate_scope_table
+
+### E2 Nachschlagen (Release-Kandidat danach)
+- [ ] lookup
+- [ ] predict_spectrum
+
+### E3 Laborgrafik (Release-Kandidat danach)
+- [ ] generate_spectrum
+- [ ] generate_tlc
+- [ ] generate_titration_curve
+- [ ] generate_species_distribution
+- [ ] generate_calibration_curve
+- [ ] generate_pk_curve
+- [ ] generate_dose_response
+
+### E4 Rechnen (Release-Kandidat danach)
+- [ ] calculate_solution
+- [ ] calculate_ph
+- [ ] calculate_content
+- [ ] calculate_pharmacokinetics
+
+### E5 README hochwertig (nach E4)
+- [ ] Je Bereich (Zeichnen · Laborgrafik · Nachschlagen · Rechnen · Anki) ein echtes Bild aus
+  einem echten Aufruf; heutiges „Full-profile feature reference" und „Profiles" auflösen.
+- [ ] Installationsweg Desktop-Extension (`.mcpb`) zuerst, `install.sh`/PyPI danach.
+- [ ] Werkzeugtabelle: Tool · Bereich · Beispiel-Prompt · Panel ja/nein.
+- [ ] Danach Shorts: `plans/vermarktung.md` § „Shorts je Workflow" (Jay 26.10.) — dort weiter.
+
 > Fokusentscheidung 14.10.2026: erst den allgemeinen Chemie-Kern stabilisieren.
 > MVP als Standard: Einzelstrukturen, Batch, Vergleich, Reaktionsschema; Datenblatt
 > und PNG-Export als Unterstützung (6 Tools). `CHEMDRAW_PROFILE=full` schaltet den
