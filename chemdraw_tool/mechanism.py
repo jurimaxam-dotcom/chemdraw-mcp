@@ -32,6 +32,8 @@ class MechanismTemplate:
     substrate_pattern: str
     nucleophile_pattern: str | None
     steps: list[MechanismStep]
+    # Was gezeichnet ist — die Schritte sind feste Lehrbuchmoleküle, nicht die Nutzer-Substrate
+    example: str = ""
 
 
 def validate_substrates(template: MechanismTemplate, smiles_list: list[str]) -> bool:

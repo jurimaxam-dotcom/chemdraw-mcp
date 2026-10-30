@@ -6,6 +6,7 @@ from chemdraw_tool.templates import register
 SN2_TEMPLATE = MechanismTemplate(
     id="sn2",
     name="Nucleophilic Substitution (SN2)",
+    example="bromomethane + hydroxide",
     category="substitution",
     substrate_pattern="[C:1][F,Cl,Br,I:2]",
     nucleophile_pattern="[O,N,S:3]",
@@ -45,6 +46,7 @@ SN2_TEMPLATE = MechanismTemplate(
 SN1_TEMPLATE = MechanismTemplate(
     id="sn1",
     name="Nucleophilic Substitution (SN1)",
+    example="2-bromopropane + water",
     category="substitution",
     substrate_pattern="[CX4:1]([#6])([#6])[F,Cl,Br,I:2]",
     nucleophile_pattern="[O,N,S:3]",

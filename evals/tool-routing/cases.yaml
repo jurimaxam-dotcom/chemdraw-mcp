@@ -153,6 +153,23 @@ cases:
     forbidden: [generate_reaction]
     why: Gegenrichtung zu draw-reaction.
 
+  - id: mechanism-english-fischer
+    prompt: "Show me the arrow-pushing for the Fischer esterification"
+    expect: generate_mechanism
+    forbidden: [generate_reaction, generate_molecule]
+    why: >
+      Dritter, andersartiger Fall (englisch, Fachjargon „arrow-pushing", dritter
+      Mechanismus der Galerie) neben draw-mechanism und mechanism-in-conversation.
+
+  - id: mechanism-outside-the-gallery
+    prompt: "Zeichne die Diels-Alder-Reaktion von Butadien mit Ethen"
+    expect: generate_reaction
+    forbidden: [generate_mechanism]
+    why: >
+      Die Mechanismus-Galerie kennt nur SN1, SN2 und Fischer-Ester (Entscheid
+      30.10.2026). Alles andere ist die Nettogleichung — sonst kommt ein
+      Fehler oder ein falsches Lehrbuchbild.
+
   # --- Nachschlagen: der benannte Einzelwert --------------------------------
   - id: lookup-named-value
     prompt: "Was ist die CAS-Nummer von Paracetamol?"

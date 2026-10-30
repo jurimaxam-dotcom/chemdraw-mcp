@@ -16,6 +16,8 @@ MVP = {
     "generate_reaction", "lookup_molecule_data", "save_png",
     # Seit 21.10.2026: Lernweg Molekül → Anki (Panel-Knopf und Chat).
     "export_anki_deck",
+    # Basis-Ausbau Welle 1 (30.10.2026): Lehrbuch-Mechanismen.
+    "generate_mechanism",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -56,7 +58,7 @@ def _data(profile=None, vault=False):
 
 
 @pytest.mark.parametrize("profile", [None, "mvp"])
-def test_default_and_explicit_mvp_offer_exactly_seven_tools(profile):
+def test_default_and_explicit_mvp_offer_exactly_the_mvp_tools(profile):
     assert {t["name"] for t in _data(profile)["tools"]} == MVP
 
 
@@ -104,6 +106,22 @@ def test_mvp_keeps_the_panel_resource_and_metadata():
     assert uri in data["resources"]
     panel = {t["name"] for t in data["tools"] if ((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") == uri}
     assert panel == MVP - {"save_png"}
+
+
+def _summary(tool):
+    return next(t for t in _data()["tools"] if t["name"] == tool)["description"].split("Args:")[0]
+
+
+@pytest.mark.parametrize("neighbour, target", [
+    # Rückwärtszäune: der Nachbar, der den Fall sonst gewinnt, zeigt auf das neue Tool.
+    ("generate_reaction", "generate_mechanism"),
+])
+def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
+    assert target in _summary(neighbour)
+
+
+def test_mvp_instructions_route_mechanisms():
+    assert "generate_mechanism" in _data()["instructions"]
 
 
 @pytest.mark.parametrize("profile", ["typo", "", "MVP"])

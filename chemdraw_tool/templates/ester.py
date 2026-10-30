@@ -6,6 +6,7 @@ from chemdraw_tool.templates import register
 FISCHER_ESTER_TEMPLATE = MechanismTemplate(
     id="fischer_ester",
     name="Fischer esterification",
+    example="acetic acid + methanol",
     category="ester",
     substrate_pattern="[CX3:1](=[OX1:2])[OX2H1:3]",
     nucleophile_pattern="[OX2H1:4][#6]",

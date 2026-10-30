@@ -261,6 +261,8 @@ MVP_TOOLS = frozenset({
     # Lernweg Molekül → Anki (21.10.2026): der Panel-Knopf „Add to Anki" und
     # der Chat-Weg „mach mir Karten zu …" brauchen dasselbe Tool.
     "export_anki_deck",
+    # Basis-Ausbau Welle 1 (30.10.2026, plans/mcp-server.md): Lehrbuch-Mechanismen.
+    "generate_mechanism",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -272,13 +274,15 @@ interactive panel. This server runs the MVP profile.
 - Several individual structures: batch_generate.
 - Structural differences between two to four compounds: compare_molecules.
 - Reactants, products and conditions: generate_reaction.
+- SN1, SN2 or Fischer esterification step by step with curved arrows:
+  generate_mechanism (textbook examples; other mechanisms are not drawn).
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
   write the cards yourself. The molecule panel's Add to Anki button adds
   a single structure card.
 
-Only these drawing, data-sheet and flashcard functions are available. Other
+Only these drawing, mechanism, data-sheet and flashcard functions are available. Other
 features are temporarily disabled. Do not offer unavailable tools.
 Pass English or IUPAC compound names; SMILES are always safe. Labels may be
 localized. Drawing tools write their files themselves — never call save_png,
@@ -316,12 +320,13 @@ differences (use compare_molecules), or a reaction scheme (use generate_reaction
 Writes PNG/SVG files and returns a panel with conditions above and below the
 arrow. arrow: "forward" (→), "equilibrium" (⇌, reversible) or "retro" (⇒).
 Use it when explaining a reaction as well as for explicit drawing requests.
-This draws the net reaction, without step-by-step electron-flow mechanisms.
 Pass English or IUPAC compound names, or SMILES.
 
-Not this tool for: one compound or a property of one compound such as its
-acidity (use generate_molecule), independent structures (use batch_generate),
-or structural differences (use compare_molecules).
+Not this tool for: the step-by-step SN1, SN2 or Fischer esterification
+mechanism with electron-flow arrows (use generate_mechanism); one compound or
+a property of one compound such as its acidity (use generate_molecule),
+independent structures (use batch_generate), or structural differences (use
+compare_molecules).
 """,
     "lookup_molecule_data": """Show a compound's data sheet: structure, PubChem properties and GHS safety.
 
@@ -3444,14 +3449,20 @@ def batch_generate(
 
 @_tool(structured_output=True, meta=_UI_META)
 def generate_mechanism(
-    reaction_type: str,
+    reaction_type: Literal["fischer_ester", "sn1", "sn2"],
     substrates: list[str],
     current_step: int = 0,
 ) -> MechanismPayload:
-    """Generate a step-by-step reaction mechanism visualization.
+    """Show a textbook reaction mechanism step by step with curved arrows.
 
-    Use this when the user asks about a reaction mechanism, electron-flow
-    arrows, or wants to see how a reaction proceeds step by step.
+    A gallery of three textbook mechanisms, each drawn with its fixed
+    example: SN2 (bromomethane + hydroxide), SN1 (2-bromopropane + water)
+    and Fischer esterification (acetic acid + methanol). The substrates only
+    check that the user's compounds fit the mechanism; they are not drawn —
+    say so when they differ from the example.
+
+    Use this when the user asks about one of these mechanisms, electron-flow
+    arrows, or wants to see how such a reaction proceeds step by step.
 
     A question that starts "why does …" or "I don't understand why …" about a
     mechanism is the same request in disguise ("why does SN2 invert the
@@ -3463,8 +3474,8 @@ def generate_mechanism(
     listed in reaction_type exist; for anything else use generate_reaction.
 
     Args:
-        reaction_type: Mechanism type (e.g. "sn2", "sn1", "fischer_ester").
-        substrates: List of substrate SMILES or names.
+        reaction_type: "sn2", "sn1" or "fischer_ester".
+        substrates: The user's substrates (names or SMILES), checked for fit.
         current_step: 0 = overview (all steps), 1-N = specific step.
     """
     from chemdraw_tool.mechanism import validate_substrates
@@ -3476,8 +3487,8 @@ def generate_mechanism(
     if template is None:
         available = ", ".join(list_templates())
         raise ValueError(
-            f"Reaktionstyp '{reaction_type}' nicht gefunden. "
-            f"Verfügbare Typen: {available}"
+            f"Unknown mechanism '{reaction_type}'. Available: {available}. "
+            "For any other reaction draw the net equation with generate_reaction."
         )
 
     resolved = []
@@ -3490,10 +3501,10 @@ def generate_mechanism(
 
     if not validate_substrates(template, resolved):
         raise ValueError(
-            f"Substrate passen nicht zum Reaktionstyp '{reaction_type}'. "
-            f"Erwartet: Substrat-Pattern '{template.substrate_pattern}'"
+            f"The substrates do not fit the {reaction_type} mechanism. "
+            f"Expected substrate pattern '{template.substrate_pattern}'"
             + (
-                f", Nucleophil-Pattern '{template.nucleophile_pattern}'"
+                f", nucleophile pattern '{template.nucleophile_pattern}'"
                 if template.nucleophile_pattern
                 else ""
             )
@@ -3504,7 +3515,7 @@ def generate_mechanism(
 
     if not stabilized:
         raise ValueError(
-            f"Reaktionstyp '{reaction_type}' hat keine Schritte definiert."
+            f"Mechanism '{reaction_type}' has no steps defined."
         )
 
     step_payloads = []
@@ -3518,9 +3529,9 @@ def generate_mechanism(
             )
         )
 
-    # Eingabe statt aufgelöstem SMILES: der Nutzer erkennt seine Stoffnamen wieder
-    substrate_names = " + ".join(s.strip() for s in substrates[:2])
-    display_name = f"{template.name}: {substrate_names}"
+    # Titel nennt, was gezeichnet ist: das feste Lehrbuchbeispiel, nicht die Eingabe
+    # (Befund 30.10.2026 — „SN2: CCCCBr + [SH-]" stand über CH3Br + OH-)
+    display_name = f"{template.name} — textbook example: {template.example}"
 
     clamped_step = max(0, min(current_step, len(step_payloads)))
 
