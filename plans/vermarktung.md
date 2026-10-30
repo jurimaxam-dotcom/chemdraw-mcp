@@ -39,7 +39,7 @@ Faden 3 folgen nach dem ersten Post, Stück für Stück; die bisherige Bedingung
   (a) Release-Job erzeugt `uv export --format requirements-txt --hashes` aus `uv.lock`, das Bundle installiert mit `--constraints` bzw. `--require-hashes`; fehlt uv, bricht `run.sh` mit klarer Meldung ab statt still zu installieren — sicherste Variante, Erststart braucht vorinstalliertes uv.
   (b) wie (a), aber uv in fester Version per SHA-256 statt `curl | sh` nachladen — kein Komfortverlust, etwas mehr Pflege beim uv-Update.
   (c) so lassen — kein Aufwand, Lieferkette bleibt offen.
-- [ ] **Jay:** PyPI-Publish absichern (B2/F1): auf pypi.org → chemdraw-mcp → Publishing beim Trusted Publisher Environment `pypi` eintragen, dann GitHub → Settings → Environments → `pypi` → Required reviewers: dich selbst. Der Workflow nutzt `environment: pypi` schon (f910a4d); erst diese zwei Klicks machen daraus eine Sperre. Folge: jedes Release wartet auf deinen Klick „Approve“.
+- [ ] **Jay:** PyPI-Publish absichern (B2/F1): auf pypi.org → chemdraw-mcp → Publishing beim Trusted Publisher Environment `pypi` eintragen. GitHub-Teil ERLEDIGT 30.10.2026: Environment `pypi` hat Required reviewer jurimaxam-dotcom, Ruleset „main schützen“ (id 26189605) sperrt Force-Push und Löschen. Workflow nutzt `environment: pypi` (f910a4d) → jedes Release wartet schon jetzt auf deinen Klick „Approve“; der PyPI-Eintrag bindet den Publisher zusätzlich an genau dieses Environment.
 - [ ] B1-Rest: `export_anki_deck(deliver="ankiconnect")` importiert ohne Dialog; Vorschlag aus dem Bericht: nur nach Klick im Panel. Kartentext ist seit 6004d11 escaped, Risiko damit klein.
 
 ## Etappe 2: Landingpage
