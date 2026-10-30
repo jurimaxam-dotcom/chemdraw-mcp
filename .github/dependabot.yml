@@ -5,3 +5,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Ein Actions-PR pro Woche statt einer pro Action.
+    groups:
+      actions:
+        patterns: ["*"]
