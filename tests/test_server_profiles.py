@@ -20,6 +20,8 @@ MVP = {
     "generate_mechanism",
     "generate_3d",
     "lookup",
+    # Welle 2 (30.10.2026): Spektren und allgemeine Laborgrafik.
+    "predict_spectrum",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -107,7 +109,8 @@ def test_mvp_keeps_the_panel_resource_and_metadata():
     uri = "ui://chem-app/index.html"
     assert uri in data["resources"]
     panel = {t["name"] for t in data["tools"] if ((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") == uri}
-    assert panel == MVP - {"save_png", "lookup"}  # lookup antwortet als Text
+    # lookup und predict_spectrum antworten als Text
+    assert panel == MVP - {"save_png", "lookup", "predict_spectrum"}
 
 
 def _summary(tool):
@@ -122,13 +125,21 @@ def _summary(tool):
     ("generate_molecule", "lookup"),
     ("lookup_molecule_data", "lookup"),
     ("lookup", "lookup_molecule_data"),
+    # Welle 2: „Welche IR-Banden hat Aspirin?" klingt nach benanntem Fakt (lookup)
+    # oder nach „warum verhält sich der Stoff so" (generate_molecule).
+    ("lookup", "predict_spectrum"),
+    ("generate_molecule", "predict_spectrum"),
+    ("predict_spectrum", "lookup"),
 ])
 def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
     # Wortgrenze: „lookup" steckt sonst schon in „lookup_molecule_data".
     assert re.search(rf"\b{target}\b(?!_)", _summary(neighbour))
 
 
-@pytest.mark.parametrize("tool", ["generate_mechanism", "generate_3d", "lookup"])
+@pytest.mark.parametrize("tool", [
+    "generate_mechanism", "generate_3d", "lookup",
+    "predict_spectrum",
+])
 def test_mvp_instructions_route_newly_enabled_tools(tool):
     assert tool in _data()["instructions"]
 

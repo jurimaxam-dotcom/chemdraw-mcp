@@ -162,7 +162,7 @@ NEEDS_DELIMITATION = {
     # Der Coffein-Fall (15.08.2026): Ein blanker Stoffname ist maximal nah an
     # „what is X" und enthaelt kein Zeichen-Verb. Beide Nachschlage-Tools
     # muessen deshalb auf das Zeichnen zeigen, nicht nur aufeinander.
-    "lookup": ("lookup_molecule_data", "generate_molecule"),
+    "lookup": ("lookup_molecule_data", "generate_molecule", "predict_spectrum"),
     "lookup_molecule_data": ("lookup", "generate_molecule"),
     "calculate_solution": ("calculate_content",),
     "calculate_content": ("calculate_solution",),

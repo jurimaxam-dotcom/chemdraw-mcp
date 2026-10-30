@@ -68,5 +68,37 @@ def test_unknown_topic_fails_audibly():
 
 
 def test_unparseable_structure_is_rejected():
-    with pytest.raises(ValueError, match="parse|not"):
-        predict_spectrum("nmr_signals", structure="Q%%%")
+    """Kaputtes SMILES scheitert offline mit eigener Diagnose.
+
+    Früher „Q%%%": seit Namen über resolve() laufen (Befund 30.10.2026), ginge
+    das in die Namenskaskade und damit ins Netz. Ein offenes Ringzeichen ist
+    eindeutig SMILES und bleibt die Prüfung, ohne Netz.
+    """
+    with pytest.raises(ValueError, match="SMILES"):
+        predict_spectrum("nmr_signals", structure="C1CC(")
+
+
+def test_a_compound_name_is_resolved_instead_of_rejected(monkeypatch):
+    """Befund 30.10.2026: „Aspirin" scheiterte mit „could not be parsed".
+
+    Jedes andere Tool nimmt Namen; hier musste das Modell SMILES aus dem
+    Gedächtnis tippen — genau die Stelle, an der Stereochemie still kippt.
+    """
+    from chemdraw_tool import server
+
+    seen = []
+
+    def fake_resolve(text):
+        seen.append(text)
+        from rdkit import Chem
+        smiles = "CC(=O)Oc1ccccc1C(=O)O"
+        return smiles, Chem.MolFromSmiles(smiles)
+
+    monkeypatch.setattr(server, "resolve", fake_resolve)
+    out = predict_spectrum("ir_bands", structure="aspirin")
+    assert seen == ["aspirin"]
+    assert "aspirin" in out.splitlines()[0]
+    assert "C=O (carboxylic acid)" in out
+
+    nmr = predict_spectrum("nmr_signals", structure="aspirin")
+    assert "aspirin" in nmr.splitlines()[0]

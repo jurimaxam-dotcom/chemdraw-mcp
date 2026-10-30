@@ -267,6 +267,9 @@ MVP_TOOLS = frozenset({
     "generate_3d",
     # Benannter Einzelwert als Text (CAS, Schmelzpunkt, GHS, ChEBI, KEGG).
     "lookup",
+    # Basis-Ausbau Welle 2 (30.10.2026): erwartete IR-Banden und ¹H-Signale als
+    # Text; nimmt seit dem Befund 30.10. auch Namen statt nur SMILES.
+    "predict_spectrum",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -283,14 +286,16 @@ interactive panel. This server runs the MVP profile.
 - Shape in space (geometry, conformation, a rotatable model): generate_3d.
 - One named value as text (CAS number, melting point, GHS hazards, biological
   role, pathways): lookup.
+- Which IR bands or how many ¹H NMR signals a structure should give, or which
+  group absorbs at a measured wavenumber: predict_spectrum.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
   write the cards yourself. The molecule panel's Add to Anki button adds
   a single structure card.
 
-Only these drawing, mechanism, 3D, data-sheet and flashcard functions are available. Other
-features are temporarily disabled. Do not offer unavailable tools.
+Only the functions listed above are available; other features are
+temporarily disabled. Do not offer unavailable tools.
 Pass English or IUPAC compound names; SMILES are always safe. Labels may be
 localized. Drawing tools write their files themselves — never call save_png,
 that is the panel's export button.
@@ -311,8 +316,9 @@ all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
 generate_reaction), a data sheet (use lookup_molecule_data), a single named
-value such as melting point, CAS number or GHS hazards (use lookup), or a
-rotatable 3D model or the shape in space (use generate_3d).
+value such as melting point, CAS number or GHS hazards (use lookup), the IR
+bands or ¹H signals to expect (use predict_spectrum), or a rotatable 3D model
+or the shape in space (use generate_3d).
 
 Pass English or IUPAC names, or SMILES; use label for a localized display name.
 """,
@@ -346,6 +352,28 @@ required. Missing values are not evidence that a property or hazard is absent.
 Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
 role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
+""",
+    # Volltext nennt generate_spectrum, das im Standardprofil (noch) fehlt.
+    "predict_spectrum": """Say what a spectrum of this structure should show — or read a band.
+
+Three questions, all of them exam material:
+
+- "ir_bands": which IR bands to expect for a structure, with range,
+  intensity and band shape, ordered as you read a spectrum (high
+  wavenumber first). Needs `structure`.
+- "assign_wavenumber": you measured a band — which groups absorb there?
+  Ordered by how centrally the value sits in each range. Needs
+  `wavenumber` in cm⁻¹.
+- "nmr_signals": how many ¹H signals the structure gives and in what
+  integral ratio. Needs `structure`.
+
+Deterministic on purpose, and therefore honestly limited: band positions
+come from a curated table matched to the structure, signals from the
+topological equivalence of the protons. It does NOT predict chemical
+shifts in ppm — that would take a model and would be guesswork.
+
+Not this tool for: looking up measured data for a substance (lookup), or
+the structure drawing itself (generate_molecule).
 """,
 }
 
@@ -2565,24 +2593,38 @@ def predict_spectrum(
 
     Args:
         topic: Which question to answer — see the list above.
-        structure: SMILES of the compound ("ir_bands", "nmr_signals").
-            Resolve a name to SMILES first if needed.
+        structure: English/IUPAC name or SMILES of the compound
+            ("ir_bands", "nmr_signals").
         wavenumber: Measured band position in cm⁻¹ ("assign_wavenumber").
     """
     from chemdraw_tool import spectro
 
-    if topic == "ir_bands":
+    def _structure(needed_by: str) -> tuple[str, str]:
+        """Name oder SMILES → (SMILES, Anzeige). Befund 30.10.2026: Namen
+        scheiterten hier als einziges Tool; das Modell musste SMILES tippen."""
         if not structure:
-            raise ValueError("topic='ir_bands' needs a structure (SMILES).")
-        bands = spectro.expected_ir_bands(structure)
+            raise ValueError(
+                f"topic='{needed_by}' needs a structure (name or SMILES)."
+            )
+        smiles, _ = resolve(structure)
+        shown = structure.strip()
+        if smiles != shown:
+            shown = f"{shown} (`{smiles}`)"
+        else:
+            shown = f"`{smiles}`"
+        return smiles, shown
+
+    if topic == "ir_bands":
+        smiles, shown = _structure("ir_bands")
+        bands = spectro.expected_ir_bands(smiles)
         if not bands:
             return (
                 f"# Expected IR bands\n\nNo characteristic bands found for "
-                f"`{structure}` — the table covers the common functional "
+                f"{shown} — the table covers the common functional "
                 "groups, so an exotic structure can come back empty."
             )
         lines = [
-            f"# Expected IR bands for `{structure}`",
+            f"# Expected IR bands for {shown}",
             "",
             "| Wavenumber [cm⁻¹] | Group | Intensity | Shape |",
             "|---|---|---|---|",
@@ -2637,11 +2679,10 @@ def predict_spectrum(
         return "\n".join(lines)
 
     if topic == "nmr_signals":
-        if not structure:
-            raise ValueError("topic='nmr_signals' needs a structure (SMILES).")
-        r = spectro.proton_signals(structure)
+        smiles, shown = _structure("nmr_signals")
+        r = spectro.proton_signals(smiles)
         lines = [
-            f"# ¹H signals for `{structure}`",
+            f"# ¹H signals for {shown}",
             "",
             f"**{r['count']} signal(s), {r['total_hydrogens']} hydrogens**",
             "",
@@ -2680,6 +2721,8 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
     Not this tool for: a bare compound name with no named value asked for —
     that means show the substance, use generate_molecule. Nor for a visual
     data sheet with the structure beside the facts — use lookup_molecule_data.
+    Nor for the IR bands or ¹H signals a structure should give — derived
+    from the structure, not looked up — use predict_spectrum.
     This tool draws nothing; it returns text.
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized

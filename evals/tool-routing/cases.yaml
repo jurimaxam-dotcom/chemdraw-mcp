@@ -268,6 +268,23 @@ cases:
     forbidden: [generate_spectrum, lookup]
     why: Aus der Struktur abgeleitet, nicht gemessen und nicht gezeichnet.
 
+  - id: predict-assign-band
+    prompt: "Ich hab im IR eine starke Bande bei 1715 cm-1 — was kann das sein?"
+    expect: predict_spectrum
+    forbidden: [generate_spectrum, lookup]
+    why: >
+      Gemessene Bande zuordnen (assign_wavenumber), ohne Stoffnamen — nichts
+      zum Nachschlagen und nichts zum Zeichnen.
+
+  - id: predict-nmr-signals-en
+    prompt: "How many signals does ethyl acetate give in the 1H NMR, and in what ratio?"
+    expect: predict_spectrum
+    forbidden: [lookup, generate_molecule]
+    why: >
+      Signalzahl aus der Struktur abgeleitet; englisch, und mit Stoffnamen —
+      der Fall, den lookup („named value") und generate_molecule (bare name)
+      sonst gewinnen. Seit 30.10.2026 nimmt predict_spectrum den Namen selbst.
+
   - id: draw-spectrum
     prompt: >
       Zeichne mir ein IR-Spektrum mit Banden bei 1750, 1690 und 2900 cm-1
