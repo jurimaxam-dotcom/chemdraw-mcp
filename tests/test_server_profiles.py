@@ -22,6 +22,7 @@ MVP = {
     "lookup",
     # Welle 2 (30.10.2026): Spektren und allgemeine Laborgrafik.
     "predict_spectrum",
+    "generate_spectrum",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -130,6 +131,12 @@ def _summary(tool):
     ("lookup", "predict_spectrum"),
     ("generate_molecule", "predict_spectrum"),
     ("predict_spectrum", "lookup"),
+    # „Zeichne das IR-Spektrum von Aspirin": Stoffname + Zeichenverb zieht zu
+    # generate_molecule; predict_spectrum und generate_spectrum zeigen aufeinander.
+    ("generate_molecule", "generate_spectrum"),
+    ("predict_spectrum", "generate_spectrum"),
+    ("generate_spectrum", "predict_spectrum"),
+    ("generate_spectrum", "generate_molecule"),
 ])
 def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
     # Wortgrenze: „lookup" steckt sonst schon in „lookup_molecule_data".
@@ -138,7 +145,7 @@ def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
 
 @pytest.mark.parametrize("tool", [
     "generate_mechanism", "generate_3d", "lookup",
-    "predict_spectrum",
+    "predict_spectrum", "generate_spectrum",
 ])
 def test_mvp_instructions_route_newly_enabled_tools(tool):
     assert tool in _data()["instructions"]

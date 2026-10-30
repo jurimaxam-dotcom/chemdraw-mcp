@@ -181,7 +181,8 @@ NEEDS_DELIMITATION = {
     # Zwei Sigmoide auf verschiedenen Achsen: pH gegen Konzentration
     "generate_dose_response": ("generate_species_distribution", "generate_titration_curve"),
     "predict_spectrum": ("generate_spectrum",),
-    "generate_spectrum": ("predict_spectrum",),
+    # Stoffname + „zeichne" zieht sonst zur Strukturformel (Welle 2, 30.10.2026).
+    "generate_spectrum": ("predict_spectrum", "generate_molecule"),
 }
 
 

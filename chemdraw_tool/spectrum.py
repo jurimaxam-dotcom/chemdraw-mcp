@@ -116,15 +116,15 @@ def _get_config(spectrum_type: str) -> SpectrumConfig:
     cfg = SPECTRUM_TYPES.get(spectrum_type)
     if cfg is None:
         raise ValueError(
-            f"Unbekannter Spektrentyp {spectrum_type!r} — "
-            f"erlaubt sind {sorted(SPECTRUM_TYPES)}"
+            f"Unknown spectrum type {spectrum_type!r} — "
+            f"allowed: {sorted(SPECTRUM_TYPES)}"
         )
     return cfg
 
 
 def _parse_peaks(cfg: SpectrumConfig, peaks: Sequence[Mapping]) -> list[_Peak]:
     if not peaks:
-        raise ValueError("Mindestens ein Peak wird benötigt")
+        raise ValueError("At least one peak is needed.")
     parsed = [
         _Peak(
             position=float(p["position"]),
@@ -136,7 +136,7 @@ def _parse_peaks(cfg: SpectrumConfig, peaks: Sequence[Mapping]) -> list[_Peak]:
     ]
     norm = max(abs(p.intensity) for p in parsed)
     if norm == 0:
-        raise ValueError("Alle Intensitäten sind 0 — mindestens eine muss ≠ 0 sein")
+        raise ValueError("All intensities are 0 — at least one peak needs a nonzero intensity.")
     signed = cfg.kind in ("signed", "cotton")
     return [
         _Peak(
@@ -204,16 +204,29 @@ def build_curve(
         )
 
     xs = _sample_points(cfg, parsed)
-    ys = [sum(_peak_value(cfg, p, x) for p in parsed) for x in xs]
     if cfg.kind == "transmission":
-        ys = [max(0.0, 100.0 - _TRANSMISSION_DEPTH * y) for y in ys]
+        # Transmission multipliziert sich (T = T₁·T₂…). Früher addiert und bei
+        # 0 % abgeschnitten: zwei starke Nachbarbanden (Aspirin C=O 1750/1690)
+        # lagen als flacher Boden auf der Achse (Befund 30.10.2026).
+        return xs, [_transmission(cfg, parsed, x) for x in xs]
+    ys = [sum(_peak_value(cfg, p, x) for p in parsed) for x in xs]
     return xs, ys
 
 
-def _apex(cfg: SpectrumConfig, p: _Peak) -> tuple[float, float, bool]:
+def _transmission(cfg: SpectrumConfig, peaks: list[_Peak], x: float) -> float:
+    t = 100.0
+    for p in peaks:
+        t *= 1.0 - (_TRANSMISSION_DEPTH / 100.0) * _peak_value(cfg, p, x)
+    return t
+
+
+def _apex(
+    cfg: SpectrumConfig, p: _Peak, peaks: list[_Peak]
+) -> tuple[float, float, bool]:
     """(x, y, oberhalb?) für die Label-Position eines Peaks."""
     if cfg.kind == "transmission":
-        return p.position, 100.0 - _TRANSMISSION_DEPTH * p.intensity, False
+        # Auf der Kurve, nicht auf der Einzelbande — Nachbarn vertiefen sie.
+        return p.position, _transmission(cfg, peaks, p.position), False
     if cfg.kind == "bars":
         return p.position, 100.0 * p.intensity, True
     if cfg.kind == "cotton":
@@ -270,7 +283,7 @@ def _build_figure(
     y_span = ax.get_ylim()[1] - y_lo
     px_per_pt = fig.dpi / 72.0
     labeled = sorted(
-        ((_apex(cfg, p), p) for p in parsed if p.label),
+        ((_apex(cfg, p, parsed), p) for p in parsed if p.label),
         key=lambda item: item[0][0],
     )
     prev_x: float | None = None

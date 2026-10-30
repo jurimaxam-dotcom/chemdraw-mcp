@@ -289,3 +289,45 @@ def test_no_label_below_the_plot_floor():
         assert bottom_px >= floor_px, (
             f"Label {t.get_text()!r} ragt unter die Plot-Unterkante"
         )
+
+
+# ---------------------------------------------------------------------------
+# Befunde aus dem echten Aufruf (Welle 2, 30.10.2026)
+# ---------------------------------------------------------------------------
+
+
+def test_overlapping_strong_ir_bands_never_clip_to_zero():
+    """Aspirin-Lehrbuchfall: C=O-Ester 1750 und C=O-Säure 1690 cm⁻¹.
+
+    Die Absorptionen wurden addiert und bei 0 % abgeschnitten — beide Banden
+    lagen als flacher Boden auf der Achse, die Beschriftungen übereinander.
+    Transmission multipliziert sich (T = T₁·T₂), deshalb erreicht sie nie 0.
+    """
+    x, y = build_curve(
+        "ir",
+        [{"position": 1750, "intensity": 1}, {"position": 1690, "intensity": 0.9}],
+    )
+    assert min(y) > 0.1
+    # Zwei getrennte Minima mit einem Buckel dazwischen.
+    assert _y_at(x, y, 1720) > _y_at(x, y, 1750)
+    assert _y_at(x, y, 1720) > _y_at(x, y, 1690)
+
+
+def test_single_ir_band_keeps_its_depth():
+    """Ein einzelner Peak mit s=1 fällt weiter auf 5 % — wie vor dem Fix."""
+    x, y = build_curve("ir", [{"position": 1700, "intensity": 1}])
+    assert _y_at(x, y, 1700) == pytest.approx(5.0, abs=0.01)
+
+
+@pytest.mark.parametrize("spectrum_type, peaks", [
+    ("xrd", [{"position": 10, "intensity": 1}]),
+    ("ir", []),
+    ("uv_vis", [{"position": 250, "intensity": 0}]),
+])
+def test_error_messages_are_english(spectrum_type, peaks):
+    """Nutzertexte sind englisch (Projektkonvention); Befund 30.10.2026."""
+    with pytest.raises(ValueError) as error:
+        build_curve(spectrum_type, peaks)
+    message = str(error.value)
+    for german in ("benötigt", "Spektrentyp", "erlaubt", "mindestens", "Alle"):
+        assert german not in message

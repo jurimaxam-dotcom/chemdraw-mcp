@@ -48,12 +48,15 @@ def test_svg_only_on_request(tmp_path):
 
 
 def test_cdxml_not_available_for_spectra():
-    with pytest.raises(ValueError, match="png"):
+    with pytest.raises(ValueError, match="png") as error:
         generate_spectrum("ir", IR_PEAKS, formats=["cdxml"])
+    # Befund 30.10.2026: „Spektren unterstützen nur …" — Nutzertext englisch.
+    assert "Spektren" not in str(error.value)
 
 
 def test_unknown_spectrum_type_raises():
-    with pytest.raises(ValueError, match="[Ss]pektrentyp"):
+    # Hielt früher den deutschen Text „Spektrentyp" fest (Befund 30.10.2026).
+    with pytest.raises(ValueError, match="spectrum type"):
         generate_spectrum("xrd", IR_PEAKS)
 
 

@@ -270,6 +270,8 @@ MVP_TOOLS = frozenset({
     # Basis-Ausbau Welle 2 (30.10.2026): erwartete IR-Banden und ¹H-Signale als
     # Text; nimmt seit dem Befund 30.10. auch Namen statt nur SMILES.
     "predict_spectrum",
+    # Schematisches Spektrum aus einer Peakliste (IR, NMR, MS, UV/Vis …).
+    "generate_spectrum",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -288,6 +290,8 @@ interactive panel. This server runs the MVP profile.
   role, pathways): lookup.
 - Which IR bands or how many ¹H NMR signals a structure should give, or which
   group absorbs at a measured wavenumber: predict_spectrum.
+- A drawn spectrum (IR, NMR, MS, UV/Vis …) from peaks you supply:
+  generate_spectrum.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
@@ -309,7 +313,7 @@ _MVP_SUMMARIES = {
 Writes PNG/SVG files and returns an interactive panel with the structure,
 properties and functional groups. A bare compound name ("caffeine") also
 means this tool, and so does a question about why one compound behaves as it
-does (acidity, solubility) — the answer is in its structure. No ChemDraw required.
+does (acidity, solubility) — the answer is in its structure.
 A Fischer or Haworth projection of a sugar or amino acid, or a drawing with
 all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
 
@@ -317,8 +321,9 @@ Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
 generate_reaction), a data sheet (use lookup_molecule_data), a single named
 value such as melting point, CAS number or GHS hazards (use lookup), the IR
-bands or ¹H signals to expect (use predict_spectrum), or a rotatable 3D model
-or the shape in space (use generate_3d).
+bands or ¹H signals to expect (use predict_spectrum), a spectrum drawing (use
+generate_spectrum), or a rotatable 3D model or the shape in space (use
+generate_3d).
 
 Pass English or IUPAC names, or SMILES; use label for a localized display name.
 """,
@@ -352,28 +357,6 @@ required. Missing values are not evidence that a property or hazard is absent.
 Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
 role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
-""",
-    # Volltext nennt generate_spectrum, das im Standardprofil (noch) fehlt.
-    "predict_spectrum": """Say what a spectrum of this structure should show — or read a band.
-
-Three questions, all of them exam material:
-
-- "ir_bands": which IR bands to expect for a structure, with range,
-  intensity and band shape, ordered as you read a spectrum (high
-  wavenumber first). Needs `structure`.
-- "assign_wavenumber": you measured a band — which groups absorb there?
-  Ordered by how centrally the value sits in each range. Needs
-  `wavenumber` in cm⁻¹.
-- "nmr_signals": how many ¹H signals the structure gives and in what
-  integral ratio. Needs `structure`.
-
-Deterministic on purpose, and therefore honestly limited: band positions
-come from a curated table matched to the structure, signals from the
-topological equivalence of the protons. It does NOT predict chemical
-shifts in ppm — that would take a model and would be guesswork.
-
-Not this tool for: looking up measured data for a substance (lookup), or
-the structure drawing itself (generate_molecule).
 """,
 }
 
@@ -870,7 +853,8 @@ def generate_spectrum(
 
     Not this tool for: working out WHICH bands to expect, or what a measured
     wavenumber belongs to — that is predict_spectrum, whose band list can
-    then be handed to this tool for the drawing.
+    then be handed to this tool for the drawing. Nor for the compound's
+    structure formula — that is generate_molecule.
 
     Axis conventions are handled automatically (IR: inverted wavenumber
     axis with transmission dips; NMR: ppm axis right-to-left; MS: bar plot;
@@ -892,14 +876,14 @@ def generate_spectrum(
     fmts = _normalize_formats(formats)
     if "cdxml" in fmts:
         raise ValueError(
-            "Spektren unterstützen nur png/svg — CDXML ist ein Strukturformat"
+            "Spectra are available as png/svg only — CDXML is a structure format."
         )
 
     cfg = SPECTRUM_TYPES.get(spectrum_type)
     if cfg is None:
         raise ValueError(
-            f"Unbekannter Spektrentyp {spectrum_type!r} — "
-            f"erlaubt sind {sorted(SPECTRUM_TYPES)}"
+            f"Unknown spectrum type {spectrum_type!r} — "
+            f"allowed: {sorted(SPECTRUM_TYPES)}"
         )
 
     peak_dicts = [SpectrumPeak.model_validate(p).model_dump() for p in peaks]

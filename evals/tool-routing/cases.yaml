@@ -292,6 +292,23 @@ cases:
     forbidden: [predict_spectrum]
     why: Gegebene Peakliste zeichnen, nichts vorhersagen.
 
+  - id: draw-spectrum-by-name
+    prompt: "Zeichne das IR-Spektrum von Aspirin"
+    expect: generate_spectrum
+    forbidden: [generate_molecule, lookup]
+    why: >
+      Stoffname plus „zeichne" zieht zur Strukturformel. Ohne Peakliste
+      liefert das Modell typische Literaturbanden selbst (oder holt sie
+      vorher bei predict_spectrum — das ist erlaubt).
+
+  - id: draw-mass-spectrum-en
+    prompt: "Plot a mass spectrum: molecular ion at m/z 180, base peak at 120, another at 138"
+    expect: generate_spectrum
+    forbidden: [predict_spectrum, generate_molecule]
+    why: >
+      Englisch, Massenspektrum statt IR — die Peakliste ist gegeben, es gibt
+      nichts vorherzusagen.
+
   # --- Panel-Infrastruktur darf nie vom Modell kommen -----------------------
   - id: never-save-png
     prompt: "Zeichne Coffein und speicher das Bild als PNG"
