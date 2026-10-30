@@ -141,7 +141,7 @@ formulas, so the picture and the number never disagree.
 
 All 23 tools exposed with `CHEMDRAW_PROFILE=full`. The default MVP registers only
 `generate_molecule`, `batch_generate`, `compare_molecules`, `generate_reaction`,
-`generate_mechanism`, `generate_3d`, `export_anki_deck`, `lookup_molecule_data` and the panel's internal `save_png`.
+`generate_mechanism`, `generate_3d`, `lookup`, `export_anki_deck`, `lookup_molecule_data` and the panel's internal `save_png`.
 Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
@@ -279,10 +279,10 @@ exposes exactly the 23 tools above. The MVP never registers vault tools.
 
 ## Profiles
 
-The default **MVP profile** focuses on seven jobs: draw a molecule, draw several
+The default **MVP profile** focuses on eight jobs: draw a molecule, draw several
 individual structures, compare compounds, draw a reaction scheme, explore textbook mechanisms,
-view a rotatable 3D conformer, and turn structures into Anki flashcards. The panel also supports compound data sheets,
-PNG export and an Add to Anki button. It registers nine tools in total.
+view a rotatable 3D conformer, look up compound facts, and turn structures into Anki flashcards. The panel also supports compound data sheets,
+PNG export and an Add to Anki button. It registers ten tools in total.
 This is a general chemistry workflow for study, teaching and lab reports.
 
 Other features remain in the code and in the optional **full profile**, but are
