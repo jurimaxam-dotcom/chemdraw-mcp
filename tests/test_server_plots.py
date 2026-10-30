@@ -5,6 +5,8 @@ Beide Tools teilen den PlotPayload (type='plot') und die PlotView im Panel.
 
 from pathlib import Path
 
+import pytest
+
 from chemdraw_tool.server import (
     generate_species_distribution,
     generate_titration_curve,
@@ -80,3 +82,38 @@ def test_compare_molecules_needs_two_to_four(tmp_path, monkeypatch):
         compare_molecules(structures=["CCO"])
     with pytest.raises(ValueError):
         compare_molecules(structures=["C", "CC", "CCC", "CCCC", "CCCCC"])
+
+
+# --- Befunde aus dem echten Aufruf (Welle 2, 30.10.2026) ------------------
+
+_GERMAN = ("Mindestens", "benötigt", "müssen", "Werte", "ergeben", "übergeben")
+_TITRATION = dict(c_acid=0.1, v_acid_ml=20, c_titrant=0.1)
+
+
+@pytest.mark.parametrize("call", [
+    lambda: generate_titration_curve("x", [], **_TITRATION),
+    lambda: generate_titration_curve("x", [4.76], c_acid=-0.1, v_acid_ml=20, c_titrant=0.1),
+    lambda: generate_species_distribution("x", []),
+    lambda: generate_species_distribution("x", [4.4], labels=["HA"]),
+])
+def test_plot_errors_are_english(call, tmp_path, monkeypatch):
+    """Nutzertexte sind englisch (Projektkonvention); alle vier kamen deutsch an."""
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    with pytest.raises(ValueError) as error:
+        call()
+    assert not [w for w in _GERMAN if w in str(error.value)], str(error.value)
+
+
+@pytest.mark.parametrize("call", [
+    lambda: generate_titration_curve("x", [7.2, 2.1], **_TITRATION),
+    lambda: generate_species_distribution("x", [7.2, 2.1]),
+    lambda: generate_species_distribution("x", [2.15, 12.35, 7.2]),
+])
+def test_descending_pka_values_are_rejected(call, tmp_path, monkeypatch):
+    """Befund 30.10.2026: [7.2, 2.1] wurde still gezeichnet — Pufferpunkte
+    schwebten neben der Kurve, die Zwischenspezies HA⁻ verschwand. pKa₁ < pKa₂
+    gilt immer; vertauschte Werte sind ein Eingabefehler, kein Diagramm."""
+    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    with pytest.raises(ValueError, match="ascending"):
+        call()
+    assert not list(tmp_path.iterdir())

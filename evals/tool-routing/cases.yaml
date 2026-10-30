@@ -237,6 +237,43 @@ cases:
       Gegenrichtung. Der einseitige Zaun war hier schon einmal das Problem —
       wer den Fall nicht ausschliesst, gewinnt ihn.
 
+  - id: titration-indicator
+    prompt: "Welcher Indikator passt für die Titration von Phosphorsäure mit NaOH? Zeig mir die Kurve."
+    expect: generate_titration_curve
+    forbidden: [generate_species_distribution, generate_spectrum]
+    why: >
+      Indikatorwahl ist Titrationskurve (Umschlagsbereich als Band am
+      Äquivalenzsprung), nicht Speziesverteilung — obwohl beide pKa-Werte
+      von Phosphorsäure brauchen.
+
+  - id: titration-en
+    prompt: "Show me the titration curve of 0.1 M acetic acid with 0.1 M NaOH and mark the equivalence point."
+    expect: generate_titration_curve
+    forbidden: [generate_species_distribution, calculate_ph]
+    why: Englisch; Volumen auf der x-Achse, nicht pH.
+
+  - id: species-stomach
+    prompt: "Liegt Ibuprofen (pKs 4,4) im Magen bei pH 1,5 eher geladen oder ungeladen vor? Mit Diagramm bitte."
+    expect: generate_species_distribution
+    forbidden: [generate_molecule, generate_titration_curve]
+    why: >
+      Ionisierungsgrad über pH. generate_molecule beansprucht „acidity"
+      eines Stoffes und gewinnt den Fall ohne den Zaun dorthin.
+
+  - id: species-phosphate
+    prompt: "Zeichne die Speziesverteilung von Phosphorsäure über den ganzen pH-Bereich"
+    expect: generate_species_distribution
+    forbidden: [generate_titration_curve, calculate_ph]
+    why: Der direkte Auftrag — Anteile α gegen pH, keine Titration.
+
+  - id: species-en
+    prompt: "Which form of histidine's side chain dominates at pH 7.4? Plot the fractions against pH."
+    expect: generate_species_distribution
+    forbidden: [generate_molecule, lookup]
+    why: >
+      Englisch, Aminosäure statt Arzneistoff; „which form dominates" ist der
+      Kernsatz des Auswahltexts.
+
   - id: calc-weigh-in
     prompt: "Wie viel NaOH brauche ich fuer 250 mL 0,1 molare Loesung?"
     expect: calculate_solution

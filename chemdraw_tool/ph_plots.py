@@ -155,7 +155,7 @@ def build_species_figure(
     labels = list(labels) if labels else _default_species_labels(n)
     if len(labels) != n + 1:
         raise ValueError(
-            f"{n} pKa-Werte ergeben {n + 1} Spezies — {len(labels)} Labels übergeben."
+            f"{n} pKa value(s) give {n + 1} species — {len(labels)} label(s) were passed."
         )
 
     phs = [14.0 * i / (CURVE_POINTS - 1) for i in range(CURVE_POINTS)]

@@ -274,6 +274,10 @@ MVP_TOOLS = frozenset({
     "generate_spectrum",
     # DC-Platte aus Rf-Werten fürs Protokoll.
     "generate_tlc",
+    # pH-Kurven gemeinsam: teilen ph_plots.exact_ph. calculate_ph bleibt aus
+    # (wartet auf Jays Entscheid) — die Auswahltexte nennen es deshalb nicht.
+    "generate_titration_curve",
+    "generate_species_distribution",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -296,6 +300,8 @@ interactive panel. This server runs the MVP profile.
   peak values: generate_spectrum, not a generic chart — supply typical
   literature peaks yourself.
 - A TLC plate sketch from Rf values: generate_tlc.
+- pH against added titrant volume: generate_titration_curve. Fractions of
+  each protonation species across pH 0–14: generate_species_distribution.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
@@ -314,8 +320,8 @@ that is the panel's export button.
 _MVP_SUMMARIES = {
     "generate_molecule": """Draw one compound as a 2D structure — the default for a single substance.
 
-Writes PNG/SVG files and returns an interactive panel with the structure,
-properties and functional groups. A bare compound name ("caffeine") also
+Writes PNG/SVG files and an interactive panel (properties, functional
+groups). A bare compound name ("caffeine") also
 means this tool, and so does a question about why one compound behaves as it
 does (acidity, solubility) — the answer is in its structure.
 A Fischer or Haworth projection of a sugar or amino acid, or a drawing with
@@ -326,10 +332,9 @@ structural differences (use compare_molecules), a reaction scheme (use
 generate_reaction), a data sheet (use lookup_molecule_data), a single named
 value such as melting point, CAS number or GHS hazards (use lookup), the IR
 bands or ¹H signals to expect (use predict_spectrum), a spectrum drawing (use
-generate_spectrum), or a rotatable 3D model or the shape in space (use
-generate_3d).
-
-Pass English or IUPAC names, or SMILES; use label for a localized display name.
+generate_spectrum), which species of an acid dominates at a given pH (use
+generate_species_distribution), or a rotatable 3D model or the shape in space
+(use generate_3d).
 """,
     "batch_generate": """Draw several individual compounds as separate PNG/SVG files and panels.
 
@@ -362,6 +367,39 @@ required. Missing values are not evidence that a property or hazard is absent.
 Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
 role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
+""",
+    # Volltexte nennen calculate_ph, calculate_content und
+    # generate_dose_response, die im Standardprofil fehlen.
+    "generate_titration_curve": """Draw a titration curve: weak (or polyprotic) acid vs. strong base.
+
+Computes pH against titrant volume from the exact charge balance and
+marks equivalence points (per protolysis step), the buffer points
+(pH = pKa at half-equivalence) and optionally the indicator transition
+range as a shaded band.
+
+Use this when the user asks about titrations, equivalence points,
+buffer regions or indicator choice. YOU supply the substance data from
+your knowledge: pKa values in ascending order, sensible concentrations
+(0.1 M is the classic teaching case) and the indicator's transition range.
+
+Not this tool for: which species dominates at a given pH, or the degree
+of ionization across the pH range (use generate_species_distribution).
+A single pH value as a number is not drawn — this tool only draws curves.
+""",
+    "generate_species_distribution": """Draw the species distribution of an acid over pH (Henderson-Hasselbalch).
+
+Plots the fraction α of every protonation species against pH with the
+pKa values marked — the standard diagram for absorption/distribution
+reasoning in pharmacy.
+
+Use this when the user asks which species dominates at a given pH, about
+degree of ionization, or absorption across membranes. YOU supply pKa
+values (ascending) from your knowledge; pass species labels (formulas like
+"H₂PO₄⁻") for a readable legend.
+
+Not this tool for: pH against added titrant volume, equivalence points or
+indicator choice (use generate_titration_curve). It answers "which species
+when", not "what pH do I have" — a single pH value is not drawn.
 """,
     # Desktop-Befund 30.10.2026: alle Spektren-Prompts gingen an Desktops
     # eingebautes visualize. Der Text beansprucht die Fälle wörtlich.
@@ -1244,6 +1282,18 @@ def export_anki_deck(
     )
 
 
+def _check_pka_values(pka_values: list[float]) -> None:
+    """Gemeinsame Prüfung beider pH-Kurven. Befund 30.10.2026: [7.2, 2.1]
+    wurde still gezeichnet — Pufferpunkte neben der Kurve, Zwischenspezies weg."""
+    if not pka_values:
+        raise ValueError("At least one pKa value is needed.")
+    if any(b < a for a, b in zip(pka_values, pka_values[1:])):
+        raise ValueError(
+            f"pKa values must be ascending, one per protolysis step "
+            f"(pKa1 < pKa2 < …); got {list(pka_values)}. Check the order."
+        )
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_titration_curve(
     substance: str,
@@ -1281,10 +1331,9 @@ def generate_titration_curve(
     """
     from chemdraw_tool.ph_plots import render_titration_png, render_titration_svg
 
-    if not pka_values:
-        raise ValueError("Mindestens ein pKa-Wert wird benötigt.")
+    _check_pka_values(pka_values)
     if min(c_acid, v_acid_ml, c_titrant) <= 0:
-        raise ValueError("Konzentrationen und Volumen müssen positiv sein.")
+        raise ValueError("Concentrations and volume must be positive.")
 
     kwargs = dict(
         pka_values=pka_values,
@@ -1444,8 +1493,7 @@ def generate_species_distribution(
     """
     from chemdraw_tool.ph_plots import render_species_png, render_species_svg
 
-    if not pka_values:
-        raise ValueError("Mindestens ein pKa-Wert wird benötigt.")
+    _check_pka_values(pka_values)
 
     svg = render_species_svg(pka_values, labels, substance)
     files = write_files(
