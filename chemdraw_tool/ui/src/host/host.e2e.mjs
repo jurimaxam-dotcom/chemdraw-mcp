@@ -22,7 +22,7 @@ const client = new Client({ name: "panel-e2e", version: "0.0.0" });
 const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "full" }, cwd: repo }));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp" }, cwd: repo }));
 let browser;
 try {
   const tools = (await client.listTools()).tools;
