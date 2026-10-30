@@ -336,7 +336,8 @@ UNIPROT_HEXOKINASE = {
 
 # KEGG REST (Plaintext)
 KEGG_FIND_GLUCOSE = (
-    "cpd:C00031\tD-Glucose; Grape sugar; Dextrose\n"
+    # Wie die echte KEGG-Antwort: C00031 führt „Glucose" wörtlich
+    "cpd:C00031\tD-Glucose; Grape sugar; Dextrose; Glucose; D-Glucopyranose\n"
     "cpd:C00267\talpha-D-Glucose; alpha-D-Glucopyranose\n"
 )
 KEGG_GET_C00031 = (
@@ -368,18 +369,18 @@ def test_lookup_compound_formats_full_pubchem_table():
     ):
         out = lookup_compound("Aspirin")
 
-    assert out.startswith("## Aspirin — PubChem-Daten")
+    assert out.startswith("## Aspirin — PubChem data")
     assert "| **CID** | 2244 |" in out
-    assert "| **IUPAC-Name** | 2-acetyloxybenzoic acid |" in out
-    assert "| **Summenformel** | C9H8O4 |" in out
-    assert "| **Molmasse** | 180.16 g/mol |" in out
-    assert "| **Exakte Masse** | 180.04225873 |" in out
+    assert "| **IUPAC name** | 2-acetyloxybenzoic acid |" in out
+    assert "| **Molecular formula** | C9H8O4 |" in out
+    assert "| **Molecular weight** | 180.16 g/mol |" in out
+    assert "| **Exact mass** | 180.04225873 |" in out
     assert "| **XLogP** | 1.2 |" in out
-    assert "| **Polare Oberfläche** | 63.6 Å² |" in out
-    assert "| **H-Brücken-Donoren** | 1 |" in out
-    assert "| **H-Brücken-Akzeptoren** | 4 |" in out
+    assert "| **Polar surface area** | 63.6 Å² |" in out
+    assert "| **H-bond donors** | 1 |" in out
+    assert "| **H-bond acceptors** | 4 |" in out
     assert "| **InChIKey** | BSYNRYMUTXBXSQ-UHFFFAOYSA-N |" in out
-    assert "| **CAS-Nr.** | 50-78-2 |" in out
+    assert "| **CAS No.** | 50-78-2 |" in out
     # Ladung 0 ist der Normalfall und wird bewusst nicht gezeigt
     assert "Ladung" not in out
     assert "https://pubchem.ncbi.nlm.nih.gov/compound/2244" in out
@@ -394,8 +395,8 @@ def test_lookup_compound_synonyms_exclude_query_name_and_cap_at_five():
     ):
         out = lookup_compound("Aspirin")
 
-    syn_line = next(line for line in out.splitlines() if line.startswith("**Synonyme:"))
-    names = syn_line.removeprefix("**Synonyme:** ").split(", ")
+    syn_line = next(line for line in out.splitlines() if line.startswith("**Synonyms:"))
+    names = syn_line.removeprefix("**Synonyms:** ").split(", ")
     assert len(names) == 5
     assert "aspirin" not in [n.lower() for n in names]  # Suchname raus
     assert "50-78-2" not in names  # CAS steht in der Tabelle
@@ -415,9 +416,9 @@ def test_lookup_compound_omits_rows_for_missing_fields():
     ):
         out = lookup_compound("Wasser")
 
-    assert "| **Summenformel** | H2O |" in out
+    assert "| **Molecular formula** | H2O |" in out
     assert "None" not in out
-    for absent in ("IUPAC-Name", "Molmasse", "XLogP", "InChIKey", "CAS-Nr.", "Synonyme"):
+    for absent in ("IUPAC name", "Molecular weight", "XLogP", "InChIKey", "CAS No.", "Synonyms"):
         assert absent not in out
 
 
@@ -431,11 +432,12 @@ def test_lookup_compound_shows_charge_for_ions():
     ):
         out = lookup_compound("Sulfat")
 
-    assert "| **Ladung** | -2 |" in out
+    assert "| **Charge** | -2 |" in out
 
 
 def test_lookup_compound_degrades_gracefully_on_api_error():
-    """PubChem down (500) → Hinweistext statt Exception, CID bleibt '?'."""
+    """PubChem down (500) → Hinweistext statt Exception, und kein Link ins Leere
+    (früher „/compound/?" — Messung 30.10.2026)."""
     with http(
         {
             "/property/": _Resp(status=500),
@@ -444,8 +446,8 @@ def test_lookup_compound_degrades_gracefully_on_api_error():
     ):
         out = lookup_compound("Aspirin")
 
-    assert "Eigenschaften konnten nicht abgerufen werden." in out
-    assert "https://pubchem.ncbi.nlm.nih.gov/compound/?" in out
+    assert "Properties could not be retrieved from PubChem." in out
+    assert "https://pubchem.ncbi.nlm.nih.gov/compound/?" not in out
 
 
 def test_lookup_compound_handles_unknown_substance():
@@ -458,14 +460,14 @@ def test_lookup_compound_handles_unknown_substance():
     ):
         out = lookup_compound("Xyzzyol")
 
-    assert "Eigenschaften konnten nicht abgerufen werden." in out
-    assert "Synonyme" not in out
+    assert "Properties could not be retrieved from PubChem." in out
+    assert "Synonyms" not in out
 
 
 def test_lookup_compound_shows_zero_values():
     """Null ist ein Messwert, keine Leerstelle.
 
-    Benzol hat echt TPSA 0, null H-Brücken-Donoren und null -Akzeptoren. Eine
+    Benzol hat echt TPSA 0, null H-bond donors und null -Akzeptoren. Eine
     Wahrheitsprüfung (`if v := ...`) verschluckt genau diese Zeilen und der
     Nutzer hält die Angabe für unbekannt statt für null.
     """
@@ -490,9 +492,9 @@ def test_lookup_compound_shows_zero_values():
     ):
         out = lookup_compound("Benzol")
 
-    assert "| **Polare Oberfläche** | 0 Å² |" in out
-    assert "| **H-Brücken-Donoren** | 0 |" in out
-    assert "| **H-Brücken-Akzeptoren** | 0 |" in out
+    assert "| **Polar surface area** | 0 Å² |" in out
+    assert "| **H-bond donors** | 0 |" in out
+    assert "| **H-bond acceptors** | 0 |" in out
 
 
 def test_lookup_compound_shows_logp_of_zero():
@@ -511,7 +513,7 @@ def test_lookup_compound_shows_logp_of_zero():
 
 
 def test_lookup_compound_keeps_markdown_valid_on_partial_outage():
-    """Properties tot, Synonyme leben: die CAS-Zeile darf keine kopflose
+    """Properties tot, Synonyms leben: die CAS-Zeile darf keine kopflose
     Tabellenzeile hinter den Fehlertext hängen — das rendert als roher Text."""
     with http(
         {
@@ -521,9 +523,9 @@ def test_lookup_compound_keeps_markdown_valid_on_partial_outage():
     ):
         out = lookup_compound("Aspirin")
 
-    assert "Eigenschaften konnten nicht abgerufen werden." in out
+    assert "Properties could not be retrieved from PubChem." in out
     assert "50-78-2" in out, "die CAS-Nummer ist bekannt und soll nicht verschwinden"
-    assert "| **CAS-Nr.** | 50-78-2 |" not in out, (
+    assert "| **CAS No.** | 50-78-2 |" not in out, (
         "Tabellenzeile ohne Tabellenkopf — muss als normale Zeile ausgegeben werden"
     )
 
@@ -595,7 +597,7 @@ def test_lookup_safety_reports_unknown_compound():
     with http({"/cids/JSON": _Resp(json_data={"Fault": {"Code": "PUGREST.NotFound"}})}):
         out = lookup_safety("Xyzzyol")
 
-    assert out == "Verbindung 'Xyzzyol' nicht in PubChem gefunden."
+    assert out == "Compound 'Xyzzyol' not found in PubChem."
 
 
 @pytest.mark.parametrize(
@@ -630,7 +632,7 @@ def test_lookup_physical_formats_experimental_properties():
     ):
         out = lookup_physical("Aspirin")
 
-    assert out.startswith("## Aspirin — Physikalische Eigenschaften")
+    assert out.startswith("## Aspirin — Physical properties")
     assert "| **Melting Point** | 135 °C |" in out
     assert "| **Density** | 1.4 g/cu cm |" in out
     assert "| **Solubility** | In water, 4.6 mg/mL |" in out
@@ -655,7 +657,7 @@ def test_lookup_physical_reports_unknown_compound():
     with http({"/cids/JSON": _Resp(status=404)}):
         out = lookup_physical("Xyzzyol")
 
-    assert out == "Verbindung 'Xyzzyol' nicht in PubChem gefunden."
+    assert out == "Compound 'Xyzzyol' not found in PubChem."
 
 
 def test_lookup_physical_reports_missing_experimental_data():
@@ -667,7 +669,7 @@ def test_lookup_physical_reports_missing_experimental_data():
     ):
         out = lookup_physical("Neustoff")
 
-    assert out == "Keine experimentellen Daten für 'Neustoff' in PubChem."
+    assert out == "No experimental data for 'Neustoff' in PubChem."
 
 
 # --- lookup_biochem ---------------------------------------------------------
@@ -685,10 +687,10 @@ def test_lookup_biochem_formats_chebi_and_uniprot():
     assert "### ChEBI" in out
     assert "- **ID:** CHEBI:17234" in out
     assert "- **Name:** glucose" in out
-    assert "- **Beschreibung:** An aldohexose used as a source of energy." in out
+    assert "- **Description:** An aldohexose used as a source of energy." in out
     assert "chebiId=CHEBI_17234" in out
 
-    assert "### UniProt (Proteine/Enzyme, Mensch)" in out
+    assert "### UniProt (proteins/enzymes, human)" in out
     assert "- **Hexokinase-1** (P19367)" in out
     assert "  - Gene: HK1" in out
     assert "  - EC: 2.7.1.1" in out
@@ -708,7 +710,7 @@ def test_lookup_biochem_without_chebi_hit_still_lists_proteins():
     ):
         out = lookup_biochem("Hexokinase")
 
-    assert "Kein ChEBI-Eintrag gefunden." in out
+    assert "No ChEBI entry found." in out
     assert "### ChEBI" not in out
     assert "- **Hexokinase-1** (P19367)" in out
 
@@ -747,8 +749,8 @@ def test_lookup_biochem_degrades_when_both_apis_fail():
     ):
         out = lookup_biochem("Glucose")
 
-    assert out.startswith("## Glucose — Biochemische Einordnung")
-    assert "Kein ChEBI-Eintrag gefunden." in out
+    assert out.startswith("## Glucose — Biochemical classification")
+    assert "No ChEBI entry found." in out
     assert "UniProt" not in out
 
 
@@ -765,15 +767,15 @@ def test_lookup_pathway_formats_kegg_entry_and_pathways():
     ):
         out = lookup_pathway("Glucose")
 
-    assert out.startswith("## Glucose — KEGG Stoffwechseldaten")
-    assert "- **KEGG-ID:** cpd:C00031" in out
-    assert "- **Namen:** D-Glucose, Grape sugar, Dextrose, D-Glucopyranose" in out
-    assert "- **Formel:** C6H12O6" in out
-    assert "### Stoffwechselwege (12)" in out
+    assert out.startswith("## Glucose — KEGG metabolic data")
+    assert "- **KEGG ID:** cpd:C00031" in out
+    assert "- **Names:** D-Glucose, Grape sugar, Dextrose, D-Glucopyranose" in out
+    assert "- **Formula:** C6H12O6" in out
+    assert "### Metabolic pathways (12)" in out
     assert "- [map00010](https://www.kegg.jp/pathway/map00010)" in out
     # maximal 10 Links, Rest als Zähler
     assert out.count("https://www.kegg.jp/pathway/") == 10
-    assert "- ... und 2 weitere" in out
+    assert "- ... and 2 more" in out
     assert "https://www.kegg.jp/entry/cpd:C00031" in out
 
 
@@ -781,7 +783,7 @@ def test_lookup_pathway_reports_unknown_compound():
     with http({"/find/compound/": _Resp(text="\n")}):
         out = lookup_pathway("Xyzzyol")
 
-    assert out == "'Xyzzyol' nicht in KEGG gefunden."
+    assert out == "'Xyzzyol' not found in KEGG."
 
 
 def test_lookup_pathway_reports_compound_without_pathways():
@@ -794,16 +796,16 @@ def test_lookup_pathway_reports_compound_without_pathways():
     ):
         out = lookup_pathway("Testol")
 
-    assert "Keine Stoffwechselwege verknüpft." in out
-    assert "### Stoffwechselwege" not in out
-    assert "Formel" not in out  # Feld fehlt in der KEGG-Antwort
+    assert "No metabolic pathways linked." in out
+    assert "### Metabolic pathways" not in out
+    assert "Formula" not in out  # Feld fehlt in der KEGG-Antwort
 
 
 def test_lookup_pathway_degrades_on_kegg_error():
     with http({"/find/compound/": _Resp(status=502)}):
         out = lookup_pathway("Glucose")
 
-    assert out == "'Glucose' nicht in KEGG gefunden."
+    assert out == "'Glucose' not found in KEGG."
 
 
 def test_lookup_pathway_survives_broken_entry_fetch():
@@ -817,6 +819,63 @@ def test_lookup_pathway_survives_broken_entry_fetch():
     ):
         out = lookup_pathway("Glucose")
 
-    assert "- **KEGG-ID:** cpd:C00031" in out
-    assert "### Stoffwechselwege (12)" in out
-    assert "Namen" not in out
+    assert "- **KEGG ID:** cpd:C00031" in out
+    assert "### Metabolic pathways (12)" in out
+    assert "Names" not in out
+
+
+# --- Befunde aus dem echten Aufruf 30.10.2026 (Basis-Ausbau Welle 1) ----------
+
+
+def test_lookup_pathway_takes_the_exact_name_not_the_first_fuzzy_hit():
+    """KEGG sortiert „glucose" mit UDP-glucose (C00029) vorn; das war die Antwort —
+    ein anderer Stoff mit eigener Formel und eigenen Wegen."""
+    find = (
+        "cpd:C00029\tUDP-glucose; UDPglucose; UDP-D-glucose\n"
+        "cpd:C00031\tD-Glucose; Grape sugar; Dextrose; Glucose; D-Glucopyranose\n"
+    )
+    with http(
+        {
+            "/find/compound/": _Resp(text=find),
+            "/get/": _Resp(text=KEGG_GET_C00031),
+            "/link/pathway/": _Resp(text=KEGG_PATHWAYS_C00031),
+        }
+    ):
+        out = lookup_pathway("glucose")
+    assert "- **KEGG ID:** cpd:C00031" in out
+
+
+def test_lookup_pathway_without_exact_name_says_so_instead_of_guessing():
+    with http({"/find/compound/": _Resp(text="cpd:C00029\tUDP-glucose; UDPglucose\n")}):
+        out = lookup_pathway("glucose")
+    assert out == "'glucose' not found in KEGG."
+
+
+def test_lookup_physical_skips_rows_without_a_property_name():
+    """PubChem liefert Werte ohne Überschrift; daraus wurde die Zeile „| **** | … |"."""
+    data = {"Record": {"Section": [{"TOCHeading": "Experimental Properties", "Section": [
+        {"TOCHeading": "", "Information": [{"Value": {"StringWithMarkup": [{"String": "white crystals"}]}}]},
+        {"TOCHeading": "Melting Point", "Information": [{"Value": {"StringWithMarkup": [{"String": "235 °C"}]}}]},
+    ]}]}}
+    with http(
+        {
+            "/cids/JSON": _Resp(json_data={"IdentifierList": {"CID": [2519]}}),
+            "heading=Experimental": _Resp(json_data=data),
+        }
+    ):
+        out = lookup_physical("caffeine")
+    assert "| **** |" not in out
+    assert "| **Melting Point** | 235 °C |" in out
+
+
+def test_lookup_compound_without_cid_has_no_broken_source_link():
+    """Properties tot → früher „PubChem CID ?" mit Link auf /compound/?."""
+    with http(
+        {
+            "/property/": _Resp(status=503),
+            "/synonyms/": _Resp(json_data={"InformationList": {"Information": [
+                {"Synonym": ["caffeine", "58-08-2"]}]}}),
+        }
+    ):
+        out = lookup_compound("caffeine")
+    assert "CID ?" not in out and "/compound/?" not in out

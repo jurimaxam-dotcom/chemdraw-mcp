@@ -466,9 +466,13 @@ def kegg_find(name: str) -> str | None:
             _KEGG_FIND_URL.format(name=quote(name, safe="")), timeout=_TIMEOUT
         )
         resp.raise_for_status()
-        lines = resp.text.strip().split("\n")
-        if lines and lines[0]:
-            return lines[0].split("\t")[0]
+        # Nur ein Eintrag, der den Namen wörtlich führt: KEGG sortiert unscharf,
+        # für „glucose" stand UDP-glucose (C00029) vorn (Messung 30.10.2026).
+        wanted = name.strip().lower()
+        for line in resp.text.strip().split("\n"):
+            kegg_id, _, names = line.partition("\t")
+            if any(n.strip().lower() == wanted for n in names.split(";")):
+                return kegg_id
         return None
     except Exception:
         logger.warning("KEGG find failed for %r", name, exc_info=True)

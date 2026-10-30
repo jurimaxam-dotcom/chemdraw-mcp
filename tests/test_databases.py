@@ -211,10 +211,16 @@ def test_chebi_lookup_returns_none_on_error():
 # --- KEGG (Textfeld-Parsing) ------------------------------------------------
 
 
-def test_kegg_find_returns_first_id():
-    text = "cpd:C00031\tD-Glucose; Grape sugar\ncpd:C00267\talpha-D-Glucose\n"
+def test_kegg_find_returns_the_entry_with_the_exact_name():
+    text = "cpd:C00029\tUDP-glucose; UDPglucose\ncpd:C00031\tD-Glucose; Grape sugar; Glucose\n"
     with patch("chemdraw_tool.databases.requests.get", return_value=_resp(text=text)):
         assert databases.kegg_find("glucose") == "cpd:C00031"
+
+
+def test_kegg_find_returns_none_without_an_exact_name():
+    text = "cpd:C00031\tD-Glucose; Grape sugar\ncpd:C00267\talpha-D-Glucose\n"
+    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(text=text)):
+        assert databases.kegg_find("glucose") is None
 
 
 def test_kegg_find_returns_none_on_error():

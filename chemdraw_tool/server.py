@@ -265,6 +265,8 @@ MVP_TOOLS = frozenset({
     "generate_mechanism",
     # Einziger Weg zu 3D: das Molekül-Panel hat keine 3D-Ansicht (Messung 30.10.).
     "generate_3d",
+    # Benannter Einzelwert als Text (CAS, Schmelzpunkt, GHS, ChEBI, KEGG).
+    "lookup",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -279,6 +281,8 @@ interactive panel. This server runs the MVP profile.
 - SN1, SN2 or Fischer esterification step by step with curved arrows:
   generate_mechanism (textbook examples; other mechanisms are not drawn).
 - Shape in space (geometry, conformation, a rotatable model): generate_3d.
+- One named value as text (CAS number, melting point, GHS hazards, biological
+  role, pathways): lookup.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
@@ -306,8 +310,9 @@ all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
-generate_reaction), a data sheet (use lookup_molecule_data), or a rotatable
-3D model or the shape in space (use generate_3d).
+generate_reaction), a data sheet (use lookup_molecule_data), a single named
+value such as melting point, CAS number or GHS hazards (use lookup), or a
+rotatable 3D model or the shape in space (use generate_3d).
 
 Pass English or IUPAC names, or SMILES; use label for a localized display name.
 """,
@@ -339,7 +344,8 @@ panel also calls this tool when the user clicks Data. Internet access is
 required. Missing values are not evidence that a property or hazard is absent.
 
 Not this tool for: a bare compound name with no data requested — use
-generate_molecule. Pass English or IUPAC names, or SMILES.
+generate_molecule; one named value as text, or physical constants, biological
+role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
 """,
 }
 
@@ -2695,35 +2701,35 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
     }
     if topic not in handlers:
         raise ValueError(
-            f"Unbekanntes topic '{topic}' — erlaubt: {', '.join(handlers)}."
+            f"Unknown topic '{topic}' — allowed: {', '.join(handlers)}."
         )
     return handlers[topic](name)
 
 
 def _lookup_compound(name: str) -> str:
     """PubChem-Grunddaten als Markdown — Thema "properties" von `lookup`."""
-    lines = [f"## {name} — PubChem-Daten\n"]
+    lines = [f"## {name} — PubChem data\n"]
     cid = "?"
 
     props = pubchem_properties(name)
     have_table = bool(props)
     if props:
         cid = props.get("CID", "?")
-        lines.append("| Eigenschaft | Wert |")
+        lines.append("| Property | Value |")
         lines.append("|------------|------|")
         lines.append(f"| **CID** | {cid} |")
         # Numerische Felder auf Existenz prüfen, nicht auf Wahrheit: Benzol hat
         # echt TPSA 0 und null H-Brücken — eine `if v :=`-Prüfung verschluckt
         # genau diese Messwerte und der Nutzer hält sie für unbekannt.
         for key, label, unit in (
-            ("IUPACName", "IUPAC-Name", ""),
-            ("MolecularFormula", "Summenformel", ""),
-            ("MolecularWeight", "Molmasse", " g/mol"),
-            ("ExactMass", "Exakte Masse", ""),
+            ("IUPACName", "IUPAC name", ""),
+            ("MolecularFormula", "Molecular formula", ""),
+            ("MolecularWeight", "Molecular weight", " g/mol"),
+            ("ExactMass", "Exact mass", ""),
             ("XLogP", "XLogP", ""),
-            ("TPSA", "Polare Oberfläche", " Å²"),
-            ("HBondDonorCount", "H-Brücken-Donoren", ""),
-            ("HBondAcceptorCount", "H-Brücken-Akzeptoren", ""),
+            ("TPSA", "Polar surface area", " Å²"),
+            ("HBondDonorCount", "H-bond donors", ""),
+            ("HBondAcceptorCount", "H-bond acceptors", ""),
             ("InChIKey", "InChIKey", ""),
         ):
             v = props.get(key)
@@ -2731,26 +2737,28 @@ def _lookup_compound(name: str) -> str:
                 lines.append(f"| **{label}** | {v}{unit} |")
         charge = props.get("Charge")
         if charge:
-            lines.append(f"| **Ladung** | {charge} |")
+            lines.append(f"| **Charge** | {charge} |")
     else:
-        lines.append("Eigenschaften konnten nicht abgerufen werden.")
+        lines.append("Properties could not be retrieved from PubChem.")
 
     cas, synonyms = pubchem_synonyms(name)
     if cas:
         # Ohne Tabellenkopf wäre eine Pipe-Zeile roher Text im Chat.
         if have_table:
-            lines.append(f"| **CAS-Nr.** | {cas} |")
+            lines.append(f"| **CAS No.** | {cas} |")
         else:
-            lines.append(f"\n**CAS-Nr.:** {cas}")
+            lines.append(f"\n**CAS No.:** {cas}")
     if synonyms:
         filtered = [s for s in synonyms if s.lower() != name.lower()][:5]
         if filtered:
-            lines.append(f"\n**Synonyme:** {', '.join(filtered)}")
+            lines.append(f"\n**Synonyms:** {', '.join(filtered)}")
 
-    lines.append(
-        f"\n*Quelle: [PubChem CID {cid}]"
-        f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid})*"
-    )
+    # Ohne CID kein Link — früher „PubChem CID ?" auf /compound/? (Messung 30.10.)
+    if cid != "?":
+        lines.append(
+            f"\n*Source: [PubChem CID {cid}]"
+            f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid})*"
+        )
     return "\n".join(lines)
 
 
@@ -2848,7 +2856,7 @@ def _lookup_safety(name: str) -> str:
     """GHS-Einstufung als Markdown — Thema "safety" von `lookup`. Leitquelle zuerst."""
     cid = _get_cid(name)
     if cid is None:
-        return f"Verbindung '{name}' nicht in PubChem gefunden."
+        return f"Compound '{name}' not found in PubChem."
 
     ghs = pubchem_ghs(cid)
     head = f"## {name} — GHS classification (PubChem CID {cid})\n"
@@ -2896,26 +2904,27 @@ def _lookup_physical(name: str) -> str:
     """Schmelz-/Siedepunkt, Dichte, Löslichkeit — Thema "physical" von `lookup`."""
     cid = _get_cid(name)
     if cid is None:
-        return f"Verbindung '{name}' nicht in PubChem gefunden."
+        return f"Compound '{name}' not found in PubChem."
 
     props = pubchem_physical_properties(cid)
     if not props:
-        return f"Keine experimentellen Daten für '{name}' in PubChem."
+        return f"No experimental data for '{name}' in PubChem."
 
-    lines = [f"## {name} — Physikalische Eigenschaften\n"]
-    lines.append("| Eigenschaft | Wert |")
+    lines = [f"## {name} — Physical properties\n"]
+    lines.append("| Property | Value |")
     lines.append("|------------|------|")
 
     seen = set()
     for entry in props:
         n = entry.get("name", "")
         v = entry.get("value", "")
-        if v and n not in seen:
+        # Werte ohne Überschrift ergaben die Zeile „| **** | … |" (Messung 30.10.)
+        if n and v and n not in seen:
             seen.add(n)
             lines.append(f"| **{n}** | {v} |")
 
     lines.append(
-        f"\n*Quelle: [PubChem CID {cid}]"
+        f"\n*Source: [PubChem CID {cid}]"
         f"(https://pubchem.ncbi.nlm.nih.gov/compound/{cid}#section=Experimental-Properties)*"
     )
     return "\n".join(lines)
@@ -2923,7 +2932,7 @@ def _lookup_physical(name: str) -> str:
 
 def _lookup_biochem(name: str) -> str:
     """ChEBI-Klassifikation + UniProt-Enzyme — Thema "biochem" von `lookup`."""
-    lines = [f"## {name} — Biochemische Einordnung\n"]
+    lines = [f"## {name} — Biochemical classification\n"]
 
     chebi = chebi_lookup(name)
     if chebi:
@@ -2931,17 +2940,17 @@ def _lookup_biochem(name: str) -> str:
         lines.append(f"- **ID:** {chebi['obo_id']}")
         lines.append(f"- **Name:** {chebi['label']}")
         if chebi["description"]:
-            lines.append(f"- **Beschreibung:** {chebi['description']}")
+            lines.append(f"- **Description:** {chebi['description']}")
         lines.append(
-            f"- *Quelle: [ChEBI {chebi['obo_id']}]"
+            f"- *Source: [ChEBI {chebi['obo_id']}]"
             f"(https://www.ebi.ac.uk/chebi/searchId.do?chebiId={chebi['id']})*"
         )
     else:
-        lines.append("Kein ChEBI-Eintrag gefunden.\n")
+        lines.append("No ChEBI entry found.\n")
 
     proteins = uniprot_search(name)
     if proteins:
-        lines.append("\n### UniProt (Proteine/Enzyme, Mensch)\n")
+        lines.append("\n### UniProt (proteins/enzymes, human)\n")
         for p in proteins[:3]:
             acc = p["accession"]
             lines.append(f"- **{p['name']}** ({acc})")
@@ -2960,28 +2969,28 @@ def _lookup_pathway(name: str) -> str:
     """KEGG-Stoffwechselwege — Thema "pathway" von `lookup`."""
     kegg_id = kegg_find(name)
     if kegg_id is None:
-        return f"'{name}' nicht in KEGG gefunden."
+        return f"'{name}' not found in KEGG."
 
     data = kegg_compound(kegg_id)
-    lines = [f"## {name} — KEGG Stoffwechseldaten\n"]
-    lines.append(f"- **KEGG-ID:** {data['id']}")
+    lines = [f"## {name} — KEGG metabolic data\n"]
+    lines.append(f"- **KEGG ID:** {data['id']}")
     if data["names"]:
-        lines.append(f"- **Namen:** {', '.join(data['names'][:5])}")
+        lines.append(f"- **Names:** {', '.join(data['names'][:5])}")
     if data["formula"]:
-        lines.append(f"- **Formel:** {data['formula']}")
+        lines.append(f"- **Formula:** {data['formula']}")
 
     if data["pathways"]:
-        lines.append(f"\n### Stoffwechselwege ({len(data['pathways'])})\n")
+        lines.append(f"\n### Metabolic pathways ({len(data['pathways'])})\n")
         for pw in data["pathways"][:10]:
             pw_id = pw.replace("path:", "")
             lines.append(f"- [{pw_id}](https://www.kegg.jp/pathway/{pw_id})")
         if len(data["pathways"]) > 10:
-            lines.append(f"- ... und {len(data['pathways']) - 10} weitere")
+            lines.append(f"- ... and {len(data['pathways']) - 10} more")
     else:
-        lines.append("\nKeine Stoffwechselwege verknüpft.")
+        lines.append("\nNo metabolic pathways linked.")
 
     lines.append(
-        f"\n*Quelle: [KEGG {data['id']}](https://www.kegg.jp/entry/{data['id']})*"
+        f"\n*Source: [KEGG {data['id']}](https://www.kegg.jp/entry/{data['id']})*"
     )
     return "\n".join(lines)
 

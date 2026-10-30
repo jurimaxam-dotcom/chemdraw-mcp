@@ -19,6 +19,7 @@ MVP = {
     # Basis-Ausbau Welle 1 (30.10.2026): Lehrbuch-Mechanismen.
     "generate_mechanism",
     "generate_3d",
+    "lookup",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -106,7 +107,7 @@ def test_mvp_keeps_the_panel_resource_and_metadata():
     uri = "ui://chem-app/index.html"
     assert uri in data["resources"]
     panel = {t["name"] for t in data["tools"] if ((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") == uri}
-    assert panel == MVP - {"save_png"}
+    assert panel == MVP - {"save_png", "lookup"}  # lookup antwortet als Text
 
 
 def _summary(tool):
@@ -118,12 +119,16 @@ def _summary(tool):
     ("generate_reaction", "generate_mechanism"),
     ("generate_molecule", "generate_3d"),
     ("generate_3d", "generate_molecule"),
+    ("generate_molecule", "lookup"),
+    ("lookup_molecule_data", "lookup"),
+    ("lookup", "lookup_molecule_data"),
 ])
 def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
-    assert target in _summary(neighbour)
+    # Wortgrenze: „lookup" steckt sonst schon in „lookup_molecule_data".
+    assert re.search(rf"\b{target}\b(?!_)", _summary(neighbour))
 
 
-@pytest.mark.parametrize("tool", ["generate_mechanism", "generate_3d"])
+@pytest.mark.parametrize("tool", ["generate_mechanism", "generate_3d", "lookup"])
 def test_mvp_instructions_route_newly_enabled_tools(tool):
     assert tool in _data()["instructions"]
 
