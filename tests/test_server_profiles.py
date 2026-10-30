@@ -18,6 +18,7 @@ MVP = {
     "export_anki_deck",
     # Basis-Ausbau Welle 1 (30.10.2026): Lehrbuch-Mechanismen.
     "generate_mechanism",
+    "generate_3d",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -115,13 +116,16 @@ def _summary(tool):
 @pytest.mark.parametrize("neighbour, target", [
     # Rückwärtszäune: der Nachbar, der den Fall sonst gewinnt, zeigt auf das neue Tool.
     ("generate_reaction", "generate_mechanism"),
+    ("generate_molecule", "generate_3d"),
+    ("generate_3d", "generate_molecule"),
 ])
 def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
     assert target in _summary(neighbour)
 
 
-def test_mvp_instructions_route_mechanisms():
-    assert "generate_mechanism" in _data()["instructions"]
+@pytest.mark.parametrize("tool", ["generate_mechanism", "generate_3d"])
+def test_mvp_instructions_route_newly_enabled_tools(tool):
+    assert tool in _data()["instructions"]
 
 
 @pytest.mark.parametrize("profile", ["typo", "", "MVP"])

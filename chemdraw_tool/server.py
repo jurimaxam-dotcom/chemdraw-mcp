@@ -263,6 +263,8 @@ MVP_TOOLS = frozenset({
     "export_anki_deck",
     # Basis-Ausbau Welle 1 (30.10.2026, plans/mcp-server.md): Lehrbuch-Mechanismen.
     "generate_mechanism",
+    # Einziger Weg zu 3D: das Molekül-Panel hat keine 3D-Ansicht (Messung 30.10.).
+    "generate_3d",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -276,13 +278,14 @@ interactive panel. This server runs the MVP profile.
 - Reactants, products and conditions: generate_reaction.
 - SN1, SN2 or Fischer esterification step by step with curved arrows:
   generate_mechanism (textbook examples; other mechanisms are not drawn).
+- Shape in space (geometry, conformation, a rotatable model): generate_3d.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
   write the cards yourself. The molecule panel's Add to Anki button adds
   a single structure card.
 
-Only these drawing, mechanism, data-sheet and flashcard functions are available. Other
+Only these drawing, mechanism, 3D, data-sheet and flashcard functions are available. Other
 features are temporarily disabled. Do not offer unavailable tools.
 Pass English or IUPAC compound names; SMILES are always safe. Labels may be
 localized. Drawing tools write their files themselves — never call save_png,
@@ -303,7 +306,8 @@ all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
-generate_reaction), or a data sheet (use lookup_molecule_data).
+generate_reaction), a data sheet (use lookup_molecule_data), or a rotatable
+3D model or the shape in space (use generate_3d).
 
 Pass English or IUPAC names, or SMILES; use label for a localized display name.
 """,
@@ -1646,6 +1650,9 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
     Use this when the user asks about 3D structure, molecular geometry
     (tetrahedral, planar...), conformation or spatial arrangement.
+
+    Not this tool for: a flat 2D structure drawing or a Fischer/Haworth
+    projection — use generate_molecule.
 
     IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
     localized display name.

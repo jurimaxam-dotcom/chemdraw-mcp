@@ -170,6 +170,29 @@ cases:
       30.10.2026). Alles andere ist die Nettogleichung — sonst kommt ein
       Fehler oder ein falsches Lehrbuchbild.
 
+  - id: draw-3d-explicit
+    prompt: "Zeig mir Methan als drehbares 3D-Modell"
+    expect: generate_3d
+    forbidden: [generate_molecule]
+    why: >
+      Ausdruecklicher 3D-Wunsch. Seit 30.10.2026 im Standardprofil; das
+      Molekuel-Panel hat keine 3D-Ansicht, also ist das der einzige Weg.
+
+  - id: draw-3d-geometry-question
+    prompt: "Warum ist Wasser gewinkelt und nicht linear?"
+    expect: generate_3d
+    forbidden: [lookup_molecule_data]
+    why: >
+      Geometriefrage ohne das Wort 3D — die raeumliche Form ist die Antwort.
+      generate_molecule ist hier nicht verboten (Strukturformel plus Modell
+      ist eine gute Antwort), nur das Datenblatt.
+
+  - id: draw-3d-english-conformation
+    prompt: "What does the chair conformation of cyclohexane look like?"
+    expect: generate_3d
+    forbidden: [generate_reaction, batch_generate]
+    why: Konformation auf Englisch — dritter, andersartiger Ausloeser.
+
   # --- Nachschlagen: der benannte Einzelwert --------------------------------
   - id: lookup-named-value
     prompt: "Was ist die CAS-Nummer von Paracetamol?"

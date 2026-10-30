@@ -5,7 +5,7 @@
 The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
 `compare_molecules`, `generate_reaction`, `export_anki_deck` (since 21.10.2026,
 for the panel's Add to Anki button and the chat route), plus
-`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism` (8 tools, 7 with a panel). Set `CHEMDRAW_PROFILE=full`
+`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism` and `generate_3d` (9 tools, 8 with a panel). Set `CHEMDRAW_PROFILE=full`
 and restart to restore the full catalog (23 tools, 16 with a panel).
 Other tools remain implemented and tested, but are not registered in the MVP.
 The immediate goal is a reliable input → correct structure → usable export
@@ -74,7 +74,7 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (default MVP: 8 tools, 7 with a panel;
+the two numbers the Python side predicts (default MVP: 9 tools, 8 with a panel;
 full profile: 23 tools, 16 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): `tisch auftrag codex` with prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/`; Codex drives the GUI (`vermarktung/ax-claude.swift`). Jay gets the result, not the chore. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
