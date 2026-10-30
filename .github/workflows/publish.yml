@@ -55,9 +55,11 @@ jobs:
         with:
           node-version: 22
       - run: ./scripts/build-mcpb.sh
-      - run: gh release upload "${{ github.event.release.tag_name }}" dist/*.mcpb --clobber
+      # Tag ueber env statt ${{ }} in der Shell-Zeile (Sicherheitsscan B5)
+      - run: gh release upload "$TAG" dist/*.mcpb --clobber
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
 
   # Registry-Eintrag ist ein Snapshot: nur ein Publish-Lauf aendert ihn. OIDC statt
   # Device-Flow, damit er am Release haengt statt an jemandes Erinnerung
