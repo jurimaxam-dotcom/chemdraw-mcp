@@ -79,6 +79,13 @@ kein `--update`. Vor echter Panel-/Architekturarbeit erneut prüfen und
 Netz-/Quellenproblem eingrenzen; die abgeschlossenen Etappen ändern nur
 Tests, Bilder und Doku.
 
+**Neustartmechanik dieser Session:** `HERDR_PANE_ID` und `HERDR_ENV` fehlen
+in der Tool-Shell. `tisch wer` ordnet die aktuelle Codex-Session eindeutig
+`w4D:p5` zu; `herdr agent get w4D:p5` bestätigt Codex, working und diesen
+Projekt-CWD. Neustart daher mit ausschließlich für den Befehl gesetztem
+`HERDR_PANE_ID=w4D:p5`; keine dauerhafte Konfigurationsänderung. Beim nächsten
+Neustart die Zuordnung frisch prüfen, Pane-ID nicht blind wiederverwenden.
+
 **Zugesagte Prüfmethoden:** Desktop über CUA frisch binden; vor Eingaben
 aktuelle AX-Ziele lesen. Neustart per Cmd-Q, Prozessende mit `pgrep -x Claude`
 prüfen, danach erst starten und beantwortetes tools/list abwarten. Jeder
