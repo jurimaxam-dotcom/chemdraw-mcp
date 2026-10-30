@@ -22,10 +22,74 @@ const client = new Client({ name: "panel-e2e", version: "0.0.0" });
 const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome }, cwd: repo }));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "full" }, cwd: repo }));
 let browser;
 try {
   const tools = (await client.listTools()).tools;
+  browser = await chromium.launch();
+  // Welle 1: echte Galerie-Antworten über denselben sandboxed Host wie Desktop.
+  const check = (ok, message) => { if (!ok) throw new Error("ROT: " + message); console.log("✔", message); };
+  const mount = async (p, name, input) => {
+    const tool = tools.find((t) => t.name === name);
+    check(tool?._meta?.ui?.resourceUri, `${name} ist als Panel-Tool registriert`);
+    const result = await client.callTool({ name, arguments: input });
+    check(!result.isError, `${name} liefert eine erfolgreiche echte Serverantwort`);
+    const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
+    await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result });
+    const iframe = p.locator("iframe").last();
+    await iframe.evaluate((el) => { el.style.width = "510px"; el.style.height = "560px"; });
+    return p.frames().at(-1);
+  };
+  const gallery = await browser.newPage({ viewport: { width: 1530, height: 560 } });
+  await gallery.setContent('<body style="margin:0;display:flex"></body>');
+  await gallery.addScriptTag({ path: out });
+  await gallery.exposeFunction("__callTool", (req) => client.callTool(req));
+  for (const [type, substrates, example, count] of [
+    ["sn1", ["CC(C)Br", "O"], "2-bromopropane + water", 5],
+    ["sn2", ["CBr", "[OH-]"], "bromomethane + hydroxide", 3],
+    ["fischer_ester", ["CC(=O)O", "CO"], "acetic acid + methanol", 6],
+  ]) {
+    const f = await mount(gallery, "generate_mechanism", { reaction_type: type, substrates });
+    await f.getByRole("button", { name: "Overview", exact: true }).waitFor();
+    const body = await f.locator("body").innerText();
+    check(body.includes("textbook example") && body.includes(example), `${type}: sichtbarer Titel nennt das gezeichnete Lehrbuchbeispiel`);
+    // Pfeile und Struktur kommen aus echten Renderer-SVGs, nicht aus einem Text-Platzhalter.
+    check(await f.locator('svg path').count() > 0 && body.includes("Reactants"), `${type}: Übersicht enthält gezeichnete Strukturen und Schritte`);
+    await f.getByRole("button", { name: "Step by step", exact: true }).click();
+    await f.getByText(`Step 1 / ${count}`, { exact: true }).waitFor();
+    check(await f.getByRole("button", { name: "← Back", exact: true }).isDisabled(), `${type}: erster Schritt sperrt Zurück`);
+    const first = await f.locator(".mech-step-svg").innerHTML();
+    await f.getByRole("button", { name: "Next →", exact: true }).click();
+    await f.getByText(`Step 2 / ${count}`, { exact: true }).waitFor();
+    check(await f.locator(".mech-step-svg").innerHTML() !== first, `${type}: Weiter zeigt eine andere Zeichnung`);
+
+  }
+  await gallery.waitForTimeout(200); // Übergänge der Schrittanzeige vor dem Bild abschließen.
+  await gallery.screenshot({ path: join(tmpdir(), "panel-host-wave1-mechanisms.png") });
+  await gallery.close();
+
+  const spatial = await browser.newPage({ viewport: { width: 530, height: 560 } });
+  await spatial.setContent('<body style="margin:0"></body>');
+  await spatial.addScriptTag({ path: out });
+  await spatial.exposeFunction("__callTool", (req) => client.callTool(req));
+  const spatialFrame = await mount(spatial, "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" });
+  await spatialFrame.getByText("Caffeine", { exact: true }).waitFor();
+  const canvas = spatialFrame.locator('svg[viewBox="0 0 480 480"]');
+  await canvas.waitFor({ state: "visible" });
+  check(await canvas.locator('circle[fill^="url(#atom-"]').count() === 24 && await canvas.locator("line").count() > 20,
+    "3D: sichtbare SVG-Zeichenfläche enthält Caffeins 24 Atome und Bindungen");
+  check((await spatialFrame.locator("body").innerText()).includes("drag to rotate"), "3D: Bedienhinweis sichtbar");
+  const geometry = () => canvas.locator('circle[fill^="url(#atom-"]').evaluateAll((atoms) => atoms.map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));
+  await spatial.screenshot({ path: join(tmpdir(), "panel-host-wave1-3d.png") });
+  const before = JSON.stringify(await geometry());
+  const box = await canvas.boundingBox();
+  await spatial.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await spatial.mouse.down();
+  await spatial.mouse.move(box.x + box.width / 2 + 85, box.y + box.height / 2 + 45, { steps: 8 });
+  await spatial.mouse.up();
+  check(JSON.stringify(await geometry()) !== before, "3D: Ziehen ändert die projizierten Atomkoordinaten");
+  await spatial.close();
+
   const gm = tools.find((t) => t.name === "generate_molecule");
     const toolInput = { name_or_smiles: "methylphenidate" };
   const toolResult = await client.callTool({ name: "generate_molecule", arguments: toolInput });
@@ -34,7 +98,6 @@ try {
   const html = res.contents[0].text;
   console.log("resource bytes:", html.length, "| result keys:", Object.keys(toolResult));
 
-  browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 700, height: 700 } });
   const serverCalls = [];
   const ankiCalls = [];
