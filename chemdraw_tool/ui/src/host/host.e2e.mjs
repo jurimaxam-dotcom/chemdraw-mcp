@@ -204,6 +204,48 @@ try {
     await p.close();
   }
 
+  // Welle 2: pH-Kurven und Speziesverteilung im echten Panel-Host.
+  for (const [name, input, expectedLabels, curveCount] of [
+    ["generate_titration_curve", { substance: "Phosphoric acid", pka_values: [2.15, 7.2, 12.35], c_acid: 0.1,
+      v_acid_ml: 25, c_titrant: 0.1, indicator: { name: "Phenolphthalein", ph_range: [8.2, 10] } },
+    ["EP 1", "EP 2", "EP 3", "Phenolphthalein"], 1],
+    ["generate_titration_curve", { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1,
+      v_acid_ml: 25, c_titrant: 0.1 }, ["EP", "pH = pKa = 4.76"], 1],
+    ["generate_species_distribution", { substance: "Ibuprofen", pka_values: [4.4], labels: ["HA", "A−"] },
+    ["HA", "A−"], 2],
+    ["generate_species_distribution", { substance: "Phosphoric acid", pka_values: [2.15, 7.2, 12.35],
+      labels: ["H3PO4", "H2PO4−", "HPO4²−", "PO4³−"] }, ["H3PO4", "H2PO4−", "HPO4²−", "PO4³−"], 4],
+  ]) {
+    const p = await browser.newPage({ viewport: { width: 530, height: 560 } });
+    await p.setContent('<body style="margin:0"></body>');
+    await p.addScriptTag({ path: out });
+    const calls = [];
+    await p.exposeFunction("__callTool", (req) => { calls.push(req); return client.callTool(req); });
+    const f = await mount(p, name, input);
+    await f.locator(".plot-svg svg").waitFor();
+    const labels = await f.locator(".plot-svg svg text").allTextContents();
+    check(expectedLabels.every((label) => labels.includes(label)), `${input.substance} ${name}: EP/Puffer/Indikator oder Spezies in echter SVG`);
+    const curves = f.locator('.plot-svg g[id="axes_1"] > g[id^="line2d_"] > path[style*="stroke-width: 1.6"]');
+    check(await curves.count() === curveCount, `${input.substance} ${name}: ${curveCount} echte Datenkurven`);
+    if (input.indicator) check(await f.locator('.plot-svg path[style*="fill: #9467bd"]').count() > 0,
+      "Phosphorsäure: Indikatorband ist als gefüllte Fläche gezeichnet");
+    if (input.substance === "Acetic acid") {
+      const centerX = (label) => f.locator(".plot-svg svg text").filter({ hasText: new RegExp(`^${label}$`) }).first()
+        .evaluate((el) => { const b = el.getBoundingClientRect(); return b.x + b.width / 2; });
+      check(Math.abs(await centerX("EP") - await centerX("25")) < 1, "Essigsäure: EP-Linie bei 25 mL");
+    }
+    const path = await f.locator('span[title$=".png"]').getAttribute("title");
+    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "diagramme") + "/") && existsSync(path),
+      `${input.substance} ${name}: echte PNG-Datei in diagramme/`);
+    await f.getByRole("button", { name: "Export as PNG" }).click();
+    await f.getByRole("button", { name: /Saved:/ }).waitFor();
+    check(calls.filter((req) => req.name === "save_png").length === 1, `${input.substance} ${name}: Export über save_png-Bridge`);
+    const savedPath = (await f.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
+    check(readFileSync(savedPath).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])), `${input.substance}: Exportdatei ist PNG`);
+    await p.screenshot({ path: join(tmpdir(), `panel-host-wave2-ph-${name}-${input.substance.replaceAll(" ", "-")}.png`) });
+    await p.close();
+  }
+
   const gm = tools.find((t) => t.name === "generate_molecule");
     const toolInput = { name_or_smiles: "methylphenidate" };
   const toolResult = await client.callTool({ name: "generate_molecule", arguments: toolInput });

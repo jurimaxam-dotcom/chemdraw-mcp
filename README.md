@@ -101,15 +101,15 @@ Rf values beside the spots, plus the supplied mobile phase and detection:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-wave2.png" alt="TLC plate sketch with three lanes: starting material at Rf 0.30, product at 0.65, co-spot with both; mobile phase Hexane/ethyl acetate 7:3" width="520"></p>
 
-*"Titration curve of phosphoric acid with NaOH, phenolphthalein as
+*"Titration curve of acetic acid with NaOH, phenolphthalein as
 indicator"* — `generate_titration_curve` computes pH from the exact charge
 balance, with equivalence points, buffer points (pH = pKa) and the indicator
-band; its sibling `generate_species_distribution` shows which protonation
-species dominates at every pH:
+band. Separately, `generate_species_distribution` shows which phosphoric
+acid protonation species dominates at every pH:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/titration-phosphoric.png" alt="Titration curve of phosphoric acid with three equivalence points and phenolphthalein band" width="420">
-  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/species-phosphoric.png" alt="Species distribution of phosphoric acid over pH with pKa crossovers" width="420">
+  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-titration-acetic.png" alt="Titration curve of acetic acid: equivalence point at 25 mL, buffer point at pH 4.76, phenolphthalein band" width="420">
+  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-species-phosphoric.png" alt="Species distribution of phosphoric acid over pH with pKa crossovers" width="420">
 </p>
 
 *"Create an Anki deck with important molecules and open it in Anki"* —
