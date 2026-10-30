@@ -39,10 +39,10 @@ jobs:
           path: dist/
       - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
 
-  # Das Bundle ist ein Starter (mcpb/server/run.sh holt die PyPI-Version per uv),
-  # deshalb reicht ein Job ohne Python-Toolchain. Haengt am Release-Tag.
-  # Erst nach PyPI: run.sh holt beim ersten Start genau diese Version per uv —
-  # ein frueher hochgeladenes Bundle wuerde sonst ins Leere greifen (Codex-Befund).
+  # Das Bundle ist ein Starter (mcpb/server/run.sh holt die PyPI-Version per uv).
+  # Haengt am Release-Tag. Erst nach PyPI: build-mcpb.sh traegt die SHA-256 der
+  # PyPI-Dateien in requirements.lock ein, run.sh installiert nur mit
+  # --require-hashes (Sicherheitsscan B4). uv braucht der Job fuer `uv export`.
   bundle:
     needs: publish
     if: github.event_name == 'release'
@@ -51,6 +51,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22

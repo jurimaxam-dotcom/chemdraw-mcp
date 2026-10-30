@@ -3,14 +3,21 @@
 #
 # Das Bundle enthält keine Laufzeit: RDKit ist eine native Erweiterung, ein
 # vollständig eingepacktes Bundle wäre je Plattform weit über 100 MB. Stattdessen
-# installiert uv das Paket beim ersten Start von PyPI in ein eigenes Verzeichnis;
-# danach startet der Server direkt und offline, ohne uv. Claude Desktop startet MCP-Server mit minimalem GUI-PATH —
-# deshalb wird uv hier an den bekannten Orten gesucht und notfalls installiert.
+# installiert uv das Paket beim ersten Start von PyPI in ein eigenes Verzeichnis,
+# jede Datei gegen die Hashes in requirements.lock geprüft; danach startet der
+# Server direkt und offline, ohne uv. Claude Desktop startet MCP-Server mit
+# minimalem GUI-PATH — deshalb wird uv hier an den bekannten Orten gesucht und
+# notfalls in fester, per SHA-256 geprüfter Version geladen (uv-holen.sh).
 set -eu
 
 VERSION="${CHEMDRAW_MCP_VERSION:-@@VERSION@@}"
 
 log() { printf 'chemdraw-mcp bundle: %s\n' "$*" >&2; }
+
+SKRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REQS="$SKRIPT_DIR/requirements.lock"
+UV_HOLEN_DIR="$SKRIPT_DIR"
+. "$SKRIPT_DIR/uv-holen.sh"
 
 find_uv() {
   for candidate in \
@@ -32,34 +39,20 @@ find_uv() {
   return 1
 }
 
-UV="${CHEMDRAW_MCP_UV:-$(find_uv || true)}"
-if [ -z "$UV" ]; then
-  log "uv nicht gefunden — installiere es nach ~/.local/bin (astral.sh) …"
-  if command -v curl >/dev/null 2>&1; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh >&2
-  else
-    log "FEHLER: weder uv noch curl vorhanden. Bitte uv installieren: https://docs.astral.sh/uv/"
-    exit 1
-  fi
-  UV="${CHEMDRAW_MCP_UV:-$(find_uv || true)}"
-  if [ -z "$UV" ]; then
-    log "FEHLER: uv-Installation fehlgeschlagen."
-    exit 1
-  fi
-fi
-
-# Feste Installation statt `uv tool run` (02.10.2026): Die Wegwerf-Umgebung von
-# `uv tool run` liegt im uv-Cache und wird nach jedem `uv cache clean` neu
-# gebaut (≈50 MB Download) — im Desktop-Log scheiterten so Starts am ~55-s-
-# Timeout. Ein eigenes Tool-Verzeichnis übersteht das Cache-Leeren und lässt
-# eine globale `uv tool install chemdraw-mcp` des Nutzers unangetastet.
+# Eigene Umgebung je Version statt `uv tool install` (30.10.2026, Sicherheitsscan
+# B4): `uv tool install` ignoriert Hashes in --constraints und
+# --with-requirements (gemessen: falscher Hash installiert trotzdem). Nur
+# `uv pip install --require-hashes` prüft jede Datei gegen requirements.lock,
+# das der Release-Job aus uv.lock erzeugt — alle Abhängigkeiten exakt so, wie
+# sie getestet wurden, und chemdraw-mcp selbst mit den Hashes der PyPI-Dateien.
+# Das Verzeichnis übersteht `uv cache clean` und lässt eine globale
+# `uv tool install chemdraw-mcp` des Nutzers unangetastet (02.10.2026).
 BASE="${XDG_DATA_HOME:-$HOME/.local/share}/chemdraw-mcp-bundle"
-export UV_TOOL_DIR="$BASE/tools"
-export UV_TOOL_BIN_DIR="$BASE/bin"
-SERVER="$UV_TOOL_DIR/chemdraw-mcp/bin/chemdraw-mcp"
-RECEIPT="$UV_TOOL_DIR/chemdraw-mcp/uv-receipt.toml"
+UMGEBUNG="$BASE/env-$VERSION"
+SERVER="$UMGEBUNG/bin/chemdraw-mcp"
+STEMPEL="$UMGEBUNG/.chemdraw-mcp-installiert"
 
-installiert() { [ -x "$SERVER" ] && grep -q "\"==$VERSION\"" "$RECEIPT" 2>/dev/null; }
+installiert() { [ -x "$SERVER" ] && [ "$(cat "$STEMPEL" 2>/dev/null)" = "$VERSION" ]; }
 
 if installiert; then
   exec "$SERVER"
@@ -130,20 +123,57 @@ if installiert; then  # ein paralleler Start war schneller
   exec "$SERVER"
 fi
 
-log "installiere chemdraw-mcp $VERSION über $UV (einmalig, danach startet es ohne uv und offline)"
-# --refresh-package: Direkt nach einem Release kennt uvs zwischengespeicherter
-# PyPI-Index die neue Version noch nicht ("there is no version of
-# chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026). Nur auf dem Installationsweg —
-# der Normalstart ruft uv gar nicht auf.
-"$UV" tool install --force --quiet --refresh-package chemdraw-mcp "chemdraw-mcp==$VERSION" >&2 &
+if [ ! -f "$REQS" ]; then
+  gib_frei
+  log "FEHLER: $REQS fehlt — das Bundle ist unvollständig gebaut (scripts/build-mcpb.sh)."
+  exit 1
+fi
+
+# uv erst hier: der Normalstart oben braucht es nicht. Vorhandenes uv hat Vorrang;
+# sonst eine feste Version mit geprüfter SHA-256 (uv-holen.sh), nie `curl | sh`.
+# CHEMDRAW_MCP_UV=- ignoriert ein vorhandenes uv und lädt immer die geprüfte Version.
+UV="${CHEMDRAW_MCP_UV:-$(find_uv || true)}"
+[ "$UV" = "-" ] && UV=""
+if [ -z "$UV" ]; then
+  log "uv nicht gefunden — lade die geprüfte Version nach $BASE/uv"
+  if ! UV="$(hole_uv "$BASE/uv")"; then
+    gib_frei
+    log "FEHLER: uv konnte nicht sicher installiert werden. Bitte uv installieren: https://docs.astral.sh/uv/"
+    exit 1
+  fi
+fi
+
+installiere() {
+  rm -rf "$UMGEBUNG"
+  # Python 3.12 fest: dafür hat jede gelockte Abhängigkeit (RDKit!) Wheels. Fehlt
+  # es, lädt uv ein verwaltetes Python und prüft dessen Hash selbst.
+  "$UV" venv --quiet --python 3.12 "$UMGEBUNG" &&
+  # --refresh-package: Direkt nach einem Release kennt uvs zwischengespeicherter
+  # PyPI-Index die neue Version noch nicht ("there is no version of
+  # chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026).
+  "$UV" pip install --quiet --python "$UMGEBUNG/bin/python" \
+    --require-hashes --refresh-package chemdraw-mcp -r "$REQS" &&
+  [ -x "$SERVER" ] &&
+  printf '%s\n' "$VERSION" > "$STEMPEL"
+}
+
+log "installiere chemdraw-mcp $VERSION über $UV (einmalig, Hashes geprüft; danach startet es ohne uv und offline)"
+installiere >&2 &
 KIND=$!
 if wait "$KIND" && installiert; then
   KIND=""
+  # Ältere Versionen und die frühere `uv tool`-Ablage (bis 0.6.0) aufräumen.
+  for alt in "$BASE"/env-*; do
+    [ "$alt" = "$UMGEBUNG" ] || rm -rf "$alt"
+  done
+  rm -rf "$BASE/tools" "$BASE/bin"
   gib_frei
   exec "$SERVER"
 fi
 KIND=""
+rm -rf "$UMGEBUNG"
 gib_frei
 
-log "feste Installation fehlgeschlagen — starte über uv tool run"
-exec "$UV" tool run --refresh-package chemdraw-mcp --from "chemdraw-mcp==$VERSION" chemdraw-mcp
+# Kein Rückfall auf `uv tool run`: der würde ohne Hashes auflösen (B4).
+log "FEHLER: Installation von chemdraw-mcp $VERSION fehlgeschlagen (Netz? Hash-Abweichung?). Details stehen oben."
+exit 1

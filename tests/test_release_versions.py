@@ -28,8 +28,12 @@ def test_bundle_sources_take_the_version_from_pyproject():
     manifest = json.loads((ROOT / "mcpb" / "manifest.json").read_text())
     assert manifest["version"] == "@@VERSION@@"
     run_sh = (ROOT / "mcpb" / "server" / "run.sh").read_text()
-    assert "chemdraw-mcp==$VERSION" in run_sh
     assert re.search(r'VERSION="\$\{CHEMDRAW_MCP_VERSION:-@@VERSION@@\}"', run_sh)
+    # Seit B4 (30.10.2026) steht die gepinnte Version samt PyPI-Hashes in
+    # requirements.lock, die build-mcpb.sh aus derselben VERSION schreibt.
+    build = (ROOT / "scripts" / "build-mcpb.sh").read_text()
+    assert "printf 'chemdraw-mcp==%s %s\\n' \"$VERSION\" \"$HASHES\"" in build
+    assert "pypi.org/pypi/chemdraw-mcp/$VERSION/json" in build
 
 
 def test_bundle_launcher_never_relies_on_path():

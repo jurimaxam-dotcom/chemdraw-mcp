@@ -9,3 +9,14 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+
+  # uv.lock: das Bundle installiert genau diesen Stand (requirements.lock, B4).
+  # Sicherheitsupdates einer Abhaengigkeit erreichen Nutzer nur ueber ein neues
+  # Release — dieser PR ist der Anlass dafuer.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      python:
+        patterns: ["*"]
