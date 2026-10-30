@@ -301,6 +301,23 @@ cases:
       liefert das Modell typische Literaturbanden selbst (oder holt sie
       vorher bei predict_spectrum — das ist erlaubt).
 
+  - id: draw-spectrum-schematic-desktop
+    prompt: "Aspirin IR-Spektrum schematisch"
+    expect: generate_spectrum
+    forbidden: [generate_molecule, lookup]
+    why: >
+      Desktop-Befund 30.10.2026 (Codex): wörtlich dieser Prompt ging an
+      Desktops eingebautes visualize. Seitdem beansprucht der Auswahltext
+      „schematic" und Spektren ohne Peakwerte ausdrücklich.
+
+  - id: draw-nmr-by-name
+    prompt: "Zeichne ein 1H-NMR von Ethylacetat"
+    expect: generate_spectrum
+    forbidden: [generate_molecule, lookup]
+    why: >
+      Drittes Desktop-Drehbuch vom 30.10.2026, ging ebenfalls an visualize.
+      NMR statt IR, Stoffname ohne Signale.
+
   - id: draw-mass-spectrum-en
     prompt: "Plot a mass spectrum: molecular ion at m/z 180, base peak at 120, another at 138"
     expect: generate_spectrum

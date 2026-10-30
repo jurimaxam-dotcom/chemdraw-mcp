@@ -292,8 +292,9 @@ interactive panel. This server runs the MVP profile.
   role, pathways): lookup.
 - Which IR bands or how many ¹H NMR signals a structure should give, or which
   group absorbs at a measured wavenumber: predict_spectrum.
-- A drawn spectrum (IR, NMR, MS, UV/Vis …) from peaks you supply:
-  generate_spectrum.
+- Any spectrum picture (IR, NMR, MS, UV/Vis), also "schematic" and without
+  peak values: generate_spectrum, not a generic chart — supply typical
+  literature peaks yourself.
 - A TLC plate sketch from Rf values: generate_tlc.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
@@ -361,6 +362,23 @@ required. Missing values are not evidence that a property or hazard is absent.
 Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
 role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
+""",
+    # Desktop-Befund 30.10.2026: alle Spektren-Prompts gingen an Desktops
+    # eingebautes visualize. Der Text beansprucht die Fälle wörtlich.
+    "generate_spectrum": """Draw a spectrum — IR, ¹H/¹³C NMR, mass spectrum (MS), UV/Vis, Raman, NIR, fluorescence, ORD or CD — as PNG/SVG files with a panel.
+
+Any request to draw, sketch, plot or show a spectrum is this tool, including
+a "schematic" spectrum of a named compound ("aspirin IR spectrum
+schematic") and requests with no peak values: then supply typical
+literature peak positions yourself (aspirin IR: C=O ~1750 and ~1690 cm⁻¹,
+broad O–H ~2500–3300 cm⁻¹). Use it instead of drawing the spectrum as a
+generic chart or visualization — this tool gets the axis conventions right
+(IR: inverted wavenumber axis with transmission dips; NMR: ppm right to
+left; MS: bars). It draws exactly the peaks it is given; it predicts nothing.
+
+Not this tool for: working out WHICH bands to expect, or what a measured
+wavenumber belongs to (use predict_spectrum — its band list can then be
+drawn here), or the compound's structure formula (use generate_molecule).
 """,
 }
 

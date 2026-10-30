@@ -106,6 +106,18 @@ def test_mvp_molecule_tool_claims_named_projections():
     assert "Haworth" in summary and "Fischer" in summary
 
 
+def test_mvp_spectrum_tool_claims_named_spectra_against_generic_charts():
+    # Desktop-Befund 30.10.2026 (Codex): „Aspirin IR-Spektrum schematisch“ und
+    # alle drei Drehbuch-Prompts gingen an Desktops eingebautes visualize —
+    # dasselbe Muster wie Haworth am 26.10. Die Beschreibung muss die Fälle
+    # wörtlich beanspruchen, auch ohne Peakliste.
+    summary = _summary("generate_spectrum")
+    for phrase in ("IR", "NMR", "mass spectrum", "schematic", "no peak"):
+        assert phrase in summary, phrase
+    assert "visualiz" in summary  # grenzt sich gegen generische Diagramme ab
+    assert "generate_spectrum" in _data()["instructions"].split("schematic")[1][:200]
+
+
 def test_mvp_keeps_the_panel_resource_and_metadata():
     data = _data()
     uri = "ui://chem-app/index.html"
