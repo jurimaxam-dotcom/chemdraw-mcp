@@ -183,6 +183,8 @@ NEEDS_DELIMITATION = {
     "predict_spectrum": ("generate_spectrum",),
     # Stoffname + „zeichne" zieht sonst zur Strukturformel (Welle 2, 30.10.2026).
     "generate_spectrum": ("predict_spectrum", "generate_molecule"),
+    # Eine DC „meiner Veresterung" nennt eine Reaktion (Welle 2, 30.10.2026).
+    "generate_tlc": ("generate_reaction",),
 }
 
 

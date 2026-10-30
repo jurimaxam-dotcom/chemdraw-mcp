@@ -92,7 +92,7 @@ def _spot_number(value, lane: str, what: str) -> float:
         return float(value)
     except (TypeError, ValueError):
         raise ValueError(
-            f"{what} in Bahn {lane!r} ist keine Zahl: {value!r}"
+            f"{what} in lane {lane!r} is not a number: {value!r}"
         ) from None
 
 
@@ -100,8 +100,8 @@ def _parse_lane(lane: Mapping) -> tuple[str, list[Mapping]]:
     name = str(lane.get("name", "") or "").strip()
     if not name:
         raise ValueError(
-            "Jede Bahn braucht einen Namen (z.B. 'Edukt', 'Reaktion', 'Co-Spot') — "
-            "unbeschriftete Bahnen sind im Protokoll nicht auswertbar"
+            "Every lane needs a name (e.g. 'Starting material', 'Reaction', "
+            "'Co-spot') — an unlabelled lane cannot be read in a lab report."
         )
     spots = list(lane.get("spots") or [])
     return name, spots
@@ -131,8 +131,8 @@ def build_plate(lanes: Sequence[Mapping]) -> PlateGeometry:
     """
     if not lanes:
         raise ValueError(
-            "Mindestens eine Bahn (lane) wird benötigt — eine DC-Platte ohne "
-            "Bahn hat nichts zu zeigen"
+            "At least one lane is needed — a TLC plate without lanes has "
+            "nothing to show."
         )
 
     names: list[str] = []
@@ -149,26 +149,26 @@ def build_plate(lanes: Sequence[Mapping]) -> PlateGeometry:
         for spot in raw_spots:
             if "rf" not in spot:
                 raise ValueError(
-                    f"Fleck in Bahn {name!r} ohne Rf-Wert — Rf ist Pflicht "
-                    "(Laufstrecke Substanz / Laufstrecke Front)"
+                    f"A spot in lane {name!r} has no Rf value — rf is required "
+                    "(distance travelled by the substance / by the front)."
                 )
-            rf = _spot_number(spot["rf"], name, "Rf-Wert")
+            rf = _spot_number(spot["rf"], name, "Rf value")
             if not START_Y <= rf <= FRONT_Y:
                 raise ValueError(
-                    f"Rf-Wert {rf:g} in Bahn {name!r} liegt außerhalb von 0–1. "
-                    "Rf ist ein Verhältnis (Laufstrecke Substanz / Laufstrecke "
-                    "Front) und kann nicht größer als 1 oder negativ sein — "
-                    "bitte die Messwerte prüfen."
+                    f"Rf value {rf:g} in lane {name!r} lies outside 0–1. "
+                    "Rf is a ratio (distance travelled by the substance / by "
+                    "the front) and cannot exceed 1 or be negative — check "
+                    "the measured distances."
                 )
             intensity = _spot_number(
                 spot.get("intensity", 1.0) if spot.get("intensity") is not None else 1.0,
                 name,
-                "Intensität",
+                "Intensity",
             )
             if not 0.0 < intensity <= 1.0:
                 raise ValueError(
-                    f"Intensität {intensity:g} in Bahn {name!r} liegt außerhalb "
-                    "von 0–1 (1 = kräftiger Fleck, 0.3 = schwacher Fleck)"
+                    f"Intensity {intensity:g} in lane {name!r} lies outside "
+                    "0–1 (1 = strong spot, 0.3 = faint spot)."
                 )
             parsed.append((rf, intensity, str(spot.get("label", "") or "")))
 

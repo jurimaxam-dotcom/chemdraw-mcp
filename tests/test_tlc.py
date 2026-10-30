@@ -43,7 +43,8 @@ ESTER_LANES = [
 
 
 def test_no_lanes_raises():
-    with pytest.raises(ValueError, match="[Bb]ahn"):
+    # Hielt früher den deutschen Text „Bahn" fest (Befund 30.10.2026).
+    with pytest.raises(ValueError, match="[Ll]ane"):
         build_plate([])
 
 
@@ -247,3 +248,23 @@ def test_title_is_not_prefixed_twice():
     assert _plate_title("tlc: veresterung") == "tlc: veresterung"
     assert _plate_title("Veresterung") == "TLC: Veresterung"
     assert _plate_title("") == "TLC plate"
+
+
+_GERMAN = ("Bahn", "benötigt", "Fleck", "Wert ", "außerhalb", "Zahl", "Intensität", "Pflicht", "bitte")
+
+
+@pytest.mark.parametrize("lanes", [
+    [],
+    [{"name": "", "spots": [{"rf": 0.5}]}],
+    [{"name": "A", "spots": [{"rf": 1.3}]}],
+    [{"name": "A", "spots": [{"label": "x"}]}],
+    [{"name": "A", "spots": [{"rf": "hoch"}]}],
+    [{"name": "A", "spots": [{"rf": 0.5, "intensity": 3}]}],
+])
+def test_error_messages_are_english(lanes):
+    """Nutzertexte sind englisch (Projektkonvention); Befund 30.10.2026 —
+    alle sechs Fehlermeldungen kamen deutsch beim Modell an."""
+    with pytest.raises(ValueError) as error:
+        build_plate(lanes)
+    message = str(error.value)
+    assert not [w for w in _GERMAN if w in message], message

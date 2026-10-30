@@ -65,8 +65,10 @@ def test_svg_only_on_request(tmp_path):
 
 
 def test_cdxml_not_available_for_plates():
-    with pytest.raises(ValueError, match="png"):
+    with pytest.raises(ValueError, match="png") as error:
         generate_tlc(ESTER_LANES, formats=["cdxml"])
+    # Befund 30.10.2026: „DC-Platten unterstützen nur …" — Nutzertext englisch.
+    assert "DC-Platten" not in str(error.value)
 
 
 def test_rf_above_one_raises_with_clear_message():
@@ -75,7 +77,8 @@ def test_rf_above_one_raises_with_clear_message():
 
 
 def test_no_lanes_raises():
-    with pytest.raises(ValueError, match="[Bb]ahn"):
+    # Hielt früher den deutschen Text „Bahn" fest (Befund 30.10.2026).
+    with pytest.raises(ValueError, match="[Ll]ane"):
         generate_tlc([])
 
 

@@ -309,6 +309,31 @@ cases:
       Englisch, Massenspektrum statt IR — die Peakliste ist gegeben, es gibt
       nichts vorherzusagen.
 
+  # --- DC-Platte: Laborergebnis, keine Reaktion -----------------------------
+  - id: tlc-esterification
+    prompt: >
+      DC meiner Veresterung: Edukt bei Rf 0,3, Produkt bei 0,65, der Co-Spot
+      zeigt beide. Mach mir die Skizze fürs Protokoll.
+    expect: generate_tlc
+    forbidden: [generate_reaction, generate_molecule]
+    why: >
+      Nennt eine Reaktion, meint aber die Platte. Der Zaun generate_reaction
+      → generate_tlc existiert genau für diesen Satz.
+
+  - id: tlc-sketch-plain
+    prompt: "Zeichne eine DC-Platte mit drei Bahnen, Laufmittel Hexan/EE 7:3, Flecken bei 0,2, 0,45 und 0,8"
+    expect: generate_tlc
+    forbidden: [generate_spectrum, batch_generate]
+    why: Reine Plattenskizze ohne Stoff- oder Reaktionsbezug.
+
+  - id: tlc-en
+    prompt: "My TLC in ethyl acetate: spot A ran 2.1 cm, front 6.0 cm; spot B 4.2 cm. Draw the plate."
+    expect: generate_tlc
+    forbidden: [generate_spectrum, generate_reaction]
+    why: >
+      Englisch, Laufstrecken statt Rf — das Modell rechnet Rf = 0,35/0,70
+      selbst aus; das Tool weist Rf > 1 ab statt still zu beschneiden.
+
   # --- Panel-Infrastruktur darf nie vom Modell kommen -----------------------
   - id: never-save-png
     prompt: "Zeichne Coffein und speicher das Bild als PNG"

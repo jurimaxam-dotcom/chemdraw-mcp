@@ -272,6 +272,8 @@ MVP_TOOLS = frozenset({
     "predict_spectrum",
     # Schematisches Spektrum aus einer Peakliste (IR, NMR, MS, UV/Vis …).
     "generate_spectrum",
+    # DC-Platte aus Rf-Werten fürs Protokoll.
+    "generate_tlc",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -292,6 +294,7 @@ interactive panel. This server runs the MVP profile.
   group absorbs at a measured wavenumber: predict_spectrum.
 - A drawn spectrum (IR, NMR, MS, UV/Vis …) from peaks you supply:
   generate_spectrum.
+- A TLC plate sketch from Rf values: generate_tlc.
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
@@ -343,7 +346,8 @@ Use it when explaining a reaction as well as for explicit drawing requests.
 Pass English or IUPAC compound names, or SMILES.
 
 Not this tool for: the step-by-step SN1, SN2 or Fischer esterification
-mechanism with electron-flow arrows (use generate_mechanism); one compound or
+mechanism with electron-flow arrows (use generate_mechanism); a TLC plate
+sketch from Rf values, even of a reaction mixture (use generate_tlc); one compound or
 a property of one compound such as its acidity (use generate_molecule),
 independent structures (use batch_generate), or structural differences (use
 compare_molecules).
@@ -929,6 +933,9 @@ def generate_tlc(
     lane showing educt AND product is simply two spots on one lane. Every
     spot is annotated with its Rf value so the sketch can be read off.
 
+    Not this tool for: the reaction scheme of the reaction being monitored
+    (generate_reaction), or a spectrum (generate_spectrum).
+
     Args:
         lanes: The lanes from left to right, e.g.
             [{"name": "Edukt", "spots": [{"rf": 0.30, "label": "Säure"}]},
@@ -951,7 +958,7 @@ def generate_tlc(
     fmts = _normalize_formats(formats)
     if "cdxml" in fmts:
         raise ValueError(
-            "DC-Platten unterstützen nur png/svg — CDXML ist ein Strukturformat"
+            "TLC plates are available as png/svg only — CDXML is a structure format."
         )
 
     lane_models = [TlcLane.model_validate(lane) for lane in lanes]
