@@ -226,7 +226,60 @@ Nicht gelesen hat der Scan:
 | F2 | behoben | 644c17f | `claude -p` läuft in eigenem `mkdtemp`-Ordner (0700), danach entfernt; Rauchtest mit Attrappe. |
 | F3/F4 | behoben | 7e6ab6e | Galerie und Screenshots je Lauf in frischem `mkdtemp`-Ordner, kein Löschen in festen `/tmp`-Pfaden. |
 | B7 | behoben | 5c1d989 | `safeHref`: nur `http:`/`https:` werden verlinkt. DOM-Test vorher rot; Bundle neu gebaut. |
-| B4 | offen (Jays Entscheidung) | — | Optionen (a)–(c) in `plans/vermarktung.md`. |
+| B4 | behoben (Variante b, Jay 30.10.) | 1474aa5 | uv fest + SHA-256, `--require-hashes` gegen `requirements.lock`; Belege unten. |
 | B6, B8–B11 | offen | — | Nicht im Auftrag. |
 
 Gate nach allen Fixes: `./test.sh` rc=0 (ruff grün, 7343 passed / 16 skipped, Bundle aktuell, Frontend 31 + 82 + 2 pass); `npm run test:host` rc=0.
+
+## B4-Umsetzung 30.10.2026 (Tisch-Faden 20261030-081345-b4-installweg)
+
+Jays Entscheidung: Variante (b). Commit 1474aa5.
+
+**Warum nicht `uv tool install --constraints`:** gemessen mit uv 0.11.11, Paket `pycowsay==0.0.0.2`, frischer Cache:
+
+```
+constraints mit Hash 000…0        → "Installed 1 executable: pycowsay"   (Hash ignoriert)
+--with-requirements mit Hash 000…0 → "+ pycowsay==0.0.0.2"               (Hash ignoriert)
+uv venv + uv pip install --require-hashes -r (Hash 000…0) → Abbruch, "Computed: sha256:5c03d8a9…"
+```
+
+Deshalb installiert `run.sh` jetzt in `env-<version>` per `uv venv --python 3.12` und
+`uv pip install --require-hashes -r requirements.lock`.
+
+**Echter Kaltstart** (Bundle 0.6.0 lokal gebaut, entpackt, leeres HOME, leerer uv-Cache,
+`CHEMDRAW_MCP_UV=-`, PATH `/usr/bin:/bin`):
+
+```
+chemdraw-mcp uv: lade uv 0.13.6 (uv-aarch64-apple-darwin.tar.gz) …
+chemdraw-mcp uv: uv 0.13.6 geprüft (sha256 60fbd5c8a1ed681845eea28d9d622fcde03c51e91a43465b64a1e17db1ed3472)
+chemdraw-mcp bundle: installiere chemdraw-mcp 0.6.0 über …/uv-0.13.6/uv (einmalig, Hashes geprüft; …)
+server: {'name': 'ChemDraw Tool', 'version': '0.6.0'}
+tools: 7 mit Panel: 6
+```
+
+Dauer 51 s inklusive Download von uv, Python 3.12 und allen Wheels. Das liegt knapp unter
+Desktops ~55-s-Start-Timeout. Bricht Desktop ab, ist der Cache danach warm und der nächste Start
+schnell. Warmer Zweitstart mit Handshake: 1,03 s. `requirements.lock`: 1064 Hashzeilen,
+letzte Zeile `chemdraw-mcp==0.6.0 --hash=sha256:235f6773… --hash=sha256:0bfe7648…` (= PyPI-Digests).
+
+**Rotprobe Paket-Hash** (gleiches Bundle, Pillow-Hashes in `requirements.lock` genullt, warmer Cache):
+
+```
+Computed:
+  sha256:fc481f742ccda20e9ed760b8f978dff50f2a4e9bc253ac167fb0a05b0783ef52
+chemdraw-mcp bundle: FEHLER: Installation von chemdraw-mcp 0.6.0 fehlgeschlagen (Netz? Hash-Abweichung?). …
+```
+
+Kein Server-Start, keine `env-0.6.0` übrig.
+
+**Rotprobe uv-Prüfsumme** (im Gate, ohne Netz): `tests/test_mcpb_start.py::test_falsche_uv_pruefsumme_bricht_den_start_ab`
+liefert ein Stub-uv per `file://` mit falscher Prüfsumme aus. Erwartet wird: Exit ≠ 0, „Prüfsumme … stimmt nicht“,
+das Stub-uv wird nie ausgeführt und bleibt nicht liegen. Der Test wurde mit abgeschaltetem Vergleich in
+`uv-holen.sh` rot gesehen. Gegen das alte `run.sh` scheiterten 14 von 15 Starttests.
+
+**Gate:** `./test.sh` rc=0 (7348 passed / 16 skipped, Frontend 31 + 82 + 2 pass). `actionlint` für
+`publish.yml` grün. `scripts/uv-pruefsummen.sh 0.13.6` erzeugt die eingecheckte Datei byte-identisch.
+
+**Restpunkte:** Python selbst holt uv mit seinen eingebauten Prüfsummen; dafür ist die feste uv-Version
+zuständig, das bleibt außerhalb von B4. Der Release-Pfad (`bundle`-Job mit `uv export` in CI) läuft erst
+beim nächsten Release wirklich.
