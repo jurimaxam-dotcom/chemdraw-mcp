@@ -1,5 +1,82 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 22:54
+
+**Nächster Schritt:** Tisch-Faden `20261030-225321-welle-2-predict-spectrum` lesen
+(`~/.claude/bin/tisch lies --faden … --ich codex`). Opus hat `predict_spectrum`
+mit `3945648` freigeschaltet und Desktop neu gestartet. Codex übernimmt jetzt
+README-Textbeispiel und drei Desktop-Handtests. **Am neuen Auftrag noch nichts
+gebaut oder getestet.** Kein Panel, deshalb kein neuer Host-Fall.
+
+1. Vor Änderungen eigene Dateien reservieren (`README.md`, Prüfbericht unter
+   `docs/`); fremde Server-/Snapshot-/Python-Dateien bei Opus belassen.
+2. README-Abschnitt mit echtem Textbeispiel ergänzen. Einstiege: `README.md:140`
+   (Feature reference), `:229` (`predict_spectrum`), `:280` (Profiles; nennt bisher
+   10 Tools und muss nach verifizierter Freischaltung mitwandern). Aktuellen
+   Serverkatalog frisch prüfen; weitere Welle-2-Freischaltungen können parallel
+   eintreffen. Keine neue Software bauen, nur bestehenden Umfang dokumentieren.
+3. Desktop-Drehbuch, jeder Prompt in neuem Chat, unverändert:
+   - `Welche IR-Banden erwarte ich bei Aspirin?` → `predict_spectrum`,
+     `topic=ir_bands`, `structure` darf der Name sein. Toolüberschrift
+     Expected IR bands for Aspirin (`CC(=O)Oc1ccccc1C(=O)O`);
+     O–H 3300–2500 und zwei C=O-Zeilen.
+   - `Ich hab im IR eine starke Bande bei 1715 cm-1 — was kann das sein?`
+     → `predict_spectrum`, `assign_wavenumber`, Tabelle Keton + Carbonsäure.
+   - `How many signals does ethyl acetate give in the 1H NMR?`
+     → `predict_spectrum`, `nmr_signals`, 3 Signale, Verhältnis 3:3:2.
+   - Screenshots `/tmp/chemdraw-desktop-test/welle2-predict_spectrum-*.png`,
+     zusätzlich AX-Text und tatsächlichen Toolnamen/Argumente belegen.
+4. Commit je Schritt, push; Bericht an Opus mit Kopfblock `---`,
+   `status/abnahme/dateien/offen`, Datei jeweils `pfad @ einzelner-commit`.
+   Neues Ergebnis nicht mit altem Welle-1-Grün vermischen.
+
+**Desktop-Bedienung / zugesagte Beweisform:** CUA neu binden, nach Prozessneustart
+frische AX-Daten und Screenshot vergleichen. Bei Widerspruch einmal
+`osascript -e 'tell application "Claude" to activate'`, dann erneut lesen.
+Das löste im letzten Lauf die scheinbar alten Screenshots; AX-Raise allein
+reichte nicht. Nach zwei erfolglosen Bindungsversuchen stoppen und berichten.
+Neustart: `osascript -e 'quit app "Claude"'`, Prozessende mit `pgrep -x Claude`
+prüfen, erst danach `open -a Claude`; auf abgeschlossene `tools/list` im
+`~/Library/Logs/Claude/mcp-server-chemdraw-tool.log` achten. Nicht sofort nach
+`quit` öffnen, solange der alte Prozess noch lebt. Screenshots speichern und
+ansehen; ein Modelltext über fehlende Tools beweist keine tatsächliche Toolliste.
+Keine laufenden eigenen Hintergrundjobs oder Wartezeiten bei diesem Neustart.
+
+**Bereits erledigt, nicht wiederholen:**
+- [x] Welle-1-Hostfälle SN1/SN2/Fischer und 3D: `187eccd`; Gegenproben einmal
+  rot, danach grün. Standardprofil seit `5a521a2`.
+- [x] Echte README-Bilder und ehrlicher Galerie-/3D-Text: `1001027`.
+  README auf 10 Tools nach lookup: `7616b96`.
+- [x] Acht Desktop-Fälle nach Extension-Abgleich ausgeführt/dokumentiert:
+  `docs/welle1-host-desktop-2026-10-30.md:79`, Ergebnistabelle `:149`,
+  Commit `50b5806`. **Nur Diels–Alder bestanden; keine grüne Welle-1-Abnahme.**
+  Fischer/Wasser/CAS/Glucose/Coffein meist Text statt erwartetem Tool;
+  SN2 nimmt `generate_reaction`; Ibuprofen berechnet selbst per Befehl
+  (nach zwei Minuten gestoppt), kein ChemDraw-3D-Panel.
+- [x] Extension 0.5.1 installiert und auf ihrer UI-Detailseite bereits
+  **deaktiviert** vorgefunden; nicht deinstalliert/reaktiviert.
+  `/tmp/chemdraw-desktop-test/extension-disabled.png`.
+- [x] Frischer Handshake: 10 Tools/8 Panels, Exit 0,
+  `/tmp/chemdraw-wave1-followup-handshake.log`. Host/Gate nochmals Exit 0,
+  7.393 Python-Tests/16 übersprungen, Bundle/Frontend grün:
+  `/tmp/chemdraw-wave1-final-ten-host.log`, `…-gate.log`.
+  Läufe starteten bei `7616b96`, parallel begann fremde Welle-2-Arbeit;
+  keine Abnahme dieses zusätzlichen Umfangs behaupten.
+- [x] Bericht an Chef: Folgefaden `20261030-224243-folge-zu-faden-20261030` #5.
+  Alle eigenen bisherigen Änderungen gepusht. Keine fremde WIP geändert.
+
+**Offene Fragen an Jay (unbeantwortet — nicht bauen):**
+- „Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil?“
+- Zu `calculate_ph`: „bleibt es in Welle 2?“
+
+**Weiter offen:** Desktop-Toolauswahl/-Entdeckung aus Welle 1 bleibt fehlerhaft,
+obwohl Extension deaktiviert, Prozess neu und unabhängiger Katalog korrekt.
+Keine Ursache als bewiesen behaupten. Anthropic-`--check` war nach etwa zwölf
+Minuten HTTPS-Verbindungsaufbau ohne Ergebnis abgebrochen (Exit 130), kein
+`--update`. Bei neuer Panel-/Architekturarbeit erneut prüfen. Weitere Welle-2-
+Tools kommen laut Opus als eigene Tisch-Aufträge; nicht vorwegnehmen.
+
+
 ## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
 
 > Auftrag Jay 30.10.: die 16 fürs Release zurückgenommenen Tools sauber wieder ins
