@@ -185,11 +185,29 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 - Stand Standardprofil nach Welle 1: 10 Tools, 8 Panels (Handshake grün).
 
 ### Welle 2 — Spektren & allgemeine Laborgrafik (Release-Kandidat danach)
-- [ ] predict_spectrum
-- [ ] generate_spectrum
-- [ ] generate_tlc
-- [ ] generate_titration_curve + generate_species_distribution (teilen `ph_plots.exact_ph`,
-  zusammen freischalten)
+- [ ] predict_spectrum — Serverseite fertig `3945648`; offen: Desktop-Handtest (Codex).
+  Behoben: `structure="Aspirin"` scheiterte („could not be parsed"), das Modell musste SMILES
+  tippen → läuft jetzt durch `resolve()`. Zäune generate_molecule/lookup → predict_spectrum.
+  Notiert: Ausgabe doppelt („3 signal(s) for 8 hydrogens" in Kopf und Bullet).
+- [ ] generate_spectrum — Serverseite fertig `c6c847c` + Desktop-Fix `6ba60ca`; offen:
+  Desktop-Handtest (Codex). Behoben: überlappende IR-Banden (Aspirin C=O 1750/1690) addiert und
+  bei 0 % abgeschnitten → Transmission multipliziert; Fehlertexte englisch; Exportknopf in
+  SpectrumView (ExportPngButton). **Offen, Desktop-Befund (Codex):** „Aspirin IR-Spektrum
+  schematisch" geht auch nach eigenem Auswahltext (`6ba60ca`) an Desktops eingebautes
+  `visualize` — nicht weiter ohne Desktop-Messung an der Beschreibung drehen; Codex' sieben
+  Fälle gesammelt auswerten. Notiert: 12–19 KB Text ans Modell (SVG inline im Payload-JSON).
+- [ ] generate_tlc — Serverseite fertig `90cfd7b` (+ Exportknopf `d6098a9`); offen:
+  Desktop-Handtest (Codex). Behoben: sieben deutsche Fehlermeldungen; erster Zaun überhaupt
+  (⇄ generate_reaction, → generate_spectrum), 3 Routingfälle (vorher 0). Notiert: eng
+  benachbarte Flecken (0,50/0,52) überdecken ihre Rf-Beschriftung; 8–16 KB Modelltext.
+- [ ] generate_titration_curve + generate_species_distribution — Serverseite fertig `6093b88`
+  (+ Exportknopf PlotView `d6098a9`); offen: Desktop-Handtest (Codex). Behoben: absteigende
+  pKa ([7.2, 2.1]) still gezeichnet (Pufferpunkte neben der Kurve, HA⁻ verschwand) → Fehler;
+  Fehlertexte englisch. Eigene MVP-Auswahltexte ohne calculate_ph/calculate_content/
+  generate_dose_response. Notiert: 17–24 KB Modelltext (Phosphorsäure); `notes` leer — das
+  Modell sieht EP-Volumen/-pH nur im Bild.
+- Stand Standardprofil nach Welle 2: 15 Tools, 12 Panels (Handshake grün). Randnotiz:
+  generate_molecule-Auswahltext bei 2010 B — der nächste Zaun dort braucht Kürzung.
 - [ ] calculate_ph — **Ausnahme** vom „Rechnen später": pH/Puffer ist Grundstudium.
   **Jay:** bleibt es in Welle 2?
 
