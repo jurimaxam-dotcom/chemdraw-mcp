@@ -62,21 +62,26 @@ conditions above and below it, live in the chat panel:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-reaction.gif" alt="Fischer esterification with an equilibrium arrow and conditions above and below it in the chat panel" width="640"></p>
 
+*"Show the Fischer esterification mechanism step by step"* —
+`generate_mechanism` opens a gallery of three fixed textbook examples:
+SN1 (2-bromopropane + water), SN2 (bromomethane + hydroxide), and Fischer
+esterification (acetic acid + methanol). Curved arrows show electron flow;
+**Step by step** and **Next / Back** move through the intermediates. Substrates
+are checked for compatibility; they do not replace the molecules in the example.
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="Real MCP panels for SN1, SN2 and Fischer esterification textbook examples, each showing the second step with curved electron-flow arrows" width="960"></p>
+
+*"Show caffeine in 3D"* — `generate_3d` embeds a conformer using ETKDG and a
+force field, opens a ball-and-stick panel you can drag to rotate, and exports
+an SDF file. The panel below comes from a real tool call.
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-3d.png" alt="Caffeine conformer rendered by generate_3d in the interactive ball-and-stick panel" width="530"></p>
+
 <details>
 <summary>Additional examples — full profile only</summary>
 
 The following collection includes features paused in the MVP. Use
 `CHEMDRAW_PROFILE=full` to enable the complete feature set.
-
-*"Show the Fischer esterification mechanism step by step"* —
-`generate_mechanism` renders curved electron-flow arrows in the interactive
-panel:
-
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-mechanism.gif" alt="Step-by-step Fischer esterification mechanism with curved arrows in the chat panel" width="560"></p>
-
-The overview lays every step out in one column with the same bond length, so reactants, transition state and products read at a glance:
-
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-overview.png" alt="SN2 overview: reactants, transition state with partial bonds and curved arrows, products" width="520"></p>
 
 *"Make a scope figure of my Suzuki couplings: 3a 92%, 3b 88% after 12 h,
 3c 64% with ee 94% and dr 10:1, 3d 71%"* — `generate_scope_table` sets the
@@ -95,11 +100,6 @@ both, some educt left"* — `generate_tlc` draws the plate the lab report asks
 for, with mobile phase and detection as its caption:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-esterification.png" alt="TLC plate sketch with four lanes: educt at Rf 0.30, reaction lane with a faint educt spot and the ester at 0.65, co-spot lane with both, reference lane at 0.65" width="520"></p>
-
-*"Show caffeine in 3D"* — `generate_3d` embeds the molecule (ETKDG + force
-field) and opens a drag-to-rotate ball-and-stick viewer in the chat panel:
-
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="Rotating 3D ball-and-stick caffeine model inside the concave viewer" width="560"></p>
 
 *"Titration curve of phosphoric acid with NaOH, phenolphthalein as
 indicator"* — `generate_titration_curve` computes pH from the exact charge
@@ -141,7 +141,7 @@ formulas, so the picture and the number never disagree.
 
 All 23 tools exposed with `CHEMDRAW_PROFILE=full`. The default MVP registers only
 `generate_molecule`, `batch_generate`, `compare_molecules`, `generate_reaction`,
-`export_anki_deck`, `lookup_molecule_data` and the panel's internal `save_png`.
+`generate_mechanism`, `generate_3d`, `export_anki_deck`, `lookup_molecule_data` and the panel's internal `save_png`.
 Files are written to `~/ChemDraw-Output/`;
 every drawing tool also returns a live preview for the in-chat panel.
 
@@ -154,8 +154,9 @@ every drawing tool also returns a live preview for the in-chat panel.
 - **`generate_reaction`** — educts + products + conditions → reaction scheme
   with conditions above and below the arrow; forward (→), equilibrium (⇌) or
   retrosynthetic (⇒) arrow, formula digits subscripted (H2SO4 → H₂SO₄)
-- **`generate_mechanism`** — curved-arrow mechanisms (SN1, SN2, Fischer
-  esterification) step by step
+- **`generate_mechanism`** — fixed textbook examples for SN1, SN2 and Fischer
+  esterification, with curved arrows and interactive steps; substrates are
+  checked for compatibility, not substituted into the drawings
 - **`generate_scope_table`** — the substrate-scope figure of the methodology
   literature: the general equation with its conditions on top, below it a
   grid of products, each with identifier ("1a") and yield ("78%") plus
@@ -278,10 +279,10 @@ exposes exactly the 23 tools above. The MVP never registers vault tools.
 
 ## Profiles
 
-The default **MVP profile** focuses on five jobs: draw a molecule, draw several
-individual structures, compare compounds, draw a reaction scheme, and turn
-structures into Anki flashcards. The panel also supports compound data sheets,
-PNG export and an Add to Anki button. It registers seven tools in total.
+The default **MVP profile** focuses on seven jobs: draw a molecule, draw several
+individual structures, compare compounds, draw a reaction scheme, explore textbook mechanisms,
+view a rotatable 3D conformer, and turn structures into Anki flashcards. The panel also supports compound data sheets,
+PNG export and an Add to Anki button. It registers nine tools in total.
 This is a general chemistry workflow for study, teaching and lab reports.
 
 Other features remain in the code and in the optional **full profile**, but are
