@@ -1,0 +1,7 @@
+version: 2
+updates:
+  # SHA-Pins in .github/workflows altern sonst still (Sicherheitsscan B2).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
