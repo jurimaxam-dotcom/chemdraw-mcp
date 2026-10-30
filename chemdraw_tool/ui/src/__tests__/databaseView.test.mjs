@@ -104,3 +104,24 @@ test("GHS: gescheiterter Abruf sagt das, statt leer zu sein", async () => {
   assert.match(textOf(panel("data")), /could not be retrieved/);
   unmount();
 });
+
+// --- Link-Schema (Sicherheitsscan B7) ------------------------------------------
+// Quell-URLs stammen aus PubChem-Depositor-Metadaten, also von Dritten.
+test("Quell-Links nur mit http/https — javascript: wird nicht verlinkt", () => {
+  const evil = {
+    ...DATABASE,
+    sources: [
+      { ...DATABASE.sources[0], url: "javascript:alert(1)" },
+      ...DATABASE.sources.slice(1),
+    ],
+  };
+  const { container, unmount } = setup(evil);
+  const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+  assert.ok(!hrefs.some((h) => /^\s*javascript:/i.test(h || "")), `gefaehrlicher Link: ${hrefs}`);
+  unmount();
+
+  const ok = setup();
+  const okHrefs = [...ok.container.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+  assert.ok(okHrefs.includes("https://pubchem.ncbi.nlm.nih.gov/compound/2244"), `https-Link fehlt: ${okHrefs}`);
+  ok.unmount();
+});

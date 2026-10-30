@@ -52,6 +52,16 @@ function ghsRows(group) {
   return rows;
 }
 
+// Quell-URLs kommen aus PubChem-Depositor-Metadaten, also von Dritten: nur
+// http/https verlinken, sonst liefe ein javascript:-Link im Panel (Sicherheitsscan B7).
+function safeHref(url) {
+  try {
+    return ["http:", "https:"].includes(new URL(url).protocol) ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 function GhsGroup({ group, initiallyOpen }) {
   const [open, setOpen] = useState(initiallyOpen);
   const bodyId = `ghs-body-${group.id}`;
@@ -65,7 +75,7 @@ function GhsGroup({ group, initiallyOpen }) {
     {group.note && <p className="ghs-note">{group.note}</p>}
     {open && <div id={bodyId}>
       <DataTable rows={ghsRows(group)} />
-      {group.url && <a className="source-link" href={group.url} target="_blank" rel="noopener noreferrer">Source record →</a>}
+      {safeHref(group.url) && <a className="source-link" href={safeHref(group.url)} target="_blank" rel="noopener noreferrer">Source record →</a>}
     </div>}
   </section>;
 }
@@ -87,7 +97,7 @@ function SourcePanel({ source, moleculeSvg }) {
         {groups.length > 0 ? <GhsGroups groups={groups} /> : rows.length > 0 && <DataTable rows={rows} />}
       </div>
     </div>
-    {source.url && <a className="source-link" href={source.url} target="_blank" rel="noopener noreferrer">{source.source || "View source"} →</a>}
+    {safeHref(source.url) && <a className="source-link" href={safeHref(source.url)} target="_blank" rel="noopener noreferrer">{source.source || "View source"} →</a>}
   </section>;
 }
 
