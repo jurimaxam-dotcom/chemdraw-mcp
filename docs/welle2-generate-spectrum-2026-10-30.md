@@ -103,3 +103,26 @@ C=O-Beschriftung; das löst die allgemeine Kollision im Renderer nicht.
 
 - Beschreibungs-Fix gegen `visualize`, Desktop-Neustart und erneute Toolwahl.
 - Live-Desktop-Export erst nach tatsächlichem ChemDraw-Panel prüfbar.
+
+## Weitere Verifikation und Übergabe
+
+`./scripts/handshake.sh`: Exit 0, registrierter absoluter Startbefehl über
+`/opt/homebrew/bin/uv`; gemeldet **13 Tools / 10 Panels**. Zwischenzeitlich ist
+`generate_tlc` mit `90cfd7b` dazugekommen; die ursprünglichen 12/9 sind deshalb
+kein aktueller Sollwert mehr. Handshake-Log:
+`/tmp/chemdraw-desktop-test/welle2-handshake.log`.
+
+`uv run python scripts/anthropic_sync.py --check` gestartet, nach sechs Minuten
+ohne Ausgabe beendet. Kein abgeschlossener Dokumentationsabgleich und kein
+`--update`; diese Etappe ergänzt vorhandene Tests und ein Rendererbeispiel,
+ändert keine Panelarchitektur. Den Sync vor weiterer Architekturarbeit erneut
+ausführen.
+
+Eigene Commits: README/Bild `862b781`, Hostfälle/Prüfbericht `600edd3`.
+Hostgrün umfasst den noch uncommitteten Exportknopf-Arbeitsstand des anderen
+Arbeiters (SpectrumView.jsx plus dist), daher erst mit dessen Fix-Commit als
+reproduzierbare Gesamtversion abnehmen. Kein fremdes WIP in eigene Commits
+aufgenommen. Die Desktop-Toolwahl nach diesem Fix ist noch ungetestet.
+
+Tisch-Faden `20261030-225903-welle-2-generate-spectrum` ist nach Nachricht 6
+am Hop-Limit. Kein neuer Faden zur Umgehung dieses Limits.
