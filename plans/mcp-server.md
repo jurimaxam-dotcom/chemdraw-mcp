@@ -96,8 +96,16 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 - [ ] generate_mechanism — **Entscheid 30.10.:** ehrliche Lehrbuch-Galerie (SN1, SN2,
   Fischer-Ester). Titel und Beschreibung sagen „textbook example", `reaction_type` listet die drei
   Typen vollständig (kein „e.g."), die Substrate prüfen nur die Passung; Fehlermeldungen englisch.
-- [ ] generate_3d
-- [ ] lookup
+  Serverseite fertig `142e581` (DoD 1–5); offen: Desktop-Handtest (Codex).
+- [ ] generate_3d — Serverseite fertig `044e8d6` (Zäune ⇄ generate_molecule, 3 Routingfälle);
+  offen: Desktop-Handtest (Codex).
+- [ ] lookup — Serverseite fertig `ed2dee2`. Behobene Befunde: KEGG nahm den ersten unscharfen
+  Treffer („glucose" → UDP-glucose C00029, jetzt C00031), Ausgabe halb deutsch → englisch, leere
+  Zeile „| **** |" in physical, Link „CID ?". Offen: Desktop-Handtest (Codex).
+  Nicht behoben, notiert: 6–10 s je Aufruf (PubChem/ChEBI/KEGG nacheinander); ChEBI-Zeitüberschreitung
+  erscheint als „No ChEBI entry found" (Ausfall ≠ kein Eintrag); Familiennamen wie „xylene" →
+  „not found" statt Isomerauswahl (lookup umgeht den Resolver).
+- Stand Standardprofil nach Welle 1: 10 Tools, 8 Panels (Handshake grün).
 
 ### Welle 2 — Spektren & allgemeine Laborgrafik (Release-Kandidat danach)
 - [ ] predict_spectrum
