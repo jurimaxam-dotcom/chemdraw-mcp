@@ -1,81 +1,92 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 22:54
+## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 23:22
 
-**Nächster Schritt:** Tisch-Faden `20261030-225321-welle-2-predict-spectrum` lesen
-(`~/.claude/bin/tisch lies --faden … --ich codex`). Opus hat `predict_spectrum`
-mit `3945648` freigeschaltet und Desktop neu gestartet. Codex übernimmt jetzt
-README-Textbeispiel und drei Desktop-Handtests. **Am neuen Auftrag noch nichts
-gebaut oder getestet.** Kein Panel, deshalb kein neuer Host-Fall.
+**Nächster Schritt:** zuerst `~/.claude/bin/tisch lies --neu --ich codex` und
+Faden `20261030-231601-welle-2-ph-kurven` lesen. Bericht #5 ist an Opus
+abgeliefert, noch keine Antwort. Kein Bau-Auftrag offen; neue Arbeit nur
+nach aktuellem Tisch-Auftrag. Bei Diagnose zuerst die Weitergabe der
+Toolliste Desktop → Remote-Gerät/Modell prüfen, bevor Beschreibungen weiter
+geändert werden. Read-only anfangen; keine Setup-Umbauten auf Verdacht.
 
-1. Vor Änderungen eigene Dateien reservieren (`README.md`, Prüfbericht unter
-   `docs/`); fremde Server-/Snapshot-/Python-Dateien bei Opus belassen.
-2. README-Abschnitt mit echtem Textbeispiel ergänzen. Einstiege: `README.md:140`
-   (Feature reference), `:229` (`predict_spectrum`), `:280` (Profiles; nennt bisher
-   10 Tools und muss nach verifizierter Freischaltung mitwandern). Aktuellen
-   Serverkatalog frisch prüfen; weitere Welle-2-Freischaltungen können parallel
-   eintreffen. Keine neue Software bauen, nur bestehenden Umfang dokumentieren.
-3. Desktop-Drehbuch, jeder Prompt in neuem Chat, unverändert:
-   - `Welche IR-Banden erwarte ich bei Aspirin?` → `predict_spectrum`,
-     `topic=ir_bands`, `structure` darf der Name sein. Toolüberschrift
-     Expected IR bands for Aspirin (`CC(=O)Oc1ccccc1C(=O)O`);
-     O–H 3300–2500 und zwei C=O-Zeilen.
-   - `Ich hab im IR eine starke Bande bei 1715 cm-1 — was kann das sein?`
-     → `predict_spectrum`, `assign_wavenumber`, Tabelle Keton + Carbonsäure.
-   - `How many signals does ethyl acetate give in the 1H NMR?`
-     → `predict_spectrum`, `nmr_signals`, 3 Signale, Verhältnis 3:3:2.
-   - Screenshots `/tmp/chemdraw-desktop-test/welle2-predict_spectrum-*.png`,
-     zusätzlich AX-Text und tatsächlichen Toolnamen/Argumente belegen.
-4. Commit je Schritt, push; Bericht an Opus mit Kopfblock `---`,
-   `status/abnahme/dateien/offen`, Datei jeweils `pfad @ einzelner-commit`.
-   Neues Ergebnis nicht mit altem Welle-1-Grün vermischen.
+**Hauptbefund:** Desktop verbindet laut `~/Library/Logs/Claude/main.log:25233`
+am 30.10. um 23:16:28 **15 Tools**. Ein frischer Kontrollchat nennt trotzdem
+nur die **7 alten** Namen und Präfix `mcp__remote-devices__chemdraw-tool__`.
+Dokumentiert in `docs/welle2-ph-desktop-2026-10-30.md:12`, Kontrollchat
+`bd13de2a-3124-4cce-a52e-429c528a212a`. Modell-Selbstauskunft ist ein Hinweis,
+kein endgültiger Beweis des Modellkontexts oder der Cache-Ursache. Daher
+sind die beobachteten Fehlroutings keine isolierte Bewertung der neuen
+Toolbeschreibungen.
 
-**Desktop-Bedienung / zugesagte Beweisform:** CUA neu binden, nach Prozessneustart
-frische AX-Daten und Screenshot vergleichen. Bei Widerspruch einmal
-`osascript -e 'tell application "Claude" to activate'`, dann erneut lesen.
-Das löste im letzten Lauf die scheinbar alten Screenshots; AX-Raise allein
-reichte nicht. Nach zwei erfolglosen Bindungsversuchen stoppen und berichten.
-Neustart: `osascript -e 'quit app "Claude"'`, Prozessende mit `pgrep -x Claude`
-prüfen, erst danach `open -a Claude`; auf abgeschlossene `tools/list` im
-`~/Library/Logs/Claude/mcp-server-chemdraw-tool.log` achten. Nicht sofort nach
-`quit` öffnen, solange der alte Prozess noch lebt. Screenshots speichern und
-ansehen; ein Modelltext über fehlende Tools beweist keine tatsächliche Toolliste.
-Keine laufenden eigenen Hintergrundjobs oder Wartezeiten bei diesem Neustart.
+**Dateien / Beweisformen zum Weiterarbeiten:**
+- `docs/welle2-ph-desktop-2026-10-30.md:47`: vier pH-Desktopfälle;
+  `:56`: Backend/Host; `:84`: numerisch belegter Pufferpunktfehler.
+- `docs/welle2-tlc-desktop-2026-10-30.md:15`: vier Spektren-Retests;
+  `:75`: drei DC-Desktopfälle; `:31`: DC-Host/Backend.
+- `docs/welle2-generate-spectrum-2026-10-30.md:32`: ursprünglicher fehlender
+  Exportknopf, einmal rot; danach Fix bei Opus und Host grün.
+- `chemdraw_tool/ui/src/host/host.e2e.mjs:93`: Spektren; `:156`: DC;
+  `:207`: pH-Plots. Gegen echten Server, sandboxed AppBridge, Wegwerf-HOME,
+  echte SVG-Geometrie und PNG-Magic-Bytes, Export über `save_png` geprüft.
+- Alle Desktop-Screenshots/AX und Logs liegen in `/tmp/chemdraw-desktop-test/`:
+  `welle2-generate_spectrum-retest-*`, `welle2-generate_tlc-*`, `welle2-ph-*`.
+  Host-Bilder haben `host` im Namen und ersetzen keine Desktop-Abnahme.
 
-**Bereits erledigt, nicht wiederholen:**
-- [x] Welle-1-Hostfälle SN1/SN2/Fischer und 3D: `187eccd`; Gegenproben einmal
-  rot, danach grün. Standardprofil seit `5a521a2`.
-- [x] Echte README-Bilder und ehrlicher Galerie-/3D-Text: `1001027`.
-  README auf 10 Tools nach lookup: `7616b96`.
-- [x] Acht Desktop-Fälle nach Extension-Abgleich ausgeführt/dokumentiert:
-  `docs/welle1-host-desktop-2026-10-30.md:79`, Ergebnistabelle `:149`,
-  Commit `50b5806`. **Nur Diels–Alder bestanden; keine grüne Welle-1-Abnahme.**
-  Fischer/Wasser/CAS/Glucose/Coffein meist Text statt erwartetem Tool;
-  SN2 nimmt `generate_reaction`; Ibuprofen berechnet selbst per Befehl
-  (nach zwei Minuten gestoppt), kein ChemDraw-3D-Panel.
-- [x] Extension 0.5.1 installiert und auf ihrer UI-Detailseite bereits
-  **deaktiviert** vorgefunden; nicht deinstalliert/reaktiviert.
-  `/tmp/chemdraw-desktop-test/extension-disabled.png`.
-- [x] Frischer Handshake: 10 Tools/8 Panels, Exit 0,
-  `/tmp/chemdraw-wave1-followup-handshake.log`. Host/Gate nochmals Exit 0,
-  7.393 Python-Tests/16 übersprungen, Bundle/Frontend grün:
-  `/tmp/chemdraw-wave1-final-ten-host.log`, `…-gate.log`.
-  Läufe starteten bei `7616b96`, parallel begann fremde Welle-2-Arbeit;
-  keine Abnahme dieses zusätzlichen Umfangs behaupten.
-- [x] Bericht an Chef: Folgefaden `20261030-224243-folge-zu-faden-20261030` #5.
-  Alle eigenen bisherigen Änderungen gepusht. Keine fremde WIP geändert.
+**Schon erledigt — nicht wiederholen:**
+- [x] Spektren-Host + Aspirin-README-Bild: `862b781`, `600edd3`, `362919c`.
+  41 Backendtests grün. Exportknopf-Fix `6ba60ca` bei Opus.
+- [x] Vier Spektren-Retests und drei DC-Desktopfälle ausgeführt:
+  **0/7 erwartete ChemDraw-Aufrufe**, sechs Visualize-Widgets, einmal eigene
+  SVG/PNG per Befehle. Bericht `0c36b4b`; keine grüne Desktop-Abnahme.
+- [x] DC-Host mit Co-Spot 1/1/2 Flecken, Laufmittel und Rf 0.35/0.70,
+  Export und neues README-Bild: `2c9a71a`; 43 Backendtests grün.
+- [x] Desktop kontrolliert beendet (pgrep leer), neu gestartet;
+  tools/list am 22:16:29Z beantwortet. Dann Kontrollchat plus vier pH-Fälle.
+  **0/4 erwartete ChemDraw-Aufrufe**: ein Visualize-Widget, drei Mathviz-
+  Freigabeanfragen. Keine Mathviz-Freigabe erteilt; fertige Fremdgrafik nicht
+  behaupten. Bericht mit Details `a6d6e86`.
+- [x] Vier pH-Hostfälle inkl. EP 25 mL, Indikatorband, zwei/vier Spezies und
+  Export; 26 Backendtests, Gesamt-Hostlauf Exit 0. README Essigsäurekurve
+  und Phosphorsäure-Spezies: `5eb9c43`.
+- [x] Alle eigenen Änderungen bis `a6d6e86` gepusht; keine fremde WIP
+  übernommen. Berichte an Opus: Spektren-Faden erreichte Hop-Limit 6;
+  DC-Faden `20261030-231009-welle-2-generate-tlc` #4;
+  pH-Faden `20261030-231601-welle-2-ph-kurven` #5.
+- [x] Frühere Welle-1-Arbeit bleibt dokumentiert:
+  `docs/welle1-host-desktop-2026-10-30.md:79`, `:149`, Commit `50b5806`.
+  Nur Diels–Alder bestanden, keine grüne Gesamt-Abnahme. Installierte
+  Extension damals deaktiviert vorgefunden, nicht reaktiviert.
 
-**Offene Fragen an Jay (unbeantwortet — nicht bauen):**
+**Separat offen — Renderer, nicht Desktop:** Phosphorsäure-Pufferpunkte sind
+auf pKa gesetzt statt auf die exakte Kurve. Bei 62.5 mL: Kurve pH 11.861965,
+roter Punkt 12.35; bei 12.5 mL: 2.285969 gegenüber 2.15. Reproducer und Bild
+in `docs/welle2-ph-desktop-2026-10-30.md:84`. An Opus übergeben; noch kein
+Fix-Auftrag für Codex. Backend-/Host-Grün prüft diese Übereinstimmung nicht.
+Lange Spektrenlabels überlappen ebenfalls teilweise (Bericht DC/Spektren).
+
+**Offene Fragen an Jay (wörtlich, unbeantwortet — nicht bauen):**
 - „Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil?“
 - Zu `calculate_ph`: „bleibt es in Welle 2?“
 
-**Weiter offen:** Desktop-Toolauswahl/-Entdeckung aus Welle 1 bleibt fehlerhaft,
-obwohl Extension deaktiviert, Prozess neu und unabhängiger Katalog korrekt.
-Keine Ursache als bewiesen behaupten. Anthropic-`--check` war nach etwa zwölf
-Minuten HTTPS-Verbindungsaufbau ohne Ergebnis abgebrochen (Exit 130), kein
-`--update`. Bei neuer Panel-/Architekturarbeit erneut prüfen. Weitere Welle-2-
-Tools kommen laut Opus als eigene Tisch-Aufträge; nicht vorwegnehmen.
+**Wartezeiten / Folgeaktion:** keine laufenden eigenen Jobs, kein offener
+Fix mitten im Test. Drei Mathviz-Freigabeanfragen bleiben nur in den
+Testchats; sie laufen nicht. Desktop darf nach Bericht neu gestartet werden.
+Tisch-Postfach beim frischen Start prüfen; vorhandenen Hop-Platz beachten,
+keinen neuen Faden zur Umgehung eines Limits anlegen.
+`anthropic_sync.py --check` wurde mehrfach ohne Ausgabe nach mehreren
+Minuten beendet, zuletzt rund 4.5 Minuten. Kein erfolgreicher Abgleich und
+kein `--update`. Vor echter Panel-/Architekturarbeit erneut prüfen und
+Netz-/Quellenproblem eingrenzen; die abgeschlossenen Etappen ändern nur
+Tests, Bilder und Doku.
 
+**Zugesagte Prüfmethoden:** Desktop über CUA frisch binden; vor Eingaben
+aktuelle AX-Ziele lesen. Neustart per Cmd-Q, Prozessende mit `pgrep -x Claude`
+prüfen, danach erst starten und beantwortetes tools/list abwarten. Jeder
+Drehbuch-Prompt unverändert in neuem Chat, Toolname/Argumente + Screenshot
+und AX sichern. Stdio-Handshake zeigt den registrierten Startbefehl;
+Toolzahl allein beweist weder Versionsgleichheit noch Modell-Sichtbarkeit.
+Host/Python/Bundle/Installation/Desktop getrennt berichten. Keine
+ungeprüfte Modellbehauptung über Toolverfügbarkeit als Ursache übernehmen.
 
 ## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
 
@@ -190,18 +201,18 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
   tippen → läuft jetzt durch `resolve()`. Zäune generate_molecule/lookup → predict_spectrum.
   Notiert: Ausgabe doppelt („3 signal(s) for 8 hydrogens" in Kopf und Bullet).
 - [ ] generate_spectrum — Serverseite fertig `c6c847c` + Desktop-Fix `6ba60ca`; offen:
-  Desktop-Handtest (Codex). Behoben: überlappende IR-Banden (Aspirin C=O 1750/1690) addiert und
+  Desktop-Retests ausgeführt, Toolwahl weiterhin rot (`0c36b4b`). Behoben: überlappende IR-Banden (Aspirin C=O 1750/1690) addiert und
   bei 0 % abgeschnitten → Transmission multipliziert; Fehlertexte englisch; Exportknopf in
   SpectrumView (ExportPngButton). **Offen, Desktop-Befund (Codex):** „Aspirin IR-Spektrum
   schematisch" geht auch nach eigenem Auswahltext (`6ba60ca`) an Desktops eingebautes
   `visualize` — nicht weiter ohne Desktop-Messung an der Beschreibung drehen; Codex' sieben
   Fälle gesammelt auswerten. Notiert: 12–19 KB Text ans Modell (SVG inline im Payload-JSON).
 - [ ] generate_tlc — Serverseite fertig `90cfd7b` (+ Exportknopf `d6098a9`); offen:
-  Desktop-Handtest (Codex). Behoben: sieben deutsche Fehlermeldungen; erster Zaun überhaupt
+  Desktop-Handtest ausgeführt, Toolwahl rot (`0c36b4b`); Host/README `2c9a71a`. Behoben: sieben deutsche Fehlermeldungen; erster Zaun überhaupt
   (⇄ generate_reaction, → generate_spectrum), 3 Routingfälle (vorher 0). Notiert: eng
   benachbarte Flecken (0,50/0,52) überdecken ihre Rf-Beschriftung; 8–16 KB Modelltext.
 - [ ] generate_titration_curve + generate_species_distribution — Serverseite fertig `6093b88`
-  (+ Exportknopf PlotView `d6098a9`); offen: Desktop-Handtest (Codex). Behoben: absteigende
+  (+ Exportknopf PlotView `d6098a9`); Host/README `5eb9c43`, Desktop 0/4 (`a6d6e86`). Offen: Toollisten-Diskrepanz und falsche Pufferpunkte (oben). Behoben: absteigende
   pKa ([7.2, 2.1]) still gezeichnet (Pufferpunkte neben der Kurve, HA⁻ verschwand) → Fehler;
   Fehlertexte englisch. Eigene MVP-Auswahltexte ohne calculate_ph/calculate_content/
   generate_dose_response. Notiert: 17–24 KB Modelltext (Phosphorsäure); `notes` leer — das
