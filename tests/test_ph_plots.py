@@ -152,3 +152,34 @@ def test_speziesverteilung_legende_liegt_ausserhalb_der_kurven():
     legende = ax.get_legend().get_window_extent()
     achse = ax.get_window_extent()
     assert legende.x0 >= achse.x1 - 1, "Legende überlappt die Achse"
+
+
+@pytest.mark.parametrize("pka_values", [[4.76], [2.15, 7.2, 12.35]])
+def test_pufferpunkte_liegen_auf_der_kurve(pka_values):
+    """Desktop-Befund 30.10.2026 (docs/welle2-ph-desktop-2026-10-30.md): bei
+    Phosphorsäure saß der dritte Pufferpunkt auf pKa 12.35, die Kurve aber bei
+    pH 11.86 — Wasser puffert dort mit. Der Marker muss den exakten pH tragen."""
+    from chemdraw_tool.ph_plots import build_titration_figure, exact_ph
+
+    fig = build_titration_figure(pka_values, 0.1, 25.0, 0.1)
+    marker = [
+        line.get_xydata()[0]
+        for line in fig.axes[0].get_lines()
+        if line.get_marker() == "o"
+    ]
+    assert len(marker) == len(pka_values)
+    for v, ph in marker:
+        total = 25.0 + v
+        erwartet = exact_ph(pka_values, c_acid=0.1 * 25 / total, c_na=0.1 * v / total)
+        assert ph == pytest.approx(erwartet, abs=1e-6)
+
+
+def test_pufferpunkt_beschriftung_nennt_abweichung_von_pka():
+    from chemdraw_tool.ph_plots import build_titration_figure
+
+    fig = build_titration_figure([2.15, 7.2, 12.35], 0.1, 25.0, 0.1)
+    texte = [t.get_text() for t in fig.axes[0].texts]
+    # 7.20 liegt auf der Kurve, 12.35 nicht — dann kein „pH = pKa"
+    assert any(t.startswith("pH = pKa2") for t in texte), texte
+    assert not any(t.startswith("pH = pKa3") for t in texte), texte
+    assert any("11.86" in t and "pKa3 = 12.35" in t for t in texte), texte

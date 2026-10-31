@@ -31,6 +31,8 @@ FIGSIZE = (10.0, 6.5)
 DPI = 150
 CURVE_POINTS = 400
 INDICATOR_COLOR = "#9467bd"
+# Ab dieser Abweichung ist „pH = pKa" am Pufferpunkt keine Lehrbuchwahrheit mehr.
+BUFFER_LABEL_TOLERANCE = 0.05
 SPECIES_COLORS = ("#1a1a1a", "#d62728", "#1f77b4", "#2ca02c", "#9467bd")
 
 
@@ -92,14 +94,28 @@ def build_titration_figure(
             color="#555555",
         )
 
-    # Halbäquivalenz: pH = pKa (Pufferpunkte)
+    # Halbäquivalenz (Pufferpunkte): der Marker trägt den exakten pH, nicht pKa.
+    # Bei sehr starker/schwacher Stufe weicht er ab (Phosphorsäure pKa3 12.35 →
+    # pH 11.86, weil Wasser mitpuffert) — dann sagt die Beschriftung das.
     for k, pka in enumerate(pka_values):
         v_half = curve.eq_volumes_ml[0] * (k + 0.5)
         if 0 < pka < 14:
-            ax.plot([v_half], [pka], marker="o", markersize=5, color="#d62728")
+            total = v_acid_ml + v_half
+            ph = exact_ph(
+                pka_values,
+                c_acid=c_acid * v_acid_ml / total,
+                c_na=c_titrant * v_half / total,
+            )
+            index = k + 1 if len(pka_values) > 1 else ""
+            label = (
+                f"pH = pKa{index} = {pka:g}"
+                if abs(ph - pka) < BUFFER_LABEL_TOLERANCE
+                else f"pH {ph:.2f} (pKa{index} = {pka:g})"
+            )
+            ax.plot([v_half], [ph], marker="o", markersize=5, color="#d62728")
             ax.annotate(
-                f"pH = pKa{k + 1 if len(pka_values) > 1 else ''} = {pka:g}",
-                xy=(v_half, pka),
+                label,
+                xy=(v_half, ph),
                 xytext=(8, -4),
                 textcoords="offset points",
                 fontsize=9,
