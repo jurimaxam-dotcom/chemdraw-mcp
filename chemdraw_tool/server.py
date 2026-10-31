@@ -274,10 +274,12 @@ MVP_TOOLS = frozenset({
     "generate_spectrum",
     # DC-Platte aus Rf-Werten fürs Protokoll.
     "generate_tlc",
-    # pH-Kurven gemeinsam: teilen ph_plots.exact_ph. calculate_ph bleibt aus
-    # (wartet auf Jays Entscheid) — die Auswahltexte nennen es deshalb nicht.
+    # pH-Kurven gemeinsam: teilen ph_plots.exact_ph.
     "generate_titration_curve",
     "generate_species_distribution",
+    # Jay 31.10.2026: der pH als Zahl gehört in Welle 2 — dieselbe
+    # Ladungsbilanz wie die Kurve, also stimmen Zahl und Bild überein.
+    "calculate_ph",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -302,6 +304,8 @@ interactive panel. This server runs the MVP profile.
 - A TLC plate sketch from Rf values: generate_tlc.
 - pH against added titrant volume: generate_titration_curve. Fractions of
   each protonation species across pH 0–14: generate_species_distribution.
+  A pH, buffer or ionisation value as a number with the working:
+  calculate_ph (it computes; the two curve tools draw).
 - A compound's data sheet: lookup_molecule_data. The molecule panel's Data
   button also retrieves it on demand; database access needs the internet.
 - The user has to learn or revise something → offer export_anki_deck and
@@ -368,7 +372,7 @@ Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
 role or metabolic pathways — use lookup. Pass English or IUPAC names, or SMILES.
 """,
-    # Volltexte nennen calculate_ph, calculate_content und
+    # Volltexte nennen calculate_content, calculate_solution und
     # generate_dose_response, die im Standardprofil fehlen.
     "generate_titration_curve": """Draw a titration curve: weak (or polyprotic) acid vs. strong base.
 
@@ -384,7 +388,8 @@ your knowledge: pKa values in ascending order, sensible concentrations
 
 Not this tool for: which species dominates at a given pH, or the degree
 of ionization across the pH range (use generate_species_distribution).
-A single pH value as a number is not drawn — this tool only draws curves.
+A single pH value as a number is not drawn — that is calculate_ph, which
+solves the same charge balance and shows the working; this tool only draws.
 """,
     "generate_species_distribution": """Draw the species distribution of an acid over pH (Henderson-Hasselbalch).
 
@@ -399,7 +404,25 @@ values (ascending) from your knowledge; pass species labels (formulas like
 
 Not this tool for: pH against added titrant volume, equivalence points or
 indicator choice (use generate_titration_curve). It answers "which species
-when", not "what pH do I have" — a single pH value is not drawn.
+when", not "what pH do I have" — the pH of a solution or buffer, or the
+ionised fraction at one pH, as a number is calculate_ph.
+""",
+    "calculate_ph": """Calculate pH, buffer composition and buffer recipes, with the working.
+
+Solves the exact charge balance — the same one that draws the titration
+curve — and puts the textbook approximation next to it. Where the two
+disagree, the approximation has lost its assumptions and the answer says
+so instead of quietly being wrong.
+
+Pick the `topic`: "weak_acid", "weak_base", "strong_acid", "strong_base",
+"buffer" (ratio and capacity), "buffer_recipe" (masses to weigh) or
+"ionisation" (charged and uncharged fraction of a drug at one pH).
+You supply the pKa values from the monograph or table.
+
+Not this tool for: drawing pH against titrant volume, equivalence points
+or indicator choice (use generate_titration_curve), or drawing the species
+fractions across the whole pH range (use generate_species_distribution) —
+this one computes, those draw.
 """,
     # Desktop-Befund 30.10.2026: alle Spektren-Prompts gingen an Desktops
     # eingebautes visualize. Der Text beansprucht die Fälle wörtlich.
