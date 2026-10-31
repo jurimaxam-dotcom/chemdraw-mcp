@@ -1,24 +1,40 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Chef, 31.10.2026 12:05
+## Weiter bei — Fahrplan (Jay + Claude, 31.10.2026 21:10)
 
-**Stand:** Welle 1 + 2 fertig — Standardprofil 16 Tools / 12 Panels (HEAD `0304437`). Pufferpunkt-Fix `a08e3cb`,
-`calculate_ph` freigeschaltet `71223ed` (Jay 31.10.), README neu nach den fünf Bereichen `65800df`.
+**Stand:** Welle 1 + 2 serverseitig fertig — Standardprofil 16 Tools / 12 Panels (HEAD `70187a2`). Letzter
+öffentlicher Release ist v0.5.2 (25.10., 7-Tool-MVP); keine Welle hat bisher ihren Release-Kandidaten bekommen.
+Diagramm: https://claude.ai/artifact/DLBzFki1JLe7pFjaQNYguE (Fahrplan, drei Gates).
 
 **Ursache Desktop-Routing 0/19:** die neuen Tools standen in den Rechten des Desktop-Konnektors auf „blockiert“ —
-blockierte Tools sieht das Modell nicht, es fiel auf die alten zurück. Jay hat am 31.10. alle auf „Immer erlauben“
-gestellt; `calculate_ph` steht nach dem Neustart noch auf „blockiert“. Agenten dürfen Rechte nicht ändern
-(der Classifier blockt) — das ist Jays Klick.
+blockierte Tools sieht das Modell nicht. Jay hat am 31.10. alle auf „Immer erlauben“ gestellt; `calculate_ph`
+steht nach dem Neustart noch auf „blockiert“. Agenten dürfen Rechte nicht ändern — Jays Klick.
+**Alle Toolwahl-rot-Befunde vom 30.10. (Spektrum, DC, Titration 0/4) sind damit ungültig, bis der Retest
+mit freigegebenen Rechten läuft. Keine Beschreibung mehr ohne diese Messung anfassen.**
 
-**Offen, in dieser Reihenfolge:**
+**Gate A — Desktop-Abnahme → Release-Kandidat 0.6** (blockiert durch a)
 - [ ] (a) **Jay:** in Claude Desktop beim ChemDraw-Konnektor `calculate_ph` auf „Immer erlauben“ stellen.
-- [ ] (b) **Codex:** Kontrollchat, dann Routing-Retest beider Wellen + `calculate_ph`-Drehbuch
-      (Faden `20261031-114612-chef-entscheide-jay-31` #2).
-- [ ] (c) **Codex:** README-Bilder Calculate, Anki, Look up; `assets/wave2-titration-acetic.png` nach `a08e3cb` neu rendern
-      (Faden `20261031-115304-welle-2-abgenommen-a08e3cb` #2).
-- [ ] (d) Shorts S8–S11 — Entwürfe lokal in `vermarktung/video` (unversioniert), Drehbücher `plans/vermarktung.md` § b2;
-      erst nach Jays Sichtprüfung des Test-Shorts S1.
-- [ ] (e) **Jay:** Welle 3 ins Standardprofil oder eigenes Profil?
+- [ ] (b) **Codex:** Kontrollchat, Routing-Retest aller 10 Welle-1/2-Tools + `calculate_ph`-Drehbuch
+      (Faden `20261031-114612-chef-entscheide-jay-31` #2; Status 31.10. 21:00: angenommen, nicht laufend).
+- [ ] (c) **Codex:** Desktop-Handtest der 12 Panels (DoD 7), Screenshots `/tmp/chemdraw-desktop-test/`.
+- [ ] (d) **Opus:** Befunde aus b/c fixen (TDD), Version heben, `.mcpb` bauen, `./scripts/publish-registry.sh`;
+      Release-Klick = Jay.
+
+**Gate B — README-Bilder + Shorts** (parallel zu A, unabhängig vom Klick außer Calculate-Bild)
+- [ ] (e) **Codex:** README-Bilder Calculate, Anki, Look up; `assets/wave2-titration-acetic.png` nach `a08e3cb`
+      neu rendern (Faden `20261031-115304-welle-2-abgenommen-a08e3cb` #2; Status 21:00: angenommen, nicht laufend).
+- [ ] (f) **Jay:** Test-Short S1 ansehen (`vermarktung/out/test-short-schema/s1-anki.mp4`, 25 s) — Aufhänger,
+      dunkles Schema, Tempo; danach erst S8–S11.
+- [ ] (g) **Codex:** Shorts S8–S11 nach `plans/vermarktung.md` § b2.
+
+**Gate C — Welle 3** (erst nach Release 0.6)
+- [ ] (h) **Jay:** Welle 3 ins Standardprofil oder eigenes Profil? Empfehlung Claude: eigenes Profil
+      (`CHEMDRAW_PROFILE=pharma`) — Rechnen/PK/Dose-Response sind Pharmazie, nicht Grundstudium; 2-KB-Kante
+      bei vier Beschreibungen; 36,7 KB Modelltext bei scope_table. Entscheid fällt mit dem Release-Klick.
+
+Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees seit 01.10., Merge-Prüfung nach Gate A) ·
+Radar-Vorschlag `Phlya/adjustText` für Spektren-Labels: **verworfen 31.10.**, zieht scipy (Abhängigkeitsregel
+in CLAUDE.md); Label-Überlappung bleibt als Welle-2-Restfehler notiert.
 
 ## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
 
