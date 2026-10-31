@@ -208,7 +208,7 @@ try {
   for (const [name, input, expectedLabels, curveCount] of [
     ["generate_titration_curve", { substance: "Phosphoric acid", pka_values: [2.15, 7.2, 12.35], c_acid: 0.1,
       v_acid_ml: 25, c_titrant: 0.1, indicator: { name: "Phenolphthalein", ph_range: [8.2, 10] } },
-    ["EP 1", "EP 2", "EP 3", "Phenolphthalein"], 1],
+    ["EP 1", "EP 2", "EP 3", "Phenolphthalein", "pH 2.29 (pKa1 = 2.15)", "pH 11.86 (pKa3 = 12.35)"], 1],
     ["generate_titration_curve", { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1,
       v_acid_ml: 25, c_titrant: 0.1 }, ["EP", "pH = pKa = 4.76"], 1],
     ["generate_species_distribution", { substance: "Ibuprofen", pka_values: [4.4], labels: ["HA", "A−"] },
@@ -244,6 +244,28 @@ try {
     check(readFileSync(savedPath).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])), `${input.substance}: Exportdatei ist PNG`);
     await p.screenshot({ path: join(tmpdir(), `panel-host-wave2-ph-${name}-${input.substance.replaceAll(" ", "-")}.png`) });
     await p.close();
+  }
+
+  // Welle 2: calculate_ph ist absichtlich ein Text-Tool ohne Panel. Diese drei
+  // echten MCP-Aufrufe prüfen pH, abwägbaren Pufferansatz und Ionisationsanteile.
+  const calculatePh = tools.find((tool) => tool.name === "calculate_ph");
+  check(calculatePh && !calculatePh._meta?.ui?.resourceUri,
+    "calculate_ph ist registriert und bleibt ein Text-Tool ohne Panel-Ressource");
+  for (const [topic, input, expected] of [
+    ["weak_acid", { concentration: 0.1, pka: 4.76 },
+      ["**pH = 2.88**", "Exact (charge balance)", "Textbook approximation", "pKa used: 4.76"]],
+    ["buffer_recipe", { target_ph: 7.4, pka: 7.2, total_concentration: 0.1, volume_ml: 100 },
+      ["Ratio base : acid = 1.58 : 1", "0.003869 mol", "0.006131 mol", "make up to 100 mL"]],
+    ["ionisation", { pka: 4.4, target_ph: 6.5, drug_type: "acid" },
+      ["Charged: 99.21 %", "Uncharged: 0.79 %", "10^(6.5 − 4.4)"]],
+  ]) {
+    const result = await client.callTool({ name: "calculate_ph", arguments: { topic, ...input } });
+    check(!result.isError, `calculate_ph ${topic}: echter MCP-Aufruf erfolgreich`);
+    const answer = result.content.filter((part) => part.type === "text").map((part) => part.text).join("\n");
+    check(expected.every((text) => answer.includes(text)),
+      `calculate_ph ${topic}: Textantwort enthält ${expected.join(", ")}`);
+    check(!result.content.some((part) => part.type === "image") && !result._meta?.ui?.resourceUri,
+      `calculate_ph ${topic}: Antwort bleibt Text ohne Panel oder eingebettetes Bild`);
   }
 
   const gm = tools.find((t) => t.name === "generate_molecule");
