@@ -1,114 +1,24 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Opus (Bauer), 31.10.2026, 12:20
+## Weiter bei — Chef, 31.10.2026 12:05
 
-**Nächster Schritt:** `~/.claude/bin/tisch lies --neu --ich opus`; nur auf neuen Tisch-Auftrag des
-Chefs (w4D:p1) bauen. Welle 2 vollständig: 16 Tools / 12 Panels (`calculate_ph` als Text-Tool,
-`71223ed`), Pufferpunkt-Fix `a08e3cb`. Gate 7470 passed, Handshake 16/12, test:host grün.
-Kein Code halbfertig. Desktop läuft noch mit dem Stand vor beiden Commits — Neustart + Handtest
-liegen bei Codex (Tisch-Faden `20261031-114612-chef-entscheide-jay-31`).
+**Stand:** Welle 1 + 2 fertig — Standardprofil 16 Tools / 12 Panels (HEAD `0304437`). Pufferpunkt-Fix `a08e3cb`,
+`calculate_ph` freigeschaltet `71223ed` (Jay 31.10.), README neu nach den fünf Bereichen `65800df`.
 
-**Jay-Entscheide 31.10.2026:** `calculate_ph` gehört in Welle 2 (umgesetzt `71223ed`) ·
-Config-Eingriff für die Desktop-Routing-Diagnose erlaubt, mit `.bak` — macht Codex, nicht Opus.
+**Ursache Desktop-Routing 0/19:** die neuen Tools standen in den Rechten des Desktop-Konnektors auf „blockiert“ —
+blockierte Tools sieht das Modell nicht, es fiel auf die alten zurück. Jay hat am 31.10. alle auf „Immer erlauben“
+gestellt; `calculate_ph` steht nach dem Neustart noch auf „blockiert“. Agenten dürfen Rechte nicht ändern
+(der Classifier blockt) — das ist Jays Klick.
 
-**Offen an Jay** (nicht bauen): Welle 3 ins Standardprofil oder eigenes Profil?
-
-## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 23:22
-
-**Nächster Schritt:** zuerst `~/.claude/bin/tisch lies --neu --ich codex` und
-Faden `20261030-231601-welle-2-ph-kurven` lesen. Bericht #5 ist an Opus
-abgeliefert, noch keine Antwort. Kein Bau-Auftrag offen; neue Arbeit nur
-nach aktuellem Tisch-Auftrag. Bei Diagnose zuerst die Weitergabe der
-Toolliste Desktop → Remote-Gerät/Modell prüfen, bevor Beschreibungen weiter
-geändert werden. Read-only anfangen; keine Setup-Umbauten auf Verdacht.
-
-**Hauptbefund:** Desktop verbindet laut `~/Library/Logs/Claude/main.log:25233`
-am 30.10. um 23:16:28 **15 Tools**. Ein frischer Kontrollchat nennt trotzdem
-nur die **7 alten** Namen und Präfix `mcp__remote-devices__chemdraw-tool__`.
-Dokumentiert in `docs/welle2-ph-desktop-2026-10-30.md:12`, Kontrollchat
-`bd13de2a-3124-4cce-a52e-429c528a212a`. Modell-Selbstauskunft ist ein Hinweis,
-kein endgültiger Beweis des Modellkontexts oder der Cache-Ursache. Daher
-sind die beobachteten Fehlroutings keine isolierte Bewertung der neuen
-Toolbeschreibungen.
-
-**Dateien / Beweisformen zum Weiterarbeiten:**
-- `docs/welle2-ph-desktop-2026-10-30.md:47`: vier pH-Desktopfälle;
-  `:56`: Backend/Host; `:84`: numerisch belegter Pufferpunktfehler.
-- `docs/welle2-tlc-desktop-2026-10-30.md:15`: vier Spektren-Retests;
-  `:75`: drei DC-Desktopfälle; `:31`: DC-Host/Backend.
-- `docs/welle2-generate-spectrum-2026-10-30.md:32`: ursprünglicher fehlender
-  Exportknopf, einmal rot; danach Fix bei Opus und Host grün.
-- `chemdraw_tool/ui/src/host/host.e2e.mjs:93`: Spektren; `:156`: DC;
-  `:207`: pH-Plots. Gegen echten Server, sandboxed AppBridge, Wegwerf-HOME,
-  echte SVG-Geometrie und PNG-Magic-Bytes, Export über `save_png` geprüft.
-- Alle Desktop-Screenshots/AX und Logs liegen in `/tmp/chemdraw-desktop-test/`:
-  `welle2-generate_spectrum-retest-*`, `welle2-generate_tlc-*`, `welle2-ph-*`.
-  Host-Bilder haben `host` im Namen und ersetzen keine Desktop-Abnahme.
-
-**Schon erledigt — nicht wiederholen:**
-- [x] Spektren-Host + Aspirin-README-Bild: `862b781`, `600edd3`, `362919c`.
-  41 Backendtests grün. Exportknopf-Fix `6ba60ca` bei Opus.
-- [x] Vier Spektren-Retests und drei DC-Desktopfälle ausgeführt:
-  **0/7 erwartete ChemDraw-Aufrufe**, sechs Visualize-Widgets, einmal eigene
-  SVG/PNG per Befehle. Bericht `0c36b4b`; keine grüne Desktop-Abnahme.
-- [x] DC-Host mit Co-Spot 1/1/2 Flecken, Laufmittel und Rf 0.35/0.70,
-  Export und neues README-Bild: `2c9a71a`; 43 Backendtests grün.
-- [x] Desktop kontrolliert beendet (pgrep leer), neu gestartet;
-  tools/list am 22:16:29Z beantwortet. Dann Kontrollchat plus vier pH-Fälle.
-  **0/4 erwartete ChemDraw-Aufrufe**: ein Visualize-Widget, drei Mathviz-
-  Freigabeanfragen. Keine Mathviz-Freigabe erteilt; fertige Fremdgrafik nicht
-  behaupten. Bericht mit Details `a6d6e86`.
-- [x] Vier pH-Hostfälle inkl. EP 25 mL, Indikatorband, zwei/vier Spezies und
-  Export; 26 Backendtests, Gesamt-Hostlauf Exit 0. README Essigsäurekurve
-  und Phosphorsäure-Spezies: `5eb9c43`.
-- [x] Alle eigenen Änderungen bis `a6d6e86` gepusht; keine fremde WIP
-  übernommen. Berichte an Opus: Spektren-Faden erreichte Hop-Limit 6;
-  DC-Faden `20261030-231009-welle-2-generate-tlc` #4;
-  pH-Faden `20261030-231601-welle-2-ph-kurven` #5.
-- [x] Frühere Welle-1-Arbeit bleibt dokumentiert:
-  `docs/welle1-host-desktop-2026-10-30.md:79`, `:149`, Commit `50b5806`.
-  Nur Diels–Alder bestanden, keine grüne Gesamt-Abnahme. Installierte
-  Extension damals deaktiviert vorgefunden, nicht reaktiviert.
-
-**Behoben 31.10.2026 (`a08e3cb`):** Pufferpunkte tragen den exakten pH, die
-Beschriftung nennt pH und pKa, wenn sie abweichen. Ursprünglicher Befund:
-**Separat offen — Renderer, nicht Desktop:** Phosphorsäure-Pufferpunkte sind
-auf pKa gesetzt statt auf die exakte Kurve. Bei 62.5 mL: Kurve pH 11.861965,
-roter Punkt 12.35; bei 12.5 mL: 2.285969 gegenüber 2.15. Reproducer und Bild
-in `docs/welle2-ph-desktop-2026-10-30.md:84`. An Opus übergeben; noch kein
-Fix-Auftrag für Codex. Backend-/Host-Grün prüft diese Übereinstimmung nicht.
-Lange Spektrenlabels überlappen ebenfalls teilweise (Bericht DC/Spektren).
-
-**Offene Fragen an Jay (wörtlich, unbeantwortet — nicht bauen):**
-- „Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil?“
-- ~~Zu `calculate_ph`: „bleibt es in Welle 2?“~~ — Jay 31.10.2026: ja (`71223ed`).
-
-**Wartezeiten / Folgeaktion:** keine laufenden eigenen Jobs, kein offener
-Fix mitten im Test. Drei Mathviz-Freigabeanfragen bleiben nur in den
-Testchats; sie laufen nicht. Desktop darf nach Bericht neu gestartet werden.
-Tisch-Postfach beim frischen Start prüfen; vorhandenen Hop-Platz beachten,
-keinen neuen Faden zur Umgehung eines Limits anlegen.
-`anthropic_sync.py --check` wurde mehrfach ohne Ausgabe nach mehreren
-Minuten beendet, zuletzt rund 4.5 Minuten. Kein erfolgreicher Abgleich und
-kein `--update`. Vor echter Panel-/Architekturarbeit erneut prüfen und
-Netz-/Quellenproblem eingrenzen; die abgeschlossenen Etappen ändern nur
-Tests, Bilder und Doku.
-
-**Neustartmechanik dieser Session:** `HERDR_PANE_ID` und `HERDR_ENV` fehlen
-in der Tool-Shell. `tisch wer` ordnet die aktuelle Codex-Session eindeutig
-`w4D:p5` zu; `herdr agent get w4D:p5` bestätigt Codex, working und diesen
-Projekt-CWD. Neustart daher mit ausschließlich für den Befehl gesetztem
-`HERDR_PANE_ID=w4D:p5`; keine dauerhafte Konfigurationsänderung. Beim nächsten
-Neustart die Zuordnung frisch prüfen, Pane-ID nicht blind wiederverwenden.
-
-**Zugesagte Prüfmethoden:** Desktop über CUA frisch binden; vor Eingaben
-aktuelle AX-Ziele lesen. Neustart per Cmd-Q, Prozessende mit `pgrep -x Claude`
-prüfen, danach erst starten und beantwortetes tools/list abwarten. Jeder
-Drehbuch-Prompt unverändert in neuem Chat, Toolname/Argumente + Screenshot
-und AX sichern. Stdio-Handshake zeigt den registrierten Startbefehl;
-Toolzahl allein beweist weder Versionsgleichheit noch Modell-Sichtbarkeit.
-Host/Python/Bundle/Installation/Desktop getrennt berichten. Keine
-ungeprüfte Modellbehauptung über Toolverfügbarkeit als Ursache übernehmen.
+**Offen, in dieser Reihenfolge:**
+- [ ] (a) **Jay:** in Claude Desktop beim ChemDraw-Konnektor `calculate_ph` auf „Immer erlauben“ stellen.
+- [ ] (b) **Codex:** Kontrollchat, dann Routing-Retest beider Wellen + `calculate_ph`-Drehbuch
+      (Faden `20261031-114612-chef-entscheide-jay-31` #2).
+- [ ] (c) **Codex:** README-Bilder Calculate, Anki, Look up; `assets/wave2-titration-acetic.png` nach `a08e3cb` neu rendern
+      (Faden `20261031-115304-welle-2-abgenommen-a08e3cb` #2).
+- [ ] (d) Shorts S8–S11 — Entwürfe lokal in `vermarktung/video` (unversioniert), Drehbücher `plans/vermarktung.md` § b2;
+      erst nach Jays Sichtprüfung des Test-Shorts S1.
+- [ ] (e) **Jay:** Welle 3 ins Standardprofil oder eigenes Profil?
 
 ## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
 
