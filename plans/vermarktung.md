@@ -174,6 +174,39 @@ W3 und W5 erst nach einer Desktop-Probe drehen.
       every H — one click each“ · Schluss: Haworth-Ring. ~18 s (nicht „show the Haworth projection“ — Desktop
       antwortet dann mit seinem eigenen Visualizer)
 
+### b2) Shorts für die Welle-1/2-Tools (Chef-Auftrag 31.10.2026, Faden 20261031-115650)
+Datensätze `vermarktung/video/src/shorts/s8…s11-*.ts`, Liste `ENTWUERFE` (geprüft von `pruefeShort`, **ohne**
+Komposition — die S2–S7-Regel „erst nach Jays S1-Sichtprüfung“ gilt auch hier). Beats sind Soll-Zeiten; nach der
+Aufnahme ersetzt Codex sie durch `beats.json` und verschiebt den Datensatz nach `SHORTS`.
+**Tippgeschwindigkeit:** Abschnitt Prompt darf höchstens 4 s dauern (0,5 s vor dem Klick bis 0,8 s nach Senden) →
+Tippen ≤ 2,2 s, also rund 15 Zeichen/s im AX-Skript. **Routing zuerst:** jeden Prompt einmal in Desktop
+probieren, bevor gedreht wird (Codex' Routing-Retest); geht er an ein anderes Tool, Prompt im Datensatz ändern.
+
+**Reihenfolge nach Breitenwirkung** (wer versteht den Short ohne Vorwissen, wie viele Studierende haben das Thema):
+1. **S9 3D** — braucht kein Fachwissen, Bewegung im Bild; jedes Chemie-/Pharmazie-/Bio-Fach.
+2. **S10 Titration** — Pflichtstoff im ersten Semester allgemeine Chemie, klassische Klausurfrage.
+3. **S8 Mechanismus** — OC-Grundvorlesung; ehrlich als Lehrbuchbeispiel, kein freier Mechanismus.
+4. **S11 DC-Platte** — Praktikumsprotokoll, schmaler als die drei davor.
+
+**Aufnahme-Drehbücher (für Codex; Checkliste aus `SCHEMA.md` gilt zusätzlich):**
+- [ ] **S9 3D (W10, `generate_3d`)** · Prompt `ibuprofen in 3D` · Panel abwarten → 1 s ruhig → im Modell 3 s langsam
+      nach rechts ziehen → loslassen, 1 s halten → 3 s nach unten ziehen → loslassen · Aufhänger „Ibuprofen in 3D.
+      Drag to turn it.“ · **im Bild:** Kugel-Stab-Modell ohne Abschnitt am Panelrand, Carboxylgruppe und
+      Isobutylkette beide sichtbar am Schluss. ~20 s
+- [ ] **S10 Titration (W11, `generate_titration_curve`)** · Prompt `titrate acetic acid with NaOH` · Zeiger je 2 s auf
+      EP-Linie (25 mL), auf roten Pufferpunkt („pH = pKa = 4.76“), auf Indikatorband → Export PNG · Aufhänger
+      „The titration curve, computed — not sketched“ · **im Bild:** ganze Kurve 0–37,5 mL, EP-Beschriftung, roter
+      Punkt **auf** der Kurve (Fix `a08e3cb`), Indikatorband — fehlt das Band, weil das Modell keinen Indikator
+      wählt, Prompt um „phenolphthalein“ verlängern und Tippzeit neu prüfen. ~20 s
+- [ ] **S8 Mechanismus (W9, `generate_mechanism`)** · Prompt `Fischer esterification mechanism` · Panel startet in
+      der Übersicht → „Step by step“ → 5× „Next →“ im 2-s-Takt bis „Step 6 / 6“ · Aufhänger „Arrow-pushing, one step
+      at a time“ · **im Bild:** gekrümmte Elektronenpfeile in jedem Schritt, Schrittzähler lesbar, Schluss mit
+      Ester + Wasser. Geht der Prompt an `generate_reaction` (Schema ohne Pfeile), auf
+      `Fischer esterification mechanism, arrows` ausweichen. ~24 s
+- [ ] **S11 DC-Platte (W12, `generate_tlc`)** · Prompt `TLC: Rf 0.3, 0.65, co-spot` · Zeiger je 2 s auf Edukt-, Produkt-,
+      Co-Spot-Bahn → Export PNG · Aufhänger „Your TLC plate, ready for the lab report“ · **im Bild:** drei
+      beschriftete Bahnen, Rf an jedem Fleck, Startlinie und Front. ~20 s
+
 ### c) Gemeinsame Fixes vor dem nächsten Dreh (Befund an short-desktop-v2 + short-2026-10-25)
 - [~] **Jay 27.10.: Name darf im Bild stehen** (kein Blocker mehr). War: **Persönlicher Name im Bild:** prompt.png zeigt „Guten Abend, Juri“ (Desktop-Begrüßung) → vor dem Tippen in einen
       bestehenden leeren Chat wechseln oder Begrüßung aus dem Ausschnitt nehmen. Blocker für jeden Upload.

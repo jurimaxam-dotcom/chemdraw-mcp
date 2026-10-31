@@ -293,6 +293,9 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 > Vor Panel-/Manifestarbeit: `uv run python scripts/anthropic_sync.py --check` (CLAUDE.md).
 
 ## Etappen
+- [ ] **Geparkt (Chef 31.10.2026: nicht löschen):** von der README (`65800df`) nicht mehr verwendete Assets —
+  `assets/titration-phosphoric.png`, `species-phosphoric.png`, `ethyl-acetate-ir.png`, `tlc-esterification.png`,
+  `mechanism-overview.png`, `demo-mechanism.gif`, `demo-3d.gif`. Vor einem Löschen `grep` in `docs/` und `vermarktung/`.
 
 ### Etappe 14.10.2026: vorhandene MVP-Oberfläche autonom verbessern
 
