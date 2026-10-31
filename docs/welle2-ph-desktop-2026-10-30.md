@@ -178,3 +178,13 @@ Abgleich, kein `--update`. Diese Etappe ändert keine Panelarchitektur.
 Alle vier Host-Screenshots sowie beide neuen README-Bilder visuell geprüft.
 Kein fremdes WIP übernommen. Desktop darf nach Bericht wieder neu gestartet
 werden; drei nicht bestätigte Mathviz-Anfragen bleiben in den Testchats.
+
+## Nachtrag: Routing-Diagnose am 31.10.2026 (nicht abgeschlossen)
+
+Gesteuerte UI-Änderungen nach `003-claude-antwort.md` scheiterten bei CUA-Koordinaten mit `-10005 noWindowsAvailable`. Mit `osascript ... activate` und `vermarktung/out/.bin/ax-claude` ließ sich die Ansicht danach über AX erreichen. Die Einstellungen unter **Konnektoren → chemdraw-tool** zeigen 12 interaktive und 3 weitere Tools, also die aktuelle lokale 15er-Liste. Der Eintrag führt in Tool-Berechtigungen; ein Schalter zum Trennen/Verbinden war in diesem Detail nicht sichtbar. Der Abschnitt „Dieser Computer → Entwickler“ wurde wegen eines fehlgeleiteten AX-Klicks nicht weiter geöffnet.
+
+Während des Klickfehlers stellte die Oberfläche vorübergehend die Rechte aller 15 Tools auf „Immer erlauben“. Unmittelbar danach wurden die zuvor abgelesenen Einzelwerte wiederhergestellt: generate_molecule, lookup_molecule_data und generate_reaction genehmigungspflichtig; generate_spectrum, generate_tlc, generate_titration_curve, generate_species_distribution, generate_3d, predict_spectrum und lookup blockiert; die übrigen 5 Tools immer erlaubt. Abschließender AX-Zustand stimmt damit überein; Screenshot: `/tmp/chemdraw-desktop-test/welle2-routing-settings-permissions-restored.png`.
+
+Read-only geprüft: `claude_desktop_config.json` enthält weiterhin den MCP-Schlüssel `chemdraw-tool` für den lokalen Server. `main.log` zeigt am 30.10. 23:21:28 sowohl `Connected to chemdraw-tool (15 tools)` als auch `localMcpBridge announcing chemdraw-tool: 15 tool(s)`; separat verbindet sich `[remote-tools-device]` mit `wss://bridge.claudeusercontent.com` und authentifiziert am 31.10. um 11:45:18. Das belegt eine getrennte Gerätebrücke, aber nicht, dass sie `chemdraw-tool` doppelt anbietet oder dem Modell eine alte Liste liefert.
+
+Weder der Konnektor wurde aus/an geschaltet noch ein neuer Kontrollchat gesendet; die Umbenennung in `chemdraw`, Desktop-Neustart und Routing-Retests wurden nicht begonnen. Config blieb unverändert. Nächster Schritt dieser Diagnose ist wegen der einmaligen Wiederholungsgrenze aus dem Tisch-Auftrag: stoppen und Befund an Claude melden. Die Modellseite und Ursache des Präfixes `mcp__remote-devices__chemdraw-tool__` bleiben ungeklärt.
