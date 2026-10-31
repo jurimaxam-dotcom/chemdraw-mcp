@@ -1,26 +1,17 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Opus (Bauer), Kontext-Neustart 30.10.2026, 23:25
+## Weiter bei — Opus (Bauer), 31.10.2026, 12:20
 
 **Nächster Schritt:** `~/.claude/bin/tisch lies --neu --ich opus`; nur auf neuen Tisch-Auftrag des
-Chefs (w4D:p1) bauen. Welle 1 + 2 serverseitig fertig (15 Tools / 12 Panels, Gate 7462 passed,
-Handshake 15/12, Desktop um 23:21 neu gestartet mit HEAD). Kein Code halbfertig.
+Chefs (w4D:p1) bauen. Welle 2 vollständig: 16 Tools / 12 Panels (`calculate_ph` als Text-Tool,
+`71223ed`), Pufferpunkt-Fix `a08e3cb`. Gate 7470 passed, Handshake 16/12, test:host grün.
+Kein Code halbfertig. Desktop läuft noch mit dem Stand vor beiden Commits — Neustart + Handtest
+liegen bei Codex (Tisch-Faden `20261031-114612-chef-entscheide-jay-31`).
 
-**Offen, nicht in § Welle 2 eingetragen:** Phosphorsäure-Titration setzt die Pufferpunkte auf pKa statt
-auf die Kurve (V 62,5 mL: Kurve pH 11,86, Punkt 12,35; 12,5 mL: 2,29 vs. 2,15; Beleg Codex,
-`docs/welle2-ph-desktop-2026-10-30.md`). Fix in `ph_plots.py`, TDD: Markerhöhe == `exact_ph` am
-Marker-Volumen. An Chef gemeldet, Faden `20261030-224424-welle-1-serverseitig-abgenommen` #5.
+**Jay-Entscheide 31.10.2026:** `calculate_ph` gehört in Welle 2 (umgesetzt `71223ed`) ·
+Config-Eingriff für die Desktop-Routing-Diagnose erlaubt, mit `.bak` — macht Codex, nicht Opus.
 
-**Desktop-Routing (0/19 über beide Wellen):** Modell sieht über `mcp__remote-devices__chemdraw-tool__`
-die 7 alten Tools, Desktop kündigt 15 an. Vorgeschlagene Diagnose an Chef (#4 im selben Faden):
-Konnektor aus/an → Kontrollchat; dann Server-Schlüssel in `claude_desktop_config.json` testweise
-umbenennen (mit .bak). **Jay:** Config-Eingriff erlaubt? — unbeantwortet, nicht bauen.
-
-**Weitere offene Fragen an Jay** (unbeantwortet — nicht bauen): calculate_ph in Welle 2? ·
-Welle 3 ins Standardprofil oder eigenes Profil?
-
-**Offene Tisch-Fäden:** `20261030-224424-welle-1-serverseitig-abgenommen` (Wellenbericht #4/#5, wartet
-auf Chef) · `20261030-231601-welle-2-ph-kurven` (Codex-Bericht #5 gelesen, beantwortet über Chef-Faden).
+**Offen an Jay** (nicht bauen): Welle 3 ins Standardprofil oder eigenes Profil?
 
 ## Weiter bei — Codex, Kontext-Neustart 30.10.2026, 23:22
 
@@ -79,6 +70,8 @@ Toolbeschreibungen.
   Nur Diels–Alder bestanden, keine grüne Gesamt-Abnahme. Installierte
   Extension damals deaktiviert vorgefunden, nicht reaktiviert.
 
+**Behoben 31.10.2026 (`a08e3cb`):** Pufferpunkte tragen den exakten pH, die
+Beschriftung nennt pH und pKa, wenn sie abweichen. Ursprünglicher Befund:
 **Separat offen — Renderer, nicht Desktop:** Phosphorsäure-Pufferpunkte sind
 auf pKa gesetzt statt auf die exakte Kurve. Bei 62.5 mL: Kurve pH 11.861965,
 roter Punkt 12.35; bei 12.5 mL: 2.285969 gegenüber 2.15. Reproducer und Bild
@@ -88,7 +81,7 @@ Lange Spektrenlabels überlappen ebenfalls teilweise (Bericht DC/Spektren).
 
 **Offene Fragen an Jay (wörtlich, unbeantwortet — nicht bauen):**
 - „Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil?“
-- Zu `calculate_ph`: „bleibt es in Welle 2?“
+- ~~Zu `calculate_ph`: „bleibt es in Welle 2?“~~ — Jay 31.10.2026: ja (`71223ed`).
 
 **Wartezeiten / Folgeaktion:** keine laufenden eigenen Jobs, kein offener
 Fix mitten im Test. Drei Mathviz-Freigabeanfragen bleiben nur in den
@@ -241,7 +234,7 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
   (⇄ generate_reaction, → generate_spectrum), 3 Routingfälle (vorher 0). Notiert: eng
   benachbarte Flecken (0,50/0,52) überdecken ihre Rf-Beschriftung; 8–16 KB Modelltext.
 - [ ] generate_titration_curve + generate_species_distribution — Serverseite fertig `6093b88`
-  (+ Exportknopf PlotView `d6098a9`); Host/README `5eb9c43`, Desktop 0/4 (`a6d6e86`). Offen: Toollisten-Diskrepanz und falsche Pufferpunkte (oben). Behoben: absteigende
+  (+ Exportknopf PlotView `d6098a9`); Host/README `5eb9c43`, Desktop 0/4 (`a6d6e86`). Offen: Toollisten-Diskrepanz (oben); Pufferpunkte behoben `a08e3cb`. Behoben: absteigende
   pKa ([7.2, 2.1]) still gezeichnet (Pufferpunkte neben der Kurve, HA⁻ verschwand) → Fehler;
   Fehlertexte englisch. Eigene MVP-Auswahltexte ohne calculate_ph/calculate_content/
   generate_dose_response. Notiert: 17–24 KB Modelltext (Phosphorsäure); `notes` leer — das
@@ -249,7 +242,9 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 - Stand Standardprofil nach Welle 2: 15 Tools, 12 Panels (Handshake grün). Randnotiz:
   generate_molecule-Auswahltext bei 2010 B — der nächste Zaun dort braucht Kürzung.
 - [ ] calculate_ph — **Ausnahme** vom „Rechnen später": pH/Puffer ist Grundstudium.
-  **Jay:** bleibt es in Welle 2?
+  **Jay (31.10.2026):** ja, Welle 2. Serverseite fertig `71223ed` (Text-Tool, kein Panel; Zäune
+  beidseitig zu Titrationskurve/Speziesverteilung, Standardprofil 16 Tools / 12 Panels).
+  Offen: Desktop-Handtest + Host-Fälle/README (Codex).
 
 ### Welle 3 — Vertiefung (später)
 - [ ] calculate_solution
