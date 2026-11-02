@@ -19,7 +19,7 @@ Backup `.bak-2026-11-02`), nicht gelöscht.
 - [x] (a) alte Erweiterung aus, Desktop neu gestartet (Claude, 23:05)
 - [ ] (b) **Codex:** Desktop-Messlauf aller 16 Tools mit natürlichen Prompts (Faden `20261102-230541-desktop-abnahme-0-7`),
       Tabelle `docs/desktop-abnahme-2026-11-02.md`
-- [ ] (c) **Claude:** Host-Fälle für `batch_generate` und `generate_reaction` (fehlen in `host.e2e.mjs`)
+- [x] (c) **Claude:** Host-Fälle für `batch_generate` und `generate_reaction` (fehlen in `host.e2e.mjs`)
 - [ ] (d) **Claude:** Befunde aus (b) fixen (TDD), bis jedes Tool in Desktop grün ist
 - [ ] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
 - [ ] (f) **Jay:** Release-Klick = Tag `v0.7.0` pushen → `publish.yml` macht PyPI → `.mcpb` am Release → Registry

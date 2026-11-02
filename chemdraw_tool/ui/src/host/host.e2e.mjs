@@ -479,6 +479,33 @@ try {
     svg: document.querySelector(".plot-svg svg").getBoundingClientRect().width,
   }));
   prüfe(cmp.heading < 100 && cmp.svg >= 0.8 * cmp.box, `Vergleich: Überschrift ${Math.round(cmp.heading)} px, Bild ${Math.round(cmp.svg)} von ${Math.round(cmp.box)} px breit`);
+  await cmpPage.close();
+
+  // Release 0.7.0 (02.11.2026): die beiden Panel-Tools ohne Host-Fall.
+  const rxnPage = await browser.newPage({ viewport: { width: 720, height: 600 } });
+  await rxnPage.setContent('<body style="margin:0"></body>');
+  await rxnPage.addScriptTag({ path: out });
+  await rxnPage.exposeFunction("__callTool", (req) => client.callTool(req));
+  const rxn = await mount(rxnPage, "generate_reaction", {
+    reactants: ["CC(=O)O", "CCO"], products: ["CC(=O)OCC", "O"], conditions: "H2SO4", name: "Fischer esterification",
+  });
+  await rxn.locator('[data-testid="balance-badge"]').waitFor();
+  check(await rxn.locator(".reaction-panel").getByText("Fischer esterification").count() > 0, "Reaktion: Titel sichtbar");
+  check(await rxn.locator(".reaction-panel svg").count() >= 5, "Reaktion: vier Strukturen und ein Pfeil gezeichnet");
+  check(await rxn.locator('[data-testid="balance-badge"]').getAttribute("data-state") === "balanced", "Reaktion: Bilanz ausgeglichen");
+  check((await rxn.locator("body").innerText()).includes("H2SO4") || (await rxn.locator("body").innerText()).includes("H₂SO₄"), "Reaktion: Bedingung am Pfeil");
+  await rxnPage.close();
+
+  const batchPage = await browser.newPage({ viewport: { width: 720, height: 900 } });
+  await batchPage.setContent('<body style="margin:0"></body>');
+  await batchPage.addScriptTag({ path: out });
+  await batchPage.exposeFunction("__callTool", (req) => client.callTool(req));
+  const batch = await mount(batchPage, "batch_generate", { molecules: ["benzene", "toluene", "phenol"] });
+  await batch.locator(".panel-title").nth(2).waitFor();
+  const titles = (await batch.locator(".panel-title").allInnerTexts()).map((t) => t.toLowerCase());
+  check(["benzene", "toluene", "phenol"].every((n) => titles.some((t) => t.includes(n))), `Batch: drei Molekülkarten (${titles.join(", ")})`);
+  check(await batch.locator("button.export-png").count() === 3, "Batch: je Molekül ein Export-Knopf");
+  await batchPage.close();
 } finally {
   await browser?.close();
   await client.close();
