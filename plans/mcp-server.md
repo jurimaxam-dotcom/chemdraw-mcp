@@ -1,40 +1,34 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Fahrplan (Jay + Claude, 31.10.2026 21:10)
+## Weiter bei — Release 0.7.0 (Jay + Claude, 02.11.2026 23:10)
 
-**Stand:** Welle 1 + 2 serverseitig fertig — Standardprofil 16 Tools / 12 Panels (HEAD `70187a2`). Letzter
-öffentlicher Release ist v0.5.2 (25.10., 7-Tool-MVP); keine Welle hat bisher ihren Release-Kandidaten bekommen.
-Diagramm: https://claude.ai/artifact/DLBzFki1JLe7pFjaQNYguE (Fahrplan, drei Gates).
+**Reihenfolge (Jay 02.11.):** erst 0.7.0 sauber raus → dann README sauber → Shorts zuletzt.
 
-**Ursache Desktop-Routing 0/19:** die neuen Tools standen in den Rechten des Desktop-Konnektors auf „blockiert“ —
-blockierte Tools sieht das Modell nicht. Jay hat am 31.10. alle auf „Immer erlauben“ gestellt; `calculate_ph`
-steht nach dem Neustart noch auf „blockiert“. Agenten dürfen Rechte nicht ändern — Jays Klick.
-**Alle Toolwahl-rot-Befunde vom 30.10. (Spektrum, DC, Titration 0/4) sind damit ungültig, bis der Retest
-mit freigegebenen Rechten läuft. Keine Beschreibung mehr ohne diese Messung anfassen.**
+**Stand draußen:** GitHub-Release, PyPI und MCP-Registry stehen auf **0.6.0** (26.10., 7 Tools). Im Repo:
+66 Commits mehr, 16 Tools / 12 Panels; `pyproject.toml` trägt noch 0.6.0, CHANGELOG `[Unreleased]` leer.
+Der Plan vom 31.10. sprach von „RC 0.6" — falsch, 0.6.0 war schon draußen.
 
-**Gate A — Desktop-Abnahme → Release-Kandidat 0.6** (blockiert durch a)
-- [ ] (a) **Jay:** in Claude Desktop beim ChemDraw-Konnektor `calculate_ph` auf „Immer erlauben“ stellen.
-- [ ] (b) **Codex:** Kontrollchat, Routing-Retest aller 10 Welle-1/2-Tools + `calculate_ph`-Drehbuch
-      (Faden `20261031-114612-chef-entscheide-jay-31` #2; Status 31.10. 21:00: angenommen, nicht laufend).
-- [ ] (c) **Codex:** Desktop-Handtest der 12 Panels (DoD 7), Screenshots `/tmp/chemdraw-desktop-test/`.
-- [ ] (d) **Opus:** Befunde aus b/c fixen (TDD), Version heben, `.mcpb` bauen, `./scripts/publish-registry.sh`;
-      Release-Klick = Jay.
+**Ordnung 02.11.:** In Desktop liefen zwei ChemDraw-Server — Konnektor `chemdraw-tool` (Repo, 16 Tools) und die
+alte Erweiterung `.mcpb` 0.5.1 (7 Tools, installiert 25.10.). Das war die „Toollisten-Diskrepanz" aller Tests vom
+30./31.10. Claude hat die Erweiterung um 23:05 deaktiviert (`Claude Extensions Settings/…chemdraw-mcp.json`,
+Backup `.bak-2026-11-02`), nicht gelöscht.
 
-**Gate B — README-Bilder + Shorts** (parallel zu A, unabhängig vom Klick außer Calculate-Bild)
-- [ ] (e) **Codex:** README-Bilder Calculate, Anki, Look up; `assets/wave2-titration-acetic.png` nach `a08e3cb`
-      neu rendern (Faden `20261031-115304-welle-2-abgenommen-a08e3cb` #2; Status 21:00: angenommen, nicht laufend).
-- [ ] (f) **Jay:** Test-Short S1 ansehen (`vermarktung/out/test-short-schema/s1-anki.mp4`, 25 s) — Aufhänger,
-      dunkles Schema, Tempo; danach erst S8–S11.
-- [ ] (g) **Codex:** Shorts S8–S11 nach `plans/vermarktung.md` § b2.
+**Belegt 02.11.:** `./test.sh` rc=0 · Handshake 16/12 · `test:host` rc=0, 156 ✔. Desktop-Toolwahl: nur
+`generate_reaction` (30.10.) belegt; alles andere offen.
 
-**Gate C — Welle 3** (erst nach Release 0.6)
-- [ ] (h) **Jay:** Welle 3 ins Standardprofil oder eigenes Profil? Empfehlung Claude: eigenes Profil
-      (`CHEMDRAW_PROFILE=pharma`) — Rechnen/PK/Dose-Response sind Pharmazie, nicht Grundstudium; 2-KB-Kante
-      bei vier Beschreibungen; 36,7 KB Modelltext bei scope_table. Entscheid fällt mit dem Release-Klick.
+- [x] (a) alte Erweiterung aus, Desktop neu gestartet (Claude, 23:05)
+- [ ] (b) **Codex:** Desktop-Messlauf aller 16 Tools mit natürlichen Prompts (Faden `20261102-230541-desktop-abnahme-0-7`),
+      Tabelle `docs/desktop-abnahme-2026-11-02.md`
+- [ ] (c) **Claude:** Host-Fälle für `batch_generate` und `generate_reaction` (fehlen in `host.e2e.mjs`)
+- [ ] (d) **Claude:** Befunde aus (b) fixen (TDD), bis jedes Tool in Desktop grün ist
+- [ ] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
+- [ ] (f) **Jay:** Release-Klick = Tag `v0.7.0` pushen → `publish.yml` macht PyPI → `.mcpb` am Release → Registry
+- [ ] (g) **Jay + Codex:** `.mcpb` 0.7.0 installieren, Konnektor `chemdraw-tool` aus, Kurzabnahme mit dem Paket,
+      das Nutzer bekommen (geht erst nach PyPI, weil das Bundle die PyPI-Hashes trägt); Fehler → 0.7.1
+- danach: README-Bilder (Calculate, Anki, Look up; `wave2-titration-acetic.png` neu) · zuletzt Shorts S1/S8–S11
+- Welle 3 (Profil-Entscheid, Jay) erst nach 0.7.0
 
-Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees seit 01.10., Merge-Prüfung nach Gate A) ·
-Radar-Vorschlag `Phlya/adjustText` für Spektren-Labels: **verworfen 31.10.**, zieht scipy (Abhängigkeitsregel
-in CLAUDE.md); Label-Überlappung bleibt als Welle-2-Restfehler notiert.
+Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees) · adjustText verworfen (scipy).
 
 ## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
 
