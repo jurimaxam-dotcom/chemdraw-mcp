@@ -510,3 +510,50 @@ cases:
     expect: generate_dose_response
     forbidden: [generate_species_distribution, generate_titration_curve]
     why: Erklaerfrage der Rezeptortheorie — das Diagramm gehoert daneben (wie bei den Strukturen).
+
+  # --- Desktop-Abnahme 0.7.0 (02.11.2026): Fragen, die das Modell ohne Tool beantwortet
+  # Wortlaut aus docs/desktop-abnahme-2026-11-02.md. In Desktop je einmal rot: das Modell
+  # rechnet oder erinnert selbst, statt das Tool zu rufen.
+  - id: desktop-loeslichkeit
+    prompt: "Was ist die Löslichkeit von Paracetamol?"
+    expect: lookup
+    forbidden: [generate_molecule]
+    why: >
+      Ein benannter Messwert. Aus dem Gedächtnis kommt eine Zahl ohne Quelle;
+      lookup topic=physical liefert den PubChem-Wert mit Herkunft.
+
+  - id: desktop-ir-banden
+    prompt: "Welche IR-Banden erwarte ich bei Aspirin?"
+    expect: predict_spectrum
+    forbidden: [generate_spectrum]
+    why: >
+      Erwartete Banden aus der Struktur. predict_spectrum liest sie aus der
+      kuratierten Tabelle; eine Gedächtnisliste ist nicht reproduzierbar.
+
+  - id: desktop-ph-essig
+    prompt: "Welchen pH hat 0,1 M Essigsäure?"
+    expect: calculate_ph
+    forbidden: [generate_titration_curve, generate_species_distribution]
+    why: >
+      Eine pH-Zahl. calculate_ph löst die exakte Ladungsbilanz und stellt die
+      Näherung daneben; Kopfrechnen prüft die Annahmen nicht.
+
+  - id: desktop-puffer-rezept
+    prompt: "Wie stelle ich 100 mL Phosphatpuffer pH 7,4 her (pKa 7,2, 0,1 M)?"
+    expect: calculate_ph
+    forbidden: [generate_titration_curve, generate_species_distribution]
+    why: Pufferrezept = calculate_ph topic buffer_recipe.
+
+  - id: desktop-ionisation
+    prompt: "Wie viel Prozent Ibuprofen (pKa 4,4) liegt im Dünndarm bei pH 6,5 ionisiert vor?"
+    expect: calculate_ph
+    forbidden: [generate_species_distribution]
+    why: Ionisationsgrad als Zahl = calculate_ph topic ionisation, nicht die Kurve.
+
+  - id: desktop-vergleich
+    prompt: "Vergleiche Aspirin und Paracetamol"
+    expect: compare_molecules
+    forbidden: [generate_molecule]
+    why: >
+      Zwei Stoffe vergleichen. In Desktop kam ein pharmakologischer Textvergleich
+      ohne Strukturbild; compare_molecules zeigt die Strukturunterschiede.
