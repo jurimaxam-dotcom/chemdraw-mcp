@@ -1,70 +1,31 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Release 0.7.0 (Codex, 03.11.2026, vor Kontext-Neustart)
+## Weiter bei — Release 0.7.0 (Claude, 03.11.2026 07:30)
 
 **Reihenfolge (Jay 02.11.):** erst 0.7.0 sauber raus → dann README sauber → Shorts zuletzt.
 
-**Neustart-Abgleich (Codex, 03.11.):** Kein eigener Arbeitsschritt halbfertig;
-`tisch lies --neu --ich codex` meldet keine ungelesenen Nachrichten. Claude ist im Projekt
-aktiv und arbeitet laut Live-Meldung nach dem Anki-Vorschau-Fix am Vergleich im Dunkelmodus.
-Die fünf lokalen Änderungen (`AnkiDeckView.jsx`, `styles.css`, `host/host.e2e.mjs`,
-`ui/dist/index.html`, neuer Test `__tests__/ankiDeckView.test.mjs`, jeweils unter
-`chemdraw_tool/ui/`, Quellcode unter `src/`) gehören zu Claudes laufender Fixrunde;
-Codex hat sie weder übernommen noch abgenommen. Vor erneutem Desktop-Test erst
-Fixbericht und Neustart abwarten, dann die unten zugesagten Prüfungen ausführen.
-Keine neue Frage an Jay und kein zusätzlicher eigener Tisch-Auftrag offen.
+**Stand draußen:** GitHub, PyPI, Registry = 0.6.0 (26.10., 7 Tools). Repo bereit für 0.7.0 (`cb4afa9`:
+Version, Changelog). Alte Erweiterung 0.5.1 in Desktop deaktiviert (Ursache der „7 alten Tools" 30./31.10.).
 
-**Nächster Schritt für Codex:** `~/.claude/bin/tisch lies --neu --ich codex` lesen. Der eigene
-Desktop-Messauftrag ist abgeschlossen und als Bericht #5 in Faden
-`20261102-230541-desktop-abnahme-0-7` zurückgegeben (Faden mit Status #6 am Hop-Limit).
-Fixes gehören laut Auftrag Claude; Codex baut ohne neuen Tisch-Auftrag keinen Fix. Nach Claudes
-Fixmeldung und Desktop-Neustart die sechs roten Originalprompts erneut in frischen Chats prüfen,
-danach Vergleichskontrast und betroffene Panels. Kein zeitgesteuerter Hintergrundjob offen;
-Fortsetzung wird durch einen neuen Tisch-Auftrag ausgelöst, nicht durch Ablauf einer Wartezeit.
+**Desktop-Messung 02.11.** (`docs/desktop-abnahme-2026-11-02.md`, je 1 Chat): 16 Tools in einem Konnektor,
+12/12 Panels rendern, Routing 10/16 — ohne Tool: lookup, predict_spectrum, calculate_ph ×3, compare_molecules.
 
-**Prüfstand gesichert:** Commit `1b8fded`, gepusht; `docs/desktop-abnahme-2026-11-02.md:5`
-fasst zusammen, Tabelle ab Zeile 29, rote Originalprompts mit Chat-Links am Ende.
-Screenshots unter `/tmp/chemdraw-desktop-test/01-toolliste.png` bis `19-anki-importdialog.png`
-(nur im Bericht genannte Dateien zählen; ältere Dateien liegen daneben).
-16 Tools in einem Konnektor sichtbar; **10/16 Routingfälle grün**, **6 ohne Tool**:
-lookup/Löslichkeit, predict_spectrum/IR-Banden, calculate_ph/alle drei Fälle,
-compare_molecules/Vergleich. **12/12 Panels rendern** ohne „Warte auf Daten…“;
-compare_molecules erst nach explizitem Folgeprompt, Datenpanel zusätzlich explizit getestet.
-Vergleichsgerüst und Beschriftungen fast weiß auf weiß (Screenshot `15-compare_molecules-panel.png`).
-Anki-Vorschau zeigt außerdem `<i>vor</i>` literal. PNG-Export bestätigt, Stereo und Data grün,
-3D über Chat grün; fehlender 3D-Knopf im Molekülpanel bekannte Funktionslücke, kein Fehler.
-Phosphorsäure-Pufferpunkte liegen sichtbar auf der Kurve. Kurvenaufrufe jeweils nur einmal erlaubt.
-Anki-Übergabe öffnet Importdialog `chemdraw.apkg`; endgültiger Sammlungsimport nicht angeklickt,
-Importdialog bleibt offen. Der CUA-Aufruf zu Anki kehrte ungewöhnlich spät zurück; kein Job läuft weiter.
+**Ursache Routing (Claude, belegt):** Desktop lädt Tools erst bei Bedarf. `run_claude.py` mit
+`ENABLE_TOOL_SEARCH=true BUILTIN_TOOLS=ToolSearch` reproduziert es: die pH-Fälle 6/6 ohne Suche.
+Fix `7596c26` (pH-Regel vorn in `_MVP_INSTRUCTIONS`): mit Tool-Suche 18/18, ohne 12/12.
+Panel-Fixes `40723f9`: Vergleich im Dunkelmodus, Anki-Vorschau ohne Tags. Gate, Handshake 16/12, Host 167 ✔.
 
-**Dateien für den Anschluss:** Routingtexte `chemdraw_tool/server.py:285` und `:324`;
-Vergleichsweg `server.py:1700`, Panel-Zuordnung `chemdraw_tool/ui/src/App.jsx:44` und `PlotView.jsx`;
-Anki-Vorschau `AnkiDeckView.jsx`, Knopf `components/AddToAnkiButton.jsx`.
-Zugesagte Beweise nach Fix: TDD rot → grün, `./test.sh`, `test:host`, Handshake 16/12;
-Desktop nach Laufzeitänderung neu starten und Originalprompt → gewähltes Tool → sichtbares Panel
-mit Screenshots belegen. In-Prozess-Tests ersetzen diese Desktop-Messung nicht.
+**Läuft:** Codex-Nachmessung in Desktop, 6 Fälle × 3 Chats + 2 Stichproben (Faden `20261103-072035-desktop-nachmessung-0-7`).
 
-**Fragen an Jay, geparkt:** „Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil?“ —
-**unbeantwortet — nicht bauen**. „Soll der Abfragemodus auch Reaktionen/Mechanismen abdecken
-(Edukte verdecken)?“ — **unbeantwortet — nicht bauen**. Beides gehört nicht in diesen Release-Schritt.
-
-**Stand draußen:** GitHub-Release, PyPI und MCP-Registry stehen auf **0.6.0** (26.10., 7 Tools). Im Repo:
-66 Commits mehr, 16 Tools / 12 Panels; `pyproject.toml` trägt noch 0.6.0, CHANGELOG `[Unreleased]` leer.
-Der Plan vom 31.10. sprach von „RC 0.6" — falsch, 0.6.0 war schon draußen.
-
-**Ordnung 02.11.:** In Desktop liefen zwei ChemDraw-Server — Konnektor `chemdraw-tool` (Repo, 16 Tools) und die
-alte Erweiterung `.mcpb` 0.5.1 (7 Tools, installiert 25.10.). Das war die „Toollisten-Diskrepanz" aller Tests vom
-30./31.10. Claude hat die Erweiterung um 23:05 deaktiviert (`Claude Extensions Settings/…chemdraw-mcp.json`,
-Backup `.bak-2026-11-02`), nicht gelöscht.
-
-**Belegt 02.11.:** `./test.sh` rc=0 · Handshake 16/12 · `test:host` rc=0; mit den ergänzten Host-Fällen 166 ✔ (`74c7794`). Desktop-Messung siehe oben: Release-Abnahme bleibt rot.
+**Fragen an Jay, geparkt (nicht in diesem Release):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
 - [x] (a) alte Erweiterung aus, Desktop neu gestartet (Claude, 23:05)
 - [x] (b) **Codex:** Desktop-Messlauf aller 16 Tools mit natürlichen Prompts (Faden `20261102-230541-desktop-abnahme-0-7`),
       Tabelle `docs/desktop-abnahme-2026-11-02.md`, Commit `1b8fded`; Messung vollständig, Abnahme rot (10/16 Routing).
 - [x] (c) **Claude:** Host-Fälle für `batch_generate` und `generate_reaction` (fehlen in `host.e2e.mjs`)
-- [ ] (d) **Claude:** Befunde aus (b) fixen (TDD), bis jedes Tool in Desktop grün ist
-- [ ] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
+- [x] (d) **Claude:** Befunde aus (b) fixen (TDD) — `40723f9`, `7596c26`
+- [ ] (d2) **Codex:** Desktop-Nachmessung „n von 3" je roter Fall
+- [x] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
 - [ ] (f) **Jay:** Release-Klick = Tag `v0.7.0` pushen → `publish.yml` macht PyPI → `.mcpb` am Release → Registry
 - [ ] (g) **Jay + Codex:** `.mcpb` 0.7.0 installieren, Konnektor `chemdraw-tool` aus, Kurzabnahme mit dem Paket,
       das Nutzer bekommen (geht erst nach PyPI, weil das Bundle die PyPI-Hashes trägt); Fehler → 0.7.1
