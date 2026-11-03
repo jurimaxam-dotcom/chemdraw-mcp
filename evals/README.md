@@ -1,6 +1,6 @@
 # Evals: Prompt → Tool
 
-Der Server bietet standardmäßig das MVP-Profil mit sieben Tools an;
+Der Server bietet standardmäßig das Standardprofil (mvp) mit 16 Tools an;
 `CHEMDRAW_PROFILE=full` schaltet alle 23 Tools frei. Welches davon das Modell
 bei welcher Frage wählt, war
 bisher Anekdote: „Zeichne Aspirin" landete einmal bei `generate_scope_table`,

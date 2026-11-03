@@ -6,6 +6,50 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-11-03
+
+The default profile grows from 7 to 16 tools: mechanisms, 3D, look-ups,
+spectra, TLC plates, pH curves and pH numbers join drawing and Anki.
+
+### Added
+
+- **Reaction mechanisms** (`generate_mechanism`): SN1, SN2 and Fischer
+  esterification as textbook examples, step by step with curved arrows.
+  Other mechanisms are not drawn — the tool says so instead of guessing.
+- **Rotatable 3D model** (`generate_3d`): drag to rotate in the panel.
+- **Look-ups as text** (`lookup`): properties, GHS safety, physical data,
+  biochemistry and pathways from PubChem, ChEBI, UniProt and KEGG.
+- **Expected spectra** (`predict_spectrum`): IR bands for a structure, the
+  groups behind a measured wavenumber, ¹H signal count and integral ratio.
+  Deterministic; no ppm shifts.
+- **Spectrum figures** (`generate_spectrum`): IR, NMR, MS and UV/Vis from
+  peak lists, with an Export PNG button.
+- **TLC plates** (`generate_tlc`): lanes, spots and co-spot from Rf values.
+- **Titration curves and species distribution**
+  (`generate_titration_curve`, `generate_species_distribution`).
+- **pH numbers with the working** (`calculate_ph`): weak/strong acids and
+  bases, buffers, buffer recipes and ionisation, exact charge balance next
+  to the textbook approximation.
+
+### Fixed
+
+- Titration curves: half-equivalence markers sit on the curve's exact pH
+  instead of on the pKa.
+- Compare panel in dark mode: the shared scaffold was drawn white on the
+  white figure background.
+- Anki deck preview showed card HTML literally (`<i>vor</i>`).
+- Export PNG button on TLC plates, spectra and plot figures.
+- Anki card text is escaped; only `<b> <i> <sub> <sup> <br>` and entities
+  pass. Panel source links accept http/https only.
+
+### Changed
+
+- Server instructions route a pH, buffer or ionisation number to
+  `calculate_ph`. Claude Desktop loads tools on demand; without this line
+  the model answered such questions from memory.
+- Desktop bundle: uv is fetched with a checksum, dependencies are
+  hash-locked; CI actions are pinned to commit SHAs.
+
 ## [0.6.0] — 2026-10-26
 
 ### Added
