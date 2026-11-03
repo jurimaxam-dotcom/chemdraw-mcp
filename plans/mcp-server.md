@@ -1,6 +1,6 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Release 0.7.0 (Claude, 03.11.2026 07:30)
+## Weiter bei — Release 0.7.0 (Claude, 03.11.2026 07:50)
 
 **Reihenfolge (Jay 02.11.):** erst 0.7.0 sauber raus → dann README sauber → Shorts zuletzt.
 
@@ -15,20 +15,17 @@ Version, Changelog). Alte Erweiterung 0.5.1 in Desktop deaktiviert (Ursache der 
 Fix `7596c26` (pH-Regel vorn in `_MVP_INSTRUCTIONS`): mit Tool-Suche 18/18, ohne 12/12.
 Panel-Fixes `40723f9`: Vergleich im Dunkelmodus, Anki-Vorschau ohne Tags. Gate, Handshake 16/12, Host 167 ✔.
 
-**Läuft:** Codex-Nachmessung in Desktop, 6 Fälle × 3 Chats + 2 Stichproben (Faden `20261103-072035-desktop-nachmessung-0-7`).
-Zwischenstand Codex: Löslichkeit Paracetamol in Desktop weiter ohne Tool (2 von 3 gemessen) — für `lookup` wurde nichts
-geändert, in Claude Code mit Tool-Suche war er 5/5 grün.
+**Nachmessung Desktop 03.11. (Codex `bcd6f44`, Claude geprüft):** Originalprompts **0/18** — alle 6 Fälle 0 von 3,
+Antworten aus dem Gedächtnis (pH 2,87 fachlich richtig). Mit Zusatz „— nutze ChemDraw" **6/6** (pH, Löslichkeit, Vergleich
+je 2/2). Stichproben generate_molecule + Titrationskurve grün; Vergleich im Dunkelmodus lesbar; Anki ohne Tags.
+→ Entscheidungsregel „pH weiter rot" greift: Hinweiszeile erreicht Desktops Toolwahl nicht. 0.7.0 geht raus,
+Grenze + Workaround in CHANGELOG „Known limitations".
+**Rückschrittkontrolle Claude Code (57 Fälle, je 2 Läufe):** mit Tool-Suche 50 + 49/57, ohne 54 + 53/57. Gegenmessung der
+8 Rotfälle auf `7596c26^`: mit Suche 3/8 + 2/8, nach Fix 1/8 + 1/8 — schwaches Signal, im Rauschen; ohne Suche gleich.
+Dauerhaft rot: `exam-revision` (batch_generate dazu), `reaction-in-conversation` mit Suche (nur Mechanismus).
+Nebenbefund Codex: Label „Acetylsalicylsäure" im Vergleichspanel mit Lücke am Umlaut (nach 0.7.0).
 
-**Nächster Schritt (Claude, nach Codex-Bericht in diesem Faden):** auswerten nach pH-Fällen —
-- pH in Desktop jetzt grün → Hinweise kommen an: analoge Zeile für lookup/predict_spectrum/compare_molecules in
-  `_MVP_INSTRUCTIONS` (≤ 2048 B, Test `tests/test_server_instructions.py`), messen mit
-  `ENABLE_TOOL_SEARCH=true BUILTIN_TOOLS=ToolSearch uv run python evals/tool-routing/run_claude.py <ids>` ×3, Codex misst nach.
-- pH in Desktop weiter rot → Server erreicht Desktops Toolwahl hier nicht: 0.7.0 trotzdem raus, Grenze in CHANGELOG
-  („Text-Tools in Desktop bei Wissensfragen manchmal übersprungen; ‚mit ChemDraw' im Prompt hilft").
-- Danach Jay: Tag `v0.7.0` pushen (f). Prüfmethoden zugesagt: TDD rot→grün, `./test.sh`, Handshake 16/12, `test:host`,
-  Desktop „n von 3" je Fall.
-Abgebrochen durch Kontext-Neustart: Gesamtlauf aller Eval-Fälle (mit/ohne Tool-Suche) als Rückschrittkontrolle — neu starten.
-Jay-Handlung offen: „Vergleiche Aspirin und Paracetamol" in Desktop ansehen (Gerüst dunkel auf Weiß?).
+**Nächster Schritt: Jay — Tag `v0.7.0` pushen (f).** Danach (g) Kurzabnahme mit dem `.mcpb`.
 
 **Fragen an Jay, geparkt (nicht in diesem Release):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
@@ -37,7 +34,7 @@ Jay-Handlung offen: „Vergleiche Aspirin und Paracetamol" in Desktop ansehen (G
       Tabelle `docs/desktop-abnahme-2026-11-02.md`, Commit `1b8fded`; Messung vollständig, Abnahme rot (10/16 Routing).
 - [x] (c) **Claude:** Host-Fälle für `batch_generate` und `generate_reaction` (fehlen in `host.e2e.mjs`)
 - [x] (d) **Claude:** Befunde aus (b) fixen (TDD) — `40723f9`, `7596c26`
-- [ ] (d2) **Codex:** Desktop-Nachmessung „n von 3" je roter Fall
+- [x] (d2) **Codex:** Desktop-Nachmessung „n von 3" je roter Fall — 0/18, mit „nutze ChemDraw" 6/6 (`bcd6f44`)
 - [x] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
 - [ ] (f) **Jay:** Release-Klick = Tag `v0.7.0` pushen → `publish.yml` macht PyPI → `.mcpb` am Release → Registry
 - [ ] (g) **Jay + Codex:** `.mcpb` 0.7.0 installieren, Konnektor `chemdraw-tool` aus, Kurzabnahme mit dem Paket,

@@ -57,6 +57,8 @@ spectra, TLC plates, pH curves and pH numbers join drawing and Anki.
   solubility of paracetamol?", expected IR bands, pH numbers, "compare
   aspirin and paracetamol" (measured 0 of 3 chats each, 2026-11-03).
   Drawing requests ("draw ibuprofen") and figure requests are not affected.
+  Naming the tool helps: adding "use ChemDraw" to the prompt made Desktop
+  call `calculate_ph`, `lookup` and `compare_molecules` (2 of 2 chats each).
 
 ## [0.6.0] — 2026-10-26
 
