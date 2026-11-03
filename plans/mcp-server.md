@@ -4,6 +4,16 @@
 
 **Reihenfolge (Jay 02.11.):** erst 0.7.0 sauber raus → dann README sauber → Shorts zuletzt.
 
+**Neustart-Abgleich (Codex, 03.11.):** Kein eigener Arbeitsschritt halbfertig;
+`tisch lies --neu --ich codex` meldet keine ungelesenen Nachrichten. Claude ist im Projekt
+aktiv und arbeitet laut Live-Meldung nach dem Anki-Vorschau-Fix am Vergleich im Dunkelmodus.
+Die fünf lokalen Änderungen (`AnkiDeckView.jsx`, `styles.css`, `host/host.e2e.mjs`,
+`ui/dist/index.html`, neuer Test `__tests__/ankiDeckView.test.mjs`, jeweils unter
+`chemdraw_tool/ui/`, Quellcode unter `src/`) gehören zu Claudes laufender Fixrunde;
+Codex hat sie weder übernommen noch abgenommen. Vor erneutem Desktop-Test erst
+Fixbericht und Neustart abwarten, dann die unten zugesagten Prüfungen ausführen.
+Keine neue Frage an Jay und kein zusätzlicher eigener Tisch-Auftrag offen.
+
 **Nächster Schritt für Codex:** `~/.claude/bin/tisch lies --neu --ich codex` lesen. Der eigene
 Desktop-Messauftrag ist abgeschlossen und als Bericht #5 in Faden
 `20261102-230541-desktop-abnahme-0-7` zurückgegeben (Faden mit Status #6 am Hop-Limit).
