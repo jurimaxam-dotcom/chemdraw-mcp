@@ -25,7 +25,20 @@ Grenze + Workaround in CHANGELOG „Known limitations".
 Dauerhaft rot: `exam-revision` (batch_generate dazu), `reaction-in-conversation` mit Suche (nur Mechanismus).
 Nebenbefund Codex: Label „Acetylsalicylsäure" im Vergleichspanel mit Lücke am Umlaut (nach 0.7.0).
 
-**Nächster Schritt: Jay — Tag `v0.7.0` pushen (f).** Danach (g) Kurzabnahme mit dem `.mcpb`.
+**Nächster Schritt (03.11. 08:15, Jay will es jetzt): Release 0.7.0.** `publish.yml` startet bei `release: published`, ein
+reiner Tag-Push reicht NICHT. Befehl (Projektordner): `gh release create v0.7.0 --title "0.7.0" --notes-file <(awk
+'/^## \[0.7.0\]/{f=1;next} /^## \[0.6.0\]/{exit} f' CHANGELOG.md)` — Release = Jays Hand (Außenwirkung). Danach Actions-Lauf
+prüfen (`gh run list --workflow publish.yml`), PyPI 0.7.0 + `.mcpb` am Release + Registry `isLatest`, dann (g) mit Codex.
+
+**Werkzeugbilanz (Artifact, 03.11.):** https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg — 23 Tools × Version, Nutzen,
+Mehrwert, CC-Routing, Desktop; Quelle `/private/tmp/…/scratchpad/werkzeugbilanz.html` ist flüchtig → bei Änderung per `url` lesen.
+
+**Nach 0.7.0 — API-Eval (Jay 03.11.: „erst 0.7.0, dann"):** Runner über Anthropic-API (Opus 5.5) gegen den ECHTEN Server
+(MCP-stdio-Client, Tools mit `defer_loading` + `tool_search_tool_bm25_20251119` wie Desktops Nachladen), je Fall eine
+Korrektheitsprüfung (pH 2,88 ± 0,02, InChIKey, Pufferrezept 38,7/61,3 mL; Text per Modell-Richter), alle 23 Tools.
+Erst 10 Kernfälle (~3 $, Kosten je Fall messen), dann Freigabe für ~60 × 3 (~20–25 $ geschätzt). Voraussetzung Jay:
+API-Schlüssel (`ANTHROPIC_API_KEY` oder `ant auth login`; heute weder Key noch `ant` noch SDK da). Grenze: sagt
+Desktop-Routing NICHT verlässlich voraus (CC mit Tool-Suche 18/18 vs. Desktop 0/9) — dafür bleibt Codex' Klicktest.
 
 **Fragen an Jay, geparkt (nicht in diesem Release):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
