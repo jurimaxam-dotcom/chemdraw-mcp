@@ -45,10 +45,18 @@ spectra, TLC plates, pH curves and pH numbers join drawing and Anki.
 ### Changed
 
 - Server instructions route a pH, buffer or ionisation number to
-  `calculate_ph`. Claude Desktop loads tools on demand; without this line
-  the model answered such questions from memory.
+  `calculate_ph`. With on-demand tool loading (Claude Code tool search)
+  this moved the pH cases from 6/12 to 18/18.
 - Desktop bundle: uv is fetched with a checksum, dependencies are
   hash-locked; CI actions are pinned to commit SHAs.
+
+### Known limitations
+
+- In Claude Desktop, knowledge-style questions are often answered from
+  memory without calling a tool, even when one fits: "What is the
+  solubility of paracetamol?", expected IR bands, pH numbers, "compare
+  aspirin and paracetamol" (measured 0 of 3 chats each, 2026-11-03).
+  Drawing requests ("draw ibuprofen") and figure requests are not affected.
 
 ## [0.6.0] — 2026-10-26
 
