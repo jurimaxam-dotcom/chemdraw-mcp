@@ -68,3 +68,88 @@ Routing wird nur aus dem ersten vorgegebenen Prompt eines frischen Chats gewerte
 | Vergleiche Aspirin und Paracetamol | https://claude.ai/chat/f505f6eb-2ad7-44ba-8a6b-00b2008bf4ea |
 
 Expliziter Folgeprompt im Vergleichschat: „Zeichne jetzt beide Strukturformeln nebeneinander mit chemdraw-tool.compare_molecules.“ Der Vergleich erscheint, aber sein weißer Hintergrund bei sehr hellen neutralen Bindungen macht das gemeinsame Gerüst kaum sichtbar. Das betrifft die sichtbare Nutzbarkeit, obwohl das Panel technisch rendert.
+
+## Nachmessung 03.11.
+
+Auftrag: Tisch `20261103-072035-desktop-nachmessung-0-7` #1, Zusatzmessung #4.
+Gemessen nach Routing-Fix `7596c26` und Panel-Fix `40723f9`. HEAD beim Neustart:
+`24c1885`; während der Messung weitere Release-/Dokumentationscommits bis `b903013`.
+Claude Desktop vollständig beendet und neu geöffnet. Modellanzeige: **Opus 5.5 Mittel**, Modus **Manuell**.
+Kontrollchat nennt genau **chemdraw-tool, 16 Tools**, keinen zweiten ChemDraw-Konnektor:
+https://claude.ai/chat/f6ce5c03-7636-4a2f-90df-4875c601d578
+(`nach-00-toolliste.png`). Keine Änderung dauerhafter Toolberechtigungen.
+
+**Ergebnis der Originalprompts: 0/18 erwartete Toolaufrufe.** Jeder Versuch läuft in einem
+frischen Chat; gewertet wird ausschließlich die erste Antwort. Alle Antworten waren abgeschlossen
+und enthielten keinen Toolaufruf, sondern Text und gegebenenfalls Formeln/Tabellen.
+Fachliche Richtigkeit der Textantworten ist nicht Gegenstand dieser Messung.
+Die Claude-Code-Messung 18/18 ist damit für diese Desktop-Konstellation nicht bestätigt.
+
+| Originalprompt (wortgleich) | Erwartet | Ergebnis | Screenshots |
+|---|---|---|---|
+| Was ist die Löslichkeit von Paracetamol? | lookup | **0 von 3** | `nach-lookup-1.png` bis `nach-lookup-3.png` |
+| Welche IR-Banden erwarte ich bei Aspirin? | predict_spectrum | **0 von 3** | `nach-ir-1.png` bis `nach-ir-3.png` |
+| Welchen pH hat 0,1 M Essigsäure? | calculate_ph | **0 von 3** | `nach-ph-acid-1.png` bis `nach-ph-acid-3.png` |
+| Wie stelle ich 100 mL Phosphatpuffer pH 7,4 her (pKa 7,2, 0,1 M)? | calculate_ph | **0 von 3** | `nach-ph-buffer-1.png` bis `nach-ph-buffer-3.png` |
+| Wie viel Prozent Ibuprofen (pKa 4,4) liegt im Dünndarm bei pH 6,5 ionisiert vor? | calculate_ph | **0 von 3** | `nach-ph-ionisation-1.png` bis `nach-ph-ionisation-3.png` |
+| Vergleiche Aspirin und Paracetamol | compare_molecules | **0 von 3** | `nach-compare-1.png` bis `nach-compare-3.png` |
+
+Chat-IDs, jeweils in Versuchsreihenfolge; vollständiger Link: `https://claude.ai/chat/<ID>`:
+
+| Fall | Versuch 1 | Versuch 2 | Versuch 3 |
+|---|---|---|---|
+| Löslichkeit | 699ac32e-6592-494a-a024-057e2cbd85b7 | c2cc2943-e06f-4ee4-bd23-b1c7393d27c3 | 57ee3351-f02f-478b-9193-e7de61fb8a7c |
+| IR | 9492f48c-4a5f-46f2-b77b-72766a987f15 | 64e54925-9744-48d6-9347-8122afa8c8cc | bd81d793-74f0-482b-b771-75910563803b |
+| pH Essigsäure | f5600bc7-6b70-4126-a95b-5f3f576965df | 7f9834c4-2598-415f-bd4f-a9b56083801d | fc193cd5-7cf9-40a0-9d34-c29f466c99b8 |
+| Puffer | e4ae89b0-1549-4ee7-beb4-325d9d861270 | b0a30435-cfbc-46ad-8cdb-d77fe0210cc0 | 6b57421f-1f22-47c3-aa45-da344d628eee |
+| Ionisation | 1f143924-3b12-4cfc-a4a3-78a5fae45168 | 30a3e639-52d3-434e-9a2e-87ac3598c7a8 | 10a2faad-2a60-400e-96b6-994e044daacf |
+| Vergleich | 62d56110-4167-4e6f-b331-34d5e437f08e | 1ca0c0e2-8388-4f56-a264-3c6c20a7a530 | 0821e974-96c7-43f2-b87f-2df12486589a |
+
+### Stichproben und Sichtprüfung
+
+- **Struktur grün:** „Zeichne Ibuprofen“ → `generate_molecule`, gefülltes Strukturpanel.
+  Chat https://claude.ai/chat/ecc3b713-b310-42ae-81af-d1ed4062b219,
+  `nach-generate-molecule.png`.
+- **Kurve grün:** „Zeig mir die Titrationskurve von Phosphorsäure mit NaOH“ →
+  `generate_titration_curve`, ausschließlich **Einmal erlauben** geklickt. Panel mit
+  drei EP-Markierungen und Pufferpunktbeschriftungen 2.29 / 7.2 / 11.86.
+  Chat https://claude.ai/chat/37deedbe-d0f0-405a-b076-da416c362a66,
+  `nach-titration.png`.
+- **Vergleichskontrast grün:** Im dritten Vergleichschat separat den ursprünglichen expliziten
+  Folgeprompt gesendet: „Zeichne jetzt beide Strukturformeln nebeneinander mit
+  chemdraw-tool.compare_molecules.“ → Tool und Panel sichtbar. Im Dunkelmodus sind das
+  gemeinsame Gerüst und die Beschriftungen jetzt dunkel auf weißem Bildgrund lesbar,
+  rote Unterschiede bleiben erkennbar (`nach-compare-panel-dark.png`). Der Folgeaufruf
+  ändert das rote Routing-Ergebnis nicht. Nebenbefund: Im automatisch gewählten Label
+  „Acetylsalicylsäure“ bleibt eine sichtbare Lücke am Umlaut; Kontrast-Fix davon unabhängig.
+- **Anki-Vorschau:** Originalprompt „Mach mir Anki-Karten zu Aspirin und Ibuprofen“ →
+  `export_anki_deck`, 17 Karten / 3 Bilder, zehn Vorschaufragen ohne wörtliche Tags sichtbar.
+  Chat https://claude.ai/chat/a5730103-0da9-4f8f-a3da-5552e539d815,
+  `nach-anki-preview.png`. Kein Sammlungsimport ausgeführt.
+- **Gezielter HTML-Nachweis grün:** Zusätzlich eine einzelne Textkarte mit der Vorderseite
+  `Warum Ibuprofen <i>vor</i> ASS vermeiden?` ausdrücklich über `export_anki_deck` angefordert,
+  nur als APKG gespeichert. Die Karte im Panel zeigt **Warum Ibuprofen vor ASS vermeiden?**,
+  ohne wörtliche Tags (`nach-anki-html-preview.png`). Das erzeugte Paket
+  `~/ChemDraw-Output/anki/anki-vorschautest.apkg` enthält laut schreibgeschützter
+  SQLite-Abfrage des ZIP-Eintrags `collection.anki2` weiterhin `<i>vor</i>` im Kartenfeld;
+  der Test enthält also tatsächlich HTML-Eingabe. Chat:
+  https://claude.ai/chat/334f1e8f-85b1-406c-9bc9-bc486fb83443.
+
+Alle genannten Screenshots liegen unter `/tmp/chemdraw-desktop-test/`. Keine Änderungen am
+Produktionscode durch diese Nachmessung; kein Full-Gate erneut gestartet.
+
+### Zusatzmessung: „— nutze ChemDraw“
+
+Je zwei weitere **frische Chats**, keine Folgeprompts. **6/6 erwartete Toolaufrufe**:
+
+| Wortgleicher Prompt | Erwartet und gewählt | Ergebnis | Chat 1 | Chat 2 | Screenshots |
+|---|---|---|---|---|---|
+| Welchen pH hat 0,1 M Essigsäure? — nutze ChemDraw | calculate_ph | **2 von 2** | ca5ada4d-c994-4a13-91c9-e4f52dabea25 | 56fe9a2c-ca1c-4eb8-8ad7-ce9a162e8407 | `nach-zusatz-ph-1.png`, `nach-zusatz-ph-2.png` |
+| Was ist die Löslichkeit von Paracetamol? — nutze ChemDraw | lookup | **2 von 2** | 1ff3b70f-9046-4fca-a0e2-3c0fd4ae8902 | 913c1dac-fa9f-4a5f-b921-02be4722438a | `nach-zusatz-lookup-1.png`, `nach-zusatz-lookup-2.png` |
+| Vergleiche Aspirin und Paracetamol — nutze ChemDraw | compare_molecules | **2 von 2** | 676f78b1-5971-4a5a-8799-08d3c8d8353f | 3029add0-ab85-49ea-b440-a1d6a32242db | `nach-zusatz-compare-1.png`, `nach-zusatz-compare-2.png` |
+
+Chat-Links wieder `https://claude.ai/chat/<ID>`. Bei pH und Löslichkeit zeigt Desktop den
+benannten Toolaufruf als aufklappbare Aktivität; beim Vergleich zusätzlich jeweils das Panel.
+Die Stichprobe belegt den Zusatz für diese drei Prompts in dieser Desktop-Konstellation.
+Sie belegt weder alle Formulierungen noch die drei nicht erneut gemessenen Fälle IR, Puffer
+und Ionisation. Die weiterhin roten Originalprompts bleiben davon getrennt.
