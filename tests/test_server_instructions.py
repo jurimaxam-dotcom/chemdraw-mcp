@@ -101,3 +101,22 @@ def test_instructions_name_the_panel_as_the_point():
         "Die Karte erwaehnt das Panel nicht. Es ist der Unterschied zwischen "
         "einem Bild und etwas, in dem man Atome antippen kann."
     )
+
+
+# Desktop-Abnahme 02.11.2026: Mit Tool-Suche (Desktop lädt Tools erst bei Bedarf)
+# sieht das Modell vorab nur Namen und diese Hinweise. pH-Fragen beantwortete es
+# dann 6/6 ohne Suche aus dem Kopf (evals: desktop-ph-*, ENABLE_TOOL_SEARCH=true).
+# Die Regel muss im Standardprofil stehen und vorn, weil Claude Code hinten kappt.
+def test_mvp_instructions_claim_ph_numbers_early():
+    from chemdraw_tool.server import _MVP_INSTRUCTIONS as text
+
+    assert len(text.encode()) <= MAX_BYTES
+    line = next((z for z in text.splitlines() if "calculate_ph" in z and "yourself" in z), None)
+    assert line, "keine eigene Zeile: pH-Zahl → calculate_ph, auch wenn man selbst rechnen könnte"
+    assert text.index(line) < len(text) // 2, "pH-Regel steht in der hinteren Hälfte"
+
+
+def test_mvp_instructions_drop_the_seven_tool_wording():
+    from chemdraw_tool.server import _MVP_INSTRUCTIONS as text
+
+    assert "temporarily disabled" not in text and "MVP profile" not in text
