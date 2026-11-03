@@ -4,6 +4,15 @@ import { displayPath } from "./utils/displayPath";
 
 const MAX_FRONTS = 10;
 
+// Kartenvorderseiten sind Anki-HTML (<i>, <br>, &amp;). Die Vorschau zeigt den
+// Text, ohne das HTML einzusetzen: <template>-Inhalt ist inert — er lädt keine
+// Bilder und führt keine Handler aus.
+export function frontText(front) {
+  const tpl = document.createElement("template");
+  tpl.innerHTML = String(front ?? "").replace(/<br\s*\/?>/gi, " ");
+  return (tpl.content.textContent || "").replace(/\s+/g, " ").trim();
+}
+
 export default function AnkiDeckView({ data }) {
   const fronts = data.fronts || [];
   const shown = fronts.slice(0, MAX_FRONTS);
@@ -31,7 +40,7 @@ export default function AnkiDeckView({ data }) {
         }}
       >
         {shown.map((front, i) => (
-          <li key={i}>{front}</li>
+          <li key={i}>{frontText(front)}</li>
         ))}
       </ol>
       {hidden > 0 && (

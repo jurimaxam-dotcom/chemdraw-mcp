@@ -481,6 +481,29 @@ try {
   prüfe(cmp.heading < 100 && cmp.svg >= 0.8 * cmp.box, `Vergleich: Überschrift ${Math.round(cmp.heading)} px, Bild ${Math.round(cmp.svg)} von ${Math.round(cmp.box)} px breit`);
   await cmpPage.close();
 
+  // Desktop-Befund 02.11.2026: im Dunkelmodus färbte die globale RDKit-Umfärbung
+  // das gemeinsame Gerüst hell — auf dem bewusst weißen Bildgrund fast unsichtbar.
+  const cmpDark = await browser.newPage({ viewport: { width: 720, height: 600 }, colorScheme: "dark" });
+  await cmpDark.setContent("<body></body>");
+  await cmpDark.addScriptTag({ path: out });
+  await cmpDark.evaluate((a) => window.__startHost(a), { html: cmpHtml, toolInput: cmpInput, toolResult: cmpResult });
+  const darkFrame = cmpDark.frames().find((f) => f !== cmpDark.mainFrame());
+  await darkFrame.locator(".plot-svg svg").waitFor();
+  const scaffold = await darkFrame.evaluate(() => {
+    const lum = (c) => { const m = c.match(/\d+(\.\d+)?/g); if (!m) return 1; const [r, g, b] = m.map(Number); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
+    const paths = [...document.querySelectorAll('.plot-svg svg path[style*="stroke:#000000"]')];
+    const texts = [...document.querySelectorAll('.plot-svg svg text[fill="#000000"], .plot-svg svg path[fill="#000000"]')];
+    return {
+      n: paths.length,
+      maxStroke: Math.max(0, ...paths.map((p) => lum(getComputedStyle(p).stroke))),
+      maxFill: Math.max(0, ...texts.map((t) => lum(getComputedStyle(t).fill))),
+      bg: lum(getComputedStyle(document.querySelector(".plot-svg")).backgroundColor),
+    };
+  });
+  check(scaffold.n > 0 && scaffold.bg > 0.9 && scaffold.maxStroke < 0.5 && scaffold.maxFill < 0.5,
+    `Vergleich dunkel: Gerüst dunkel auf weißem Grund (${scaffold.n} Pfade, Strich ${scaffold.maxStroke.toFixed(2)}, Schrift ${scaffold.maxFill.toFixed(2)})`);
+  await cmpDark.close();
+
   // Release 0.7.0 (02.11.2026): die beiden Panel-Tools ohne Host-Fall.
   const rxnPage = await browser.newPage({ viewport: { width: 720, height: 600 } });
   await rxnPage.setContent('<body style="margin:0"></body>');

@@ -45,25 +45,25 @@
     --atom-p: #ffa657;  /* P  #FF7F00 → helles Orange */
     --atom-i: #d2a8ff;  /* I  #A020F0 → helles Violett */
   }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#000000"]          { fill: var(--atom-c); }
-  :root:not([data-theme="light"]) svg text[fill="#000000"]          { fill: var(--atom-c); } /* Fischer/Haworth-Beschriftung */
-  :root:not([data-theme="light"]) svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#FF0000"]          { fill: var(--atom-o); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#0000FF"]          { fill: var(--atom-n); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#CCCC00"]          { fill: var(--atom-s); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#00CC00"]          { fill: var(--atom-cl); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#33CCCC"]          { fill: var(--atom-f); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#A52A2A"]          { fill: var(--atom-br); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#FF7F00"]          { fill: var(--atom-p); }
-  :root:not([data-theme="light"]) svg path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
-  :root:not([data-theme="light"]) svg path[fill="#A020F0"]          { fill: var(--atom-i); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#000000"]          { fill: var(--atom-c); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) text[fill="#000000"]          { fill: var(--atom-c); } /* Fischer/Haworth-Beschriftung */
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#FF0000"]          { fill: var(--atom-o); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#0000FF"]          { fill: var(--atom-n); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#CCCC00"]          { fill: var(--atom-s); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#00CC00"]          { fill: var(--atom-cl); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#33CCCC"]          { fill: var(--atom-f); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#A52A2A"]          { fill: var(--atom-br); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#FF7F00"]          { fill: var(--atom-p); }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg) path[fill="#A020F0"]          { fill: var(--atom-i); }
 }
 
   :root[data-theme="dark"] {
@@ -95,25 +95,25 @@
     --atom-p: #ffa657;  /* P  #FF7F00 → helles Orange */
     --atom-i: #d2a8ff;  /* I  #A020F0 → helles Violett */
   }
-  :root[data-theme="dark"] svg path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
-  :root[data-theme="dark"] svg path[fill="#000000"]          { fill: var(--atom-c); }
-  :root[data-theme="dark"] svg text[fill="#000000"]          { fill: var(--atom-c); }
-  :root[data-theme="dark"] svg path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
-  :root[data-theme="dark"] svg path[fill="#FF0000"]          { fill: var(--atom-o); }
-  :root[data-theme="dark"] svg path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
-  :root[data-theme="dark"] svg path[fill="#0000FF"]          { fill: var(--atom-n); }
-  :root[data-theme="dark"] svg path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
-  :root[data-theme="dark"] svg path[fill="#CCCC00"]          { fill: var(--atom-s); }
-  :root[data-theme="dark"] svg path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
-  :root[data-theme="dark"] svg path[fill="#00CC00"]          { fill: var(--atom-cl); }
-  :root[data-theme="dark"] svg path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
-  :root[data-theme="dark"] svg path[fill="#33CCCC"]          { fill: var(--atom-f); }
-  :root[data-theme="dark"] svg path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
-  :root[data-theme="dark"] svg path[fill="#A52A2A"]          { fill: var(--atom-br); }
-  :root[data-theme="dark"] svg path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
-  :root[data-theme="dark"] svg path[fill="#FF7F00"]          { fill: var(--atom-p); }
-  :root[data-theme="dark"] svg path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
-  :root[data-theme="dark"] svg path[fill="#A020F0"]          { fill: var(--atom-i); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#000000"]          { fill: var(--atom-c); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) text[fill="#000000"]          { fill: var(--atom-c); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#FF0000"]          { fill: var(--atom-o); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#0000FF"]          { fill: var(--atom-n); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#CCCC00"] { stroke: var(--atom-s) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#CCCC00"]          { fill: var(--atom-s); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#00CC00"] { stroke: var(--atom-cl) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#00CC00"]          { fill: var(--atom-cl); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#33CCCC"] { stroke: var(--atom-f) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#33CCCC"]          { fill: var(--atom-f); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#A52A2A"] { stroke: var(--atom-br) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#A52A2A"]          { fill: var(--atom-br); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#FF7F00"] { stroke: var(--atom-p) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#FF7F00"]          { fill: var(--atom-p); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg) path[fill="#A020F0"]          { fill: var(--atom-i); }
 
 
 html, body {
