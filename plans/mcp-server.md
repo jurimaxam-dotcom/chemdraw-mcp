@@ -16,6 +16,19 @@ Fix `7596c26` (pH-Regel vorn in `_MVP_INSTRUCTIONS`): mit Tool-Suche 18/18, ohne
 Panel-Fixes `40723f9`: Vergleich im Dunkelmodus, Anki-Vorschau ohne Tags. Gate, Handshake 16/12, Host 167 ✔.
 
 **Läuft:** Codex-Nachmessung in Desktop, 6 Fälle × 3 Chats + 2 Stichproben (Faden `20261103-072035-desktop-nachmessung-0-7`).
+Zwischenstand Codex: Löslichkeit Paracetamol in Desktop weiter ohne Tool (2 von 3 gemessen) — für `lookup` wurde nichts
+geändert, in Claude Code mit Tool-Suche war er 5/5 grün.
+
+**Nächster Schritt (Claude, nach Codex-Bericht in diesem Faden):** auswerten nach pH-Fällen —
+- pH in Desktop jetzt grün → Hinweise kommen an: analoge Zeile für lookup/predict_spectrum/compare_molecules in
+  `_MVP_INSTRUCTIONS` (≤ 2048 B, Test `tests/test_server_instructions.py`), messen mit
+  `ENABLE_TOOL_SEARCH=true BUILTIN_TOOLS=ToolSearch uv run python evals/tool-routing/run_claude.py <ids>` ×3, Codex misst nach.
+- pH in Desktop weiter rot → Server erreicht Desktops Toolwahl hier nicht: 0.7.0 trotzdem raus, Grenze in CHANGELOG
+  („Text-Tools in Desktop bei Wissensfragen manchmal übersprungen; ‚mit ChemDraw' im Prompt hilft").
+- Danach Jay: Tag `v0.7.0` pushen (f). Prüfmethoden zugesagt: TDD rot→grün, `./test.sh`, Handshake 16/12, `test:host`,
+  Desktop „n von 3" je Fall.
+Abgebrochen durch Kontext-Neustart: Gesamtlauf aller Eval-Fälle (mit/ohne Tool-Suche) als Rückschrittkontrolle — neu starten.
+Jay-Handlung offen: „Vergleiche Aspirin und Paracetamol" in Desktop ansehen (Gerüst dunkel auf Weiß?).
 
 **Fragen an Jay, geparkt (nicht in diesem Release):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
