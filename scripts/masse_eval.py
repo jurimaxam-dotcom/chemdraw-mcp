@@ -221,6 +221,14 @@ def _formel(smiles: str) -> str | None:
     return CalcMolFormula(mol) if mol else None
 
 
+def _hat_kohlenstoff(smiles: str) -> bool:
+    # Nicht per Formelstring: "Ca" und "ClK" enthalten auch ein "C".
+    from rdkit import Chem
+
+    mol = Chem.MolFromSmiles(smiles)
+    return mol is not None and any(a.GetAtomicNum() == 6 for a in mol.GetAtoms())
+
+
 def _passendes_smiles(smiles: set[str], key: str) -> str | None:
     """Das SMILES des Objekts, dessen InChIKey zum Erwartungsschlüssel passt."""
     from rdkit import Chem, RDLogger
@@ -263,7 +271,7 @@ def baue_liste(_: argparse.Namespace) -> int:
             smi = _passendes_smiles(o["smiles"], key)
             if smi is None:
                 grund = "SMILES und InChIKey im Objekt passen nicht zusammen"
-            elif "C" not in (_formel(smi) or "") or "Pt" in smi:
+            elif not _hat_kohlenstoff(smi) or "Pt" in smi:
                 grund = "anorganisch/Metallkomplex — außerhalb des Zeichenauftrags"
             else:
                 o["key"], o["smiles_ok"] = key, smi
@@ -812,11 +820,125 @@ def ph_pruefen(_: argparse.Namespace) -> int:
     return 0
 
 
+# --- Identitätsbericht -------------------------------------------------------
+
+PROTOKOLL = EVIDENZ / "identitaet-lauf.json"
+
+# Handdeutung einzelner Fälle (Eingabe → Satz), nach Sichtung des Laufs.
+IDENT_DEUTUNG: dict[str, str] = {}
+
+_ART_TEXT = {
+    "skelett": "anderes Gerüst — falscher Stoff",
+    "stereo": "gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer)",
+    "ladung": "gleicher Stoff, andere Protonierung/Salzform",
+}
+
+
+def _chembl_namen(keys: list[str]) -> dict[str, str]:
+    namen: dict[str, str] = {}
+    for start in range(0, len(keys), 40):
+        teil = keys[start : start + 40]
+        url = CHEMBL + "?" + urllib.parse.urlencode(
+            {
+                "molecule_structures__standard_inchi_key__in": ",".join(teil),
+                "only": "pref_name,molecule_structures",
+                "limit": 1000,
+            }
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                for m in json.load(resp)["molecules"]:
+                    k = (m.get("molecule_structures") or {}).get("standard_inchi_key")
+                    if k and m.get("pref_name"):
+                        namen[k] = m["pref_name"].lower()
+        except OSError:
+            pass
+        time.sleep(0.5)
+    return namen
+
+
+def identitaet_bericht(_: argparse.Namespace) -> int:
+    liste = {e["eingabe"]: e for e in json.loads(LISTE.read_text(encoding="utf-8"))["stoffe"]}
+    # Nur Eingaben, die (noch) in der Liste stehen — die Liste kann nach dem Lauf
+    # strenger gefiltert worden sein.
+    lauf = [e for e in json.loads(PROTOKOLL.read_text(encoding="utf-8")) if e["eingabe"] in liste]
+    zahl = Counter(e["status"] for e in lauf)
+    rot = [e for e in lauf if e["status"] == "rot"]
+    gelb = [e for e in lauf if e["status"] == "gelb"]
+    namen = _chembl_namen(sorted({e["erhalten"] for e in rot if e.get("erhalten")}))
+    zeiten = sorted(e["sekunden"] for e in lauf)
+    gesamt = sum(zeiten)
+
+    def q(p: float) -> float:
+        return zeiten[min(len(zeiten) - 1, int(p * len(zeiten)))]
+
+    md = [
+        "# Identität — Masse-Evaluation",
+        "",
+        f"Lauf {dt.date.fromtimestamp(PROTOKOLL.stat().st_mtime).isoformat()} · "
+        "`uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json "
+        "--protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: "
+        "`uv run python scripts/masse_eval.py identitaet`",
+        "",
+        f"**{len(lauf)} Eingaben ({len({liste[e['eingabe']]['inchikey'] for e in lauf if e['eingabe'] in liste})} Stoffe): "
+        f"{zahl['gruen']} grün · {zahl['gelb']} gelb · {zahl['rot']} rot.**",
+        "",
+        f"Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). "
+        f"Laufzeit gesamt {gesamt / 60:.0f} min · Median {q(0.5):.1f} s · 90 % ≤ {q(0.9):.1f} s · "
+        f"langsamste {zeiten[-1]:.1f} s je Eingabe (inkl. 0,3 s Pause).",
+        "",
+        "## Rot nach Art",
+        "",
+        "| Art | Zahl | Bedeutung |",
+        "|---|---:|---|",
+    ]
+    arten = Counter(e.get("art", "nicht aufgelöst") for e in rot)
+    for art, n in arten.most_common():
+        md.append(f"| {art} | {n} | {_ART_TEXT.get(art, 'Kaskade findet nichts, obwohl die Quelle den Stoff führt')} |")
+    md += ["", "## Alle roten Fälle", ""]
+    for art in [a for a, _ in arten.most_common()]:
+        md += [
+            f"### {art}",
+            "",
+            "| Eingabe | Sprache | erwartet | erhalten | ChEMBL-Name des Erhaltenen | Deutung |",
+            "|---|---|---|---|---|---|",
+        ]
+        for e in rot:
+            if e.get("art", "nicht aufgelöst") != art:
+                continue
+            ref = liste.get(e["eingabe"], {})
+            erhalten = e.get("erhalten", "—")
+            deutung = IDENT_DEUTUNG.get(e["eingabe"], _ART_TEXT.get(art, e["text"]))
+            md.append(
+                f"| {e['eingabe']} | {ref.get('sprache', '')[:2]} | `{e['erwartet']}` | `{erhalten}` | "
+                f"{namen.get(erhalten, '')} | {deutung} |"
+            )
+        md.append("")
+    md += ["## Gelb", "", "| Eingabe | Grund |", "|---|---|"]
+    md += [f"| {e['eingabe']} | {e['text']} |" for e in gelb] or ["| — | — |"]
+    md += [
+        "",
+        "## Langsamste Eingaben",
+        "",
+        "| Eingabe | Sekunden | Status |",
+        "|---|---:|---|",
+    ]
+    for e in sorted(lauf, key=lambda e: -e["sekunden"])[:10]:
+        md.append(f"| {e['eingabe']} | {e['sekunden']:.1f} | {e['status']} |")
+    md.append("")
+    ziel = EVIDENZ / "identitaet.md"
+    ziel.write_text("\n".join(md), encoding="utf-8")
+    print(f"{len(lauf)} Eingaben: {dict(zahl)} · Arten {dict(arten)} → {ziel.relative_to(REPO)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="befehl", required=True)
     sub.add_parser("liste", help="Stoffliste aus Wikidata/ChEMBL bauen").set_defaults(f=baue_liste)
     sub.add_parser("ir", help="IR-Regelabdeckung (offline)").set_defaults(f=ir_abdeckung)
+    sub.add_parser("identitaet", help="Bericht aus dem Identitätsprotokoll").set_defaults(f=identitaet_bericht)
     sub.add_parser("ph", help="pH-Aufgaben gegen ph_calc (offline)").set_defaults(f=ph_pruefen)
     sub.add_parser("ph-referenz", help="Referenzwerte mit sympy neu rechnen").set_defaults(f=ph_referenz)
     args = parser.parse_args()
