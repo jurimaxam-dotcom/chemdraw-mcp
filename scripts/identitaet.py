@@ -38,6 +38,8 @@ bedeuten Verschiedenes, der InChIKey trennt sie schichtweise:
     skelett  — erster Block verschieden: anderes Konstitutionsgerüst
     stereo   — Gerüst gleich, Stereoblock verschieden (Racemat vs. Enantiomer)
     ladung   — nur das letzte Zeichen verschieden (Protonierung/Salzform)
+    salz     — Schlüssel verschieden, aber größtes Fragment neutralisiert gleich
+               (Hydrochlorid statt freier Base o. ä.; nur mit "smiles_referenz")
 Einträge mit "unsicher": true (Referenzquellen widersprechen sich) werden
 bei Abweichung GELB, nie ROT.
 """
@@ -123,6 +125,9 @@ def pruefe(eintrag: dict) -> dict:
         }
     if schluessel != erwartet:
         art = abweichungsart(schluessel, erwartet)
+        referenz = eintrag.get("smiles_referenz")
+        if art != "ladung" and referenz and gleicher_elternstoff(mol, referenz):
+            art = "salz"
         if eintrag.get("unsicher"):
             return {
                 "status": GELB,
@@ -146,6 +151,25 @@ def abweichungsart(erhalten: str, erwartet: str) -> str:
     if erhalten[:25] != erwartet[:25]:
         return "stereo"
     return "ladung"
+
+
+def elternkey(mol) -> str | None:
+    """InChIKey des größten Fragments, neutralisiert — Salz und freie Base gleich."""
+    from rdkit.Chem.MolStandardize import rdMolStandardize
+
+    if mol is None:
+        return None
+    try:
+        teil = rdMolStandardize.LargestFragmentChooser().choose(mol)
+        teil = rdMolStandardize.Uncharger().uncharge(teil)
+        return inchi.MolToInchiKey(teil)
+    except Exception:
+        return None
+
+
+def gleicher_elternstoff(mol, referenz_smiles: str) -> bool:
+    a = elternkey(mol)
+    return a is not None and a == elternkey(Chem.MolFromSmiles(referenz_smiles))
 
 
 def _quelle_weg(ergebnis: dict) -> bool:

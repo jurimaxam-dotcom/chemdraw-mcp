@@ -831,7 +831,43 @@ _ART_TEXT = {
     "skelett": "anderes Gerüst — falscher Stoff",
     "stereo": "gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer)",
     "ladung": "gleicher Stoff, andere Protonierung/Salzform",
+    "salz": "gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich)",
 }
+
+
+def _pubchem_smiles(key: str) -> str | None:
+    """Nur zur EINORDNUNG eines roten Falls, nie als Erwartung."""
+    url = (
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/"
+        f"{key}/property/SMILES,Title/JSON"
+    )
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            p = json.load(resp)["PropertyTable"]["Properties"][0]
+        time.sleep(0.3)
+        return p.get("SMILES") or p.get("IsomericSMILES")
+    except (OSError, KeyError, IndexError, ValueError):
+        return None
+
+
+def _nachklassifizieren(rot: list[dict], liste: dict[str, dict]) -> None:
+    """Ältere Protokolle kennen 'salz' noch nicht: per Elternfragment nachziehen."""
+    from rdkit import Chem
+
+    sys.path.insert(0, str(REPO / "scripts"))
+    from identitaet import elternkey
+
+    for e in rot:
+        if e.get("art") not in ("skelett", "stereo") or not e.get("erhalten"):
+            continue
+        ref = liste[e["eingabe"]].get("smiles_referenz")
+        smi = _pubchem_smiles(e["erhalten"])
+        if not (ref and smi):
+            continue
+        a = elternkey(Chem.MolFromSmiles(smi))
+        if a and a == elternkey(Chem.MolFromSmiles(ref)):
+            e["art"] = "salz"
 
 
 def _chembl_namen(keys: list[str]) -> dict[str, str]:
@@ -866,6 +902,7 @@ def identitaet_bericht(_: argparse.Namespace) -> int:
     zahl = Counter(e["status"] for e in lauf)
     rot = [e for e in lauf if e["status"] == "rot"]
     gelb = [e for e in lauf if e["status"] == "gelb"]
+    _nachklassifizieren(rot, liste)
     namen = _chembl_namen(sorted({e["erhalten"] for e in rot if e.get("erhalten")}))
     zeiten = sorted(e["sekunden"] for e in lauf)
     gesamt = sum(zeiten)
