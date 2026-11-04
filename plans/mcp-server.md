@@ -45,6 +45,37 @@ der eigenen Reservierung, rote Regression vor Produktfix. Bei erneutem
 Bundle-Test Receipt/Hash/PyPI-Dateivergleich plus isolierten laufenden Prozess
 prüfen; Toolzahlen allein genügen nicht.
 
+## Weiter bei — Rest der Etappen A–D + Werkzeugbilanz (Claude, 05.11.2026 00:45, vor Kontext-Neustart)
+
+**Erledigt heute (geprüft, Haken unten):** Release 0.7.0 draußen (PyPI, Bundle, Registry) · D Repo aufräumen · C README-Gate ·
+g Bundle-Abnahme · B Mechanismus mit eigenen Substraten gemergt (`16fc11e`) + Titel-Fix (`a43104d`, `a18b849`), Gate grün.
+
+**Läuft noch:**
+- **A Masse-Evaluation (Opus-Arbeiter, gestartet 04.11. 23:12):** `ir-abdeckung.md`, `ph.md`, `README.md` in
+  `docs/evidence/masse-eval-2026-11/` liegen schon; `identitaet.md` (PubChem-Lauf über ~300 Stoffe, Rate-Limit) steht aus.
+  Nach Neustart: `git log --oneline -15` und `git status` ansehen; liegt `identitaet.md` vor und ist alles committet → Bericht
+  gegen Abnahmepunkt A prüfen (Stoffliste ≥ 250 mit unabhängiger Quelle, drei Berichte mit Zahlen, `uv run pytest
+  tests/test_eval_cases.py tests/test_server_profiles.py -q` grün) und abhaken. Liegt Ungecommittetes (`scripts/masse_eval.py`,
+  `tests/identity/*.json`) → sichten, Lauf selbst zu Ende fahren (`uv run python scripts/identitaet.py --datei
+  tests/identity/stoffe-masse.json`), committen. Der Arbeiter-Bericht geht mit dem Kontext-Neustart verloren; Dateien sind die Wahrheit.
+- **Desktop-Handtest Mechanismen (Codex, Faden `20261104-234915-desktop-handtest-fuer-generate`):** Bericht kommt als Tisch-
+  Nachricht; Datei `docs/desktop-abnahme-mechanismus-2026-11-05.md` entsteht. Prüfen, Haken bei B ergänzen, Faden erledigt.
+  Bekannte Befunde: SN1 als Frage („SN1 von …“) ohne Tool = Desktop-Grenze; Titel-SMILES behoben.
+
+**Danach (letzter Punkt):** Werkzeugbilanz neu bauen: in `scripts/werkzeugbilanz.py` den Eintrag `generate_mechanism`
+anpassen (`erzeugt="rechnet"`, wie: Substrate per Reaktions-SMARTS, Grenze je Familie, Fallback Vorlage; Schwierigkeiten
+aus dem Handtest), Lauf `HOME=<wegwerf> uv run python scripts/werkzeugbilanz_lauf.py <ordner>`, Seite bauen mit
+`--welle3-log docs/evidence/routing-2026-11-03/welle3-vollprofil-2026-11-04-n1.log`, per Artifact `url`
+https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg republishen (erst `action: read`). Dann 0.8.0-Release vorbereiten
+(CHANGELOG [Unreleased] → [0.8.0], Version, Gate, Handshake) — Release-Klick nach Jays Freigabe 04.11. („mache du den Release“)
+darf Claude selbst; `gh release create v0.8.0 --target <volle SHA>`, PyPI-Umgebung per API freigeben (pending_deployments).
+
+**Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md`
+(mcp-2-migration behalten/archivieren · origin/mcp-2-migration-v2 löschen · worktree-agent Demo-Commits übernehmen ·
+Dependabot-Update als eigene Etappe).
+
+Offene Tisch-Fäden: `20261104-234915-desktop-handtest-fuer-generate` (Codex, Auftrag läuft).
+
 ## Weiter bei — Werkzeugbilanz-Folgen A–D abarbeiten (Claude, 04.11.2026 23:10)
 
 **Jay (04.11. 23:00):** „Sprich dich mit Codex und dem Advisor ab und arbeitet alle Punkte in der logisch sinnvollsten
