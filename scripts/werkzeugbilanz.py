@@ -167,7 +167,7 @@ T = {
   pipe=[("IN","Topic + Werte","pKa vom Nutzer"),("PH","ph_core","Ladungsbilanz exakt"),("APX","Näherung","Formel daneben"),("OUT","Text","Rechenweg")],
   focal=1, beispiel=("text:calculate_ph","heutiger Lauf: 0,1 M, pKa 4,76 → pH 2,88"), shots=["09-calculate_ph-acid.png"],
   mehrwert="Gering bei Lehrbuchfällen (Desktop rechnete 2,87 selbst richtig), hoch dort, wo die Näherung kippt (verdünnte Säuren, mehrprotonig) und beim Pufferrezept in Gramm.",
-  schwer=["Desktop ruft es bei natürlichen pH-Fragen nicht: 0 von 12 Chats; mit „— nutze ChemDraw“ 2/2.", "In Claude Code nach der Hinweiszeile in `instructions` 20/20; die Zeile erreicht Desktops Toolwahl nicht (Tools werden erst nachgeladen).", "Beschreibung 1980 Zeichen, knapp unter der 2-KB-Grenze."]),
+  schwer=["Desktop ruft es bei natürlichen pH-Fragen nicht: 0 von 12 Chats; mit „— nutze ChemDraw“ 2/2, aber nur der Essigsäure-Prompt wurde so nachgemessen, Puffer und Ionisation nicht.", "In Claude Code nach der Hinweiszeile in `instructions` 20/20; die Zeile erreicht Desktops Toolwahl nicht (Tools werden erst nachgeladen).", "Beschreibung 1980 Zeichen, knapp unter der 2-KB-Grenze."]),
  "export_anki_deck": dict(a="anki", v="0.6", w="Anki-Deck (.apkg) mit Strukturbildern",
   files=["server.py: export_anki_deck", "anki_export.py (genanki, Bilder rendern, AnkiConnect)", "curated_decks.py (2 Startdecks, 8 geprüfte SMILES)", "payloads.py: AnkiDeckPayload", "ui: AnkiDeckView, AnkiButton (Add to Anki)"],
   deps=["genanki", "RDKit", "Anki (optional, zum Öffnen)"], erzeugt="rechnet",
@@ -280,7 +280,7 @@ UI_TESTS = {
 DESKTOP = {
  "generate_molecule": ("ok", "✔ 02.11. + 03.11.", "„Zeichne Ibuprofen“ → Panel, Stereo (R)/(S), Data, Export"),
  "batch_generate": ("ok", "✔ 02.11.", "„Benzol, Toluol, Phenol“ → drei Panels"),
- "compare_molecules": ("no", "0 von 3 · mit Zusatz 2/2", "„Vergleiche Aspirin und Paracetamol“ → Text; mit „— nutze ChemDraw“ Panel"),
+ "compare_molecules": ("no", "0 von 4 · mit Zusatz 2/2", "„Vergleiche Aspirin und Paracetamol“ → Text (02.11. + 3× 03.11.); mit „— nutze ChemDraw“ Panel"),
  "generate_reaction": ("ok", "✔ 02.11.", "Veresterung mit H₂SO₄, Δ, balanced"),
  "generate_mechanism": ("ok", "✔ 02.11.", "SN2 mit Übergangszustand und Pfeilen"),
  "generate_3d": ("ok", "✔ 02.11.", "Koffein als Kugel-Stab-Modell"),
@@ -291,7 +291,7 @@ DESKTOP = {
  "lookup": ("no", "0 von 4 · mit Zusatz 2/2", "„Löslichkeit von Paracetamol?“ → Text aus dem Gedächtnis"),
  "lookup_molecule_data": ("ok", "✔ Data-Klick + Aufruf", "CID 3672, IUPAC, Masse, XLogP, TPSA, InChIKey"),
  "predict_spectrum": ("no", "0 von 4", "„Welche IR-Banden erwarte ich bei Aspirin?“ → Text"),
- "calculate_ph": ("no", "0 von 12 · mit Zusatz 2/2", "pH, Puffer, Ionisation je 0/1 + 0/3; Antwort pH ≈ 2,88 fachlich richtig"),
+ "calculate_ph": ("no", "0 von 12 · mit Zusatz 2/2 (nur pH-Fall)", "pH, Puffer, Ionisation je 0/1 + 0/3; Antwort pH ≈ 2,88 fachlich richtig; Zusatz nur für den Essigsäure-Prompt gemessen"),
  "export_anki_deck": ("ok", "✔ 02.11. + 03.11.", "17 Karten, 3 Bilder, Add-to-Anki öffnet Importdialog"),
  "save_png": ("ok", "✔ 02.11.", "Export-Klick → Ibuprofen-2.png, 38 KB"),
  "generate_pk_curve": ("mid", "03.10. ✔ Zahlen", "letzter Desktop-Test vor Welle 1"),
@@ -781,7 +781,7 @@ select{{font:14px var(--f-sans);background:var(--panel);color:var(--fg);border:1
 
   <div class="finding">
     <div class="g"><strong>Aufträge treffen.</strong> „Zeichne“, „Plot“, „DC meiner Veresterung“: in Claude Code fast immer, in Desktop bei allen 12 Panel-Tools. Was dann erscheint, wird je Eingabe neu gerechnet (RDKit, matplotlib, Ladungsbilanz), nicht aus einem Speicher geholt.</div>
-    <div class="w"><strong>Fragen fallen durch.</strong> „Warum ist Wasser gewinkelt?“, „Was ist der Unterschied …?“, „Welchen pH hat …?“: das Modell antwortet aus dem Gedächtnis. In Desktop trifft das jede Wissensfrage, weil die Tool-Beschreibungen dort erst nachgeladen werden.</div>
+    <div class="w"><strong>Fragen fallen durch.</strong> „Warum ist Wasser gewinkelt?“, „Was ist der Unterschied …?“, „Welchen pH hat …?“: das Modell antwortet aus dem Gedächtnis. In Desktop traf das alle 6 gemessenen Wissensfragen (0/18 Chats), weil die Tool-Beschreibungen dort erst nachgeladen werden.</div>
     <div class="b"><strong>Zwei Tools sind Vorlage oder Tabelle.</strong> generate_mechanism zeichnet drei feste Lehrbuchbeispiele (Substrate werden nur geprüft), predict_spectrum wendet 31 kuratierte Regeln an. Alles andere rechnet oder holt live aus PubChem.</div>
   </div>
 
