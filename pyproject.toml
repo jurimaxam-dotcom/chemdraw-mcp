@@ -82,7 +82,7 @@ dev = [
     # entfernen wäre die Alternative — dafür müsste screenshot_ui.py aber sauber
     # degradieren, und ein Pin kostet nichts. Version hier ändern ⇒ package.json
     # mitziehen.
-    "playwright==1.60.0",
+    "playwright==1.64.1",
     "pytest",
     "ruff>=0.15.16",
 ]
