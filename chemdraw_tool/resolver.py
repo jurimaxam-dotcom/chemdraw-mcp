@@ -183,9 +183,16 @@ def _nci_cir_lookup(name: str, report: list | None = None) -> str | None:
         _record(report, _NCI, *_classify_error(exc))
         return None
     if resp.status_code != 200:
-        status = _NOT_FOUND if resp.status_code == 404 else _SOURCE_ERROR
+        # CIR meldet einen unbekannten Namen als HTTP 500 mit dem Body
+        # "Page not found (404)" (belegt 04.11.2026, Masse-Evaluation). Das ist
+        # eine Antwort, kein Ausfall — sonst wird jeder deutsche Trivialname,
+        # den PubChem nicht kennt, zu "partial" samt falschem Rat "retry".
+        unknown = resp.status_code == 404 or (
+            resp.status_code == 500 and "page not found" in (resp.text or "").lower()
+        )
+        status = _NOT_FOUND if unknown else _SOURCE_ERROR
         detail = (
-            "name unknown (HTTP 404)"
+            f"name unknown (HTTP {resp.status_code})"
             if status == _NOT_FOUND
             else f"HTTP {resp.status_code}"
         )

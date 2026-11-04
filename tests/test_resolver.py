@@ -498,3 +498,48 @@ def test_two_open_rings_get_no_append_suggestion(_no_cascade):
         resolve("C1CC2")
     assert "ring bond 2" in str(exc.value)
     assert "Suggestion" not in str(exc.value)
+
+
+# --- NCI CIR meldet "unbekannt" als HTTP 500 (Masse-Evaluation 04.11.2026) ---
+# Belegt per curl: cactus.nci.nih.gov antwortet auf jeden unbekannten Namen mit
+# Status 500 und dem Body "<h1>Page not found (404)</h1>". Vorher zählte das als
+# Quellenfehler → kind "partial" ("retry once the connection is stable") für jeden
+# deutschen Trivialnamen, den PubChem nicht kennt. Im Lauf über 711 Eingaben
+# waren so 14 % gelb statt "not_found".
+
+
+def _nci_resp(status: int, text: str):
+    resp = Mock()
+    resp.status_code = status
+    resp.text = text
+    resp.raise_for_status = Mock()
+    return resp
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_nci_page_not_found_500_is_not_found(mock_get, _opsin):
+    """PubChem 404 + NCI 500 'Page not found' → jede Quelle hat geantwortet: not_found."""
+    mock_get.side_effect = [
+        _http_resp(404),
+        _nci_resp(500, "<h1>Page not found (404)</h1>\n"),
+    ]
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Nifedipin")
+    assert exc.value.kind == "not_found"
+    msg = str(exc.value)
+    assert "retry" not in msg.lower()
+    assert "English" in msg
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver.requests.get")
+def test_nci_real_500_stays_source_error(mock_get, _opsin):
+    """Ein 500 ohne 'Page not found' bleibt ein Quellenfehler → partial."""
+    mock_get.side_effect = [
+        _http_resp(404),
+        _nci_resp(500, "<h1>Internal Server Error</h1>"),
+    ]
+    with pytest.raises(NameResolutionError) as exc:
+        resolve_name("Nifedipin")
+    assert exc.value.kind == "partial"

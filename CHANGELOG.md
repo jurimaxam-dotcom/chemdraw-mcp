@@ -35,6 +35,14 @@ Planned as 0.8.0.
 - The curved arrow from a breaking bond to the leaving group ends beside the
   atom instead of under its label.
 
+### Fixed
+
+- Names unknown to every database are reported as "not found" again. NCI CIR
+  answers an unknown name with HTTP 500 and the body "Page not found", which
+  counted as a source outage: every German trivial name PubChem does not index
+  got "retry once the connection is stable" instead of "use the English name"
+  (found by the identity run over 711 inputs, where 14 % turned yellow for it).
+
 ## [0.7.0] — 2026-11-03
 
 The default profile grows from 7 to 16 tools: mechanisms, 3D, look-ups,
