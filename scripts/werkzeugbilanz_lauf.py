@@ -7,13 +7,26 @@ Testfixtures (Scope-Einträge, Kalibrierstandards, Einwaagen) kommen aus tests/,
 Beispiele dieselben sind wie im Gate. Ausgabeordner enthält je Tool <tool>.json, die Dateien
 der Tools in <DIR>-Unterordnern und _ergebnis.json (ok, Sekunden, Typ, Länge).
 """
-import json, sys, time, pathlib, traceback
-OUT = pathlib.Path(sys.argv[1]); OUT.mkdir(exist_ok=True)
+import importlib
+import json
+import pathlib
+import sys
+import time
+import traceback
+
+OUT = pathlib.Path(sys.argv[1])
+OUT.mkdir(exist_ok=True)
 sys.path.insert(0, ".")
-import chemdraw_tool.server as s
+s = importlib.import_module("chemdraw_tool.server")
+
 for a in [x for x in dir(s) if x.endswith("_DIR")]:
-    p = OUT / a.lower(); p.mkdir(exist_ok=True); setattr(s, a, p)
-import tests.test_server_scope as ts, tests.test_server_calibration as tc, tests.test_server_content as tcon
+    p = OUT / a.lower()
+    p.mkdir(exist_ok=True)
+    setattr(s, a, p)
+tc = importlib.import_module("tests.test_server_calibration")
+tcon = importlib.import_module("tests.test_server_content")
+ts = importlib.import_module("tests.test_server_scope")
+
 calls = {
  "generate_molecule": dict(name_or_smiles="ibuprofen"),
  "batch_generate": dict(molecules=["benzene","toluene","phenol"]),
@@ -42,10 +55,12 @@ calls.update({
 })
 res = {}  # alle 23 in einem Lauf
 for name, kw in calls.items():
-    fn = getattr(s, name); t0 = time.time()
+    fn = getattr(s, name)
+    t0 = time.time()
     try:
         r = fn(**kw)
-        if hasattr(r, "model_dump"): r = r.model_dump()
+        if hasattr(r, "model_dump"):
+            r = r.model_dump()
         txt = json.dumps(r, ensure_ascii=False, default=str) if not isinstance(r, str) else r
         res[name] = {"ok": True, "s": round(time.time()-t0,2), "type": (r.get("type") if isinstance(r,dict) else "text"), "len": len(txt), "keys": list(r.keys())[:25] if isinstance(r,dict) else None}
         (OUT / f"{name}.json").write_text(txt[:400000])

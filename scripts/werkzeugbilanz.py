@@ -14,7 +14,6 @@ Aufruf:  uv run python scripts/werkzeugbilanz.py <lauf-ordner> <ziel.html> [--we
 """
 from __future__ import annotations
 
-import ast
 import base64
 import html
 import io
@@ -544,14 +543,16 @@ def routing_html(tool: str, cases: list[dict], res: dict, w3: dict) -> tuple[str
         r = res.get(c["id"])
         if r:
             marks = "".join(f"<i class='{'g' if r[k][0] else 'r'}' title='{k}: {html.escape(r[k][1])}'></i>" for k in runs if k in r)
-            ok = sum(r[k][0] for k in runs if k in r); n = sum(1 for k in runs if k in r)
+            ok = sum(r[k][0] for k in runs if k in r)
+            n = sum(1 for k in runs if k in r)
             rot = "; ".join(f"{k}: {html.escape(r[k][1])}" for k in runs if k in r and not r[k][0])
         else:
             rr = w3[c["id"]]
             marks = f"<i class='{'g' if rr[0] else 'r'}' title='Vollprofil n=1: {html.escape(rr[1])}'></i>"
             ok, n = int(rr[0]), 1
             rot = "" if rr[0] else html.escape(rr[1])
-        stat[c["art"]][0] += ok; stat[c["art"]][1] += n
+        stat[c["art"]][0] += ok
+        stat[c["art"]][1] += n
         rows.append(f"<tr><td><span class='tag t-{c['art']}'>{c['art']}</span></td><td class='prompt'>{html.escape(c['prompt'].strip())}</td><td class='marks'>{marks} <span class='m'>{ok}/{n}</span></td><td class='muted small'>{rot}</td></tr>")
     tbl = ("<table class='cases'><thead><tr><th>Art</th><th>Prompt</th><th>Treffer</th><th>Wenn rot: gerufen</th></tr></thead><tbody>"
            + "".join(rows) + "</tbody></table>")
@@ -570,7 +571,8 @@ def tool_card(tool: str, beschr: dict, cases: list[dict], res: dict, w3: dict, l
     def ratio(k):
         o, n = stat.get(k, [0, 0])
         return f"{o}/{n}" if n else "–"
-    gesamt_ok = sum(v[0] for v in stat.values()); gesamt_n = sum(v[1] for v in stat.values())
+    gesamt_ok = sum(v[0] for v in stat.values())
+    gesamt_n = sum(v[1] for v in stat.values())
     cc_cls = "na" if not gesamt_n else ("ok" if gesamt_ok == gesamt_n else ("mid" if gesamt_ok >= gesamt_n * 0.6 else "no"))
     first = d["description"].split("\n\n")[0].strip()
     fence = re.search(r"Not this tool for:.*?(?=\n\n|\Z)", d["description"], re.S)
@@ -650,12 +652,14 @@ def baue(lauf: Path, ziel: Path, welle3_log: Path | None) -> None:
     for c in cases:
         r = res.get(c["id"])
         if r:
-            gesamt[c["art"]][0] += sum(v[0] for v in r.values()); gesamt[c["art"]][1] += len(r)
+            gesamt[c["art"]][0] += sum(v[0] for v in r.values())
+            gesamt[c["art"]][1] += len(r)
     ts = {"Name": [0, 0], "Auftrag": [0, 0], "Frage": [0, 0]}
     for c in cases:
         r = res.get(c["id"])
         if r:
-            ts[c["art"]][0] += sum(r[k][0] for k in ("TS 1", "TS 2") if k in r); ts[c["art"]][1] += sum(1 for k in ("TS 1", "TS 2") if k in r)
+            ts[c["art"]][0] += sum(r[k][0] for k in ("TS 1", "TS 2") if k in r)
+            ts[c["art"]][1] += sum(1 for k in ("TS 1", "TS 2") if k in r)
 
     areas_html = []
     for aid, aname, adesc in AREAS:
@@ -861,7 +865,9 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     w3 = None
     if "--welle3-log" in args:
-        i = args.index("--welle3-log"); w3 = Path(args[i + 1]); del args[i:i + 2]
+        i = args.index("--welle3-log")
+        w3 = Path(args[i + 1])
+        del args[i:i + 2]
     if len(args) != 2:
         sys.exit(__doc__)
     baue(Path(args[0]), Path(args[1]), w3)
