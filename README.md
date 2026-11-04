@@ -93,12 +93,12 @@ electron-flow arrows and **Next / Back** through the intermediates. Substrates
 you name are checked for compatibility with the mechanism; they are not drawn
 into it. Other mechanisms are not available.
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="MCP panels for the SN1, SN2 and Fischer esterification textbook examples, each showing the second step with curved electron-flow arrows" width="960"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="Second step of the SN1, SN2 and Fischer esterification textbook examples, each with curved electron-flow arrows, drawn from the step SVGs that generate_mechanism returns" width="960"></p>
 
 **3D.** `generate_3d` embeds one conformer (ETKDGv3, then MMFF or UFF), opens a
 ball-and-stick panel you drag to rotate and writes an SDF file:
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-3d.png" alt="Caffeine conformer rendered by generate_3d in the interactive ball-and-stick panel" width="480"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-3d.png" alt="Ball-and-stick projection of the caffeine conformer that generate_3d embeds; the panel shows the same atoms and lets you rotate them" width="420"></p>
 
 ### Lab graphics
 
@@ -125,7 +125,7 @@ at half-equivalence and an optional indicator band.
 species across pH 0–14:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-titration-acetic.png" alt="Titration curve of acetic acid: equivalence point at 25 mL, buffer point at pH 4.76, phenolphthalein band" width="420">
+  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-titration-acetic.png" alt="Titration curve of 0.1 M acetic acid with 0.1 M NaOH: equivalence point at 25 mL, buffer point on the curve at pH 4.76, phenolphthalein band" width="420">
   <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-species-phosphoric.png" alt="Species distribution of phosphoric acid over pH with pKa crossovers" width="420">
 </p>
 
@@ -143,6 +143,8 @@ species across pH 0–14:
   signals to expect with their integral ratio. It is rule-based: no chemical
   shifts in ppm, and diastereotopic protons count as one signal.
 
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lookup-datasheet.png" alt="Caffeine data sheet from lookup_molecule_data: structure on the left, PubChem properties (CID, IUPAC name, formula, molar mass, XLogP, TPSA, InChIKey) and the GHS signal word Warning with H302 on the right" width="760"></p>
+
 Lookups need an internet connection. A missing value is not evidence that a
 property or hazard is absent.
 
@@ -155,6 +157,8 @@ titration curve and prints the textbook approximation beside it; where the two
 disagree, the answer says the approximation's assumptions no longer hold.
 10⁻⁸ M HCl comes out at pH 6.98, not 8. You supply the pKa values.
 
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/calculate-ph.png" alt="Two calculate_ph answers: 0.1 M acetic acid at pH 2.88 with the exact value beside the textbook approximation, and 1e-8 M HCl at pH 6.98 with the note that −log c would wrongly give pH 8" width="760"></p>
+
 ### Anki
 
 **`export_anki_deck`** writes a ready-to-import `.apkg` with rendered
@@ -165,6 +169,8 @@ duplicating them. With the AnkiConnect add-on the cards go straight into the
 running Anki. `curated_deck_id` picks a small bundled starter deck instead of
 your own cards. The molecule panel's **Add to Anki** button adds a single
 structure card.
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-card.png" alt="An Anki card from export_anki_deck: the front asks to name the aspirin structure, the back repeats the structure and answers Aspirin (acetylsalicylic acid)" width="760"></p>
 
 ### Options on the drawing tools
 
@@ -206,7 +212,7 @@ The `full` profile adds:
 <summary>Example figures from the full profile</summary>
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/scope-suzuki.png" alt="Substrate scope figure: Suzuki coupling equation with conditions on top, below it four biphenyl products labeled 3a to 3d with yields and ee/dr notes" width="760"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/pk-curve.png" alt="Plasma concentration over time for repeated oral doses, building up to steady state inside a therapeutic window" width="640"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/pk-curve.png" alt="Plasma concentration over time for repeated oral doses, building up to steady state around Css,av 4.76 mg/L between the MEC and MTC lines of the therapeutic window" width="640"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/dose-response.png" alt="Hill curve of an agonist and the same curve shifted to the right by a competitive antagonist" width="640"></p>
 
 </details>
@@ -333,6 +339,12 @@ confusing ways.
   conformational search and not an energy statement.
 - **CDXML is a side path.** It is round-trip validated, but PNG and SVG are
   the primary outputs and the ones the pixel tests cover.
+- **Claude Desktop often answers knowledge questions without a tool.**
+  "What is the solubility of paracetamol?", expected IR bands, a pH number or
+  "compare aspirin and paracetamol" were answered from memory in 0 of 3 chats
+  each (measured 2026-11-03), even though a tool fits. Drawing and figure
+  requests are not affected. Adding "use ChemDraw" to the prompt made Desktop
+  call `calculate_ph`, `lookup` and `compare_molecules` (2 of 2 chats each).
 - **The extension targets macOS and Linux.** Windows is untested.
 
 ## How it works
