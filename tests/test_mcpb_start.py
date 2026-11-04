@@ -331,3 +331,18 @@ def test_lebende_pid_in_der_sperre_wird_respektiert(tmp_path):
         halter.wait()
     log = tmp_path / "calls.log"
     assert not log.exists() or "pip install" not in log.read_text()
+
+
+def test_manifest_beschreibung_nennt_die_aktuelle_toolzahl():
+    """Der Installationsdialog in Desktop zeigt `long_description`; eine veraltete
+    Toolzahl dort („six tools“ bei 16 registrierten) fiel in der Bundle-Abnahme 0.7.0 auf.
+    Die Zahl kommt aus dem Standardprofil, nicht aus Handarbeit."""
+    import json
+
+    from chemdraw_tool.server import create_server
+
+    manifest = json.loads((Path(__file__).resolve().parents[1] / "mcpb" / "manifest.json").read_text())
+    n = len(create_server("mvp")._tool_manager.list_tools())
+    text = manifest["long_description"]
+    assert re.search(r"\b(six|seven|eight|nine|ten|eleven|twelve)\s+tools\b", text) is None, text
+    assert f"{n} tools" in text, (n, text)
