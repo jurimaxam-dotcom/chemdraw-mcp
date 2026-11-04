@@ -1,5 +1,28 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Jays drei Fragen zur Werkzeugbilanz (Claude, 04.11.2026 22:55, nach Kontext-Neustart)
+
+Stand: Werkzeugbilanz-Seite je Tool fertig und publiziert (https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg, Version 4),
+Generator `scripts/werkzeugbilanz.py` + `scripts/werkzeugbilanz_lauf.py` committet (`079c877`, `f73af48`), Routing-Logs in
+`docs/evidence/routing-2026-11-03/`. Nichts halbfertig. Release 0.7.0 weiterhin Jays Klick (Befehl im Abschnitt darunter).
+
+**Jay fragt (04.11. 22:50, wörtlich, als Nächstes beantworten — Erklärfragen, kein Bauauftrag):**
+1. „Wie meinst du 3 feste Lehrbuchbeispiele? Theoretisch könnten wir doch 100te Moleküle testen lassen und evaluieren,
+   um sicherzugehen, dass uns nichts entgeht." → Erklären: generate_mechanism zeichnet die Vorlagen-Moleküle aus
+   `chemdraw_tool/templates/*.py` (sn1, sn2, fischer_ester); Nutzer-Substrate werden nur per SMARTS geprüft
+   (`mechanism.validate_substrates`), nie gezeichnet. Für die anderen Tools gilt: Masse-Evaluation ist möglich und sinnvoll
+   (z. B. identitaet.py von 24 auf hunderte Stoffe aus PubChem-Listen, Golden-Bilder stichprobenweise, Routing-Fälle
+   generieren) — Vorschlag mit Aufwand und Nutzen machen, erst nach Jays Ja bauen.
+2. „Wie stellen wir sicher, dass das README immer aktuell ist und die Abbildungen hohe Qualität haben?" → Ist-Stand:
+   README-Bilder sind Handarbeit (13 Bilder, eins überholt: `wave2-titration-acetic.png` vor Fix a08e3cb; Look up/Calculate/
+   Anki ohne Bild). Optionen: Bilder per Skript aus den Tools erzeugen (wie `scripts/werkzeugbilanz_lauf.py`) + Test, der
+   README-Toolliste gegen `create_server()` prüft + Bild-Fingerabdrücke; Vorschlag reihen, dann bauen.
+3. „Ist wirklich nur das im Repo, was für den User benötigt wird?" (Satz abgebrochen) → Repo durchsehen: was ins Wheel
+   kommt (`pyproject` include) vs. Entwicklungs-/Doku-Ballast (docs/Praktikum_*, vermarktung/, web/, evals, Branches +
+   Worktrees); Liste mit Behalten/Raus-Vorschlag, Default raus, Entscheidung Jay.
+
+Danach weiter wie unten (Release-Klick, dann README-Bilder, Limitations-Absatz, API-Eval).
+
 ## Weiter bei — Release 0.7.0 (Claude, 03.11.2026 07:50)
 
 **Reihenfolge (Jay 02.11.):** erst 0.7.0 sauber raus → dann README sauber → Shorts zuletzt.
