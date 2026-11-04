@@ -1,0 +1,5059 @@
+[
+ {
+  "status": "gruen",
+  "text": "DCXYFEDJOCDNAF-REOHCLBHSA-N",
+  "eingabe": "L-Asparagine",
+  "erwartet": "DCXYFEDJOCDNAF-REOHCLBHSA-N",
+  "sekunden": 0.39
+ },
+ {
+  "status": "gruen",
+  "text": "DCXYFEDJOCDNAF-REOHCLBHSA-N",
+  "eingabe": "L-Asparagin",
+  "erwartet": "DCXYFEDJOCDNAF-REOHCLBHSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+  "eingabe": "L-alanine",
+  "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+  "eingabe": "Alanin",
+  "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ZDXPYRJPNDTMRX-VKHMYHEASA-N",
+  "eingabe": "L-glutamine",
+  "erwartet": "ZDXPYRJPNDTMRX-VKHMYHEASA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ZDXPYRJPNDTMRX-VKHMYHEASA-N",
+  "eingabe": "L-Glutamin",
+  "erwartet": "ZDXPYRJPNDTMRX-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "AGPKZVBTJJNPAG-WHFBIAKZSA-N",
+  "eingabe": "L-isoleucine",
+  "erwartet": "AGPKZVBTJJNPAG-WHFBIAKZSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "AGPKZVBTJJNPAG-WHFBIAKZSA-N",
+  "eingabe": "L-Isoleucin",
+  "erwartet": "AGPKZVBTJJNPAG-WHFBIAKZSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ROHFNLRQFUQHCH-YFKPBYRVSA-N",
+  "eingabe": "L-leucine",
+  "erwartet": "ROHFNLRQFUQHCH-YFKPBYRVSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ROHFNLRQFUQHCH-YFKPBYRVSA-N",
+  "eingabe": "Leucin",
+  "erwartet": "ROHFNLRQFUQHCH-YFKPBYRVSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "KDXKERNSBIXSRK-YFKPBYRVSA-N",
+  "eingabe": "L-lysine",
+  "erwartet": "KDXKERNSBIXSRK-YFKPBYRVSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "MTCFGRXMJLQNBG-REOHCLBHSA-N",
+  "eingabe": "L-serine",
+  "erwartet": "MTCFGRXMJLQNBG-REOHCLBHSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "MTCFGRXMJLQNBG-REOHCLBHSA-N",
+  "eingabe": "L-Serin",
+  "erwartet": "MTCFGRXMJLQNBG-REOHCLBHSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "AYFVYJQAPQTCCC-GBXIJSLDSA-N",
+  "eingabe": "L-threonine",
+  "erwartet": "AYFVYJQAPQTCCC-GBXIJSLDSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "AYFVYJQAPQTCCC-GBXIJSLDSA-N",
+  "eingabe": "Threonin",
+  "erwartet": "AYFVYJQAPQTCCC-GBXIJSLDSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "OUYCCCASQSFEME-QMMMGPOBSA-N",
+  "eingabe": "L-tyrosine",
+  "erwartet": "OUYCCCASQSFEME-QMMMGPOBSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OUYCCCASQSFEME-QMMMGPOBSA-N",
+  "eingabe": "L-Tyrosin",
+  "erwartet": "OUYCCCASQSFEME-QMMMGPOBSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "KZSNJWFQEVHDMF-BYPYZUCNSA-N",
+  "eingabe": "L-valine",
+  "erwartet": "KZSNJWFQEVHDMF-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "KZSNJWFQEVHDMF-BYPYZUCNSA-N",
+  "eingabe": "L-Valin",
+  "erwartet": "KZSNJWFQEVHDMF-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "eingabe": "arginine",
+  "erwartet": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "eingabe": "L-arginine",
+  "erwartet": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "eingabe": "L-Arginin",
+  "erwartet": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "eingabe": "aspartic acid",
+  "erwartet": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "eingabe": "L-aspartic acid",
+  "erwartet": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "eingabe": "Asparaginsäure",
+  "erwartet": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+  "sekunden": 6.94
+ },
+ {
+  "status": "gruen",
+  "text": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "eingabe": "glutamic acid",
+  "erwartet": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "eingabe": "L-glutamic acid",
+  "erwartet": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "eingabe": "L-Glutaminsäure",
+  "erwartet": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+  "sekunden": 7.12
+ },
+ {
+  "status": "gruen",
+  "text": "DHMQDGOQFOQNFH-UHFFFAOYSA-N",
+  "eingabe": "glycine",
+  "erwartet": "DHMQDGOQFOQNFH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DHMQDGOQFOQNFH-UHFFFAOYSA-N",
+  "eingabe": "Glycin",
+  "erwartet": "DHMQDGOQFOQNFH-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "eingabe": "histidine",
+  "erwartet": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "eingabe": "L-histidine",
+  "erwartet": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "eingabe": "L-Histidin",
+  "erwartet": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "eingabe": "methionine",
+  "erwartet": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "eingabe": "L-methionine",
+  "erwartet": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "eingabe": "L-Methionin",
+  "erwartet": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+  "eingabe": "phenylalanine",
+  "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+  "eingabe": "Phenylalanin",
+  "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+  "sekunden": 0.02
+ },
+ {
+  "status": "gruen",
+  "text": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "eingabe": "proline",
+  "erwartet": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "eingabe": "L-proline",
+  "erwartet": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "eingabe": "L-Prolin",
+  "erwartet": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "QIVBCDIJIAJPQS-VIFPVBQESA-N",
+  "eingabe": "tryptophan",
+  "erwartet": "QIVBCDIJIAJPQS-VIFPVBQESA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "MBWXNTAXLNYFJB-NKFFZRIASA-N",
+  "eingabe": "(E)-phytonadione",
+  "erwartet": "MBWXNTAXLNYFJB-NKFFZRIASA-N",
+  "sekunden": 4.11
+ },
+ {
+  "status": "gruen",
+  "text": "MBWXNTAXLNYFJB-NKFFZRIASA-N",
+  "eingabe": "Phyllochinon",
+  "erwartet": "MBWXNTAXLNYFJB-NKFFZRIASA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "CMSMOCZEIVJLDB-UHFFFAOYSA-N",
+  "eingabe": "(RS)-cyclophosphamide",
+  "erwartet": "CMSMOCZEIVJLDB-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(RS)-Cyclophosphamid",
+  "erwartet": "CMSMOCZEIVJLDB-UHFFFAOYSA-N",
+  "sekunden": 24.18
+ },
+ {
+  "status": "gruen",
+  "text": "IUBSYMUCCVWXPE-UHFFFAOYSA-N",
+  "eingabe": "(RS)-metoprolol",
+  "erwartet": "IUBSYMUCCVWXPE-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "WUBBRNOQWQTFEX-UHFFFAOYSA-N",
+  "eingabe": "4-aminosalicylic acid",
+  "erwartet": "WUBBRNOQWQTFEX-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "4-Aminosalicylsäure",
+  "erwartet": "WUBBRNOQWQTFEX-UHFFFAOYSA-N",
+  "sekunden": 38.92
+ },
+ {
+  "status": "gruen",
+  "text": "FBPFZTCFMRRESA-KVTDHHQDSA-N",
+  "eingabe": "D-(-)-mannitol",
+  "erwartet": "FBPFZTCFMRRESA-KVTDHHQDSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FBPFZTCFMRRESA-KVTDHHQDSA-N",
+  "eingabe": "Mannit",
+  "erwartet": "FBPFZTCFMRRESA-KVTDHHQDSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "VVIAGPKUTFNRDU-STQMWFEESA-N",
+  "eingabe": "L-folinic acid",
+  "erwartet": "VVIAGPKUTFNRDU-STQMWFEESA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Levofolinsäure",
+  "erwartet": "VVIAGPKUTFNRDU-STQMWFEESA-N",
+  "sekunden": 38.53
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "STECJAGHUSJQJN-USLFZFAMSA-N",
+  "text": "falscher Stoff (stereo): STECJAGHUSJQJN-USLFZFAMSA-N statt STECJAGHUSJQJN-FWXGHANASA-N",
+  "eingabe": "L-scopolamine",
+  "erwartet": "STECJAGHUSJQJN-FWXGHANASA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "L-Scopolamin",
+  "erwartet": "STECJAGHUSJQJN-FWXGHANASA-N",
+  "sekunden": 24.32
+ },
+ {
+  "status": "gruen",
+  "text": "PWKSKIMOESPYIA-BYPYZUCNSA-N",
+  "eingabe": "N-acetyl-L-cysteine",
+  "erwartet": "PWKSKIMOESPYIA-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "PWKSKIMOESPYIA-BYPYZUCNSA-N",
+  "eingabe": "Acetylcystein",
+  "erwartet": "PWKSKIMOESPYIA-BYPYZUCNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): DCYOBGZUOMKFPA-UHFFFAOYSA-N statt DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+  "eingabe": "Prussian blue",
+  "erwartet": "DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): DCYOBGZUOMKFPA-UHFFFAOYSA-N statt DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+  "eingabe": "Berliner Blau",
+  "erwartet": "DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+  "sekunden": 3.9
+ },
+ {
+  "status": "gruen",
+  "text": "MCGSCOLBFJQGHM-SCZZXKLOSA-N",
+  "eingabe": "abacavir",
+  "erwartet": "MCGSCOLBFJQGHM-SCZZXKLOSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gruen",
+  "text": "BZKPWHYZMXOIDC-UHFFFAOYSA-N",
+  "eingabe": "acetazolamide",
+  "erwartet": "BZKPWHYZMXOIDC-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "BZKPWHYZMXOIDC-UHFFFAOYSA-N",
+  "eingabe": "Acetazolamid",
+  "erwartet": "BZKPWHYZMXOIDC-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+  "eingabe": "acetic acid",
+  "erwartet": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+  "eingabe": "Essigsäure",
+  "erwartet": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+  "sekunden": 7.17
+ },
+ {
+  "status": "gruen",
+  "text": "MKUXAQIIEYXACX-UHFFFAOYSA-N",
+  "eingabe": "aciclovir",
+  "erwartet": "MKUXAQIIEYXACX-UHFFFAOYSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "HXHWSAZORRCQMX-UHFFFAOYSA-N",
+  "eingabe": "albendazole",
+  "erwartet": "HXHWSAZORRCQMX-UHFFFAOYSA-N",
+  "sekunden": 3.66
+ },
+ {
+  "status": "gruen",
+  "text": "HXHWSAZORRCQMX-UHFFFAOYSA-N",
+  "eingabe": "albendazol",
+  "erwartet": "HXHWSAZORRCQMX-UHFFFAOYSA-N",
+  "sekunden": 3.87
+ },
+ {
+  "status": "gruen",
+  "text": "CPYGBGOXCJJJGC-GKLGUMFISA-L",
+  "eingabe": "alcuronium chloride",
+  "erwartet": "CPYGBGOXCJJJGC-GKLGUMFISA-L",
+  "sekunden": 3.7
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Alcuroniumchlorid",
+  "erwartet": "CPYGBGOXCJJJGC-GKLGUMFISA-L",
+  "sekunden": 24.36
+ },
+ {
+  "status": "gruen",
+  "text": "OFCNXPDARWKPPY-UHFFFAOYSA-N",
+  "eingabe": "allopurinol",
+  "erwartet": "OFCNXPDARWKPPY-UHFFFAOYSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gruen",
+  "text": "GMVPRGQOIOIIMI-DWKJAMRDSA-N",
+  "eingabe": "alprostadil",
+  "erwartet": "GMVPRGQOIOIIMI-DWKJAMRDSA-N",
+  "sekunden": 3.67
+ },
+ {
+  "status": "gruen",
+  "text": "GMVPRGQOIOIIMI-DWKJAMRDSA-N",
+  "eingabe": "Prostaglandin E1",
+  "erwartet": "GMVPRGQOIOIIMI-DWKJAMRDSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "LKCWBDHBTVXHDL-RMDFUYIESA-N",
+  "eingabe": "amikacin",
+  "erwartet": "LKCWBDHBTVXHDL-RMDFUYIESA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "XSDQTOBWRPYKKA-UHFFFAOYSA-N",
+  "eingabe": "amiloride",
+  "erwartet": "XSDQTOBWRPYKKA-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Amilorid",
+  "erwartet": "XSDQTOBWRPYKKA-UHFFFAOYSA-N",
+  "sekunden": 24.75
+ },
+ {
+  "status": "gruen",
+  "text": "IYIKLHRQXLHMJQ-UHFFFAOYSA-N",
+  "eingabe": "amiodarone",
+  "erwartet": "IYIKLHRQXLHMJQ-UHFFFAOYSA-N",
+  "sekunden": 3.72
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Amiodaron",
+  "erwartet": "IYIKLHRQXLHMJQ-UHFFFAOYSA-N",
+  "sekunden": 24.85
+ },
+ {
+  "status": "gruen",
+  "text": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+  "eingabe": "amitriptyline",
+  "erwartet": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+  "eingabe": "Amitriptylin",
+  "erwartet": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+  "sekunden": 3.77
+ },
+ {
+  "status": "gruen",
+  "text": "OVCDSSHSILBFBN-UHFFFAOYSA-N",
+  "eingabe": "amodiaquine",
+  "erwartet": "OVCDSSHSILBFBN-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "OVCDSSHSILBFBN-UHFFFAOYSA-N",
+  "eingabe": "Amodiaquin",
+  "erwartet": "OVCDSSHSILBFBN-UHFFFAOYSA-N",
+  "sekunden": 4.2
+ },
+ {
+  "status": "gruen",
+  "text": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N",
+  "eingabe": "amoxicillin",
+  "erwartet": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "APKFDSVGJQXUKY-INPOYWNPSA-N",
+  "eingabe": "amphotericin B",
+  "erwartet": "APKFDSVGJQXUKY-INPOYWNPSA-N",
+  "sekunden": 3.88
+ },
+ {
+  "status": "gruen",
+  "text": "AVKUERGKIZMTKX-NJBDSQKTSA-N",
+  "eingabe": "ampicillin",
+  "erwartet": "AVKUERGKIZMTKX-NJBDSQKTSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "YBBLVLTVTVSKRW-UHFFFAOYSA-N",
+  "eingabe": "anastrozole",
+  "erwartet": "YBBLVLTVTVSKRW-UHFFFAOYSA-N",
+  "sekunden": 3.84
+ },
+ {
+  "status": "gruen",
+  "text": "YBBLVLTVTVSKRW-UHFFFAOYSA-N",
+  "eingabe": "Anastrozol",
+  "erwartet": "YBBLVLTVTVSKRW-UHFFFAOYSA-N",
+  "sekunden": 3.66
+ },
+ {
+  "status": "gruen",
+  "text": "SXYIRMFQILZOAM-HVNFFKDJSA-N",
+  "eingabe": "artemether",
+  "erwartet": "SXYIRMFQILZOAM-HVNFFKDJSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "FIHJKUPKCHIPAT-AHIGJZGOSA-N",
+  "eingabe": "artesunate",
+  "erwartet": "FIHJKUPKCHIPAT-AHIGJZGOSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Artesunat",
+  "erwartet": "FIHJKUPKCHIPAT-AHIGJZGOSA-N",
+  "sekunden": 24.36
+ },
+ {
+  "status": "gruen",
+  "text": "AXRYRYVKAWYZBR-GASGPIRDSA-N",
+  "eingabe": "atazanavir",
+  "erwartet": "AXRYRYVKAWYZBR-GASGPIRDSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "eingabe": "atracurium besilate",
+  "erwartet": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "eingabe": "atracurium besylate",
+  "erwartet": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Atracurium-Besilat",
+  "erwartet": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "sekunden": 24.38
+ },
+ {
+  "status": "gruen",
+  "text": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+  "eingabe": "azathioprine",
+  "erwartet": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+  "eingabe": "Azathioprin",
+  "erwartet": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "MQTOSJVFKKJCRP-BICOPXKESA-N",
+  "eingabe": "azithromycin",
+  "erwartet": "MQTOSJVFKKJCRP-BICOPXKESA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gruen",
+  "text": "WZPBZJONDBGPKJ-VEHQQRBSSA-N",
+  "eingabe": "aztreonam",
+  "erwartet": "WZPBZJONDBGPKJ-VEHQQRBSSA-N",
+  "sekunden": 4.6
+ },
+ {
+  "status": "gruen",
+  "text": "KUVIULQEHSCUHY-XYWKZLDCSA-N",
+  "eingabe": "beclomethasone dipropionate",
+  "erwartet": "KUVIULQEHSCUHY-XYWKZLDCSA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Beclometasondipropionat",
+  "erwartet": "KUVIULQEHSCUHY-XYWKZLDCSA-N",
+  "sekunden": 24.28
+ },
+ {
+  "status": "gruen",
+  "text": "QUIJNHUBAXPXFS-XLJNKUFUSA-N",
+  "eingabe": "bedaquiline",
+  "erwartet": "QUIJNHUBAXPXFS-XLJNKUFUSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Bedaquilin",
+  "erwartet": "QUIJNHUBAXPXFS-XLJNKUFUSA-N",
+  "sekunden": 24.23
+ },
+ {
+  "status": "gruen",
+  "text": "YTKUWDBFDASYHO-UHFFFAOYSA-N",
+  "eingabe": "bendamustine",
+  "erwartet": "YTKUWDBFDASYHO-UHFFFAOYSA-N",
+  "sekunden": 3.7
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "ZHSKUOZOLHMKEA-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): ZHSKUOZOLHMKEA-UHFFFAOYSA-N statt YTKUWDBFDASYHO-UHFFFAOYSA-N",
+  "eingabe": "Bendamustin",
+  "erwartet": "YTKUWDBFDASYHO-UHFFFAOYSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+  "eingabe": "benzathine benzylpenicillin",
+  "erwartet": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+  "sekunden": 3.3
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "BVGLIYRKPOITBQ-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): BVGLIYRKPOITBQ-UHFFFAOYSA-N statt BVGLIYRKPOITBQ-ANPZCEIESA-N",
+  "eingabe": "Benzylpenicillin-Benzathin",
+  "erwartet": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "CULUWZNBISUWAS-UHFFFAOYSA-N",
+  "eingabe": "benznidazole",
+  "erwartet": "CULUWZNBISUWAS-UHFFFAOYSA-N",
+  "sekunden": 3.75
+ },
+ {
+  "status": "gruen",
+  "text": "CULUWZNBISUWAS-UHFFFAOYSA-N",
+  "eingabe": "Benznidazol",
+  "erwartet": "CULUWZNBISUWAS-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "OMPJBNCRMGITSC-UHFFFAOYSA-N",
+  "eingabe": "benzoyl peroxide",
+  "erwartet": "OMPJBNCRMGITSC-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OMPJBNCRMGITSC-UHFFFAOYSA-N",
+  "eingabe": "Dibenzoylperoxid",
+  "erwartet": "OMPJBNCRMGITSC-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "SESFRYSPDFLNCH-UHFFFAOYSA-N",
+  "eingabe": "benzyl benzoate",
+  "erwartet": "SESFRYSPDFLNCH-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "SESFRYSPDFLNCH-UHFFFAOYSA-N",
+  "eingabe": "Benzoesäurebenzylester",
+  "erwartet": "SESFRYSPDFLNCH-UHFFFAOYSA-N",
+  "sekunden": 7.4
+ },
+ {
+  "status": "gruen",
+  "text": "JGSARLDLIJGVTE-MBNYWOFBSA-N",
+  "eingabe": "benzylpenicillin",
+  "erwartet": "JGSARLDLIJGVTE-MBNYWOFBSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "UREBDLICKHMUKA-DVTGEIKXSA-N",
+  "eingabe": "betamethasone",
+  "erwartet": "UREBDLICKHMUKA-DVTGEIKXSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Betamethason",
+  "erwartet": "UREBDLICKHMUKA-DVTGEIKXSA-N",
+  "sekunden": 44.0
+ },
+ {
+  "status": "gruen",
+  "text": "LKJPYSCBVHEWIU-UHFFFAOYSA-N",
+  "eingabe": "bicalutamide",
+  "erwartet": "LKJPYSCBVHEWIU-UHFFFAOYSA-N",
+  "sekunden": 3.76
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Bicalutamid",
+  "erwartet": "LKJPYSCBVHEWIU-UHFFFAOYSA-N",
+  "sekunden": 26.88
+ },
+ {
+  "status": "gruen",
+  "text": "YSXKPIUOCJLQIE-UHFFFAOYSA-N",
+  "eingabe": "biperiden",
+  "erwartet": "YSXKPIUOCJLQIE-UHFFFAOYSA-N",
+  "sekunden": 3.7
+ },
+ {
+  "status": "gruen",
+  "text": "VHYCDWMUTMEGQY-UHFFFAOYSA-N",
+  "eingabe": "bisoprolol",
+  "erwartet": "VHYCDWMUTMEGQY-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "OYPRJOBELJOOCE-UHFFFAOYSA-N",
+  "eingabe": "calcium",
+  "erwartet": "OYPRJOBELJOOCE-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "NEEHYRZPVYRGPP-IYEMJOQQSA-L",
+  "eingabe": "calcium gluconate",
+  "erwartet": "NEEHYRZPVYRGPP-IYEMJOQQSA-L",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Calciumgluconat",
+  "erwartet": "NEEHYRZPVYRGPP-IYEMJOQQSA-L",
+  "sekunden": 24.71
+ },
+ {
+  "status": "gruen",
+  "text": "GAGWJHPBXLXJQN-UORFTKCHSA-N",
+  "eingabe": "capecitabine",
+  "erwartet": "GAGWJHPBXLXJQN-UORFTKCHSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "GAGWJHPBXLXJQN-UORFTKCHSA-N",
+  "eingabe": "Capecitabin",
+  "erwartet": "GAGWJHPBXLXJQN-UORFTKCHSA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gruen",
+  "text": "FFGPTBGBLSHEPO-UHFFFAOYSA-N",
+  "eingabe": "carbamazepine",
+  "erwartet": "FFGPTBGBLSHEPO-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "FFGPTBGBLSHEPO-UHFFFAOYSA-N",
+  "eingabe": "carbamazepin",
+  "erwartet": "FFGPTBGBLSHEPO-UHFFFAOYSA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gruen",
+  "text": "MLYYVTUWGNIJIB-BXKDBHETSA-N",
+  "eingabe": "cefazolin",
+  "erwartet": "MLYYVTUWGNIJIB-BXKDBHETSA-N",
+  "sekunden": 3.78
+ },
+ {
+  "status": "gruen",
+  "text": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+  "eingabe": "cefixime",
+  "erwartet": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Cefixim Anhydrat",
+  "erwartet": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+  "sekunden": 24.51
+ },
+ {
+  "status": "gruen",
+  "text": "GPRBEKHLDVQUJE-QSWIMTSFSA-N",
+  "eingabe": "cefotaxime",
+  "erwartet": "GPRBEKHLDVQUJE-QSWIMTSFSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "GPRBEKHLDVQUJE-QSWIMTSFSA-N",
+  "eingabe": "Cefotaxim",
+  "erwartet": "GPRBEKHLDVQUJE-QSWIMTSFSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "ORFOPKXBNMVMKC-DWVKKRMSSA-N",
+  "eingabe": "ceftazidime",
+  "erwartet": "ORFOPKXBNMVMKC-DWVKKRMSSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Ceftazidim",
+  "erwartet": "ORFOPKXBNMVMKC-DWVKKRMSSA-N",
+  "sekunden": 24.2
+ },
+ {
+  "status": "gruen",
+  "text": "VAAUVRVFOQPIGI-SPQHTLEESA-N",
+  "eingabe": "ceftriaxone",
+  "erwartet": "VAAUVRVFOQPIGI-SPQHTLEESA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "VAAUVRVFOQPIGI-SPQHTLEESA-N",
+  "eingabe": "Ceftriaxon",
+  "erwartet": "VAAUVRVFOQPIGI-SPQHTLEESA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+  "eingabe": "cephalexin",
+  "erwartet": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+  "eingabe": "Cefalexin",
+  "erwartet": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gruen",
+  "text": "JCKYGMPEJWAADB-UHFFFAOYSA-N",
+  "eingabe": "chlorambucil",
+  "erwartet": "JCKYGMPEJWAADB-UHFFFAOYSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "WIIZWVCIJKGZOK-RKDXNWHRSA-N",
+  "eingabe": "chloramphenicol",
+  "erwartet": "WIIZWVCIJKGZOK-RKDXNWHRSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N",
+  "eingabe": "chlorhexidine",
+  "erwartet": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N",
+  "eingabe": "Chlorhexidin",
+  "erwartet": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N",
+  "sekunden": 3.87
+ },
+ {
+  "status": "gruen",
+  "text": "WHTVZRBIWZFKQO-UHFFFAOYSA-N",
+  "eingabe": "chloroquine",
+  "erwartet": "WHTVZRBIWZFKQO-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "WHTVZRBIWZFKQO-UHFFFAOYSA-N",
+  "eingabe": "Chloroquin",
+  "erwartet": "WHTVZRBIWZFKQO-UHFFFAOYSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "OJFZXRZZXBFEAP-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): OJFZXRZZXBFEAP-UHFFFAOYSA-N statt OSDLLIBGSJNGJE-UHFFFAOYSA-N",
+  "eingabe": "chloroxylenol",
+  "erwartet": "OSDLLIBGSJNGJE-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OSDLLIBGSJNGJE-UHFFFAOYSA-N",
+  "eingabe": "Chlorxylenol",
+  "erwartet": "OSDLLIBGSJNGJE-UHFFFAOYSA-N",
+  "sekunden": 3.7
+ },
+ {
+  "status": "gruen",
+  "text": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+  "eingabe": "chlorpromazine",
+  "erwartet": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+  "eingabe": "Chlorpromazin",
+  "erwartet": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "PMATZTZNYRCHOR-CGLBZJNRSA-N",
+  "eingabe": "ciclosporin",
+  "erwartet": "PMATZTZNYRCHOR-CGLBZJNRSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "PMATZTZNYRCHOR-CGLBZJNRSA-N",
+  "eingabe": "cyclosporine",
+  "erwartet": "PMATZTZNYRCHOR-CGLBZJNRSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "MYSWGUAQZAJSOK-UHFFFAOYSA-N",
+  "eingabe": "ciprofloxacin",
+  "erwartet": "MYSWGUAQZAJSOK-UHFFFAOYSA-N",
+  "sekunden": 3.28
+ },
+ {
+  "status": "gruen",
+  "text": "AGOYDEPGAOXOCK-KCBOHYOISA-N",
+  "eingabe": "clarithromycin",
+  "erwartet": "AGOYDEPGAOXOCK-KCBOHYOISA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+  "text": "falscher Stoff (stereo): KDLRVYVGXIQJDK-AWPVFWJPSA-N statt KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+  "eingabe": "clindamycin",
+  "erwartet": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "WDQPAMHFFCXSNU-UHFFFAOYSA-N",
+  "eingabe": "clofazimine",
+  "erwartet": "WDQPAMHFFCXSNU-UHFFFAOYSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Clofazimin",
+  "erwartet": "WDQPAMHFFCXSNU-UHFFFAOYSA-N",
+  "sekunden": 25.17
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "GKIRPKYJQBWNGO-QPLCGJKRSA-N",
+  "text": "falscher Stoff (stereo): GKIRPKYJQBWNGO-QPLCGJKRSA-N statt GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+  "eingabe": "clomifene",
+  "erwartet": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+  "eingabe": "Clomifen",
+  "erwartet": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+  "sekunden": 3.71
+ },
+ {
+  "status": "gruen",
+  "text": "GDLIGKIOYRNHDA-UHFFFAOYSA-N",
+  "eingabe": "clomipramine",
+  "erwartet": "GDLIGKIOYRNHDA-UHFFFAOYSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Clomipramin",
+  "erwartet": "GDLIGKIOYRNHDA-UHFFFAOYSA-N",
+  "sekunden": 24.36
+ },
+ {
+  "status": "gruen",
+  "text": "VNFPBHJOKIVQEB-UHFFFAOYSA-N",
+  "eingabe": "clotrimazole",
+  "erwartet": "VNFPBHJOKIVQEB-UHFFFAOYSA-N",
+  "sekunden": 3.72
+ },
+ {
+  "status": "gruen",
+  "text": "VNFPBHJOKIVQEB-UHFFFAOYSA-N",
+  "eingabe": "Clotrimazol",
+  "erwartet": "VNFPBHJOKIVQEB-UHFFFAOYSA-N",
+  "sekunden": 4.62
+ },
+ {
+  "status": "gruen",
+  "text": "LQOLIRLGBULYKD-JKIFEVAISA-N",
+  "eingabe": "cloxacillin",
+  "erwartet": "LQOLIRLGBULYKD-JKIFEVAISA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gruen",
+  "text": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+  "eingabe": "clozapine",
+  "erwartet": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+  "sekunden": 3.92
+ },
+ {
+  "status": "gruen",
+  "text": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+  "eingabe": "Clozapin",
+  "erwartet": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+  "eingabe": "codeine",
+  "erwartet": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+  "eingabe": "Codein",
+  "erwartet": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "QYSXJUFSXHHAJI-YRZJJWOYSA-N",
+  "eingabe": "colecalciferol",
+  "erwartet": "QYSXJUFSXHHAJI-YRZJJWOYSA-N",
+  "sekunden": 3.82
+ },
+ {
+  "status": "gruen",
+  "text": "QYSXJUFSXHHAJI-YRZJJWOYSA-N",
+  "eingabe": "cholecalciferol",
+  "erwartet": "QYSXJUFSXHHAJI-YRZJJWOYSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "UVKZSORBKUEBAZ-UHFFFAOYSA-N",
+  "eingabe": "cyclizine",
+  "erwartet": "UVKZSORBKUEBAZ-UHFFFAOYSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Cyclizin",
+  "erwartet": "UVKZSORBKUEBAZ-UHFFFAOYSA-N",
+  "sekunden": 24.45
+ },
+ {
+  "status": "gruen",
+  "text": "DYDCUQKUCUHJBH-UWTATZPHSA-N",
+  "eingabe": "cycloserine",
+  "erwartet": "DYDCUQKUCUHJBH-UWTATZPHSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "DYDCUQKUCUHJBH-UWTATZPHSA-N",
+  "eingabe": "Cycloserin",
+  "erwartet": "DYDCUQKUCUHJBH-UWTATZPHSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N",
+  "eingabe": "cytarabine",
+  "erwartet": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "gruen",
+  "text": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N",
+  "eingabe": "Cytarabin",
+  "erwartet": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "FDKXTQMXEQVLRF-ZHACJKMWSA-N",
+  "eingabe": "dacarbazine",
+  "erwartet": "FDKXTQMXEQVLRF-ZHACJKMWSA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Dacarbazin",
+  "erwartet": "FDKXTQMXEQVLRF-ZHACJKMWSA-N",
+  "sekunden": 25.17
+ },
+ {
+  "status": "gruen",
+  "text": "FKRSSPOQAMALKA-CUPIEXAXSA-N",
+  "eingabe": "daclatasvir",
+  "erwartet": "FKRSSPOQAMALKA-CUPIEXAXSA-N",
+  "sekunden": 3.85
+ },
+ {
+  "status": "gruen",
+  "text": "RJURFGZVJUQBHK-IIXSONLDSA-N",
+  "eingabe": "dactinomycin",
+  "erwartet": "RJURFGZVJUQBHK-IIXSONLDSA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "gruen",
+  "text": "RJURFGZVJUQBHK-IIXSONLDSA-N",
+  "eingabe": "Actinomycin D",
+  "erwartet": "RJURFGZVJUQBHK-IIXSONLDSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "MQJKPEGWNLWLTK-UHFFFAOYSA-N",
+  "eingabe": "dapsone",
+  "erwartet": "MQJKPEGWNLWLTK-UHFFFAOYSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "MQJKPEGWNLWLTK-UHFFFAOYSA-N",
+  "eingabe": "Dapson",
+  "erwartet": "MQJKPEGWNLWLTK-UHFFFAOYSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "CJBJHOAVZSMMDJ-HEXNFIEUSA-N",
+  "eingabe": "darunavir",
+  "erwartet": "CJBJHOAVZSMMDJ-HEXNFIEUSA-N",
+  "sekunden": 3.76
+ },
+ {
+  "status": "gruen",
+  "text": "NBRBXGKOEOGLOI-UHFFFAOYSA-N",
+  "eingabe": "dasabuvir",
+  "erwartet": "NBRBXGKOEOGLOI-UHFFFAOYSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "ZBNZXTGUTAYRHI-UHFFFAOYSA-N",
+  "eingabe": "dasatinib",
+  "erwartet": "ZBNZXTGUTAYRHI-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "STQGQHZAVUOBTE-VGBVRHCVSA-N",
+  "eingabe": "daunorubicin",
+  "erwartet": "STQGQHZAVUOBTE-VGBVRHCVSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "UBQYURCVBFRUQT-UHFFFAOYSA-N",
+  "eingabe": "deferoxamine",
+  "erwartet": "UBQYURCVBFRUQT-UHFFFAOYSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "UBQYURCVBFRUQT-UHFFFAOYSA-N",
+  "eingabe": "Deferoxamin",
+  "erwartet": "UBQYURCVBFRUQT-UHFFFAOYSA-N",
+  "sekunden": 4.66
+ },
+ {
+  "status": "gruen",
+  "text": "XDAOLTSRNUSPPH-XMMPIXPASA-N",
+  "eingabe": "delamanid",
+  "erwartet": "XDAOLTSRNUSPPH-XMMPIXPASA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gruen",
+  "text": "NFLWUMRGJYTJIN-PNIOQBSNSA-N",
+  "eingabe": "desmopressin",
+  "erwartet": "NFLWUMRGJYTJIN-PNIOQBSNSA-N",
+  "sekunden": 3.86
+ },
+ {
+  "status": "gruen",
+  "text": "UREBDLICKHMUKA-CXSFZGCWSA-N",
+  "eingabe": "dexamethasone",
+  "erwartet": "UREBDLICKHMUKA-CXSFZGCWSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Dexamethason",
+  "erwartet": "UREBDLICKHMUKA-CXSFZGCWSA-N",
+  "sekunden": 24.57
+ },
+ {
+  "status": "gruen",
+  "text": "YVPYQUNUQOZFHG-UHFFFAOYSA-N",
+  "eingabe": "diatrizoic acid",
+  "erwartet": "YVPYQUNUQOZFHG-UHFFFAOYSA-N",
+  "sekunden": 3.78
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Amidotrizoesäure",
+  "erwartet": "YVPYQUNUQOZFHG-UHFFFAOYSA-N",
+  "sekunden": 38.6
+ },
+ {
+  "status": "gruen",
+  "text": "AAOVKJBEBIDNHE-UHFFFAOYSA-N",
+  "eingabe": "diazepam",
+  "erwartet": "AAOVKJBEBIDNHE-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "BXZVVICBKDXVGW-NKWVEPMBSA-N",
+  "eingabe": "didanosine",
+  "erwartet": "BXZVVICBKDXVGW-NKWVEPMBSA-N",
+  "sekunden": 4.23
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Didanosin",
+  "erwartet": "BXZVVICBKDXVGW-NKWVEPMBSA-N",
+  "sekunden": 24.48
+ },
+ {
+  "status": "gruen",
+  "text": "RCKMWOKWVGPNJF-UHFFFAOYSA-N",
+  "eingabe": "diethylcarbamazine",
+  "erwartet": "RCKMWOKWVGPNJF-UHFFFAOYSA-N",
+  "sekunden": 3.72
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Diethylcarbamazin",
+  "erwartet": "RCKMWOKWVGPNJF-UHFFFAOYSA-N",
+  "sekunden": 24.22
+ },
+ {
+  "status": "gruen",
+  "text": "LTMHDMANZUZIPE-PUGKRICDSA-N",
+  "eingabe": "digoxin",
+  "erwartet": "LTMHDMANZUZIPE-PUGKRICDSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "BDYYDXJSHYEDGB-UHFFFAOYSA-N",
+  "eingabe": "diloxanide furoate",
+  "erwartet": "BDYYDXJSHYEDGB-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Diloxanidfuroat",
+  "erwartet": "BDYYDXJSHYEDGB-UHFFFAOYSA-N",
+  "sekunden": 25.58
+ },
+ {
+  "status": "gruen",
+  "text": "WQABCVAJNWAXTE-UHFFFAOYSA-N",
+  "eingabe": "dimercaprol",
+  "erwartet": "WQABCVAJNWAXTE-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XEYBRNLFEZDVAW-ARSRFYASSA-N",
+  "eingabe": "dinoprostone",
+  "erwartet": "XEYBRNLFEZDVAW-ARSRFYASSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "XEYBRNLFEZDVAW-ARSRFYASSA-N",
+  "eingabe": "prostaglandin E2",
+  "erwartet": "XEYBRNLFEZDVAW-ARSRFYASSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "ZDZOTLJHXYCWBA-VCVYQWHSSA-N",
+  "eingabe": "docetaxel",
+  "erwartet": "ZDZOTLJHXYCWBA-VCVYQWHSSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "APSBXTVYXVQYAB-UHFFFAOYSA-M",
+  "eingabe": "docusate sodium",
+  "erwartet": "APSBXTVYXVQYAB-UHFFFAOYSA-M",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Docusat",
+  "erwartet": "APSBXTVYXVQYAB-UHFFFAOYSA-M",
+  "sekunden": 24.17
+ },
+ {
+  "status": "gruen",
+  "text": "RHWKPHLQXYSBKR-BMIGLBTASA-N",
+  "eingabe": "dolutegravir",
+  "erwartet": "RHWKPHLQXYSBKR-BMIGLBTASA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "AOJJSUZBOXZQNB-TZSSRYMLSA-N",
+  "eingabe": "doxorubicin",
+  "erwartet": "AOJJSUZBOXZQNB-TZSSRYMLSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+  "text": "falscher Stoff (skelett): SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+  "eingabe": "doxycycline",
+  "erwartet": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+  "text": "falscher Stoff (skelett): SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+  "eingabe": "Doxycyclin",
+  "erwartet": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "XPOQHMRABVBWPR-ZDUSSCGKSA-N",
+  "eingabe": "efavirenz",
+  "erwartet": "XPOQHMRABVBWPR-ZDUSSCGKSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gruen",
+  "text": "XQSPYNMVSIKCOC-NTSWFWBYSA-N",
+  "eingabe": "emtricitabine",
+  "erwartet": "XQSPYNMVSIKCOC-NTSWFWBYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Emtricitabin",
+  "erwartet": "XQSPYNMVSIKCOC-NTSWFWBYSA-N",
+  "sekunden": 25.36
+ },
+ {
+  "status": "gruen",
+  "text": "GBXSMTUPTTWBMN-XIRDDKMYSA-N",
+  "eingabe": "enalapril",
+  "erwartet": "GBXSMTUPTTWBMN-XIRDDKMYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "QDGZDCVAUDNJFG-FXQIFTODSA-N",
+  "eingabe": "entecavir",
+  "erwartet": "QDGZDCVAUDNJFG-FXQIFTODSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "eingabe": "ephedrine",
+  "erwartet": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "eingabe": "(−)-ephedrine",
+  "erwartet": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "MWFDNXJPZUOTJB-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): MWFDNXJPZUOTJB-UHFFFAOYSA-N statt KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "eingabe": "(−)-Ephedrin",
+  "erwartet": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "MECHNRXZTMCUDQ-RKHKHRCZSA-N",
+  "eingabe": "ergocalciferol",
+  "erwartet": "MECHNRXZTMCUDQ-RKHKHRCZSA-N",
+  "sekunden": 3.44
+ },
+ {
+  "status": "gruen",
+  "text": "WVVSZNPYNCNODU-XTQGRXLLSA-N",
+  "eingabe": "ergometrine",
+  "erwartet": "WVVSZNPYNCNODU-XTQGRXLLSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "WVVSZNPYNCNODU-XTQGRXLLSA-N",
+  "eingabe": "Ergometrin",
+  "erwartet": "WVVSZNPYNCNODU-XTQGRXLLSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "ULGZDMOVFRHVEP-RWJQBGPGSA-N",
+  "eingabe": "erythromycin",
+  "erwartet": "ULGZDMOVFRHVEP-RWJQBGPGSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "AEUTYOVWOVBAKS-UWVGGRQHSA-N",
+  "eingabe": "ethambutol",
+  "erwartet": "AEUTYOVWOVBAKS-UWVGGRQHSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "AEOCXXJPGCBFJA-UHFFFAOYSA-N",
+  "eingabe": "ethionamide",
+  "erwartet": "AEOCXXJPGCBFJA-UHFFFAOYSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Ethionamid",
+  "erwartet": "AEOCXXJPGCBFJA-UHFFFAOYSA-N",
+  "sekunden": 24.37
+ },
+ {
+  "status": "gruen",
+  "text": "HAPOVYFOVVWLRS-UHFFFAOYSA-N",
+  "eingabe": "ethosuximide",
+  "erwartet": "HAPOVYFOVVWLRS-UHFFFAOYSA-N",
+  "sekunden": 3.66
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Ethosuximid",
+  "erwartet": "HAPOVYFOVVWLRS-UHFFFAOYSA-N",
+  "sekunden": 24.21
+ },
+ {
+  "status": "gruen",
+  "text": "VJJPUSNTGOMMGY-MRVIYFEKSA-N",
+  "eingabe": "etoposide",
+  "erwartet": "VJJPUSNTGOMMGY-MRVIYFEKSA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Etoposid",
+  "erwartet": "VJJPUSNTGOMMGY-MRVIYFEKSA-N",
+  "sekunden": 24.22
+ },
+ {
+  "status": "gruen",
+  "text": "PJMPHNIQZUBGLI-UHFFFAOYSA-N",
+  "eingabe": "fentanyl",
+  "erwartet": "PJMPHNIQZUBGLI-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "RFHAOTPXVQNOHP-UHFFFAOYSA-N",
+  "eingabe": "fluconazole",
+  "erwartet": "RFHAOTPXVQNOHP-UHFFFAOYSA-N",
+  "sekunden": 3.81
+ },
+ {
+  "status": "gruen",
+  "text": "RFHAOTPXVQNOHP-UHFFFAOYSA-N",
+  "eingabe": "Fluconazol",
+  "erwartet": "RFHAOTPXVQNOHP-UHFFFAOYSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "XRECTZIEBJDKEO-UHFFFAOYSA-N",
+  "eingabe": "flucytosine",
+  "erwartet": "XRECTZIEBJDKEO-UHFFFAOYSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gruen",
+  "text": "XRECTZIEBJDKEO-UHFFFAOYSA-N",
+  "eingabe": "5-fluorocytosine",
+  "erwartet": "XRECTZIEBJDKEO-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "5-Fluorcytosin",
+  "erwartet": "XRECTZIEBJDKEO-UHFFFAOYSA-N",
+  "sekunden": 24.28
+ },
+ {
+  "status": "gruen",
+  "text": "GIUYCYHIANZCFB-FJFJXFQQSA-N",
+  "eingabe": "fludarabine phosphate",
+  "erwartet": "GIUYCYHIANZCFB-FJFJXFQQSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Fludarabin-Phosphat",
+  "erwartet": "GIUYCYHIANZCFB-FJFJXFQQSA-N",
+  "sekunden": 24.88
+ },
+ {
+  "status": "gruen",
+  "text": "AAXVEMMRQDVLJB-BULBTXNYSA-N",
+  "eingabe": "fludrocortisone",
+  "erwartet": "AAXVEMMRQDVLJB-BULBTXNYSA-N",
+  "sekunden": 3.75
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Fludrocortison",
+  "erwartet": "AAXVEMMRQDVLJB-BULBTXNYSA-N",
+  "sekunden": 24.22
+ },
+ {
+  "status": "gruen",
+  "text": "GHASVSINZRGABV-UHFFFAOYSA-N",
+  "eingabe": "fluorouracil",
+  "erwartet": "GHASVSINZRGABV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "GHASVSINZRGABV-UHFFFAOYSA-N",
+  "eingabe": "5-Fluoruracil",
+  "erwartet": "GHASVSINZRGABV-UHFFFAOYSA-N",
+  "sekunden": 3.7
+ },
+ {
+  "status": "gruen",
+  "text": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+  "eingabe": "fluoxetine",
+  "erwartet": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+  "eingabe": "Fluoxetin",
+  "erwartet": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+  "eingabe": "fluphenazine",
+  "erwartet": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+  "sekunden": 3.88
+ },
+ {
+  "status": "gruen",
+  "text": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+  "eingabe": "Fluphenazin",
+  "erwartet": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "OVBPIULPVIDEAO-LBPRGKRZSA-N",
+  "eingabe": "folic acid",
+  "erwartet": "OVBPIULPVIDEAO-LBPRGKRZSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OVBPIULPVIDEAO-LBPRGKRZSA-N",
+  "eingabe": "Folsäure",
+  "erwartet": "OVBPIULPVIDEAO-LBPRGKRZSA-N",
+  "sekunden": 7.39
+ },
+ {
+  "status": "gruen",
+  "text": "RIKMMFOAQPJVMX-UHFFFAOYSA-N",
+  "eingabe": "fomepizole",
+  "erwartet": "RIKMMFOAQPJVMX-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "RIKMMFOAQPJVMX-UHFFFAOYSA-N",
+  "eingabe": "Fomepizol",
+  "erwartet": "RIKMMFOAQPJVMX-UHFFFAOYSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+  "eingabe": "furosemide",
+  "erwartet": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+  "eingabe": "Furosemid",
+  "erwartet": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "SDUQYLNIPVEERB-QPPQHZFASA-N",
+  "eingabe": "gemcitabine",
+  "erwartet": "SDUQYLNIPVEERB-QPPQHZFASA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Gemcitabin",
+  "erwartet": "SDUQYLNIPVEERB-QPPQHZFASA-N",
+  "sekunden": 24.42
+ },
+ {
+  "status": "gruen",
+  "text": "ZNNLBTZKUZBEKO-UHFFFAOYSA-N",
+  "eingabe": "glibenclamide",
+  "erwartet": "ZNNLBTZKUZBEKO-UHFFFAOYSA-N",
+  "sekunden": 3.87
+ },
+ {
+  "status": "gruen",
+  "text": "ZNNLBTZKUZBEKO-UHFFFAOYSA-N",
+  "eingabe": "glyburide",
+  "erwartet": "ZNNLBTZKUZBEKO-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Glibenclamid",
+  "erwartet": "ZNNLBTZKUZBEKO-UHFFFAOYSA-N",
+  "sekunden": 24.41
+ },
+ {
+  "status": "gruen",
+  "text": "BOVGTQGAOIONJV-UHFFFAOYSA-N",
+  "eingabe": "gliclazide",
+  "erwartet": "BOVGTQGAOIONJV-UHFFFAOYSA-N",
+  "sekunden": 3.83
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "gliclazid",
+  "erwartet": "BOVGTQGAOIONJV-UHFFFAOYSA-N",
+  "sekunden": 24.45
+ },
+ {
+  "status": "gruen",
+  "text": "SXRSQZLOMIGNAQ-UHFFFAOYSA-N",
+  "eingabe": "glutaral",
+  "erwartet": "SXRSQZLOMIGNAQ-UHFFFAOYSA-N",
+  "sekunden": 3.29
+ },
+ {
+  "status": "gruen",
+  "text": "SXRSQZLOMIGNAQ-UHFFFAOYSA-N",
+  "eingabe": "Glutaraldehyd",
+  "erwartet": "SXRSQZLOMIGNAQ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DDUHZTYCFQRHIY-RBHXEPJQSA-N",
+  "eingabe": "griseofulvin",
+  "erwartet": "DDUHZTYCFQRHIY-RBHXEPJQSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "LNEPOXFFQSENCJ-UHFFFAOYSA-N",
+  "eingabe": "haloperidol",
+  "erwartet": "LNEPOXFFQSENCJ-UHFFFAOYSA-N",
+  "sekunden": 3.39
+ },
+ {
+  "status": "gruen",
+  "text": "BCQZXOMGPXTTIC-UHFFFAOYSA-N",
+  "eingabe": "halothane",
+  "erwartet": "BCQZXOMGPXTTIC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BCQZXOMGPXTTIC-UHFFFAOYSA-N",
+  "eingabe": "Halothan",
+  "erwartet": "BCQZXOMGPXTTIC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RPTUSVTUFVMDQK-UHFFFAOYSA-N",
+  "eingabe": "hydralazine",
+  "erwartet": "RPTUSVTUFVMDQK-UHFFFAOYSA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gruen",
+  "text": "RPTUSVTUFVMDQK-UHFFFAOYSA-N",
+  "eingabe": "Hydralazin",
+  "erwartet": "RPTUSVTUFVMDQK-UHFFFAOYSA-N",
+  "sekunden": 3.36
+ },
+ {
+  "status": "gruen",
+  "text": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+  "eingabe": "hydrochlorothiazide",
+  "erwartet": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+  "sekunden": 3.36
+ },
+ {
+  "status": "gruen",
+  "text": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+  "eingabe": "Hydrochlorothiazid",
+  "erwartet": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+  "sekunden": 3.94
+ },
+ {
+  "status": "gruen",
+  "text": "JYGXADMDTFJGBT-VWUMJDOOSA-N",
+  "eingabe": "hydrocortisone",
+  "erwartet": "JYGXADMDTFJGBT-VWUMJDOOSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "JYGXADMDTFJGBT-VWUMJDOOSA-N",
+  "eingabe": "cortisol",
+  "erwartet": "JYGXADMDTFJGBT-VWUMJDOOSA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gruen",
+  "text": "YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+  "eingabe": "hydroxocobalamin",
+  "erwartet": "YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+  "sekunden": 3.71
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "DQOCFCZRZOAIBN-WZHZPDAFSA-L",
+  "text": "falscher Stoff (skelett): DQOCFCZRZOAIBN-WZHZPDAFSA-L statt YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+  "eingabe": "Hydroxycobalamin",
+  "erwartet": "YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "VSNHCAURESNICA-UHFFFAOYSA-N",
+  "eingabe": "hydroxycarbamide",
+  "erwartet": "VSNHCAURESNICA-UHFFFAOYSA-N",
+  "sekunden": 3.88
+ },
+ {
+  "status": "gruen",
+  "text": "VSNHCAURESNICA-UHFFFAOYSA-N",
+  "eingabe": "Hydroxyharnstoff",
+  "erwartet": "VSNHCAURESNICA-UHFFFAOYSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "XXSMGPRMXLTPCZ-UHFFFAOYSA-N",
+  "eingabe": "hydroxychloroquine",
+  "erwartet": "XXSMGPRMXLTPCZ-UHFFFAOYSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Hydroxychloroquin",
+  "erwartet": "XXSMGPRMXLTPCZ-UHFFFAOYSA-N",
+  "sekunden": 24.07
+ },
+ {
+  "status": "gruen",
+  "text": "HOMGKSMUEGBAAB-UHFFFAOYSA-N",
+  "eingabe": "ifosfamide",
+  "erwartet": "HOMGKSMUEGBAAB-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "HOMGKSMUEGBAAB-UHFFFAOYSA-N",
+  "eingabe": "Ifosfamid",
+  "erwartet": "HOMGKSMUEGBAAB-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "KTUFNOKKBVMGRW-UHFFFAOYSA-N",
+  "eingabe": "imatinib",
+  "erwartet": "KTUFNOKKBVMGRW-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "CBVCZFGXHXORBI-PXQQMZJSSA-N",
+  "eingabe": "indinavir",
+  "erwartet": "CBVCZFGXHXORBI-PXQQMZJSSA-N",
+  "sekunden": 4.03
+ },
+ {
+  "status": "gruen",
+  "text": "NTHXOOBQLCIOLC-UHFFFAOYSA-N",
+  "eingabe": "iohexol",
+  "erwartet": "NTHXOOBQLCIOLC-UHFFFAOYSA-N",
+  "sekunden": 3.75
+ },
+ {
+  "status": "gruen",
+  "text": "JXMIBUGMYLQZGO-UHFFFAOYSA-N",
+  "eingabe": "iotroxic acid",
+  "erwartet": "JXMIBUGMYLQZGO-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "JXMIBUGMYLQZGO-UHFFFAOYSA-N",
+  "eingabe": "Iotroxinsäure",
+  "erwartet": "JXMIBUGMYLQZGO-UHFFFAOYSA-N",
+  "sekunden": 7.11
+ },
+ {
+  "status": "gruen",
+  "text": "UWKQSNNFCGGAFS-XIFFEERXSA-N",
+  "eingabe": "irinotecan",
+  "erwartet": "UWKQSNNFCGGAFS-XIFFEERXSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "PIWKPBJCKXDKJR-UHFFFAOYSA-N",
+  "eingabe": "isoflurane",
+  "erwartet": "PIWKPBJCKXDKJR-UHFFFAOYSA-N",
+  "sekunden": 3.71
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Isofluran",
+  "erwartet": "PIWKPBJCKXDKJR-UHFFFAOYSA-N",
+  "sekunden": 24.51
+ },
+ {
+  "status": "gruen",
+  "text": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+  "eingabe": "isosorbide dinitrate",
+  "erwartet": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "MOYKHGMNXAOIAT-OMMKOOBNSA-N",
+  "text": "falscher Stoff (stereo): MOYKHGMNXAOIAT-OMMKOOBNSA-N statt MOYKHGMNXAOIAT-JGWLITMVSA-N",
+  "eingabe": "Isosorbiddinitrat",
+  "erwartet": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "SBUJHOSQTJFQJX-NOAMYHISSA-N",
+  "eingabe": "kanamycin A",
+  "erwartet": "SBUJHOSQTJFQJX-NOAMYHISSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+  "eingabe": "ketamine",
+  "erwartet": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(RS)-ketamine",
+  "erwartet": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+  "sekunden": 24.3
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(RS)-Ketamin",
+  "erwartet": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+  "sekunden": 24.33
+ },
+ {
+  "status": "gruen",
+  "text": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+  "eingabe": "lactulose",
+  "erwartet": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "β-lactulose",
+  "erwartet": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+  "sekunden": 24.21
+ },
+ {
+  "status": "gruen",
+  "text": "JTEGQNOMFQHVDC-NKWVEPMBSA-N",
+  "eingabe": "lamivudine",
+  "erwartet": "JTEGQNOMFQHVDC-NKWVEPMBSA-N",
+  "sekunden": 3.91
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Lamivudin",
+  "erwartet": "JTEGQNOMFQHVDC-NKWVEPMBSA-N",
+  "sekunden": 24.43
+ },
+ {
+  "status": "gruen",
+  "text": "PYZRQGJRPPTADH-UHFFFAOYSA-N",
+  "eingabe": "lamotrigine",
+  "erwartet": "PYZRQGJRPPTADH-UHFFFAOYSA-N",
+  "sekunden": 3.71
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Lamotrigin",
+  "erwartet": "PYZRQGJRPPTADH-UHFFFAOYSA-N",
+  "sekunden": 24.34
+ },
+ {
+  "status": "gruen",
+  "text": "GGXICVAJURFBLW-CEYXHVGTSA-N",
+  "eingabe": "latanoprost",
+  "erwartet": "GGXICVAJURFBLW-CEYXHVGTSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "VRTWBAAJJOHBQU-KMWAZVGDSA-N",
+  "eingabe": "ledipasvir",
+  "erwartet": "VRTWBAAJJOHBQU-KMWAZVGDSA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gruen",
+  "text": "GFIJNRVAKGFPGQ-LIJARHBVSA-N",
+  "eingabe": "leuprorelin",
+  "erwartet": "GFIJNRVAKGFPGQ-LIJARHBVSA-N",
+  "sekunden": 3.26
+ },
+ {
+  "status": "gruen",
+  "text": "GFIJNRVAKGFPGQ-LIJARHBVSA-N",
+  "eingabe": "leuprolide",
+  "erwartet": "GFIJNRVAKGFPGQ-LIJARHBVSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "HLFSDGLLUJUHTE-SNVBAGLBSA-N",
+  "eingabe": "levamisole",
+  "erwartet": "HLFSDGLLUJUHTE-SNVBAGLBSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "HLFSDGLLUJUHTE-SNVBAGLBSA-N",
+  "eingabe": "Levamisol",
+  "erwartet": "HLFSDGLLUJUHTE-SNVBAGLBSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "GSDSWSVVBLHKDQ-JTQLQIEISA-N",
+  "eingabe": "levofloxacin",
+  "erwartet": "GSDSWSVVBLHKDQ-JTQLQIEISA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "WWYNJERNGUHSAO-XUDSTZEESA-N",
+  "eingabe": "levonorgestrel",
+  "erwartet": "WWYNJERNGUHSAO-XUDSTZEESA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "NNJVILVZKWQKPM-UHFFFAOYSA-N",
+  "eingabe": "lidocaine",
+  "erwartet": "NNJVILVZKWQKPM-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "NNJVILVZKWQKPM-UHFFFAOYSA-N",
+  "eingabe": "Lidocain",
+  "erwartet": "NNJVILVZKWQKPM-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "TYZROVQLWOKYKF-ZDUSSCGKSA-N",
+  "eingabe": "linezolid",
+  "erwartet": "TYZROVQLWOKYKF-ZDUSSCGKSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "RDOIQAHITMMDAJ-UHFFFAOYSA-N",
+  "eingabe": "loperamide",
+  "erwartet": "RDOIQAHITMMDAJ-UHFFFAOYSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Loperamid",
+  "erwartet": "RDOIQAHITMMDAJ-UHFFFAOYSA-N",
+  "sekunden": 24.34
+ },
+ {
+  "status": "gruen",
+  "text": "KJHKTHWMRKYKJE-SUGCFTRWSA-N",
+  "eingabe": "lopinavir",
+  "erwartet": "KJHKTHWMRKYKJE-SUGCFTRWSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "JCCNYMKQOSZNPW-UHFFFAOYSA-N",
+  "eingabe": "loratadine",
+  "erwartet": "JCCNYMKQOSZNPW-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Loratadin",
+  "erwartet": "JCCNYMKQOSZNPW-UHFFFAOYSA-N",
+  "sekunden": 24.1
+ },
+ {
+  "status": "gruen",
+  "text": "DIWRORZWFLOCLC-UHFFFAOYSA-N",
+  "eingabe": "lorazepam",
+  "erwartet": "DIWRORZWFLOCLC-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "PSIFNNKUMBGKDQ-UHFFFAOYSA-N",
+  "eingabe": "losartan",
+  "erwartet": "PSIFNNKUMBGKDQ-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "OPXLLQIJSORQAM-UHFFFAOYSA-N",
+  "eingabe": "mebendazole",
+  "erwartet": "OPXLLQIJSORQAM-UHFFFAOYSA-N",
+  "sekunden": 3.9
+ },
+ {
+  "status": "gruen",
+  "text": "OPXLLQIJSORQAM-UHFFFAOYSA-N",
+  "eingabe": "Mebendazol",
+  "erwartet": "OPXLLQIJSORQAM-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "PSGAAPLEWMOORI-PEINSRQWSA-N",
+  "eingabe": "medroxyprogesterone acetate",
+  "erwartet": "PSGAAPLEWMOORI-PEINSRQWSA-N",
+  "sekunden": 3.7
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Medroxyprogesteronacetat",
+  "erwartet": "PSGAAPLEWMOORI-PEINSRQWSA-N",
+  "sekunden": 24.45
+ },
+ {
+  "status": "gruen",
+  "text": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+  "eingabe": "mefloquine",
+  "erwartet": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+  "text": "falscher Stoff (stereo): XEEQGYMUWCZPDN-DOMZBBRYSA-N statt XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+  "eingabe": "Mefloquin",
+  "erwartet": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+  "eingabe": "meglumine antimoniate",
+  "erwartet": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "N-Methylglucaminantimonat",
+  "erwartet": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+  "sekunden": 25.38
+ },
+ {
+  "status": "gruen",
+  "text": "JCYZMTMYPZHVBF-UHFFFAOYSA-N",
+  "eingabe": "melarsoprol",
+  "erwartet": "JCYZMTMYPZHVBF-UHFFFAOYSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "GLVAUDGFNGKCSF-UHFFFAOYSA-N",
+  "eingabe": "mercaptopurine",
+  "erwartet": "GLVAUDGFNGKCSF-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "GLVAUDGFNGKCSF-UHFFFAOYSA-N",
+  "eingabe": "Mercaptopurin",
+  "erwartet": "GLVAUDGFNGKCSF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DMJNNHOOLUXYBV-PQTSNVLCSA-N",
+  "eingabe": "meropenem",
+  "erwartet": "DMJNNHOOLUXYBV-PQTSNVLCSA-N",
+  "sekunden": 3.71
+ },
+ {
+  "status": "gruen",
+  "text": "XOGTZOOQQBDUSI-UHFFFAOYSA-M",
+  "eingabe": "mesna",
+  "erwartet": "XOGTZOOQQBDUSI-UHFFFAOYSA-M",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+  "eingabe": "methadone",
+  "erwartet": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(RS)-methadone",
+  "erwartet": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+  "sekunden": 23.91
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(RS)-Methadon",
+  "erwartet": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+  "sekunden": 24.2
+ },
+ {
+  "status": "gruen",
+  "text": "FBOZXECLQNJBKD-ZDUSSCGKSA-N",
+  "eingabe": "methotrexate",
+  "erwartet": "FBOZXECLQNJBKD-ZDUSSCGKSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "FBOZXECLQNJBKD-ZDUSSCGKSA-N",
+  "eingabe": "Methotrexat",
+  "erwartet": "FBOZXECLQNJBKD-ZDUSSCGKSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "QZIWDCLHLOADPK-ZETCQYMHSA-N",
+  "text": "falscher Stoff (skelett): QZIWDCLHLOADPK-ZETCQYMHSA-N statt CJCSPKMFHVPWAR-JTQLQIEISA-N",
+  "eingabe": "methyldopa",
+  "erwartet": "CJCSPKMFHVPWAR-JTQLQIEISA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "VHRSUDSXCMQTMA-PJHHCJLFSA-N",
+  "eingabe": "methylprednisolone",
+  "erwartet": "VHRSUDSXCMQTMA-PJHHCJLFSA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gruen",
+  "text": "VHRSUDSXCMQTMA-PJHHCJLFSA-N",
+  "eingabe": "Methylprednisolon",
+  "erwartet": "VHRSUDSXCMQTMA-PJHHCJLFSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "UYIDWJXVRJXHKX-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): UYIDWJXVRJXHKX-UHFFFAOYSA-N statt CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "eingabe": "methylthioninium chloride",
+  "erwartet": "CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "eingabe": "methylene blue",
+  "erwartet": "CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "eingabe": "Methylenblau",
+  "erwartet": "CXKWCBBOMKCUKX-UHFFFAOYSA-M",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "TTWJBBZEZQICBI-UHFFFAOYSA-N",
+  "eingabe": "metoclopramide",
+  "erwartet": "TTWJBBZEZQICBI-UHFFFAOYSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Metoclopramid",
+  "erwartet": "TTWJBBZEZQICBI-UHFFFAOYSA-N",
+  "sekunden": 24.32
+ },
+ {
+  "status": "gruen",
+  "text": "VAOCPAMSLUNLGC-UHFFFAOYSA-N",
+  "eingabe": "metronidazole",
+  "erwartet": "VAOCPAMSLUNLGC-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "VAOCPAMSLUNLGC-UHFFFAOYSA-N",
+  "eingabe": "Metronidazol",
+  "erwartet": "VAOCPAMSLUNLGC-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "DDLIGBOFAVUZHB-UHFFFAOYSA-N",
+  "eingabe": "midazolam",
+  "erwartet": "DDLIGBOFAVUZHB-UHFFFAOYSA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gruen",
+  "text": "VKHAHZOOUSRJNA-GCNJZUOMSA-N",
+  "eingabe": "mifepristone",
+  "erwartet": "VKHAHZOOUSRJNA-GCNJZUOMSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "VKHAHZOOUSRJNA-GCNJZUOMSA-N",
+  "eingabe": "Mifepriston",
+  "erwartet": "VKHAHZOOUSRJNA-GCNJZUOMSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "PQLXHQMOHUQAKB-UHFFFAOYSA-N",
+  "eingabe": "miltefosine",
+  "erwartet": "PQLXHQMOHUQAKB-UHFFFAOYSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "PQLXHQMOHUQAKB-UHFFFAOYSA-N",
+  "eingabe": "Miltefosin",
+  "erwartet": "PQLXHQMOHUQAKB-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+  "eingabe": "morphine",
+  "erwartet": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+  "eingabe": "Morphin",
+  "erwartet": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "FABPRXSRWADJSP-MEDUHNTESA-N",
+  "eingabe": "moxifloxacin",
+  "erwartet": "FABPRXSRWADJSP-MEDUHNTESA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "MINDHVHHQZYEEK-HBBNESRFSA-N",
+  "eingabe": "mupirocin",
+  "erwartet": "MINDHVHHQZYEEK-HBBNESRFSA-N",
+  "sekunden": 3.66
+ },
+ {
+  "status": "gruen",
+  "text": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+  "eingabe": "naloxone",
+  "erwartet": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+  "text": "falscher Stoff (stereo): UZHSEJADLWPNLE-BIAVLDQUSA-N statt UZHSEJADLWPNLE-GRGSLBFTSA-N",
+  "eingabe": "Naloxon",
+  "erwartet": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gruen",
+  "text": "NCXMLFZGDNKEPB-FFPOYIOWSA-N",
+  "eingabe": "natamycin",
+  "erwartet": "NCXMLFZGDNKEPB-FFPOYIOWSA-N",
+  "sekunden": 3.82
+ },
+ {
+  "status": "gruen",
+  "text": "ALWKGYPQUAPLQC-UHFFFAOYSA-N",
+  "eingabe": "neostigmine",
+  "erwartet": "ALWKGYPQUAPLQC-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "ALWKGYPQUAPLQC-UHFFFAOYSA-N",
+  "eingabe": "Neostigmin",
+  "erwartet": "ALWKGYPQUAPLQC-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "NQDJXKOVJZTUJA-UHFFFAOYSA-N",
+  "eingabe": "nevirapine",
+  "erwartet": "NQDJXKOVJZTUJA-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Nevirapin",
+  "erwartet": "NQDJXKOVJZTUJA-UHFFFAOYSA-N",
+  "sekunden": 24.91
+ },
+ {
+  "status": "gruen",
+  "text": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "eingabe": "nicotinamide",
+  "erwartet": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "eingabe": "niacinamide",
+  "erwartet": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "eingabe": "Nicotinamid",
+  "erwartet": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "HYIMSNHJOBLJNT-UHFFFAOYSA-N",
+  "eingabe": "nifedipine",
+  "erwartet": "HYIMSNHJOBLJNT-UHFFFAOYSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Nifedipin",
+  "erwartet": "HYIMSNHJOBLJNT-UHFFFAOYSA-N",
+  "sekunden": 24.19
+ },
+ {
+  "status": "gruen",
+  "text": "ARFHIAQFJWUCFH-IZZDOVSWSA-N",
+  "eingabe": "nifurtimox",
+  "erwartet": "ARFHIAQFJWUCFH-IZZDOVSWSA-N",
+  "sekunden": 3.9
+ },
+ {
+  "status": "gruen",
+  "text": "NXFQHRVNIOXGAQ-YCRREMRBSA-N",
+  "eingabe": "nitrofurantoin",
+  "erwartet": "NXFQHRVNIOXGAQ-YCRREMRBSA-N",
+  "sekunden": 3.25
+ },
+ {
+  "status": "rot",
+  "text": "nicht aufloesbar (not_found)",
+  "eingabe": "nitroprusside",
+  "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N",
+  "sekunden": 9.52
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Nitroprussid",
+  "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N",
+  "sekunden": 24.34
+ },
+ {
+  "status": "gruen",
+  "text": "APTGJECXMIKIET-WOSSHHRXSA-N",
+  "eingabe": "norethindrone enanthate",
+  "erwartet": "APTGJECXMIKIET-WOSSHHRXSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+  "eingabe": "omeprazole",
+  "erwartet": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+  "eingabe": "Omeprazol",
+  "erwartet": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "VSZGPKBBMSAYNT-RRFJBIMHSA-N",
+  "eingabe": "oseltamivir",
+  "erwartet": "VSZGPKBBMSAYNT-RRFJBIMHSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "XCGYUJZMCCFSRP-UHFFFAOYSA-N",
+  "eingabe": "oxamniquine",
+  "erwartet": "XCGYUJZMCCFSRP-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Oxamniquin",
+  "erwartet": "XCGYUJZMCCFSRP-UHFFFAOYSA-N",
+  "sekunden": 24.09
+ },
+ {
+  "status": "gruen",
+  "text": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+  "eingabe": "oxycodone",
+  "erwartet": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+  "eingabe": "Oxycodon",
+  "erwartet": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XNOPRXBHLZRZKH-DSZYJQQASA-N",
+  "eingabe": "oxytocin",
+  "erwartet": "XNOPRXBHLZRZKH-DSZYJQQASA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "RCINICONZNJXQF-MZXODVADSA-N",
+  "eingabe": "paclitaxel",
+  "erwartet": "RCINICONZNJXQF-MZXODVADSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gelb",
+  "art": "stereo",
+  "erhalten": "UAUIUKWPKRJZJV-QPLHLKROSA-N",
+  "text": "Referenz unsicher, abweichend (stereo): UAUIUKWPKRJZJV-QPLHLKROSA-N statt UAUIUKWPKRJZJV-MDJGTQRPSA-N",
+  "eingabe": "paritaprevir",
+  "erwartet": "UAUIUKWPKRJZJV-MDJGTQRPSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "UAUIUKWPKRJZJV-MDJGTQRPSA-N",
+  "eingabe": "Paritaprevir, (2R,6S,12Z,13aR,14aR,16aS)-",
+  "erwartet": "UAUIUKWPKRJZJV-MDJGTQRPSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "UOZODPSAJZTQNH-LSWIJEOBSA-N",
+  "eingabe": "paromomycin",
+  "erwartet": "UOZODPSAJZTQNH-LSWIJEOBSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+  "text": "falscher Stoff (stereo): VVNCNSJFMMFHPL-GSVOUGTGSA-N statt VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "eingabe": "penicillamine",
+  "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "eingabe": "D-penicillamine",
+  "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+  "text": "falscher Stoff (stereo): VVNCNSJFMMFHPL-GSVOUGTGSA-N statt VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "eingabe": "Penicillamin",
+  "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "XDRYMKDFEDOLFX-UHFFFAOYSA-N",
+  "eingabe": "pentamidine",
+  "erwartet": "XDRYMKDFEDOLFX-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "XDRYMKDFEDOLFX-UHFFFAOYSA-N",
+  "eingabe": "Pentamidin",
+  "erwartet": "XDRYMKDFEDOLFX-UHFFFAOYSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "RLLPVAHGXHCWKJ-UHFFFAOYSA-N",
+  "eingabe": "permethrin",
+  "erwartet": "RLLPVAHGXHCWKJ-UHFFFAOYSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
+  "eingabe": "phenobarbital",
+  "erwartet": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+  "eingabe": "phenoxymethylpenicillin",
+  "erwartet": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+  "sekunden": 4.5
+ },
+ {
+  "status": "gruen",
+  "text": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+  "eingabe": "penicillin v",
+  "erwartet": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "CXOFVDLJLONNDW-UHFFFAOYSA-N",
+  "eingabe": "phenytoin",
+  "erwartet": "CXOFVDLJLONNDW-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "QCHFTSOMWOSFHM-WPRPVWTQSA-N",
+  "eingabe": "pilocarpine",
+  "erwartet": "QCHFTSOMWOSFHM-WPRPVWTQSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "QCHFTSOMWOSFHM-WPRPVWTQSA-N",
+  "eingabe": "Pilocarpin",
+  "erwartet": "QCHFTSOMWOSFHM-WPRPVWTQSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "KOUZYZCESNTXJO-UHFFFAOYSA-N",
+  "eingabe": "podophyllin",
+  "erwartet": "KOUZYZCESNTXJO-UHFFFAOYSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M",
+  "eingabe": "potassium chloride",
+  "erwartet": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M",
+  "eingabe": "Kaliumchlorid",
+  "erwartet": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+  "eingabe": "povidone-iodine",
+  "erwartet": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+  "sekunden": 6.81
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Povidon-Iod",
+  "erwartet": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+  "sekunden": 24.46
+ },
+ {
+  "status": "gruen",
+  "text": "FSVJFNAIGNNGKK-UHFFFAOYSA-N",
+  "eingabe": "praziquantel",
+  "erwartet": "FSVJFNAIGNNGKK-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+  "eingabe": "prednisolone",
+  "erwartet": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+  "eingabe": "Prednisolon",
+  "erwartet": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "CPTBDICYNRMXFX-UHFFFAOYSA-N",
+  "eingabe": "procarbazine",
+  "erwartet": "CPTBDICYNRMXFX-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "CPTBDICYNRMXFX-UHFFFAOYSA-N",
+  "eingabe": "Procarbazin",
+  "erwartet": "CPTBDICYNRMXFX-UHFFFAOYSA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "gruen",
+  "text": "SSOLNOMRVKKSON-UHFFFAOYSA-N",
+  "eingabe": "proguanil",
+  "erwartet": "SSOLNOMRVKKSON-UHFFFAOYSA-N",
+  "sekunden": 3.82
+ },
+ {
+  "status": "gruen",
+  "text": "OLBCVFGFOZPWHH-UHFFFAOYSA-N",
+  "eingabe": "propofol",
+  "erwartet": "OLBCVFGFOZPWHH-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "AQHHHDLHHXJYJD-UHFFFAOYSA-N",
+  "eingabe": "propranolol",
+  "erwartet": "AQHHHDLHHXJYJD-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "YSAUAVHXTIETRK-AATRIKPKSA-N",
+  "eingabe": "pyrantel",
+  "erwartet": "YSAUAVHXTIETRK-AATRIKPKSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "IPEHBUMCGVEMRF-UHFFFAOYSA-N",
+  "eingabe": "pyrazinamide",
+  "erwartet": "IPEHBUMCGVEMRF-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "IPEHBUMCGVEMRF-UHFFFAOYSA-N",
+  "eingabe": "Pyrazinamid",
+  "erwartet": "IPEHBUMCGVEMRF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RVOLLAQWKVFTGE-UHFFFAOYSA-N",
+  "eingabe": "pyridostigmine",
+  "erwartet": "RVOLLAQWKVFTGE-UHFFFAOYSA-N",
+  "sekunden": 3.79
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Pyridostigmin",
+  "erwartet": "RVOLLAQWKVFTGE-UHFFFAOYSA-N",
+  "sekunden": 24.33
+ },
+ {
+  "status": "gruen",
+  "text": "LXNHXLLTXMVWPM-UHFFFAOYSA-N",
+  "eingabe": "pyridoxine",
+  "erwartet": "LXNHXLLTXMVWPM-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "LXNHXLLTXMVWPM-UHFFFAOYSA-N",
+  "eingabe": "Pyridoxin",
+  "erwartet": "LXNHXLLTXMVWPM-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WKSAUQYGYAYLPV-UHFFFAOYSA-N",
+  "eingabe": "pyrimethamine",
+  "erwartet": "WKSAUQYGYAYLPV-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "WKSAUQYGYAYLPV-UHFFFAOYSA-N",
+  "eingabe": "Pyrimethamin",
+  "erwartet": "WKSAUQYGYAYLPV-UHFFFAOYSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "LOUPRKONTZGTKE-WZBLMQSHSA-N",
+  "eingabe": "quinine",
+  "erwartet": "LOUPRKONTZGTKE-WZBLMQSHSA-N",
+  "sekunden": 4.06
+ },
+ {
+  "status": "gruen",
+  "text": "LOUPRKONTZGTKE-WZBLMQSHSA-N",
+  "eingabe": "Chinin",
+  "erwartet": "LOUPRKONTZGTKE-WZBLMQSHSA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gruen",
+  "text": "CZFFBEXEKNGXKS-UHFFFAOYSA-N",
+  "eingabe": "raltegravir",
+  "erwartet": "CZFFBEXEKNGXKS-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "FPIPGXGPPPQFEQ-OVSJKPMPSA-N",
+  "eingabe": "retinol",
+  "erwartet": "FPIPGXGPPPQFEQ-OVSJKPMPSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "gruen",
+  "text": "IWUCXVSUMQZMFG-AFCXAGJDSA-N",
+  "eingabe": "ribavirin",
+  "erwartet": "IWUCXVSUMQZMFG-AFCXAGJDSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "AUNGANRZJHBGPY-SCRDCRAPSA-N",
+  "eingabe": "riboflavin",
+  "erwartet": "AUNGANRZJHBGPY-SCRDCRAPSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "AZFBLLCNOQPJGJ-VXTBVIBXSA-N",
+  "text": "falscher Stoff (skelett): AZFBLLCNOQPJGJ-VXTBVIBXSA-N statt ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+  "eingabe": "rifabutin",
+  "erwartet": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+  "sekunden": 3.37
+ },
+ {
+  "status": "gruen",
+  "text": "JQXXHWHPUNPDRT-WLSIYKJHSA-N",
+  "eingabe": "rifampicin",
+  "erwartet": "JQXXHWHPUNPDRT-WLSIYKJHSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "WDZCUPBHRAEYDL-GZAUEHORSA-N",
+  "eingabe": "rifapentine",
+  "erwartet": "WDZCUPBHRAEYDL-GZAUEHORSA-N",
+  "sekunden": 3.69
+ },
+ {
+  "status": "gruen",
+  "text": "WDZCUPBHRAEYDL-GZAUEHORSA-N",
+  "eingabe": "Rifapentin",
+  "erwartet": "WDZCUPBHRAEYDL-GZAUEHORSA-N",
+  "sekunden": 3.74
+ },
+ {
+  "status": "gruen",
+  "text": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+  "eingabe": "risperidone",
+  "erwartet": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+  "sekunden": 3.89
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "WDNMHZRFIIOXOD-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): WDNMHZRFIIOXOD-UHFFFAOYSA-N statt RAPZEAPATHNIPO-UHFFFAOYSA-N",
+  "eingabe": "Risperidon",
+  "erwartet": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "NCDNCNXCDXHOMX-XGKFQTDJSA-N",
+  "eingabe": "ritonavir",
+  "erwartet": "NCDNCNXCDXHOMX-XGKFQTDJSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "YGSDEFSMJLZEOE-UHFFFAOYSA-N",
+  "eingabe": "salicylic acid",
+  "erwartet": "YGSDEFSMJLZEOE-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "QWAXKHKRTORLEM-UGJKXSETSA-N",
+  "eingabe": "saquinavir",
+  "erwartet": "QWAXKHKRTORLEM-UGJKXSETSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "UEJSSZHHYBHCEL-UHFFFAOYSA-N",
+  "eingabe": "silver sulfadiazine",
+  "erwartet": "UEJSSZHHYBHCEL-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Silbersulfadiazin",
+  "erwartet": "UEJSSZHHYBHCEL-UHFFFAOYSA-N",
+  "sekunden": 24.65
+ },
+ {
+  "status": "gruen",
+  "text": "JTZZSQYMACOLNN-VDWJNHBNSA-N",
+  "eingabe": "simeprevir",
+  "erwartet": "JTZZSQYMACOLNN-VDWJNHBNSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "RYMZZMVNJRMUDD-HGQWONQESA-N",
+  "eingabe": "simvastatin",
+  "erwartet": "RYMZZMVNJRMUDD-HGQWONQESA-N",
+  "sekunden": 3.8
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "UEAVLBXLOZNDHT-UHFFFAOYSA-K",
+  "text": "falscher Stoff (skelett): UEAVLBXLOZNDHT-UHFFFAOYSA-K statt SHWNNYZBHZIQQV-UHFFFAOYSA-J",
+  "eingabe": "sodium calcium edetate",
+  "erwartet": "SHWNNYZBHZIQQV-UHFFFAOYSA-J",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "SHWNNYZBHZIQQV-UHFFFAOYSA-J",
+  "eingabe": "Calcium-dinatrium-ethylendiamintetraacetat",
+  "erwartet": "SHWNNYZBHZIQQV-UHFFFAOYSA-J",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "NGSFWBMYFKHRBD-UHFFFAOYSA-M",
+  "eingabe": "sodium lactate",
+  "erwartet": "NGSFWBMYFKHRBD-UHFFFAOYSA-M",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Natriumlactat",
+  "erwartet": "NGSFWBMYFKHRBD-UHFFFAOYSA-M",
+  "sekunden": 25.51
+ },
+ {
+  "status": "gruen",
+  "text": "TTZHDVOVKQGIBA-IQWMDFIBSA-N",
+  "eingabe": "sofosbuvir",
+  "erwartet": "TTZHDVOVKQGIBA-IQWMDFIBSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "UNFWWIHTNXNPBV-WXKVUWSESA-N",
+  "eingabe": "spectinomycin",
+  "erwartet": "UNFWWIHTNXNPBV-WXKVUWSESA-N",
+  "sekunden": 3.33
+ },
+ {
+  "status": "gruen",
+  "text": "LXMSZDCAJNLERA-ZHYRCANASA-N",
+  "eingabe": "spironolactone",
+  "erwartet": "LXMSZDCAJNLERA-ZHYRCANASA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Spironolacton",
+  "erwartet": "LXMSZDCAJNLERA-ZHYRCANASA-N",
+  "sekunden": 24.21
+ },
+ {
+  "status": "gruen",
+  "text": "UCSJYZPVAKXKNQ-HZYVHMACSA-N",
+  "eingabe": "streptomycin",
+  "erwartet": "UCSJYZPVAKXKNQ-HZYVHMACSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "ACTRVOBWPAIOHC-XIXRPRMCSA-N",
+  "eingabe": "succimer",
+  "erwartet": "ACTRVOBWPAIOHC-XIXRPRMCSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "meso-Dimercaptobernsteinsäure",
+  "erwartet": "ACTRVOBWPAIOHC-XIXRPRMCSA-N",
+  "sekunden": 39.4
+ },
+ {
+  "status": "gruen",
+  "text": "SEEPANYCNGTZFQ-UHFFFAOYSA-N",
+  "eingabe": "sulfadiazine",
+  "erwartet": "SEEPANYCNGTZFQ-UHFFFAOYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "SEEPANYCNGTZFQ-UHFFFAOYSA-N",
+  "eingabe": "Sulfadiazin",
+  "erwartet": "SEEPANYCNGTZFQ-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N",
+  "eingabe": "sulfasalazine",
+  "erwartet": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N",
+  "eingabe": "Sulfasalazin",
+  "erwartet": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+  "sekunden": 3.66
+ },
+ {
+  "status": "gruen",
+  "text": "FIAFUQMPZJWCLV-UHFFFAOYSA-N",
+  "eingabe": "suramin",
+  "erwartet": "FIAFUQMPZJWCLV-UHFFFAOYSA-N",
+  "sekunden": 3.65
+ },
+ {
+  "status": "gruen",
+  "text": "AXOIZCJOOAYSMI-UHFFFAOYSA-N",
+  "eingabe": "suxamethonium",
+  "erwartet": "AXOIZCJOOAYSMI-UHFFFAOYSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "AXOIZCJOOAYSMI-UHFFFAOYSA-N",
+  "eingabe": "succinylcholine",
+  "erwartet": "AXOIZCJOOAYSMI-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "SGOIRFVFHAKUTI-ZCFIWIBFSA-N",
+  "eingabe": "tenofovir",
+  "erwartet": "SGOIRFVFHAKUTI-ZCFIWIBFSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "JFVZFKDSXNQEJW-CQSZACIVSA-N",
+  "text": "falscher Stoff (skelett): JFVZFKDSXNQEJW-CQSZACIVSA-N statt SGOIRFVFHAKUTI-ZCFIWIBFSA-N",
+  "eingabe": "tenofovir disoproxil",
+  "erwartet": "SGOIRFVFHAKUTI-ZCFIWIBFSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+  "eingabe": "terbinafine",
+  "erwartet": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+  "eingabe": "Terbinafin",
+  "erwartet": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+  "sekunden": 3.85
+ },
+ {
+  "status": "gruen",
+  "text": "GKCBAIGFKIBETG-UHFFFAOYSA-N",
+  "eingabe": "tetracaine",
+  "erwartet": "GKCBAIGFKIBETG-UHFFFAOYSA-N",
+  "sekunden": 3.44
+ },
+ {
+  "status": "gruen",
+  "text": "GKCBAIGFKIBETG-UHFFFAOYSA-N",
+  "eingabe": "Tetracain",
+  "erwartet": "GKCBAIGFKIBETG-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "NWXMGUDVXFXRIG-WESIUVDSSA-N",
+  "eingabe": "tetracycline",
+  "erwartet": "NWXMGUDVXFXRIG-WESIUVDSSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gruen",
+  "text": "NWXMGUDVXFXRIG-WESIUVDSSA-N",
+  "eingabe": "Tetracyclin",
+  "erwartet": "NWXMGUDVXFXRIG-WESIUVDSSA-N",
+  "sekunden": 3.43
+ },
+ {
+  "status": "gruen",
+  "text": "JZRWCGZRTZMZEH-UHFFFAOYSA-N",
+  "eingabe": "thiamine(1+) ion",
+  "erwartet": "JZRWCGZRTZMZEH-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "JZRWCGZRTZMZEH-UHFFFAOYSA-N",
+  "eingabe": "Thiamin",
+  "erwartet": "JZRWCGZRTZMZEH-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "AWLILQARPMWUHA-UHFFFAOYSA-M",
+  "eingabe": "thiopental sodium",
+  "erwartet": "AWLILQARPMWUHA-UHFFFAOYSA-M",
+  "sekunden": 3.38
+ },
+ {
+  "status": "gruen",
+  "text": "AWLILQARPMWUHA-UHFFFAOYSA-M",
+  "eingabe": "sodium thiopental",
+  "erwartet": "AWLILQARPMWUHA-UHFFFAOYSA-M",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Natriumthiopental",
+  "erwartet": "AWLILQARPMWUHA-UHFFFAOYSA-M",
+  "sekunden": 27.24
+ },
+ {
+  "status": "gruen",
+  "text": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+  "eingabe": "timolol",
+  "erwartet": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "(S)-(−)-timolol",
+  "erwartet": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+  "sekunden": 26.42
+ },
+ {
+  "status": "gruen",
+  "text": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "eingabe": "tioguanine",
+  "erwartet": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "eingabe": "6-thioguanine",
+  "erwartet": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "eingabe": "6-Thioguanin",
+  "erwartet": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): GYDJEQRTZSCIOI-UHFFFAOYSA-N statt GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+  "eingabe": "tranexamic acid",
+  "erwartet": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+  "sekunden": 3.92
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): GYDJEQRTZSCIOI-UHFFFAOYSA-N statt GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+  "eingabe": "Tranexamsäure",
+  "erwartet": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+  "sekunden": 6.93
+ },
+ {
+  "status": "gruen",
+  "text": "SHGAZHPCJJPHSC-YCNIQYBTSA-N",
+  "eingabe": "tretinoin",
+  "erwartet": "SHGAZHPCJJPHSC-YCNIQYBTSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "NQPDXQQQCQDHHW-UHFFFAOYSA-N",
+  "eingabe": "triclabendazole",
+  "erwartet": "NQPDXQQQCQDHHW-UHFFFAOYSA-N",
+  "sekunden": 4.53
+ },
+ {
+  "status": "gruen",
+  "text": "NQPDXQQQCQDHHW-UHFFFAOYSA-N",
+  "eingabe": "Triclabendazol",
+  "erwartet": "NQPDXQQQCQDHHW-UHFFFAOYSA-N",
+  "sekunden": 3.88
+ },
+ {
+  "status": "gruen",
+  "text": "IEDVJHCEMCRBQM-UHFFFAOYSA-N",
+  "eingabe": "trimethoprim",
+  "erwartet": "IEDVJHCEMCRBQM-UHFFFAOYSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "JJCZGVLYNIVKKD-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): JJCZGVLYNIVKKD-UHFFFAOYSA-N statt BGDKAVGWHJFAGW-UHFFFAOYSA-N",
+  "eingabe": "tropicamide",
+  "erwartet": "BGDKAVGWHJFAGW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "JJCZGVLYNIVKKD-UHFFFAOYSA-N",
+  "text": "falscher Stoff (skelett): JJCZGVLYNIVKKD-UHFFFAOYSA-N statt BGDKAVGWHJFAGW-UHFFFAOYSA-N",
+  "eingabe": "Tropicamid",
+  "erwartet": "BGDKAVGWHJFAGW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "HKDLNTKNLJPAIY-WKWWZUSTSA-N",
+  "eingabe": "ulipristal",
+  "erwartet": "HKDLNTKNLJPAIY-WKWWZUSTSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "OOLLAFOLCSJHRE-ZHAKMVSLSA-N",
+  "eingabe": "ulipristal acetate",
+  "erwartet": "OOLLAFOLCSJHRE-ZHAKMVSLSA-N",
+  "sekunden": 3.57
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Ulipristalacetat",
+  "erwartet": "OOLLAFOLCSJHRE-ZHAKMVSLSA-N",
+  "sekunden": 23.96
+ },
+ {
+  "status": "gruen",
+  "text": "WPVFJKSGQUFQAP-GKAPJAKFSA-N",
+  "eingabe": "valganciclovir",
+  "erwartet": "WPVFJKSGQUFQAP-GKAPJAKFSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "NIJJYAXOARWZEE-UHFFFAOYSA-N",
+  "eingabe": "valproic acid",
+  "erwartet": "NIJJYAXOARWZEE-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "NIJJYAXOARWZEE-UHFFFAOYSA-N",
+  "eingabe": "Valproinsäure",
+  "erwartet": "NIJJYAXOARWZEE-UHFFFAOYSA-N",
+  "sekunden": 7.05
+ },
+ {
+  "status": "gruen",
+  "text": "MYPYJXKWCTUITO-LYRMYLQWSA-N",
+  "eingabe": "vancomycin",
+  "erwartet": "MYPYJXKWCTUITO-LYRMYLQWSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "VEPSYABRBFXYIB-PWXDFCLTSA-M",
+  "eingabe": "vecuronium bromide",
+  "erwartet": "VEPSYABRBFXYIB-PWXDFCLTSA-M",
+  "sekunden": 3.44
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Vecuronium-Bromid",
+  "erwartet": "VEPSYABRBFXYIB-PWXDFCLTSA-M",
+  "sekunden": 24.17
+ },
+ {
+  "status": "gruen",
+  "text": "SGTNSNPWRIOYBX-UHFFFAOYSA-N",
+  "eingabe": "verapamil",
+  "erwartet": "SGTNSNPWRIOYBX-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+  "text": "falscher Stoff (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N",
+  "eingabe": "vinblastine",
+  "erwartet": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+  "text": "falscher Stoff (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N",
+  "eingabe": "Vinblastin",
+  "erwartet": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+  "sekunden": 3.64
+ },
+ {
+  "status": "gruen",
+  "text": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+  "eingabe": "vincristine",
+  "erwartet": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+  "eingabe": "Vincristin",
+  "erwartet": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "GBABOYUKABKIAF-IELIFDKJSA-N",
+  "eingabe": "vinorelbine",
+  "erwartet": "GBABOYUKABKIAF-IELIFDKJSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+  "text": "falscher Stoff (stereo): GBABOYUKABKIAF-GHYRFKGUSA-N statt GBABOYUKABKIAF-IELIFDKJSA-N",
+  "eingabe": "Vinorelbin",
+  "erwartet": "GBABOYUKABKIAF-IELIFDKJSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "BCEHBSKCWLPMDN-MGPLVRAMSA-N",
+  "eingabe": "voriconazole",
+  "erwartet": "BCEHBSKCWLPMDN-MGPLVRAMSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "BCEHBSKCWLPMDN-MGPLVRAMSA-N",
+  "eingabe": "Voriconazol",
+  "erwartet": "BCEHBSKCWLPMDN-MGPLVRAMSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "HUCJFAOMUPXHDK-UHFFFAOYSA-N",
+  "eingabe": "xylometazoline",
+  "erwartet": "HUCJFAOMUPXHDK-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Xylometazolin",
+  "erwartet": "HUCJFAOMUPXHDK-UHFFFAOYSA-N",
+  "sekunden": 24.54
+ },
+ {
+  "status": "gruen",
+  "text": "HBOMLICNUCNMMY-XLPZGREQSA-N",
+  "eingabe": "zidovudine",
+  "erwartet": "HBOMLICNUCNMMY-XLPZGREQSA-N",
+  "sekunden": 3.56
+ },
+ {
+  "status": "gruen",
+  "text": "HBOMLICNUCNMMY-XLPZGREQSA-N",
+  "eingabe": "Zidovudin",
+  "erwartet": "HBOMLICNUCNMMY-XLPZGREQSA-N",
+  "sekunden": 4.48
+ },
+ {
+  "status": "gruen",
+  "text": "XRASPMIURGNCCH-UHFFFAOYSA-N",
+  "eingabe": "zoledronic acid",
+  "erwartet": "XRASPMIURGNCCH-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Zoledronsäure",
+  "erwartet": "XRASPMIURGNCCH-UHFFFAOYSA-N",
+  "sekunden": 39.25
+ },
+ {
+  "status": "gruen",
+  "text": "FZERHIULMFGESH-UHFFFAOYSA-N",
+  "eingabe": "acetanilide",
+  "erwartet": "FZERHIULMFGESH-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FZERHIULMFGESH-UHFFFAOYSA-N",
+  "eingabe": "Acetanilid",
+  "erwartet": "FZERHIULMFGESH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XUKUURHRXDUEBC-KAYWLYCHSA-N",
+  "eingabe": "atorvastatin",
+  "erwartet": "XUKUURHRXDUEBC-KAYWLYCHSA-N",
+  "sekunden": 3.6
+ },
+ {
+  "status": "gruen",
+  "text": "BLFLLBZGZJTVJG-UHFFFAOYSA-N",
+  "eingabe": "benzocaine",
+  "erwartet": "BLFLLBZGZJTVJG-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "BLFLLBZGZJTVJG-UHFFFAOYSA-N",
+  "eingabe": "Benzocain",
+  "erwartet": "BLFLLBZGZJTVJG-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "HTQMVQVXFRQIKW-UHFFFAOYSA-N",
+  "eingabe": "candesartan",
+  "erwartet": "HTQMVQVXFRQIKW-UHFFFAOYSA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gruen",
+  "text": "FAKRSMQSSFJEIM-RQJHMYQMSA-N",
+  "eingabe": "captopril",
+  "erwartet": "FAKRSMQSSFJEIM-RQJHMYQMSA-N",
+  "sekunden": 3.52
+ },
+ {
+  "status": "gruen",
+  "text": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+  "eingabe": "cetirizine",
+  "erwartet": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+  "eingabe": "Cetirizin",
+  "erwartet": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "ZZVUWRFHKOJYTH-UHFFFAOYSA-N",
+  "eingabe": "diphenhydramine",
+  "erwartet": "ZZVUWRFHKOJYTH-UHFFFAOYSA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Diphenhydramin",
+  "erwartet": "ZZVUWRFHKOJYTH-UHFFFAOYSA-N",
+  "sekunden": 24.18
+ },
+ {
+  "status": "gruen",
+  "text": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+  "eingabe": "metamizole",
+  "erwartet": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Metamizol (freie Säure)",
+  "erwartet": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+  "sekunden": 38.09
+ },
+ {
+  "status": "gruen",
+  "text": "CMWTZPSULFXXJA-VIFPVBQESA-N",
+  "eingabe": "naproxen",
+  "erwartet": "CMWTZPSULFXXJA-VIFPVBQESA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "IQPSEEYGBUAQFF-UHFFFAOYSA-N",
+  "eingabe": "pantoprazole",
+  "erwartet": "IQPSEEYGBUAQFF-UHFFFAOYSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "IQPSEEYGBUAQFF-UHFFFAOYSA-N",
+  "eingabe": "Pantoprazol",
+  "erwartet": "IQPSEEYGBUAQFF-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "CPJSUEIXXCENMM-UHFFFAOYSA-N",
+  "eingabe": "phenacetin",
+  "erwartet": "CPJSUEIXXCENMM-UHFFFAOYSA-N",
+  "sekunden": 3.45
+ },
+ {
+  "status": "gruen",
+  "text": "MFDFERRIHVXMIY-UHFFFAOYSA-N",
+  "eingabe": "procaine",
+  "erwartet": "MFDFERRIHVXMIY-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "MFDFERRIHVXMIY-UHFFFAOYSA-N",
+  "eingabe": "Procain",
+  "erwartet": "MFDFERRIHVXMIY-UHFFFAOYSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "HDACQVRGBOVJII-JBDAPHQKSA-N",
+  "eingabe": "ramipril",
+  "erwartet": "HDACQVRGBOVJII-JBDAPHQKSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "BNRNXUUZRGQAQC-UHFFFAOYSA-N",
+  "eingabe": "sildenafil",
+  "erwartet": "BNRNXUUZRGQAQC-UHFFFAOYSA-N",
+  "sekunden": 3.44
+ },
+ {
+  "status": "gruen",
+  "text": "JLKIGFTWXXRPMT-UHFFFAOYSA-N",
+  "eingabe": "sulfamethoxazole",
+  "erwartet": "JLKIGFTWXXRPMT-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "JLKIGFTWXXRPMT-UHFFFAOYSA-N",
+  "eingabe": "Sulfamethoxazol",
+  "erwartet": "JLKIGFTWXXRPMT-UHFFFAOYSA-N",
+  "sekunden": 3.58
+ },
+ {
+  "status": "gruen",
+  "text": "NGBFQHCMQULJNZ-UHFFFAOYSA-N",
+  "eingabe": "torasemide",
+  "erwartet": "NGBFQHCMQULJNZ-UHFFFAOYSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Torasemid",
+  "erwartet": "NGBFQHCMQULJNZ-UHFFFAOYSA-N",
+  "sekunden": 24.19
+ },
+ {
+  "status": "gruen",
+  "text": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
+  "eingabe": "tramadol",
+  "erwartet": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+  "eingabe": "acetaldehyde",
+  "erwartet": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+  "eingabe": "Acetaldehyd",
+  "erwartet": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WFDIJRYMOXRFFG-UHFFFAOYSA-N",
+  "eingabe": "acetic anhydride",
+  "erwartet": "WFDIJRYMOXRFFG-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WFDIJRYMOXRFFG-UHFFFAOYSA-N",
+  "eingabe": "Essigsäureanhydrid",
+  "erwartet": "WFDIJRYMOXRFFG-UHFFFAOYSA-N",
+  "sekunden": 7.16
+ },
+ {
+  "status": "gruen",
+  "text": "CSCPPACGZOOCGX-UHFFFAOYSA-N",
+  "eingabe": "acetone",
+  "erwartet": "CSCPPACGZOOCGX-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WEVYAHXRMPXWCK-UHFFFAOYSA-N",
+  "eingabe": "acetonitrile",
+  "erwartet": "WEVYAHXRMPXWCK-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WEVYAHXRMPXWCK-UHFFFAOYSA-N",
+  "eingabe": "Acetonitril",
+  "erwartet": "WEVYAHXRMPXWCK-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "KWOLFJPFCHCOCG-UHFFFAOYSA-N",
+  "eingabe": "acetophenone",
+  "erwartet": "KWOLFJPFCHCOCG-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "KWOLFJPFCHCOCG-UHFFFAOYSA-N",
+  "eingabe": "Acetophenon",
+  "erwartet": "KWOLFJPFCHCOCG-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WETWJCDKMRHUPV-UHFFFAOYSA-N",
+  "eingabe": "acetyl chloride",
+  "erwartet": "WETWJCDKMRHUPV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WETWJCDKMRHUPV-UHFFFAOYSA-N",
+  "eingabe": "Acetylchlorid",
+  "erwartet": "WETWJCDKMRHUPV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "HSFWRNGVRCDJHI-UHFFFAOYSA-N",
+  "eingabe": "acetylene",
+  "erwartet": "HSFWRNGVRCDJHI-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HSFWRNGVRCDJHI-UHFFFAOYSA-N",
+  "eingabe": "Ethin",
+  "erwartet": "HSFWRNGVRCDJHI-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N",
+  "eingabe": "aniline",
+  "erwartet": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N",
+  "eingabe": "Anilin",
+  "erwartet": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RDOXTESZEPMUJZ-UHFFFAOYSA-N",
+  "eingabe": "anisole",
+  "erwartet": "RDOXTESZEPMUJZ-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "RDOXTESZEPMUJZ-UHFFFAOYSA-N",
+  "eingabe": "Anisol",
+  "erwartet": "RDOXTESZEPMUJZ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "MWPLVEDNUUSJAV-UHFFFAOYSA-N",
+  "eingabe": "anthracene",
+  "erwartet": "MWPLVEDNUUSJAV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "MWPLVEDNUUSJAV-UHFFFAOYSA-N",
+  "eingabe": "Anthracen",
+  "erwartet": "MWPLVEDNUUSJAV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HUMNYLRZRPPJDN-UHFFFAOYSA-N",
+  "eingabe": "benzaldehyde",
+  "erwartet": "HUMNYLRZRPPJDN-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HUMNYLRZRPPJDN-UHFFFAOYSA-N",
+  "eingabe": "Benzaldehyd",
+  "erwartet": "HUMNYLRZRPPJDN-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "UHOVQNZJYSORNB-UHFFFAOYSA-N",
+  "eingabe": "benzene",
+  "erwartet": "UHOVQNZJYSORNB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UHOVQNZJYSORNB-UHFFFAOYSA-N",
+  "eingabe": "Benzol",
+  "erwartet": "UHOVQNZJYSORNB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "JFDZBHWFFUWGJE-UHFFFAOYSA-N",
+  "eingabe": "benzonitrile",
+  "erwartet": "JFDZBHWFFUWGJE-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "JFDZBHWFFUWGJE-UHFFFAOYSA-N",
+  "eingabe": "Benzonitril",
+  "erwartet": "JFDZBHWFFUWGJE-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WVDDGKGOMKODPV-UHFFFAOYSA-N",
+  "eingabe": "benzyl alcohol",
+  "erwartet": "WVDDGKGOMKODPV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "WVDDGKGOMKODPV-UHFFFAOYSA-N",
+  "eingabe": "Benzylalkohol",
+  "erwartet": "WVDDGKGOMKODPV-UHFFFAOYSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+  "eingabe": "carbon tetrachloride",
+  "erwartet": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+  "eingabe": "Tetrachlormethan",
+  "erwartet": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+  "sekunden": 3.61
+ },
+ {
+  "status": "gruen",
+  "text": "MVPPADPHJFYWMZ-UHFFFAOYSA-N",
+  "eingabe": "chlorobenzene",
+  "erwartet": "MVPPADPHJFYWMZ-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "MVPPADPHJFYWMZ-UHFFFAOYSA-N",
+  "eingabe": "Chlorbenzol",
+  "erwartet": "MVPPADPHJFYWMZ-UHFFFAOYSA-N",
+  "sekunden": 3.68
+ },
+ {
+  "status": "gruen",
+  "text": "HEDRZPFGACZZDS-UHFFFAOYSA-N",
+  "eingabe": "chloroform",
+  "erwartet": "HEDRZPFGACZZDS-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "XDTMQSROBMDMFD-UHFFFAOYSA-N",
+  "eingabe": "cyclohexane",
+  "erwartet": "XDTMQSROBMDMFD-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XDTMQSROBMDMFD-UHFFFAOYSA-N",
+  "eingabe": "Cyclohexan",
+  "erwartet": "XDTMQSROBMDMFD-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "JHIVVAPYMSGYDF-UHFFFAOYSA-N",
+  "eingabe": "cyclohexanone",
+  "erwartet": "JHIVVAPYMSGYDF-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "JHIVVAPYMSGYDF-UHFFFAOYSA-N",
+  "eingabe": "Cyclohexanon",
+  "erwartet": "JHIVVAPYMSGYDF-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+  "eingabe": "dichloromethane",
+  "erwartet": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+  "eingabe": "Dichlormethan",
+  "erwartet": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+  "sekunden": 3.47
+ },
+ {
+  "status": "gruen",
+  "text": "RTZKZFJDLAIYFH-UHFFFAOYSA-N",
+  "eingabe": "diethyl ether",
+  "erwartet": "RTZKZFJDLAIYFH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RTZKZFJDLAIYFH-UHFFFAOYSA-N",
+  "eingabe": "Diethylether",
+  "erwartet": "RTZKZFJDLAIYFH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N",
+  "eingabe": "dimethyl sulfoxide",
+  "erwartet": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N",
+  "eingabe": "Dimethylsulfoxid",
+  "erwartet": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XEKOWRVHYACXOJ-UHFFFAOYSA-N",
+  "eingabe": "ethyl acetate",
+  "erwartet": "XEKOWRVHYACXOJ-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "XEKOWRVHYACXOJ-UHFFFAOYSA-N",
+  "eingabe": "Essigsäureethylester",
+  "erwartet": "XEKOWRVHYACXOJ-UHFFFAOYSA-N",
+  "sekunden": 6.99
+ },
+ {
+  "status": "gruen",
+  "text": "VGGSQFUCUMXWEO-UHFFFAOYSA-N",
+  "eingabe": "ethylene",
+  "erwartet": "VGGSQFUCUMXWEO-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "VGGSQFUCUMXWEO-UHFFFAOYSA-N",
+  "eingabe": "Ethen",
+  "erwartet": "VGGSQFUCUMXWEO-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "LYCAIKOWRPUZTN-UHFFFAOYSA-N",
+  "eingabe": "ethylene glycol",
+  "erwartet": "LYCAIKOWRPUZTN-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "LYCAIKOWRPUZTN-UHFFFAOYSA-N",
+  "eingabe": "Ethylenglycol",
+  "erwartet": "LYCAIKOWRPUZTN-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WSFSSNUMVMOOMR-UHFFFAOYSA-N",
+  "eingabe": "formaldehyde",
+  "erwartet": "WSFSSNUMVMOOMR-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WSFSSNUMVMOOMR-UHFFFAOYSA-N",
+  "eingabe": "Formaldehyd",
+  "erwartet": "WSFSSNUMVMOOMR-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "PEDCQBHIVMGVHV-UHFFFAOYSA-N",
+  "eingabe": "glycerol",
+  "erwartet": "PEDCQBHIVMGVHV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "PEDCQBHIVMGVHV-UHFFFAOYSA-N",
+  "eingabe": "Glycerin",
+  "erwartet": "PEDCQBHIVMGVHV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "VLKZOEOYAKHREP-UHFFFAOYSA-N",
+  "eingabe": "hexane",
+  "erwartet": "VLKZOEOYAKHREP-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "VLKZOEOYAKHREP-UHFFFAOYSA-N",
+  "eingabe": "Hexan",
+  "erwartet": "VLKZOEOYAKHREP-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RRHGJUQNOFWUDK-UHFFFAOYSA-N",
+  "eingabe": "isoprene",
+  "erwartet": "RRHGJUQNOFWUDK-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RRHGJUQNOFWUDK-UHFFFAOYSA-N",
+  "eingabe": "Isopren",
+  "erwartet": "RRHGJUQNOFWUDK-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "KFZMGEQAYNKOFK-UHFFFAOYSA-N",
+  "eingabe": "isopropyl alcohol",
+  "erwartet": "KFZMGEQAYNKOFK-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "KFZMGEQAYNKOFK-UHFFFAOYSA-N",
+  "eingabe": "2-Propanol",
+  "erwartet": "KFZMGEQAYNKOFK-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "OKKJLVBELUTLKV-UHFFFAOYSA-N",
+  "eingabe": "methanol",
+  "erwartet": "OKKJLVBELUTLKV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UFWIBTONFRDIAS-UHFFFAOYSA-N",
+  "eingabe": "naphthalene",
+  "erwartet": "UFWIBTONFRDIAS-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UFWIBTONFRDIAS-UHFFFAOYSA-N",
+  "eingabe": "Naphthalin",
+  "erwartet": "UFWIBTONFRDIAS-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "LQNUZADURLCDLV-UHFFFAOYSA-N",
+  "eingabe": "nitrobenzene",
+  "erwartet": "LQNUZADURLCDLV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "LQNUZADURLCDLV-UHFFFAOYSA-N",
+  "eingabe": "Nitrobenzol",
+  "erwartet": "LQNUZADURLCDLV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ISWSIDIOOBJBQZ-UHFFFAOYSA-N",
+  "eingabe": "phenol",
+  "erwartet": "ISWSIDIOOBJBQZ-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "BDERNNFJNOPAEC-UHFFFAOYSA-N",
+  "eingabe": "propyl alcohol",
+  "erwartet": "BDERNNFJNOPAEC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BDERNNFJNOPAEC-UHFFFAOYSA-N",
+  "eingabe": "1-Propanol",
+  "erwartet": "BDERNNFJNOPAEC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "JUJWROOIHBZHMG-UHFFFAOYSA-N",
+  "eingabe": "pyridine",
+  "erwartet": "JUJWROOIHBZHMG-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "JUJWROOIHBZHMG-UHFFFAOYSA-N",
+  "eingabe": "Pyridin",
+  "erwartet": "JUJWROOIHBZHMG-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "PPBRXRYQALVLMV-UHFFFAOYSA-N",
+  "eingabe": "styrene",
+  "erwartet": "PPBRXRYQALVLMV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "PPBRXRYQALVLMV-UHFFFAOYSA-N",
+  "eingabe": "Styrol",
+  "erwartet": "PPBRXRYQALVLMV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "WYURNTSHIVDZCO-UHFFFAOYSA-N",
+  "eingabe": "tetrahydrofuran",
+  "erwartet": "WYURNTSHIVDZCO-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "YXFVVABEGXRONW-UHFFFAOYSA-N",
+  "eingabe": "toluene",
+  "erwartet": "YXFVVABEGXRONW-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "YXFVVABEGXRONW-UHFFFAOYSA-N",
+  "eingabe": "Toluol",
+  "erwartet": "YXFVVABEGXRONW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "OIPILFWXSMYKGL-UHFFFAOYSA-N",
+  "eingabe": "acetylcholine",
+  "erwartet": "OIPILFWXSMYKGL-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "OIPILFWXSMYKGL-UHFFFAOYSA-N",
+  "eingabe": "Acetylcholin",
+  "erwartet": "OIPILFWXSMYKGL-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "GFFGJBXGBJISGV-UHFFFAOYSA-N",
+  "eingabe": "adenine",
+  "erwartet": "GFFGJBXGBJISGV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "GFFGJBXGBJISGV-UHFFFAOYSA-N",
+  "eingabe": "Adenin",
+  "erwartet": "GFFGJBXGBJISGV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OIRDTQYFTABQOQ-KQYNXXCUSA-N",
+  "eingabe": "adenosine",
+  "erwartet": "OIRDTQYFTABQOQ-KQYNXXCUSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "OIRDTQYFTABQOQ-KQYNXXCUSA-N",
+  "eingabe": "Adenosin",
+  "erwartet": "OIRDTQYFTABQOQ-KQYNXXCUSA-N",
+  "sekunden": 0.02
+ },
+ {
+  "status": "gruen",
+  "text": "RKUNBYITZUJHSG-PJPHBNEVSA-N",
+  "eingabe": "atropine",
+  "erwartet": "RKUNBYITZUJHSG-PJPHBNEVSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "YKPUWZUDDOIDPM-SOFGYWHQSA-N",
+  "eingabe": "capsaicin",
+  "erwartet": "YKPUWZUDDOIDPM-SOFGYWHQSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "HVYWMOMLDIMFJA-DPAQBDIFSA-N",
+  "eingabe": "cholesterol",
+  "erwartet": "HVYWMOMLDIMFJA-DPAQBDIFSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "HVYWMOMLDIMFJA-DPAQBDIFSA-N",
+  "eingabe": "Cholesterin",
+  "erwartet": "HVYWMOMLDIMFJA-DPAQBDIFSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+  "eingabe": "citral",
+  "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Citral A+B",
+  "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+  "sekunden": 24.3
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+  "text": "falscher Stoff (stereo): ZPUCINDJVBIVPJ-LJISPDSOSA-N statt ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+  "eingabe": "cocaine",
+  "erwartet": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+  "eingabe": "Kokain",
+  "erwartet": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "OPTASPLRGRRNAP-UHFFFAOYSA-N",
+  "eingabe": "cytosine",
+  "erwartet": "OPTASPLRGRRNAP-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "OPTASPLRGRRNAP-UHFFFAOYSA-N",
+  "eingabe": "Cytosin",
+  "erwartet": "OPTASPLRGRRNAP-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "VYFYYTLLBUKUHU-UHFFFAOYSA-N",
+  "eingabe": "dopamine",
+  "erwartet": "VYFYYTLLBUKUHU-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "VYFYYTLLBUKUHU-UHFFFAOYSA-N",
+  "eingabe": "Dopamin",
+  "erwartet": "VYFYYTLLBUKUHU-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+  "eingabe": "epinephrine",
+  "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+  "sekunden": 3.63
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+  "text": "falscher Stoff (stereo): UCTWMZQNUQWSLP-UHFFFAOYSA-N statt UCTWMZQNUQWSLP-VIFPVBQESA-N",
+  "eingabe": "Adrenalin",
+  "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "RRAFCDWBNXTKKO-UHFFFAOYSA-N",
+  "eingabe": "eugenol",
+  "erwartet": "RRAFCDWBNXTKKO-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UYTPUPDQBNUYGX-UHFFFAOYSA-N",
+  "eingabe": "guanine",
+  "erwartet": "UYTPUPDQBNUYGX-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "UYTPUPDQBNUYGX-UHFFFAOYSA-N",
+  "eingabe": "Guanin",
+  "erwartet": "UYTPUPDQBNUYGX-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "NTYJJOPFIAHURM-UHFFFAOYSA-N",
+  "eingabe": "histamine",
+  "erwartet": "NTYJJOPFIAHURM-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "NTYJJOPFIAHURM-UHFFFAOYSA-N",
+  "eingabe": "Histamin",
+  "erwartet": "NTYJJOPFIAHURM-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DRLFMBDRBRZALE-UHFFFAOYSA-N",
+  "eingabe": "melatonin",
+  "erwartet": "DRLFMBDRBRZALE-UHFFFAOYSA-N",
+  "sekunden": 3.53
+ },
+ {
+  "status": "gruen",
+  "text": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+  "eingabe": "nicotine",
+  "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+  "eingabe": "Nicotin",
+  "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "SFLSHLFXELFNJZ-QMMMGPOBSA-N",
+  "eingabe": "norepinephrine",
+  "erwartet": "SFLSHLFXELFNJZ-QMMMGPOBSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "SFLSHLFXELFNJZ-QMMMGPOBSA-N",
+  "eingabe": "Noradrenalin",
+  "erwartet": "SFLSHLFXELFNJZ-QMMMGPOBSA-N",
+  "sekunden": 3.36
+ },
+ {
+  "status": "gruen",
+  "text": "RJKFOVLPORLFTN-LEKSSAKUSA-N",
+  "eingabe": "progesterone",
+  "erwartet": "RJKFOVLPORLFTN-LEKSSAKUSA-N",
+  "sekunden": 3.55
+ },
+ {
+  "status": "gruen",
+  "text": "RJKFOVLPORLFTN-LEKSSAKUSA-N",
+  "eingabe": "Progesteron",
+  "erwartet": "RJKFOVLPORLFTN-LEKSSAKUSA-N",
+  "sekunden": 3.49
+ },
+ {
+  "status": "gruen",
+  "text": "SMQUZDBALVYZAC-UHFFFAOYSA-N",
+  "eingabe": "salicylaldehyde",
+  "erwartet": "SMQUZDBALVYZAC-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "SMQUZDBALVYZAC-UHFFFAOYSA-N",
+  "eingabe": "Salicylaldehyd",
+  "erwartet": "SMQUZDBALVYZAC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QZAYGJVTTNCVMB-UHFFFAOYSA-N",
+  "eingabe": "serotonin",
+  "erwartet": "QZAYGJVTTNCVMB-UHFFFAOYSA-N",
+  "sekunden": 3.48
+ },
+ {
+  "status": "gruen",
+  "text": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N",
+  "eingabe": "testosterone",
+  "erwartet": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N",
+  "sekunden": 3.54
+ },
+ {
+  "status": "gruen",
+  "text": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N",
+  "eingabe": "Testosteron",
+  "erwartet": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N",
+  "sekunden": 3.5
+ },
+ {
+  "status": "gruen",
+  "text": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+  "eingabe": "theobromine",
+  "erwartet": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+  "eingabe": "Theobromin",
+  "erwartet": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ZFXYFBGIUFBOJW-UHFFFAOYSA-N",
+  "eingabe": "theophylline",
+  "erwartet": "ZFXYFBGIUFBOJW-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "RWQNBRDOKXIBIV-UHFFFAOYSA-N",
+  "eingabe": "thymine",
+  "erwartet": "RWQNBRDOKXIBIV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "RWQNBRDOKXIBIV-UHFFFAOYSA-N",
+  "eingabe": "Thymin",
+  "erwartet": "RWQNBRDOKXIBIV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ISAKRJDGNUQOIC-UHFFFAOYSA-N",
+  "eingabe": "uracil",
+  "erwartet": "ISAKRJDGNUQOIC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "MWOOGOJBHIARFG-UHFFFAOYSA-N",
+  "eingabe": "vanillin",
+  "erwartet": "MWOOGOJBHIARFG-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BTCSSZJGUNDROE-UHFFFAOYSA-N",
+  "eingabe": "γ-aminobutyric acid",
+  "erwartet": "BTCSSZJGUNDROE-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "γ-Aminobuttersäure",
+  "erwartet": "BTCSSZJGUNDROE-UHFFFAOYSA-N",
+  "sekunden": 39.02
+ },
+ {
+  "status": "gruen",
+  "text": "ALYNCZNDIQEVRV-UHFFFAOYSA-N",
+  "eingabe": "4-aminobenzoic acid",
+  "erwartet": "ALYNCZNDIQEVRV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ALYNCZNDIQEVRV-UHFFFAOYSA-N",
+  "eingabe": "p-Aminobenzoesäure",
+  "erwartet": "ALYNCZNDIQEVRV-UHFFFAOYSA-N",
+  "sekunden": 7.11
+ },
+ {
+  "status": "gruen",
+  "text": "NIXOWILDQLNWCW-UHFFFAOYSA-N",
+  "eingabe": "acrylic acid",
+  "erwartet": "NIXOWILDQLNWCW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Acrylsäure",
+  "erwartet": "NIXOWILDQLNWCW-UHFFFAOYSA-N",
+  "sekunden": 40.81
+ },
+ {
+  "status": "gruen",
+  "text": "FERIUCNNQQJTOY-UHFFFAOYSA-N",
+  "eingabe": "butyric acid",
+  "erwartet": "FERIUCNNQQJTOY-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "FERIUCNNQQJTOY-UHFFFAOYSA-N",
+  "eingabe": "Buttersäure",
+  "erwartet": "FERIUCNNQQJTOY-UHFFFAOYSA-N",
+  "sekunden": 7.37
+ },
+ {
+  "status": "gruen",
+  "text": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+  "eingabe": "edetic acid",
+  "erwartet": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Ethylendiamintetraessigsäure",
+  "erwartet": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+  "sekunden": 39.22
+ },
+ {
+  "status": "gruen",
+  "text": "BDAGIHXWWSANSR-UHFFFAOYSA-N",
+  "eingabe": "formic acid",
+  "erwartet": "BDAGIHXWWSANSR-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "BDAGIHXWWSANSR-UHFFFAOYSA-N",
+  "eingabe": "Ameisensäure",
+  "erwartet": "BDAGIHXWWSANSR-UHFFFAOYSA-N",
+  "sekunden": 7.25
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+  "text": "falscher Stoff (skelett): VZCYOOQTPOCHFL-OWOJBTEDSA-N statt BVSPPBKONISENN-SLHNCBLASA-N",
+  "eingabe": "fumaric acid",
+  "erwartet": "BVSPPBKONISENN-SLHNCBLASA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+  "eingabe": "Fumarsäure",
+  "erwartet": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+  "sekunden": 7.11
+ },
+ {
+  "status": "gruen",
+  "text": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N",
+  "eingabe": "hydroquinone",
+  "erwartet": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N",
+  "eingabe": "Hydrochinon",
+  "erwartet": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N",
+  "sekunden": 3.73
+ },
+ {
+  "status": "gruen",
+  "text": "AEMRFAOFKBGASW-UHFFFAOYSA-N",
+  "eingabe": "hydroxyacetic acid",
+  "erwartet": "AEMRFAOFKBGASW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Glycolsäure",
+  "erwartet": "AEMRFAOFKBGASW-UHFFFAOYSA-N",
+  "sekunden": 38.39
+ },
+ {
+  "status": "gruen",
+  "text": "RAXXELZNTBOGNW-UHFFFAOYSA-N",
+  "eingabe": "imidazole",
+  "erwartet": "RAXXELZNTBOGNW-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "RAXXELZNTBOGNW-UHFFFAOYSA-N",
+  "eingabe": "Imidazol",
+  "erwartet": "RAXXELZNTBOGNW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "VZCYOOQTPOCHFL-UPHRSURJSA-N",
+  "eingabe": "maleic acid",
+  "erwartet": "VZCYOOQTPOCHFL-UPHRSURJSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Maleinsäure",
+  "erwartet": "VZCYOOQTPOCHFL-UPHRSURJSA-N",
+  "sekunden": 38.73
+ },
+ {
+  "status": "gruen",
+  "text": "OFOBLEOULBTSOW-UHFFFAOYSA-N",
+  "eingabe": "malonic acid",
+  "erwartet": "OFOBLEOULBTSOW-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Malonsäure",
+  "erwartet": "OFOBLEOULBTSOW-UHFFFAOYSA-N",
+  "sekunden": 39.23
+ },
+ {
+  "status": "gruen",
+  "text": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+  "eingabe": "methylamine",
+  "erwartet": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+  "eingabe": "Methylamin",
+  "erwartet": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "YNAVUWVOSKDBBP-UHFFFAOYSA-N",
+  "eingabe": "morpholine",
+  "erwartet": "YNAVUWVOSKDBBP-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "YNAVUWVOSKDBBP-UHFFFAOYSA-N",
+  "eingabe": "Morpholin",
+  "erwartet": "YNAVUWVOSKDBBP-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ZQPPMHVWECSIRJ-KTKRTIGZSA-N",
+  "eingabe": "oleic acid",
+  "erwartet": "ZQPPMHVWECSIRJ-KTKRTIGZSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "ZQPPMHVWECSIRJ-KTKRTIGZSA-N",
+  "eingabe": "Ölsäure",
+  "erwartet": "ZQPPMHVWECSIRJ-KTKRTIGZSA-N",
+  "sekunden": 7.16
+ },
+ {
+  "status": "gruen",
+  "text": "MUBZPKHOEPUJKR-UHFFFAOYSA-N",
+  "eingabe": "oxalic acid",
+  "erwartet": "MUBZPKHOEPUJKR-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "MUBZPKHOEPUJKR-UHFFFAOYSA-N",
+  "eingabe": "Oxalsäure",
+  "erwartet": "MUBZPKHOEPUJKR-UHFFFAOYSA-N",
+  "sekunden": 7.14
+ },
+ {
+  "status": "gruen",
+  "text": "IPCSVZSSVZVIGE-UHFFFAOYSA-N",
+  "eingabe": "palmitic acid",
+  "erwartet": "IPCSVZSSVZVIGE-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "IPCSVZSSVZVIGE-UHFFFAOYSA-N",
+  "eingabe": "Palmitinsäure",
+  "erwartet": "IPCSVZSSVZVIGE-UHFFFAOYSA-N",
+  "sekunden": 7.03
+ },
+ {
+  "status": "gruen",
+  "text": "XNGIFLGASWRNHJ-UHFFFAOYSA-N",
+  "eingabe": "phthalic acid",
+  "erwartet": "XNGIFLGASWRNHJ-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Phthalsäure",
+  "erwartet": "XNGIFLGASWRNHJ-UHFFFAOYSA-N",
+  "sekunden": 39.27
+ },
+ {
+  "status": "gruen",
+  "text": "NQRYJNQNLNOLGT-UHFFFAOYSA-N",
+  "eingabe": "piperidine",
+  "erwartet": "NQRYJNQNLNOLGT-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "NQRYJNQNLNOLGT-UHFFFAOYSA-N",
+  "eingabe": "Piperidin",
+  "erwartet": "NQRYJNQNLNOLGT-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "XBDQKXXYIPTUBI-UHFFFAOYSA-N",
+  "eingabe": "propionic acid",
+  "erwartet": "XBDQKXXYIPTUBI-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "XBDQKXXYIPTUBI-UHFFFAOYSA-N",
+  "eingabe": "Propionsäure",
+  "erwartet": "XBDQKXXYIPTUBI-UHFFFAOYSA-N",
+  "sekunden": 7.22
+ },
+ {
+  "status": "gruen",
+  "text": "LCTONWCANYUPML-UHFFFAOYSA-N",
+  "eingabe": "pyruvic acid",
+  "erwartet": "LCTONWCANYUPML-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "LCTONWCANYUPML-UHFFFAOYSA-N",
+  "eingabe": "Brenztraubensäure",
+  "erwartet": "LCTONWCANYUPML-UHFFFAOYSA-N",
+  "sekunden": 7.44
+ },
+ {
+  "status": "gruen",
+  "text": "GHMLBKRAJCXXBS-UHFFFAOYSA-N",
+  "eingabe": "resorcin",
+  "erwartet": "GHMLBKRAJCXXBS-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QIQXTHQIDYTFRH-UHFFFAOYSA-N",
+  "eingabe": "stearic acid",
+  "erwartet": "QIQXTHQIDYTFRH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "QIQXTHQIDYTFRH-UHFFFAOYSA-N",
+  "eingabe": "Stearinsäure",
+  "erwartet": "QIQXTHQIDYTFRH-UHFFFAOYSA-N",
+  "sekunden": 7.14
+ },
+ {
+  "status": "gruen",
+  "text": "KDYFGRWQOYBRFD-UHFFFAOYSA-N",
+  "eingabe": "succinic acid",
+  "erwartet": "KDYFGRWQOYBRFD-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "KDYFGRWQOYBRFD-UHFFFAOYSA-N",
+  "eingabe": "Bernsteinsäure",
+  "erwartet": "KDYFGRWQOYBRFD-UHFFFAOYSA-N",
+  "sekunden": 7.07
+ },
+ {
+  "status": "gruen",
+  "text": "FDDDEECHVMSUSB-UHFFFAOYSA-N",
+  "eingabe": "sulfanilamide",
+  "erwartet": "FDDDEECHVMSUSB-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gruen",
+  "text": "FDDDEECHVMSUSB-UHFFFAOYSA-N",
+  "eingabe": "Sulfanilamid",
+  "erwartet": "FDDDEECHVMSUSB-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ZMANZCXQSJIPKH-UHFFFAOYSA-N",
+  "eingabe": "triethylamine",
+  "erwartet": "ZMANZCXQSJIPKH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "ZMANZCXQSJIPKH-UHFFFAOYSA-N",
+  "eingabe": "Triethylamin",
+  "erwartet": "ZMANZCXQSJIPKH-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DTQVDTLACAAQTR-UHFFFAOYSA-N",
+  "eingabe": "trifluoroacetic acid",
+  "erwartet": "DTQVDTLACAAQTR-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gruen",
+  "text": "DTQVDTLACAAQTR-UHFFFAOYSA-N",
+  "eingabe": "Trifluoressigsäure",
+  "erwartet": "DTQVDTLACAAQTR-UHFFFAOYSA-N",
+  "sekunden": 8.06
+ },
+ {
+  "status": "gruen",
+  "text": "YBJHBAHKTGYVGT-ZKWXMUAHSA-N",
+  "eingabe": "biotin",
+  "erwartet": "YBJHBAHKTGYVGT-ZKWXMUAHSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "rot",
+  "art": "skelett",
+  "erhalten": "RMRCNWBMXRMIRW-WZHZPDAFSA-L",
+  "text": "falscher Stoff (skelett): RMRCNWBMXRMIRW-WZHZPDAFSA-L statt FDJOLVPMNUYSCM-UVKKECPRSA-L",
+  "eingabe": "cyanocobalamin",
+  "erwartet": "FDJOLVPMNUYSCM-UVKKECPRSA-L",
+  "sekunden": 3.36
+ },
+ {
+  "status": "gruen",
+  "text": "MJVAVZPDRWSRRC-UHFFFAOYSA-N",
+  "eingabe": "menadione",
+  "erwartet": "MJVAVZPDRWSRRC-UHFFFAOYSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "MJVAVZPDRWSRRC-UHFFFAOYSA-N",
+  "eingabe": "Menadion",
+  "erwartet": "MJVAVZPDRWSRRC-UHFFFAOYSA-N",
+  "sekunden": 3.46
+ },
+ {
+  "status": "gruen",
+  "text": "PVNIIMVLHYAWGP-UHFFFAOYSA-N",
+  "eingabe": "nicotinic acid",
+  "erwartet": "PVNIIMVLHYAWGP-UHFFFAOYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Nicotinsäure",
+  "erwartet": "PVNIIMVLHYAWGP-UHFFFAOYSA-N",
+  "sekunden": 38.46
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+  "text": "falscher Stoff (stereo): GHOKWGTUZJEAQD-ZETCQYMHSA-N statt GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+  "eingabe": "pantothenic acid",
+  "erwartet": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+  "sekunden": 0.01
+ },
+ {
+  "status": "gelb",
+  "text": "Quelle weg (partial)",
+  "eingabe": "Pantothensäure",
+  "erwartet": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+  "sekunden": 41.33
+ },
+ {
+  "status": "gruen",
+  "text": "CZMRCDWAGMRECN-UGDNZRGBSA-N",
+  "eingabe": "sucrose",
+  "erwartet": "CZMRCDWAGMRECN-UGDNZRGBSA-N",
+  "sekunden": 3.51
+ },
+ {
+  "status": "gruen",
+  "text": "CZMRCDWAGMRECN-UGDNZRGBSA-N",
+  "eingabe": "Saccharose",
+  "erwartet": "CZMRCDWAGMRECN-UGDNZRGBSA-N",
+  "sekunden": 3.59
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+  "text": "falscher Stoff (stereo): HDTRYLNUVZCQOY-LIZSDCNHSA-N statt HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+  "eingabe": "trehalose",
+  "erwartet": "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+  "sekunden": 3.62
+ },
+ {
+  "status": "gruen",
+  "text": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+  "eingabe": "xylitol",
+  "erwartet": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+  "sekunden": 0.0
+ },
+ {
+  "status": "rot",
+  "art": "stereo",
+  "erhalten": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+  "text": "falscher Stoff (stereo): HEBKCHPVOIAQTA-NGQZWQHPSA-N statt HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+  "eingabe": "Xylit",
+  "erwartet": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+  "sekunden": 3.57
+ }
+]
