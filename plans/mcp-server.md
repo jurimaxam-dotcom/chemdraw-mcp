@@ -15,7 +15,7 @@ B = nach A, Opus-Arbeiter mit Design-Notiz vorweg; Desktop-Abnahme der README-Bi
 Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
 
 **Abnahme je Etappe (prüfbar, nicht beschrieben):**
-- [ ] **D Repo aufräumen (Codex):** nur gemergte Branches gelöscht, `git branch --merged`-Ausgabe als Beleg; `mcp-2-migration`
+- [x] **D Repo aufräumen (Codex, 04.11. 23:10, Claude geprüft: web/ weg, praktikumsrechner-Repo ea0ceb8 privat gepusht, Bundle 38 MB + Worktree-tar 359 MB in ~/Documents/archive, Worktree entfernt, keine Branch-Löschung, Gate grün, Ruff an Bilanzskripten gefixt 7007e14; vier Branch-Fragen an Jay in docs/repo-aufraeumen-2026-11-04.md):** nur gemergte Branches gelöscht, `git branch --merged`-Ausgabe als Beleg; `mcp-2-migration`
       (2 Commits nicht in main), `origin/mcp-2-migration-v2` (1), `worktree-agent-a89d4c26da6a9d6c2` (5 Commits: demo-short.sh,
       Kamera) werden NICHT gelöscht, sondern mit Patch-Vergleich und Bundle-Sicherung in einer Befunddatei `docs/repo-aufraeumen-2026-11-04.md`
       für Jay gelistet (Datenverlust-Bremse); `web/` samt `scripts/build-web.sh`, `deploy-pages.sh`, `rechner-e2e.sh` als Ganzes
