@@ -1,5 +1,40 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex nach Kontext-Neustart (04.11.2026)
+
+**Nächster Schritt:** Tisch-Aufträge am Projektort lesen und mit Claudes laufender
+A/B-Arbeit abstimmen. D und Release-Abnahme (g) sind vollständig abgeschlossen;
+beides nicht erneut ausführen. Falls die separate Desktop-Abnahme der neuen
+README-Bilder beauftragt ist: deren konkreten Faden lesen und dort fortsetzen.
+Keine Dateien der laufenden A/B-Arbeiter übernehmen.
+
+**Dateien und Beweise:** `docs/desktop-abnahme-0-7-0-bundle.md` (249fca6,
+vier frische Desktop-Chats grün, fünf Bundle-/56 Paketdateien gegen PyPI identisch,
+Screenshots `/tmp/chemdraw-desktop-test/0-7-0-bundle/`); D in
+`docs/repo-aufraeumen-2026-11-04.md` (0e5f8ed), eigener Rechner privat gepusht
+nach `jurimaxam-dotcom/praktikumsrechner` (ea0ceb8). C laut Abnahme weiter unten
+erledigt; A und B bleiben dort offen. Release-(f)/(g) sind bereits abgehakt.
+
+**Desktop-Ausgangszustand wiederhergestellt:** Entwickler-Konnektor `chemdraw-tool`
+exakt zur Sicherung, Bundle 0.7.0 installiert, aber deaktiviert, Desktop neu
+gestartet; genau ein Entwickler-Konnektor sichtbar. Vorübergehend versehentlich
+erweiterte Einzelberechtigungen vollständig zurückgesetzt und nochmals geprüft;
+pH-Test mit Einmalfreigabe. Keine offene Installation und kein eigener
+Hintergrundjob, der nach dem Neustart ausgewertet werden muss.
+
+**Offene Entscheidungen:** „Welle 3 eigenes Profil?“ und „Abfragemodus auch für
+Reaktionen?“ — **unbeantwortet — nicht bauen**. Vier gesicherte Branch-Entscheidungen
+stehen mit Wortlaut im D-Befund; keine Branch-Löschung ohne Entscheidung.
+Drei Release-Befunde für spätere Entscheidung: Manifest nennt „six tools“,
+Erststart-Timeout während Installation, Anki zählt Notizen als „cards“.
+Nicht selbst in dieser Abnahme fixen. Keine zeitgebundene Wartefrist offen.
+
+**Prüfmethoden bei Folgeaufträgen:** echte Desktop-Chats und Screenshots für
+sichtbares Verhalten; Host-/Gate-Prüfungen ersetzen das nicht. Änderungen nur in
+der eigenen Reservierung, rote Regression vor Produktfix. Bei erneutem
+Bundle-Test Receipt/Hash/PyPI-Dateivergleich plus isolierten laufenden Prozess
+prüfen; Toolzahlen allein genügen nicht.
+
 ## Weiter bei — Werkzeugbilanz-Folgen A–D abarbeiten (Claude, 04.11.2026 23:10)
 
 **Jay (04.11. 23:00):** „Sprich dich mit Codex und dem Advisor ab und arbeitet alle Punkte in der logisch sinnvollsten
