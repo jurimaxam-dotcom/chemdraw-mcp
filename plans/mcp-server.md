@@ -21,7 +21,7 @@ Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
       für Jay gelistet (Datenverlust-Bremse); `web/` samt `scripts/build-web.sh`, `deploy-pages.sh`, `rechner-e2e.sh` als Ganzes
       nach `~/Documents/projects/praktikumsrechner` oder `~/Documents/archive/` verschoben (Browsertrainer bleibt separat);
       Gate grün danach. `assets/` unangetastet.
-- [ ] **C README-Gate (Opus):** `tests/test_readme.py` einmal rot gesehen (Toolzeile entfernt, wieder eingesetzt): jedes registrierte
+- [x] **C README-Gate (Opus, 04.11. 23:30, Claude geprüft: Gate grün, Rot-Probe generate_tlc selbst wiederholt, 13 Bilder aus `scripts/readme_bilder.py` + Hash-Manifest, drei neue Bilder gesichtet, Limitations ergänzt; Commits 167c8b1…73b48fc; 7 ungenutzte Assets entfernt, Git behält sie):** `tests/test_readme.py` einmal rot gesehen (Toolzeile entfernt, wieder eingesetzt): jedes registrierte
       Tool des Standardprofils in der README-Tabelle, kein nicht registriertes, Toolzahlen (16/23) stimmen mit `create_server()`;
       `scripts/readme_bilder.py` erzeugt jedes Datei-Bild in `assets/` aus den Tools mit festen Beispielen (Titrationskurve mit
       Pufferpunkt auf der Kurve, neu: Look up/Calculate/Anki je ein Bild); Hash-Test im Gate wie Golden-SVGs (bewusst neu erzeugen
