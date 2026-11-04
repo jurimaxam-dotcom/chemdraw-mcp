@@ -92,7 +92,8 @@ Desktop-Routing NICHT verlässlich voraus (CC mit Tool-Suche 18/18 vs. Desktop 0
 - [x] (d) **Claude:** Befunde aus (b) fixen (TDD) — `40723f9`, `7596c26`
 - [x] (d2) **Codex:** Desktop-Nachmessung „n von 3" je roter Fall — 0/18, mit „nutze ChemDraw" 6/6 (`bcd6f44`)
 - [x] (e) **Claude:** CHANGELOG 0.7.0, Version 0.7.0 (`pyproject.toml`, `server.json`), Gate + Handshake grün
-- [ ] (f) **Jay:** Release-Klick = Tag `v0.7.0` pushen → `publish.yml` macht PyPI → `.mcpb` am Release → Registry
+- [x] (f) Release v0.7.0 (Claude, 04.11. 23:08, Jays Freigabe „mache du den Release“): Tag auf `3016833` (kein Produktcode seit Gate 03.11.),
+      Lauf 41922554381 grün: PyPI 0.7.0, `chemdraw-mcp-0.7.0.mcpb` am Release, Registry-Job grün; PyPI-Umgebung per API freigegeben
 - [ ] (g) **Jay + Codex:** `.mcpb` 0.7.0 installieren, Konnektor `chemdraw-tool` aus, Kurzabnahme mit dem Paket,
       das Nutzer bekommen (geht erst nach PyPI, weil das Bundle die PyPI-Hashes trägt); Fehler → 0.7.1
 - danach: README-Bilder (Calculate, Anki, Look up; `wave2-titration-acetic.png` neu) · zuletzt Shorts S1/S8–S11
