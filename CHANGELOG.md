@@ -6,6 +6,35 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+Planned as 0.8.0.
+
+### Added
+
+- **Mechanisms with your own molecules** (`generate_mechanism`): the steps are
+  now drawn with the substrates you pass, not a fixed example. The reaction
+  centre is found per family, intermediates and products are derived from your
+  molecules, and the arrows point at their atoms. SN2 inverts a stereocentre
+  ((R)-2-bromobutane + cyanide gives the (S)-nitrile); SN1 marks a stereogenic
+  product as racemic. Each family has a stated limit:
+  - SN2: methyl, primary or secondary alkyl chloride, bromide or iodide with
+    one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻).
+  - SN1: tertiary, benzylic or allylic alkyl halide with water, an alcohol or
+    one of those anions.
+  - Fischer esterification: one carboxylic acid with one primary or secondary
+    alcohol.
+- Result fields `substrates_drawn` and `fallback_reason`: without substrates,
+  or if the drawing fails, the textbook example is shown and the result says so.
+
+### Changed
+
+- Substrates outside a family's limit now get an error that names the reason
+  (for example "tertiary halide — … use sn1") instead of a SMARTS pattern;
+  counter-ions such as Na⁺ are ignored.
+- The SN1 textbook example is now 2-bromo-2-methylpropane + water (a secondary
+  halide is outside the SN1 limit).
+- The curved arrow from a breaking bond to the leaving group ends beside the
+  atom instead of under its label.
+
 ## [0.7.0] — 2026-11-03
 
 The default profile grows from 7 to 16 tools: mechanisms, 3D, look-ups,
