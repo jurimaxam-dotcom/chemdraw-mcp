@@ -1,27 +1,43 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Jays drei Fragen zur Werkzeugbilanz (Claude, 04.11.2026 22:55, nach Kontext-Neustart)
+## Weiter bei — Werkzeugbilanz-Folgen A–D abarbeiten (Claude, 04.11.2026 23:10)
 
-Stand: Werkzeugbilanz-Seite je Tool fertig und publiziert (https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg, Version 4),
-Generator `scripts/werkzeugbilanz.py` + `scripts/werkzeugbilanz_lauf.py` committet (`079c877`, `f73af48`), Routing-Logs in
-`docs/evidence/routing-2026-11-03/`. Nichts halbfertig. Release 0.7.0 weiterhin Jays Klick (Befehl im Abschnitt darunter).
+**Jay (04.11. 23:00):** „Sprich dich mit Codex und dem Advisor ab und arbeitet alle Punkte in der logisch sinnvollsten
+Reihenfolge ab, das entscheidet der Advisor, hört erst auf, wenn alles erledigt ist.“ Jays drei Fragen (Mechanismus-Vorlagen,
+README-Aktualität, Repo-Umfang) sind beantwortet (Antwort 04.11. 22:58); daraus die vier Vorschläge.
 
-**Jay fragt (04.11. 22:50, wörtlich, als Nächstes beantworten — Erklärfragen, kein Bauauftrag):**
-1. „Wie meinst du 3 feste Lehrbuchbeispiele? Theoretisch könnten wir doch 100te Moleküle testen lassen und evaluieren,
-   um sicherzugehen, dass uns nichts entgeht." → Erklären: generate_mechanism zeichnet die Vorlagen-Moleküle aus
-   `chemdraw_tool/templates/*.py` (sn1, sn2, fischer_ester); Nutzer-Substrate werden nur per SMARTS geprüft
-   (`mechanism.validate_substrates`), nie gezeichnet. Für die anderen Tools gilt: Masse-Evaluation ist möglich und sinnvoll
-   (z. B. identitaet.py von 24 auf hunderte Stoffe aus PubChem-Listen, Golden-Bilder stichprobenweise, Routing-Fälle
-   generieren) — Vorschlag mit Aufwand und Nutzen machen, erst nach Jays Ja bauen.
-2. „Wie stellen wir sicher, dass das README immer aktuell ist und die Abbildungen hohe Qualität haben?" → Ist-Stand:
-   README-Bilder sind Handarbeit (13 Bilder, eins überholt: `wave2-titration-acetic.png` vor Fix a08e3cb; Look up/Calculate/
-   Anki ohne Bild). Optionen: Bilder per Skript aus den Tools erzeugen (wie `scripts/werkzeugbilanz_lauf.py`) + Test, der
-   README-Toolliste gegen `create_server()` prüft + Bild-Fingerabdrücke; Vorschlag reihen, dann bauen.
-3. „Ist wirklich nur das im Repo, was für den User benötigt wird?" (Satz abgebrochen) → Repo durchsehen: was ins Wheel
-   kommt (`pyproject` include) vs. Entwicklungs-/Doku-Ballast (docs/Praktikum_*, vermarktung/, web/, evals, Branches +
-   Worktrees); Liste mit Behalten/Raus-Vorschlag, Default raus, Entscheidung Jay.
+**Reihenfolge (Advisor, Codex einverstanden bis auf Nuance „D-Bestandsaufnahme parallel, Ausführung nach C“):**
+D ∥ C → A → B. D ohne `assets/` (das ist C). B zuletzt und auf eigenem Branch, bis Jays Tag v0.7.0 steht — sonst
+verschifft der Tag ein geändertes Tool, das der CHANGELOG nicht beschreibt.
 
-Danach weiter wie unten (Release-Klick, dann README-Bilder, Limitations-Absatz, API-Eval).
+**Zuständig:** D = Codex (Faden-Auftrag), C = Opus-Arbeiter (Claude prüft Diff + Gate), A = Opus-Arbeiter parallel zu C,
+B = nach A, Opus-Arbeiter mit Design-Notiz vorweg; Desktop-Abnahme der README-Bilder = Codex nach C.
+Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
+
+**Abnahme je Etappe (prüfbar, nicht beschrieben):**
+- [ ] **D Repo aufräumen (Codex):** nur gemergte Branches gelöscht, `git branch --merged`-Ausgabe als Beleg; `mcp-2-migration`
+      (2 Commits nicht in main), `origin/mcp-2-migration-v2` (1), `worktree-agent-a89d4c26da6a9d6c2` (5 Commits: demo-short.sh,
+      Kamera) werden NICHT gelöscht, sondern mit Patch-Vergleich und Bundle-Sicherung in einer Befunddatei `docs/repo-aufraeumen-2026-11-04.md`
+      für Jay gelistet (Datenverlust-Bremse); `web/` samt `scripts/build-web.sh`, `deploy-pages.sh`, `rechner-e2e.sh` als Ganzes
+      nach `~/Documents/projects/praktikumsrechner` oder `~/Documents/archive/` verschoben (Browsertrainer bleibt separat);
+      Gate grün danach. `assets/` unangetastet.
+- [ ] **C README-Gate (Opus):** `tests/test_readme.py` einmal rot gesehen (Toolzeile entfernt, wieder eingesetzt): jedes registrierte
+      Tool des Standardprofils in der README-Tabelle, kein nicht registriertes, Toolzahlen (16/23) stimmen mit `create_server()`;
+      `scripts/readme_bilder.py` erzeugt jedes Datei-Bild in `assets/` aus den Tools mit festen Beispielen (Titrationskurve mit
+      Pufferpunkt auf der Kurve, neu: Look up/Calculate/Anki je ein Bild); Hash-Test im Gate wie Golden-SVGs (bewusst neu erzeugen
+      per `UPDATE_README_BILDER=1`); Limitations-Absatz trägt die Desktop-Grenze aus dem CHANGELOG 0.7.0; Gate grün.
+      GIFs bleiben Aufnahmen (demo-video.sh), nur Datum/Version geprüft.
+- [ ] **A Masse-Evaluation (Opus):** `tests/identity/stoffe.json` von 24 auf ~300 Einträge; Erwartungswerte aus einer
+      UNABHÄNGIGEN Quelle (Codex-Einwand): InChIKeys aus PubChem-Download je CID-Liste (Ph.-Eur.-Arzneistoffe / Top-200
+      Wirkstoffe), nicht aus der eigenen Auflösungskette; IR-Regelabdeckung über dieselbe Menge (welche Gruppen keine Regel
+      treffen) als Bericht; pH-Aufgaben (~50) gegen Lehrbuchlösungen. Ergebnis + Rot/Gelb-Zusammenfassung nach
+      `docs/evidence/masse-eval-2026-11/`; bleibt außerhalb des Gates (Netz).
+- [ ] **B Mechanismus mit eigenen Molekülen (Opus, Branch `mechanismus-substrate`):** Design-Notiz zuerst (Reaktionszentrum per
+      SMARTS finden, Rest mitzeichnen, Pfeile an gefundene Atome), Unterstützungsgrenze je Familie benennen; TDD, Golden-SVGs
+      gesichtet; CHANGELOG 0.8.0; Merge erst nach Tag v0.7.0.
+- [ ] Nach allem: Werkzeugbilanz neu bauen (`scripts/werkzeugbilanz.py`) und per url republishen.
+
+Bremsen bleiben: Release-Klick = Jay; Branch-Löschung nur gemergt; nichts nach außen.
 
 ## Weiter bei — Release 0.7.0 (Claude, 03.11.2026 07:50)
 
