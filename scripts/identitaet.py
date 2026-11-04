@@ -27,12 +27,24 @@ eine kaputte Eingabe still zu irgendeinem Stoff gemacht. Bei
 "fehler": "ambiguous" (Familienname wie "xylene") prueft optional
 "kandidaten" die InChIKeys der angebotenen Isomere in ihrer Reihenfolge.
 
-Aufruf:  uv run python scripts/identitaet.py [--json]
+Aufruf:  uv run python scripts/identitaet.py [--json] [--datei PFAD] [--protokoll PFAD]
+         --datei     andere Fixture gleichen Schemas (Standard: tests/identity/stoffe.json),
+                     z. B. tests/identity/stoffe-masse.json (Masse-Evaluation, ~1 h)
+         --protokoll Ergebnisse zusätzlich als JSON in diese Datei
 Exit 1 nur bei ROT.
+
+Bei falschem Stoff sagt das Feld "art", WIE falsch — die drei Fälle
+bedeuten Verschiedenes, der InChIKey trennt sie schichtweise:
+    skelett  — erster Block verschieden: anderes Konstitutionsgerüst
+    stereo   — Gerüst gleich, Stereoblock verschieden (Racemat vs. Enantiomer)
+    ladung   — nur das letzte Zeichen verschieden (Protonierung/Salzform)
+Einträge mit "unsicher": true (Referenzquellen widersprechen sich) werden
+bei Abweichung GELB, nie ROT.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import time
@@ -52,6 +64,8 @@ FIXTURE = REPO / "tests" / "identity" / "stoffe.json"
 # Zwischen zwei Anfragen: PubChem bittet um <5 Anfragen/Sekunde, und die
 # Kaskade macht je Name mehrere.
 PAUSE = 0.3
+# Nach "Quelle weg" so lange warten, dann genau einmal neu versuchen.
+BACKOFF = 10.0
 
 ROT, GELB, GRUEN = "rot", "gelb", "gruen"
 
@@ -108,25 +122,74 @@ def pruefe(eintrag: dict) -> dict:
             "text": f"Luecke geschlossen → {schluessel} (Fixture nachziehen)",
         }
     if schluessel != erwartet:
+        art = abweichungsart(schluessel, erwartet)
+        if eintrag.get("unsicher"):
+            return {
+                "status": GELB,
+                "art": art,
+                "erhalten": schluessel,
+                "text": f"Referenz unsicher, abweichend ({art}): {schluessel} statt {erwartet}",
+            }
         return {
             "status": ROT,
-            "text": f"falscher Stoff: {schluessel} statt {erwartet}",
+            "art": art,
+            "erhalten": schluessel,
+            "text": f"falscher Stoff ({art}): {schluessel} statt {erwartet}",
         }
     return {"status": GRUEN, "text": schluessel}
 
 
+def abweichungsart(erhalten: str, erwartet: str) -> str:
+    """Welche InChIKey-Schicht abweicht: skelett, stereo oder ladung."""
+    if erhalten[:14] != erwartet[:14]:
+        return "skelett"
+    if erhalten[:25] != erwartet[:25]:
+        return "stereo"
+    return "ladung"
+
+
+def _quelle_weg(ergebnis: dict) -> bool:
+    return ergebnis["status"] == GELB and ergebnis["text"].startswith("Quelle weg")
+
+
 def main() -> int:
-    als_json = "--json" in sys.argv
-    eintraege = json.loads(FIXTURE.read_text(encoding="utf-8"))["stoffe"]
+    parser = argparse.ArgumentParser(description="Name → Molekül gegen die echten Quellen")
+    parser.add_argument("--json", action="store_true", help="Ergebnis als JSON auf stdout")
+    parser.add_argument("--datei", type=Path, default=FIXTURE, help="Fixture (Schema wie stoffe.json)")
+    parser.add_argument("--protokoll", type=Path, help="Ergebnisse zusätzlich als JSON-Datei")
+    args = parser.parse_args()
+    als_json = args.json
+    eintraege = json.loads(args.datei.read_text(encoding="utf-8"))["stoffe"]
 
     ergebnisse = []
-    for eintrag in eintraege:
-        ergebnis = {**pruefe(eintrag), "eingabe": eintrag["eingabe"]}
+    for nummer, eintrag in enumerate(eintraege, 1):
+        start = time.perf_counter()
+        ergebnis = pruefe(eintrag)
+        if _quelle_weg(ergebnis):
+            # Drosselung oder kurzer Ausfall: einmal mit Abstand nachfassen,
+            # sonst färbt ein PubChem-Schluckauf den Rest des Laufs gelb.
+            time.sleep(BACKOFF)
+            ergebnis = pruefe(eintrag)
+        sekunden = time.perf_counter() - start
+        ergebnis = {
+            **ergebnis,
+            "eingabe": eintrag["eingabe"],
+            "erwartet": eintrag.get("inchikey"),
+            "sekunden": round(sekunden, 2),
+        }
         ergebnisse.append(ergebnis)
         if not als_json:
             zeichen = {ROT: "✗", GELB: "~", GRUEN: "✓"}[ergebnis["status"]]
-            print(f"  {zeichen} {eintrag['eingabe']:<28} {ergebnis['text']}")
+            print(
+                f"  {zeichen} {nummer:>3} {eintrag['eingabe']:<28} {sekunden:5.1f} s  {ergebnis['text']}",
+                flush=True,
+            )
         time.sleep(PAUSE)
+
+    if args.protokoll:
+        args.protokoll.write_text(
+            json.dumps(ergebnisse, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+        )
 
     rot = [e for e in ergebnisse if e["status"] == ROT]
     gelb = [e for e in ergebnisse if e["status"] == GELB]

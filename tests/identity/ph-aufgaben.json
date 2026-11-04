@@ -1,0 +1,720 @@
+{
+ "zweck": "pH-Aufgaben mit Referenzlösung außerhalb von chemdraw_tool. Gefahren von scripts/masse_eval.py ph (offline).",
+ "aufgenommen": "2026-11-04",
+ "herkunft": "Referenzwert = sympy, Ladungsbilanz als Polynom in [H⁺], einzige positive reelle Wurzel (40 Stellen), pKw = 14, ideale Lösung (Aktivität = Konzentration). Unabhängig von ph_core in Formulierung, Methode und Code, nicht in der Physik. 'lehrbuch' = gängiger Lehrbuch-Ankerwert ohne Seitenangabe; die Referenz muss ihn auf ±0,02 treffen. Neu rechnen: uv run --with sympy python scripts/masse_eval.py ph-referenz",
+ "aufgaben": [
+  {
+   "id": "hcl-0.1",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 0.1
+   },
+   "feld": "ph",
+   "erwartet": 1.0,
+   "toleranz": 0.005,
+   "quelle": "Lehrbuch-Standardbeispiel: 0,1 M HCl → pH 1",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 1.0
+  },
+  {
+   "id": "hcl-0.01",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 0.01
+   },
+   "feld": "ph",
+   "erwartet": 2.0,
+   "toleranz": 0.005,
+   "quelle": "Lehrbuch-Standardbeispiel",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 2.0
+  },
+  {
+   "id": "hcl-1e-5",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 1e-05
+   },
+   "feld": "ph",
+   "erwartet": 4.999957,
+   "toleranz": 0.005,
+   "quelle": "verdünnt, Wasser noch vernachlässigbar",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "hcl-1e-7",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 1e-07
+   },
+   "feld": "ph",
+   "erwartet": 6.791012,
+   "toleranz": 0.005,
+   "quelle": "Grenzfall: Säure und Wasser gleich stark (Lehrbuchwert 6,79)",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 6.79
+  },
+  {
+   "id": "hcl-1e-8",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 1e-08
+   },
+   "feld": "ph",
+   "erwartet": 6.978294,
+   "toleranz": 0.005,
+   "quelle": "Klassische Fangfrage: 1e-8 M HCl ist nicht basisch (pH 6,98)",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 6.98
+  },
+  {
+   "id": "hcl-2",
+   "topic": "strong_acid",
+   "parameter": {
+    "concentration": 2.0
+   },
+   "feld": "ph",
+   "erwartet": -0.30103,
+   "toleranz": 0.005,
+   "quelle": "konzentriert: negativer pH (ideal gerechnet)",
+   "herleitung": "sympy: [H⁺] = c + [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": -0.3
+  },
+  {
+   "id": "naoh-0.1",
+   "topic": "strong_base",
+   "parameter": {
+    "concentration": 0.1
+   },
+   "feld": "ph",
+   "erwartet": 13.0,
+   "toleranz": 0.005,
+   "quelle": "Lehrbuch-Standardbeispiel",
+   "herleitung": "sympy: [H⁺] + c(Na⁺) = [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 13.0
+  },
+  {
+   "id": "naoh-1e-3",
+   "topic": "strong_base",
+   "parameter": {
+    "concentration": 0.001
+   },
+   "feld": "ph",
+   "erwartet": 11.0,
+   "toleranz": 0.005,
+   "quelle": "Lehrbuch-Standardbeispiel",
+   "herleitung": "sympy: [H⁺] + c(Na⁺) = [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 11.0
+  },
+  {
+   "id": "naoh-1e-8",
+   "topic": "strong_base",
+   "parameter": {
+    "concentration": 1e-08
+   },
+   "feld": "ph",
+   "erwartet": 7.021706,
+   "toleranz": 0.005,
+   "quelle": "Spiegelbild der Fangfrage",
+   "herleitung": "sympy: [H⁺] + c(Na⁺) = [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 7.02
+  },
+  {
+   "id": "naoh-2",
+   "topic": "strong_base",
+   "parameter": {
+    "concentration": 2.0
+   },
+   "feld": "ph",
+   "erwartet": 14.30103,
+   "toleranz": 0.005,
+   "quelle": "konzentriert: pH über 14 (ideal gerechnet)",
+   "herleitung": "sympy: [H⁺] + c(Na⁺) = [OH⁻]; Polynom Grad 2 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 14.3
+  },
+  {
+   "id": "essig-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 2.882863,
+   "toleranz": 0.005,
+   "quelle": "Essigsäure 0,1 M: Lehrbuchwert pH 2,88",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 2.88
+  },
+  {
+   "id": "essig-0.01",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.01,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 3.389052,
+   "toleranz": 0.005,
+   "quelle": "Essigsäure 0,01 M: Lehrbuchwert ≈ 3,4",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 3.38
+  },
+  {
+   "id": "essig-1e-4",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.0001,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 4.469877,
+   "toleranz": 0.005,
+   "quelle": "Näherung bricht: Säure merklich dissoziiert",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "essig-1e-6",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 1e-06,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 6.018553,
+   "toleranz": 0.005,
+   "quelle": "fast vollständig dissoziiert + Wasser",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "essig-1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 1.0,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 2.380905,
+   "toleranz": 0.005,
+   "quelle": "Essigsäure 1 M",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 2.38
+  },
+  {
+   "id": "ameisen-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 3.75
+   },
+   "feld": "ph",
+   "erwartet": 2.384156,
+   "toleranz": 0.005,
+   "quelle": "Ameisensäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "hf-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 3.17
+   },
+   "feld": "ph",
+   "erwartet": 2.10285,
+   "toleranz": 0.005,
+   "quelle": "Flusssäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "hcn-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 9.21
+   },
+   "feld": "ph",
+   "erwartet": 5.104982,
+   "toleranz": 0.005,
+   "quelle": "Blausäure, sehr schwach: pH ≈ 5,1",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 5.11
+  },
+  {
+   "id": "nh4-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 9.25
+   },
+   "feld": "ph",
+   "erwartet": 5.124978,
+   "toleranz": 0.005,
+   "quelle": "Ammoniumchlorid 0,1 M: pH ≈ 5,1",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 5.13
+  },
+  {
+   "id": "phenol-0.01",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.01,
+    "pka": 10.0
+   },
+   "feld": "ph",
+   "erwartet": 5.997861,
+   "toleranz": 0.005,
+   "quelle": "sehr schwache Säure, verdünnt — Wasser zählt",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "mittelstark-0.01",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.01,
+    "pka": 1.0
+   },
+   "feld": "ph",
+   "erwartet": 2.038067,
+   "toleranz": 0.005,
+   "quelle": "pKs 1: fast vollständig dissoziiert",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "mittelstark-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 2.0
+   },
+   "feld": "ph",
+   "erwartet": 1.568385,
+   "toleranz": 0.005,
+   "quelle": "pKs 2: Näherung weit daneben",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "stark-konz",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 5.0,
+    "pka": 0.5
+   },
+   "feld": "ph",
+   "erwartet": -0.045018,
+   "toleranz": 0.005,
+   "quelle": "Randfall: exakter pH < 0",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "schwach-konz",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 10.0,
+    "pka": -1.0
+   },
+   "feld": "ph",
+   "erwartet": -0.791012,
+   "toleranz": 0.005,
+   "quelle": "Randfall: pKs < 0, pH deutlich < 0",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 1; Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "h3po4-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka_values": [
+     2.12,
+     7.21,
+     12.67
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 1.619619,
+   "toleranz": 0.005,
+   "quelle": "Phosphorsäure 0,1 M: pH ≈ 1,6",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 3; Polynom Grad 5 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 1.62
+  },
+  {
+   "id": "h3po4-0.001",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.001,
+    "pka_values": [
+     2.12,
+     7.21,
+     12.67
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 3.048381,
+   "toleranz": 0.005,
+   "quelle": "verdünnte Phosphorsäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 3; Polynom Grad 5 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "citronen-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka_values": [
+     3.13,
+     4.76,
+     6.4
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 2.082779,
+   "toleranz": 0.005,
+   "quelle": "Citronensäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 3; Polynom Grad 5 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "kohlen-0.01",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.01,
+    "pka_values": [
+     6.35,
+     10.33
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 4.17645,
+   "toleranz": 0.005,
+   "quelle": "Kohlensäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 2; Polynom Grad 4 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "oxal-0.05",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.05,
+    "pka_values": [
+     1.25,
+     4.27
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 1.495455,
+   "toleranz": 0.005,
+   "quelle": "Oxalsäure",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 2; Polynom Grad 4 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "h2s-0.1",
+   "topic": "weak_acid",
+   "parameter": {
+    "concentration": 0.1,
+    "pka_values": [
+     7.0,
+     12.9
+    ]
+   },
+   "feld": "ph",
+   "erwartet": 4.000217,
+   "toleranz": 0.005,
+   "quelle": "Schwefelwasserstoff",
+   "herleitung": "sympy: [H⁺] = [OH⁻] + Σ j·[H(n−j)A^(j−)], n = 2; Polynom Grad 4 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "nh3-0.1",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 0.1,
+    "pkb": 4.75
+   },
+   "feld": "ph",
+   "erwartet": 11.122104,
+   "toleranz": 0.005,
+   "quelle": "Ammoniak 0,1 M: Lehrbuchwert 11,13",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 11.13
+  },
+  {
+   "id": "nh3-0.01",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 0.01,
+    "pkb": 4.75
+   },
+   "feld": "ph",
+   "erwartet": 10.615844,
+   "toleranz": 0.005,
+   "quelle": "Ammoniak 0,01 M",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "nh3-1e-5",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 1e-05,
+    "pkb": 4.75
+   },
+   "feld": "ph",
+   "erwartet": 8.853535,
+   "toleranz": 0.005,
+   "quelle": "Näherung bricht",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "acetat-0.1",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 0.1,
+    "pkb": 9.24
+   },
+   "feld": "ph",
+   "erwartet": 8.880021,
+   "toleranz": 0.005,
+   "quelle": "Natriumacetat 0,1 M: pH ≈ 8,9",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 8.88
+  },
+  {
+   "id": "pyridin-0.1",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 0.1,
+    "pka": 5.25
+   },
+   "feld": "ph",
+   "erwartet": 9.124983,
+   "toleranz": 0.005,
+   "quelle": "Pyridin über pKs der korresp. Säure",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "methylamin-0.1",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 0.1,
+    "pkb": 3.36
+   },
+   "feld": "ph",
+   "erwartet": 11.805656,
+   "toleranz": 0.005,
+   "quelle": "Methylamin",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "starkebase-konz",
+   "topic": "weak_base",
+   "parameter": {
+    "concentration": 5.0,
+    "pkb": 0.5
+   },
+   "feld": "ph",
+   "erwartet": 14.045018,
+   "toleranz": 0.005,
+   "quelle": "Randfall: exakter pH > 14",
+   "herleitung": "sympy: [H⁺] + [BH⁺] = [OH⁻], [BH⁺] = c·h/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "acetatpuffer-1:1",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.1,
+    "base_concentration": 0.1,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 4.760151,
+   "toleranz": 0.005,
+   "quelle": "Äquimolarer Puffer: pH = pKs",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 4.76
+  },
+  {
+   "id": "acetatpuffer-1:10",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.1,
+    "base_concentration": 0.01,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 3.768087,
+   "toleranz": 0.005,
+   "quelle": "HH: pKs − 1",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 3.76
+  },
+  {
+   "id": "acetatpuffer-10:1",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.01,
+    "base_concentration": 0.1,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 5.760083,
+   "toleranz": 0.005,
+   "quelle": "HH: pKs + 1",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 5.76
+  },
+  {
+   "id": "phosphatpuffer",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.05,
+    "base_concentration": 0.05,
+    "pka": 7.21
+   },
+   "feld": "ph",
+   "erwartet": 7.209998,
+   "toleranz": 0.005,
+   "quelle": "Phosphatpuffer",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 7.21
+  },
+  {
+   "id": "ammonpuffer",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.1,
+    "base_concentration": 0.2,
+    "pka": 9.25
+   },
+   "feld": "ph",
+   "erwartet": 9.550798,
+   "toleranz": 0.005,
+   "quelle": "NH4Cl/NH3 1:2",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel",
+   "lehrbuch": 9.55
+  },
+  {
+   "id": "puffer-verduennt",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 1e-05,
+    "base_concentration": 1e-05,
+    "pka": 4.76
+   },
+   "feld": "ph",
+   "erwartet": 5.274369,
+   "toleranz": 0.005,
+   "quelle": "sehr verdünnt: HH gilt nicht mehr",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "puffer-saurer-pks",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.01,
+    "base_concentration": 0.01,
+    "pka": 2.0
+   },
+   "feld": "ph",
+   "erwartet": 2.382776,
+   "toleranz": 0.005,
+   "quelle": "pKs 2: HA dissoziiert merklich, HH daneben",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "puffer-basisch-verduennt",
+   "topic": "buffer",
+   "parameter": {
+    "acid_concentration": 0.0001,
+    "base_concentration": 0.0001,
+    "pka": 10.0
+   },
+   "feld": "ph",
+   "erwartet": 9.617226,
+   "toleranz": 0.005,
+   "quelle": "basischer Puffer verdünnt",
+   "herleitung": "sympy: c(Na⁺) + [H⁺] = [OH⁻] + [A⁻], [A⁻] = (cHA + cA⁻)·Ks/(h + Ks); Polynom Grad 3 in [H⁺], einzige positive Wurzel"
+  },
+  {
+   "id": "ion-ass-magen",
+   "topic": "ionisation",
+   "parameter": {
+    "pka": 3.5,
+    "target_ph": 1.5,
+    "drug_type": "acid"
+   },
+   "feld": "ungeladen_prozent",
+   "erwartet": 99.009901,
+   "toleranz": 0.05,
+   "quelle": "ASS im Magen",
+   "herleitung": "sympy: ungeladen = 1/(1 + 10^Δ), Δ aus dem Massenwirkungsgesetz"
+  },
+  {
+   "id": "ion-ass-blut",
+   "topic": "ionisation",
+   "parameter": {
+    "pka": 3.5,
+    "target_ph": 7.4,
+    "drug_type": "acid"
+   },
+   "feld": "ungeladen_prozent",
+   "erwartet": 0.012588,
+   "toleranz": 0.05,
+   "quelle": "ASS im Blut",
+   "herleitung": "sympy: ungeladen = 1/(1 + 10^Δ), Δ aus dem Massenwirkungsgesetz"
+  },
+  {
+   "id": "ion-base-blut",
+   "topic": "ionisation",
+   "parameter": {
+    "pka": 9.0,
+    "target_ph": 7.4,
+    "drug_type": "base"
+   },
+   "feld": "ungeladen_prozent",
+   "erwartet": 2.450337,
+   "toleranz": 0.05,
+   "quelle": "basischer Arzneistoff im Blut",
+   "herleitung": "sympy: ungeladen = 1/(1 + 10^Δ), Δ aus dem Massenwirkungsgesetz"
+  },
+  {
+   "id": "ion-gleich",
+   "topic": "ionisation",
+   "parameter": {
+    "pka": 6.0,
+    "target_ph": 6.0,
+    "drug_type": "base"
+   },
+   "feld": "ungeladen_prozent",
+   "erwartet": 50.0,
+   "toleranz": 0.05,
+   "quelle": "pH = pKs: die Hälfte ungeladen",
+   "herleitung": "sympy: ungeladen = 1/(1 + 10^Δ), Δ aus dem Massenwirkungsgesetz",
+   "lehrbuch": 50.0
+  },
+  {
+   "id": "rezept-acetat-pH5",
+   "topic": "buffer_recipe",
+   "parameter": {
+    "target_ph": 5.0,
+    "pka": 4.76,
+    "total_concentration": 0.1,
+    "volume_ml": 1000.0
+   },
+   "feld": "acid_mol",
+   "erwartet": 0.036526,
+   "toleranz": 1e-06,
+   "quelle": "Acetatpuffer pH 5, 1 L, 0,1 M",
+   "herleitung": "sympy: n(HA) = c·V/(1 + 10^(pH − pKs))"
+  },
+  {
+   "id": "rezept-phosphat-pH7.4",
+   "topic": "buffer_recipe",
+   "parameter": {
+    "target_ph": 7.4,
+    "pka": 7.21,
+    "total_concentration": 0.05,
+    "volume_ml": 500.0
+   },
+   "feld": "acid_mol",
+   "erwartet": 0.009808,
+   "toleranz": 1e-06,
+   "quelle": "Phosphatpuffer pH 7,4",
+   "herleitung": "sympy: n(HA) = c·V/(1 + 10^(pH − pKs))"
+  }
+ ]
+}
