@@ -6,8 +6,8 @@ Familien (SN2, SN1, Fischer-Veresterung) innerhalb je einer benannten Unterstüt
 (Codex-Vorgabe: keine pauschale Beliebigkeit). Alles außerhalb bekommt eine Fehlermeldung mit
 Grund, nicht ein falsches Bild. Release: erst mit 0.8.0 (Branch `mechanismus-substrate`).
 
-Neues Modul: `chemdraw_tool/mechanism_substrate.py`. `mechanism_coords.py` und
-`mechanism_renderer.py` bleiben unverändert in der Schnittstelle — sie bekommen wie bisher
+Neues Modul: `chemdraw_tool/mechanism_substrate.py`. `mechanism_coords.py` (neu: `layout_anchored`) und
+`mechanism_renderer.py` bleiben in der Schnittstelle gleich — sie bekommen wie bisher
 eine Liste gemappter SMILES je Schritt und `CurvedArrow`s mit Map-IDs.
 
 ## (a) Reaktionszentrum finden
@@ -44,7 +44,7 @@ gemappten Moleküls → Liste für `stabilize_sequence`.
 - **Gültige Moleküle per `rdChemReactions`** (Reaktions-SMARTS, `RunReactants`):
   - SN2-Produkt: `[C@:1][X:2].[Nu-:3]>>[C@@:1][Nu+0:3].[X-:2]` — `@`→`@@` lässt RDKit die
     Konfiguration invertieren (`molInversionFlag`); am achiralen Zentrum wirkungslos.
-  - SN1-Produkt: `[C+:1].[Nu:3]>>[C+0:1]-[Nu+0:3]` (bei Wasser/Alkohol: Produkt nach
+  - SN1-Produkt: `[C+:1].[*:3]>>[C+0:1]-[*+0:3]` (bei Wasser/Alkohol: Produkt nach
     Deprotonierung, wie die bisherige Vorlage).
   - Fischer: Protonierung `[C:1]=[O:2]>>[C+:1]-[O:2]` (Carbokation-Grenzformel wie bisher),
     Angriff `[C+:1].[O:4]>>[C+0:1]-[O:4]` (tetraedrische Zwischenstufe, neutral gezeichnet wie
@@ -72,9 +72,16 @@ das richtige Atom des Nutzer-Moleküls. Eduktreihenfolge in Schritt 1 (propagier
 Schritte): SN2 Nucleophil links, Halogenid rechts; SN1 Halogenid, Nucleophil; Fischer Säure,
 Alkohol, H⁺.
 
-SN2-Rückseitenangriff: Nach `stabilize_sequence` wird im Übergangszustand das
-Nucleophil-Fragment so verschoben, dass sein angreifendes Atom gegenüber der Abgangsgruppe
-liegt (`C + (C − X)·Faktor`), die Abgangsgruppe auf der Verlängerung von C–X.
+**Layout (nach Sichtung geändert):** `stabilize_sequence` übernahm die Positionen des
+Vorschritts — bei 2-Brombutan + CN⁻ behielt das Nucleophil im Produkt seinen Platz aus Schritt 1
+(meterlange C–C-Bindung) und kam im Übergangszustand nicht von der Rückseite. Der Substratweg
+nutzt deshalb `mechanism_coords.layout_anchored`: jeder Schritt gibt je Molekül feste Positionen
+für das Reaktionszentrum und dessen direkte Nachbarn vor (`MechanismStep.anchors`, in
+Bindungslängen, Zentrum im Ursprung), RDKit legt den Rest drumherum; stößt ein Nebenmolekül an,
+wird es nach außen geschoben; Moleküle ohne Anker stehen rechts daneben. SN2: Abgangsgruppe auf
++x, Nucleophil auf −x, Substituenten bei 120°/240° (Edukt), 90°/270° (Übergangszustand),
+60°/300° (Produkt — der umgeklappte Regenschirm). Die festen Vorlagen laufen unverändert über
+`stabilize_sequence`.
 
 ## (d) Unterstützungsgrenze je Familie
 
