@@ -23,6 +23,10 @@ BOND_PX = 38
 # Die Leinwand muss größer sein als das größte Bild, sonst schneidet viewBox (max(0, …)) ab.
 CANVAS_W = 1200
 CANVAS_H = 900
+# Pfeil „Bindung → Abgangsgruppe“: so viele Pixel neben dem Atom endet die Spitze
+_BOND_ARROW_OVERSHOOT = 15.0
+# Mindestwölbung, damit ein kurzer Pfeil als Bogen erkennbar bleibt
+_MIN_BULGE = 18.0
 
 
 def _get_draw_coords(
@@ -116,7 +120,7 @@ def _bezier_arrow_path(sx: float, sy: float, tx: float, ty: float, style: str) -
     length = math.hypot(dx, dy) or 1.0
 
     perp_x, perp_y = -dy / length, dx / length
-    bulge = min(length * 0.35, 40.0)
+    bulge = max(min(length * 0.35, 40.0), _MIN_BULGE)
     cx, cy = mx + perp_x * bulge, my + perp_y * bulge
 
     stroke_width = 2.8 if style == "full" else 2.0
@@ -203,6 +207,14 @@ def _resolve_arrow_coords(
         sx, sy = coords[src_map_id]
 
     tx, ty = coords[tgt_map_id]
+    if src_type == "bond_to" and len(arrow.source) >= 3 and arrow.source[2] == tgt_map_id:
+        # Bindung → eigenes Ende (Abgangsgruppe): der Pfeil war nur eine halbe Bindung lang und
+        # verschwand unter der Beschriftung („Cl“, „OH“). Spitze seitlich über das Atom legen —
+        # auf die Seite, zu der sich der Bogen wölbt (_bezier_arrow_path: Normale (-dy, dx)).
+        dx, dy = tx - sx, ty - sy
+        length = math.hypot(dx, dy)
+        if length > 0:
+            tx, ty = tx - dy / length * _BOND_ARROW_OVERSHOOT, ty + dx / length * _BOND_ARROW_OVERSHOOT
     return (sx, sy), (tx, ty)
 
 

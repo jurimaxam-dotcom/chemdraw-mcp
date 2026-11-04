@@ -126,3 +126,88 @@ def stabilize_sequence(
         prior_positions = extract_positions(computed)
 
     return result
+
+
+# --- Verankertes Layout (Substratweg) ------------------------------------------------
+#
+# stabilize_sequence übernimmt die Positionen des Vorschritts. Bei Nutzer-Substraten führte das
+# zu langen Bindungen (das Nucleophil behielt seinen Platz aus Schritt 1) und zu einem
+# Nucleophil, das nicht von der Rückseite kam (Sichtung 04.11.2026). Hier gibt jeder Schritt
+# die Lage des Reaktionszentrums selbst vor; RDKit legt den Rest des Moleküls drumherum.
+
+BOND = 1.5  # RDKit-Bindungslänge in Konformer-Einheiten
+_MIN_DIST = 0.8 * BOND
+_FREE_GAP = 1.6 * BOND
+
+
+def _xs(mol: Chem.Mol) -> list[float]:
+    conf = mol.GetConformer()
+    return [conf.GetAtomPosition(i).x for i in range(mol.GetNumAtoms())]
+
+
+def _shift(mol: Chem.Mol, dx: float, dy: float) -> None:
+    conf = mol.GetConformer()
+    for i in range(mol.GetNumAtoms()):
+        p = conf.GetAtomPosition(i)
+        conf.SetAtomPosition(i, Point3D(p.x + dx, p.y + dy, 0.0))
+
+
+def _min_distance(a: Chem.Mol, others: list[Chem.Mol]) -> float:
+    ca = a.GetConformer()
+    best = float("inf")
+    for o in others:
+        co = o.GetConformer()
+        for i in range(a.GetNumAtoms()):
+            pi = ca.GetAtomPosition(i)
+            for j in range(o.GetNumAtoms()):
+                best = min(best, (pi - co.GetAtomPosition(j)).Length())
+    return best
+
+
+def _anchored_mol(smiles: str, anchors: dict[int, tuple[float, float]]) -> Chem.Mol:
+    mol = Chem.RWMol(_parse_mol_safe(smiles))
+    # Übergangszustand/Kation sind keine Radikale: kein Punkt am Kohlenstoff
+    for atom in mol.GetAtoms():
+        atom.SetNumRadicalElectrons(0)
+    index = build_atom_map_index(mol)
+    coord_map = {index[m]: Point2D(x * BOND, y * BOND) for m, (x, y) in anchors.items() if m in index}
+    if coord_map:
+        AllChem.Compute2DCoords(mol, coordMap=coord_map)
+    else:
+        AllChem.Compute2DCoords(mol)
+    if mol.GetNumConformers() == 0:
+        raise ValueError(f"Compute2DCoords erzeugte keinen Konformer für {smiles}")
+    return mol.GetMol()
+
+
+def layout_anchored(steps) -> list[list[Chem.Mol]]:
+    """Koordinaten für Schritte mit `anchors` (siehe MechanismStep).
+
+    1. Verankerte Moleküle: RDKit-Layout mit festen Positionen der Ankeratome.
+    2. Stößt ein verankertes Nebenmolekül (Nucleophil, Alkohol, H⁺) an ein früheres, wird es
+       in seiner Richtung (Vorzeichen der Anker-x) nach außen geschoben, bis es frei ist.
+    3. Freie Moleküle ({}) rechts neben alles Bisherige, vertikal auf y = 0 zentriert.
+    """
+    result = []
+    for step in steps:
+        anchors = step.anchors or [{} for _ in step.molecules]
+        if len(anchors) != len(step.molecules):
+            raise ValueError(f"Schritt '{step.label}': {len(anchors)} Anker für {len(step.molecules)} Moleküle")
+        placed: list[Chem.Mol] = []
+        for smiles, anchor in zip(step.molecules, anchors):
+            mol = _anchored_mol(smiles, anchor)
+            if anchor:
+                if placed:
+                    direction = 1.0 if sum(x for x, _ in anchor.values()) >= 0 else -1.0
+                    for _ in range(12):
+                        if _min_distance(mol, placed) >= _MIN_DIST:
+                            break
+                        _shift(mol, direction * 0.5 * BOND, 0.0)
+            else:
+                conf = mol.GetConformer()
+                ys = [conf.GetAtomPosition(i).y for i in range(mol.GetNumAtoms())]
+                right = max((max(_xs(m)) for m in placed), default=0.0)
+                _shift(mol, right + _FREE_GAP - min(_xs(mol)), -(max(ys) + min(ys)) / 2)
+            placed.append(mol)
+        result.append(placed)
+    return result
