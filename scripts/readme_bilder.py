@@ -280,7 +280,7 @@ def dose_response() -> bytes:
 # --- Galerie: Mechanismen und 3D -------------------------------------------------
 
 MECHANISMS = [
-    ("sn1", [r"CC(C)Br", "O"]),
+    ("sn1", ["CC(C)(C)Br", "O"]),
     ("sn2", ["CBr", "[OH-]"]),
     ("fischer_ester", ["CC(=O)O", "CO"]),
 ]

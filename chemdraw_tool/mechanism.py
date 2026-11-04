@@ -22,6 +22,10 @@ class MechanismStep:
     # Abstand zwischen den Molekülen des Schritts in Bindungslängen (Übergangszustände brauchen
     # weniger als Edukte, aber mehr als eine Bindung: Platz für Teilbindung und Beschriftung)
     mol_gap: float = 4.0
+    # Nur Substratweg (mechanism_substrate): je Molekül feste Positionen ausgewählter Atome
+    # {Map-ID: (x, y)} in Bindungslängen, Reaktionszentrum im Ursprung; {} = frei rechts
+    # daneben. Leer bei den festen Vorlagen — die laufen weiter über stabilize_sequence.
+    anchors: list[dict[int, tuple[float, float]]] = field(default_factory=list)
 
 
 @dataclass

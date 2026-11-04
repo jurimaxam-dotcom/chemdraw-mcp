@@ -303,6 +303,10 @@ class MechanismPayload(BaseModel):
     reaction_type: str
     steps: list[MechanismStepPayload]
     current_step: int = 0
+    # Etappe B (0.8.0): True = die Substrate des Nutzers sind gezeichnet; False = Vorlage.
+    substrates_drawn: bool = False
+    # Warum die Vorlage gezeichnet ist, obwohl die Substrate passen ("" im Normalfall)
+    fallback_reason: str = ""
 
 
 class ReactionSpec(BaseModel):

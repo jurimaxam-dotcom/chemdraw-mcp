@@ -9,7 +9,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/jurimaxam-dotcom/chemdraw-mcp?style=social)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers)
 
 chemdraw-mcp is an MCP server that lets Claude draw chemistry: structures,
-reaction schemes, textbook mechanisms, spectra, TLC plates and pH curves,
+reaction schemes, mechanisms, spectra, TLC plates and pH curves,
 rendered locally with RDKit and matplotlib as PNG and SVG files.
 Each drawing also opens an interactive panel in the chat — hover a functional
 group, switch to the PubChem data sheet, rotate a 3D model, export or add an
@@ -86,14 +86,17 @@ conditions above and below a forward (→), equilibrium (⇌) or retrosynthetic
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-reaction.gif" alt="Fischer esterification with an equilibrium arrow and conditions above and below it in the chat panel" width="640"></p>
 
-**Mechanisms — a textbook gallery, not a mechanism engine.** `generate_mechanism`
-shows three fixed examples: SN1 (2-bromopropane + water), SN2 (bromomethane +
-hydroxide) and Fischer esterification (acetic acid + methanol), with curved
-electron-flow arrows and **Next / Back** through the intermediates. Substrates
-you name are checked for compatibility with the mechanism; they are not drawn
-into it. Other mechanisms are not available.
+**Mechanisms — three families, drawn with your molecules.** `generate_mechanism`
+draws SN2, SN1 and Fischer esterification with the substrates you name, with
+curved electron-flow arrows and **Next / Back** through the intermediates. SN2
+takes a methyl, primary or secondary alkyl halide with one anionic nucleophile
+(OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻) and inverts a stereocentre; SN1 takes a
+tertiary, benzylic or allylic halide with water, an alcohol or one of those
+anions; Fischer takes one carboxylic acid and one primary or secondary alcohol.
+Anything outside these limits gets an error with the reason. Other mechanisms
+are not available.
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="Second step of the SN1, SN2 and Fischer esterification textbook examples, each with curved electron-flow arrows, drawn from the step SVGs that generate_mechanism returns" width="960"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="Second step of SN1, SN2 and Fischer esterification, each with curved electron-flow arrows, drawn from the step SVGs that generate_mechanism returns" width="960"></p>
 
 **3D.** `generate_3d` embeds one conformer (ETKDGv3, then MMFF or UFF), opens a
 ball-and-stick panel you drag to rotate and writes an SDF file:
@@ -334,7 +337,8 @@ confusing ways.
   curves show the values passed in. They measure nothing; values the model
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,
   not densitometry.
-- **Mechanisms are three fixed examples** (SN1, SN2, Fischer esterification).
+- **Mechanisms are three families** (SN1, SN2, Fischer esterification), each
+  within a stated substrate limit; allylic rearrangement is not drawn.
 - **3D is one conformer**, a plausible geometry to look at — not a
   conformational search and not an energy statement.
 - **CDXML is a side path.** It is round-trip validated, but PNG and SVG are

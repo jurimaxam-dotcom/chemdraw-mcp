@@ -1,0 +1,179 @@
+"""Mechanismus mit den Molekülen des Nutzers (Etappe B, docs/mechanismus-substrate-design.md).
+
+Netzfrei: alle Eingaben sind SMILES. Erwartete Produkte stehen als eigene SMILES hier
+(zweite Formulierung), Stereochemie wird per CIP geprüft, nicht am SVG.
+"""
+
+import pytest
+from rdkit import Chem
+from rdkit.Chem import rdCIPLabeler
+
+from chemdraw_tool.mechanism_substrate import UnsupportedSubstrates, build_steps
+
+
+def _plain(smiles: str) -> str:
+    """Gemapptes Schritt-SMILES → kanonisches SMILES ohne Maps."""
+    mol = Chem.MolFromSmiles(smiles)
+    assert mol is not None, smiles
+    for a in mol.GetAtoms():
+        a.SetAtomMapNum(0)
+    return Chem.MolToSmiles(Chem.MolFromSmiles(Chem.MolToSmiles(mol)))
+
+
+def _canon(smiles: str) -> str:
+    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles))
+
+
+def _maps(step) -> set[int]:
+    found = set()
+    for smi in step.molecules:
+        mol = Chem.MolFromSmiles(smi, sanitize=False)
+        found |= {a.GetAtomMapNum() for a in mol.GetAtoms()}
+    return found
+
+
+def _arrows_point_at_drawn_atoms(steps):
+    for step in steps:
+        maps = _maps(step)
+        for arrow in step.arrows:
+            assert arrow.source[0] in maps and arrow.target[0] in maps, (step.label, arrow)
+
+
+# --- SN2 ----------------------------------------------------------------------
+
+
+def test_sn2_2_brombutan_cyanid_invertiert_das_stereozentrum():
+    steps = build_steps("sn2", ["C[C@@H](Br)CC", "[C-]#N"])  # (R)-2-Brombutan
+    assert len(steps) == 3
+    produkt = next(s for s in steps[-1].molecules if "N" in s)
+    mol = Chem.MolFromSmiles(_plain(produkt))
+    assert _canon("CCC(C)C#N") == Chem.MolToSmiles(Chem.MolFromSmiles(_plain(produkt)), isomericSmiles=False)
+    rdCIPLabeler.AssignCIPLabels(mol)
+    codes = [a.GetProp("_CIPCode") for a in mol.GetAtoms() if a.HasProp("_CIPCode")]
+    assert codes == ["S"], "SN2 muss (R)-2-Brombutan zu (S)-2-Methylbutannitril invertieren"
+    assert _canon("[Br-]") in [_plain(s) for s in steps[-1].molecules]
+
+
+def test_sn2_zeichnet_das_ganze_substrat_in_jedem_schritt():
+    steps = build_steps("sn2", ["CCCCBr", "[I-]"])
+    edukte = sorted(_plain(s) for s in steps[0].molecules)
+    assert edukte == sorted([_canon("CCCCBr"), _canon("[I-]")])
+    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted([_canon("CCCCI"), _canon("[Br-]")])
+    ts = steps[1]
+    assert ts.is_transition_state and len(ts.molecules) == 3
+    assert set(ts.partial_bonds) == {(3, 1), (1, 2)}
+    _arrows_point_at_drawn_atoms(steps)
+
+
+def test_sn2_gegenion_faellt_weg():
+    steps = build_steps("sn2", ["CCBr", "[Na+].[C-]#N"])
+    assert _canon("CCC#N") in [_plain(s) for s in steps[-1].molecules]
+    assert not any("Na" in s for st in steps for s in st.molecules)
+
+
+@pytest.mark.parametrize("nuc, produkt", [
+    ("[OH-]", "CCO"), ("CC[O-]", "CCOCC"), ("[N-]=[N+]=[N-]", "CCN=[N+]=[N-]"),
+    ("C[S-]", "CCSC"), ("[SH-]", "CCS"), ("[Br-]", "CCBr"),
+])
+def test_sn2_jedes_nucleophil_der_liste(nuc, produkt):
+    steps = build_steps("sn2", ["CCI", nuc])
+    assert _canon(produkt) in [_plain(s) for s in steps[-1].molecules]
+
+
+@pytest.mark.parametrize("smiles, grund", [
+    (["CC(C)(C)Br", "[OH-]"], "tertiary"),
+    (["CCBr", "O"], "anionic nucleophile"),
+    (["CCBr", "N"], "anionic nucleophile"),
+    (["CCF", "[OH-]"], "fluoride"),
+    (["BrCCBr", "[OH-]"], "more than one"),
+    (["Brc1ccccc1", "[OH-]"], "alkyl halide"),
+    (["CCBr"], "nucleophile"),
+])
+def test_sn2_grenze_mit_grund(smiles, grund):
+    with pytest.raises(UnsupportedSubstrates, match=grund):
+        build_steps("sn2", smiles)
+
+
+def test_sn2_tertiaer_verweist_auf_sn1():
+    with pytest.raises(UnsupportedSubstrates, match="sn1"):
+        build_steps("sn2", ["CC(C)(C)Br", "[OH-]"])
+
+
+# --- SN1 ----------------------------------------------------------------------
+
+
+def test_sn1_tert_butylchlorid_wasser():
+    steps = build_steps("sn1", ["CC(C)(C)Cl", "O"])
+    assert len(steps) == 5
+    assert _canon("C[C+](C)C") in [_plain(s) for s in steps[2].molecules]
+    assert _canon("[Cl-]") in [_plain(s) for s in steps[2].molecules]
+    assert _canon("CC(C)(C)O") in [_plain(s) for s in steps[-1].molecules]
+    _arrows_point_at_drawn_atoms(steps)
+
+
+def test_sn1_mit_anion_und_alkohol():
+    assert _canon("CC(C)(C)OCC") in [_plain(s) for s in build_steps("sn1", ["CC(C)(C)Br", "CCO"])[-1].molecules]
+    assert _canon("CC(C)(C)C#N") in [_plain(s) for s in build_steps("sn1", ["CC(C)(C)Br", "[C-]#N"])[-1].molecules]
+
+
+def test_sn1_benzylisch_stereogen_heisst_racemisch():
+    steps = build_steps("sn1", ["C[C@@H](Br)c1ccccc1", "O"])
+    assert _canon("CC(O)c1ccccc1") in [_plain(s) for s in steps[-1].molecules]
+    assert "racemic" in steps[-1].label
+    # Produkt ohne Stereodeskriptor: Angriff von beiden Seiten
+    assert all("@" not in s for s in steps[-1].molecules)
+
+
+def test_sn1_allylisch():
+    steps = build_steps("sn1", ["C=CC(C)Cl", "O"])
+    assert _canon("C=CC(C)O") in [_plain(s) for s in steps[-1].molecules]
+
+
+@pytest.mark.parametrize("smiles, grund", [
+    (["CCCCBr", "O"], "sn2"),
+    (["CC(C)Br", "O"], "sn2"),
+    (["CC(C)(C)Br", "CC(=O)C"], "nucleophile"),
+])
+def test_sn1_grenze_mit_grund(smiles, grund):
+    with pytest.raises(UnsupportedSubstrates, match=grund):
+        build_steps("sn1", smiles)
+
+
+# --- Fischer ------------------------------------------------------------------
+
+
+def test_fischer_propionsaeure_ethanol():
+    steps = build_steps("fischer_ester", ["CCC(=O)O", "CCO"])
+    assert len(steps) == 6
+    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted([_canon("CCC(=O)OCC"), _canon("O")])
+    assert _canon("CCC(O)(O)OCC") in [_plain(s) for s in steps[3].molecules]
+    _arrows_point_at_drawn_atoms(steps)
+
+
+def test_fischer_sekundaerer_alkohol_und_reihenfolge_egal():
+    steps = build_steps("fischer_ester", ["CC(C)O", "c1ccccc1C(=O)O"])
+    assert _canon("CC(C)OC(=O)c1ccccc1") in [_plain(s) for s in steps[-1].molecules]
+
+
+@pytest.mark.parametrize("smiles, grund", [
+    (["CC(=O)O", "CC(C)(C)O"], "tertiary"),
+    (["CC(=O)O", "Oc1ccccc1"], "phenol"),
+    (["OC(=O)CCC(=O)O", "CO"], "more than one"),
+    (["CC(O)C(=O)O"], "two separate"),
+    (["CCBr", "CO"], "carboxylic acid"),
+])
+def test_fischer_grenze_mit_grund(smiles, grund):
+    with pytest.raises(UnsupportedSubstrates, match=grund):
+        build_steps("fischer_ester", smiles)
+
+
+# --- Lehrbuchbeispiele bleiben gültige Eingaben ------------------------------
+
+
+@pytest.mark.parametrize("rt, smiles, n", [
+    ("sn2", ["CBr", "[OH-]"], 3),
+    ("sn1", ["CC(C)(C)Br", "O"], 5),
+    ("fischer_ester", ["CC(=O)O", "CO"], 6),
+])
+def test_lehrbuchbeispiele_laufen_ueber_den_substratweg(rt, smiles, n):
+    assert len(build_steps(rt, smiles)) == n

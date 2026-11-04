@@ -1,5 +1,5 @@
 {
-  "description": "Show a textbook reaction mechanism step by step with curved arrows.\n\nA gallery of three textbook mechanisms, each drawn with its fixed\nexample: SN2 (bromomethane + hydroxide), SN1 (2-bromopropane + water)\nand Fischer esterification (acetic acid + methanol). The substrates only\ncheck that the user's compounds fit the mechanism; they are not drawn —\nsay so when they differ from the example.\n\nUse this when the user asks about one of these mechanisms, electron-flow\narrows, or wants to see how such a reaction proceeds step by step.\n\nA question that starts \"why does …\" or \"I don't understand why …\" about a\nmechanism is the same request in disguise (\"why does SN2 invert the\ncentre?\"). The arrows ARE the explanation; draw them and explain\nalongside, rather than describing them in words.\n\nNot this tool for: the net equation educt → product without\nintermediates — that is generate_reaction. Only the mechanism types\nlisted in reaction_type exist; for anything else use generate_reaction.\n\nArgs:\n    reaction_type: \"sn2\", \"sn1\" or \"fischer_ester\".\n    substrates: The user's substrates (names or SMILES), checked for fit.\n    current_step: 0 = overview (all steps), 1-N = specific step.",
+  "description": "Show a reaction mechanism step by step with curved arrows, drawn with the user's own substrates.\n\nThree mechanism families, each with a stated limit:\nSN2 — a methyl, primary or secondary alkyl chloride, bromide or iodide with\none anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻); a\nstereocentre is inverted.\nSN1 — a tertiary, benzylic or allylic alkyl halide with water, an alcohol\nor one of those anions.\nFischer esterification — one carboxylic acid with one primary or secondary\nalcohol.\nSubstrates outside the limit return an error that names the reason. Without\nsubstrates, or if the drawing fails, the textbook example is shown and the\nresult says so (substrates_drawn, fallback_reason).\n\nUse this when the user asks about one of these mechanisms, electron-flow\narrows, or wants to see how such a reaction proceeds step by step.\n\nA question that starts \"why does …\" or \"I don't understand why …\" about a\nmechanism is the same request in disguise (\"why does SN2 invert the\ncentre?\"). The arrows ARE the explanation; draw them and explain\nalongside, rather than describing them in words.\n\nNot this tool for: the net equation educt → product without\nintermediates — that is generate_reaction. Only the mechanism types\nlisted in reaction_type exist; for anything else use generate_reaction.\n\nArgs:\n    reaction_type: \"sn2\", \"sn1\" or \"fischer_ester\".\n    substrates: The user's substrates (names or SMILES): halide and nucleophile, or acid and alcohol.\n    current_step: 0 = overview (all steps), 1-N = specific step.",
   "inputSchema": {
     "properties": {
       "current_step": {
@@ -64,6 +64,11 @@
         "title": "Current Step",
         "type": "integer"
       },
+      "fallback_reason": {
+        "default": "",
+        "title": "Fallback Reason",
+        "type": "string"
+      },
       "name": {
         "title": "Name",
         "type": "string"
@@ -78,6 +83,11 @@
         },
         "title": "Steps",
         "type": "array"
+      },
+      "substrates_drawn": {
+        "default": false,
+        "title": "Substrates Drawn",
+        "type": "boolean"
       },
       "type": {
         "default": "mechanism",

@@ -46,19 +46,19 @@ SN2_TEMPLATE = MechanismTemplate(
 SN1_TEMPLATE = MechanismTemplate(
     id="sn1",
     name="Nucleophilic Substitution (SN1)",
-    example="2-bromopropane + water",
+    example="2-bromo-2-methylpropane + water",
     category="substitution",
     substrate_pattern="[CX4:1]([#6])([#6])[F,Cl,Br,I:2]",
     nucleophile_pattern="[O,N,S:3]",
     steps=[
         MechanismStep(
             label="Reactants",
-            molecules=["[C:1]([CH3])([CH3])[Br:2]", "[OH2:3]"],
+            molecules=["[C:1]([CH3])([CH3])([CH3])[Br:2]", "[OH2:3]"],
             arrows=[],
         ),
         MechanismStep(
             label="Leaving group departs",
-            molecules=["[C:1]([CH3])([CH3])[Br:2]"],
+            molecules=["[C:1]([CH3])([CH3])([CH3])[Br:2]"],
             arrows=[
                 CurvedArrow(
                     source=(1, "bond_to", 2),
@@ -69,12 +69,12 @@ SN1_TEMPLATE = MechanismTemplate(
         ),
         MechanismStep(
             label="Carbocation (intermediate)",
-            molecules=["[C+:1]([CH3])([CH3])", "[Br-:2]"],
+            molecules=["[C+:1]([CH3])([CH3])[CH3]", "[Br-:2]"],
             arrows=[],
         ),
         MechanismStep(
             label="Nucleophilic attack",
-            molecules=["[C+:1]([CH3])([CH3])", "[OH2:3]"],
+            molecules=["[C+:1]([CH3])([CH3])[CH3]", "[OH2:3]"],
             arrows=[
                 CurvedArrow(
                     source=(3, "lone_pair"),
@@ -85,7 +85,7 @@ SN1_TEMPLATE = MechanismTemplate(
         ),
         MechanismStep(
             label="Product (after deprotonation)",
-            molecules=["[C:1]([CH3])([CH3])[OH:3]", "[Br-:2]"],
+            molecules=["[C:1]([CH3])([CH3])([CH3])[OH:3]", "[Br-:2]"],
             arrows=[],
         ),
     ],
