@@ -77,7 +77,7 @@ Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
       Wirkstoffe), nicht aus der eigenen Auflösungskette; IR-Regelabdeckung über dieselbe Menge (welche Gruppen keine Regel
       treffen) als Bericht; pH-Aufgaben (~50) gegen Lehrbuchlösungen. Ergebnis + Rot/Gelb-Zusammenfassung nach
       `docs/evidence/masse-eval-2026-11/`; bleibt außerhalb des Gates (Netz).
-- [ ] **B Mechanismus mit eigenen Molekülen (Opus, Branch `mechanismus-substrate`):** Design-Notiz zuerst (Reaktionszentrum per
+- [x] **B Mechanismus mit eigenen Molekülen (Opus, Branch `mechanismus-substrate`, 05.11. 00:20 gemergt `16fc11e`, Gate grün rc=0; Claude geprüft: 6 Commits, Design-Notiz, Grenzen je Familie in `mechanism_substrate.py`, README-Bild gesichtet; CHANGELOG [Unreleased] → 0.8.0; Desktop-Handtest Codex offen):** Design-Notiz zuerst (Reaktionszentrum per
       SMARTS finden, Rest mitzeichnen, Pfeile an gefundene Atome), Unterstützungsgrenze je Familie benennen; TDD, Golden-SVGs
       gesichtet; CHANGELOG 0.8.0; Merge erst nach Tag v0.7.0.
 - [ ] Nach allem: Werkzeugbilanz neu bauen (`scripts/werkzeugbilanz.py`) und per url republishen.
