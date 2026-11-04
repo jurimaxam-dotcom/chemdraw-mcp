@@ -45,14 +45,15 @@ try {
   await gallery.addScriptTag({ path: out });
   await gallery.exposeFunction("__callTool", (req) => client.callTool(req));
   for (const [type, substrates, example, count] of [
-    ["sn1", ["CC(C)Br", "O"], "2-bromopropane + water", 5],
-    ["sn2", ["CBr", "[OH-]"], "bromomethane + hydroxide", 3],
-    ["fischer_ester", ["CC(=O)O", "CO"], "acetic acid + methanol", 6],
+    // Etappe B (0.8.0): gezeichnet werden die Substrate; der Titel nennt sie wörtlich.
+    ["sn1", ["CC(C)(C)Cl", "O"], "CC(C)(C)Cl + O", 5],
+    ["sn2", ["C[C@@H](Br)CC", "[C-]#N"], "C[C@@H](Br)CC + [C-]#N", 3],
+    ["fischer_ester", ["CCC(=O)O", "CCO"], "CCC(=O)O + CCO", 6],
   ]) {
     const f = await mount(gallery, "generate_mechanism", { reaction_type: type, substrates });
     await f.getByRole("button", { name: "Overview", exact: true }).waitFor();
     const body = await f.locator("body").innerText();
-    check(body.includes("textbook example") && body.includes(example), `${type}: sichtbarer Titel nennt das gezeichnete Lehrbuchbeispiel`);
+    check(!body.includes("textbook example") && body.includes(example), `${type}: sichtbarer Titel nennt die gezeichneten Substrate`);
     // Pfeile und Struktur kommen aus echten Renderer-SVGs, nicht aus einem Text-Platzhalter.
     check(await f.locator('svg path').count() > 0 && body.includes("Reactants"), `${type}: Übersicht enthält gezeichnete Strukturen und Schritte`);
     await f.getByRole("button", { name: "Step by step", exact: true }).click();

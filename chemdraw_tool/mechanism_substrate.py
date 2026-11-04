@@ -24,6 +24,16 @@ from chemdraw_tool.mechanism import CurvedArrow, MechanismStep
 
 FAMILIES = ("sn2", "sn1", "fischer_ester")
 
+# Unterstützungsgrenze je Familie, ein Satz — steht wörtlich in Fehlermeldungen.
+SUPPORT = {
+    "sn2": ("SN2 draws a methyl, primary or secondary alkyl chloride, bromide or iodide with one "
+            "anionic nucleophile: OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻ or RS⁻/HS⁻."),
+    "sn1": ("SN1 draws a tertiary, benzylic or allylic alkyl chloride, bromide or iodide with water, "
+            "an alcohol or one of the SN2 anions."),
+    "fischer_ester": ("Fischer esterification draws one carboxylic acid (a single COOH) with one "
+                      "primary or secondary alcohol."),
+}
+
 # Map-IDs des Reaktionszentrums — identisch mit den Vorlagen, damit die Pfeile gleich bleiben.
 C, X, NU = 1, 2, 3
 C_ACID, O_CARBONYL, O_HYDROXY, O_ALCOHOL, H_PLUS = 1, 2, 3, 4, 7

@@ -64,17 +64,24 @@ def test_generate_mechanism_wrong_substrates():
         )
 
 
-def test_title_names_the_textbook_example_that_is_drawn():
-    """Befund 30.10.2026: Das Bild ist immer das feste Template-Beispiel, der Titel
-    nannte aber die Nutzer-Substrate („SN2: CCCCBr + [SH-]" über CH3Br + OH-).
-    Entscheid Jay/Chef: ehrliche Lehrbuch-Galerie — der Titel nennt, was gezeichnet ist."""
+def test_title_names_the_textbook_example_when_it_falls_back(monkeypatch):
+    """Befund 30.10.2026: über CH3Br + OH⁻ stand „SN2: CCCCBr + [SH-]“. Seit Etappe B zeichnet das
+    Tool die Substrate; nur im Fallback ist das Bild die Vorlage — dann nennt der Titel sie."""
+    import chemdraw_tool.mechanism_coords as coords
+
+    def kaputt(steps):
+        raise RuntimeError("layout exploded")
+
+    monkeypatch.setattr(coords, "layout_anchored", kaputt)
     result = generate_mechanism("sn2", ["CCCCBr", "[SH-]"])
     assert result.name == "Nucleophilic Substitution (SN2) — textbook example: bromomethane + hydroxide"
+    assert result.substrates_drawn is False
+    assert "layout" in result.fallback_reason
     assert "CCCCBr" not in result.name
 
 
 @pytest.mark.parametrize("reaction_type, example", [
-    ("sn1", "2-bromopropane + water"),
+    ("sn1", "2-bromo-2-methylpropane + water"),
     ("fischer_ester", "acetic acid + methanol"),
 ])
 def test_every_template_names_its_drawn_example(reaction_type, example):
@@ -82,11 +89,66 @@ def test_every_template_names_its_drawn_example(reaction_type, example):
     assert get_template(reaction_type).example == example
 
 
-def test_drawing_does_not_depend_on_the_substrates():
-    """Hält die Galerie-Aussage ehrlich: ändert sich das, muss der Titel mitwandern."""
+def test_drawing_follows_the_substrates():
+    """Umkehr von test_drawing_does_not_depend_on_the_substrates (Etappe B, 04.11.2026)."""
     a = generate_mechanism("sn2", ["CBr", "[OH-]"])
     b = generate_mechanism("sn2", ["CCCCBr", "[SH-]"])
-    assert [s.svg for s in a.steps] == [s.svg for s in b.steps]
+    assert a.substrates_drawn and b.substrates_drawn
+    assert [s.svg for s in a.steps] != [s.svg for s in b.steps]
+
+
+def test_title_names_the_users_substances(monkeypatch):
+    import chemdraw_tool.server as server
+    from chemdraw_tool.resolver import validate_smiles
+
+    names = {"2-bromobutane": "CCC(C)Br", "sodium cyanide": "[C-]#N.[Na+]"}
+    monkeypatch.setattr(server, "resolve", lambda s: (names[s], validate_smiles(names[s])))
+    result = generate_mechanism("sn2", ["2-bromobutane", "sodium cyanide"])
+    assert result.name == "Nucleophilic Substitution (SN2) — 2-bromobutane + sodium cyanide"
+    assert result.substrates_drawn is True and result.fallback_reason == ""
+
+
+@pytest.mark.parametrize("reaction_type, substrates, n", [
+    ("sn2", ["C[C@@H](Br)CC", "[C-]#N"], 3),
+    ("sn1", ["CC(C)(C)Cl", "O"], 5),
+    ("fischer_ester", ["CCC(=O)O", "CCO"], 6),
+])
+def test_three_families_draw_real_substrates(reaction_type, substrates, n):
+    result = generate_mechanism(reaction_type, substrates)
+    assert result.substrates_drawn is True
+    assert len(result.steps) == n
+    assert all("<svg" in s.svg for s in result.steps)
+    assert " + ".join(substrates) in result.name
+
+
+def test_empty_substrates_draw_the_textbook_example():
+    result = generate_mechanism("fischer_ester", [])
+    assert result.substrates_drawn is False
+    assert result.fallback_reason == "no substrates given"
+    assert "textbook example: acetic acid + methanol" in result.name
+
+
+def test_outside_the_limit_says_why():
+    with pytest.raises(ValueError, match="do not fit the sn2 mechanism: tertiary halide"):
+        generate_mechanism("sn2", ["CC(C)(C)Br", "[OH-]"])
+    with pytest.raises(ValueError, match="use sn2"):
+        generate_mechanism("sn1", ["CCCCBr", "O"])
+
+
+def test_unresolvable_name_says_so(monkeypatch):
+    import chemdraw_tool.server as server
+
+    def nie(s):
+        raise ValueError("not found")
+
+    monkeypatch.setattr(server, "resolve", nie)
+    with pytest.raises(ValueError, match="'foozane' could not be resolved"):
+        generate_mechanism("sn2", ["foozane", "hydroxide"])
+
+
+def test_payload_new_fields_have_defaults():
+    p = MechanismPayload(name="x", reaction_type="sn2", steps=[])
+    assert p.substrates_drawn is False and p.fallback_reason == ""
 
 
 def test_reaction_type_lists_every_template_and_nothing_else():
@@ -99,6 +161,9 @@ def test_reaction_type_lists_every_template_and_nothing_else():
     assert sorted(typing.get_args(hint)) == list_templates()
 
 
-def test_description_says_it_is_a_textbook_gallery():
+def test_description_names_the_limit_of_each_family():
     doc = generate_mechanism.__doc__
-    assert "textbook" in doc and "e.g." not in doc
+    assert "e.g." not in doc
+    assert "primary or secondary" in doc and "tertiary, benzylic or allylic" in doc
+    assert "they are not drawn" not in doc
+    assert "Not this tool for" in doc

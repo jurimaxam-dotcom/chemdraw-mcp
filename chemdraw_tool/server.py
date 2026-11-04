@@ -295,7 +295,8 @@ interactive panel, and compute the numbers behind them.
 - Structural differences between two to four compounds: compare_molecules.
 - Reactants, products and conditions: generate_reaction.
 - SN1, SN2 or Fischer esterification step by step with curved arrows:
-  generate_mechanism (textbook examples; other mechanisms are not drawn).
+  generate_mechanism (draws the user's substrates within each family's limit;
+  other mechanisms are not drawn).
 - Shape in space (geometry, conformation, a rotatable model): generate_3d.
 - One named value as text (CAS number, melting point, GHS hazards, biological
   role, pathways): lookup.
@@ -3591,13 +3592,19 @@ def generate_mechanism(
     substrates: list[str],
     current_step: int = 0,
 ) -> MechanismPayload:
-    """Show a textbook reaction mechanism step by step with curved arrows.
+    """Show a reaction mechanism step by step with curved arrows, drawn with the user's own substrates.
 
-    A gallery of three textbook mechanisms, each drawn with its fixed
-    example: SN2 (bromomethane + hydroxide), SN1 (2-bromopropane + water)
-    and Fischer esterification (acetic acid + methanol). The substrates only
-    check that the user's compounds fit the mechanism; they are not drawn —
-    say so when they differ from the example.
+    Three mechanism families, each with a stated limit:
+    SN2 — a methyl, primary or secondary alkyl chloride, bromide or iodide with
+    one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻); a
+    stereocentre is inverted.
+    SN1 — a tertiary, benzylic or allylic alkyl halide with water, an alcohol
+    or one of those anions.
+    Fischer esterification — one carboxylic acid with one primary or secondary
+    alcohol.
+    Substrates outside the limit return an error that names the reason. Without
+    substrates, or if the drawing fails, the textbook example is shown and the
+    result says so (substrates_drawn, fallback_reason).
 
     Use this when the user asks about one of these mechanisms, electron-flow
     arrows, or wants to see how such a reaction proceeds step by step.
@@ -3613,12 +3620,16 @@ def generate_mechanism(
 
     Args:
         reaction_type: "sn2", "sn1" or "fischer_ester".
-        substrates: The user's substrates (names or SMILES), checked for fit.
+        substrates: The user's substrates (names or SMILES): halide and nucleophile, or acid and alcohol.
         current_step: 0 = overview (all steps), 1-N = specific step.
     """
-    from chemdraw_tool.mechanism import validate_substrates
-    from chemdraw_tool.mechanism_coords import stabilize_sequence
+    from chemdraw_tool import mechanism_coords
     from chemdraw_tool.mechanism_renderer import render_step_svg
+    from chemdraw_tool.mechanism_substrate import (
+        SUPPORT,
+        UnsupportedSubstrates,
+        build_steps,
+    )
     from chemdraw_tool.templates import get_template, list_templates
 
     template = get_template(reaction_type)
@@ -3629,47 +3640,57 @@ def generate_mechanism(
             "For any other reaction draw the net equation with generate_reaction."
         )
 
-    resolved = []
-    for s in substrates:
-        try:
-            smi, _mol = resolve(s)
+    def misfit(reason: str) -> ValueError:
+        return ValueError(
+            f"The substrates do not fit the {reaction_type} mechanism: {reason}. {SUPPORT[reaction_type]}"
+        )
+
+    fallback_reason = ""
+    step_payloads: list[MechanismStepPayload] = []
+    if not substrates:
+        fallback_reason = "no substrates given"
+    else:
+        resolved = []
+        for s in substrates:
+            try:
+                smi, _mol = resolve(s)
+            except Exception as exc:  # noqa: BLE001 — jede Auflösungsart gibt denselben Rat
+                raise misfit(f"'{s}' could not be resolved to a structure ({exc})") from None
             resolved.append(smi)
-        except Exception:
-            resolved.append(s)
+        try:
+            steps = build_steps(reaction_type, resolved)
+        except UnsupportedSubstrates as exc:
+            raise misfit(str(exc)) from None
+        except Exception as exc:  # noqa: BLE001 — passt, aber Ableitung scheitert → Vorlage
+            fallback_reason = f"the steps could not be derived for these substrates ({exc})"
+        else:
+            try:
+                mols = mechanism_coords.layout_anchored(steps)
+                step_payloads = [
+                    MechanismStepPayload(svg=render_step_svg(step, m), label=step.label,
+                                         is_transition_state=step.is_transition_state)
+                    for step, m in zip(steps, mols)
+                ]
+            except Exception as exc:  # noqa: BLE001 — Layout-/Renderfehler → Vorlage
+                fallback_reason = f"the layout failed for these substrates ({exc})"
+                step_payloads = []
 
-    if not validate_substrates(template, resolved):
-        raise ValueError(
-            f"The substrates do not fit the {reaction_type} mechanism. "
-            f"Expected substrate pattern '{template.substrate_pattern}'"
-            + (
-                f", nucleophile pattern '{template.nucleophile_pattern}'"
-                if template.nucleophile_pattern
-                else ""
-            )
+    if step_payloads:
+        # Titel nennt die Eingaben wörtlich — das ist, was gezeichnet ist (Etappe B, 04.11.2026)
+        display_name = f"{template.name} — {' + '.join(substrates)}"
+    else:
+        stabilized = mechanism_coords.stabilize_sequence(
+            [step.molecules for step in template.steps], gaps=[step.mol_gap for step in template.steps]
         )
-
-    steps_smiles = [step.molecules for step in template.steps]
-    stabilized = stabilize_sequence(steps_smiles, gaps=[step.mol_gap for step in template.steps])
-
-    if not stabilized:
-        raise ValueError(
-            f"Mechanism '{reaction_type}' has no steps defined."
-        )
-
-    step_payloads = []
-    for step, mols in zip(template.steps, stabilized):
-        svg = render_step_svg(step, mols)
-        step_payloads.append(
-            MechanismStepPayload(
-                svg=svg,
-                label=step.label,
-                is_transition_state=step.is_transition_state,
-            )
-        )
-
-    # Titel nennt, was gezeichnet ist: das feste Lehrbuchbeispiel, nicht die Eingabe
-    # (Befund 30.10.2026 — „SN2: CCCCBr + [SH-]" stand über CH3Br + OH-)
-    display_name = f"{template.name} — textbook example: {template.example}"
+        if not stabilized:
+            raise ValueError(f"Mechanism '{reaction_type}' has no steps defined.")
+        step_payloads = [
+            MechanismStepPayload(svg=render_step_svg(step, mols), label=step.label,
+                                 is_transition_state=step.is_transition_state)
+            for step, mols in zip(template.steps, stabilized)
+        ]
+        # Fallback: das Bild ist die Vorlage — der Titel sagt es (Befund 30.10.2026)
+        display_name = f"{template.name} — textbook example: {template.example}"
 
     clamped_step = max(0, min(current_step, len(step_payloads)))
 
@@ -3679,6 +3700,8 @@ def generate_mechanism(
         reaction_type=reaction_type,
         steps=step_payloads,
         current_step=clamped_step,
+        substrates_drawn=not fallback_reason,
+        fallback_reason=fallback_reason,
     )
 
 
