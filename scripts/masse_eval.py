@@ -847,6 +847,39 @@ IDENT_DEUTUNG: dict[str, str] = {
     ),
     "Prussian blue": "Eisen-Cyanid-Gerüst; Wikidata und PubChem modellieren den Komplex verschieden — kein Zeichenfall.",
     "Berliner Blau": "wie Prussian blue.",
+    # Nachgeprüft 05.11. per PubChem-Titel beider InChIKeys (erwartet vs. erhalten):
+    "tropicamide": (
+        "OPSIN (0,0 s, offline) liest 'tropic-amide' und baut das Amid der Tropasäure "
+        "(C(C(CO)c1ccccc1)(=O)N) — vierter OPSIN-Fehlgriff bei einem Trivialnamen."
+    ),
+    "Tropicamid": "wie tropicamide (OPSIN).",
+    "Risperidon": (
+        "PubChem führt den deutschen Namen als eigenes Record CID 44402564 (C23H29FN4O2, Dihydro-Form); "
+        "per curl auf /compound/name/Risperidon/cids nachgeprüft. Synonymfehler bei PubChem, wie (−)-Ephedrin."
+    ),
+    "fumaric acid": (
+        "Referenzfehler: Wikidata Q125026916 (Formel C20H33N3) ist nicht Fumarsäure; der Resolver liefert "
+        "PubChems Fumaric Acid (C4H4O4). Lehrbuch-Liste beim nächsten `liste`-Lauf auf Q139857 pinnen."
+    ),
+    "tenofovir disoproxil": (
+        "Referenzfehler: Wikidata Q155954 trägt den InChIKey von Tenofovir (C9H14N5O4P), die Eingabe heißt "
+        "aber Disoproxil; der Resolver liefert PubChems Tenofovir Disoproxil (C19H30N5O10P) — richtig."
+    ),
+    "doxycycline": (
+        "Tautomer: gleiche Formel C22H24N2O8, PubChem modelliert die Carboximidsäure-Form; den "
+        "Wikidata/ChEMBL-Schlüssel kennt PubChem nicht. Kein falscher Stoff."
+    ),
+    "Doxycyclin": "wie doxycycline (Tautomer).",
+    "rifabutin": (
+        "Gleiche Formel C46H62N4O11, den erwarteten Schlüssel kennt PubChem nicht; erhalten ist PubChems "
+        "Rifabutin. Tautomer-/Darstellungsunterschied der Referenz, kein falscher Stoff."
+    ),
+    "cyanocobalamin": (
+        "Gleiche Formel C63H88CoN14O14P; Cobalt-Komplex, von Wikidata und PubChem verschieden modelliert "
+        "(wie Prussian blue). PubChems Titel des Erhaltenen: Cyanocobalamin."
+    ),
+    "Hydroxycobalamin": "Cobalt-Komplex, PubChem-Record als Hydrat mit anderer Ladungsschreibweise — wie cyanocobalamin.",
+    "sodium calcium edetate": "Anderes Salz-Verhältnis (CaNa₂ erwartet, CaNa erhalten); gleicher Wirkstoff.",
 }
 
 _ART_TEXT = {
@@ -955,6 +988,11 @@ def identitaet_bericht(_: argparse.Namespace) -> int:
     arten = Counter(e.get("art", "nicht aufgelöst") for e in rot)
     for art, n in arten.most_common():
         md.append(f"| {art} | {n} | {_ART_TEXT.get(art, 'Kaskade findet nichts, obwohl die Quelle den Stoff führt')} |")
+    # Nicht aufgelöst nach Sprache: deutsche Wikidata-Labels ohne PubChem-Synonym
+    # sind der erwartete Hauptfall (seit dem NCI-Fix cc13e47 rot statt gelb).
+    sprachen = Counter(liste[e["eingabe"]].get("sprache", "?")[:2] for e in rot if "art" not in e)
+    if sprachen:
+        md += ["", "Nicht aufgelöst nach Sprache der Eingabe: " + " · ".join(f"{sp} {n}" for sp, n in sprachen.most_common())]
     md += ["", "## Alle roten Fälle", ""]
     for art in [a for a, _ in arten.most_common()]:
         md += [
