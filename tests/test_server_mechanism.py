@@ -118,7 +118,7 @@ def test_three_families_draw_real_substrates(reaction_type, substrates, n):
     assert result.substrates_drawn is True
     assert len(result.steps) == n
     assert all("<svg" in s.svg for s in result.steps)
-    assert " + ".join(substrates) in result.name
+    assert result.substrates_drawn  # Titel zeigt Formeln, siehe test_title_shows_formulas_not_raw_smiles
 
 
 def test_empty_substrates_draw_the_textbook_example():
