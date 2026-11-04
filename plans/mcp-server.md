@@ -45,7 +45,43 @@ der eigenen Reservierung, rote Regression vor Produktfix. Bei erneutem
 Bundle-Test Receipt/Hash/PyPI-Dateivergleich plus isolierten laufenden Prozess
 prüfen; Toolzahlen allein genügen nicht.
 
-## Weiter bei — Rest der Etappen A–D + Werkzeugbilanz (Claude, 05.11.2026 00:45, vor Kontext-Neustart)
+## Weiter bei — Etappe A abschließen, dann Release-Zeile 0.8.0 (Claude, 05.11.2026 00:20, vor Kontext-Neustart)
+
+**Erledigt heute (geprüft):** Codex-Handtest Mechanismen abgenommen (`350b270`, Faden `20261104-234915` erledigt; Formel-Titel
+im Desktop bestätigt) · Resolver-Fix NCI-500 „Page not found“ = not_found statt partial (`cc13e47`, TDD) · Nitro-SMARTS +
+starke Base ohne Auslöschung (`c8b3e8b`; pH 48/51 grün, Nitro 10/10) · Version 0.8.0 in CHANGELOG/pyproject/server.json/uv.lock
+(`150dcbb`) · Werkzeugbilanz neu gebaut und republisht (`cecb120`, Artifact Version 5) · **Gate rc=0 (7542 Tests) + Handshake
+16/12 auf dem 0.8.0-Stand.**
+
+**Läuft (Wartezeit mit Folgeaktion):** Identitätslauf 1 über 711 Eingaben, Prozess `scripts/identitaet.py --datei
+tests/identity/stoffe-masse.json`, Stand 00:15 ≈ 480/711, schreibt am Ende `docs/evidence/masse-eval-2026-11/identitaet-lauf.json`.
+Prüfen: `pgrep -f "scripts/identitaet.py --datei"` — leer = fertig. Dann:
+1. Lauf 1 sichern: `cp …/identitaet-lauf.json …/identitaet-lauf-1-vor-nci-fix.json`, Bericht `uv run python scripts/masse_eval.py identitaet`,
+   committen (Lauf 1 = Beweis für den NCI-Befund: ~14 % gelb „Quelle weg (partial)“ waren deutsche Namen, NCI antwortet 500 statt 404).
+2. Lauf 2 mit gefixtem Resolver (Hintergrund, ~45 min): `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json
+   --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht neu, README der Masse-Eval um „Lauf 1 → Fix → Lauf 2“ ergänzen.
+3. A abhaken gegen die Abnahmepunkte: ≥ 250 Stoffe mit unabhängiger Quelle (711 Eingaben/414 Stoffe, Wikidata + ChEMBL ✓), drei
+   Berichte mit Zahlen (ir-abdeckung.md ✓, ph.md ✓, identitaet.md nach Lauf 2), `uv run pytest tests/test_eval_cases.py
+   tests/test_server_profiles.py -q` grün. Ein Opus-Arbeiter der alten Session (Task a8c187fe8efb448ce) hat ggf. parallel
+   `identitaet.md` geschrieben/committet — Dateien sind die Wahrheit, `git log` ansehen, nichts doppelt committen.
+4. Dann Release-Zeile an Jay (Release-Klick = Jays Hand, Auftrag 04.11. hieß „0.8.0 vorbereiten“):
+   `gh release create v0.8.0 --target <volle SHA von main> --title "0.8.0" --notes-file <(awk '/^## \[0.8.0\]/{f=1;next} /^## \[0.7.0\]/{exit} f' CHANGELOG.md)`,
+   danach `gh run list --workflow publish.yml`, PyPI-Umgebung per API freigeben (pending_deployments), Bundle `.mcpb` am Release, Registry `isLatest`.
+
+**Befunde für später (nicht in 0.8.0):** OPSIN-Fehlgriffe bei Trivialnamen (chloroxylenol → Cyclohexadienol, methyldopa →
+N-Methyl-DOPA, methylthioninium chloride → Thiepinium; OPSIN gewinnt vor PubChem) · PubChem-Synonymfehler „(−)-Ephedrin“ →
+CID 104213 · 12 IR-Gruppen ohne Regel (`ir-abdeckung.md`: Halogenaryl, Heteroaromat-NH, Imin, Sulfonamid, C–F, Carbamat,
+β-Lactam, …) · pH-Klemme [0,14] in `exact_ph` (3 Randfälle, teilt sich die Funktion mit der Titrationskurve) · Desktop:
+„Mechanismus der Diels-Alder-Reaktion“ läuft in generate_reaction ohne Drei-Familien-Hinweis, Fischer-Pfeil knapp über HO-Label,
+SN2-Produkt ohne (S)-Label im Panel (`docs/desktop-abnahme-mechanismus-2026-11-05.md`).
+
+**Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md`
+(mcp-2-migration behalten/archivieren · origin/mcp-2-migration-v2 löschen · worktree-agent Demo-Commits übernehmen ·
+Dependabot-Update als eigene Etappe) · Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
+Offene Tisch-Fäden: keine zu dieser Arbeit (`20261104-234915` erledigt 00:05).
+
+## Weiter bei — Rest der Etappen A–D + Werkzeugbilanz (Claude, 04.11.2026 23:45, vor Kontext-Neustart)
 
 **Erledigt heute (geprüft, Haken unten):** Release 0.7.0 draußen (PyPI, Bundle, Registry) · D Repo aufräumen · C README-Gate ·
 g Bundle-Abnahme · B Mechanismus mit eigenen Substraten gemergt (`16fc11e`) + Titel-Fix (`a43104d`, `a18b849`), Gate grün.
@@ -108,10 +144,10 @@ Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
       Wirkstoffe), nicht aus der eigenen Auflösungskette; IR-Regelabdeckung über dieselbe Menge (welche Gruppen keine Regel
       treffen) als Bericht; pH-Aufgaben (~50) gegen Lehrbuchlösungen. Ergebnis + Rot/Gelb-Zusammenfassung nach
       `docs/evidence/masse-eval-2026-11/`; bleibt außerhalb des Gates (Netz).
-- [x] **B Mechanismus mit eigenen Molekülen (Opus, Branch `mechanismus-substrate`, 05.11. 00:20 gemergt `16fc11e`, Gate grün rc=0; Claude geprüft: 6 Commits, Design-Notiz, Grenzen je Familie in `mechanism_substrate.py`, README-Bild gesichtet; CHANGELOG [Unreleased] → 0.8.0; Desktop-Handtest Codex offen):** Design-Notiz zuerst (Reaktionszentrum per
+- [x] **B Mechanismus mit eigenen Molekülen (Opus, Branch `mechanismus-substrate`, 05.11. 00:20 gemergt `16fc11e`, Gate grün rc=0; Claude geprüft: 6 Commits, Design-Notiz, Grenzen je Familie in `mechanism_substrate.py`, README-Bild gesichtet; CHANGELOG [Unreleased] → 0.8.0; Desktop-Handtest Codex `350b270` abgenommen 05.11. 00:05):** Design-Notiz zuerst (Reaktionszentrum per
       SMARTS finden, Rest mitzeichnen, Pfeile an gefundene Atome), Unterstützungsgrenze je Familie benennen; TDD, Golden-SVGs
       gesichtet; CHANGELOG 0.8.0; Merge erst nach Tag v0.7.0.
-- [ ] Nach allem: Werkzeugbilanz neu bauen (`scripts/werkzeugbilanz.py`) und per url republishen.
+- [x] Nach allem: Werkzeugbilanz neu bauen (`scripts/werkzeugbilanz.py`) und per url republishen (Claude 05.11. 00:10, `cecb120`, Artifact Version 5).
 
 Bremsen bleiben: Release-Klick = Jay; Branch-Löschung nur gemergt; nichts nach außen.
 
