@@ -1,0 +1,13 @@
+✔ draw-scope-real              gerufen: ['generate_scope_table', 'generate_scope_table']
+✔ calc-weigh-in                gerufen: ['calculate_solution']
+✔ calc-content                 gerufen: ['calculate_content']
+✔ calibration-curve            gerufen: ['generate_calibration_curve']
+✔ pk-halflife-from-clearance   gerufen: ['calculate_pharmacokinetics']
+✔ pk-oral-peak                 gerufen: ['calculate_pharmacokinetics']
+✔ pk-steady-state              gerufen: ['calculate_pharmacokinetics', 'generate_pk_curve']
+✔ pk-curve-draw                gerufen: ['generate_pk_curve']
+✔ dose-response-antagonist     gerufen: ['generate_dose_response']
+✔ dose-response-concept        gerufen: ['generate_dose_response']
+
+10/10 grün
+rc=0

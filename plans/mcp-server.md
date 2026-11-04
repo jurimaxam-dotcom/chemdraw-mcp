@@ -30,8 +30,12 @@ reiner Tag-Push reicht NICHT. Befehl (Projektordner): `gh release create v0.7.0 
 '/^## \[0.7.0\]/{f=1;next} /^## \[0.6.0\]/{exit} f' CHANGELOG.md)` — Release = Jays Hand (Außenwirkung). Danach Actions-Lauf
 prüfen (`gh run list --workflow publish.yml`), PyPI 0.7.0 + `.mcpb` am Release + Registry `isLatest`, dann (g) mit Codex.
 
-**Werkzeugbilanz (Artifact, 03.11.):** https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg — 23 Tools × Version, Nutzen,
-Mehrwert, CC-Routing, Desktop; Quelle `/private/tmp/…/scratchpad/werkzeugbilanz.html` ist flüchtig → bei Änderung per `url` lesen.
+**Werkzeugbilanz (Artifact, 04.11. neu gebaut):** https://claude.ai/artifact/PV3deo4duj9r8zad5gpskg — je Tool Dateien, Ablaufdiagramm,
+Output (heutiger Lauf + Desktop-Screenshot), Toolwahl nach Name/Auftrag/Frage (CC 4 Läufe + Desktop), Mehrwert, Schwierigkeiten, Testbreite.
+Generator `scripts/werkzeugbilanz.py <lauf> <ziel.html> --welle3-log …`, Lauf `scripts/werkzeugbilanz_lauf.py <ordner>`; Quellen fest im Repo
+(`docs/evidence/routing-2026-11-03/`, Snapshots, Tests, Abnahme-Doku). Befund 04.11.: Auftrag 122/128, Frage 72/88 (mit Tool-Suche 31/44);
+generate_mechanism = feste Vorlage (Substrate nur geprüft), predict_spectrum = 31 SMARTS-Regeln, alles andere gerechnet/live.
+Nebenbefund: Ibuprofen kommt mit CAS 58560-75-1 (Racemat) statt 15687-27-1 (PubChem-Synonymreihenfolge).
 
 **Nach 0.7.0 — API-Eval (Jay 03.11.: „erst 0.7.0, dann"):** Runner über Anthropic-API (Opus 5.5) gegen den ECHTEN Server
 (MCP-stdio-Client, Tools mit `defer_loading` + `tool_search_tool_bm25_20251119` wie Desktops Nachladen), je Fall eine
