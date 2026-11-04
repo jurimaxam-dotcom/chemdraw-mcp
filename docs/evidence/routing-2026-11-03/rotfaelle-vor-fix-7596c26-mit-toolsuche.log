@@ -1,0 +1,52 @@
+== TS Lauf 1
+✘ reaction-in-conversation     gerufen: ['ToolSearch', 'generate_mechanism']
+    erwartet generate_reaction, verboten —
+    warum: „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege. Entscheidung 02.10.2026: Reaktion UND Mechanismus ist eine gute Antwort auf „wie laeuft ab" (gemessen: das Modell ruft beide) — verboten bleibt nur das Einzelmolekuel; vorher stand generate_mechanism auch in `forbidden`.
+✘ compare-in-conversation      gerufen: —
+    Modell schrieb stattdessen: # Ibuprofen vs. Naproxen Beide sind **NSAR** (nichtsteroidale Antirheumatika). Sie gehören zur selben chemischen Gruppe, den Arylpropionsäuren, und hemmen COX-1 und COX-2 ohne Unterschied. Sie wirken 
+    erwartet compare_molecules, verboten —
+    warum: „Unterschied" ist der Ausloeser: compare_molecules hebt genau ihn hervor, waehrend zwei Einzelbilder ihn dem Auge ueberlassen.
+✘ exam-revision                gerufen: ['ToolSearch', 'batch_generate', 'export_anki_deck']
+    erwartet export_anki_deck, verboten ['batch_generate']
+    warum: Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine Reihe von Strukturen, die man wieder vergisst.
+
+3/8 grün
+== PLAIN Lauf 1
+✘ lookup-data-sheet            gerufen: ['lookup_molecule_data', 'lookup', 'lookup', 'lookup', 'generate_molecule', 'predict_spectrum', 'generate_species_distribution']
+    erwartet lookup_molecule_data, verboten ['lookup', 'generate_molecule']
+    warum: Datenblatt heisst Panel mit Struktur plus gruppierten Quellen.
+✔ explain-substance            gerufen: ['generate_molecule']
+✔ explain-why-acidic           gerufen: ['generate_molecule']
+✔ reaction-in-conversation     gerufen: ['generate_mechanism', 'generate_reaction']
+✔ compare-in-conversation      gerufen: ['compare_molecules']
+✘ exam-revision                gerufen: ['batch_generate', 'export_anki_deck']
+    erwartet export_anki_deck, verboten ['batch_generate']
+    warum: Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine Reihe von Strukturen, die man wieder vergisst.
+
+5/8 grün
+== TS Lauf 2
+✘ reaction-in-conversation     gerufen: ['ToolSearch', 'generate_mechanism']
+    erwartet generate_reaction, verboten —
+    warum: „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege. Entscheidung 02.10.2026: Reaktion UND Mechanismus ist eine gute Antwort auf „wie laeuft ab" (gemessen: das Modell ruft beide) — verboten bleibt nur das Einzelmolekuel; vorher stand generate_mechanism auch in `forbidden`.
+✘ compare-in-conversation      gerufen: —
+    Modell schrieb stattdessen: Beide sind nichtsteroidale Antirheumatika (NSAR) aus derselben chemischen Gruppe, den Arylpropionsäuren („Profene“). Sie wirken gleich: Sie hemmen die Enzyme COX‑1 und COX‑2 und damit die Bildung von 
+    erwartet compare_molecules, verboten —
+    warum: „Unterschied" ist der Ausloeser: compare_molecules hebt genau ihn hervor, waehrend zwei Einzelbilder ihn dem Auge ueberlassen.
+✘ exam-revision                gerufen: ['ToolSearch', 'batch_generate']
+    erwartet export_anki_deck, verboten ['batch_generate']
+    warum: Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine Reihe von Strukturen, die man wieder vergisst.
+
+2/8 grün
+== PLAIN Lauf 2
+✘ explain-substance            gerufen: —
+    Modell schrieb stattdessen: Ibuprofen gehört zu den **NSAR** (nichtsteroidale Antirheumatika). **Wirkmechanismus:** Ibuprofen hemmt die Enzyme **Cyclooxygenase‑1 und ‑2 (COX‑1/COX‑2)**, und zwar reversibel. Diese Enzyme bilden a
+    erwartet generate_molecule, verboten —
+    warum: Reine Erklaerfrage. Die Antwort ist Text — aber mit dem Panel daneben, in dem man die Carboxylgruppe antippen kann, ist sie eine andere.
+✔ explain-why-acidic           gerufen: ['generate_molecule']
+✔ reaction-in-conversation     gerufen: ['generate_mechanism', 'generate_reaction']
+✔ compare-in-conversation      gerufen: ['compare_molecules']
+✘ exam-revision                gerufen: ['batch_generate', 'export_anki_deck']
+    erwartet export_anki_deck, verboten ['batch_generate']
+    warum: Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine Reihe von Strukturen, die man wieder vergisst.
+
+4/8 grün

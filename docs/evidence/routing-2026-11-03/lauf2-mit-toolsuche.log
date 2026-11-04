@@ -1,0 +1,81 @@
+✔ bare-name-de                 gerufen: ['ToolSearch', 'generate_molecule']
+✔ bare-name-en                 gerufen: ['ToolSearch', 'generate_molecule']
+✔ bare-name-with-article       gerufen: ['ToolSearch', 'generate_molecule']
+✔ draw-single-structure        gerufen: ['ToolSearch', 'generate_molecule']
+✔ draw-with-caption            gerufen: ['ToolSearch', 'generate_molecule']
+✔ draw-batch                   gerufen: ['ToolSearch', 'batch_generate']
+✔ draw-reaction                gerufen: ['ToolSearch', 'generate_reaction']
+✔ draw-equilibrium             gerufen: ['ToolSearch', 'generate_reaction']
+✔ draw-reaction-as-typed       gerufen: ['ToolSearch', 'generate_reaction']
+✔ draw-sugar-as-typed          gerufen: ['ToolSearch', 'generate_molecule']
+✔ haworth-projection-named     gerufen: ['ToolSearch', 'generate_molecule']
+✔ fischer-projection-named     gerufen: ['ToolSearch', 'generate_molecule']
+✔ draw-racemate-as-typed       gerufen: ['ToolSearch', 'generate_molecule']
+✘ all-stereoisomers            gerufen: ['ToolSearch', 'batch_generate']
+    erwartet generate_molecule, verboten ['batch_generate']
+    warum: Gegenrichtung: alle Stereoisomere eines Stoffs sind ein Parameter von generate_molecule (stereo_variants), keine Liste fuer batch_generate.
+✔ draw-mechanism               gerufen: ['ToolSearch', 'generate_mechanism']
+✔ mechanism-english-fischer    gerufen: ['ToolSearch', 'generate_mechanism']
+✔ mechanism-outside-the-gallery gerufen: ['ToolSearch', 'generate_reaction']
+✔ draw-3d-explicit             gerufen: ['ToolSearch', 'generate_3d']
+✘ draw-3d-geometry-question    gerufen: —
+    Modell schrieb stattdessen: Wasser ist gewinkelt (ca. 104,5°), weil das Sauerstoffatom neben den zwei Bindungen zu den H-Atomen noch **zwei freie Elektronenpaare** besitzt. ## 1. Elektronenpaare stoßen sich ab (VSEPR-Modell) Der
+    erwartet generate_3d, verboten —
+    warum: Geometriefrage ohne das Wort 3D — die raeumliche Form ist die Antwort. generate_molecule ist hier nicht verboten (Strukturformel plus Modell ist eine gute Antwort), nur das Datenblatt.
+✔ draw-3d-english-conformation gerufen: ['ToolSearch', 'generate_3d']
+✘ lookup-named-value           gerufen: —
+    Modell schrieb stattdessen: Die CAS-Nummer von Paracetamol (Acetaminophen, N-(4-Hydroxyphenyl)acetamid) ist **103-90-2**.
+    erwartet lookup, verboten —
+    warum: Ein benannter Einzelwert. Wenn dieser Fall ins Zeichnen kippt, ist die Default-Regel zu breit geraten — der Gegentest zu bare-name-de.
+✔ lookup-safety                gerufen: ['ToolSearch', 'lookup']
+✔ lookup-melting-point         gerufen: ['ToolSearch', 'lookup']
+✔ lookup-data-sheet            gerufen: ['ToolSearch', 'lookup_molecule_data']
+✔ calc-ph-number               gerufen: ['ToolSearch', 'calculate_ph']
+✔ draw-titration-curve         gerufen: ['ToolSearch', 'generate_titration_curve']
+✔ titration-indicator          gerufen: ['ToolSearch', 'generate_titration_curve', 'generate_titration_curve']
+✔ titration-en                 gerufen: ['ToolSearch', 'generate_titration_curve']
+✔ species-stomach              gerufen: ['ToolSearch', 'generate_species_distribution', 'calculate_ph']
+✔ species-phosphate            gerufen: ['ToolSearch', 'generate_species_distribution']
+✔ species-en                   gerufen: ['ToolSearch', 'generate_species_distribution', 'calculate_ph']
+✔ predict-spectrum             gerufen: ['ToolSearch', 'predict_spectrum']
+✔ predict-assign-band          gerufen: ['ToolSearch', 'predict_spectrum']
+✔ predict-nmr-signals-en       gerufen: ['ToolSearch', 'predict_spectrum']
+✔ draw-spectrum                gerufen: ['ToolSearch', 'generate_spectrum']
+✔ draw-spectrum-by-name        gerufen: ['ToolSearch', 'generate_spectrum']
+✔ draw-spectrum-schematic-desktop gerufen: ['ToolSearch', 'generate_spectrum']
+✔ draw-nmr-by-name             gerufen: ['ToolSearch', 'generate_spectrum']
+✔ draw-mass-spectrum-en        gerufen: ['ToolSearch', 'generate_spectrum']
+✔ tlc-esterification           gerufen: ['ToolSearch', 'generate_tlc']
+✔ tlc-sketch-plain             gerufen: ['ToolSearch', 'generate_tlc']
+✔ tlc-en                       gerufen: ['ToolSearch', 'generate_tlc']
+✔ never-save-png               gerufen: ['ToolSearch', 'generate_molecule']
+✘ explain-substance            gerufen: —
+    Modell schrieb stattdessen: **Ibuprofen** gehört zu den nichtsteroidalen Antirheumatika (NSAR). **Wie es wirkt:** Ibuprofen hemmt die Enzyme **Cyclooxygenase 1 und 2 (COX-1/COX-2)**. Diese Enzyme bilden aus Arachidonsäure die **
+    erwartet generate_molecule, verboten —
+    warum: Reine Erklaerfrage. Die Antwort ist Text — aber mit dem Panel daneben, in dem man die Carboxylgruppe antippen kann, ist sie eine andere.
+✘ explain-why-acidic           gerufen: —
+    Modell schrieb stattdessen: Acetylsalicylsäure (ASS) ist sauer wegen ihrer **Carboxylgruppe (–COOH)**. Ihr pKs liegt bei etwa **3,5**, sie ist also eine mittelstarke organische Säure. ### 1. Die Carboxylgruppe gibt ein Proton ab
+    erwartet generate_molecule, verboten —
+    warum: Die Antwort steckt in der Struktur — die Carboxylgruppe. Ohne Bild muss der Nutzer sie sich vorstellen. Kein pH-Wert gefragt, nur das Warum.
+✘ reaction-in-conversation     gerufen: ['ToolSearch', 'generate_mechanism']
+    erwartet generate_reaction, verboten —
+    warum: „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege. Entscheidung 02.10.2026: Reaktion UND Mechanismus ist eine gute Antwort auf „wie laeuft ab" (gemessen: das Modell ruft beide) — verboten bleibt nur das Einzelmolekuel; vorher stand generate_mechanism auch in `forbidden`.
+✔ mechanism-in-conversation    gerufen: ['ToolSearch', 'generate_mechanism']
+✘ compare-in-conversation      gerufen: —
+    Modell schrieb stattdessen: Beide sind nichtsteroidale Antirheumatika (NSAR). Sie hemmen die Enzyme COX‑1 und COX‑2 und wirken dadurch schmerzstillend, entzündungshemmend und fiebersenkend. Der wichtigste Unterschied ist, wie la
+    erwartet compare_molecules, verboten —
+    warum: „Unterschied" ist der Ausloeser: compare_molecules hebt genau ihn hervor, waehrend zwei Einzelbilder ihn dem Auge ueberlassen.
+✘ exam-revision                gerufen: ['ToolSearch', 'batch_generate']
+    erwartet export_anki_deck, verboten ['batch_generate']
+    warum: Lernabsicht, kein Bildwunsch. Karten sind hier die Antwort, nicht eine Reihe von Strukturen, die man wieder vergisst.
+✔ exam-revision-short          gerufen: ['ToolSearch', 'export_anki_deck']
+✔ pk-ionisation-is-ph          gerufen: ['ToolSearch', 'calculate_ph']
+✔ desktop-loeslichkeit         gerufen: ['ToolSearch', 'lookup']
+✔ desktop-ir-banden            gerufen: ['ToolSearch', 'predict_spectrum']
+✔ desktop-ph-essig             gerufen: ['ToolSearch', 'calculate_ph']
+✔ desktop-puffer-rezept        gerufen: ['ToolSearch', 'calculate_ph']
+✔ desktop-ionisation           gerufen: ['ToolSearch', 'calculate_ph']
+✔ desktop-vergleich            gerufen: ['ToolSearch', 'compare_molecules']
+
+49/57 grün
+rc=1
