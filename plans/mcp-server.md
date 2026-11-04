@@ -8,6 +8,15 @@ beides nicht erneut ausführen. Falls die separate Desktop-Abnahme der neuen
 README-Bilder beauftragt ist: deren konkreten Faden lesen und dort fortsetzen.
 Keine Dateien der laufenden A/B-Arbeiter übernehmen.
 
+**Neustart-Prüfung (04.11., Codex):** Keine eigene halbfertige Arbeit und keine
+ungelesene Tisch-Nachricht. Einzige lokale Änderung beim Prüfen:
+`scripts/masse_eval.py` (laufende Claude-/Arbeiter-Arbeit, nicht mitcommitten).
+Offener Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`, zuletzt
+#4 Codex-Status zum Neustart. A wartet laut Helfer-Live auf seinen Hintergrundlauf;
+nach dessen Bericht wertet Claude aus. Codex hat keine eigene Wartefrist und
+keinen Hintergrundjob; nach Neustart Nachrichten prüfen, bei fehlendem Auftrag
+keine A/B-Arbeit übernehmen.
+
 **Dateien und Beweise:** `docs/desktop-abnahme-0-7-0-bundle.md` (249fca6,
 vier frische Desktop-Chats grün, fünf Bundle-/56 Paketdateien gegen PyPI identisch,
 Screenshots `/tmp/chemdraw-desktop-test/0-7-0-bundle/`); D in
@@ -25,8 +34,9 @@ Hintergrundjob, der nach dem Neustart ausgewertet werden muss.
 **Offene Entscheidungen:** „Welle 3 eigenes Profil?“ und „Abfragemodus auch für
 Reaktionen?“ — **unbeantwortet — nicht bauen**. Vier gesicherte Branch-Entscheidungen
 stehen mit Wortlaut im D-Befund; keine Branch-Löschung ohne Entscheidung.
-Drei Release-Befunde für spätere Entscheidung: Manifest nennt „six tools“,
-Erststart-Timeout während Installation, Anki zählt Notizen als „cards“.
+Release-Befunde: Manifest „six tools“ laut Release-Abschnitt bereits behoben
+(`dbd94e5`); offen bleiben Erststart-Timeout während Installation und
+Anki zählt Notizen als „cards“.
 Nicht selbst in dieser Abnahme fixen. Keine zeitgebundene Wartefrist offen.
 
 **Prüfmethoden bei Folgeaufträgen:** echte Desktop-Chats und Screenshots für
