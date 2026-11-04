@@ -205,3 +205,10 @@ def test_ionisation_unbekannte_art_wird_abgelehnt():
 
     with pytest.raises(ValueError, match="acid"):
         ph_calc.ionisation(pka=4.0, ph=2.0, kind="salt")
+
+
+def test_concentrated_strong_base_has_no_cancellation():
+    """Masse-Evaluation 04.11.2026: (−c + √(c²+4Kw))/2 löscht sich bei c ≥ 1 M aus —
+    10 M NaOH gab pH 15,05 statt 15,00. Stabil: [H⁺] = 2Kw/(c + √(c²+4Kw))."""
+    assert strong_base_ph(10.0)["ph"] == pytest.approx(15.0, abs=0.001)
+    assert strong_base_ph(2.0)["ph"] == pytest.approx(14.30103, abs=0.001)

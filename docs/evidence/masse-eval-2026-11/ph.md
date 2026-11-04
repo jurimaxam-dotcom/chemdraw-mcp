@@ -1,21 +1,19 @@
 # pH-Aufgaben — Masse-Evaluation
 
-Stand 2026-11-04 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
+Stand 2026-11-05 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
 
-**51 Aufgaben: 47 grün · 4 rot.** Referenz aus `tests/identity/ph-aufgaben.json` (sympy, Polynomwurzel der Ladungsbilanz — Herleitung je Aufgabe in der Datei). Geprüft werden der Rückgabewert von `ph_calc` (Toleranz in der Datei, pH ±0,005) UND die Überschrift, die `calculate_ph` dem Nutzer zeigt (auf 2 Stellen gerundet). Spalte *Näherung* = Lehrbuchnäherung bzw. Henderson-Hasselbalch bzw. −log c, nur zur Einordnung, nicht geprüft.
+**51 Aufgaben: 48 grün · 3 rot.** Referenz aus `tests/identity/ph-aufgaben.json` (sympy, Polynomwurzel der Ladungsbilanz — Herleitung je Aufgabe in der Datei). Geprüft werden der Rückgabewert von `ph_calc` (Toleranz in der Datei, pH ±0,005) UND die Überschrift, die `calculate_ph` dem Nutzer zeigt (auf 2 Stellen gerundet). Spalte *Näherung* = Lehrbuchnäherung bzw. Henderson-Hasselbalch bzw. −log c, nur zur Einordnung, nicht geprüft.
 
 ## Abweichungen
 
 | Aufgabe | Thema | Parameter | Referenz | ph_calc | Δ | Tool-Kopf | Näherung | Status | Quelle/Zweck |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| naoh-2 | strong_base | concentration=2.0 | 14.3 | 14.31 | +0.01 | 14.31 | 14.30 | rot | konzentriert: pH über 14 (ideal gerechnet) |
 | stark-konz | weak_acid | concentration=5.0, pka=0.5 | -0.04502 | 6.072e-18 | +0.045 | 0.00 | -0.10 | rot | Randfall: exakter pH < 0 |
 | schwach-konz | weak_acid | concentration=10.0, pka=-1.0 | -0.791 | 6.072e-18 | +0.79 | 0.00 | -1.00 | rot | Randfall: pKs < 0, pH deutlich < 0 |
 | starkebase-konz | weak_base | concentration=5.0, pkb=0.5 | 14.05 | 14 | -0.045 | 14.00 | 14.10 | rot | Randfall: exakter pH > 14 |
 
 ### Deutung
 
-- **naoh-2**: Auslöschung in `_with_water_autoprotolysis` (Base-Zweig): [H⁺] = (−c + √(c² + 4Kw))/2 zieht zwei fast gleiche Zahlen voneinander ab; bei c ≥ 1 M bleibt nur Rundungsrauschen. 10 M NaOH → pH 15,05 statt 15,00. Stabil wäre [H⁺] = 2Kw/(c + √(c² + 4Kw)).
 - **stark-konz**: `ph_core.exact_ph` sucht per Bisektion nur in [0, 14] und klemmt am Rand: Ergebnis pH 0,00 statt −0,05. Die Näherung (−0,10) liegt hier näher an der Wahrheit als der 'exakte' Wert.
 - **schwach-konz**: wie stark-konz: Klemme bei pH 0 — 0,00 statt −0,79.
 - **starkebase-konz**: Spiegelbild: Klemme bei pH 14 — 14,00 statt 14,05.
@@ -30,10 +28,10 @@ Stand 2026-11-04 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
 | hcl-1e-7 | strong_acid | concentration=1e-07 | 6.791 | 6.791 | +3.6e-07 | 6.79 | 7.00 | grün | Grenzfall: Säure und Wasser gleich stark (Lehrbuchwert 6,79) |
 | hcl-1e-8 | strong_acid | concentration=1e-08 | 6.978 | 6.978 | +3.1e-07 | 6.98 | 8.00 | grün | Klassische Fangfrage: 1e-8 M HCl ist nicht basisch (pH 6,98) |
 | hcl-2 | strong_acid | concentration=2.0 | -0.301 | -0.301 | +4.3e-09 | -0.30 | -0.30 | grün | konzentriert: negativer pH (ideal gerechnet) |
-| naoh-0.1 | strong_base | concentration=0.1 | 13 | 13 | -1.5e-05 | 13.00 | 13.00 | grün | Lehrbuch-Standardbeispiel |
-| naoh-1e-3 | strong_base | concentration=0.001 | 11 | 11 | +6.4e-09 | 11.00 | 11.00 | grün | Lehrbuch-Standardbeispiel |
+| naoh-0.1 | strong_base | concentration=0.1 | 13 | 13 | +4.4e-13 | 13.00 | 13.00 | grün | Lehrbuch-Standardbeispiel |
+| naoh-1e-3 | strong_base | concentration=0.001 | 11 | 11 | +4.3e-09 | 11.00 | 11.00 | grün | Lehrbuch-Standardbeispiel |
 | naoh-1e-8 | strong_base | concentration=1e-08 | 7.022 | 7.022 | -3.1e-07 | 7.02 | 6.00 | grün | Spiegelbild der Fangfrage |
-| naoh-2 | strong_base | concentration=2.0 | 14.3 | 14.31 | +0.01 | 14.31 | 14.30 | rot | konzentriert: pH über 14 (ideal gerechnet) |
+| naoh-2 | strong_base | concentration=2.0 | 14.3 | 14.3 | -4.3e-09 | 14.30 | 14.30 | grün | konzentriert: pH über 14 (ideal gerechnet) |
 | essig-0.1 | weak_acid | concentration=0.1, pka=4.76 | 2.883 | 2.883 | -4.6e-07 | 2.88 | 2.88 | grün | Essigsäure 0,1 M: Lehrbuchwert pH 2,88 |
 | essig-0.01 | weak_acid | concentration=0.01, pka=4.76 | 3.389 | 3.389 | -4.6e-07 | 3.39 | 3.38 | grün | Essigsäure 0,01 M: Lehrbuchwert ≈ 3,4 |
 | essig-1e-4 | weak_acid | concentration=0.0001, pka=4.76 | 4.47 | 4.47 | -2e-07 | 4.47 | 4.38 | grün | Näherung bricht: Säure merklich dissoziiert |

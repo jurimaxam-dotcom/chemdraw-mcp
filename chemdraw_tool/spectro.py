@@ -226,7 +226,7 @@ _IR_TABLE: list[dict] = [
         "hint": "",
     },
     {
-        "smarts": "[NX3](=O)=O",
+        "smarts": "[$([NX3](=O)(=O)[#6]),$([NX3+](=O)([O-])[#6])]",
         "group": "N=O (nitro, antisymmetric)",
         "low": 1500,
         "high": 1560,
@@ -235,7 +235,7 @@ _IR_TABLE: list[dict] = [
         "hint": "Nitro always shows a pair — this one and the band near 1350.",
     },
     {
-        "smarts": "[NX3](=O)=O",
+        "smarts": "[$([NX3](=O)(=O)[#6]),$([NX3+](=O)([O-])[#6])]",
         "group": "N=O (nitro, symmetric)",
         "low": 1345,
         "high": 1385,

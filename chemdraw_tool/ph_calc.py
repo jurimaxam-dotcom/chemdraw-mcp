@@ -254,9 +254,13 @@ def _with_water_autoprotolysis(concentration: float, acidic: bool) -> float:
     kw = 10.0**-PKW
     # [H+]² − c·[H+] − Kw = 0 für die Säure (c = zugegebene Protonen),
     # bei der Base entsprechend für [OH−].
-    added = concentration if acidic else -concentration
-    h = (added + math.sqrt(added * added + 4.0 * kw)) / 2.0
-    return h
+    root = math.sqrt(concentration * concentration + 4.0 * kw)
+    if acidic:
+        return (concentration + root) / 2.0
+    # Base: (−c + √(c²+4Kw))/2 zieht ab c ≥ 1 M zwei fast gleiche Zahlen
+    # voneinander ab (10 M NaOH gab pH 15,05 statt 15,00 — Masse-Evaluation
+    # 04.11.2026). Rationalisiert: [H⁺] = 2Kw / (c + √(c²+4Kw)), ohne Auslöschung.
+    return 2.0 * kw / (concentration + root)
 
 
 def strong_acid_ph(concentration: float) -> dict:

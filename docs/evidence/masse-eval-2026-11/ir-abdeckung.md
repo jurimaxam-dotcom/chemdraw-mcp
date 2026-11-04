@@ -1,6 +1,6 @@
 # IR-Regelabdeckung — Masse-Evaluation
 
-Stand 2026-11-04 · `uv run python scripts/masse_eval.py ir` · offline, < 10 s
+Stand 2026-11-05 · `uv run python scripts/masse_eval.py ir` · offline, < 10 s
 
 **414 Moleküle** (ein Eintrag je InChIKey aus `tests/identity/stoffe-masse.json`, SMILES aus Wikidata, nicht aus `resolve()` — der Bericht hängt also nicht vom Identitätslauf ab). Je Molekül: 43 eigene SMARTS-Gruppen (unabhängig von `_IR_TABLE` geschrieben, Liste `IR_GRUPPEN` im Skript) gegen die Gruppen, die `spectro.expected_ir_bands` (= `predict_spectrum`) meldet.
 
@@ -19,7 +19,6 @@ Stand 2026-11-04 · `uv run python scripts/masse_eval.py ir` · offline, < 10 s
 | Carbamat | 15 | 15 | 100% | nein | C=O 1690–1740; Tabelle meldet Amid UND Ester | albendazole, atazanavir, capecitabine, daclatasvir |
 | β-Lactam | 14 | 14 | 100% | nein | C=O 1760–1780 — deutlich über der Amid-I-Bande | amoxicillin, ampicillin, aztreonam, benzathine benzylpenicillin |
 | Alkylchlorid/-bromid/-iodid | 13 | 13 | 100% | nein | C–Cl 600–800, C–Br 500–600 | (RS)-cyclophosphamide, beclomethasone dipropionate, bendamustine, chlorambucil |
-| Nitro | 10 | 10 | 100% | ja, feuert hier nicht | N=O 1500–1560 und 1345–1385 — die Regel existiert, ihr SMARTS [NX3](=O)=O passt aber nicht auf die ladungsgetrennte Form [N+](=O)[O-], in der RDKit jede Nitrogruppe speichert | azathioprine, benznidazole, chloramphenicol, delamanid |
 | Phosphat/Phosphonat | 9 | 9 | 100% | nein | P=O 1250–1300, P–O 950–1050 | (RS)-cyclophosphamide, fludarabine phosphate, hydroxocobalamin, ifosfamide |
 | Sulfonsäure/Sulfat/Sulfonat | 6 | 6 | 100% | nein | S=O 1150–1250, 1030–1060 | atracurium besilate, aztreonam, docusate sodium, mesna |
 | Carboxylat | 4 | 4 | 100% | nein | COO⁻ asym. 1550–1610, sym. ~1400 | calcium gluconate, ceftazidime, sodium calcium edetate, sodium lactate |
@@ -42,22 +41,21 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 | Halogenaryl (C–F/Cl/Br/I) | C–H (aromatic) (52), C=C (aromatic ring) (49), C–H (alkane, sp³) (49), C=O (amide, band I) (17) |
 | Heteroaromat-NH (Pyrrol/Indol/Imidazol) | C–H (aromatic) (47), C–H (alkane, sp³) (37), C=C (aromatic ring) (23), N–H (primary amine) (15) |
 | Imin/Amidin/Guanidin (C=N, nicht aromatisch) | C–H (alkane, sp³) (32), C–H (aromatic) (25), C=C (aromatic ring) (21), C=O (amide, band I) (16) |
-| Sulfonamid | C–H (aromatic) (15), C=C (aromatic ring) (14), C–H (alkane, sp³) (13), C=O (amide, band I) (8) |
+| Sulfonamid | C–H (aromatic) (15), C=C (aromatic ring) (14), C–H (alkane, sp³) (13), N–H (amide) (8) |
 | Fluor (aliphatisch, C–F) | C–H (alkane, sp³) (15), C–H (aromatic) (10), C=C (aromatic ring) (9), O–H (alcohol) (8) |
-| Carbamat | C=O (amide, band I) (15), C–O (ester) (15), C–H (aromatic) (15), C=O (ester) (15) |
-| β-Lactam | O–H (carboxylic acid) (14), C=O (amide, band I) (14), C=O (carboxylic acid) (14), C–H (alkane, sp³) (14) |
-| Alkylchlorid/-bromid/-iodid | C–H (alkane, sp³) (12), C–H (aromatic) (4), C=C (aromatic ring) (4), O–H (alcohol) (3) |
-| Nitro | C–H (aromatic) (10), C–H (alkane, sp³) (9), C=C (aromatic ring) (6), C=O (amide, band I) (3) |
-| Phosphat/Phosphonat | C–H (alkane, sp³) (9), C–H (aromatic) (6), C–O (ether) (5), O–H (alcohol) (5) |
-| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C=O (ester) (2) |
-| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), O–H (carboxylic acid) (1), C=O (amide, band I) (1) |
-| Imid | C=O (amide, band I) (4), N–H (amide) (4), C–H (alkane, sp³) (3), C–H (aromatic) (3) |
-| Sulfon | C–H (aromatic) (3), C=C (aromatic ring) (2), C–H (alkane, sp³) (2), C=O (amide, band I) (1) |
-| Sulfoxid | C–H (alkane, sp³) (3), C–H (aromatic) (2), C–O (ether) (2), C=C (aromatic ring) (2) |
-| Amin sekundär | C=C (alkene) (2), C–O (ester) (2), C=O (ester) (2), C=C (aromatic ring) (2) |
-| Thiocarbonyl (Thioamid/-harnstoff) | C–H (aromatic) (1), C–H (alkane, sp³) (1) |
-| Nitratester | C–O (ether) (1), C–H (alkane, sp³) (1) |
-| Azid | C–H (aromatic) (1), C–O (ether) (1), O–H (alcohol) (1), C–H (alkane, sp³) (1) |
+| Carbamat | C–O (ester) (15), C=O (ester) (15), C–H (alkane, sp³) (15), C=O (amide, band I) (15) |
+| β-Lactam | O–H (carboxylic acid) (14), C=O (carboxylic acid) (14), C–H (alkane, sp³) (14), C=O (amide, band I) (14) |
+| Alkylchlorid/-bromid/-iodid | C–H (alkane, sp³) (12), C=C (aromatic ring) (4), C–H (aromatic) (4), O–H (alcohol) (3) |
+| Phosphat/Phosphonat | C–H (alkane, sp³) (9), C–H (aromatic) (6), O–H (alcohol) (5), C–O (ether) (5) |
+| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C–O (ester) (2) |
+| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), O–H (carboxylic acid) (1), N–H (amide) (1) |
+| Imid | N–H (amide) (4), C=O (amide, band I) (4), C–H (alkane, sp³) (3), C–H (aromatic) (3) |
+| Sulfon | C–H (aromatic) (3), C=C (aromatic ring) (2), C–H (alkane, sp³) (2), N–H (amide) (1) |
+| Sulfoxid | C–H (alkane, sp³) (3), C=C (aromatic ring) (2), C–H (aromatic) (2), C–O (ether) (2) |
+| Amin sekundär | C–O (ester) (2), C=O (ester) (2), C=C (aromatic ring) (2), C–H (alkane, sp³) (2) |
+| Thiocarbonyl (Thioamid/-harnstoff) | C–H (alkane, sp³) (1), C–H (aromatic) (1) |
+| Nitratester | C–H (alkane, sp³) (1), C–O (ether) (1) |
+| Azid | C–H (alkane, sp³) (1), O–H (alcohol) (1), C–H (aromatic) (1), C–O (ether) (1) |
 | Formaldehyd |  |
 
 ## Alle Gruppen: Vorkommen und Abdeckung
@@ -78,7 +76,7 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 | Säurehalogenid | ja | 1 | 1 | C=O (acid halide) |
 | Anhydrid | ja | 1 | 1 | C=O (anhydride) |
 | Nitril | ja | 6 | 6 | C≡N (nitrile) |
-| Nitro | ja | 10 | 0 | N=O (nitro, antisymmetric) |
+| Nitro | ja | 10 | 10 | N=O (nitro, antisymmetric) |
 | Nitratester | ja | 1 | 0 | — keine — |
 | Azid | ja | 1 | 0 | — keine — |
 | Sulfonamid | ja | 16 | 0 | — keine — |
@@ -110,6 +108,6 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 
 ## Tabellenregeln, die in keinem der Moleküle feuern
 
-N=O (nitro, antisymmetric), N=O (nitro, symmetric)
+keine
 
 Moleküle, für die außer sp³-C–H gar keine Bande gemeldet wird: 16 ((RS)-cyclophosphamide, calcium, halothane, ifosfamide, miltefosine, nitroprusside, potassium chloride, sodium calcium edetate, carbon tetrachloride, chloroform)

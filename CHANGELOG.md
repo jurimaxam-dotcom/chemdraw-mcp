@@ -42,6 +42,14 @@ Planned as 0.8.0.
   counted as a source outage: every German trivial name PubChem does not index
   got "retry once the connection is stable" instead of "use the English name"
   (found by the identity run over 711 inputs, where 14 % turned yellow for it).
+- `predict_spectrum` reports the two nitro bands again (1500–1560 and
+  1345–1385 cm⁻¹). The rule's SMARTS only matched the uncharged `N(=O)=O`
+  form, while RDKit stores every nitro group charge-separated, so the rule
+  never fired (0 of 10 nitro compounds in the IR coverage run). Nitrate esters
+  (O–NO₂) are deliberately not counted as nitro.
+- `calculate_ph` for concentrated strong bases: 10 M NaOH gave pH 15.05
+  instead of 15.00 because the quadratic solution subtracted two nearly equal
+  numbers; the rationalised form has no cancellation.
 
 ## [0.7.0] — 2026-11-03
 

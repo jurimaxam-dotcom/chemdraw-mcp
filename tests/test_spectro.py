@@ -128,3 +128,12 @@ def test_result_names_the_diastereotopic_limitation():
 def test_integrals_sum_to_the_hydrogen_count():
     r = proton_signals("CCO")
     assert sum(r["integrals"]) == 6
+
+
+def test_nitro_group_fires_on_rdkits_charge_separated_form():
+    """Masse-Evaluation 04.11.2026: RDKit speichert jede Nitrogruppe als
+    [N+](=O)[O-]; das SMARTS [NX3](=O)=O passte nie — die Regel war tot."""
+    for smiles in ("c1ccccc1[N+](=O)[O-]", "C[N+](=O)[O-]"):
+        labels = " ".join(b["group"] for b in expected_ir_bands(smiles))
+        assert "nitro, antisymmetric" in labels, smiles
+        assert "nitro, symmetric" in labels, smiles
