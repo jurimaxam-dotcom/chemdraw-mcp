@@ -184,3 +184,13 @@ https://github.com/jurimaxam-dotcom/praktikumsrechner . Kein Deployment.
 Die vier oben genannten Branch-Fragen bleiben absichtlich offen. Keine Branches
 oder Remote-Refs gelöscht. Die Aufräumetappe ist damit abgeschlossen; die
 fachliche Bewertung alter Änderungen ist eine separate Entscheidung.
+
+## Commit-Zuordnung im gemeinsamen Arbeitsbaum
+
+Die bereits gestagten Web-Löschungen wurden während des laufenden Gates vom
+parallelen C-Commit `167c8b1` mit aufgenommen (zusammen mit tests/test_readme.py).
+Kein Rewrite: der gewünschte Endstand ist korrekt. D-Korrekturen:
+`7007e14` (Ruff), `22d4142` (Befund und .gitignore).
+Der während des Gates neu hinzugekommene C-Test wurde ergänzend separat
+geprüft: `uv run pytest -q tests/test_readme.py` → **5 passed in 1.04s**
+(`/tmp/gate-d-readme.log`). Keine fremden Änderungen zurückgesetzt.
