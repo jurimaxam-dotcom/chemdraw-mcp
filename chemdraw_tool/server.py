@@ -3586,6 +3586,18 @@ def batch_generate(
     )
 
 
+
+def _substrate_label(raw: str, resolved: str, mol: Chem.Mol) -> str:
+    """Titelzeile eines Mechanismus: der Name, wie eingegeben — oder, wenn die Eingabe ein
+    SMILES war, die Summenformel mit Tiefziffern und Ladung (C₄H₉Br, CN⁻). Rohe SMILES im
+    Panel-Titel waren der Befund des Desktop-Handtests 05.11.2026 (Codex)."""
+    if resolved != raw.strip():
+        return raw.strip()
+    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+
+    formel = subscript_formulas(CalcMolFormula(mol))
+    return formel.replace("-", "⁻").replace("+", "⁺")
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_mechanism(
     reaction_type: Literal["fischer_ester", "sn1", "sn2"],
@@ -3651,12 +3663,14 @@ def generate_mechanism(
         fallback_reason = "no substrates given"
     else:
         resolved = []
+        shown: list[str] = []
         for s in substrates:
             try:
                 smi, _mol = resolve(s)
             except Exception as exc:  # noqa: BLE001 — jede Auflösungsart gibt denselben Rat
                 raise misfit(f"'{s}' could not be resolved to a structure ({exc})") from None
             resolved.append(smi)
+            shown.append(_substrate_label(s, smi, _mol))
         try:
             steps = build_steps(reaction_type, resolved)
         except UnsupportedSubstrates as exc:
@@ -3677,7 +3691,7 @@ def generate_mechanism(
 
     if step_payloads:
         # Titel nennt die Eingaben wörtlich — das ist, was gezeichnet ist (Etappe B, 04.11.2026)
-        display_name = f"{template.name} — {' + '.join(substrates)}"
+        display_name = f"{template.name} — {' + '.join(shown)}"
     else:
         stabilized = mechanism_coords.stabilize_sequence(
             [step.molecules for step in template.steps], gaps=[step.mol_gap for step in template.steps]

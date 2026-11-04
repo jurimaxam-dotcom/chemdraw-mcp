@@ -167,3 +167,13 @@ def test_description_names_the_limit_of_each_family():
     assert "primary or secondary" in doc and "tertiary, benzylic or allylic" in doc
     assert "they are not drawn" not in doc
     assert "Not this tool for" in doc
+
+
+def test_title_shows_formulas_not_raw_smiles():
+    """Desktop-Handtest 05.11. (Codex): das Modell übergibt SMILES, der Panel-Titel zeigte
+    „C[C@@H](Br)CC + [C-]#N“. Für SMILES-Eingaben steht die Summenformel im Titel, Namen bleiben."""
+    r = generate_mechanism(reaction_type="sn2", substrates=["C[C@@H](Br)CC", "[C-]#N"])
+    assert "C[C@@H]" not in r.name and "[C-]" not in r.name, r.name
+    assert "C₄H₉Br" in r.name and "CN⁻" in r.name, r.name
+    r2 = generate_mechanism(reaction_type="sn2", substrates=["bromomethane", "hydroxide"])
+    assert "bromomethane + hydroxide" in r2.name
