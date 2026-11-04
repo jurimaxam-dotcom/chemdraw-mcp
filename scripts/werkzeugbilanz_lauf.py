@@ -32,7 +32,7 @@ calls = {
  "batch_generate": dict(molecules=["benzene","toluene","phenol"]),
  "compare_molecules": dict(structures=["aspirin","paracetamol"]),
  "generate_reaction": dict(reactants=["acetic acid","ethanol"], products=["ethyl acetate","water"], conditions="H2SO4, Δ", arrow="equilibrium"),
- "generate_mechanism": dict(reaction_type="sn2", substrates=["bromomethane","hydroxide"], current_step=2),
+ "generate_mechanism": dict(reaction_type="sn2", substrates=["(R)-2-bromobutane","cyanide"], current_step=2),
  "generate_3d": dict(name_or_smiles="caffeine"),
  "generate_spectrum": dict(spectrum_type="ir", title="Aspirin", peaks=[{"position":1750,"intensity":1,"label":"C=O Ester"},{"position":1690,"intensity":0.9,"label":"C=O Säure"},{"position":3000,"intensity":0.4,"label":"O-H"}]),
  "generate_tlc": dict(lanes=[{"name":"Edukt","spots":[{"rf":0.30,"label":"Säure"}]},{"name":"Reaktion","spots":[{"rf":0.65,"label":"Ester"}]},{"name":"Co-Spot","spots":[{"rf":0.30},{"rf":0.65}]}], solvent="Hexan/EE 7:3", title="Veresterung"),

@@ -87,14 +87,14 @@ T = {
   focal=2, beispiel=("reaction_dir/reaktion-fe7f77/reaktion-fe7f77.png","Datei-Rendering von heute: Veresterung mit Gleichgewichtspfeil"), shots=["17-generate_reaction.png"],
   mehrwert="Hoch. Eine saubere Gleichung mit Bedingungen und Bilanz ist Grundstudium-Alltag; Claude ohne Tool liefert nur Text.",
   schwer=["„Wie läuft die Veresterung ab?“ (Frage) ruft mit Tool-Suche den Mechanismus statt der Gleichung (2/2 rot).", "Das Modell muss die Produkte selbst kennen; das Tool prüft nur die Bilanz, nicht die Chemie."]),
- "generate_mechanism": dict(a="draw", v="0.7", w="Lehrbuch-Mechanismus mit Elektronenpfeilen",
-  files=["server.py: generate_mechanism", "templates/substitution.py (SN1, SN2)", "templates/ester.py (Fischer)", "mechanism.py: validate_substrates", "mechanism_coords.py", "mechanism_renderer.py", "payloads.py: MechanismPayload", "ui: MechanismView"],
-  deps=["RDKit"], erzeugt="vorlage",
-  wie="Drei feste Vorlagen mit vorgegebenen Molekülen je Schritt. Die Substrate des Nutzers werden nur per SMARTS auf Passung geprüft (Alkylhalogenid? Nucleophil?); gezeichnet wird immer das Lehrbuchbeispiel (Brommethan + Hydroxid, tert-Butylbromid, Essigsäure + Methanol). Die Pfeile liegen als Overlay auf stabilisierten Koordinaten.",
-  pipe=[("IN","Typ + Substrate","sn1 / sn2 / fischer_ester"),("CHK","SMARTS-Prüfung","passt das Substrat?"),("TPL","Vorlage","feste Moleküle je Schritt"),("SVG","Renderer","Pfeil-Overlay"),("OUT","Panel","Schritte, kein File")],
-  focal=2, beispiel=("generate_mechanism.json:steps:1","Schritt 2 (Übergangszustand) aus dem heutigen Lauf"), shots=["03-generate_mechanism.png"],
-  mehrwert="Hoch für die drei Fälle: gebogene Pfeile kann Claude nicht zeichnen. Ehrlich bei allem anderen (sagt, was nicht drin ist).",
-  schwer=["Nur drei Beispiele; die eigenen Substrate tauchen nicht im Bild auf, nur in der Prüfung.", "Tests: 9 Aufrufe, 2 verschiedene Substratpaare."]),
+ "generate_mechanism": dict(a="draw", v="0.8", w="Mechanismus mit Elektronenpfeilen — mit den eigenen Molekülen",
+  files=["server.py: generate_mechanism", "mechanism_substrate.py (Reaktionszentrum, Grenze je Familie)", "templates/substitution.py (SN1, SN2)", "templates/ester.py (Fischer)", "mechanism.py: validate_substrates", "mechanism_coords.py", "mechanism_renderer.py", "payloads.py: MechanismPayload", "ui: MechanismView"],
+  deps=["RDKit"], erzeugt="rechnet",
+  wie="Seit 0.8.0 (Etappe B, 05.11.) rechnet das Tool die Schritte aus den Substraten des Nutzers: Reaktions-SMARTS je Familie findet das Zentrum (C–X, Nucleophil; Carboxyl + Alkohol), Zwischenstufen und Produkte werden per RDKit-Reaktion aus den eigenen Molekülen abgeleitet, die Pfeile zeigen auf die gefundenen Atome. SN2 invertiert ein Stereozentrum, SN1 markiert das Produkt als Racemat. Jede Familie hat eine benannte Grenze (SN2: Methyl/primär/sekundär + anionisches Nucleophil; SN1: tertiär/benzylisch/allylisch + H₂O/ROH/Anion; Fischer: eine Carbonsäure + primärer/sekundärer Alkohol) — außerhalb kommt eine Fehlermeldung mit dem Grund. Ohne Substrate oder bei Zeichenfehler fällt es auf das Lehrbuchbeispiel zurück und sagt das (`fallback_reason`).",
+  pipe=[("IN","Typ + Substrate","sn1 / sn2 / fischer_ester"),("RES","Resolver","je Substrat"),("CTR","Reaktionszentrum","SMARTS je Familie, Grenze"),("STP","Schritte","RDKit-Reaktion aus eigenen Molekülen"),("SVG","Renderer","Pfeile an gefundene Atome"),("OUT","Panel","Schritte, kein File")],
+  focal=3, beispiel=("generate_mechanism.json:steps:1","Schritt 2 (Übergangszustand) aus dem heutigen Lauf: (R)-2-Brombutan + Cyanid"), shots=["mechanismus-substrate/07-sn2-formula-title.png", "mechanismus-substrate/03-fischer-product.png"],
+  mehrwert="Hoch: gebogene Pfeile am eigenen Molekül kann Claude nicht zeichnen. Ehrlich außerhalb der drei Familien (Fehlermeldung mit Grund statt falschem Bild).",
+  schwer=["Desktop-Handtest 05.11. (Codex): SN2/SN1/Fischer mit eigenen Substraten im Panel richtig, tertiäres Halogenid wird mit Grund abgelehnt. Offen: Fischer-Pfeil liegt knapp über dem HO-Label; das SN2-Produkt trägt den Keil, aber kein (S)-Label; bei SMILES-Eingabe steht die Summenformel im Titel (C₄H₉Br + CN⁻).", "Desktop-Routing: „SN1 von tert-Butylchlorid mit Wasser“ (Frage) und „Mechanismus der Diels-Alder-Reaktion“ laufen ohne Tool bzw. in generate_reaction — der Hinweis auf die drei Familien kommt erst auf Nachfrage.", "Tests: test_mechanism_substrate.py + 5 weitere Dateien; drei Familien, Grenzfälle je Familie, Stereo-Inversion."]),
  "generate_3d": dict(a="draw", v="0.7", w="Drehbares 3D-Modell",
   files=["server.py: generate_3d", "resolver.py", "structure3d.py (ETKDGv3 + MMFF)", "payloads.py: Molecule3DPayload", "ui: Molecule3DView (Canvas)"],
   deps=["RDKit"], erzeugt="rechnet",
@@ -248,7 +248,7 @@ MODUL_TESTS = {
  "batch_generate": ["test_server_formats"],
  "compare_molecules": [],
  "generate_reaction": ["test_layout", "test_reaction_balance", "test_reaction_coefficients", "test_cdxml_writer", "test_server_reaction"],
- "generate_mechanism": ["test_mechanism", "test_mechanism_coords", "test_mechanism_renderer", "test_server_mechanism", "test_aufgaben_mechanismus"],
+ "generate_mechanism": ["test_mechanism", "test_mechanism_substrate", "test_mechanism_coords", "test_mechanism_renderer", "test_server_mechanism", "test_aufgaben_mechanismus"],
  "generate_3d": [],
  "generate_spectrum": ["test_spectrum", "test_server_spectrum"],
  "generate_tlc": ["test_tlc", "test_server_tlc"],
@@ -281,7 +281,7 @@ DESKTOP = {
  "batch_generate": ("ok", "✔ 02.11.", "„Benzol, Toluol, Phenol“ → drei Panels"),
  "compare_molecules": ("no", "0 von 4 · mit Zusatz 2/2", "„Vergleiche Aspirin und Paracetamol“ → Text (02.11. + 3× 03.11.); mit „— nutze ChemDraw“ Panel"),
  "generate_reaction": ("ok", "✔ 02.11.", "Veresterung mit H₂SO₄, Δ, balanced"),
- "generate_mechanism": ("ok", "✔ 02.11.", "SN2 mit Übergangszustand und Pfeilen"),
+ "generate_mechanism": ("ok", "✔ 02.11. + 05.11.", "SN2 mit Übergangszustand und Pfeilen; 05.11. eigene Substrate (SN2, SN1, Fischer), tertiär abgelehnt"),
  "generate_3d": ("ok", "✔ 02.11.", "Koffein als Kugel-Stab-Modell"),
  "generate_spectrum": ("ok", "✔ 02.11.", "zwei IR-Peaks als Transmissionsminima"),
  "generate_tlc": ("ok", "✔ 02.11.", "zwei Bahnen, Rf 0,30/0,60"),
@@ -296,7 +296,7 @@ DESKTOP = {
  "generate_pk_curve": ("mid", "03.10. ✔ Zahlen", "letzter Desktop-Test vor Welle 1"),
 }
 
-VER = {"0.6": ("v06", "0.6 draußen"), "0.7": ("v07", "0.7 neu"), "w3": ("vw3", "Welle 3, nur Vollprofil")}
+VER = {"0.6": ("v06", "0.6 draußen"), "0.7": ("v06", "0.7 draußen"), "0.8": ("v07", "0.8 neu, unveröffentlicht"), "w3": ("vw3", "Welle 3, nur Vollprofil")}
 ERZ = {
  "rechnet": ("Erzeugt", "wird je Eingabe neu gerechnet (RDKit/matplotlib/Mathematik)"),
  "tabelle": ("Regeltabelle", "kuratierte Regeln werden auf die Eingabe angewendet, Ergebnis deterministisch"),
@@ -451,7 +451,7 @@ def shots_html(tool: str) -> str:
     for name in T[tool].get("shots", []):
         uri = bild_uri(SHOTS / name, 880, jpeg=True)
         if uri:
-            out.append(f"<figure><img src='{uri}' alt='Claude Desktop, {html.escape(name)}'><figcaption>Claude Desktop 02./03.11. (Codex): <code>{html.escape(name)}</code></figcaption></figure>")
+            out.append(f"<figure><img src='{uri}' alt='Claude Desktop, {html.escape(name)}'><figcaption>Claude Desktop (Codex, Handtests 02.–05.11.): <code>{html.escape(name)}</code></figcaption></figure>")
     return "".join(out)
 
 
@@ -771,7 +771,7 @@ select{{font:14px var(--f-sans);background:var(--panel);color:var(--fg);border:1
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">chemdraw-mcp · Stand 04.11.2026 · Repo bereit für 0.7.0, draußen 0.6.0</div>
+    <div class="eyebrow">chemdraw-mcp · Stand 05.11.2026 · Repo bereit für 0.8.0, draußen 0.7.0</div>
     <h1>Werkzeugbilanz: 23 Tools, jedes einzeln geprüft</h1>
     <p class="lead">Je Tool: welche Dateien es ausmachen, wie die Anfrage durchläuft, was es ausgibt, ob das Modell es bei einem Auftrag und bei einer Studentenfrage trifft, was es gegenüber Claude ohne Server bringt, wo es hakt und wie breit es getestet ist. Zahlen sind gezählt oder gemessen; Einschätzungen sind als solche markiert.</p>
   </header>
@@ -786,7 +786,7 @@ select{{font:14px var(--f-sans);background:var(--panel);color:var(--fg);border:1
   <div class="finding">
     <div class="g"><strong>Aufträge treffen.</strong> „Zeichne“, „Plot“, „DC meiner Veresterung“: in Claude Code fast immer, in Desktop bei allen 12 Panel-Tools. Was dann erscheint, wird je Eingabe neu gerechnet (RDKit, matplotlib, Ladungsbilanz), nicht aus einem Speicher geholt.</div>
     <div class="w"><strong>Fragen fallen durch.</strong> „Warum ist Wasser gewinkelt?“, „Was ist der Unterschied …?“, „Welchen pH hat …?“: das Modell antwortet aus dem Gedächtnis. In Desktop traf das alle 6 gemessenen Wissensfragen (0/18 Chats), weil die Tool-Beschreibungen dort erst nachgeladen werden.</div>
-    <div class="b"><strong>Zwei Tools sind Vorlage oder Tabelle.</strong> generate_mechanism zeichnet drei feste Lehrbuchbeispiele (Substrate werden nur geprüft), predict_spectrum wendet 31 kuratierte Regeln an. Alles andere rechnet oder holt live aus PubChem.</div>
+    <div class="b"><strong>Ein Tool ist Tabelle.</strong> predict_spectrum wendet 31 kuratierte Regeln an. Alles andere rechnet oder holt live aus PubChem — seit 0.8.0 auch generate_mechanism, das die Schritte aus den eigenen Substraten ableitet (bis 0.7.0 drei feste Lehrbuchbeispiele).</div>
   </div>
 
   <section class="explain">
@@ -811,7 +811,8 @@ select{{font:14px var(--f-sans);background:var(--panel);color:var(--fg);border:1
     <span class="eyebrow">Version</span>
     <button class="chip" data-f="all" aria-pressed="true">Alle 23</button>
     <button class="chip" data-f="0.6" aria-pressed="false">0.6 draußen (7)</button>
-    <button class="chip" data-f="0.7" aria-pressed="false">0.7 neu (9)</button>
+    <button class="chip" data-f="0.7" aria-pressed="false">0.7 draußen (8)</button>
+    <button class="chip" data-f="0.8" aria-pressed="false">0.8 neu (1)</button>
     <button class="chip" data-f="w3" aria-pressed="false">Welle 3 (7)</button>
     <button class="chip" id="openall" aria-pressed="false">Alle aufklappen</button>
   </div>
