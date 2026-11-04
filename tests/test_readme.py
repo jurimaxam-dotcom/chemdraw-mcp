@@ -21,6 +21,9 @@ wäre falsch-rot. Dass das Skript deterministisch ist, prüft es selbst
 """
 
 import asyncio
+import hashlib
+import importlib.util
+import os
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -96,3 +99,38 @@ def test_jedes_referenzierte_bild_existiert():
     assert refs, "README referenziert keine Bilder — Regex kaputt?"
     fehlend = [r for r in refs if not (ROOT / "assets" / r).is_file()]
     assert not fehlend, f"README zeigt auf fehlende Bilder: {fehlend}"
+
+
+def _skript_bilder() -> list[str]:
+    spec = importlib.util.spec_from_file_location("readme_bilder", ROOT / "scripts" / "readme_bilder.py")
+    modul = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modul)
+    return modul.BILDER
+
+
+def _sha(name: str) -> str:
+    return hashlib.sha256((ROOT / "assets" / name).read_bytes()).hexdigest()
+
+
+def test_jedes_skriptbild_steht_im_readme():
+    fehlend = sorted(set(_skript_bilder()) - set(_asset_refs()))
+    assert not fehlend, f"Skript erzeugt Bilder, die das README nicht zeigt: {fehlend}"
+
+
+def test_skriptbilder_tragen_den_gesegneten_hash():
+    bilder = _skript_bilder()
+    if os.environ.get("UPDATE_README_BILDER") == "1":
+        MANIFEST.write_text("".join(f"{_sha(n)}  {n}\n" for n in bilder), encoding="utf-8")
+        return
+    assert MANIFEST.is_file(), f"Hash-Manifest fehlt: {MANIFEST}\n{UPDATE_HINT}"
+    gesegnet = dict(
+        reversed(line.split("  ", 1)) for line in MANIFEST.read_text(encoding="utf-8").splitlines() if line
+    )
+    assert sorted(gesegnet) == sorted(bilder), (
+        f"Manifest und Skript nennen verschiedene Bilder.\n{UPDATE_HINT}"
+    )
+    anders = [n for n in bilder if _sha(n) != gesegnet[n]]
+    assert not anders, (
+        f"assets/ weicht vom gesegneten Skript-Stand ab: {anders} — von Hand ersetzt "
+        f"oder Skript geändert, ohne neu zu segnen?\n{UPDATE_HINT}"
+    )
