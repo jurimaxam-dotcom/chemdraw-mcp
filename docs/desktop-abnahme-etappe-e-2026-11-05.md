@@ -210,3 +210,56 @@ keine laufende Antwort im frischen Fenster (`final-state.txt` und
 Für diesen reinen Handtest wurde das Gate nicht erneut ausgeführt; die vom
 Auftrag genannten Gate-Zahlen sind Fremdbericht, keine eigene Abnahme.
 Eigene Dokuprüfung: `git diff --cached --check` vor dem Commit.
+
+## Runde 3
+
+Desktop-Nachtest am 05.11.2026 ab 15:47 MEZ, Auftrag
+`20261105-154636-etappe-e-r3-handtest`. Getesteter Stand:
+`dfe0cef6cd9368534faed37842b1db415ec63227` auf `main`.
+Claude Desktop vollständig über Cmd-Q beendet; vor dem Neustart lieferte
+`pgrep -fl 'chemdraw-tool-server|chemdraw-mcp-bundle'` keine Prozesse.
+Danach Desktop neu gestartet. `process-after-restart.txt` bestätigt die
+Repo-Server-PIDs 10084 und 10255 mit `.venv/bin/chemdraw-tool-server`,
+keinen Bundle-Prozess. `identity-before.json` bestätigt den absoluten
+`/opt/homebrew/bin/uv --directory /Users/tom/Documents/projects/chemdraw-mcp run chemdraw-tool-server`
+und Bundle `isEnabled: false`. Modell: Opus 5.5 Mittel.
+
+Belegordner aller unten genannten Dateien:
+`/tmp/chemdraw-desktop-test/etappe-e-r3/`.
+Echte Desktop-Screenshots, jeweils nach sichtbarer Schrittumschaltung geprüft.
+
+SN1-Prompt im frischen Chat:
+„Zeichne den SN1-Mechanismus von tert-Butylchlorid mit Wasser mit generate_mechanism“.
+Chat: https://claude.ai/chat/071ec5cc-c5c1-4f70-b113-3ee3f6366ff6
+
+SN2-Prompt in einem weiteren frischen Chat:
+„Zeichne den SN2-Mechanismus von (R)-2-Brombutan mit Cyanid mit generate_mechanism“.
+Chat: https://claude.ai/chat/85932e56-b036-4316-9bcd-9b03df51ee09
+
+| Fall | grün/rot | Beleg-Datei |
+|---|---|---|
+| SN1 Schritt 1/6: Reactants, tert-Butylchlorid und Wasser | Grün | `sn1-step1.png` |
+| SN1 Schritt 2/6: Leaving group departs, C–Cl→Cl-Pfeil | Grün | `sn1-step2.png` |
+| SN1 Schritt 3/6: Carbocation (intermediate), C⁺ und Cl⁻ | Grün | `sn1-step3.png` |
+| SN1 Schritt 4/6: Nucleophilic attack, Wasser→C⁺-Pfeil | Grün | `sn1-step4.png` |
+| SN1 Schritt 5/6: Oxonium ion, R–OH₂⁺ und O–H→O-Pfeil | Grün | `sn1-step5.png` |
+| SN1 Schritt 6/6: Products, ROH + Cl⁻ + H⁺ | Grün | `sn1-step6.png` |
+| SN2 Schritt 2/3: δ⁻ am Cyanid-C und Br, eckige Klammern mit ‡ | Grün | `sn2-step2.png` |
+
+Schritt 5 schreibt die zwei H des Oxoniumions als `OH⁺` am Sauerstoff und
+als zweites, explizit gebundenes H darunter. Der rote Pfeil beginnt an dieser
+O–H-Bindung und endet am O. Schritt 6 zeigt die neutrale OH-Gruppe, Chlorid
+und separates H⁺. Alle sechs Schritte wurden über Next nacheinander geöffnet;
+Screenshot und Schrittzähler stimmten jeweils überein.
+Im SN2-Übergangszustand stehen δ⁻ statt voller Minusladungen am Cyanid-C
+und Br; beide gestrichelten Bindungen und die Klammer mit ‡ sind sichtbar.
+
+Beide Prompts riefen `generate_mechanism` auf. In diesem Lauf erschien keine
+zusätzliche Freigabe; keine Berechtigungseinstellung wurde geändert.
+`identity-after.json`: `config_unchanged: true`, `bundle_unchanged: true`.
+Abschließend frischer leerer Chat auf `claude.ai/new` (`final-state.txt`,
+`final-state.png`), Repo-Prozesse weiterhin aktiv (`process-final.txt`).
+Keine Produktänderung. Das Gate wurde für diesen reinen Desktop-Nachtest
+nicht wiederholt; Dokuprüfung mit `git diff --cached --check`.
+Der von Claude angekündigte Folge-Commit zum SN1-Zaun allylischer Halogenide
+ist nicht Gegenstand dieses auf `dfe0cef` gestarteten Sichttests.
