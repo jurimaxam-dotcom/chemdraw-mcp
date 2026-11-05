@@ -318,3 +318,24 @@ def test_lookup_rejects_unknown_topic():
     """Ein Tippfehler im Thema darf nicht still die Grunddaten liefern."""
     with pytest.raises(ValueError, match="topic"):
         server.lookup("Aspirin", topic="gibtsnicht")
+
+
+# --- Mechanismus außerhalb der drei Familien (Desktop-Abnahme 05.11.2026) ---
+#
+# „Mechanismus der Diels-Alder-Reaktion" landete richtig bei generate_reaction,
+# aber die Antwort verschwieg, dass Pfeilmechanismen nur für SN1, SN2 und
+# Fischer-Veresterung gezeichnet werden. Der Rückwärtszaun steht deshalb in
+# generate_reaction selbst — im Vollprofil UND in der MVP-Fassung, die Claude
+# Desktop tatsächlich ausliefert.
+
+
+@pytest.mark.parametrize("profile", ["full", "mvp"])
+def test_generate_reaction_says_which_mechanisms_are_drawn(profile):
+    if profile == "full":
+        desc = _registered()["generate_reaction"]
+    else:
+        desc = server._MVP_SUMMARIES["generate_reaction"]
+    flat = " ".join(desc.split())
+    assert "only for SN1, SN2 and Fischer esterification" in flat, flat
+    assert "Diels–Alder" in flat, flat
+    assert "arrow mechanism is not drawn" in flat, flat

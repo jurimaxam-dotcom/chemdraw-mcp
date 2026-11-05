@@ -18,7 +18,7 @@ import math
 from dataclasses import dataclass
 
 from rdkit import Chem
-from rdkit.Chem import rdChemReactions
+from rdkit.Chem import rdChemReactions, rdCIPLabeler
 
 from chemdraw_tool.mechanism import CurvedArrow, MechanismStep
 
@@ -147,6 +147,25 @@ def _idx(mol: Chem.Mol, map_id: int) -> int:
         if atom.GetAtomMapNum() == map_id:
             return atom.GetIdx()
     raise MechanismBuildError(f"atom map {map_id} missing")
+
+
+def unmapped(mol: Chem.Mol) -> Chem.Mol:
+    """Kopie ohne Atom-Maps, Atomindizes unverändert.
+
+    Für CIP immer diese Kopie nehmen: Map-Nummern fließen in die Ränge ein, kippen R/S und
+    machen zwei gleiche Substituenten scheinbar verschieden (falsches Stereozentrum).
+    """
+    plain = Chem.Mol(mol)
+    for atom in plain.GetAtoms():
+        atom.SetAtomMapNum(0)
+    return plain
+
+
+def cip_labels(mol: Chem.Mol) -> dict[int, str]:
+    """{Atomindex: "R"/"S"} nach dem neuen CIP-Labeler (rdCIPLabeler), Maps vorher entfernt."""
+    plain = unmapped(mol)
+    rdCIPLabeler.AssignCIPLabels(plain)
+    return {a.GetIdx(): a.GetProp("_CIPCode") for a in plain.GetAtoms() if a.HasProp("_CIPCode")}
 
 
 def _smi(mol: Chem.Mol) -> str:
@@ -337,6 +356,11 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
     product = _react("[C@:1]-[Cl,Br,I:2].[*-:3]>>[C@@:1]-[*+0:3].[*-:2]", [sub_m, nuc_m])
     prod = _frag_with(product, NU)
     leaving = _frag_with(product, X)
+    # Konfiguration des Produktzentrums ausschreiben — der Keil allein ist keine Aussage
+    # (Desktop-Abnahme 05.11.2026). Ohne @ in der Eingabe bleibt das Label ohne Deskriptor.
+    label = "Products"
+    if descriptor := cip_labels(prod).get(_idx(prod, C)):
+        label += f", ({descriptor})"
 
     subs = _neighbours(sub_m, C, exclude=(X,))
     # Nur Kohlenstoff-/Heteroatom-Substituenten zählen für den Fächer (H ist implizit)
@@ -363,7 +387,7 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
             ],
         ),
         MechanismStep(
-            label="Products", molecules=[_smi(prod), _smi(leaving)], arrows=[],
+            label=label, molecules=[_smi(prod), _smi(leaving)], arrows=[],
             anchors=[
                 {C: (0.0, 0.0), **_fan(subs, _SN2_AFTER[len(subs)]),
                  **_tail(prod, NU, (-1.0, 0.0), -1.0, exclude=(C,))},
@@ -391,7 +415,8 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
             atom.SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
     stereogenic = any(
         idx == _idx(product, C)
-        for idx, _ in Chem.FindMolChiralCenters(product, includeUnassigned=True, useLegacyImplementation=False))
+        for idx, _ in Chem.FindMolChiralCenters(unmapped(product), includeUnassigned=True,
+                                             useLegacyImplementation=False))
 
     label = "Product (after deprotonation)" if neutral else "Product"
     if stereogenic:

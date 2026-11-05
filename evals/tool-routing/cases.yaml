@@ -170,6 +170,19 @@ cases:
       30.10.2026). Alles andere ist die Nettogleichung — sonst kommt ein
       Fehler oder ein falsches Lehrbuchbild.
 
+  - id: mechanism-diels-alder-no-arrows
+    prompt: "Mechanismus der Diels-Alder-Reaktion"
+    expect: generate_reaction
+    forbidden: [generate_mechanism]
+    why: >
+      Desktop-Abnahme 05.11.2026: Das Wort „Mechanismus" ohne Zeichen-Verb fuer
+      eine Reaktion ausserhalb der drei Familien. Der Fall ging richtig zu
+      generate_reaction, aber die Antwort verschwieg, dass Pfeilmechanismen nur
+      fuer SN1, SN2 und Fischer-Veresterung gezeichnet werden. Das Fallformat
+      prueft nur den tool_use-Block, nicht den Antworttext — ob die Antwort die
+      drei Familien nennt, bleibt Handtest (Zaunsatz in generate_reaction,
+      erzwungen von test_generate_reaction_says_which_mechanisms_are_drawn).
+
   - id: draw-3d-explicit
     prompt: "Zeig mir Methan als drehbares 3D-Modell"
     expect: generate_3d

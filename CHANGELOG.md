@@ -24,6 +24,9 @@ this project uses [Semantic Versioning](https://semver.org/).
     alcohol.
 - Result fields `substrates_drawn` and `fallback_reason`: without substrates,
   or if the drawing fails, the textbook example is shown and the result says so.
+- The SN2 product step names the configuration of the new stereocentre
+  ("Products, (S)" for (R)-2-bromobutane + cyanide), computed by CIP rules on
+  the product rather than read off the wedge.
 
 ### Changed
 
@@ -34,6 +37,14 @@ this project uses [Semantic Versioning](https://semver.org/).
   halide is outside the SN1 limit).
 - The curved arrow from a breaking bond to the leaving group ends beside the
   atom instead of under its label.
+- Mechanism titles for SMILES input show a name with its stereodescriptor
+  ("(R)-2-bromobutane + cyanide") instead of the molecular formula, which did
+  not even tell constitutional isomers apart. Simple ions are named offline;
+  other names come from PubChem (3 s timeout, cached per process). Offline the
+  title shows the SMILES with its descriptor, and the mechanism is still drawn.
+- `generate_reaction` states that curved-arrow mechanisms exist only for SN1,
+  SN2 and Fischer esterification: for any other mechanism (Diels–Alder) the
+  net scheme is drawn and the answer says that the arrows are not.
 
 ### Fixed
 

@@ -110,6 +110,29 @@ def pubchem_properties_by_inchikey(key: str) -> dict | None:
         return None
 
 
+# Kurzer Timeout für den Titel im Mechanismus-Panel: ein Etikett darf die Zeichnung nicht um
+# 10 s pro Substrat verzögern (der Lesewert von _TIMEOUT ist für pug_view gedacht).
+_TITLE_TIMEOUT = (3, 3)
+_PUBCHEM_INCHIKEY_TITLE_URL = (
+    "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{key}/property/Title/JSON"
+)
+
+
+def pubchem_title_by_inchikey(key: str) -> str | None:
+    """PubChem-Titel (meist der gebräuchliche Name) des Stammdatensatzes; None bei jedem Fehler."""
+    try:
+        resp = requests.get(
+            _PUBCHEM_INCHIKEY_TITLE_URL.format(key=quote(key, safe="")),
+            timeout=_TITLE_TIMEOUT,
+        )
+        resp.raise_for_status()
+        props = resp.json().get("PropertyTable", {}).get("Properties", [])
+        return (props[0].get("Title") or None) if props else None
+    except Exception:
+        logger.warning("PubChem InChIKey title failed for %r", key, exc_info=True)
+        return None
+
+
 def pubchem_synonyms_by_inchikey(key: str) -> tuple[str | None, list[str]]:
     try:
         resp = requests.get(

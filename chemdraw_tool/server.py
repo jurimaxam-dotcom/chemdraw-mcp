@@ -361,6 +361,10 @@ sketch from Rf values, even of a reaction mixture (use generate_tlc); one compou
 a property of one compound such as its acidity (use generate_molecule),
 independent structures (use batch_generate), or structural differences (use
 compare_molecules).
+
+Curved-arrow mechanisms are drawn only for SN1, SN2 and Fischer esterification
+(generate_mechanism). For any other mechanism, such as Diels–Alder, draw the
+net scheme here and tell the user that the arrow mechanism is not drawn.
 """,
     "lookup_molecule_data": """Show a compound's data sheet: structure, PubChem properties and GHS safety.
 
@@ -3275,23 +3279,27 @@ def generate_reaction(
     that is generate_mechanism. Also not for many products of one reaction
     with yields (generate_scope_table).
 
-    IMPORTANT: Always pass English or IUPAC compound names, never localized
-    names — 'Aspirin' not 'Acetylsalicylsäure'. SMILES are always safe.
+    Curved-arrow mechanisms are drawn only for SN1, SN2 and Fischer
+    esterification (generate_mechanism). For any other mechanism, such as
+    Diels–Alder, draw the net scheme here and tell the user that the arrow
+    mechanism is not drawn.
+
+    Always pass English or IUPAC names ('Aspirin', not
+    'Acetylsalicylsäure'); SMILES are always safe.
 
     Args:
-        reactants: List of English/IUPAC reactant names or SMILES strings.
-        products: List of English/IUPAC product names or SMILES strings.
+        reactants: English/IUPAC reactant names or SMILES.
+        products: English/IUPAC product names or SMILES.
         conditions: Text above the arrow (e.g. 'H2SO4, 0-5 °C'); formula
-            digits are subscripted, a line break starts a new line.
+            digits are subscripted.
         conditions_below: Text under the arrow (e.g. 'reflux, 2 h').
-        arrow: "forward" (→), "equilibrium" (⇌, reversible reaction) or
-            "retro" (⇒, retrosynthesis: target as reactants, precursors as
-            products).
-        name: Display name for the reaction step (can be localized).
-        formats: Any of "png", "svg", "cdxml" (default: png + svg). Add
-            "cdxml" only when the scheme is to be edited in ChemDraw.
-        abbreviate_groups: True draws common substituents as short labels
-            (Ph, OAc, OMe, CO2H, tBu, Boc …); the CDXML keeps full structures.
+        arrow: "forward" (→), "equilibrium" (⇌) or "retro" (⇒, target as
+            reactants, precursors as products).
+        name: Display name (can be localized).
+        formats: Any of "png", "svg", "cdxml" (default png + svg); "cdxml"
+            only for editing in ChemDraw.
+        abbreviate_groups: True draws common substituents as labels (Ph,
+            OAc, tBu …); the CDXML keeps full structures.
         render_style: "" standard · "compact" small print · "presentation"
             slides · "grayscale" b/w palette.
         coefficients: One integer per species, reactants then products
@@ -3587,16 +3595,97 @@ def batch_generate(
 
 
 
-def _substrate_label(raw: str, resolved: str, mol: Chem.Mol) -> str:
-    """Titelzeile eines Mechanismus: der Name, wie eingegeben — oder, wenn die Eingabe ein
-    SMILES war, die Summenformel mit Tiefziffern und Ladung (C₄H₉Br, CN⁻). Rohe SMILES im
-    Panel-Titel waren der Befund des Desktop-Handtests 05.11.2026 (Codex)."""
-    if resolved != raw.strip():
-        return raw.strip()
-    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+# Einfache Ionen und Wasser: Name offline, ohne PubChem (kanonisches SMILES → Name).
+_SIMPLE_SPECIES = {
+    Chem.CanonSmiles(smi): name
+    for smi, name in {
+        "[C-]#N": "cyanide", "[OH-]": "hydroxide", "[I-]": "iodide", "[Br-]": "bromide",
+        "[Cl-]": "chloride", "[N-]=[N+]=[N-]": "azide", "[SH-]": "hydrosulfide", "O": "water",
+    }.items()
+}
+# PubChem-Titel je InChIKey, nur Erfolge — ein Fehlschlag (offline) wird nie festgeschrieben.
+_TITLE_CACHE: dict[str, str] = {}
+# CIP-Angabe schon im Namen: (R), (2R), (2R,3S) …
+_CIP_IN_NAME = re.compile(r"\((?:\d*[RS],?)+\)")
 
-    formel = subscript_formulas(CalcMolFormula(mol))
-    return formel.replace("-", "⁻").replace("+", "⁺")
+
+def _running_text_name(title: str) -> str:
+    """PubChem-Titel wie im Fließtext: „2-Bromobutane, (R)-“ → „(R)-2-bromobutane“.
+
+    Entscheid 05.11.2026, gegen echte Titel gemessen:
+    1. CAS-Inversion („2-Bromobutane, (R)-“, „Alanine, L-“) wird nach vorn gezogen.
+    2. Je Wort (durch Leerzeichen getrennt) wird das erste großgeschriebene Teilwort (Groß + ≥ 2
+       Kleinbuchstaben) klein, wenn davor kein Kleinbuchstabe steht — „Propionic Acid“ →
+       „propionic acid“. Locants, Stereodeskriptoren und Präfixe wie „N,N-“ bleiben stehen,
+       Abkürzungen (DMSO) bleiben groß. Eigennamen in Stoffnamen (selten) würden mit klein
+       geschrieben — in Kauf genommen.
+    """
+    if inverted := re.fullmatch(r"(.+), ([^,\s]+-)", title):
+        title = inverted.group(2) + inverted.group(1)
+
+    def word(token: str) -> str:
+        match = re.search(r"[A-Z][a-z]{2,}", token)
+        if match is None or re.search(r"[a-z]", token[: match.start()]):
+            return token
+        i = match.start()
+        return token[:i] + token[i].lower() + token[i + 1 :]
+
+    return " ".join(word(token) for token in title.split(" "))
+
+
+def _smiles_title(mol: Chem.Mol) -> str:
+    """Name einer SMILES-Eingabe: einfache Ionen offline, sonst PubChem-Titel (per InChIKey,
+    einmal je Prozess) mit CIP-Deskriptor aus RDKit; ohne Netz kanonisches SMILES + Deskriptor."""
+    import logging
+
+    from chemdraw_tool import databases
+    from chemdraw_tool.mechanism_substrate import cip_labels
+
+    canon = Chem.MolToSmiles(mol)
+    if canon in _SIMPLE_SPECIES:
+        return _SIMPLE_SPECIES[canon]
+    labels = cip_labels(mol)
+    descriptor = ",".join(labels[i] for i in sorted(labels))
+    title = None
+    try:
+        key = Chem.MolToInchiKey(mol)
+        title = _TITLE_CACHE.get(key)
+        if title is None and (title := databases.pubchem_title_by_inchikey(key)):
+            _TITLE_CACHE[key] = title
+    except Exception:  # noqa: BLE001 — ein fehlender Name darf den Mechanismus nie kippen
+        logging.getLogger(__name__).warning("title lookup failed for %r", canon, exc_info=True)
+        title = None
+    if title:
+        name = _running_text_name(title)
+        if descriptor and not _CIP_IN_NAME.search(name):
+            name = f"({descriptor})-{name}"
+        return name
+    return f"{canon} ({descriptor})" if descriptor else canon
+
+
+def _substrate_label(raw: str, mol: Chem.Mol) -> str:
+    """Titelzeile eines Mechanismus: ein Name bleibt, wie eingegeben; ein SMILES wird zum Namen
+    mit Stereodeskriptor („(R)-2-bromobutane“). Erkennung parse-first wie in resolver.resolve:
+    was RDKit als SMILES liest, IST ein SMILES — ein Stringvergleich mit dem aufgelösten
+    Ergebnis bricht, sobald resolve() kanonisiert (Desktop-Abnahme 05.11.2026)."""
+    import logging
+
+    from rdkit import rdBase
+
+    from chemdraw_tool.resolver import _STEREO_PREFIX
+
+    text = raw.strip()
+    if " " in text or _STEREO_PREFIX.match(text):
+        return text
+    with rdBase.BlockLogs():
+        parsed = Chem.MolFromSmiles(text)
+    if parsed is None:
+        return text
+    try:
+        return _smiles_title(parsed)
+    except Exception:  # noqa: BLE001 — Etikett, keine Zeichnung: notfalls das SMILES
+        logging.getLogger(__name__).warning("substrate label failed for %r", text, exc_info=True)
+        return Chem.MolToSmiles(parsed)
 
 @_tool(structured_output=True, meta=_UI_META)
 def generate_mechanism(
@@ -3670,7 +3759,7 @@ def generate_mechanism(
             except Exception as exc:  # noqa: BLE001 — jede Auflösungsart gibt denselben Rat
                 raise misfit(f"'{s}' could not be resolved to a structure ({exc})") from None
             resolved.append(smi)
-            shown.append(_substrate_label(s, smi, _mol))
+            shown.append(_substrate_label(s, _mol))
         try:
             steps = build_steps(reaction_type, resolved)
         except UnsupportedSubstrates as exc:

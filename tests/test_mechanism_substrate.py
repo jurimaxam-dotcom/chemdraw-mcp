@@ -9,6 +9,7 @@ from rdkit import Chem
 from rdkit.Chem import rdCIPLabeler
 
 from chemdraw_tool.mechanism_substrate import UnsupportedSubstrates, build_steps
+from tests.mechanism_matrix import MATRIX
 
 
 def _plain(smiles: str) -> str:
@@ -177,3 +178,56 @@ def test_fischer_grenze_mit_grund(smiles, grund):
 ])
 def test_lehrbuchbeispiele_laufen_ueber_den_substratweg(rt, smiles, n):
     assert len(build_steps(rt, smiles)) == n
+
+
+# --- CIP-Deskriptor des Produktzentrums im Schritt-Label (Desktop-Abnahme 05.11.2026) ----------
+
+
+def _product_cip(steps) -> str:
+    """CIP-Code am Produktzentrum (Map 1), berechnet auf dem UNGEMAPPTEN Produkt."""
+    smi = next(s for s in steps[-1].molecules if f":{1}]" in s)
+    mapped = Chem.MolFromSmiles(smi)
+    idx = next(a.GetIdx() for a in mapped.GetAtoms() if a.GetAtomMapNum() == 1)
+    for a in mapped.GetAtoms():
+        a.SetAtomMapNum(0)  # Maps ändern CIP-Ränge — Indizes bleiben dabei gleich
+    rdCIPLabeler.AssignCIPLabels(mapped)
+    atom = mapped.GetAtomWithIdx(idx)
+    return atom.GetProp("_CIPCode") if atom.HasProp("_CIPCode") else ""
+
+
+def test_sn2_label_nennt_das_s_produkt():
+    steps = build_steps("sn2", ["C[C@@H](Br)CC", "[C-]#N"])  # (R)-2-Brombutan
+    assert steps[-1].label == "Products, (S)"
+    assert _product_cip(steps) == "S"
+
+
+def test_sn2_label_nennt_das_r_produkt():
+    steps = build_steps("sn2", ["C[C@H](Br)CC", "[C-]#N"])  # (S)-2-Brombutan
+    assert steps[-1].label == "Products, (R)"
+    assert _product_cip(steps) == "R"
+
+
+def test_sn2_achirales_substrat_ohne_deskriptor():
+    steps = build_steps("sn2", ["CCBr", "[OH-]"])
+    assert steps[-1].label == "Products"
+
+
+def test_sn2_unbestimmtes_stereozentrum_bekommt_keinen_deskriptor():
+    """Entscheid 05.11.: ohne Konfiguration in der Eingabe steht kein (R)/(S) und kein „racemic" —
+    über die Herkunft der Eingabe (Racemat oder unbekannt) sagt ein SMILES ohne @ nichts."""
+    steps = build_steps("sn2", ["CCC(C)Br", "[C-]#N"])
+    assert steps[-1].label == "Products"
+
+
+
+@pytest.mark.parametrize("case_id, family, substrates, expected", MATRIX, ids=[m[0] for m in MATRIX])
+def test_matrix_produktlabel_traegt_den_deskriptor(case_id, family, substrates, expected):
+    steps = build_steps(family, substrates)
+    label = steps[-1].label
+    if expected in ("R", "S"):
+        assert f"({expected})" in label, label
+        assert _product_cip(steps) == expected
+    elif expected == "racemic":
+        assert "racemic" in label, label
+    else:
+        assert "(R)" not in label and "(S)" not in label and "racemic" not in label, label

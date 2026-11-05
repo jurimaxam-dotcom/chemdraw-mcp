@@ -1,9 +1,40 @@
 """Tests for generate_mechanism MCP tool."""
 
 import pytest
+from rdkit import Chem
 
 from chemdraw_tool.payloads import MechanismPayload
 from chemdraw_tool.server import generate_mechanism
+
+# PubChem-Titel je InChIKey — die Tests gehen nie ins Netz (autouse-Fixture unten).
+_TITLES = {
+    "C[C@@H](Br)CC": "2-Bromobutane",  # bewusst ohne Deskriptor: der kommt aus RDKit
+    "C[C@H](Br)CC": "2-Bromobutane",
+    "CCC(=O)O": "Propionic acid",
+    "CCO": "Ethanol",
+}
+_LOOKUPS: list[str] = []
+
+
+def _key(smiles: str) -> str:
+    return Chem.MolToInchiKey(Chem.MolFromSmiles(smiles))
+
+
+@pytest.fixture(autouse=True)
+def _kein_netz(monkeypatch):
+    """Titel-Nachschlag ohne Netz: feste Antworten, unbekannte Schlüssel → None."""
+    import chemdraw_tool.databases as databases
+    import chemdraw_tool.server as server
+
+    table = {_key(smi): title for smi, title in _TITLES.items()}
+
+    def fake(key):
+        _LOOKUPS.append(key)
+        return table.get(key)
+
+    _LOOKUPS.clear()
+    monkeypatch.setattr(databases, "pubchem_title_by_inchikey", fake)
+    monkeypatch.setattr(server, "_TITLE_CACHE", {})
 
 
 def test_generate_mechanism_sn2():
@@ -169,11 +200,78 @@ def test_description_names_the_limit_of_each_family():
     assert "Not this tool for" in doc
 
 
-def test_title_shows_formulas_not_raw_smiles():
-    """Desktop-Handtest 05.11. (Codex): das Modell übergibt SMILES, der Panel-Titel zeigte
-    „C[C@@H](Br)CC + [C-]#N“. Für SMILES-Eingaben steht die Summenformel im Titel, Namen bleiben."""
+def test_title_names_smiles_input_with_stereodescriptor():
+    """Desktop-Abnahme 05.11.: das Modell übergibt SMILES; der Titel zeigte erst die SMILES, dann
+    die Summenformel (C₄H₉Br — trennt nicht einmal Konstitutionsisomere). Jetzt: Name + CIP."""
     r = generate_mechanism(reaction_type="sn2", substrates=["C[C@@H](Br)CC", "[C-]#N"])
-    assert "C[C@@H]" not in r.name and "[C-]" not in r.name, r.name
-    assert "C₄H₉Br" in r.name and "CN⁻" in r.name, r.name
-    r2 = generate_mechanism(reaction_type="sn2", substrates=["bromomethane", "hydroxide"])
-    assert "bromomethane + hydroxide" in r2.name
+    assert r.name == "Nucleophilic Substitution (SN2) — (R)-2-bromobutane + cyanide", r.name
+    r2 = generate_mechanism(reaction_type="sn2", substrates=["C[C@H](Br)CC", "[OH-]"])
+    assert r2.name.endswith("— (S)-2-bromobutane + hydroxide"), r2.name
+
+
+def test_title_names_fischer_smiles_input():
+    r = generate_mechanism("fischer_ester", ["CCC(=O)O", "CCO"])
+    assert r.name == "Fischer esterification — propionic acid + ethanol", r.name
+
+
+def test_title_keeps_a_descriptor_pubchem_already_gives(monkeypatch):
+    import chemdraw_tool.databases as databases
+
+    monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: "(2R)-2-Bromobutane")
+    r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
+    assert r.name.endswith("— (2R)-2-bromobutane + cyanide"), r.name
+
+
+@pytest.mark.parametrize("title, shown", [
+    ("2-Bromobutane", "2-bromobutane"),
+    ("Propionic acid", "propionic acid"),
+    ("(R)-2-Bromobutane", "(R)-2-bromobutane"),
+    ("N,N-Dimethylformamide", "N,N-dimethylformamide"),
+    ("DMSO", "DMSO"),
+    # Echte PubChem-Titel (Stichprobe 05.11.2026): CAS-Inversion und Title Case
+    ("2-Bromobutane, (R)-", "(R)-2-bromobutane"),
+    ("Propionic Acid", "propionic acid"),
+])
+def test_pubchem_title_is_lowercased_like_running_text(title, shown):
+    from chemdraw_tool.server import _running_text_name
+
+    assert _running_text_name(title) == shown
+
+
+def test_title_falls_back_to_smiles_with_descriptor_when_offline(monkeypatch):
+    """Ohne Netz: kanonisches SMILES mit CIP in Klammern — nie die Summenformel, nie ein Fehler."""
+    import chemdraw_tool.databases as databases
+
+    def offline(key):
+        raise ConnectionError("no network")
+
+    monkeypatch.setattr(databases, "pubchem_title_by_inchikey", offline)
+    r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
+    canon = Chem.MolToSmiles(Chem.MolFromSmiles("C[C@@H](Br)CC"))
+    assert r.name == f"Nucleophilic Substitution (SN2) — {canon} (R) + cyanide", r.name
+    assert r.substrates_drawn is True and r.fallback_reason == ""
+    assert "C₄H₉Br" not in r.name
+
+
+def test_title_lookup_is_cached_per_process_but_failures_are_not():
+    generate_mechanism("fischer_ester", ["CCC(=O)O", "CCO"])
+    generate_mechanism("fischer_ester", ["CCC(=O)O", "CCO"])
+    assert _LOOKUPS.count(_key("CCC(=O)O")) == 1
+    generate_mechanism("sn2", ["CCCCBr", "[SH-]"])  # 1-Brombutan: kein Titel im Fake
+    generate_mechanism("sn2", ["CCCCBr", "[SH-]"])
+    assert _LOOKUPS.count(_key("CCCCBr")) == 2
+
+
+def test_smiles_detection_is_parse_first_not_string_equality(monkeypatch):
+    """resolve() darf ein SMILES kanonisieren — es bleibt eine SMILES-Eingabe (wie im Resolver:
+    was RDKit liest, ist SMILES)."""
+    import chemdraw_tool.server as server
+    from chemdraw_tool.resolver import validate_smiles
+
+    def canonical(s):
+        smi = Chem.MolToSmiles(Chem.MolFromSmiles(s))
+        return smi, validate_smiles(smi)
+
+    monkeypatch.setattr(server, "resolve", canonical)
+    r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
+    assert r.name.endswith("— (R)-2-bromobutane + cyanide"), r.name
