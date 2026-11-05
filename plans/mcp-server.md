@@ -58,8 +58,19 @@ Registry `./scripts/publish-registry.sh` (isLatest). Release-Klick bleibt Jays H
 5. 12 IR-Gruppen ohne Regel (`ir-abdeckung.md`) · pH-Klemme [0,14] in `exact_ph` (3 Randfälle) · Desktop-Befunde aus
    `docs/desktop-abnahme-mechanismus-2026-11-05.md`.
 
-**Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md` · Welle 3 eigenes
-Profil? · Abfragemodus auch für Reaktionen?
+**Branch-Fragen beantwortet (Jay 05.11.):** mechanismus-substrate, mcp-2-migration-v2 gelöscht; mcp-2-migration als Tag
+`archiv/mcp-2-migration` archiviert und gelöscht; Dependabot-Branches als eigene Etappe nach 0.8.0.
+
+**Etappe F — eigenes Marketing-Repo (Jay 05.11., nach E, eigene Session):** `vermarktung/` (Aufnahme-Skripte, AX-Steuerung,
+Posts, Launch-Checkliste) und die Shorts-Pipeline vom Branch `worktree-agent-a89d4c26da6a9d6c2` (Tag `archiv/demo-shorts`:
+Recorder-Änderung in `ui/src/host/demo.record.mjs`, Remotion-Projekt `ui/video/`, `scripts/demo-short.sh`) in ein privates
+Repo `~/Documents/projects/chemdraw-vermarktung` (`gh repo create --private`), Historie per `git subtree split` bzw.
+`git filter-repo` mitnehmen. Vorher prüfen, wer `vermarktung/` noch braucht: Codex-Desktop-Handtest (`ax-claude.swift`,
+CLAUDE.md), `tests/test_wheel_contents.py`, `demo-video.sh`, README-GIF-Aufnahme — Verweise umbiegen oder dünnen Wrapper lassen.
+Danach Branch `worktree-agent-…` löschen (Tag bleibt). Videos selbst nie ins Repo. Erst nach E, weil Codex `ax-claude.swift`
+für den E-Handtest braucht.
+
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
 Offene Tisch-Fäden: `20261105-001817-etappe-a-masse-eval` (Claude↔Codex, Reservierung; wird mit dem Bericht geschlossen).
 
