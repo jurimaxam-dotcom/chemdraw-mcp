@@ -3801,9 +3801,8 @@ def generate_mechanism(
         # Titel nennt die Eingaben wörtlich — das ist, was gezeichnet ist (Etappe B, 04.11.2026)
         display_name = f"{template.name} — {' + '.join(shown)}"
     else:
-        stabilized = mechanism_coords.stabilize_sequence(
-            [step.molecules for step in template.steps], gaps=[step.mol_gap for step in template.steps]
-        )
+        # Vorlage = Substratweg mit den Beispiel-Substraten, also dasselbe verankerte Layout
+        stabilized = mechanism_coords.layout_anchored(template.steps)
         if not stabilized:
             raise ValueError(f"Mechanism '{reaction_type}' has no steps defined.")
         step_payloads = [

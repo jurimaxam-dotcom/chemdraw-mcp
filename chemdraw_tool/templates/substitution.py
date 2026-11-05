@@ -1,6 +1,12 @@
-"""SN1 and SN2 mechanism templates."""
+"""SN1 and SN2 mechanism templates.
 
-from chemdraw_tool.mechanism import CurvedArrow, MechanismStep, MechanismTemplate
+Die Schritte sind der Substratweg (mechanism_substrate) mit den Beispiel-Substraten — Vorlage und
+eigene Moleküle laufen durch dasselbe verankerte Layout. Die alte SN2-Vorlage lief über
+stabilize_sequence und dehnte die Produkt-C–O-Bindung auf 3,4 Bindungslängen (Befund 05.11.2026).
+"""
+
+from chemdraw_tool.mechanism import MechanismTemplate
+from chemdraw_tool.mechanism_substrate import build_steps
 from chemdraw_tool.templates import register
 
 SN2_TEMPLATE = MechanismTemplate(
@@ -10,37 +16,7 @@ SN2_TEMPLATE = MechanismTemplate(
     category="substitution",
     substrate_pattern="[C:1][F,Cl,Br,I:2]",
     nucleophile_pattern="[O,N,S:3]",
-    steps=[
-        MechanismStep(
-            label="Reactants",
-            molecules=["[OH-:3]", "[CH3:1][Br:2]"],
-            arrows=[],
-        ),
-        MechanismStep(
-            label="Backside attack (transition state)",
-            molecules=["[O-:3]", "[CH3:1]", "[Br-:2]"],
-            arrows=[
-                CurvedArrow(
-                    source=(3, "lone_pair"),
-                    target=(1, "atom"),
-                    style="full",
-                ),
-                CurvedArrow(
-                    source=(1, "bond_to", 2),
-                    target=(2, "atom"),
-                    style="full",
-                ),
-            ],
-            is_transition_state=True,
-            partial_bonds=[(3, 1), (1, 2)],
-            mol_gap=1.8,
-        ),
-        MechanismStep(
-            label="Products",
-            molecules=["[OH:3][CH3:1]", "[Br-:2]"],
-            arrows=[],
-        ),
-    ],
+    steps=build_steps("sn2", ["CBr", "[OH-]"]),
 )
 
 SN1_TEMPLATE = MechanismTemplate(
@@ -50,45 +26,7 @@ SN1_TEMPLATE = MechanismTemplate(
     category="substitution",
     substrate_pattern="[CX4:1]([#6])([#6])[F,Cl,Br,I:2]",
     nucleophile_pattern="[O,N,S:3]",
-    steps=[
-        MechanismStep(
-            label="Reactants",
-            molecules=["[C:1]([CH3])([CH3])([CH3])[Br:2]", "[OH2:3]"],
-            arrows=[],
-        ),
-        MechanismStep(
-            label="Leaving group departs",
-            molecules=["[C:1]([CH3])([CH3])([CH3])[Br:2]"],
-            arrows=[
-                CurvedArrow(
-                    source=(1, "bond_to", 2),
-                    target=(2, "atom"),
-                    style="full",
-                ),
-            ],
-        ),
-        MechanismStep(
-            label="Carbocation (intermediate)",
-            molecules=["[C+:1]([CH3])([CH3])[CH3]", "[Br-:2]"],
-            arrows=[],
-        ),
-        MechanismStep(
-            label="Nucleophilic attack",
-            molecules=["[C+:1]([CH3])([CH3])[CH3]", "[OH2:3]"],
-            arrows=[
-                CurvedArrow(
-                    source=(3, "lone_pair"),
-                    target=(1, "atom"),
-                    style="full",
-                ),
-            ],
-        ),
-        MechanismStep(
-            label="Product (after deprotonation)",
-            molecules=["[C:1]([CH3])([CH3])([CH3])[OH:3]", "[Br-:2]"],
-            arrows=[],
-        ),
-    ],
+    steps=build_steps("sn1", ["CC(C)(C)Br", "O"]),
 )
 
 register(SN2_TEMPLATE)

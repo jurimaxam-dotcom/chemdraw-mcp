@@ -143,12 +143,74 @@ def test_sn1_grenze_mit_grund(smiles, grund):
 # --- Fischer ------------------------------------------------------------------
 
 
+def _sanitized(smiles: str) -> Chem.Mol:
+    """Schritt-SMILES mit expliziten, gemappten H (sanitize=False behält sie), dann voll geprüft."""
+    mol = Chem.MolFromSmiles(smiles, sanitize=False)
+    Chem.SanitizeMol(mol)
+    return mol
+
+
+def _charge_at(step, map_id: int) -> int:
+    for smi in step.molecules:
+        for a in _sanitized(smi).GetAtoms():
+            if a.GetAtomMapNum() == map_id:
+                return a.GetFormalCharge()
+    raise AssertionError(f"Map {map_id} fehlt in {step.label}")
+
+
 def test_fischer_propionsaeure_ethanol():
     steps = build_steps("fischer_ester", ["CCC(=O)O", "CCO"])
-    assert len(steps) == 6
-    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted([_canon("CCC(=O)OCC"), _canon("O")])
-    assert _canon("CCC(O)(O)OCC") in [_plain(s) for s in steps[3].molecules]
+    assert len(steps) == 7
+    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted([_canon("CCC(=O)OCC"), _canon("O"), "[H+]"])
     _arrows_point_at_drawn_atoms(steps)
+
+
+def test_fischer_folgt_clayden_mit_protonentransfer():
+    """Design (g)9, Clayden Kap. 10: Wasser verlässt das Molekül als OH₂⁺, nicht als neutrales OH.
+    Reihenfolge: Protonierung → Angriff → Protonentransfer → Wasserabspaltung → Deprotonierung."""
+    from chemdraw_tool.mechanism_substrate import (
+        C_ACID,
+        O_ALCOHOL,
+        O_CARBONYL,
+        O_HYDROXY,
+    )
+
+    steps = build_steps("fischer_ester", ["CC(=O)O", "CCO"])
+    assert [s.label for s in steps] == [
+        "Reactants",
+        "Protonation of the carbonyl group",
+        "Nucleophilic attack of the alcohol",
+        "Proton transfer to an OH group",
+        "Loss of water",
+        "Deprotonation (H⁺ regenerated)",
+        "Products",
+    ]
+    for step in steps:
+        for smi in step.molecules:
+            _sanitized(smi)  # Valenz und Ladung jedes Zwischenprodukts gültig
+    # Ladung wandert: Oxonium am Alkohol-O → OH₂⁺ → protonierter Ester → neutral
+    assert _charge_at(steps[3], O_ALCOHOL) == +1
+    assert _charge_at(steps[4], O_HYDROXY) == +1 and _charge_at(steps[4], O_ALCOHOL) == 0
+    assert _charge_at(steps[5], O_CARBONYL) == +1
+    assert sum(Chem.GetFormalCharge(_sanitized(s)) for s in steps[6].molecules) == +1  # H⁺ zurück
+    # Pfeile: Protonentransfer O3 → H, Wasser geht mit dem Bindungspaar, O2 drückt zurück zu C=O⁺H
+    pt = {(a.source[:2], a.target[:2]) for a in steps[3].arrows}
+    assert ((O_HYDROXY, "lone_pair"), (8, "atom")) in pt
+    loss = steps[4].arrows
+    assert any(a.source == (C_ACID, "bond_to", O_HYDROXY) and a.target == (O_HYDROXY, "atom") for a in loss)
+    assert any(a.source == (O_CARBONYL, "lone_pair") and a.target == (C_ACID, "bond_to", O_CARBONYL) for a in loss)
+    assert any(a.target == (O_CARBONYL, "atom") for a in steps[5].arrows)
+
+
+def test_vorlage_und_substratweg_sagen_dasselbe():
+    """Die festen Lehrbuchbeispiele SIND der Substratweg mit den Beispiel-Substraten."""
+    from chemdraw_tool.templates import get_template
+
+    beispiele = {"sn2": ["CBr", "[OH-]"], "sn1": ["CC(C)(C)Br", "O"], "fischer_ester": ["CC(=O)O", "CO"]}
+    for rt, smiles in beispiele.items():
+        vorlage = get_template(rt).steps
+        weg = build_steps(rt, smiles)
+        assert [(s.label, s.molecules, s.arrows) for s in vorlage] == [(s.label, s.molecules, s.arrows) for s in weg], rt
 
 
 def test_fischer_sekundaerer_alkohol_und_reihenfolge_egal():
@@ -174,7 +236,7 @@ def test_fischer_grenze_mit_grund(smiles, grund):
 @pytest.mark.parametrize("rt, smiles, n", [
     ("sn2", ["CBr", "[OH-]"], 3),
     ("sn1", ["CC(C)(C)Br", "O"], 5),
-    ("fischer_ester", ["CC(=O)O", "CO"], 6),
+    ("fischer_ester", ["CC(=O)O", "CO"], 7),
 ])
 def test_lehrbuchbeispiele_laufen_ueber_den_substratweg(rt, smiles, n):
     assert len(build_steps(rt, smiles)) == n

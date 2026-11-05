@@ -46,9 +46,14 @@ gemappten Moleküls → Liste für `stabilize_sequence`.
     Konfiguration invertieren (`molInversionFlag`); am achiralen Zentrum wirkungslos.
   - SN1-Produkt: `[C+:1].[*:3]>>[C+0:1]-[*+0:3]` (bei Wasser/Alkohol: Produkt nach
     Deprotonierung, wie die bisherige Vorlage).
-  - Fischer: Protonierung `[C:1]=[O:2]>>[C+:1]-[O:2]` (Carbokation-Grenzformel wie bisher),
-    Angriff `[C+:1].[O:4]>>[C+0:1]-[O:4]` (tetraedrische Zwischenstufe, neutral gezeichnet wie
-    bisher), Abspaltung `[C:1]([O:2])([O:3])[O:4]>>[C:1](=[O:2])[O:4].[O:3]` (Ester + Wasser).
+  - Fischer (Etappe E, 05.11.2026, nach Clayden Kap. 10 — sieben Stationen): Protonierung
+    `[C:1]=[O:2]>>[C+:1]-[O:2]` — die protonierte Säure wird **bewusst als Carbokation-Grenzformel
+    C⁺(OH)₂** gezeichnet (die Grenzformel, an der der Alkohol angreift; die C=O⁺H-Form ist
+    gleichwertig); Angriff `[C+:1].[O:4]>>[C+0:1]-[O+:4]` → Oxonium am Alkohol-O, sein H als
+    eigenes Atom (Map 8); **Protonentransfer** O4–H → O3 (`RWMol`: Bindung umhängen, O4 neutral,
+    O3 +1) → C–OH₂⁺; **Wasserabspaltung**: C–O3 bricht, O2 bildet C=O⁺H (H als Atom, Map 7) →
+    protonierter Ester + H₂O; **Deprotonierung** → Ester + H₂O + H⁺. Jedes Zwischenprodukt wird
+    voll sanitisiert (Valenz, Ladung), Test `test_fischer_folgt_clayden_mit_protonentransfer`.
   - Nach `RunReactants` tragen die Template-Atome keine Map mehr, sondern `old_mapno`;
     die Map wird sofort zurückgeschrieben. Aus mehreren Produktsätzen wird derjenige gewählt,
     dessen `react_atom_idx` das gefundene Zentrum ist.
@@ -66,7 +71,9 @@ gemappten Moleküls → Liste für `stabilize_sequence`.
 
 Die Pfeile bleiben `CurvedArrow`s mit Map-IDs 1–9 und sind je Familie fest (dieselben wie in
 den Vorlagen): SN2 `3 lone_pair → 1`, `bond 1–2 → 2`; SN1 `bond 1–2 → 2`, dann
-`3 lone_pair → 1`; Fischer `2 lone_pair → 7 (H⁺)`, `4 lone_pair → 1`, `bond 1–3 → 3`.
+`3 lone_pair → 1`; Fischer `2 lone_pair → 7 (H⁺)`, `4 lone_pair → 1`, Protonentransfer `3 lone_pair → 8 (H)` +
+`bond 8–4 → 4`, Wasserabspaltung `bond 1–3 → 3` + `2 lone_pair → Bindung 1–2` (Ziel ist die
+Mitte der entstehenden C=O-Bindung: `target=(1, "bond_to", 2)`), Deprotonierung `bond 7–2 → 2`.
 Weil (a) die Map-IDs auf die gefundenen Atome legt, zeigen die Pfeile automatisch auf
 das richtige Atom des Nutzer-Moleküls. Eduktreihenfolge in Schritt 1 (propagiert über alle
 Schritte): SN2 Nucleophil links, Halogenid rechts; SN1 Halogenid, Nucleophil; Fischer Säure,
@@ -111,7 +118,7 @@ dasselbe sagen.
 ## (e) Fallback
 
 Passt das Substrat in die Grenze, scheitert aber die Ableitung (Reaktions-SMARTS liefert kein
-Produkt) oder das Layout (`stabilize_sequence`/Renderer wirft), wird die Vorlage gezeichnet.
+Produkt) oder das Layout (`layout_anchored`/Renderer wirft), wird die Vorlage gezeichnet.
 Die Antwort sagt es: `substrates_drawn=False`, `fallback_reason="…"`, Titel wieder
 „textbook example: …". Leere `substrates` zeichnen die Vorlage ebenso, mit Grund
 „no substrates given". Erfolgsfall: `substrates_drawn=True`, `fallback_reason=""`, Titel
@@ -149,10 +156,12 @@ Reaction Mechanisms". Keine Abbildung übernommen.
 | 6 | Übergangszustand in eckigen Klammern mit ‡, Teilbindungen gestrichelt, Ladung als δ⁻ verteilt | Clayden Kap. 15 | Renderer (Klammern) |
 | 7 | SN2 kehrt die Konfiguration um (Walden); das Produkt trägt seinen CIP-Deskriptor | Clayden Kap. 15 | Schrittlabel + Stereo-Annotation |
 | 8 | SN1 über planares Kation → Angriff von beiden Seiten, stereogenes Zentrum „racemic" | Clayden Kap. 15 | Schrittlabel |
-| 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | **Abweichung:** heute 6 Stationen ohne Protonentransfer, Wasser geht von neutralem OH — siehe Befund unten |
+| 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | Sieben Stationen: Edukte, Protonierung, Angriff (→ Oxonium), Protonentransfer (→ OH₂⁺), Wasserabspaltung mit Rückbildung von C=O⁺H, Deprotonierung (H⁺ zurück), Produkte. Protonierte Säure als Grenzformel C⁺(OH)₂ gezeichnet (siehe (b)); Reversibilität nur im Text, nicht als ⇌ |
 
-**Befund aus (g)9:** Die Fischer-Ableitung lässt Wasser von einem neutralen OH abgehen. Nach
-Regel 4 (Oktett) und Clayden fehlt der Protonentransfer auf das OH vor der Abspaltung.
+**Befund aus (g)9 (behoben 05.11.2026):** Die Fischer-Ableitung ließ Wasser von einem neutralen
+OH abgehen. Seither Protonentransfer vor der Abspaltung; Vorlage und Substratweg sind dieselbe
+Ableitung (die Vorlagen in `templates/` rufen `build_steps` mit den Beispiel-Substraten auf und
+laufen durch `layout_anchored` — damit ist auch die gedehnte C–O-Bindung der alten SN2-Vorlage weg).
 
 ## Pfeil-Geometrie (Etappe E, 05.11.2026)
 

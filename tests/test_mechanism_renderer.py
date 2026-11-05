@@ -155,3 +155,22 @@ def test_beschriftungsboxen_kommen_aus_den_glyphenpfaden():
     geo = geometry_of(svg)
     x0, y0, x1, y1 = geo["boxes"]["2"]
     assert x1 - x0 > y1 - y0, "OH-Box sollte breiter als hoch sein"
+
+
+def test_pfeil_kann_auf_eine_bindung_zeigen():
+    """Fischer, Wasserabspaltung: das freie Paar von O2 bildet die C=O⁺H-Bindung zurück — die
+    Spitze gehört an die Mitte der entstehenden Bindung, nicht an ein Atom (Design (g)3)."""
+    import math
+
+    from chemdraw_tool.mechanism import CurvedArrow
+    from chemdraw_tool.mechanism_renderer import geometry_of
+
+    step = MechanismStep(label="a", molecules=[], arrows=[
+        CurvedArrow(source=(2, "lone_pair"), target=(1, "bond_to", 2), style="full"),
+    ])
+    geo = geometry_of(render_step_svg(step, [_make_mol("[CH3:5][CH:1]=[OH+:2]")]))
+    (a,) = geo["arrows"]
+    assert a["tgt_bond"] == [1, 2]
+    c1, o2 = geo["centres"]["1"], geo["centres"]["2"]
+    mitte = ((c1[0] + o2[0]) / 2, (c1[1] + o2[1]) / 2)
+    assert math.dist(a["tip"], mitte) <= 0.35 * geo["bond_px"]

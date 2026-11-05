@@ -531,17 +531,28 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
     ])
     proton = Chem.MolFromSmiles(f"[H+:{H_PLUS}]")
 
+    # Protonierte Säure, gezeichnet als Carbokation-Grenzformel C⁺(OH)₂ (Design (b), (g)9)
     cation = _react("[C:1]=[O:2].[H+]>>[C+:1]-[O+0:2]", [acid_m, proton])[0]
-    tetra = _react("[C+:1].[O:4]>>[C+0:1]-[O:4]", [cation, alc_m])[0]
-    ester_water = _react("[C:1](-[OX2H1:2])(-[OX2H1:3])-[O:4]>>[C:1](=[O:2])-[O:4].[O:3]", [tetra])
-    ester, water = _frag_with(ester_water, O_ALCOHOL), _frag_with(ester_water, O_HYDROXY)
+    # Angriff des Alkohols: Oxonium am Alkohol-O, dessen H als eigenes Atom (wandert gleich weiter)
+    oxonium = _explicit_h(_react("[C+:1].[O:4]>>[C+0:1]-[O+:4]", [cation, alc_m])[0], O_ALCOHOL, H_MOVING)
+    # Protonentransfer O4–H → O3: aus dem OH wird OH₂⁺, die Abgangsgruppe ist Wasser
+    # In Schritt 5 trägt kein Pfeil mehr das gewanderte H: es wird wieder implizit („OH₂⁺“), sonst
+    # landet der Pfeil der Wasserabspaltung auf seiner Bindung (Kontaktbogen 05.11.2026)
+    water_on = _implicit_h(_move_h(oxonium, H_MOVING, O_ALCOHOL, O_HYDROXY), H_MOVING)
+    # Wasser geht, O2 bildet C=O⁺H zurück: protonierter Ester (H an O2 als Atom, es geht im nächsten Schritt)
+    prot_ester, water = _lose_water(water_on)
+    ester = _deprotonate(prot_ester)
 
     rest = _neighbours(acid_m, C_ACID, exclude=(O_CARBONYL, O_HYDROXY))
     r = {rest[0]: (-1.0, 0.0)} if rest else {}
     trigonal = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: _ray(60), O_HYDROXY: _ray(-60)}
-    tetrahedral = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: (0.0, 1.0), O_HYDROXY: (0.0, -1.0),
-                   **_tail(tetra, O_ALCOHOL, (1.0, 0.0), 1.0, exclude=(C_ACID,))}
+    # Tetraedrisch: O2 oben, O3 unten, Alkohol-O rechts; das wandernde H sitzt unter dem Alkohol-O,
+    # neben O3 — der Protonentransfer ist ein kurzer Pfeil, und das H bleibt in Schritt 5 am Ort.
+    tetra_anchor = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: (0.0, 1.0), O_HYDROXY: (0.0, -1.0),
+                    **_tail(oxonium, O_ALCOHOL, (1.0, 0.0), 1.0, exclude=(C_ACID, H_MOVING))}
     o2 = _ray(60)
+    ester_anchor = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: o2, O_ALCOHOL: _ray(-60),
+                    **_tail(ester, O_ALCOHOL, _ray(-60), 1.0, exclude=(C_ACID,))}
     return [
         MechanismStep(
             label="Reactants", molecules=[_smi(acid_m), _smi(alc_m), "[H+]"], arrows=[],
@@ -559,23 +570,122 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
             arrows=[CurvedArrow(source=(O_ALCOHOL, "lone_pair"), target=(C_ACID, "atom"), style="full")],
             anchors=[trigonal, _tail(alc_m, O_ALCOHOL, (2.4, 0.0), 1.0)],
         ),
-        MechanismStep(label="Tetrahedral intermediate", molecules=[_smi(tetra)], arrows=[],
-                      anchors=[tetrahedral]),
+        MechanismStep(
+            label="Proton transfer to an OH group",
+            molecules=[_smi(oxonium)],
+            arrows=[
+                CurvedArrow(source=(O_HYDROXY, "lone_pair"), target=(H_MOVING, "atom"), style="full"),
+                CurvedArrow(source=(H_MOVING, "bond_to", O_ALCOHOL), target=(O_ALCOHOL, "atom"), style="full"),
+            ],
+            anchors=[{**tetra_anchor, H_MOVING: (1.0, -1.0)}],
+        ),
         MechanismStep(
             label="Loss of water",
-            molecules=[_smi(tetra)],
-            arrows=[CurvedArrow(source=(C_ACID, "bond_to", O_HYDROXY), target=(O_HYDROXY, "atom"), style="full")],
-            anchors=[tetrahedral],
+            molecules=[_smi(water_on)],
+            arrows=[
+                CurvedArrow(source=(C_ACID, "bond_to", O_HYDROXY), target=(O_HYDROXY, "atom"), style="full"),
+                CurvedArrow(source=(O_CARBONYL, "lone_pair"), target=(C_ACID, "bond_to", O_CARBONYL), style="full"),
+            ],
+            anchors=[tetra_anchor],
         ),
         MechanismStep(
-            label="Products", molecules=[_smi(ester), _smi(water)], arrows=[],
-            anchors=[
-                {C_ACID: (0.0, 0.0), **r, O_CARBONYL: _ray(60), O_ALCOHOL: _ray(-60),
-                 **_tail(ester, O_ALCOHOL, _ray(-60), 1.0, exclude=(C_ACID,))},
-                {},
-            ],
+            label="Deprotonation (H⁺ regenerated)",
+            molecules=[_smi(prot_ester), _smi(water)],
+            arrows=[CurvedArrow(source=(H_PLUS, "bond_to", O_CARBONYL), target=(O_CARBONYL, "atom"), style="full")],
+            anchors=[{**ester_anchor, H_PLUS: (o2[0] * 2.0, o2[1] * 2.0)}, {}],
+        ),
+        MechanismStep(
+            label="Products", molecules=[_smi(ester), _smi(water), _smi(proton)],
+            anchors=[ester_anchor, {}, {}], arrows=[],
         ),
     ]
+
+
+# Das H, das im Protonentransfer vom Alkohol-O zum OH wandert (als Atom gezeichnet)
+H_MOVING = 8
+
+
+def _explicit_h(mol: Chem.Mol, heavy_map: int, h_map: int) -> Chem.Mol:
+    """Ein H am Atom heavy_map als eigenes, gemapptes Atom — ein Pfeil braucht ein Ziel mit Koordinaten."""
+    rw = Chem.RWMol(mol)
+    heavy = rw.GetAtomWithIdx(_idx(rw, heavy_map))
+    n_h = heavy.GetTotalNumHs()
+    if n_h < 1:
+        raise MechanismBuildError(f"atom map {heavy_map} has no hydrogen to draw")
+    h = Chem.Atom(1)
+    h.SetAtomMapNum(h_map)
+    h_idx = rw.AddAtom(h)
+    rw.AddBond(heavy.GetIdx(), h_idx, Chem.BondType.SINGLE)
+    heavy.SetNumExplicitHs(n_h - 1)
+    heavy.SetNoImplicit(True)
+    return _sanitize(rw)
+
+
+def _implicit_h(mol: Chem.Mol, h_map: int) -> Chem.Mol:
+    """Gezeichnetes H-Atom wieder in die H-Zahl seines Nachbarn falten."""
+    rw = Chem.RWMol(mol)
+    h = rw.GetAtomWithIdx(_idx(rw, h_map))
+    heavy = h.GetNeighbors()[0]
+    n_h = heavy.GetTotalNumHs()
+    heavy.SetNumExplicitHs(n_h + 1)
+    heavy.SetNoImplicit(True)
+    rw.RemoveAtom(h.GetIdx())
+    return _sanitize(rw)
+
+
+def _sanitize(rw: Chem.RWMol) -> Chem.Mol:
+    mol = rw.GetMol()
+    try:
+        Chem.SanitizeMol(mol)
+    except Exception as exc:  # noqa: BLE001 — jeder RDKit-Fehler heißt: Vorlage zeichnen
+        raise MechanismBuildError(f"intermediate failed sanitization: {exc}") from exc
+    return mol
+
+
+def _set_hs(atom: Chem.Atom, n: int, charge: int) -> None:
+    atom.SetFormalCharge(charge)
+    atom.SetNumExplicitHs(n)
+    atom.SetNoImplicit(True)
+
+
+def _move_h(mol: Chem.Mol, h_map: int, from_map: int, to_map: int) -> Chem.Mol:
+    """Protonentransfer: das gezeichnete H wechselt von from (wird neutral) zu to (wird +1)."""
+    rw = Chem.RWMol(mol)
+    h, a, b = _idx(rw, h_map), _idx(rw, from_map), _idx(rw, to_map)
+    src, dst = rw.GetAtomWithIdx(a), rw.GetAtomWithIdx(b)
+    # Implizite H vor dem Umbau zählen (danach ist der Valenz-Cache ungültig); das gezeichnete H
+    # ist ein Atom und zählt nicht mit
+    src_h, dst_h = src.GetNumExplicitHs() + src.GetNumImplicitHs(), dst.GetNumExplicitHs() + dst.GetNumImplicitHs()
+    rw.RemoveBond(h, a)
+    rw.AddBond(h, b, Chem.BondType.SINGLE)
+    _set_hs(src, src_h, 0)
+    _set_hs(dst, dst_h, +1)
+    return _sanitize(rw)
+
+
+def _lose_water(mol: Chem.Mol) -> tuple[Chem.Mol, Chem.Mol]:
+    """C–OH₂⁺ bricht: Wasser geht neutral, O2 bildet die C=O⁺H-Doppelbindung (H als Atom H_PLUS)."""
+    rw = Chem.RWMol(mol)
+    c, o2, o3 = _idx(rw, C_ACID), _idx(rw, O_CARBONYL), _idx(rw, O_HYDROXY)
+    rw.RemoveBond(c, o3)
+    rw.GetBondBetweenAtoms(c, o2).SetBondType(Chem.BondType.DOUBLE)
+    o2_atom = rw.GetAtomWithIdx(o2)
+    _set_hs(o2_atom, 0, +1)
+    h = Chem.Atom(1)
+    h.SetAtomMapNum(H_PLUS)
+    rw.AddBond(o2, rw.AddAtom(h), Chem.BondType.SINGLE)
+    _set_hs(rw.GetAtomWithIdx(o3), 2, 0)
+    whole = _sanitize(rw)
+    frags = Chem.GetMolFrags(whole, asMols=True)
+    return _frag_with(list(frags), C_ACID), _frag_with(list(frags), O_HYDROXY)
+
+
+def _deprotonate(mol: Chem.Mol) -> Chem.Mol:
+    """Protonierter Ester → Ester: das H-Atom an O2 geht als H⁺."""
+    rw = Chem.RWMol(mol)
+    rw.RemoveAtom(_idx(rw, H_PLUS))
+    _set_hs(rw.GetAtomWithIdx(_idx(rw, O_CARBONYL)), 0, 0)
+    return _sanitize(rw)
 
 
 _BUILDERS = {"sn2": _sn2, "sn1": _sn1, "fischer_ester": _fischer}

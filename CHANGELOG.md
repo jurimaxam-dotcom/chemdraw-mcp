@@ -48,6 +48,14 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Fischer esterification follows the textbook sequence (Clayden, ch. 10):
+  protonation, attack of the alcohol, proton transfer to an OH, loss of water
+  as –OH₂⁺ while the remaining OH re-forms C=O⁺H, deprotonation that returns
+  H⁺. Water no longer leaves from a neutral OH. The textbook examples are now
+  built from the same derivation as your own substrates, which also removes
+  the stretched C–O bond in the SN2 example.
+- The curved arrow from a breaking bond to its leaving group is a full arc
+  past the atom instead of a short hook.
 - Mechanism titles: PubChem names are written in running-text case
   ("tert-butyl chloride", not "tert-BUTYL CHLORIDE"), keeping stereodescriptors
   and N-/O-/S-/D-/L- prefixes; "(2R)-2-chloropentane" becomes

@@ -62,6 +62,8 @@ class _Drawing:
     # Map). RDKit beschriftet ein Gerüst-C nur, wenn seine zwei Bindungen auf einer Linie liegen —
     # im Ring ist das ein Layout-Fehler (Kontaktbogen 05.11.2026, 1-Methylcyclohexyl).
     labelled_carbons: list[int]
+    # Gezeichnete Bindungen als Strecken (Pixel) — Pfeile sollen nicht auf ihnen landen
+    bond_segments: list[tuple[tuple[float, float], tuple[float, float]]]
 
 
 def _get_draw_coords(
@@ -167,7 +169,9 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
         for i in raw_boxes
         if (a := mol.GetAtomWithIdx(i)).GetAtomicNum() == 6 and a.GetFormalCharge() == 0 and a.GetIsotope() == 0
     )
-    return _Drawing(svg, coords, boxes, list(raw_boxes.values()) + notes, atom_pts, bond_px, labelled_carbons)
+    segments = [(atom_pts[b.GetBeginAtomIdx()], atom_pts[b.GetEndAtomIdx()]) for b in mol.GetBonds()]
+    return _Drawing(svg, coords, boxes, list(raw_boxes.values()) + notes, atom_pts, bond_px, labelled_carbons,
+                    segments)
 
 
 def _set_frame(svg: str, frame: tuple[float, float, float, float]) -> str:
@@ -286,13 +290,28 @@ def _collisions(s, c, t, obstacles: list[Box], ends: float = 4.0, margin: float 
     return hits
 
 
+def _seg_dist(p, a, b) -> float:
+    """Abstand eines Punktes zur Strecke a–b."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    n2 = dx * dx + dy * dy
+    t = 0.0 if n2 < 1e-9 else max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / n2))
+    return math.dist(p, (a[0] + t * dx, a[1] + t * dy))
+
+
 def _place_arrow(
     arrow: CurvedArrow,
     coords: dict[int, tuple[float, float]],
     boxes: dict[int, Box],
     obstacles: list[Box],
+    atom_pts: list[tuple[float, float]] | None = None,
+    bond_px: float = 0.0,
+    segments: list | None = None,
 ) -> dict | None:
-    """Start, Kontrollpunkt und Spitze eines Pfeils — Enden am Beschriftungsrand, Körper frei."""
+    """Start, Kontrollpunkt und Spitze eines Pfeils — Enden am Beschriftungsrand, Körper frei.
+
+    Zweites Kriterium nach den Beschriftungen: der Bogen soll nicht über fremde Atome laufen
+    (Wasserabspaltung: die Spitze landete am H des OH₂⁺ statt auf der freien Seite).
+    """
     src_id, src_type = arrow.source[0], arrow.source[1]
     tgt_id = arrow.target[0]
     if src_id not in coords or tgt_id not in coords:
@@ -302,29 +321,55 @@ def _place_arrow(
         partner = None
     kind = "lone_pair" if src_type == "lone_pair" else ("bond" if partner is not None else "atom")
     leaving = kind == "bond" and partner == tgt_id
+    # Ziel Bindung (target = (a, "bond_to", b)): Spitze an die Mitte der entstehenden Bindung
+    tgt_bond = None
+    if len(arrow.target) >= 3 and arrow.target[1] == "bond_to" and arrow.target[2] in coords:
+        tgt_bond = (tgt_id, arrow.target[2])
 
     if kind == "bond":
         a, b = coords[src_id], coords[partner]
         s0 = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
     else:
         s0 = coords[src_id]
-    t0 = coords[tgt_id]
-    src_box, tgt_box = boxes.get(src_id), boxes.get(tgt_id)
+    if tgt_bond:
+        a, b = coords[tgt_bond[0]], coords[tgt_bond[1]]
+        t0 = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    else:
+        t0 = coords[tgt_id]
+    src_box, tgt_box = boxes.get(src_id), (None if tgt_bond else boxes.get(tgt_id))
+    push_back = kind == "lone_pair" and tgt_bond is not None and src_id in tgt_bond
 
     def clip_tip(ctrl):
         d = _unit(t0[0] - ctrl[0], t0[1] - ctrl[1])
         r = _exit_distance(t0, (-d[0], -d[1]), tgt_box, _LABEL_GAP) if tgt_box else _BARE_ATOM_GAP
         return (t0[0] - d[0] * r, t0[1] - d[1] * r)
 
-    def candidate(side: int, factor: float):
+    def candidate(side: int, factor: float, lean: float = 1.0):
         if leaving:
             # Bindung → eigenes Ende (Abgangsgruppe): die Spitze landet neben der Beschriftung, auf
             # der Seite, zu der sich der Bogen wölbt — nicht im „Br“, nicht eine halbe Bindung kurz.
+            # Schräg nach außen (Seite + ein Stück über das Atom hinaus): der Bogen wird so lang wie
+            # eine Bindung statt ein Haken von einer halben (Kontaktbogen 05.11.2026, „Loss of water“).
             dx, dy = t0[0] - s0[0], t0[1] - s0[1]
             n = _unit(-dy * side, dx * side)
-            r = _exit_distance(t0, n, tgt_box, _LABEL_GAP) if tgt_box else 10.0
-            tip = (t0[0] + n[0] * r, t0[1] + n[1] * r)
+            u = _unit(dx, dy)
+            d = _unit(0.6 * n[0] + lean * u[0], 0.6 * n[1] + lean * u[1])
+            r = _exit_distance(t0, d, tgt_box, _LABEL_GAP) if tgt_box else 10.0
+            tip = (t0[0] + d[0] * r, t0[1] + d[1] * r)
             return s0, _control(s0, tip, side, factor), tip
+        if push_back:
+            # Freies Paar → Bindung zum eigenen Nachbarn (C=O⁺H bildet sich zurück): Schwanz außen an
+            # der Beschriftung, Bogen um sie herum, Spitze an der Bindungsmitte.
+            dx, dy = t0[0] - s0[0], t0[1] - s0[1]
+            u = _unit(dx, dy)
+            n = _unit(-dy * side, dx * side)
+            d = _unit(n[0] - 0.6 * u[0], n[1] - 0.6 * u[1])
+            r = _exit_distance(s0, d, src_box, _LABEL_GAP) if src_box else _BARE_ATOM_GAP
+            start = (s0[0] + d[0] * r, s0[1] + d[1] * r)
+            tip = (t0[0] + n[0] * 3.0, t0[1] + n[1] * 3.0)
+            bulge = _MIN_BULGE * factor
+            ctrl = ((start[0] + tip[0]) / 2 + n[0] * bulge, (start[1] + tip[1]) / 2 + n[1] * bulge)
+            return start, ctrl, tip
         ctrl = _control(s0, t0, side, factor)
         start = s0
         if kind == "lone_pair":
@@ -338,13 +383,36 @@ def _place_arrow(
         # Nach dem Kürzen den Rand entlang der neuen Anflugrichtung noch einmal bestimmen
         return start, ctrl, clip_tip(ctrl)
 
+    own = [coords[m] for m in (src_id, tgt_id, partner, *(tgt_bond or ())) if m is not None and m in coords]
+
+    def is_own(p) -> bool:
+        return any(math.dist(p, q) < 1.0 for q in own)
+
+    others = [p for p in (atom_pts or []) if not is_own(p)]
+    # Bindungen zwischen zwei eigenen Atomen (die Quellbindung, die entstehende Bindung) zählen nicht
+    foreign = [(a, b) for a, b in (segments or []) if not (is_own(a) and is_own(b))]
+    near = 0.4 * bond_px
+
+    def crowding(s, c, t) -> int:
+        if near <= 0:
+            return 0
+        pts = _bezier_points(s, c, t, 20)
+        hits = sum(1 for p in pts for q in others if math.dist(p, q) < near)
+        # Die letzten Punkte (Spitze) dürfen keine fremde Bindung berühren
+        # Weder Körper noch Spitze über eine fremde Bindung (Protonentransfer: der Bogen kreuzte C–O⁺)
+        hits += sum(1 for p in pts[3:] for a, b in foreign if _seg_dist(p, a, b) < 0.12 * bond_px)
+        return hits
+
+    # Abgangsgruppe: erst schräg über das Atom hinaus (langer Bogen), dann seitlich (kurzer Haken in
+    # eine freie Lücke zwischen zwei Bindungen)
+    leans = (1.0, 0.0) if leaving else (1.0,)
     best = None
-    for side, factor in _BULGE_TRIALS:
-        s, c, t = candidate(side, factor)
-        hits = _collisions(s, c, t, obstacles)
-        if best is None or hits < best[0]:
-            best = (hits, s, c, t)
-        if hits == 0:
+    for (side, factor), lean in ((t, le) for le in leans for t in _BULGE_TRIALS):
+        s, c, t = candidate(side, factor, lean)
+        score = _collisions(s, c, t, obstacles) + crowding(s, c, t)
+        if best is None or score < best[0]:
+            best = (score, s, c, t)
+        if score == 0:
             break
     _, s, c, t = best
     return {
@@ -355,6 +423,7 @@ def _place_arrow(
         "src_map": src_id,
         "tgt_map": tgt_id,
         "bond": [src_id, partner] if kind == "bond" else None,
+        "tgt_bond": list(tgt_bond) if tgt_bond else None,
         "style": arrow.style,
     }
 
@@ -459,7 +528,7 @@ def render_step(
     arrows = []
     extent_pts = list(d.atom_pts)
     for arrow in step.arrows:
-        placed = _place_arrow(arrow, d.coords, d.boxes, d.obstacles)
+        placed = _place_arrow(arrow, d.coords, d.boxes, d.obstacles, d.atom_pts, d.bond_px, d.bond_segments)
         if placed is None:
             continue
         arrows.append(placed)

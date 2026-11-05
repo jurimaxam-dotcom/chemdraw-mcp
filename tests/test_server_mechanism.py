@@ -113,8 +113,16 @@ def test_title_names_the_textbook_example_when_it_falls_back(monkeypatch):
     Tool die Substrate; nur im Fallback ist das Bild die Vorlage — dann nennt der Titel sie."""
     import chemdraw_tool.mechanism_coords as coords
 
+    echt = coords.layout_anchored
+    aufrufe = []
+
     def kaputt(steps):
-        raise RuntimeError("layout exploded")
+        # Nur der erste Aufruf (Substrate) scheitert — die Vorlage läuft seit Etappe E durch
+        # dasselbe Layout und muss gelingen
+        aufrufe.append(1)
+        if len(aufrufe) == 1:
+            raise RuntimeError("layout exploded")
+        return echt(steps)
 
     monkeypatch.setattr(coords, "layout_anchored", kaputt)
     result = generate_mechanism("sn2", ["CCCCBr", "[SH-]"])
@@ -155,7 +163,7 @@ def test_title_names_the_users_substances(monkeypatch):
 @pytest.mark.parametrize("reaction_type, substrates, n", [
     ("sn2", ["C[C@@H](Br)CC", "[C-]#N"], 3),
     ("sn1", ["CC(C)(C)Cl", "O"], 5),
-    ("fischer_ester", ["CCC(=O)O", "CCO"], 6),
+    ("fischer_ester", ["CCC(=O)O", "CCO"], 7),
 ])
 def test_three_families_draw_real_substrates(reaction_type, substrates, n):
     result = generate_mechanism(reaction_type, substrates)

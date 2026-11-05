@@ -107,7 +107,12 @@ def test_pfeile_treffen_keine_beschriftung(ergebnisse, cid, rt, subs):
                 break
             # Spitze
             tgt = a["tgt_map"]
-            if tgt in boxen:
+            if a.get("tgt_bond"):
+                b1, b2 = (mitten[m] for m in a["tgt_bond"])
+                mitte = ((b1[0] + b2[0]) / 2, (b1[1] + b2[1]) / 2)
+                if math.dist(tip, mitte) > grenze:
+                    fehler.append(f"{name}: Spitze {math.dist(tip, mitte):.0f}px von der Bindungsmitte (> {grenze:.0f})")
+            elif tgt in boxen:
                 box = boxen[tgt]
                 if _innen(tip, box):
                     fehler.append(f"{name}: Spitze in der Beschriftung des Ziels")
@@ -137,19 +142,12 @@ def test_pfeile_treffen_keine_beschriftung(ergebnisse, cid, rt, subs):
     assert not fehler, "\n".join(fehler)
 
 
-# Befund 05.11.2026, nicht im Renderer zu beheben: in der SN2-Vorlage behält das OH im Produkt
-# seinen Platz aus dem Übergangszustand (mechanism_coords.stabilize_sequence) — die C–O-Bindung
-# ist 3,4 Bindungslängen lang. Strikt: wird das Layout repariert, ist dieser Fall rot und die
-# Markierung muss weg.
-_GEDEHNT = {"vorlage-sn2": "SN2-Vorlage: Produkt-C–O-Bindung gedehnt (stabilize_sequence)"}
-BL_CASES = [
-    pytest.param(*c, id=c[0], marks=pytest.mark.xfail(strict=True, reason=_GEDEHNT[c[0]])) if c[0] in _GEDEHNT
-    else pytest.param(*c, id=c[0])
-    for c in CASES
-]
+# Die SN2-Vorlage dehnte die Produkt-C–O-Bindung (stabilize_sequence) — seit Etappe E laufen die
+# Vorlagen durch layout_anchored, die strikte xfail-Markierung ist weg.
+BL_CASES = CASES
 
 
-@pytest.mark.parametrize(("cid", "rt", "subs"), BL_CASES)
+@pytest.mark.parametrize(("cid", "rt", "subs"), BL_CASES, ids=[c[0] for c in BL_CASES])
 def test_alle_schritte_haben_dieselbe_bindungslaenge(ergebnisse, cid, rt, subs):
     payload = _payload(ergebnisse, rt, subs)
     laengen = [geometry_of(s.svg)["bond_px"] for s in payload.steps]
