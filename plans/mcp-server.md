@@ -26,7 +26,13 @@ Fix: `rdkit<2026.9` in `pyproject.toml` (gilt auch für PyPI), Playwright npm-se
 Chromium 1248). Gate rc=0 (7542 passed), CI py3.11/py3.13 grün, Befund im PR-Kommentar. Merge = Jays Klick:
 `gh pr merge 7 --squash --delete-branch`. **Jay:** neue rdkit-Orientierung übernehmen (Goldens mit Sichtprüfung neu, Pin weg)
 oder Pin behalten? Empfehlung: Pin behalten bis zum nächsten rdkit-Release, dann neu messen.
-**Nächster Schritt:** Dependabot-Bericht abnehmen · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
+**Dependabot abgenommen (17:40, Hauptsession, Faden geschlossen):** PR #7 grün (py3.11/py3.13), Ursache des Rots war rdkit 2026.9.1
+(Compute2DCoords spiegelt Aspirin/Glucose → Golden-SVGs rot), nicht Playwright; Fix `98e4342` auf dem PR-Branch: `rdkit<2026.9` mit
+Begründung im pyproject, Playwright beidseitig 1.64.1, Goldens/Snapshots unverändert (Branch-Diff geprüft).
+**Jay:** `gh pr merge 8 --squash --delete-branch && gh pr merge 7 --squash --delete-branch` · **Jay (später, nicht blockierend):**
+rdkit-Pin behalten (Empfehlung: ja — Default-Rendering darf sich nicht still ändern) oder bei nächstem bewussten RDKit-Bump Goldens
+mit Sichtprüfung neu und Pin weg?
+**Nächster Schritt:** nach Jays Merges `git pull`, Gate einmal auf main · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
