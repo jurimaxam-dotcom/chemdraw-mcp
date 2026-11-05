@@ -10,7 +10,7 @@
 Der frühere Befehl von Jays Hand war nicht gelaufen (weder Tag noch Draft vorhanden, 16:10 geprüft).
 
 **Etappe F gestartet:** Tisch-Faden `20261105-162003-etappe-f-marketing-repo` (Claude-Session `edf9eeb9`, herdr `w4W:p4`, Split down),
-Auftrag mit Vorab-Befund: `vermarktung/`, `plans/vermarktung.md`, `docs/distribution/` sind **unversioniert** (`.git/info/exclude`
+Auftrag mit Vorab-Befund (**Korrektur 05.11.: `plans/vermarktung.md` war versioniert**, 24 Commits — nur `vermarktung/` und `docs/distribution/` waren unversioniert): `vermarktung/`, `plans/vermarktung.md`, `docs/distribution/` sind **unversioniert** (`.git/info/exclude`
 seit 21.10.) → Kopie, kein `subtree split`; Historie hat nur Branch `worktree-agent-a89d4c26da6a9d6c2` (`chemdraw_tool/ui/video/`,
 `scripts/demo-short.sh`). `vermarktung/out` 1,3 GB + `video/node_modules` bleiben draußen; `vermarktung/traffic` ist Symlink nach
 `~/.local/share/chemdraw-mcp/traffic`. `ax-claude.swift`/`aufnahme-desktop.sh` gehören Codex → Abstimmung per Tisch im Auftrag.
@@ -215,7 +215,19 @@ Registry `./scripts/publish-registry.sh` (isLatest). Release-Klick bleibt Jays H
 **Branch-Fragen beantwortet (Jay 05.11.):** mechanismus-substrate, mcp-2-migration-v2 gelöscht; mcp-2-migration als Tag
 `archiv/mcp-2-migration` archiviert und gelöscht; Dependabot-Branches als eigene Etappe nach 0.8.0.
 
-**Etappe F — eigenes Marketing-Repo (Jay 05.11., nach E, eigene Session):** `vermarktung/` (Aufnahme-Skripte, AX-Steuerung,
+- [x] **Etappe F erledigt 05.11.2026 (F-Session `edf9eeb9`, Faden `20261105-162003-etappe-f-marketing-repo`):** privates Repo
+  https://github.com/jurimaxam-dotcom/chemdraw-vermarktung (`gh repo view` → `PRIVATE`), Stand `c91abb2`. Historie: `video/` per
+  `git subtree split` vom Shorts-Branch (1 Commit, `036a4f4` → `3d80235`), darüber Arbeitsstand (`npm --prefix video test` 31/31);
+  `plans/vermarktung.md` mit 24 Commits per `git filter-repo` (`cmp` identisch). Korrektur zum Vorab-Befund: diese Datei war
+  **versioniert**, unversioniert waren nur `vermarktung/` und `docs/distribution/`. `vermarktung/` per `mv` umgezogen (gleiches
+  Volume, `out/` 1,3 GB + `node_modules` reisen mit, `.gitignore`), `docs/distribution/` per `cp -a` + `diff -rq` (leer) → hier
+  gelöscht, `plans/vermarktung.md` per `git rm`, `.git/info/exclude`-Einträge entfernt. Recorder-Änderung des Branchs war schon auf
+  main (`--clicks`); `pyproject`-exclude + Wheel-Test vom Branch bewusst nicht übernommen. Codex wählte Variante A: Wrapper
+  `scripts/ax-claude.sh` (CWD-unabhängig, `exec` mit allen Argumenten, kompiliert nur bei fehlendem/älterem Binary, meldet fehlendes
+  Schwester-Repo; `preflight` aus `/tmp` → `screen=1 ax=1`). CLAUDE.md + `plans/grundlagen-darstellung.md` umgebogen. Branches
+  `worktree-agent-a89d4c26da6a9d6c2` und `f-video-split` lokal gelöscht (nie auf origin), Tag `archiv/demo-shorts` bleibt auf origin.
+  Gate `./test.sh` rc=0 (Log im F-Scratchpad `gate-f.log`). Ursprünglicher Auftrag:
+  **Etappe F — eigenes Marketing-Repo (Jay 05.11., nach E, eigene Session):** `vermarktung/` (Aufnahme-Skripte, AX-Steuerung,
 Posts, Launch-Checkliste) und die Shorts-Pipeline vom Branch `worktree-agent-a89d4c26da6a9d6c2` (Tag `archiv/demo-shorts`:
 Recorder-Änderung in `ui/src/host/demo.record.mjs`, Remotion-Projekt `ui/video/`, `scripts/demo-short.sh`) in ein privates
 Repo `~/Documents/projects/chemdraw-vermarktung` (`gh repo create --private`), Historie per `git subtree split` bzw.
@@ -628,7 +640,7 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 ## Etappen
 - [ ] **Geparkt (Chef 31.10.2026: nicht löschen):** von der README (`65800df`) nicht mehr verwendete Assets —
   `assets/titration-phosphoric.png`, `species-phosphoric.png`, `ethyl-acetate-ir.png`, `tlc-esterification.png`,
-  `mechanism-overview.png`, `demo-mechanism.gif`, `demo-3d.gif`. Vor einem Löschen `grep` in `docs/` und `vermarktung/`.
+  `mechanism-overview.png`, `demo-mechanism.gif`, `demo-3d.gif`. Vor einem Löschen `grep` in `docs/` und `~/Documents/projects/chemdraw-vermarktung/`.
 
 ### Etappe 14.10.2026: vorhandene MVP-Oberfläche autonom verbessern
 

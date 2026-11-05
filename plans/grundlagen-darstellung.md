@@ -8,7 +8,7 @@
 2. ~~Doppelte Formel bei Kleinstmolekülen~~ — **Jay:** Label weglassen. Gebaut 26.10.: SMILES mit einem Schweratom
    (O, N, C, Cl) bekommt kein Label; H₂/O₂ und getippte Namen („water“) bleiben. Desktop-Abnahme 27.10. (Codex, Faden 20261026-235156): H₂O ohne Doppel-Label, H₂/O₂ mit Label, getippte Namen behalten Labels (Kontrollaufruf; Sonnet wandelt Namen sonst selbst in SMILES). Nebenbefund offen: „chlorine“ löst als Cl-Radikal statt Cl₂ auf.
 3. Danach Thema „Prüfungsfragen“ (OC-Grundlagen, kein achtes Tool; plans/mcp-server.md).
-Codex-Kontingent ist leer (Jay 26.10.) — Desktop-Tests bis auf Weiteres selbst (vermarktung/ax-claude.swift) oder liegen lassen.
+Codex-Kontingent ist leer (Jay 26.10.) — Desktop-Tests bis auf Weiteres selbst (`scripts/ax-claude.sh`, Quelle seit 05.11. in `chemdraw-vermarktung`) oder liegen lassen.
 Tisch: Fäden 20261026-190644 und 20261026-193309 erledigt; d.html (untracked) gehört Codex, nicht anfassen.
 
 Jay: „ich will erst die Grundlagen abdecken.“ Reihenfolge = Grundlage → Spezialfall. Nichts davon ist schon freigegeben
@@ -21,7 +21,7 @@ Jay: „entwickle autonom mit ihm weiter … sprecht euch ab“. Je Etappe: Clau
 → `tisch auftrag codex` mit dem Desktop-Test (Prompt, Klicks, Erwartung, Screenshots nach /tmp/chemdraw-desktop-test/)
 → Codex steuert Desktop (AX-Klicks, Developer-Einstellungen: MCP-Log, Server neu laden), meldet ja/nein je Schritt
 → Claude fixt Befunde, Codex testet erneut. Jay bekommt das Ergebnis am Etappenende, keine Handtests.
-Eigentum: Codex `vermarktung/ax-claude.swift`, `vermarktung/aufnahme-desktop.sh` und ein wiederholbares Desktop-Testskript;
+Eigentum: Codex `ax-claude.swift`, `aufnahme-desktop.sh` (seit 05.11. im Repo `chemdraw-vermarktung`, hier Wrapper `scripts/ax-claude.sh`) und ein wiederholbares Desktop-Testskript;
 Claude Server/UI/Tests. Bremsen bleiben: Release, Posts, Außenkommunikation = Jays Hand.
 Codex' Bedingungen (Faden 20261026-180450, #2): Testauftrag nennt Commit, exakte Prompts, Klickfolge, Sollzustände
 und ob ein Desktop-Neustart nötig ist. Während einer Abnahme fasst Claude Desktop nicht an (kein Neustart, keine
