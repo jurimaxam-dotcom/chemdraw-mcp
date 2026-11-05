@@ -12,6 +12,24 @@ Drei Läufe über viele Stoffe bzw. Aufgaben, jeder mit Erwartungswerten aus ein
 Berichte: [`identitaet.md`](identitaet.md), [`ir-abdeckung.md`](ir-abdeckung.md), [`ph.md`](ph.md).
 Rohprotokoll des Identitätslaufs: `identitaet-lauf.json`.
 
+## Lauf 1 → Fix → Lauf 2 (Identität, 04./05.11.2026)
+
+| | Lauf 1 (vor NCI-Fix) | Lauf 2 (mit `cc13e47`) |
+|---|---|---|
+| Resolver | Prozessstart 04.11. 23:19:34, alter Code im Speicher; Fix-Commit 05.11. 00:04:42 | Repo-Stand mit Fix (`inspect.getsource` geprüft) |
+| Ergebnis | 591 grün · 80 gelb · 40 rot | 591 grün · 1 gelb · 119 rot |
+| Laufzeit | 62 min (Backoff 10 s + Wiederholung je „Quelle weg“) | 37 min |
+| Dateien | `identitaet-lauf-1-vor-nci-fix.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Übergänge je Eingabe: 591 grün→grün, 40 rot→rot, 1 gelb→gelb (paritaprevir, Referenz `unsicher`),
+**79 gelb→rot**. Diese 79 waren „Quelle weg (partial)“: NCI CIR meldet einen unbekannten Namen als
+HTTP 500 mit Body „Page not found“, der Resolver hielt das für einen Quellenausfall und riet „retry“.
+Seit dem Fix heißt es ehrlich `not_found` — der Lauf zählt das als rot, weil die Quelle den Stoff führt.
+Der Fix ändert die Nutzer-Meldung, nicht die Auflösung: 75 der 80 `not_found` sind deutsche
+Wikidata-Labels ohne PubChem-Synonym (5 englische mit Präfix oder Sonderzeichen: (RS)-ketamine, (RS)-methadone, (S)-(−)-timolol, β-lactulose, nitroprusside); 74 der 77 betroffenen Stoffe
+sind über ihre englische/INN-Eingabe grün. Befund für später: deutsche Trivialnamen brauchen einen
+eigenen Weg (de.wikipedia-Weiterleitung oder Endungsregeln -on/-one, -in/-ine, -säure/-ic acid).
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:

@@ -1,5 +1,32 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Release-Klick 0.8.0 (Jays Hand), danach Befunde aus der Masse-Eval (Claude, 05.11.2026 01:10)
+
+**Etappe A ist abgenommen** (Haken unten, Beweise in `docs/evidence/masse-eval-2026-11/`, README-Abschnitt
+„Lauf 1 → Fix → Lauf 2“). A–D und Werkzeugbilanz sind damit alle erledigt; 0.8.0 ist vorbereitet (CHANGELOG, Version,
+Gate rc=0 auf `8a5bb07`, Handshake 16/12 auf `150dcbb`; seither nur Skript-Deutungen, Doku und Evidenz).
+
+**Nächster Schritt = Jay:** Release-Zeile aus Claudes Antwort 05.11. 01:10 ausführen (`gh release create v0.8.0 --target <SHA>`),
+dann `gh run list --workflow publish.yml`, PyPI-Umgebung freigeben (pending_deployments), Bundle `.mcpb` am Release prüfen,
+Registry `./scripts/publish-registry.sh` (isLatest). Release-Klick bleibt Jays Hand (Auftrag 04.11.: „0.8.0 vorbereiten“).
+
+**Befunde für danach (nicht in 0.8.0, Reihenfolge nach Nutzen):**
+1. Deutsche Trivialnamen ohne PubChem-Synonym (75 Eingaben, 74 Stoffe über INN grün): eigener Weg im Resolver —
+   de.wikipedia-Weiterleitung auf den englischen Artikel oder Endungsregeln (-on/-one, -in/-ine, -säure/-ic acid), dann
+   Lauf 3 über `stoffe-masse.json`.
+2. OPSIN gewinnt vor PubChem und zerlegt Trivialnamen (chloroxylenol, methyldopa, methylthioninium chloride, tropicamide):
+   OPSIN-Treffer gegen PubChem-Synonym gegenprüfen oder OPSIN nur für systematische Namen (Ziffern/Lokanten) nutzen.
+3. PubChem-Synonymfehler ((−)-Ephedrin → CID 104213, Risperidon → CID 44402564): Formel-Plausibilität gegen Wikidata/ChEMBL.
+4. Referenzliste: `fumaric acid` auf Q139857 pinnen, `tenofovir disoproxil` (Q155954 trägt Tenofovir-Key) korrigieren,
+   `_chembl_namen` im Bericht ist langsam (120 s Timeout je Batch) — Bericht braucht > 5 min.
+5. 12 IR-Gruppen ohne Regel (`ir-abdeckung.md`) · pH-Klemme [0,14] in `exact_ph` (3 Randfälle) · Desktop-Befunde aus
+   `docs/desktop-abnahme-mechanismus-2026-11-05.md`.
+
+**Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md` · Welle 3 eigenes
+Profil? · Abfragemodus auch für Reaktionen?
+
+Offene Tisch-Fäden: `20261105-001817-etappe-a-masse-eval` (Claude↔Codex, Reservierung; wird mit dem Bericht geschlossen).
+
 ## Weiter bei — Codex nach Kontext-Neustart (04.11.2026)
 
 **Nächster Schritt:** Tisch-Aufträge am Projektort lesen und mit Claudes laufender
@@ -139,7 +166,7 @@ Abstimmungsfaden: `20261104-230127-jay-will-vier-vorschlaege`.
       Pufferpunkt auf der Kurve, neu: Look up/Calculate/Anki je ein Bild); Hash-Test im Gate wie Golden-SVGs (bewusst neu erzeugen
       per `UPDATE_README_BILDER=1`); Limitations-Absatz trägt die Desktop-Grenze aus dem CHANGELOG 0.7.0; Gate grün.
       GIFs bleiben Aufnahmen (demo-video.sh), nur Datum/Version geprüft.
-- [ ] **A Masse-Evaluation (Opus):** `tests/identity/stoffe.json` von 24 auf ~300 Einträge; Erwartungswerte aus einer
+- [x] **A Masse-Evaluation (Opus-Arbeiter + Claude, abgenommen 05.11. 01:10; Fixture ist `tests/identity/stoffe-masse.json` mit 711 Eingaben/414 Stoffen, `stoffe.json` bleibt unverändert; Erwartung Wikidata-InChIKey gegen ChEMBL (691/711 bestätigt); drei Berichte mit Zahlen in `docs/evidence/masse-eval-2026-11/`: `identitaet.md` Lauf 2 591 grün · 1 gelb · 119 rot (80 `not_found` = deutsche Labels ohne PubChem-Synonym, 21 stereo, 16 skelett davon 4 OPSIN-Fehlgriffe, 2 PubChem-Synonymfehler, 2 Wikidata-Referenzfehler), `ir-abdeckung.md`, `ph.md` 48/51; Lauf 1 vor NCI-Fix eingefroren `f402b94`; `pytest tests/test_eval_cases.py tests/test_server_profiles.py` 263 grün; Gate rc=0 7542 Tests):** `tests/identity/stoffe.json` von 24 auf ~300 Einträge; Erwartungswerte aus einer
       UNABHÄNGIGEN Quelle (Codex-Einwand): InChIKeys aus PubChem-Download je CID-Liste (Ph.-Eur.-Arzneistoffe / Top-200
       Wirkstoffe), nicht aus der eigenen Auflösungskette; IR-Regelabdeckung über dieselbe Menge (welche Gruppen keine Regel
       treffen) als Bericht; pH-Aufgaben (~50) gegen Lehrbuchlösungen. Ergebnis + Rot/Gelb-Zusammenfassung nach
