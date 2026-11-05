@@ -44,8 +44,9 @@ gemappten Moleküls → Liste für das Layout (`layout_anchored`).
 - **Gültige Moleküle per `rdChemReactions`** (Reaktions-SMARTS, `RunReactants`):
   - SN2-Produkt: `[C@:1][X:2].[Nu-:3]>>[C@@:1][Nu+0:3].[X-:2]` — `@`→`@@` lässt RDKit die
     Konfiguration invertieren (`molInversionFlag`); am achiralen Zentrum wirkungslos.
-  - SN1-Produkt: `[C+:1].[*:3]>>[C+0:1]-[*+0:3]` (bei Wasser/Alkohol: Produkt nach
-    Deprotonierung, wie die bisherige Vorlage).
+  - SN1-Produkt: `[C+:1].[*:3]>>[C+0:1]-[*+0:3]` für Anionen. Wasser/Alkohol (Runde 3,
+    05.11.2026): `[C+:1].[O:3]>>[C+0:1]-[O+:3]` → Oxonium-Ion, ein H als eigenes Atom
+    (`H_LEAVING` = 9), Deprotonierung per `_drop_h` → ROH/ROR′ + X⁻ + H⁺ (siehe (g)10).
   - Fischer (Etappe E, 05.11.2026, nach Clayden Kap. 10 — sieben Stationen): Protonierung
     `[C:1]=[O:2]>>[C+:1]-[O:2]` — die protonierte Säure wird **bewusst als Carbokation-Grenzformel
     C⁺(OH)₂** gezeichnet (die Grenzformel, an der der Alkohol angreift; die C=O⁺H-Form ist
@@ -156,10 +157,11 @@ Reaction Mechanisms". Keine Abbildung übernommen.
 | 3 | Neue Bindung: Spitze zum Zielatom bzw. zur Mitte der entstehenden Bindung; neues freies Paar (Abgangsgruppe): Spitze zum Atom, das es trägt | [LT-Malik] Regel 3–4; [LT-Curly] | Renderer, Geometrie-Test |
 | 4 | Oktettregel: bekommt ein volles Atom ein Paar, muss im selben Schritt eins gehen (SN2: C–X bricht, während Nu–C entsteht → zwei Pfeile in einem Schritt) | [OS-6.5] Regel 4; Clayden Kap. 15 | SN2-Schritt 2 |
 | 5 | Pfeile sind gekrümmt, auch wenn das Paar „geradeaus" wandert; Pfeil und Beschriftungen überschneiden sich nicht | [LT-Curly]; Lesbarkeit | Geometrie-Test |
-| 6 | Übergangszustand in eckigen Klammern mit ‡, Teilbindungen gestrichelt, Ladung als δ⁻ verteilt | Clayden Kap. 15 | Renderer (Klammern) |
+| 6 | Übergangszustand in eckigen Klammern mit ‡, Teilbindungen gestrichelt, Ladung als δ⁻ verteilt: Nucleophil und Abgangsgruppe je δ⁻, keine vollen Ladungen (sonst Summe −2 statt −1) | Clayden Kap. 15 | Renderer (Klammern); ÜZ-Moleküle neutral, `MechanismStep.partial_charges` {NU, X: „δ−“} als Text oben rechts am Symbol (Runde 3, R2); `test_sn2_uebergangszustand_traegt_delta_minus_statt_voller_ladungen` |
 | 7 | SN2 kehrt die Konfiguration um (Walden); das Produkt trägt seinen CIP-Deskriptor | Clayden Kap. 15 | Schrittlabel + Stereo-Annotation |
 | 8 | SN1 über planares Kation → Angriff von beiden Seiten, stereogenes Zentrum „racemic" | Clayden Kap. 15 | Schrittlabel |
 | 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | Sieben Stationen: Edukte, Protonierung, Angriff (→ Oxonium), Protonentransfer (→ OH₂⁺), Wasserabspaltung mit Rückbildung von C=O⁺H, Deprotonierung (H⁺ zurück), Produkte. Protonierte Säure als Grenzformel C⁺(OH)₂ gezeichnet (siehe (b)); Reversibilität nur im Text, nicht als ⇌ |
+| 10 | SN1 mit neutralem Nucleophil (Wasser, Alkohol): der Angriff gibt das Oxonium-Ion R–OH₂⁺ bzw. R–O⁺(H)R′; erst die Deprotonierung (Pfeil von der O–H-Bindung zum O) gibt das Produkt, H⁺ steht in den Produkten | Clayden Kap. 15; [OS-11.4] OpenStax 11.4 „The SN1 Reaction“ (Hydrolyse von tert-Butylbromid über das protonierte Alkohol-Kation) | Sechs Stationen: Edukte, Abgang, Kation, Angriff, „Oxonium ion“, „Products“; Anionen fünf. Buchführung ohne Ausnahme, `test_gesamtladung_bleibt_erhalten` (Runde 3, R4) |
 
 **Befund aus (g)9 (behoben 05.11.2026):** Die Fischer-Ableitung ließ Wasser von einem neutralen
 OH abgehen. Seither Protonentransfer vor der Abspaltung; Vorlage und Substratweg sind dieselbe

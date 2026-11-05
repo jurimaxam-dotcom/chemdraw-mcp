@@ -57,6 +57,20 @@ this project uses [Semantic Versioning](https://semver.org/).
   the stretched C–O bond in the SN2 example.
 - The curved arrow from a breaking bond to its leaving group is a full arc
   past the atom instead of a short hook.
+- SN2 transition state: nucleophile and leaving group carry δ⁻ instead of two
+  full negative charges ("N≡C⁻ ··· C ··· Br⁻" added up to −2 instead of −1;
+  Clayden, ch. 15). Brackets and ‡ stay.
+- SN1 with water or an alcohol goes through the oxonium ion (R–OH₂⁺ or
+  R–O⁺(H)R′) with its own deprotonation arrow, and the products list H⁺
+  (6 steps instead of 5, so `current_step=5` is now the oxonium ion; anionic
+  nucleophiles keep 5 steps). The last step was "Product (after
+  deprotonation)" and showed ROH + X⁻ without the proton.
+- A charge on an atom whose bond leaves to the right is drawn on the left:
+  the terminal N of azide read as N=N⁺=N⁻ because the "⁻" sat under the double
+  bond.
+- Curved arrows from "HO" or "H₂O" start at the O, not at the H; a labelled
+  carbon shows its hydrogen ("CH⁺" in the 1-phenylethyl cation, "CH" in the
+  2-bromobutane transition state).
 - Mechanism titles: PubChem names are written in running-text case
   ("tert-butyl chloride", not "tert-BUTYL CHLORIDE"), keeping stereodescriptors
   and N-/O-/S-/D-/L- prefixes; "(2R)-2-chloropentane" becomes
