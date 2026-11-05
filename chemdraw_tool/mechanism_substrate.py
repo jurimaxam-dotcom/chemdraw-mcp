@@ -460,7 +460,15 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
     cation_parts = _cut(sub_m, C, X, {C: +1, X: -1})
     cation, halide = _frag_with(cation_parts, C), _frag_with(cation_parts, X)
     neutral = nuc_m.GetAtomWithIdx(_idx(nuc_m, NU)).GetFormalCharge() == 0
-    product = _react("[C+:1].[*:3]>>[C+0:1]-[*+0:3]", [Chem.Mol(cation), nuc_m])[0]
+    oxonium = None
+    if neutral:
+        # Wasser/Alkohol: der Angriff gibt das Oxonium-Ion, erst die Deprotonierung das Produkt
+        # (Clayden Kap. 15; OpenStax 11.4) — Sichtung 05.11.2026 (R4). Das abgehende H ist ein
+        # eigenes Atom, damit der Pfeil der Deprotonierung eine Bindung als Quelle hat.
+        oxonium = _explicit_h(_react("[C+:1].[O:3]>>[C+0:1]-[O+:3]", [Chem.Mol(cation), nuc_m])[0], NU, H_LEAVING)
+        product = _drop_h(oxonium, H_LEAVING, NU)
+    else:
+        product = _react("[C+:1].[*:3]>>[C+0:1]-[*+0:3]", [Chem.Mol(cation), nuc_m])[0]
     for atom in product.GetAtoms():
         if atom.GetAtomMapNum() == C:
             atom.SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
@@ -469,11 +477,36 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
         for idx, _ in Chem.FindMolChiralCenters(unmapped(product), includeUnassigned=True,
                                              useLegacyImplementation=False))
 
-    label = "Product (after deprotonation)" if neutral else "Product"
+    label = "Products" if neutral else "Product"
     if stereogenic:
         label += ", racemic"
     subs = _neighbours(sub_m, C, exclude=(X,))
     centre = {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN1, _SN1_RING)}
+    product_anchor = {**centre, **_tail(product, NU, (1.0, 0.0), 1.0, exclude=(C,))}
+    if neutral:
+        proton = Chem.MolFromSmiles(f"[H+:{H_LEAVING}]")
+        # Oxonium: R′ (Alkohol) nach rechts oben, das abgehende H nach rechts unten — der Pfeil
+        # O–H → O hat so eine freie Seite und kreuzt die neue C–O-Bindung nicht
+        ox_anchor = {**centre, **_tail(oxonium, NU, (1.0, 0.0), 1.0, exclude=(C, H_LEAVING), tilt=-60.0),
+                     H_LEAVING: (1.5, -0.866)}
+        last = [
+            MechanismStep(
+                label="Oxonium ion", molecules=[_smi(oxonium), _smi(halide)],
+                arrows=[CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full")],
+                anchors=[ox_anchor, {}],
+            ),
+            MechanismStep(
+                label=label, molecules=[_smi(product), _smi(halide), _smi(proton)], arrows=[],
+                anchors=[product_anchor, {}, {}],
+            ),
+        ]
+    else:
+        last = [
+            MechanismStep(
+                label=label, molecules=[_smi(product), _smi(halide)], arrows=[],
+                anchors=[product_anchor, {}],
+            ),
+        ]
     return [
         MechanismStep(
             label="Reactants", molecules=[_smi(sub_m), _smi(nuc_m)], arrows=[],
@@ -497,10 +530,7 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
             # eine waagrechte Bindung nach rechts lief durch das „⁻“ von C⁻≡N (Kontaktbogen 05.11.)
             anchors=[centre, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0)],
         ),
-        MechanismStep(
-            label=label, molecules=[_smi(product), _smi(halide)], arrows=[],
-            anchors=[{**centre, **_tail(product, NU, (1.0, 0.0), 1.0, exclude=(C,))}, {}],
-        ),
+        *last,
     ]
 
 
@@ -576,7 +606,7 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
                     **_tail(ester, O_ALCOHOL, _ray(-60), 1.0, exclude=(C_ACID,))}
     return [
         MechanismStep(
-            label="Reactants", molecules=[_smi(acid_m), _smi(alc_m), "[H+]"], arrows=[],
+            label="Reactants", molecules=[_smi(acid_m), _smi(alc_m), _smi(proton)], arrows=[],
             anchors=[trigonal, {}, {}],
         ),
         MechanismStep(
@@ -624,6 +654,18 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
 
 # Das H, das im Protonentransfer vom Alkohol-O zum OH wandert (als Atom gezeichnet)
 H_MOVING = 8
+# SN1 mit Wasser/Alkohol: das H, das das Oxonium-Ion als H⁺ verlässt (als Atom gezeichnet)
+H_LEAVING = 9
+
+
+def _drop_h(mol: Chem.Mol, h_map: int, heavy_map: int) -> Chem.Mol:
+    """Das gezeichnete H geht als H⁺: Atom weg, sein Partner wird neutral, übrige H bleiben."""
+    rw = Chem.RWMol(mol)
+    heavy = rw.GetAtomWithIdx(_idx(rw, heavy_map))
+    n_h = heavy.GetNumExplicitHs() + heavy.GetNumImplicitHs()
+    rw.RemoveAtom(_idx(rw, h_map))
+    _set_hs(rw.GetAtomWithIdx(_idx(rw, heavy_map)), n_h, 0)
+    return _sanitize(rw)
 
 
 def _explicit_h(mol: Chem.Mol, heavy_map: int, h_map: int) -> Chem.Mol:

@@ -14,13 +14,14 @@ Wasserstoffe zählen am schweren Partner (implizit oder als gemapptes Atom gezei
 H, das in einem Schritt als Atom und im nächsten implizit vorliegt, dieselbe Buchung ergibt.
 
 Bekannte, bewusst zugelassene Vereinfachungen (jede steht hier mit Namen, keine stillschweigend):
-- SN1-Schlussschritt „after deprotonation" fasst Angriff und Deprotonierung zusammen — das
-  Nucleophil verliert dort ein H ohne eigenen Pfeil.
 - Fischer „Protonation of the carbonyl group": ein Pfeil (O-Paar → H⁺) ergibt C=O⁺H; gezeichnet
   wird die gleichwertige Grenzformel C⁺(OH)₂ (Design-Notiz (b)), also zusätzlich C=O → C–O ohne
   Resonanzpfeil. Wer die C=O⁺H-Form zeichnet, streicht diese Ausnahme.
+(Die frühere SN1-Ausnahme „after deprotonation" ist seit Runde 3 gestrichen: neutrale Nucleophile
+gehen über das Oxonium-Ion mit eigenem Deprotonierungspfeil, Sichtung 05.11.2026, R4.)
 Nicht geprüft wird die Lage der Formalladung (Grenzformel C⁺(OH)₂ ist erlaubt); dafür steht
-tests/test_mechanism_substrate.py.
+tests/test_mechanism_substrate.py. Geprüft wird die Summe: die Gesamtladung bleibt von Schritt zu
+Schritt gleich (Übergangszustände ausgenommen — dort steht δ⁻ statt Formalladung).
 """
 
 from __future__ import annotations
@@ -143,9 +144,6 @@ def check_bookkeeping(steps) -> None:
             # Fischer: Grenzformel C⁺(OH)₂ statt C=O⁺H — die C=O-Bindung sinkt ohne Resonanzpfeil
             c_o = next(k for k in actual if isinstance(k, frozenset) and actual[k] == -1.0)
             assert actual.pop(c_o) == -1.0
-        if "after deprotonation" in after.label:
-            # SN1: Angriff + Deprotonierung in einem Bild; das Nucleophil gibt ein H ab
-            assert actual.pop(("H", NU), None) == -1.0, f"{after.label}: Deprotonierung ohne H-Verlust am Nucleophil"
         assert actual == expected, (
             f"{step.label} → {after.label}: Pfeile sagen {expected}, Moleküle zeigen {actual}")
 
@@ -153,6 +151,35 @@ def check_bookkeeping(steps) -> None:
 @pytest.mark.parametrize("cid, rt, subs, _cip", MATRIX, ids=[m[0] for m in MATRIX])
 def test_pfeile_und_bindungsaenderungen_stimmen_ueberein(cid, rt, subs, _cip):
     check_bookkeeping(build_steps(rt, subs))
+
+
+def _ladungen(step) -> tuple[dict[int, int], dict[int, int]]:
+    """(schwere Atome, gezeichnete H-Atome): Map-ID → Formalladung."""
+    heavy, hs = {}, {}
+    for mol in _mols(step):
+        for a in mol.GetAtoms():
+            assert a.GetAtomMapNum(), f"{step.label}: ungemapptes Atom {a.GetSymbol()}"
+            (hs if a.GetAtomicNum() == 1 else heavy)[a.GetAtomMapNum()] = a.GetFormalCharge()
+    return heavy, hs
+
+
+@pytest.mark.parametrize("cid, rt, subs, _cip", MATRIX, ids=[m[0] for m in MATRIX])
+def test_gesamtladung_bleibt_erhalten(cid, rt, subs, _cip):
+    """Sichtung 05.11.2026 (R4): SN1 mit Wasser endete bei ROH + X⁻ — Ladung 0 → −1, das H⁺ fehlte.
+
+    Verglichen wird je Schrittpaar die Ladungssumme der schweren Atome, die in beiden gezeichnet
+    sind (SN1 zeigt das Nucleophil erst beim Angriff), plus aller gezeichneten H-Atome: ein H⁺, das
+    im nächsten Schritt implizit am Partner sitzt, bringt seine Ladung dorthin mit. Fehlt das H⁺
+    im Produkt, bleibt die Ladung des Partners ohne Gegenstück. Übergangszustände ausgenommen:
+    dort steht δ⁻ statt Formalladung.
+    """
+    steps = [s for s in build_steps(rt, subs) if not s.is_transition_state]
+    for before, after in zip(steps, steps[1:]):
+        (h0, p0), (h1, p1) = _ladungen(before), _ladungen(after)
+        common = h0.keys() & h1.keys()
+        s0 = sum(h0[m] for m in common) + sum(p0.values())
+        s1 = sum(h1[m] for m in common) + sum(p1.values())
+        assert s0 == s1, f"{cid}: {before.label} ({s0:+d}) → {after.label} ({s1:+d})"
 
 
 def test_falscher_pfeil_faellt_auf():

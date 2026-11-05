@@ -8,7 +8,8 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import rdCIPLabeler
 
-from chemdraw_tool.mechanism_substrate import UnsupportedSubstrates, build_steps
+from chemdraw_tool.mechanism import CurvedArrow
+from chemdraw_tool.mechanism_substrate import NU, UnsupportedSubstrates, build_steps
 from tests.mechanism_matrix import MATRIX
 
 
@@ -104,12 +105,34 @@ def test_sn2_tertiaer_verweist_auf_sn1():
 
 
 def test_sn1_tert_butylchlorid_wasser():
+    """Neutrales Nucleophil: Angriff gibt das Oxonium-Ion, erst die Deprotonierung das Produkt
+    (Clayden Kap. 15; OpenStax 11.4) — sechs Stationen, Sichtung 05.11.2026 (R4)."""
+    from chemdraw_tool.mechanism_substrate import H_LEAVING
+
     steps = build_steps("sn1", ["CC(C)(C)Cl", "O"])
-    assert len(steps) == 5
+    assert [s.label for s in steps] == [
+        "Reactants", "Leaving group departs", "Carbocation (intermediate)", "Nucleophilic attack",
+        "Oxonium ion", "Products",
+    ]
     assert _canon("C[C+](C)C") in [_plain(s) for s in steps[2].molecules]
     assert _canon("[Cl-]") in [_plain(s) for s in steps[2].molecules]
-    assert _canon("CC(C)(C)O") in [_plain(s) for s in steps[-1].molecules]
+    assert sorted(_plain(s) for s in steps[4].molecules) == sorted([_canon("CC(C)(C)[OH2+]"), _canon("[Cl-]")])
+    assert steps[4].arrows == [CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full")]
+    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted(
+        [_canon("CC(C)(C)O"), _canon("[Cl-]"), "[H+]"])
     _arrows_point_at_drawn_atoms(steps)
+
+
+def test_sn1_alkohol_gibt_das_alkyloxonium_ion():
+    steps = build_steps("sn1", ["CC(C)(C)Br", "CO"])
+    assert len(steps) == 6
+    assert _canon("C[OH+]C(C)(C)C") in [_plain(s) for s in steps[4].molecules]
+    assert _canon("COC(C)(C)C") in [_plain(s) for s in steps[-1].molecules]
+
+
+def test_sn1_anion_behaelt_fuenf_schritte():
+    steps = build_steps("sn1", ["CC(C)(C)Cl", "[Na+].[N-]=[N+]=[N-]"])
+    assert [s.label for s in steps][3:] == ["Nucleophilic attack", "Product"]
 
 
 def test_sn1_mit_anion_und_alkohol():
@@ -236,7 +259,7 @@ def test_fischer_grenze_mit_grund(smiles, grund):
 
 @pytest.mark.parametrize("rt, smiles, n", [
     ("sn2", ["CBr", "[OH-]"], 3),
-    ("sn1", ["CC(C)(C)Br", "O"], 5),
+    ("sn1", ["CC(C)(C)Br", "O"], 6),
     ("fischer_ester", ["CC(=O)O", "CO"], 7),
 ])
 def test_lehrbuchbeispiele_laufen_ueber_den_substratweg(rt, smiles, n):
