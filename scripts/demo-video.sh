@@ -4,12 +4,21 @@
 #   <out>/<szene>-9x16.mp4           Shorts/Reels/TikTok (1080×1920, Panel mittig)
 #   <out>/<szene>-1x1.mp4            Bluesky/X (1080×1080)
 # usage: ./scripts/demo-video.sh [ausgabeordner]   (Netz nötig: Namensauflösung + PubChem)
+# Bereits aufgenommene Szenen neu schneiden (kein Netz):
+#   ./scripts/demo-video.sh <aufnahmeordner> --gif-only [szene …]
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT="${1:-$(mktemp -d)/chemdraw-demo}"
 SZENEN=(molecule compare reaction 3d mechanism)
+GIF_ONLY=false
+if [[ "${2:-}" == "--gif-only" ]]; then
+  GIF_ONLY=true
+  if (( $# > 2 )); then SZENEN=("${@:3}"); fi
+fi
 
-(cd chemdraw_tool/ui && node src/host/demo.record.mjs "$OUT" --hires "${SZENEN[@]}")
+if ! $GIF_ONLY; then
+  (cd chemdraw_tool/ui && node src/host/demo.record.mjs "$OUT" --hires "${SZENEN[@]}")
+fi
 
 for s in "${SZENEN[@]}"; do
   # Netzwartezeit aus dem Medienschnitt nehmen; Rohaufnahme bleibt unverändert.
@@ -18,9 +27,27 @@ for s in "${SZENEN[@]}"; do
   # Zwei Bildpixel pro CSS-Pixel bewahren feine Bindungen und Text auf Retina.
   breite=1280
   if [[ "$s" == "3d" || "$s" == "mechanism" ]]; then breite=1120; fi
+  # Erst auf die Referenzbreite normieren, dann pro Szene schneiden.
+  # Vergleich: nur Moleküle samt Namen, sämtliche Kastenkanten und die
+  # Pfadzeile liegen draußen. Rahmen über ALLE Frames der Aufnahme gemessen.
+  # Reaktion: der vollständige flache Kasten, ohne künstliche 16:9-Leerfläche.
+  ausschnitt=null
+  farben=128
+  case "$s" in
+    compare) ausschnitt='crop=1120:300:80:360,scale=1280:-1:flags=lanczos' ;;
+    reaction) ausschnitt='crop=1224:252:28:28,scale=1280:-1:flags=lanczos'; farben=64 ;;
+    molecule) ausschnitt='crop=1255:980:12:16,scale=1280:720:force_original_aspect_ratio=decrease:flags=lanczos,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0xf8f9f8' ;;
+    *) farben=256 ;;
+  esac
+  # Beim Einhängen des Iframes erscheint kurz das unskalierte Panel samt
+  # Pfadzeile. Die ersten 600 ms gehören nicht in die README-Aufnahme.
   ffmpeg -loglevel error -y -i "$OUT/$s.webm" \
-    -vf "$schnitt,fps=15,scale=$breite:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
+    -vf "$schnitt,trim=start=0.6,setpts=PTS-STARTPTS,fps=15,scale=$breite:-1:flags=lanczos,$ausschnitt,split[a][b];[a]palettegen=max_colors=$farben:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
     "assets/demo-$s.gif"
+  if $GIF_ONLY; then
+    echo "✔ $s: assets/demo-$s.gif"
+    continue
+  fi
   # Hochformat: Panel auf 1080 Breite, oben/unten Rand in der Panel-Hintergrundfarbe
   ffmpeg -loglevel error -y -i "$OUT/$s.webm" \
     -vf "$schnitt,scale=1080:-2:flags=lanczos,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=0xfafbf9,format=yuv420p" \
