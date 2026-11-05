@@ -1,5 +1,41 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Etappe E: Mechanismen sauber vor dem Release (Jay 05.11.2026, Claude-Folgesession per Auftrag)
+
+**Jay (05.11.):** „Das macht viel mehr Sinn, das vor dem Release sauber zu machen. Lehrbuchabbildungen als Orientierung für
+die Positionierung der Pfeile usw., eine klare Abnahmebedingung, und so lange mit verschiedenen Reaktionen iterieren, bis es
+immer sauber dargestellt wird.“ → **Release 0.8.0 wartet, bis E abgenommen ist.** Release-Zeile unverändert (Abschnitt darunter),
+nur die Ziel-SHA wird die neue Spitze von main.
+
+**Bekannte Befunde (alle vier gehören in E):**
+1. Panel: SN2-Produkt ohne (S)-Label, obwohl die Inversion in der Struktur steckt (`docs/desktop-abnahme-mechanismus-2026-11-05.md`).
+2. Fischer: gebogener Pfeil liegt knapp über dem HO-Label.
+3. „Mechanismus der Diels-Alder-Reaktion“ läuft in `generate_reaction` ohne Hinweis auf die drei Familien (Fence in beide Richtungen + Eval-Fall).
+4. Titel bei SMILES-Eingabe verliert Name und Stereodeskriptor: „C₄H₉Br + CN⁻“ statt „(R)-2-bromobutane + cyanide“ (Jay 05.11.,
+   Desktop-Beobachtung; Summenformel unterscheidet nicht einmal die Konstitution). Fix: Name per PubChem-Lookup + CIP aus RDKit
+   (`FindMolChiralCenters`), ohne Netz kanonischer SMILES mit Stereo — nie nur die Summenformel.
+
+**Abnahmebedingung (prüfbar, erst rot sehen, dann grün):**
+- **Lehrbuch-Referenz:** Abbildungen zu SN1, SN2 und Fischer aus Jays Vorlesungsfolien/Lehrbuch per pymupdf als Originalbild
+  ziehen (nie nachzeichnen; `~/.claude/docs/dokumente-und-grafiken.md`), Quelle als Bildunterschrift; daraus die Konventionen in
+  `docs/mechanismus-substrate-design.md` festschreiben (Pfeil startet am freien Elektronenpaar bzw. an der Bindungsmitte, endet am
+  Zielatom/der neuen Bindung; Abgangsgruppe geht vom Zentrum weg; Übergangszustand in eckigen Klammern mit ‡; Produkt trägt den
+  CIP-Deskriptor, SN1 „racemic“). Findet die Session keine eigenen OC-Unterlagen bei Jay: per Tisch-Faden nachfragen, welches
+  Lehrbuch (Clayden/Vollhardt/Bruice) gilt — nicht raten.
+- **Geometrie-Test im Gate:** kein gebogener Pfeil schneidet eine Label-Bounding-Box im SVG; Pfeilspitze ≤ 0,35 Bindungslängen
+  vom Zielatom; Pfeilanfang am Quellatom/an der Bindungsmitte. Test über alle Substrate der Matrix.
+- **Substrat-Matrix:** ≥ 10 Substrate je Familie inkl. Randfälle (Stereozentrum, Aromat am Zentrum, lange Kette, Salz-Gegenion,
+  sekundär/tertiär an der Grenze) rendern mit `substrates_drawn: true` ohne `fallback_reason`; Kontaktbogen (PNG, alle
+  Schritte nebeneinander, Referenzbild daneben) für Jays 10-Sekunden-Test — per SendUserFile, iterieren bis Jay „passt“ sagt.
+- **Stereo + Titel:** Produkt-Label (R)/(S) bzw. „racemic“ im Panel und in der Datei, Titel bei SMILES-Eingabe mit Name und
+  Deskriptor; Test-enforced.
+- **Routing:** Eval-Fall „Mechanismus der Diels-Alder-Reaktion“ → Antwort nennt die drei Familien; Taxonomie-Test für den Fence.
+- **Schluss:** Golden-SVGs bewusst neu und gesichtet (`UPDATE_…`-Pfad im selben Commit), Gate rc=0, Desktop-Handtest durch Codex
+  (`tisch auftrag codex`, Screenshots nach `/tmp/chemdraw-desktop-test/`), CHANGELOG 0.8.0 ergänzt. **Erst dann** Release-Zeile an Jay.
+
+Arbeitsweise: Opus-Arbeiter je Bau-Etappe (`model: opus`, Effort medium), Brief nach `~/.claude/docs/modell-prompting/opus-5.md`;
+TDD, Vorlage bleibt als Rückfall. Codex vorher per Tisch informieren (Dateien `chemdraw_tool/mechanism*.py`, `ui/src`, Tests).
+
 ## Weiter bei — Release-Klick 0.8.0 (Jays Hand), danach Befunde aus der Masse-Eval (Claude, 05.11.2026 01:10)
 
 **Etappe A ist abgenommen** (Haken unten, Beweise in `docs/evidence/masse-eval-2026-11/`, README-Abschnitt
