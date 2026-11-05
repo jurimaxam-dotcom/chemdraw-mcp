@@ -58,6 +58,10 @@ class _Drawing:
     obstacles: list[Box]  # alle Beschriftungen, auch ungemappter Atome und (R)/(S)
     atom_pts: list[tuple[float, float]]
     bond_px: float
+    # Neutrale Kohlenstoffe ohne Isotop, die trotzdem ein „C“ bekommen haben (Map-ID, 0 = ohne
+    # Map). RDKit beschriftet ein Gerüst-C nur, wenn seine zwei Bindungen auf einer Linie liegen —
+    # im Ring ist das ein Layout-Fehler (Kontaktbogen 05.11.2026, 1-Methylcyclohexyl).
+    labelled_carbons: list[int]
 
 
 def _get_draw_coords(
@@ -158,7 +162,12 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
     svg = drawer.GetDrawingText()
     raw_boxes, notes = _label_boxes(svg)
     boxes = {idx_to_map[i]: b for i, b in raw_boxes.items() if i in idx_to_map}
-    return _Drawing(svg, coords, boxes, list(raw_boxes.values()) + notes, atom_pts, bond_px)
+    labelled_carbons = sorted(
+        idx_to_map.get(i, 0)
+        for i in raw_boxes
+        if (a := mol.GetAtomWithIdx(i)).GetAtomicNum() == 6 and a.GetFormalCharge() == 0 and a.GetIsotope() == 0
+    )
+    return _Drawing(svg, coords, boxes, list(raw_boxes.values()) + notes, atom_pts, bond_px, labelled_carbons)
 
 
 def _set_frame(svg: str, frame: tuple[float, float, float, float]) -> str:
@@ -480,6 +489,7 @@ def render_step(
         "arrows": arrows,
         "arrows_defined": len(step.arrows),
         "ts_bracket": bracket is not None,
+        "labelled_carbons": d.labelled_carbons,
         "frame": [round(v, 1) for v in frame],
     }
     data = json.dumps(geo, separators=(",", ":"))

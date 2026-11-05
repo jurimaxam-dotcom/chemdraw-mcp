@@ -80,8 +80,11 @@ für das Reaktionszentrum und dessen direkte Nachbarn vor (`MechanismStep.anchor
 Bindungslängen, Zentrum im Ursprung), RDKit legt den Rest drumherum; stößt ein Nebenmolekül an,
 wird es nach außen geschoben; Moleküle ohne Anker stehen rechts daneben. SN2: Abgangsgruppe auf
 +x, Nucleophil auf −x, Substituenten bei 120°/240° (Edukt), 90°/270° (Übergangszustand),
-60°/300° (Produkt — der umgeklappte Regenschirm). Die festen Vorlagen laufen unverändert über
-`stabilize_sequence`.
+60°/300° (Produkt — der umgeklappte Regenschirm). **Zentrum im Ring** (Etappe E): die zwei
+Ring-Nachbarn bekommen ein Winkelpaar mit 120° Abstand — Übergangszustand 30°/150° (Ring über der
+Achse Nu···C···X), SN1 150°/270° mit dem dritten Substituenten auf 90°; sonst faltete RDKit den
+Sechsring (90°/270°) oder zog ein Ringatom gerade und beschriftete es mit „C“. Geprüft:
+`test_ringe_bleiben_regelmaessig_in_jedem_schritt`, `test_kein_geruest_kohlenstoff_traegt_ein_c`.
 
 ## (d) Unterstützungsgrenze je Familie
 

@@ -48,6 +48,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Mechanisms with the reaction centre in a ring (cyclohexyl bromide,
+  1-bromo-1-methylcyclohexane) keep a regular ring in every step: the SN2
+  transition state no longer folds the ring into a bicyclic-looking shape, and
+  no ring carbon is labelled "C".
 - Names unknown to every database are reported as "not found" again. NCI CIR
   answers an unknown name with HTTP 500 and the body "Page not found", which
   counted as a source outage: every German trivial name PubChem does not index

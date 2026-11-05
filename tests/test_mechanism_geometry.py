@@ -168,3 +168,23 @@ def test_stereodeskriptor_steht_im_sn2_produkt():
 def test_achirales_molekuel_bekommt_keinen_deskriptor():
     payload = generate_mechanism("fischer_ester", ["CC(=O)O", "CCO"])
     assert all("CIP_Code" not in s.svg for s in payload.steps)
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), CASES, ids=[c[0] for c in CASES])
+def test_kein_geruest_kohlenstoff_traegt_ein_c(ergebnisse, cid, rt, subs):
+    """Kontaktbogen 05.11.2026: im 1-Methylcyclohexyl-Kation stand an einem Ring-C ein „C“.
+
+    RDKit beschriftet ein neutrales Gerüst-C nur, wenn seine zwei Bindungen auf einer Linie liegen
+    — ein Ring mit 180° an einem Atom ist kein Sechseck mehr. Erlaubt: das Reaktionszentrum (Map 1)
+    im Übergangszustand, dort steht es frei zwischen den Teilbindungen. (Ein Nitril-C beschriftet
+    RDKit nicht — gemessen über die Matrix.)
+    """
+    payload = _payload(ergebnisse, rt, subs)
+    fehler = []
+    for nr, step in enumerate(payload.steps, 1):
+        erlaubt = {1} if step.is_transition_state else set()
+        for m in geometry_of(step.svg)["labelled_carbons"]:
+            if m in erlaubt:
+                continue
+            fehler.append(f"{cid} Schritt {nr} ({step.label}): Kohlenstoff mit Map {m} trägt ein „C“")
+    assert not fehler, "\n".join(fehler)

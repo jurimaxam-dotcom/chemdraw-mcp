@@ -231,3 +231,37 @@ def test_matrix_produktlabel_traegt_den_deskriptor(case_id, family, substrates, 
         assert "racemic" in label, label
     else:
         assert "(R)" not in label and "(S)" not in label and "racemic" not in label, label
+
+
+# --- Ring am Reaktionszentrum (Kontaktbogen 05.11.2026) ---------------------------------
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), [(c, r, s) for c, r, s, _ in MATRIX], ids=[m[0] for m in MATRIX])
+def test_ringe_bleiben_regelmaessig_in_jedem_schritt(cid, rt, subs):
+    """Cyclohexylbromid + I⁻: im Übergangszustand lagen beide Ring-Nachbarn des Zentrums auf 90°/270°
+    (180° auseinander) — der Ring wurde zum gefalteten Bicyclus. Jede Ringbindung in jedem Schritt
+    hat die normale Bindungslänge (± 15 %), jeder Ringwinkel ist ein Polygonwinkel (± 20°)."""
+    import math
+
+    from chemdraw_tool.mechanism_coords import BOND, layout_anchored
+
+    steps = build_steps(rt, subs)
+    fehler = []
+    for step, mols in zip(steps, layout_anchored(steps)):
+        for mol in mols:
+            conf = mol.GetConformer()
+            ri = mol.GetRingInfo()
+            for ring in ri.AtomRings():
+                n = len(ring)
+                soll = 180.0 * (n - 2) / n
+                for k, i in enumerate(ring):
+                    a, b, c = ring[k - 1], i, ring[(k + 1) % n]
+                    pa, pb, pc = (conf.GetAtomPosition(x) for x in (a, b, c))
+                    laenge = (pb - pc).Length()
+                    if abs(laenge - BOND) > 0.15 * BOND:
+                        fehler.append(f"{step.label}: Ringbindung {laenge / BOND:.2f} Bindungslängen")
+                    u, v = pa - pb, pc - pb
+                    winkel = math.degrees(math.acos(max(-1.0, min(1.0, u.DotProduct(v) / u.Length() / v.Length()))))
+                    if abs(winkel - soll) > 20:
+                        fehler.append(f"{step.label}: Ringwinkel {winkel:.0f}° statt {soll:.0f}°")
+    assert not fehler, f"{cid}:\n" + "\n".join(fehler)

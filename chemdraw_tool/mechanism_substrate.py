@@ -325,6 +325,33 @@ def _fan(maps: list[int], angles: list[float]) -> dict[int, tuple[float, float]]
     return {m: _ray(a) for m, a in zip(maps, angles)}
 
 
+def _ring_pair(mol: Chem.Mol, centre: int, subs: list[int]) -> tuple[int, int] | None:
+    """Zwei Substituenten, die mit dem Zentrum in einem Ring liegen (Map-IDs), sonst None."""
+    c = _idx(mol, centre)
+    for ring in Chem.GetSymmSSSR(mol):
+        if c in ring:
+            in_ring = [m for m in subs if _idx(mol, m) in ring]
+            if len(in_ring) >= 2:
+                return in_ring[0], in_ring[1]
+    return None
+
+
+def _fan_centre(mol: Chem.Mol, subs: list[int], angles: dict, ring_angles: dict) -> dict[int, tuple[float, float]]:
+    """Substituenten des Reaktions-C auf ihre Winkel; liegt das Zentrum in einem Ring, bekommen die
+    beiden Ring-Nachbarn ein eigenes Winkelpaar mit 120° Abstand.
+
+    Ohne diese Ausnahme legte der Fächer die Ring-Nachbarn auf 90°/270° (Übergangszustand, 180°
+    auseinander) oder 180°/270° (SN1, 90°) — RDKit faltete den Sechsring zum Bicyclus bzw. zog ein
+    Ringatom gerade und beschriftete es mit „C“ (Kontaktbogen 05.11.2026).
+    """
+    pair = _ring_pair(mol, C, subs)
+    if pair is None or len(subs) not in ring_angles:
+        return _fan(subs, angles[len(subs)])
+    pair_angles, rest_angles = ring_angles[len(subs)]
+    rest = [m for m in subs if m not in pair]
+    return {**_fan(list(pair), pair_angles), **_fan(rest, rest_angles)}
+
+
 def _tail(mol: Chem.Mol, map_id: int, at: tuple[float, float], direction: float,
           exclude: tuple[int, ...] = ()) -> dict[int, tuple[float, float]]:
     """Angreifendes Atom bei `at`, sein erster Nachbar eine Bindung weiter in x-Richtung `direction`."""
@@ -340,6 +367,11 @@ _SN2_BEFORE = {0: [], 1: [120], 2: [120, 240]}  # Edukt: weg vom Rückseitenangr
 _SN2_TS = {0: [], 1: [90], 2: [90, 270]}  # Übergangszustand: planar, senkrecht zur Achse
 _SN2_AFTER = {0: [], 1: [60], 2: [60, 300]}  # Produkt: Regenschirm umgeklappt (Walden)
 _SN1 = {1: [180], 2: [120, 240], 3: [90, 180, 270]}
+# Zentrum im Ring: (Winkel der zwei Ring-Nachbarn, Winkel der übrigen). Übergangszustand: der Ring
+# steht über der Achse Nu···C···X (−x und +x sind besetzt); SN1: Ring nach links unten, der dritte
+# Substituent nach oben, +x bleibt für Abgangsgruppe und Nucleophil frei.
+_SN2_TS_RING = {2: ([30, 150], [])}
+_SN1_RING = {3: ([150, 270], [90])}
 
 
 def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
@@ -381,7 +413,7 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
             partial_bonds=[(NU, C), (C, X)],
             mol_gap=1.8,
             anchors=[
-                {C: (0.0, 0.0), **_fan(subs, _SN2_TS[len(subs)])},
+                {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN2_TS, _SN2_TS_RING)},
                 _tail(nuc_m, NU, (-2.0, 0.0), -1.0),
                 {X: (2.0, 0.0)},
             ],
@@ -422,7 +454,7 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
     if stereogenic:
         label += ", racemic"
     subs = _neighbours(sub_m, C, exclude=(X,))
-    centre = {C: (0.0, 0.0), **_fan(subs, _SN1.get(len(subs), []))}
+    centre = {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN1, _SN1_RING)}
     return [
         MechanismStep(
             label="Reactants", molecules=[_smi(sub_m), _smi(nuc_m)], arrows=[],
