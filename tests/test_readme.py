@@ -1,5 +1,9 @@
 """README-Gate: Toolliste, Zahlen und Bilder im README gegen den echten Server.
 
+Seit 05.11.2026 ist das README kurz (Galerie statt Vollbild je Tool); die
+Referenzteile liegen in docs/tools.md (Tools im Detail, Profiles, Limitations).
+Die Prüfungen laufen deshalb über README + DOCS — Absicht unverändert.
+
 Das README ist die erste Seite, die ein Nutzer sieht — eine Toolzeile ohne Tool
 oder ein Tool ohne Zeile ist dort ein stiller Fehler. Darum:
 
@@ -32,6 +36,11 @@ from chemdraw_tool.server import create_server
 
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
+# Nutzer-Doku, auf die das README verlinkt; trägt Profiles und die übrigen Bilder.
+TOOLS_DOC = (ROOT / "docs" / "tools.md").read_text(encoding="utf-8")
+DOCS = [README, TOOLS_DOC, *(
+    (ROOT / "docs" / n).read_text(encoding="utf-8") for n in ("installation.md", "development.md")
+)]
 MANIFEST = ROOT / "tests" / "__fixtures__" / "readme_bilder.sha256"
 UPDATE_HINT = (
     "Bewusst neu segnen:  uv run python scripts/readme_bilder.py && "
@@ -47,14 +56,14 @@ def _tools(profile: str) -> frozenset[str]:
     return frozenset(t.name for t in tools)
 
 
-def _section(start: str, end: str) -> str:
+def _section(start: str, end: str, text: str = README) -> str:
     """Text zwischen zwei Überschriften (start inklusive, end exklusive)."""
-    begin = README.index(start)
-    return README[begin : README.index(end, begin + len(start))]
+    begin = text.index(start)
+    return text[begin : text.index(end, begin + len(start))]
 
 
 def _table_tools() -> set[str]:
-    rows = [line for line in _section("## Tools", "### Draw").splitlines() if line.startswith("|")]
+    rows = [line for line in _section("## Tools", "\n## ").splitlines() if line.startswith("|")]
     return {m for line in rows for m in re.findall(r"\| `(\w+)` \|", line)}
 
 
@@ -67,12 +76,12 @@ def test_tooltabelle_nennt_genau_die_mvp_tools():
 
 def test_save_png_ist_im_toolabschnitt_erklaert():
     assert "save_png" in _tools("mvp")
-    assert "`save_png`" in _section("## Tools", "### Draw")
+    assert "`save_png`" in _section("## Tools", "\n## ")
 
 
 def test_profilabschnitt_nennt_genau_die_zusatztools_des_vollprofils():
     erwartet = set(_tools("full")) - set(_tools("mvp")) - VAULT_TOOLS
-    genannt = set(re.findall(r"\*\*`(\w+)`\*\*", _section("## Profiles", "## Installation")))
+    genannt = set(re.findall(r"\*\*`(\w+)`\*\*", _section("## Profiles", "\n## ", TOOLS_DOC)))
     assert not erwartet - genannt, f"im Vollprofil, aber nicht unter Profiles: {sorted(erwartet - genannt)}"
     assert not genannt - erwartet, f"unter Profiles, aber kein Zusatztool: {sorted(genannt - erwartet)}"
 
@@ -81,17 +90,17 @@ def test_toolzahlen_stimmen_mit_den_profilen():
     mvp, full = len(_tools("mvp")), len(_tools("full"))
     assert f"registers {mvp} tools" in README
     assert f"The {mvp}th tool, `save_png`" in README
-    profile = _section("## Profiles", "The `full` profile adds")
+    profile = _section("## Profiles", "The `full` profile adds", TOOLS_DOC)
     assert f"| `mvp` (default) | {mvp}," in profile
     assert f"| `full` | {full}," in profile
-    assert f"# all {full} tools" in README
-    # Keine andere „N tools“-Zahl, die stehen geblieben ist.
-    for zahl in re.findall(r"\b(\d+) tools\b", README):
-        assert int(zahl) in {mvp, full}, f"„{zahl} tools“ im README passt zu keinem Profil"
+    assert f"# all {full} tools" in TOOLS_DOC
+    # Keine andere „N tools“-Zahl, die stehen geblieben ist — in keiner der Dateien.
+    for zahl in re.findall(r"\b(\d+) tools\b", "\n".join(DOCS)):
+        assert int(zahl) in {mvp, full}, f"„{zahl} tools“ in README/docs passt zu keinem Profil"
 
 
-def _asset_refs() -> list[str]:
-    return sorted(set(re.findall(r"assets/([\w.-]+\.(?:png|gif|svg|jpg))", README)))
+def _asset_refs(texte: list[str] = DOCS) -> list[str]:
+    return sorted({m for x in texte for m in re.findall(r"assets/([\w.-]+\.(?:png|gif|svg|jpg))", x)})
 
 
 def test_jedes_referenzierte_bild_existiert():
@@ -114,7 +123,7 @@ def _sha(name: str) -> str:
 
 def test_jedes_skriptbild_steht_im_readme():
     fehlend = sorted(set(_skript_bilder()) - set(_asset_refs()))
-    assert not fehlend, f"Skript erzeugt Bilder, die das README nicht zeigt: {fehlend}"
+    assert not fehlend, f"Skript erzeugt Bilder, die weder README noch docs zeigen: {fehlend}"
 
 
 def test_skriptbilder_tragen_den_gesegneten_hash():
@@ -134,3 +143,26 @@ def test_skriptbilder_tragen_den_gesegneten_hash():
         f"assets/ weicht vom gesegneten Skript-Stand ab: {anders} — von Hand ersetzt "
         f"oder Skript geändert, ohne neu zu segnen?\n{UPDATE_HINT}"
     )
+
+
+# --- README = PyPI-Beschreibung (pyproject: readme = "README.md") -------------
+
+
+def test_readme_verlinkt_nur_absolut():
+    """PyPI löst relative Pfade nicht auf: dort wäre jedes Bild und jede docs-Seite tot."""
+    ziele = re.findall(r"\]\(([^)\s]+)\)", README) + re.findall(r'(?:src|href)="([^"]+)"', README)
+    relativ = [z for z in ziele if not z.startswith(("https://", "#", "mailto:"))]
+    assert not relativ, f"relative Links im README (auf PyPI tot): {relativ}"
+
+
+def test_readme_verweist_auf_die_ausgelagerten_docs():
+    for name in ("tools.md", "installation.md", "development.md"):
+        url = f"https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/{name}"
+        assert url in README, f"README verlinkt docs/{name} nicht"
+
+
+def test_anker_und_registry_kennung_bleiben():
+    # #tools/#installation verlinken Quick start, Release-Notes und Posts;
+    # die mcp-name-Zeile braucht die MCP-Registry für die PyPI-Zuordnung.
+    assert "\n## Tools\n" in README and "\n## Installation\n" in README
+    assert "<!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->" in README
