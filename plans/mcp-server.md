@@ -1,6 +1,6 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — 0.8.0 veröffentlicht, Etappe F läuft in eigener Session (Claude-Hauptsession, 05.11.2026 16:25)
+## Weiter bei — 0.8.0 veröffentlicht, Etappe F abgenommen (Claude-Hauptsession, 05.11.2026 17:05)
 
 **Release 0.8.0 ist draußen (Jay 05.11. 16:15: „du darfst es machen“ — einmalige Freigabe für diesen Klick, keine Dauererlaubnis):**
 `gh release create v0.8.0 --target 566a060…` → https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.8.0, Tag zeigt auf
@@ -14,10 +14,10 @@ Auftrag mit Vorab-Befund (**Korrektur 05.11.: `plans/vermarktung.md` war version
 seit 21.10.) → Kopie, kein `subtree split`; Historie hat nur Branch `worktree-agent-a89d4c26da6a9d6c2` (`chemdraw_tool/ui/video/`,
 `scripts/demo-short.sh`). `vermarktung/out` 1,3 GB + `video/node_modules` bleiben draußen; `vermarktung/traffic` ist Symlink nach
 `~/.local/share/chemdraw-mcp/traffic`. `ax-claude.swift`/`aufnahme-desktop.sh` gehören Codex → Abstimmung per Tisch im Auftrag.
-Bericht kommt über den Faden; danach F hier abhaken.
+**F abgenommen 17:05** (Faden geschlossen, Bericht #2 unabhängig geprüft: Repo PRIVATE, 62 getrackte Dateien ohne Videos/`out/`/`node_modules`,
+Reste in chemdraw-mcp weg, `scripts/ax-claude.sh preflight` → `screen=1 ax=1`, `gate-f.log` grün; Haken mit Belegen unten bei „Etappe F erledigt“).
 
-**Nächster Schritt (Hauptsession):** Bericht der F-Session lesen und gegen die Abschlussbedingung prüfen (Repo existiert, `diff -rq`
-belegt, Gate rc=0, Branch gelöscht). Dann Dependabot-Branches als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
+**Nächster Schritt:** Dependabot-Branches als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
