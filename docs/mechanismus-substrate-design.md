@@ -125,6 +125,32 @@ nennt die Eingaben wörtlich („Nucleophilic Substitution (SN2) — 2-bromobuta
 - Payload: `substrates_drawn: bool = False`, `fallback_reason: str = ""` — Defaults, das
   Panel (`MechanismView`) läuft unverändert.
 
+## (g) Zeichenkonventionen (Etappe E, 05.11.2026)
+
+**Referenz:** Clayden, Greeves, Warren, *Organic Chemistry*, 2. Aufl. (OUP 2012) — Jays Wahl 05.11.;
+kein PDF vorhanden, daher aus Kenntnis des Buchs (Kap. 5 „Organic reactions", Kap. 10
+„Nucleophilic substitution at the carbonyl group", Kap. 15 „Nucleophilic substitution at saturated
+carbon"; Kapitelzuordnung ohne Seitenangabe, nicht am Buch geprüft) und gegengelesen an freien Quellen:
+[LT-Curly] = LibreTexts „The Use of Curly Arrows" (chem.libretexts.org, Supplemental Modules →
+Fundamentals), [LT-Malik] = LibreTexts Malik, *Organic Chemistry Part 1*, 4.7 „Conventions followed
+for using curly arrows", [OS-6.5] = OpenStax *Organic Chemistry* 6.5 „Using Curved Arrows in Polar
+Reaction Mechanisms". Keine Abbildung übernommen.
+
+| # | Regel | Quelle | Im Code |
+|---|---|---|---|
+| 1 | Pfeil = Bewegung eines Elektronenpaars, Schwanz an der Elektronenquelle (freies Paar oder Bindung), Spitze an der Senke; nie Atombewegung | Clayden Kap. 5; [LT-Curly]; [OS-6.5] | `CurvedArrow` |
+| 2 | Freies Paar: Schwanz am Atom mit dem Paar (außerhalb seiner Beschriftung); Bindung: Schwanz an der Bindungsmitte | [LT-Malik] Regel 1–2 | Renderer, Geometrie-Test |
+| 3 | Neue Bindung: Spitze zum Zielatom bzw. zur Mitte der entstehenden Bindung; neues freies Paar (Abgangsgruppe): Spitze zum Atom, das es trägt | [LT-Malik] Regel 3–4; [LT-Curly] | Renderer, Geometrie-Test |
+| 4 | Oktettregel: bekommt ein volles Atom ein Paar, muss im selben Schritt eins gehen (SN2: C–X bricht, während Nu–C entsteht → zwei Pfeile in einem Schritt) | [OS-6.5] Regel 4; Clayden Kap. 15 | SN2-Schritt 2 |
+| 5 | Pfeile sind gekrümmt, auch wenn das Paar „geradeaus" wandert; Pfeil und Beschriftungen überschneiden sich nicht | [LT-Curly]; Lesbarkeit | Geometrie-Test |
+| 6 | Übergangszustand in eckigen Klammern mit ‡, Teilbindungen gestrichelt, Ladung als δ⁻ verteilt | Clayden Kap. 15 | Renderer (Klammern) |
+| 7 | SN2 kehrt die Konfiguration um (Walden); das Produkt trägt seinen CIP-Deskriptor | Clayden Kap. 15 | Schrittlabel + Stereo-Annotation |
+| 8 | SN1 über planares Kation → Angriff von beiden Seiten, stereogenes Zentrum „racemic" | Clayden Kap. 15 | Schrittlabel |
+| 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | **Abweichung:** heute 6 Stationen ohne Protonentransfer, Wasser geht von neutralem OH — siehe Befund unten |
+
+**Befund aus (g)9:** Die Fischer-Ableitung lässt Wasser von einem neutralen OH abgehen. Nach
+Regel 4 (Oktett) und Clayden fehlt der Protonentransfer auf das OH vor der Abspaltung.
+
 ## Pfeil-Geometrie (Etappe E, 05.11.2026)
 
 Anker eines Pfeilendes ist der **Rand der Atombeschriftung**, nicht der Atommittelpunkt; nur ein
