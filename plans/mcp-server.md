@@ -105,6 +105,14 @@ Bericht: `~/.claude/tisch/20261105-131815-etappe-e-mechanismen-vor/bericht-hopli
 Bei „passt“: Release-Zeile mit `--target $(git rev-parse HEAD)` an Jay (Zeile im Abschnitt unten). Bei Zeilenhinweis: fixen, Matrix neu rendern, neu senden.
 Bekannte Grenzen (nicht gebaut): lange Ketten im gemeinsamen Rahmen winzig; ÜZ volle Ladungen statt δ⁻; natürlicher SN1-Prompt ohne Tool.
 
+**Abnahme 05.11. 15:55 (Advisor-Sichtung auf Jays Anweisung „lasse den Advisor die Abnahme machen“): E abgenommen.**
+SN2 (Inversion (R)↔(S) korrekt, ÜZ mit ‡) und SN1 („racemic“ nur bei chiralem Produkt, Cyanid ohne Deprotonierung) bestehen.
+Fischer: Pfeilrichtungen Schritt 4–6 in `mechanism_substrate.py` geprüft (freies Elektronenpaar → H, Bindung → O) — korrekt.
+Einziger Befund „H   regenerated“ ohne ⁺ lag nur im Bogen-Skript (ImageMagick mit Arial ohne U+207A), nicht im Produkt
+(Label im Code `H⁺`, Produkt-SVGs tragen keine Schrittüberschrift); Bogen mit Arial Unicode neu, korrekt.
+Zusätzliche Grenzen (nicht gebaut): SN1 Schritt 5 zeigt das abgegebene H⁺ nicht (Fischer schon); Ameisensäure-Zeile
+deutlich größer als die übrigen. **Nächster Schritt = Jay: Release-Klick 0.8.0** (Zeile im Abschnitt unten, Ziel-SHA = Spitze von main).
+
 Arbeitsweise: Opus-Arbeiter je Bau-Etappe (`model: opus`, Effort medium), Brief nach `~/.claude/docs/modell-prompting/opus-5.md`;
 TDD, Vorlage bleibt als Rückfall. Codex vorher per Tisch informieren (Dateien `chemdraw_tool/mechanism*.py`, `ui/src`, Tests).
 
