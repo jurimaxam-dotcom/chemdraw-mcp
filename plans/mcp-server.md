@@ -1,5 +1,32 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Etappe E Runde 3: Befunde der unabhängigen Sichtung (Claude-Hauptsession, 05.11.2026 15:40)
+
+**Jay (05.11., zu den Kontaktbögen Runde 2):** „ich kann nicht verifizieren was richtig und falsch ist, da ich nicht vom Fach bin —
+wie kompensieren wir das, dass wir mit Sicherheit sagen können, ob es stimmt?“ → **Jays Auge wird ersetzt, nicht übersprungen:**
+1. **Maschinell:** `tests/test_mechanism_bookkeeping.py` (`e744e73`) — jeder gebogene Pfeil muss genau die Bindungs-/H-Änderung zum
+   nächsten Schritt beschreiben, jede Änderung braucht ihren Pfeil; über die ganze Matrix, netzfrei an den gemappten SMILES.
+   Benannte Ausnahmen im Docstring. Dazu `tests/test_mechanism_lehrbuch.py`: Ergebnis aus OpenStax 11.2/11.4 statt eigener Ableitung.
+2. **Unabhängige Sichtung** (Opus-Gutachter, blind, ohne unsere Einschätzung, Kriterien aus Design-Notiz (g)) — Ergebnis Runde 2:
+   Fischer GELB (nur Kosmetik), **SN2 und SN1 ROT mit je einem systematischen Fehler**:
+   - **R2 SN2-ÜZ:** Nucleophil und Abgangsgruppe tragen volle Ladungen („N≡C⁻ ··· C ··· Br⁻“) → Gesamtladung −2 statt −1.
+     Richtig: δ⁻ an beiden (oder ⁻ außen an der Klammer). Bestätigt am Bild.
+   - **R4 SN1 mit H₂O/ROH:** Oxonium-Zwischenstufe (R–OH₂⁺ / R–O⁺(H)R′) und Deprotonierungspfeil fehlen; Produktzeile ROH + X⁻
+     ohne H⁺ (Ladung 0 → −1). Bestätigt am Bild. Richtig: Schritt „Oxonium ion“ mit Pfeil O–H-Bindung → O, Produkte ROH + X⁻ + H⁺.
+   - **R1 Azid:** Ladung am endständigen N liegt im SVG unter der Doppelbindungslinie (`sn2-1-chlorbutan-azid-0.svg` atom-7) → Leser
+     sieht N=N⁺=N⁻ statt ⁻N=N⁺=N⁻. Renderfehler, Daten richtig.
+   - **R3 Matrixfall sn1-tbubr-cyanid-salz:** tertiäres Halogenid + Cyanid ist kein Lehrbuch-SN1 (E2 überwiegt; am Kation Isonitril,
+     Kornblum). Fall aus der Matrix nehmen (Ersatz: tBuCl + Azid, Azid-Abfang klassisch).
+   - GELB, billig: Pfeilschwanz bei „HO“-Label (SN1 + Methanol, Schritt 4) sitzt am H statt am O · „C⁺“/„C“ am Zentrum ohne H
+     (Ameisensäure, 1-Phenylethyl) · ⇌ fehlt (nur im Text, bewusst) · Kontaktbogen-Font ohne ⁺ (nur Skript, Arial → andere Font).
+   Stereochemie durchweg richtig (Inversion, CIP, racemic — vom Gutachter nachgerechnet).
+
+**Nächster Schritt:** Runde 3 durch einen frischen Opus-Arbeiter (Brief in der Hauptsession, 15:45): R1–R4 + billige GELB-Punkte,
+`scripts/kontaktbogen.py` ins Repo (aus dem E-Scratch `kontakt.py`), Golden-SVGs bewusst neu und gesichtet, Gate rc=0 in Datei,
+Kontaktbögen k3. Danach **derselbe Gutachter-Lauf noch einmal, blind** — erst wenn er keine ROT-Zeile mehr meldet, ist E abgenommen;
+Jay bekommt Gutachten + Bögen zur Kenntnis, nicht zur Fachprüfung. Dann Handtest-Bericht `998386d` gegen den neuen Stand (Codex:
+SN1-Schrittzahl ändert sich → ein kurzer Nachtest der SN1-Umschaltung), E abhaken, Release-Zeile 0.8.0 (Abschnitt darunter).
+
 ## Weiter bei — Jays Sichtung der E-Kontaktbögen, dann Release-Zeile 0.8.0 (Claude-Hauptsession, 05.11.2026 15:00, vor Kontext-Neustart)
 
 **Nächster Schritt:** Jays Antwort auf die drei Kontaktbögen Runde 2 (SN2/SN1/Fischer, gesendet 05.11. ~14:55 per SendUserFile aus
