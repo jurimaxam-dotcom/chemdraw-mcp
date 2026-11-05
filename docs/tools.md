@@ -27,13 +27,13 @@ projections and all-H drawings are a `view` option.
 **Comparisons.** `compare_molecules` draws two to four structures side by
 side, keeps the shared scaffold neutral and highlights what differs:
 
-<p align="center"><img src="../assets/demo-compare.gif" alt="Ibuprofen, naproxen and ketoprofen side by side with differences highlighted in the chat panel" width="640"></p>
+<p align="center"><img src="../assets/demo-compare.gif" alt="Ibuprofen, naproxen and ketoprofen side by side with differences highlighted in the chat panel" width="800"></p>
 
 **Reaction schemes.** `generate_reaction` draws reactants, products and
 conditions above and below a forward (→), equilibrium (⇌) or retrosynthetic
 (⇒) arrow; formula digits are subscripted (H2SO4 → H₂SO₄):
 
-<p align="center"><img src="../assets/demo-reaction.gif" alt="Fischer esterification with an equilibrium arrow and conditions above and below it in the chat panel" width="640"></p>
+<p align="center"><img src="../assets/demo-reaction.gif" alt="Fischer esterification with an equilibrium arrow and conditions above and below it in the chat panel" width="800"></p>
 
 **Mechanisms — three families, drawn with your molecules.** `generate_mechanism`
 draws SN2, SN1 and Fischer esterification with the substrates you name, with
