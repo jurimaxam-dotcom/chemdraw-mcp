@@ -1,5 +1,26 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — 0.8.0 veröffentlicht, Etappe F läuft in eigener Session (Claude-Hauptsession, 05.11.2026 16:25)
+
+**Release 0.8.0 ist draußen (Jay 05.11. 16:15: „du darfst es machen“ — einmalige Freigabe für diesen Klick, keine Dauererlaubnis):**
+`gh release create v0.8.0 --target 566a060…` → https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.8.0, Tag zeigt auf
+`566a060309e61000f4805b508cf882aa09b559a1`. Workflow `publish.yml` Lauf 42053659782: Freigabe `pypi` per `pending_deployments`
+(Environment 25767991480), Ergebnis build/publish/bundle/registry je `success`. Belege: PyPI-Index führt `chemdraw_mcp-0.8.0`
+(whl sha256 `0506d628…`, sdist `95c05d4b…`), Release-Asset `chemdraw-mcp-0.8.0.mcpb`, MCP-Registry `isLatest` = 0.8.0.
+Der frühere Befehl von Jays Hand war nicht gelaufen (weder Tag noch Draft vorhanden, 16:10 geprüft).
+
+**Etappe F gestartet:** Tisch-Faden `20261105-162003-etappe-f-marketing-repo` (Claude-Session `edf9eeb9`, herdr `w4W:p4`, Split down),
+Auftrag mit Vorab-Befund: `vermarktung/`, `plans/vermarktung.md`, `docs/distribution/` sind **unversioniert** (`.git/info/exclude`
+seit 21.10.) → Kopie, kein `subtree split`; Historie hat nur Branch `worktree-agent-a89d4c26da6a9d6c2` (`chemdraw_tool/ui/video/`,
+`scripts/demo-short.sh`). `vermarktung/out` 1,3 GB + `video/node_modules` bleiben draußen; `vermarktung/traffic` ist Symlink nach
+`~/.local/share/chemdraw-mcp/traffic`. `ax-claude.swift`/`aufnahme-desktop.sh` gehören Codex → Abstimmung per Tisch im Auftrag.
+Bericht kommt über den Faden; danach F hier abhaken.
+
+**Nächster Schritt (Hauptsession):** Bericht der F-Session lesen und gegen die Abschlussbedingung prüfen (Repo existiert, `diff -rq`
+belegt, Gate rc=0, Branch gelöscht). Dann Dependabot-Branches als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
+· Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
 ## Weiter bei — Release-Klick 0.8.0 (Jays Hand), Etappe E abgenommen (Claude-Hauptsession, 05.11.2026 16:25)
 
 **Etappe E ist abgenommen — Beweiskette statt Jays Auge** (Jay 05.11.: „ich bin nicht vom Fach“): (1) `tests/test_mechanism_bookkeeping.py`
