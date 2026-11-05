@@ -27,6 +27,9 @@ from chemdraw_tool.mechanism_renderer import geometry_of
 from chemdraw_tool.server import generate_mechanism
 from tests.mechanism_matrix import MATRIX
 
+# Kein Netz: SMILES-Eingaben lösen einen PubChem-Titel-Nachschlag aus (tests/conftest.py)
+pytestmark = pytest.mark.usefixtures("kein_netz", "titel_offline")
+
 CASES = [(cid, rt, subs) for cid, rt, subs, _cip in MATRIX] + [
     (f"vorlage-{rt}", rt, []) for rt in ("sn1", "sn2", "fischer_ester")
 ]

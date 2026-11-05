@@ -15,6 +15,10 @@ _TITLES = {
 }
 _LOOKUPS: list[str] = []
 
+# Sockets gesperrt (tests/conftest.py) — der Titel-Fake unten deckt den einen bekannten Aufruf ab,
+# die Sperre jeden unbekannten.
+pytestmark = pytest.mark.usefixtures("kein_netz")
+
 
 def _key(smiles: str) -> str:
     return Chem.MolToInchiKey(Chem.MolFromSmiles(smiles))

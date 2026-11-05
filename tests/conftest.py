@@ -47,3 +47,39 @@ def _no_writes_to_the_real_output_dir():
             f"{listing}\n"
             "Patch-Ziel und Fundort der Konstante müssen dasselbe Modul sein."
         )
+
+
+# --- Kein Netz in den Mechanismus-Tests (Etappe E, 05.11.2026) ----------------------------
+#
+# generate_mechanism schlägt für SMILES-Eingaben den PubChem-Titel nach. Der Nachschlag fängt
+# jeden Fehler still ab — ein Test, der ins Netz geht, bleibt also grün und hängt nur still am
+# Netz (3 s Timeout je Stoff). Darum zwei Fixtures, die Testdateien per `pytestmark` einbinden:
+# `kein_netz` sperrt Sockets UND merkt sich jeden Versuch (Teardown rot), `titel_offline` gibt
+# dem Titel-Nachschlag eine feste Antwort.
+
+
+@pytest.fixture
+def kein_netz(monkeypatch):
+    """Jeder Verbindungsversuch wird abgelehnt und am Testende als Fehler gemeldet."""
+    import socket
+
+    versuche: list[str] = []
+
+    def ablehnen(*args, **kwargs):
+        versuche.append(repr(args[1:] or kwargs))
+        raise OSError("Netz im Test gesperrt (tests/conftest.py: kein_netz)")
+
+    monkeypatch.setattr(socket.socket, "connect", ablehnen)
+    monkeypatch.setattr(socket, "create_connection", ablehnen)
+    yield versuche
+    assert not versuche, f"Test ist ins Netz gegangen: {versuche[:3]}"
+
+
+@pytest.fixture
+def titel_offline(monkeypatch):
+    """PubChem-Titel ohne Netz: unbekannt (None), Cache leer."""
+    import chemdraw_tool.databases as databases
+    import chemdraw_tool.server as server
+
+    monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: None)
+    monkeypatch.setattr(server, "_TITLE_CACHE", {})
