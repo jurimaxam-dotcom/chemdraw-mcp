@@ -14,12 +14,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    # rdkit 2026.9 ändert Compute2DCoords: Aspirin, Glucose u. a. kommen
-    # gespiegelt bzw. anders orientiert heraus (Golden-SVGs rot, Dependabot-PR #7,
-    # 05.11.2026). Die Obergrenze gilt bewusst auch für PyPI-/Bundle-Nutzer:
-    # ausgeliefertes Bild = getestetes Bild. Heben erst nach Jays Entscheidung,
-    # dann Goldens mit Sichtprüfung neu erzeugen (tests/test_render_golden.py).
-    "rdkit<2026.9",
+    "rdkit",
     "lxml",
     "requests",
     "mcp>=2.3,<3",
