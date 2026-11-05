@@ -3718,8 +3718,8 @@ def generate_mechanism(
     SN2 — a methyl, primary or secondary alkyl chloride, bromide or iodide with
     one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻); a
     stereocentre is inverted.
-    SN1 — a tertiary, benzylic or allylic alkyl halide with water, an alcohol
-    or one of those anions.
+    SN1 — a tertiary or benzylic alkyl halide with water, an alcohol or one
+    of those anions; an allylic halide is refused (two products).
     Fischer esterification — one carboxylic acid with one primary or secondary
     alcohol.
     Substrates outside the limit return an error that names the reason. Without

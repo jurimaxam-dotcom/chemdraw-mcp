@@ -216,7 +216,7 @@ def test_reaction_type_lists_every_template_and_nothing_else():
 def test_description_names_the_limit_of_each_family():
     doc = generate_mechanism.__doc__
     assert "e.g." not in doc
-    assert "primary or secondary" in doc and "tertiary, benzylic or allylic" in doc
+    assert "primary or secondary" in doc and "tertiary or benzylic" in doc
     assert "they are not drawn" not in doc
     assert "Not this tool for" in doc
 

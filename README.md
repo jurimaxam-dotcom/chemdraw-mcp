@@ -91,8 +91,8 @@ draws SN2, SN1 and Fischer esterification with the substrates you name, with
 curved electron-flow arrows and **Next / Back** through the intermediates. SN2
 takes a methyl, primary or secondary alkyl halide with one anionic nucleophile
 (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻) and inverts a stereocentre; SN1 takes a
-tertiary, benzylic or allylic halide with water, an alcohol or one of those
-anions; Fischer takes one carboxylic acid and one primary or secondary alcohol.
+tertiary or benzylic halide with water, an alcohol or one of those anions (an
+allylic halide is refused: its cation gives two products); Fischer takes one carboxylic acid and one primary or secondary alcohol.
 Anything outside these limits gets an error with the reason. Other mechanisms
 are not available.
 
@@ -338,7 +338,8 @@ confusing ways.
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,
   not densitometry.
 - **Mechanisms are three families** (SN1, SN2, Fischer esterification), each
-  within a stated substrate limit; allylic rearrangement is not drawn.
+  within a stated substrate limit; allylic halides are refused, because the
+  allyl cation gives two products and drawing one would be wrong.
 - **3D is one conformer**, a plausible geometry to look at — not a
   conformational search and not an energy statement.
 - **CDXML is a side path.** It is round-trip validated, but PNG and SVG are

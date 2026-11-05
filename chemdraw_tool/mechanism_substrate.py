@@ -29,8 +29,8 @@ FAMILIES = ("sn2", "sn1", "fischer_ester")
 SUPPORT = {
     "sn2": ("SN2 draws a methyl, primary or secondary alkyl chloride, bromide or iodide with one "
             "anionic nucleophile: OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻ or RS⁻/HS⁻."),
-    "sn1": ("SN1 draws a tertiary, benzylic or allylic alkyl chloride, bromide or iodide with water, "
-            "an alcohol or one of the SN2 anions."),
+    "sn1": ("SN1 draws a tertiary or benzylic alkyl chloride, bromide or iodide with water, "
+            "an alcohol or one of the SN2 anions; allylic halides are not drawn."),
     "fischer_ester": ("Fischer esterification draws one carboxylic acid (a single COOH) with one "
                       "primary or secondary alcohol."),
 }
@@ -451,9 +451,17 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
 def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
     substrate, c_idx, x_idx, nuc, _nuc_name, nu_idx = _halide_and_nucleophile(frags, "sn1")
     n_c, benzylic, allylic = _carbon_class(substrate.mol, c_idx, x_idx)
-    if n_c < 3 and not (benzylic or allylic):
+    if allylic:
+        # Allylkation ist mesomer: Angriff an beiden Enden, zwei Produkte (OpenStax 11.5; Clayden
+        # Kap. 15) — nur eines zu zeichnen wäre falsch. Gutachter-Befund Runde 3, 05.11.2026.
+        # Steht vor der Tertiär-Prüfung: allylisch schlägt tertiär.
         raise UnsupportedSubstrates(
-            "SN1 needs a tertiary, benzylic or allylic halide (a carbocation that is stabilised); "
+            "allylic halide — the allyl cation is delocalised and the nucleophile attacks at both "
+            "ends (allylic rearrangement, two products); that is not drawn. Use a tertiary or "
+            "benzylic halide, or generate_reaction for the overall equation")
+    if n_c < 3 and not benzylic:
+        raise UnsupportedSubstrates(
+            "SN1 needs a tertiary or benzylic halide (a carbocation that is stabilised); "
             "for a methyl, primary or secondary alkyl halide use sn2")
     sub_m, nuc_m = _assign_maps([(substrate.mol, {c_idx: C, x_idx: X}), (nuc.mol, {nu_idx: NU})])
 

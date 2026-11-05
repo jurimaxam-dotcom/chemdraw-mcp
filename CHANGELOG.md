@@ -18,8 +18,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   product as racemic. Each family has a stated limit:
   - SN2: methyl, primary or secondary alkyl chloride, bromide or iodide with
     one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻).
-  - SN1: tertiary, benzylic or allylic alkyl halide with water, an alcohol or
-    one of those anions.
+  - SN1: tertiary or benzylic alkyl halide with water, an alcohol or one of
+    those anions.
   - Fischer esterification: one carboxylic acid with one primary or secondary
     alcohol.
 - Result fields `substrates_drawn` and `fallback_reason`: without substrates,
@@ -35,6 +35,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   counter-ions such as Na⁺ are ignored.
 - The SN1 textbook example is now 2-bromo-2-methylpropane + water (a secondary
   halide is outside the SN1 limit).
+- SN1 refuses allylic halides (also tertiary allylic ones) with the reason: the
+  allyl cation is delocalised, so water attacks at both ends and two products
+  form; drawing only one of them would be wrong.
 - The curved arrow from a breaking bond to the leaving group ends beside the
   atom instead of under its label.
 - Mechanism titles for SMILES input show a name with its stereodescriptor

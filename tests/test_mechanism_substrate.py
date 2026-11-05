@@ -149,9 +149,16 @@ def test_sn1_benzylisch_stereogen_heisst_racemisch():
     assert all("@" not in s for s in steps[-1].molecules)
 
 
-def test_sn1_allylisch():
-    steps = build_steps("sn1", ["C=CC(C)Cl", "O"])
-    assert _canon("C=CC(C)O") in [_plain(s) for s in steps[-1].molecules]
+@pytest.mark.parametrize("smiles", [
+    ["C=CC(C)(C)Br", "O"],   # tertiär UND allylisch — allylisch schlägt tertiär
+    ["C=CC(C)Cl", "O"],      # sekundär allylisch
+])
+def test_sn1_allylisch_wird_mit_grund_abgelehnt(smiles):
+    # Gutachter-Befund Runde 3 (05.11.2026): das Allylkation ist mesomer, Wasser greift an beiden
+    # Enden an — zwei Produkte (OpenStax 11.5; Clayden Kap. 15). Nur eines zu zeichnen ist falsch.
+    with pytest.raises(UnsupportedSubstrates, match="allylic") as err:
+        build_steps("sn1", smiles)
+    assert "two products" in str(err.value) and "generate_reaction" in str(err.value)
 
 
 @pytest.mark.parametrize("smiles, grund", [

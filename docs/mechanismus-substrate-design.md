@@ -101,10 +101,13 @@ Sechsring (90°/270°) oder zog ein Ringatom gerade und beschriftete es mit „C
   auch HS⁻). Tertiär → Grund „tertiary halide — use sn1"; neutrales Nucleophil → Grund „SN2
   needs an anionic nucleophile from the list"; Fluorid als Abgangsgruppe → „fluoride is not a
   leaving group here".
-- **SN1:** tertiäres, benzylisches oder allylisches Halogenid (Cl, Br, I) + neutrales
+- **SN1:** tertiäres oder benzylisches Halogenid (Cl, Br, I) + neutrales
   (Wasser, primärer/sekundärer/tertiärer Alkohol) oder anionisches Nucleophil (dieselbe Liste wie
-  SN2). Primär/sekundär ohne Stabilisierung → „use sn2". Allyl-Umlagerung wird nicht gezeichnet
-  (nur das direkte Produkt).
+  SN2). Primär/sekundär ohne Stabilisierung → „use sn2". Allylische Halogenide (auch tertiär-
+  allylische — allylisch schlägt tertiär) werden mit Grund „allylic halide" abgelehnt: das
+  Allylkation ist mesomer, das Nucleophil greift an beiden Enden an und es entstehen zwei Produkte
+  (OpenStax 11.5; Clayden Kap. 15) — ein Mechanismus mit nur einem davon ist falsch, nicht
+  unvollständig (Gutachter-Befund Runde 3, 05.11.2026).
   Tertiäres Halogenid + Cyanid wird gezeichnet, steht aber nicht in der Substrat-Matrix: kein
   Lehrbuch-SN1 (E2 überwiegt, am Kation entsteht nach Kornblum eher das Isonitril; Sichtung
   05.11.2026) — die Matrix zeigt stattdessen den Azid-Abfang des tert-Butyl-Kations.

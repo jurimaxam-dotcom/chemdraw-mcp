@@ -22,7 +22,7 @@ MATRIX: list[tuple[str, str, list[str], str]] = [
     ("sn2-isobutylbromid-hydrosulfid", "sn2", ["CC(C)CBr", "[SH-]"], ""),
     ("sn2-cyclohexylbromid-iodid", "sn2", ["BrC1CCCCC1", "[I-]"], ""),
     ("sn2-2-iodpropan-hydroxid", "sn2", ["CC(C)I", "[Na+].[OH-]"], ""),
-    # --- SN1: tertiär, benzylisch, allylisch; Stereozentrum → racemic --------------
+    # --- SN1: tertiär, benzylisch (allylisch abgelehnt); Stereozentrum → racemic ----
     ("sn1-tbucl-wasser", "sn1", ["CC(C)(C)Cl", "O"], ""),
     ("sn1-tbubr-methanol", "sn1", ["CC(C)(C)Br", "CO"], ""),
     ("sn1-2-chlor-2-methylbutan-ethanol", "sn1", ["CCC(C)(C)Cl", "CCO"], ""),
@@ -31,7 +31,7 @@ MATRIX: list[tuple[str, str, list[str], str]] = [
     ("sn1-benzhydrylchlorid-methanol", "sn1", ["ClC(c1ccccc1)c1ccccc1", "CO"], ""),
     ("sn1-tritylchlorid-wasser", "sn1", ["ClC(c1ccccc1)(c1ccccc1)c1ccccc1", "O"], ""),
     ("sn1-1-methylcyclohexylbromid-wasser", "sn1", ["CC1(Br)CCCCC1", "O"], ""),
-    ("sn1-allylbromid-wasser", "sn1", ["C=CC(C)(C)Br", "O"], ""),
+    ("sn1-2-brom-2-methylpentan-wasser", "sn1", ["CCCC(C)(C)Br", "O"], ""),
     # tert-Halogenid + Cyanid ist kein Lehrbuch-SN1 (E2 überwiegt, am Kation eher Isonitril,
     # Kornblum) — Sichtung 05.11.2026; der Azid-Abfang des Kations ist der klassische Fall
     ("sn1-tbucl-azid-salz", "sn1", ["CC(C)(C)Cl", "[Na+].[N-]=[N+]=[N-]"], ""),
