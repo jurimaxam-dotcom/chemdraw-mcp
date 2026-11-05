@@ -355,6 +355,7 @@ def _place_arrow(
     atom_pts: list[tuple[float, float]] | None = None,
     bond_px: float = 0.0,
     segments: list | None = None,
+    glyphs: dict[int, list[Box]] | None = None,
 ) -> dict | None:
     """Start, Kontrollpunkt und Spitze eines Pfeils — Enden am Beschriftungsrand, Körper frei.
 
@@ -425,6 +426,10 @@ def _place_arrow(
             # Freies Paar: Schwanz am Rand der eigenen Beschriftung, auf der Seite, zu der der Bogen
             # aufbricht — nicht auf „HO“, nicht hinter dem Atom.
             d = _unit(ctrl[0] - s0[0], ctrl[1] - s0[1])
+            if len((glyphs or {}).get(src_id, ())) > 1:
+                # Beschriftung mit H/Ladung („HO“, „H₂O“): das Paar gehört dem Atomsymbol — Schwanz
+                # senkrecht über bzw. unter dem Symbol, nicht am Rand neben dem H (Sichtung 05.11.)
+                d = (0.0, 1.0 if ctrl[1] > s0[1] else -1.0)
             r = _exit_distance(s0, d, src_box, _LABEL_GAP) if src_box else _BARE_ATOM_GAP
             start = (s0[0] + d[0] * r, s0[1] + d[1] * r)
         tip = clip_tip(ctrl)
@@ -600,7 +605,8 @@ def render_step(
         overlay.append(svg_text)
         d.obstacles.append(box)
     for arrow in step.arrows:
-        placed = _place_arrow(arrow, d.coords, d.boxes, d.obstacles, d.atom_pts, d.bond_px, d.bond_segments)
+        placed = _place_arrow(arrow, d.coords, d.boxes, d.obstacles, d.atom_pts, d.bond_px, d.bond_segments,
+                              d.glyphs)
         if placed is None:
             continue
         arrows.append(placed)

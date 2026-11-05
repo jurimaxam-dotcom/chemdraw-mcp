@@ -252,3 +252,24 @@ def test_sn2_uebergangszustand_traegt_delta_minus_statt_voller_ladungen(ergebnis
     for m in (NU, X):
         flach = [g for g in glyphen[str(m)] if g[3] - g[1] < 2.0]
         assert not flach, f"{cid}: Atom {m} trägt im Übergangszustand ein volles Ladungszeichen {flach}"
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), CASES, ids=[c[0] for c in CASES])
+def test_freies_paar_startet_am_atomsymbol_nicht_am_h(ergebnisse, cid, rt, subs):
+    """Sichtung 05.11.2026 (GELB): bei „HO“ (Methanol im SN1-Angriff) saß der Pfeilschwanz am H.
+    Das freie Paar gehört dem O: das nächste Glyph der Beschriftung am Pfeilschwanz ist das
+    Atomsymbol (das Glyph, dessen Mitte dem Atommittelpunkt am nächsten liegt)."""
+    payload = _payload(ergebnisse, rt, subs)
+    fehler = []
+    for nr, step in enumerate(payload.steps, 1):
+        geo = geometry_of(step.svg)
+        for a in geo["arrows"]:
+            glyphen = geo["glyphs"].get(str(a["src_map"]), [])
+            if a["kind"] != "lone_pair" or len(glyphen) < 2:
+                continue
+            mitte = geo["centres"][str(a["src_map"])]
+            symbol = min(glyphen, key=lambda g: math.dist(((g[0] + g[2]) / 2, (g[1] + g[3]) / 2), mitte))
+            naechstes = min(glyphen, key=lambda g: _abstand_box(a["src"], g))
+            if naechstes is not symbol and _abstand_box(a["src"], naechstes) < _abstand_box(a["src"], symbol):
+                fehler.append(f"{cid} Schritt {nr} ({step.label}): Pfeil {a['src_map']}→{a['tgt_map']} startet am H")
+    assert not fehler, "\n".join(fehler)
