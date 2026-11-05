@@ -273,3 +273,30 @@ def test_freies_paar_startet_am_atomsymbol_nicht_am_h(ergebnisse, cid, rt, subs)
             if naechstes is not symbol and _abstand_box(a["src"], naechstes) < _abstand_box(a["src"], symbol):
                 fehler.append(f"{cid} Schritt {nr} ({step.label}): Pfeil {a['src_map']}→{a['tgt_map']} startet am H")
     assert not fehler, "\n".join(fehler)
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), CASES, ids=[c[0] for c in CASES])
+def test_beschriftetes_zentrum_zeigt_sein_h(ergebnisse, cid, rt, subs):
+    """Sichtung 05.11.2026 (GELB): „C⁺“ im 1-Phenylethyl-Kation, „C“ im Übergangszustand von
+    2-Brombutan — RDKit lässt am beschrifteten Kohlenstoff das H weg. Wo ein H am Zentrum sitzt,
+    steht es in der Beschriftung (CH⁺, CH): mehr Glyphen als Symbol + Ladung."""
+    from rdkit import Chem
+
+    from chemdraw_tool.mechanism_substrate import build_steps
+    from chemdraw_tool.templates import get_template
+
+    steps = build_steps(rt, subs) if subs else get_template(rt).steps
+    payload = _payload(ergebnisse, rt, subs)
+    fehler = []
+    for nr, (step, shown) in enumerate(zip(steps, payload.steps), 1):
+        glyphen = geometry_of(shown.svg)["glyphs"]
+        for smi in step.molecules:
+            mol = Chem.MolFromSmiles(smi, sanitize=False)
+            mol.UpdatePropertyCache(strict=False)
+            for a in mol.GetAtoms():
+                g = glyphen.get(str(a.GetAtomMapNum()), [])
+                if a.GetAtomicNum() != 6 or not g or not a.GetTotalNumHs():
+                    continue
+                if len(g) <= 1 + (1 if a.GetFormalCharge() else 0):
+                    fehler.append(f"{cid} Schritt {nr} ({step.label}): C (Map {a.GetAtomMapNum()}) ohne sein H")
+    assert not fehler, "\n".join(fehler)

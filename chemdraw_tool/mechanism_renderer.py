@@ -146,6 +146,32 @@ def _charge_left_where_bond_goes_right(mol: Chem.RWMol) -> None:
             atom.SetProp("_displayLabel", f"<sup>{amount}{sign}</sup>{atom.GetSymbol()}")
 
 
+def _show_carbon_h(mol: Chem.RWMol, glyphs: dict[int, list[Box]]) -> bool:
+    """Beschriftetem Kohlenstoff mit H das H in die Beschriftung schreiben (CH⁺, HC⁺, CH).
+
+    RDKit beschriftet ein Kation-C oder das freistehende Zentrum des Übergangszustands, lässt
+    dessen H aber weg — „C⁺“ im 1-Phenylethyl-Kation sah aus wie ein Kation ohne H (Sichtung
+    05.11.2026). Das H steht auf der Seite ohne Bindung: links, wenn ein Nachbar rechts liegt.
+    True, wenn neu gezeichnet werden muss.
+    """
+    changed = False
+    conf = mol.GetConformer() if mol.GetNumConformers() else None
+    for atom in mol.GetAtoms():
+        n_h, charge = atom.GetTotalNumHs(), atom.GetFormalCharge()
+        if atom.GetAtomicNum() != 6 or not n_h or atom.HasProp("_displayLabel"):
+            continue
+        if len(glyphs.get(atom.GetIdx(), ())) != 1 + (1 if charge else 0):
+            continue
+        h = "H" + (f"<sub>{n_h}</sub>" if n_h > 1 else "")
+        sup = f"<sup>{abs(charge) if abs(charge) > 1 else ''}{'+' if charge > 0 else '-'}</sup>" if charge else ""
+        right = conf is not None and any(
+            conf.GetAtomPosition(n.GetIdx()).x - conf.GetAtomPosition(atom.GetIdx()).x > 0.3
+            for n in atom.GetNeighbors())
+        atom.SetProp("_displayLabel", f"{h}C{sup}" if right else f"C{h}{sup}")
+        changed = True
+    return changed
+
+
 def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIGHT,
           partial: tuple[int, ...] = ()) -> _Drawing:
     """Moleküle zeichnen; Koordinaten, Beschriftungen und gemessene Bindungslänge zurückgeben.
@@ -184,14 +210,20 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
     except Exception:  # noqa: BLE001
         pass
 
-    drawer = rdMolDraw2D.MolDraw2DSVG(max(width, CANVAS_W), max(height, CANVAS_H))
-    opts = drawer.drawOptions()
-    opts.clearBackground = False
-    opts.bondLineWidth = 2.5
-    opts.fixedBondLength = BOND_PX
-    opts.addStereoAnnotation = True
-    rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
-    drawer.FinishDrawing()
+    def render() -> rdMolDraw2D.MolDraw2DSVG:
+        drawer = rdMolDraw2D.MolDraw2DSVG(max(width, CANVAS_W), max(height, CANVAS_H))
+        opts = drawer.drawOptions()
+        opts.clearBackground = False
+        opts.bondLineWidth = 2.5
+        opts.fixedBondLength = BOND_PX
+        opts.addStereoAnnotation = True
+        rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
+        drawer.FinishDrawing()
+        return drawer
+
+    drawer = render()
+    if _show_carbon_h(mol, _glyph_boxes(drawer.GetDrawingText())):
+        drawer = render()
 
     atom_pts = []
     for i in range(mol.GetNumAtoms()):
