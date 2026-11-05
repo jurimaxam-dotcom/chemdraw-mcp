@@ -20,6 +20,12 @@ Reste in chemdraw-mcp weg, `scripts/ax-claude.sh preflight` → `screen=1 ax=1`,
 **Dependabot (17:12):** PR #8 (setup-uv 10.3.2→10.3.3, Checks grün) — Merge ist Jays Klick: `gh pr merge 8 --squash --delete-branch`
 (Claude-Merge vom Auto-Modus verweigert). PR #7 (6 Python-Bumps, u. a. Playwright 1.60→1.64.1, CI rot) läuft in eigener Session,
 Faden `20261105-163128-dependabot-pr-7-nach` (Session `8b06750a`); Bericht bringt die Merge-Zeile.
+**PR #7 grün (05.11., 98e4342 auf dem PR-Branch):** Rot war `tests/test_render_golden.py:75` (Aspirin-Goldens), Ursache
+rdkit 2026.9.1 — `Compute2DCoords` spiegelt Aspirin/Glucose, dreht Ibuprofen/Benzol (Gegenprobe: nur rdkit zurück → grün).
+Fix: `rdkit<2026.9` in `pyproject.toml` (gilt auch für PyPI), Playwright npm-seitig auf 1.64.1 nachgezogen (Pixel-Snapshot hält,
+Chromium 1248). Gate rc=0 (7542 passed), CI py3.11/py3.13 grün, Befund im PR-Kommentar. Merge = Jays Klick:
+`gh pr merge 7 --squash --delete-branch`. **Jay:** neue rdkit-Orientierung übernehmen (Goldens mit Sichtprüfung neu, Pin weg)
+oder Pin behalten? Empfehlung: Pin behalten bis zum nächsten rdkit-Release, dann neu messen.
 **Nächster Schritt:** Dependabot-Bericht abnehmen · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
