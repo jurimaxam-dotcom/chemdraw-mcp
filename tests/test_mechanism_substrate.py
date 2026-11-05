@@ -327,3 +327,17 @@ def test_ringe_bleiben_regelmaessig_in_jedem_schritt(cid, rt, subs):
                     if abs(winkel - soll) > 20:
                         fehler.append(f"{step.label}: Ringwinkel {winkel:.0f}° statt {soll:.0f}°")
     assert not fehler, f"{cid}:\n" + "\n".join(fehler)
+
+
+def test_sn1_anion_bindung_laeuft_nicht_durch_die_ladung():
+    """Kontaktbogen 05.11.2026: im SN1-Angriff lag die C≡N-Bindung waagrecht rechts vom C⁻ — RDKit
+    setzt das „⁻“ oben rechts, die Bindung lief hindurch. Der Nachbar des angreifenden Atoms liegt
+    deshalb schräg unterhalb."""
+    from chemdraw_tool.mechanism_substrate import NU
+
+    steps = build_steps("sn1", ["CC(C)(C)Br", "[Na+].[C-]#N"])
+    angriff = steps[3]
+    nuc_anker = angriff.anchors[1]
+    (nu_x, nu_y) = nuc_anker[NU]
+    nachbar = next(p for m, p in nuc_anker.items() if m != NU)
+    assert nachbar[1] < nu_y - 0.3, f"Nachbar {nachbar} liegt nicht unterhalb von {nu_x, nu_y}"

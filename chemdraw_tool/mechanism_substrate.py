@@ -353,12 +353,14 @@ def _fan_centre(mol: Chem.Mol, subs: list[int], angles: dict, ring_angles: dict)
 
 
 def _tail(mol: Chem.Mol, map_id: int, at: tuple[float, float], direction: float,
-          exclude: tuple[int, ...] = ()) -> dict[int, tuple[float, float]]:
-    """Angreifendes Atom bei `at`, sein erster Nachbar eine Bindung weiter in x-Richtung `direction`."""
+          exclude: tuple[int, ...] = (), tilt: float = 0.0) -> dict[int, tuple[float, float]]:
+    """Angreifendes Atom bei `at`, sein erster Nachbar eine Bindung weiter in x-Richtung `direction`,
+    um `tilt` Grad nach unten gekippt."""
     anchor = {map_id: at}
     nbrs = _neighbours(mol, map_id, exclude)
     if nbrs:
-        anchor[nbrs[0]] = (at[0] + direction, at[1])
+        dx, dy = _ray(-tilt)
+        anchor[nbrs[0]] = (at[0] + direction * dx, at[1] + dy)
     return anchor
 
 
@@ -474,7 +476,9 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
             label="Nucleophilic attack",
             molecules=[_smi(cation), _smi(nuc_m)],
             arrows=[CurvedArrow(source=(NU, "lone_pair"), target=(C, "atom"), style="full")],
-            anchors=[centre, _tail(nuc_m, NU, (2.6, 0.0), 1.0)],
+            # Nachbar schräg nach unten: RDKit setzt die Ladung oben rechts an das angreifende Atom,
+            # eine waagrechte Bindung nach rechts lief durch das „⁻“ von C⁻≡N (Kontaktbogen 05.11.)
+            anchors=[centre, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0)],
         ),
         MechanismStep(
             label=label, molecules=[_smi(product), _smi(halide)], arrows=[],
