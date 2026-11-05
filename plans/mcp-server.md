@@ -1,5 +1,31 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Release-Klick 0.8.0 (Jays Hand), Etappe E abgenommen (Claude-Hauptsession, 05.11.2026 16:25)
+
+**Etappe E ist abgenommen — Beweiskette statt Jays Auge** (Jay 05.11.: „ich bin nicht vom Fach“): (1) `tests/test_mechanism_bookkeeping.py`
++ `tests/test_mechanism_lehrbuch.py` im Gate (`e744e73`); (2) blinder Opus-Gutachter Lauf 1 auf k2 → 4× ROT (R1–R4, Abschnitt darunter),
+Runde 3 behoben (`8075634`…`dfe0cef`); Lauf 2 auf k3 → 32/33 grün oder gelb, 1× ROT (SN1 Allylkation ohne Resonanz/zweites Produkt)
+→ SN1 lehnt allylische Halogenide jetzt mit Grund ab (`566a060`, Snapshot/README/CHANGELOG mit); (3) Codex-Desktop-Handtest Runde 3
+grün (`056cb2a`: SN1 6 Schritte mit Oxonium + H⁺, SN2-ÜZ δ⁻, Screenshots `/tmp/chemdraw-desktop-test/etappe-e-r3/`); (4) Gate selbst:
+rc=0, 7988 Tests (`scratchpad/gate-final.log`), Handshake 16/12 grün. **Die frühere „Abnahme 15:55 per Advisor-Sichtung“ (d9e7507)
+ist damit überholt — sie hatte die vier systematischen Fehler nicht gesehen.**
+
+**Nächster Schritt = Jay: Release-Klick 0.8.0, Ziel-SHA `566a060309e61000f4805b508cf882aa09b559a1`** (Spitze von main nach `566a060`):
+```
+gh release create v0.8.0 --target 566a060309e61000f4805b508cf882aa09b559a1 --title "0.8.0" --notes-file <(awk '/^## \[0.8.0\]/{f=1;next} /^## \[0.7.0\]/{exit} f' CHANGELOG.md)
+gh run list --workflow publish.yml --limit 1
+gh api -X POST repos/jurimaxam-dotcom/chemdraw-mcp/actions/runs/<run-id>/pending_deployments -F 'environment_ids[]=25767991480' -f state=approved -f comment="0.8.0"
+```
+Jobs `bundle` und `registry` laufen im Workflow mit (Fallback `./scripts/publish-registry.sh`).
+
+**Geparkt (GELB des Gutachters, nach dem Release, eigene Etappe „E2 Lehrbuch-Feinschliff“):** SN2-Pfeile an die Edukte statt in den ÜZ
+(Clayden-Konvention) · Carbokation trigonal-planar (120°) statt T-förmig · E1/E2-Konkurrenzhinweis im Text (Isopropyliodid + OH⁻,
+tBuI + iPrOH) · Deprotonierung über Lösungsmittel statt freies H⁺ · Fischer-Protonentransfer zweistufig · ⇌ bei Fischer · lange Ketten
+(Stearin, Octan) abkürzen (R = C₁₇H₃₅) · Oxonium-Label „OH⁺ + H“ einheitlicher. Fachlich korrekt, nur Konvention/Lesbarkeit.
+
+**Danach:** Etappe F Marketing-Repo (eigene Session) · Dependabot-Branches · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten).
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
 ## Weiter bei — Etappe E Runde 3: Befunde der unabhängigen Sichtung (Claude-Hauptsession, 05.11.2026 15:40)
 
 **Jay (05.11., zu den Kontaktbögen Runde 2):** „ich kann nicht verifizieren was richtig und falsch ist, da ich nicht vom Fach bin —
