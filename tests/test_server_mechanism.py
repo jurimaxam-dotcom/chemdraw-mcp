@@ -12,6 +12,15 @@ _TITLES = {
     "C[C@H](Br)CC": "2-Bromobutane",
     "CCC(=O)O": "Propionic acid",
     "CCO": "Ethanol",
+    # Echte PubChem-Titel (Kontaktbogen 05.11.2026) — Groß-/Kleinschreibung wörtlich
+    "CC(C)(C)Cl": "tert-BUTYL CHLORIDE",
+    "CC(C)(C)Br": "t-Butyl bromide",
+    "CCC(C)(C)Cl": "2-chloro-2-methyl-Butane",
+    "CCC[C@@H](C)Cl": "(2R)-2-chloropentane",
+    "C[S-]": "mercaptomethanide",
+    "CCBr": "Bromoethane",
+    "CO": "Methanol",
+    "CCCC[S-]": "Butane-1-thiolate",
 }
 _LOOKUPS: list[str] = []
 
@@ -219,11 +228,30 @@ def test_title_names_fischer_smiles_input():
 
 
 def test_title_keeps_a_descriptor_pubchem_already_gives(monkeypatch):
+    """Ein Stereozentrum: „(2R)-“ wird „(R)-“ — wie „(R)-2-bromobutane“ daneben (Kontaktbogen 05.11.)."""
     import chemdraw_tool.databases as databases
 
     monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: "(2R)-2-Bromobutane")
     r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
-    assert r.name.endswith("— (2R)-2-bromobutane + cyanide"), r.name
+    assert r.name.endswith("— (R)-2-bromobutane + cyanide"), r.name
+
+
+@pytest.mark.parametrize("reaction_type, substrates, title", [
+    ("sn1", ["CC(C)(C)Cl", "O"], "tert-butyl chloride + water"),
+    ("sn1", ["CC(C)(C)Br", "CO"], "t-butyl bromide + methanol"),
+    ("sn1", ["CCC(C)(C)Cl", "CCO"], "2-chloro-2-methyl-butane + ethanol"),
+    ("sn2", ["CCC[C@@H](C)Cl", "C[S-]"], "(R)-2-chloropentane + methanethiolate"),
+    ("sn2", ["CCBr", "CC[O-].[Na+]"], "bromoethane + ethoxide"),
+    ("sn2", ["CCBr", "C[O-].[K+]"], "bromoethane + methoxide"),
+    ("sn2", ["CCBr", "[Na+].CCCC[S-]"], "bromoethane + butane-1-thiolate"),
+])
+def test_title_casing_and_salts_from_real_pubchem_titles(reaction_type, substrates, title):
+    """Kontaktbogen 05.11.2026: „tert-BUTYL CHLORIDE“, „t-Butyl bromide“, „(2R)-“ neben „(R)-“,
+    das rohe SMILES „CC[O-].[Na+]“ und „mercaptomethanide“ standen im Titel. Regel: alles klein
+    außer Stereo-/Lokant-Präfixen; ein Stereozentrum → „(R)“; Gegenionen fallen weg, das
+    reagierende Ion bekommt seinen Namen (Tabelle offline, sonst PubChem für das Fragment)."""
+    r = generate_mechanism(reaction_type, substrates)
+    assert r.name.split(" — ", 1)[1] == title, r.name
 
 
 @pytest.mark.parametrize("title, shown", [
@@ -231,7 +259,12 @@ def test_title_keeps_a_descriptor_pubchem_already_gives(monkeypatch):
     ("Propionic acid", "propionic acid"),
     ("(R)-2-Bromobutane", "(R)-2-bromobutane"),
     ("N,N-Dimethylformamide", "N,N-dimethylformamide"),
-    ("DMSO", "DMSO"),
+    ("tert-BUTYL CHLORIDE", "tert-butyl chloride"),
+    ("(2R,3S)-2,3-Dibromobutane", "(2R,3S)-2,3-dibromobutane"),
+    ("(E)-But-2-ene", "(E)-but-2-ene"),
+    ("D-Glucose", "D-glucose"),
+    ("Alanine, L-", "L-alanine"),
+    ("S-Methyl ethanethioate", "S-methyl ethanethioate"),
     # Echte PubChem-Titel (Stichprobe 05.11.2026): CAS-Inversion und Title Case
     ("2-Bromobutane, (R)-", "(R)-2-bromobutane"),
     ("Propionic Acid", "propionic acid"),

@@ -48,6 +48,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Mechanism titles: PubChem names are written in running-text case
+  ("tert-butyl chloride", not "tert-BUTYL CHLORIDE"), keeping stereodescriptors
+  and N-/O-/S-/D-/L- prefixes; "(2R)-2-chloropentane" becomes
+  "(R)-2-chloropentane" when there is one stereocentre. A salt such as
+  `CC[O-].[Na+]` is named by its reacting ion ("ethoxide") instead of showing
+  the raw SMILES; methanethiolate, methoxide, ethoxide and tert-butoxide are
+  named offline.
 - All steps of a mechanism share one frame, so a step no longer looks larger or
   smaller than its neighbours when each is shown at the same width.
 - Mechanisms with the reaction centre in a ring (cyclohexyl bromide,

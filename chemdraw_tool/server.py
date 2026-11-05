@@ -3595,42 +3595,57 @@ def batch_generate(
 
 
 
-# Einfache Ionen und Wasser: Name offline, ohne PubChem (kanonisches SMILES → Name).
+# Einfache Ionen und Wasser: Name offline, ohne PubChem (kanonisches SMILES → Name). Die Anionen
+# der Mechanismus-Nucleophile stehen alle hier: PubChem nennt CH3S⁻ „mercaptomethanide“.
 _SIMPLE_SPECIES = {
     Chem.CanonSmiles(smi): name
     for smi, name in {
         "[C-]#N": "cyanide", "[OH-]": "hydroxide", "[I-]": "iodide", "[Br-]": "bromide",
         "[Cl-]": "chloride", "[N-]=[N+]=[N-]": "azide", "[SH-]": "hydrosulfide", "O": "water",
+        "C[S-]": "methanethiolate", "CC[S-]": "ethanethiolate", "C[O-]": "methoxide",
+        "CC[O-]": "ethoxide", "CC(C)(C)[O-]": "tert-butoxide", "CC(C)[O-]": "isopropoxide",
     }.items()
 }
 # PubChem-Titel je InChIKey, nur Erfolge — ein Fehlschlag (offline) wird nie festgeschrieben.
 _TITLE_CACHE: dict[str, str] = {}
 # CIP-Angabe schon im Namen: (R), (2R), (2R,3S) …
 _CIP_IN_NAME = re.compile(r"\((?:\d*[RS],?)+\)")
+# Bleibt beim Kleinschreiben groß: Stereodeskriptoren in Klammern ((R), (2R,3S), (E), (Z)) und
+# Präfixe vor einem Bindestrich ohne Buchstaben davor (N-, N,N-, O-, S-, D-, L-, DL-).
+_KEEP_CASE = re.compile(
+    r"\((?:\d*[RSEZ])(?:,\d*[RSEZ])*\)|(?<![A-Za-z])(?:[NOS](?:,[NOS])*|DL|D|L)(?=-)"
+)
 
 
 def _running_text_name(title: str) -> str:
     """PubChem-Titel wie im Fließtext: „2-Bromobutane, (R)-“ → „(R)-2-bromobutane“.
 
-    Entscheid 05.11.2026, gegen echte Titel gemessen:
+    Kontaktbogen 05.11.2026, gegen echte Titel gemessen („tert-BUTYL CHLORIDE“, „t-Butyl bromide“,
+    „2-chloro-2-methyl-Butane“):
     1. CAS-Inversion („2-Bromobutane, (R)-“, „Alanine, L-“) wird nach vorn gezogen.
-    2. Je Wort (durch Leerzeichen getrennt) wird das erste großgeschriebene Teilwort (Groß + ≥ 2
-       Kleinbuchstaben) klein, wenn davor kein Kleinbuchstabe steht — „Propionic Acid“ →
-       „propionic acid“. Locants, Stereodeskriptoren und Präfixe wie „N,N-“ bleiben stehen,
-       Abkürzungen (DMSO) bleiben groß. Eigennamen in Stoffnamen (selten) würden mit klein
-       geschrieben — in Kauf genommen.
+    2. Alles klein, außer Stereodeskriptoren und Präfixen (_KEEP_CASE). Abkürzungen wie DMSO
+       werden mit klein — Großbuchstaben-Wörter sind bei PubChem häufiger Großschreibung des
+       ganzen Namens als Abkürzung.
     """
     if inverted := re.fullmatch(r"(.+), ([^,\s]+-)", title):
         title = inverted.group(2) + inverted.group(1)
+    out, pos = [], 0
+    for m in _KEEP_CASE.finditer(title):
+        out.append(title[pos : m.start()].lower())
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(title[pos:].lower())
+    return "".join(out)
 
-    def word(token: str) -> str:
-        match = re.search(r"[A-Z][a-z]{2,}", token)
-        if match is None or re.search(r"[a-z]", token[: match.start()]):
-            return token
-        i = match.start()
-        return token[:i] + token[i].lower() + token[i + 1 :]
 
-    return " ".join(word(token) for token in title.split(" "))
+def _reacting_part(mol: Chem.Mol) -> Chem.Mol:
+    """Salz → das reagierende Ion: Gegenionen (Na⁺, K⁺ …, dieselbe Regel wie der Mechanismus)
+    fallen weg. Bleibt mehr als ein Fragment, zählt das ganze Molekül."""
+    from chemdraw_tool.mechanism_substrate import _is_spectator
+
+    frags = Chem.GetMolFrags(mol, asMols=True)
+    rest = [f for f in frags if not _is_spectator(f)]
+    return rest[0] if len(frags) > 1 and len(rest) == 1 else mol
 
 
 def _smiles_title(mol: Chem.Mol) -> str:
@@ -3641,6 +3656,7 @@ def _smiles_title(mol: Chem.Mol) -> str:
     from chemdraw_tool import databases
     from chemdraw_tool.mechanism_substrate import cip_labels
 
+    mol = _reacting_part(mol)
     canon = Chem.MolToSmiles(mol)
     if canon in _SIMPLE_SPECIES:
         return _SIMPLE_SPECIES[canon]
@@ -3657,6 +3673,9 @@ def _smiles_title(mol: Chem.Mol) -> str:
         title = None
     if title:
         name = _running_text_name(title)
+        if len(labels) == 1:
+            # Ein Stereozentrum: „(2R)-“ wie „(R)-“ — sonst stehen beide Formen nebeneinander
+            name = re.sub(r"\(\d+([RS])\)", r"(\1)", name)
         if descriptor and not _CIP_IN_NAME.search(name):
             name = f"({descriptor})-{name}"
         return name
