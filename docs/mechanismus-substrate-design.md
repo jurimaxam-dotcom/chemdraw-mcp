@@ -28,7 +28,7 @@ eine Liste gemappter SMILES je Schritt und `CurvedArrow`s mit Map-IDs.
    Die Map-Nummer des Musters wird auf das getroffene Atom des Nutzer-Moleküls übertragen
    (1–9 = Reaktionszentrum, identisch mit den bisherigen Vorlagen, damit die
    `CurvedArrow`-Definitionen gleich bleiben). **Alle übrigen Atome** bekommen Map-IDs ab 100.
-   Dadurch hält `stabilize_sequence` das ganze Gerüst über alle Schritte fest, nicht nur die
+   Dadurch bleibt jedes Atom über alle Schritte identifizierbar (Layout: `layout_anchored`, siehe (c)), nicht nur die
    Reaktionsatome; `_render_mols_svg` löscht die Maps vor dem Zeichnen.
 3. Eindeutigkeit: genau ein Treffer je Rolle. Zwei Halogene, zwei COOH-Gruppen, ein Molekül in
    beiden Rollen (Hydroxysäure) oder eine fehlende Rolle → Ablehnung mit Grund.
@@ -39,7 +39,7 @@ eine Liste gemappter SMILES je Schritt und `CurvedArrow`s mit Map-IDs.
 ## (b) Zwischenstufen und Produkte ableiten
 
 Pro Schritt eine Transformation des gemappten Zustands; danach `Chem.MolToSmiles` des
-gemappten Moleküls → Liste für `stabilize_sequence`.
+gemappten Moleküls → Liste für das Layout (`layout_anchored`).
 
 - **Gültige Moleküle per `rdChemReactions`** (Reaktions-SMARTS, `RunReactants`):
   - SN2-Produkt: `[C@:1][X:2].[Nu-:3]>>[C@@:1][Nu+0:3].[X-:2]` — `@`→`@@` lässt RDKit die

@@ -3,7 +3,7 @@
 ≥ 10 Fälle je Familie, nur SMILES (kein Netz im Gate). Randfälle: Stereozentrum, Aromat am
 Zentrum, lange Kette, Salz mit Gegenion, Grenzfall sekundär/tertiär, Ringe.
 Jeder Fall muss mit substrates_drawn=True ohne fallback_reason rendern
-(tests/test_mechanism_matrix.py) und die Pfeil-Geometrie bestehen.
+(tests/test_mechanism_geometry.py) und die Pfeil-Geometrie bestehen.
 """
 
 from __future__ import annotations

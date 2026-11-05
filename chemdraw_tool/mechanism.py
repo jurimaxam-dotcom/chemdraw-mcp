@@ -24,7 +24,8 @@ class MechanismStep:
     mol_gap: float = 4.0
     # Nur Substratweg (mechanism_substrate): je Molekül feste Positionen ausgewählter Atome
     # {Map-ID: (x, y)} in Bindungslängen, Reaktionszentrum im Ursprung; {} = frei rechts
-    # daneben. Leer bei den festen Vorlagen — die laufen weiter über stabilize_sequence.
+    # daneben. Auch die festen Vorlagen tragen Anker: sie sind der Substratweg mit den
+    # Beispiel-Substraten (Etappe E, 05.11.2026).
     anchors: list[dict[int, tuple[float, float]]] = field(default_factory=list)
 
 

@@ -3,7 +3,8 @@
 Ablauf je Familie:
 1. Eingaben in Fragmente zerlegen, Gegenionen und Katalysatoren verwerfen.
 2. Rollen per SMARTS finden; das Reaktionszentrum bekommt die Map-IDs der Vorlagen (1–9),
-   alle anderen Atome Map-IDs ab 100 — so hält stabilize_sequence das ganze Gerüst fest.
+   alle anderen Atome Map-IDs ab 100 — so bleibt jedes Atom über alle Schritte identifizierbar;
+   das Layout (mechanism_coords.layout_anchored) setzt das Reaktionszentrum je Schritt fest.
 3. Grenze prüfen (UnsupportedSubstrates mit Grund im Klartext).
 4. Zwischenstufen/Produkte: gültige Moleküle per Reaktions-SMARTS (rdChemReactions),
    Bruchstücke (Übergangszustand, Carbokation) per RWMol.

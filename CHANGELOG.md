@@ -51,7 +51,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 - Fischer esterification follows the textbook sequence (Clayden, ch. 10):
   protonation, attack of the alcohol, proton transfer to an OH, loss of water
   as –OH₂⁺ while the remaining OH re-forms C=O⁺H, deprotonation that returns
-  H⁺. Water no longer leaves from a neutral OH. The textbook examples are now
+  H⁺ (7 steps instead of 6, so `current_step=6` is now the deprotonation).
+  Water no longer leaves from a neutral OH. The textbook examples are now
   built from the same derivation as your own substrates, which also removes
   the stretched C–O bond in the SN2 example.
 - The curved arrow from a breaking bond to its leaving group is a full arc
