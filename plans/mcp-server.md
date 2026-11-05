@@ -20,8 +20,8 @@ nur die Ziel-SHA wird die neue Spitze von main.
   ziehen (nie nachzeichnen; `~/.claude/docs/dokumente-und-grafiken.md`), Quelle als Bildunterschrift; daraus die Konventionen in
   `docs/mechanismus-substrate-design.md` festschreiben (Pfeil startet am freien Elektronenpaar bzw. an der Bindungsmitte, endet am
   Zielatom/der neuen Bindung; Abgangsgruppe geht vom Zentrum weg; Übergangszustand in eckigen Klammern mit ‡; Produkt trägt den
-  CIP-Deskriptor, SN1 „racemic“). Findet die Session keine eigenen OC-Unterlagen bei Jay: per Tisch-Faden nachfragen, welches
-  Lehrbuch (Clayden/Vollhardt/Bruice) gilt — nicht raten.
+  CIP-Deskriptor, SN1 „racemic“). **Jay (05.11.): kein PDF vorhanden → Clayden-Konventionen aus Kenntnis + freie Quellen (LibreTexts/OpenStax
+  zum Gegenlesen), Quelle je Regel; keine Originalabbildung.**
 - **Geometrie-Test im Gate:** kein gebogener Pfeil schneidet eine Label-Bounding-Box im SVG; Pfeilspitze ≤ 0,35 Bindungslängen
   vom Zielatom; Pfeilanfang am Quellatom/an der Bindungsmitte. Test über alle Substrate der Matrix.
 - **Substrat-Matrix:** ≥ 10 Substrate je Familie inkl. Randfälle (Stereozentrum, Aromat am Zentrum, lange Kette, Salz-Gegenion,
