@@ -97,12 +97,13 @@ nur die Ziel-SHA wird die neue Spitze von main.
 - **Schluss:** Golden-SVGs bewusst neu und gesichtet (`UPDATE_…`-Pfad im selben Commit), Gate rc=0, Desktop-Handtest durch Codex
   (`tisch auftrag codex`, Screenshots nach `/tmp/chemdraw-desktop-test/`), CHANGELOG 0.8.0 ergänzt. **Erst dann** Release-Zeile an Jay.
 
-**Stand 05.11. (Claude):** Befunde 1–4 + Befund 5 (Fischer-Protonentransfer, Clayden Kap. 10) gebaut, Commits
-`522a8c4`…`59eee39`; Geometrie-Test + Matrix (33 Fälle, `tests/mechanism_matrix.py`) im Gate; Gate rc=0 (7793), Handshake 16/12
-auf `59eee39`; README-Bild neu. Kontaktbögen an Jay (SendUserFile).
-- [x] Codex-Handtest durchgeführt und dokumentiert (`998386d`, Bericht im Fortsetzungsfaden #2; Grenzen siehe oberster Weiter-bei-Block).
-- [ ] Claude: Handtest-Bericht abnehmen; Jays „passt“ zu den Kontaktbögen einholen; erst danach Release-Zeile.
-Bekannte Grenzen (nicht gebaut): lange Ketten (Stearinsäure) bei gemeinsamem Rahmen winzig; ÜZ zeigt volle Ladungen statt δ⁻.
+**Stand 05.11. 15:30 (Claude, vor Kontext-Neustart):** E fertig bis auf Jays Sichtung. Befunde 1–5 gebaut
+(`522a8c4`…`59eee39`), Geometrie-Test + Matrix 33 Fälle im Gate, Gate rc=0 (7793), Handshake 16/12, Codex-Desktop-Handtest 6/6
+grün (`998386d`). Kontaktbögen an Jay per SendUserFile (Scratchpad, neu erzeugbar: Matrix über `generate_mechanism` rendern).
+Bericht: `~/.claude/tisch/20261105-131815-etappe-e-mechanismen-vor/bericht-hoplimit.md` (Faden voll, beide Fäden geschlossen).
+**Nächster Schritt = Jay:** Kontaktbögen sichten → „passt“ oder Zeile nennen (unbeantwortet — nicht bauen ohne Antwort).
+Bei „passt“: Release-Zeile mit `--target $(git rev-parse HEAD)` an Jay (Zeile im Abschnitt unten). Bei Zeilenhinweis: fixen, Matrix neu rendern, neu senden.
+Bekannte Grenzen (nicht gebaut): lange Ketten im gemeinsamen Rahmen winzig; ÜZ volle Ladungen statt δ⁻; natürlicher SN1-Prompt ohne Tool.
 
 Arbeitsweise: Opus-Arbeiter je Bau-Etappe (`model: opus`, Effort medium), Brief nach `~/.claude/docs/modell-prompting/opus-5.md`;
 TDD, Vorlage bleibt als Rückfall. Codex vorher per Tisch informieren (Dateien `chemdraw_tool/mechanism*.py`, `ui/src`, Tests).
