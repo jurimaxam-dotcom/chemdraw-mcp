@@ -124,3 +124,18 @@ nennt die Eingaben wörtlich („Nucleophilic Substitution (SN2) — 2-bromobuta
   drawn)".
 - Payload: `substrates_drawn: bool = False`, `fallback_reason: str = ""` — Defaults, das
   Panel (`MechanismView`) läuft unverändert.
+
+## Pfeil-Geometrie (Etappe E, 05.11.2026)
+
+Anker eines Pfeilendes ist der **Rand der Atombeschriftung**, nicht der Atommittelpunkt; nur ein
+unbeschriftetes Gerüst-C (keine Box) wird am Atom selbst angefahren. Die Boxen stammen aus den
+Glyphenpfaden des RDKit-SVG (`class='atom-N'`), (R)/(S)-Notizen (`CIP_Code`) sind Hindernisse.
+- Freies Paar: Schwanz 3,5 px außerhalb der Box der Quelle, auf der Seite, zu der der Bogen aufbricht.
+- Bindung: Schwanz an der Bindungsmitte. Bindung → eigene Abgangsgruppe: Spitze neben deren Box,
+  auf der Wölbungsseite.
+- Spitze: 3,5 px vor der Box des Ziels, entlang der Anflugrichtung (Kontrollpunkt → Atom).
+- Körper: schneidet er eine Box, erst die andere Seite, dann stärkere Wölbung (bis 3,2×).
+- Toleranz im Test: 0,35 Bindungslängen; gleiche Bindungslänge in allen Schritten (± 5 %).
+Konflikt Box vs. Mitte: Box gewinnt — liegt die Mitte in der Box, zählt nur der Rand.
+Gleicher Maßstab beim Anzeigen braucht gleiche viewBoxen: `mechanism_renderer.unify_frames` über
+alle Schritte (Aufruf gehört in `generate_mechanism`). Prüfung: tests/test_mechanism_geometry.py.

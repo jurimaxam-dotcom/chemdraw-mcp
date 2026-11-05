@@ -131,3 +131,27 @@ def test_teilbindung_endet_vor_den_atombeschriftungen():
     x1, y1, x2, y2 = map(float, m.groups())
     strich = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
     assert strich <= zentren - 20, f"Strich {strich:.0f}px bei Atomabstand {zentren:.0f}px — läuft durch die Beschriftung"
+
+
+def test_unify_frames_gibt_allen_schritten_dieselbe_viewbox():
+    """Fischer-Schritt 3 wirkte kleiner als Schritt 2: gleiche Bindungslänge in viewBox-Einheiten,
+    aber breitere viewBox — wer jedes Bild auf dieselbe Breite zieht, verkleinert ihn."""
+    from chemdraw_tool.mechanism_renderer import unify_frames
+
+    schmal = render_step_svg(MechanismStep(label="a", molecules=[], arrows=[]), [_make_mol("[CH3:1][Br:2]")])
+    breit = render_step_svg(
+        MechanismStep(label="b", molecules=[], arrows=[]), [_make_mol("[OH-:3]"), _make_mol("CCCCCC[CH2:1][Br:2]")]
+    )
+    vb = [re.search(r"viewBox='([^']*)'", s).group(1) for s in unify_frames([schmal, breit])]
+    assert vb[0] == vb[1]
+    assert all(s.lower().count("viewbox") == 1 for s in unify_frames([schmal, breit]))
+
+
+def test_beschriftungsboxen_kommen_aus_den_glyphenpfaden():
+    """Pfeilenden richten sich nach der echten Beschriftung: „HO“ ist breiter als „O“."""
+    from chemdraw_tool.mechanism_renderer import geometry_of
+
+    svg = render_step_svg(MechanismStep(label="a", molecules=[], arrows=[]), [_make_mol("[CH3:1][OH:2]")])
+    geo = geometry_of(svg)
+    x0, y0, x1, y1 = geo["boxes"]["2"]
+    assert x1 - x0 > y1 - y0, "OH-Box sollte breiter als hoch sein"
