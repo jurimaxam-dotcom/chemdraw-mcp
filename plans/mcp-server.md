@@ -1,5 +1,32 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Jays Sichtung der E-Kontaktbögen, dann Release-Zeile 0.8.0 (Claude-Hauptsession, 05.11.2026 15:00, vor Kontext-Neustart)
+
+**Nächster Schritt:** Jays Antwort auf die drei Kontaktbögen Runde 2 (SN2/SN1/Fischer, gesendet 05.11. ~14:55 per SendUserFile aus
+`/private/tmp/claude-501/-Users-tom-Documents-projects-chemdraw-mcp/37e52ebd-cd21-4f12-abe6-e4c5741264e3/scratchpad/k2/`) abwarten.
+**„passt“ zu den Bögen: unbeantwortet — nicht bauen.** Sagt Jay „passt“: Handtest-Bericht von Codex (`998386d`,
+`docs/desktop-abnahme-etappe-e-2026-11-05.md`) gegen die E-Abnahmebedingung prüfen (Gate selbst laufen lassen, rc in Datei, nicht
+nur Arbeiter-Angabe), E abhaken, dann Release-Zeile an Jay mit der dann aktuellen vollen SHA von main:
+`gh release create v0.8.0 --target <SHA> --title "0.8.0" --notes-file <(awk '/^## \[0.8.0\]/{f=1;next} /^## \[0.7.0\]/{exit} f' CHANGELOG.md)`,
+danach `gh run list --workflow publish.yml --limit 1`, Freigabe `gh api -X POST repos/jurimaxam-dotcom/chemdraw-mcp/actions/runs/<run-id>/pending_deployments
+-F 'environment_ids[]=25767991480' -f state=approved -f comment="0.8.0"`; Jobs `bundle` und `registry` laufen im Workflow mit
+(Fallback `./scripts/publish-registry.sh`). Nennt Jay einen Fall als falsch: E-Session (Faden unten) oder neuer Opus-Arbeiter, Runde 3.
+
+**Heute erledigt (geprüft):** Etappe A abgenommen (Lauf 1 `f402b94`, Lauf 2 `c776d83`, CHANGELOG-Zahl `37375a3`) · Branches:
+mechanismus-substrate, mcp-2-migration(-v2) gelöscht, Tags `archiv/mcp-2-migration` und `archiv/demo-shorts` auf origin (Jay 05.11.) ·
+Etappe E Runde 1+2 durch die E-Session (`522a8c4`…`59eee39`), Codex-Handtest grün mit zwei benannten Grenzen (SN1-Prompt ohne
+Tool-Nennung = Desktop-Routing; Schrittumschaltung Ringfall nicht bestätigt).
+
+**Danach:** Etappe F eigenes Marketing-Repo (Abschnitt unten, Jay 05.11.) in eigener Session, erst nach dem Release, weil Codex
+`vermarktung/ax-claude.swift` für Handtests braucht · Dependabot-Branches als eigene Etappe · Befunde aus der Masse-Eval (Abschnitt
+„Release-Klick 0.8.0“ unten, Punkte 1–5).
+
+**Fragen an Jay (unbeantwortet — nicht bauen):** „passt“ zu den E-Kontaktbögen · Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
+**Offene Tisch-Fäden:** `20261105-131815-etappe-e-mechanismen-vor` (E-Session `w4W:p4`, Hop 6/6 voll; Bericht der E-Session steht noch
+aus) · `20261105-142437-etappe-e-desktop-handtest` von Codex geschlossen. Nebenbefund: Prozess 65536 ist ein liegengebliebener
+Wächter einer alten Session (Kill verweigert, `kill 65536` durch Jay).
+
 ## Weiter bei — Codex nach E-Handtest und Kontext-Neustart (05.11.2026)
 
 **Nächster Schritt:** neue Tisch-Nachrichten am Projektort lesen. Der eigene
