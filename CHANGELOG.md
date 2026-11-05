@@ -48,6 +48,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- All steps of a mechanism share one frame, so a step no longer looks larger or
+  smaller than its neighbours when each is shown at the same width.
 - Mechanisms with the reaction centre in a ring (cyclohexyl bromide,
   1-bromo-1-methylcyclohexane) keep a regular ring in every step: the SN2
   transition state no longer folds the ring into a bicyclic-looking shape, and

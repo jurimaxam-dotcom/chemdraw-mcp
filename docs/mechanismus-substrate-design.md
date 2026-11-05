@@ -167,4 +167,7 @@ Glyphenpfaden des RDKit-SVG (`class='atom-N'`), (R)/(S)-Notizen (`CIP_Code`) sin
 - Toleranz im Test: 0,35 Bindungslängen; gleiche Bindungslänge in allen Schritten (± 5 %).
 Konflikt Box vs. Mitte: Box gewinnt — liegt die Mitte in der Box, zählt nur der Rand.
 Gleicher Maßstab beim Anzeigen braucht gleiche viewBoxen: `mechanism_renderer.unify_frames` über
-alle Schritte (Aufruf gehört in `generate_mechanism`). Prüfung: tests/test_mechanism_geometry.py.
+alle Schritte, aufgerufen in `generate_mechanism` für Substrat- und Vorlagenweg
+(Test `test_alle_schritte_teilen_eine_viewbox`). Grenze: bei langen Ketten (Stearinsäure) bestimmt
+die Kette den Rahmen, das Reaktionszentrum wird bei 420 px Breite klein — Abkürzung (R = C₁₇H₃₅)
+wäre der nächste Schritt, nicht gebaut. Prüfung: tests/test_mechanism_geometry.py.

@@ -188,3 +188,16 @@ def test_kein_geruest_kohlenstoff_traegt_ein_c(ergebnisse, cid, rt, subs):
                 continue
             fehler.append(f"{cid} Schritt {nr} ({step.label}): Kohlenstoff mit Map {m} trägt ein „C“")
     assert not fehler, "\n".join(fehler)
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), CASES, ids=[c[0] for c in CASES])
+def test_alle_schritte_teilen_eine_viewbox(ergebnisse, cid, rt, subs):
+    """Kontaktbogen 05.11.2026: 1-Bromoctan im Edukt riesig, im Übergangszustand winzig — jeder
+    Schritt hatte seine eigene viewBox, der Betrachter zieht jede auf dieselbe Breite. Gleiche
+    viewBox = gleicher Maßstab (unify_frames, aufgerufen in generate_mechanism)."""
+    import re
+
+    payload = _payload(ergebnisse, rt, subs)
+    boxen = [re.findall(r"viewBox='([^']*)'", s.svg) for s in payload.steps]
+    assert all(len(b) == 1 for b in boxen), f"{cid}: nicht genau eine viewBox je SVG"
+    assert len({b[0] for b in boxen}) == 1, f"{cid}: {len({b[0] for b in boxen})} verschiedene viewBoxen"

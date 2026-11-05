@@ -3725,7 +3725,7 @@ def generate_mechanism(
         current_step: 0 = overview (all steps), 1-N = specific step.
     """
     from chemdraw_tool import mechanism_coords
-    from chemdraw_tool.mechanism_renderer import render_step_svg
+    from chemdraw_tool.mechanism_renderer import render_step_svg, unify_frames
     from chemdraw_tool.mechanism_substrate import (
         SUPPORT,
         UnsupportedSubstrates,
@@ -3794,6 +3794,11 @@ def generate_mechanism(
         ]
         # Fallback: das Bild ist die Vorlage — der Titel sagt es (Befund 30.10.2026)
         display_name = f"{template.name} — textbook example: {template.example}"
+
+    # Alle Schritte auf dieselbe viewBox: gleicher Maßstab, wenn der Betrachter jedes Bild auf
+    # dieselbe Breite zieht (Kontaktbogen 05.11.2026 — lange Kette riesig, Übergangszustand winzig)
+    for payload, svg in zip(step_payloads, unify_frames([p.svg for p in step_payloads])):
+        payload.svg = svg
 
     clamped_step = max(0, min(current_step, len(step_payloads)))
 
