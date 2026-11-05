@@ -17,7 +17,10 @@ seit 21.10.) → Kopie, kein `subtree split`; Historie hat nur Branch `worktree-
 **F abgenommen 17:05** (Faden geschlossen, Bericht #2 unabhängig geprüft: Repo PRIVATE, 62 getrackte Dateien ohne Videos/`out/`/`node_modules`,
 Reste in chemdraw-mcp weg, `scripts/ax-claude.sh preflight` → `screen=1 ax=1`, `gate-f.log` grün; Haken mit Belegen unten bei „Etappe F erledigt“).
 
-**Nächster Schritt:** Dependabot-Branches als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
+**Dependabot (17:12):** PR #8 (setup-uv 10.3.2→10.3.3, Checks grün) — Merge ist Jays Klick: `gh pr merge 8 --squash --delete-branch`
+(Claude-Merge vom Auto-Modus verweigert). PR #7 (6 Python-Bumps, u. a. Playwright 1.60→1.64.1, CI rot) läuft in eigener Session,
+Faden `20261105-163128-dependabot-pr-7-nach` (Session `8b06750a`); Bericht bringt die Merge-Zeile.
+**Nächster Schritt:** Dependabot-Bericht abnehmen · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
