@@ -213,7 +213,7 @@ def image_in(fig, rect, data: bytes):
 
 
 def caffeine() -> bytes:
-    return tool_png(s.generate_molecule(CAFFEINE))
+    return tool_png(s.generate_molecule(CAFFEINE, label="Caffeine"))
 
 
 def aspirin_ir() -> bytes:
