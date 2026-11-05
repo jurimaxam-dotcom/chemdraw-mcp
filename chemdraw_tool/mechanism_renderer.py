@@ -64,6 +64,8 @@ class _Drawing:
     labelled_carbons: list[int]
     # Gezeichnete Bindungen als Strecken (Pixel) — Pfeile sollen nicht auf ihnen landen
     bond_segments: list[tuple[tuple[float, float], tuple[float, float]]]
+    # Jedes Glyph einer Beschriftung einzeln (Symbol, H, Ladung): Map-ID → Boxen
+    glyphs: dict[int, list[Box]]
 
 
 def _get_draw_coords(
@@ -81,6 +83,19 @@ def _get_draw_coords(
 
 _LABEL_PATH = re.compile(r"<path class='(atom-(\d+)|CIP_Code)' d='([^']*)'")
 _NUM = re.compile(r"-?\d+(?:\.\d+)?")
+
+
+def _glyph_boxes(svg: str) -> dict[int, list[Box]]:
+    """Atomindex → Box je Glyph (ein Pfad je Zeichen; eine Ladung „⁻“ ist ein flacher Strich)."""
+    out: dict[int, list[Box]] = {}
+    for m in _LABEL_PATH.finditer(svg):
+        if m.group(2) is None:
+            continue
+        nums = [float(v) for v in _NUM.findall(m.group(3))]
+        xs, ys = nums[0::2], nums[1::2]
+        if xs:
+            out.setdefault(int(m.group(2)), []).append([min(xs), min(ys), max(xs), max(ys)])
+    return out
 
 
 def _label_boxes(svg: str) -> tuple[dict[int, Box], list[Box]]:
@@ -131,8 +146,12 @@ def _charge_left_where_bond_goes_right(mol: Chem.RWMol) -> None:
             atom.SetProp("_displayLabel", f"<sup>{amount}{sign}</sup>{atom.GetSymbol()}")
 
 
-def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIGHT) -> _Drawing:
-    """Moleküle zeichnen; Koordinaten, Beschriftungen und gemessene Bindungslänge zurückgeben."""
+def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIGHT,
+          partial: tuple[int, ...] = ()) -> _Drawing:
+    """Moleküle zeichnen; Koordinaten, Beschriftungen und gemessene Bindungslänge zurückgeben.
+
+    partial: Map-IDs mit Teilladung (δ⁻) — sie behalten ihr Symbol, auch ein endständiges C.
+    """
     idx_to_map: dict[int, int] = {}
     offset = 0
     for m in mols:
@@ -149,6 +168,11 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
     for atom in mol.GetAtoms():
         atom.SetAtomMapNum(0)
     _charge_left_where_bond_goes_right(mol)
+    partial_idx = {i for i, m in idx_to_map.items() if m in partial}
+    for i in partial_idx:
+        atom = mol.GetAtomWithIdx(i)
+        if atom.GetAtomicNum() == 6:  # Nitril-C ohne Ladung bliebe ein unbeschriftetes Linienende
+            atom.SetProp("_displayLabel", "C")
 
     # CIP ausdrücklich zuweisen (neuer Labeler), damit die Stereo-Notiz (R)/(S) zeigt — SN2-Produkt
     # von (R)-2-Brombutan + CN⁻ ist (S). Bruchstücke eines Übergangszustands können den Labeler
@@ -191,10 +215,12 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
         idx_to_map.get(i, 0)
         for i in raw_boxes
         if (a := mol.GetAtomWithIdx(i)).GetAtomicNum() == 6 and a.GetFormalCharge() == 0 and a.GetIsotope() == 0
+        and i not in partial_idx
     )
+    glyphs = {idx_to_map[i]: g for i, g in _glyph_boxes(svg).items() if i in idx_to_map}
     segments = [(atom_pts[b.GetBeginAtomIdx()], atom_pts[b.GetEndAtomIdx()]) for b in mol.GetBonds()]
     return _Drawing(svg, coords, boxes, list(raw_boxes.values()) + notes, atom_pts, bond_px, labelled_carbons,
-                    segments)
+                    segments, glyphs)
 
 
 def _set_frame(svg: str, frame: tuple[float, float, float, float]) -> str:
@@ -518,6 +544,22 @@ def _dashed_bond_line(
     )
 
 
+def _partial_charge(text: str, box: Box | None, centre: tuple[float, float]) -> tuple[str, Box]:
+    """Teilladung („δ−“) oben rechts an der Beschriftung — dort, wo RDKit eine Ladung setzt."""
+    if box is None:
+        box = [centre[0] - 4, centre[1] - 4, centre[0] + 4, centre[1] + 4]
+    # Als Zeichenreferenz: RDKit deklariert das SVG als iso-8859-1, ein rohes „δ“ würde dort
+    # zu Zeichensalat (wie das ‡ in _ts_brackets)
+    delta, sign = (f"&#{ord(ch)};" for ch in (text[0], text[1:]))
+    x, y = box[2] + 1.0, box[1] + 3.0
+    svg = (
+        f"<text class='partial-charge' x='{x:.1f}' y='{y:.1f}' font-size='15' "
+        f"font-family='sans-serif' fill='#000000'>{delta}"
+        f"<tspan dy='-5' font-size='12'>{sign}</tspan></text>"
+    )
+    return svg, [x - 1.0, y - 16.0, x + 18.0, y + 3.0]
+
+
 def _ts_brackets(content: tuple[float, float, float, float]) -> tuple[str, Box]:
     """Eckige Klammern um den Übergangszustand, ‡ oben rechts (Lehrbuchkonvention)."""
     x, y, w, h = content
@@ -546,10 +588,17 @@ def render_step(
     Der Datensatz steht zusätzlich im SVG (`data-geometry` an der Overlay-Gruppe), damit ihn
     der Geometrie-Test auch hinter `generate_mechanism` erreicht.
     """
-    d = _draw(mols, width, height)
+    d = _draw(mols, width, height, partial=tuple(step.partial_charges))
     overlay: list[str] = []
     arrows = []
     extent_pts = list(d.atom_pts)
+    # Teilladungen zuerst: ihre Boxen sind Hindernisse für die Pfeile und gehören in den Rahmen
+    for map_id, text in step.partial_charges.items():
+        if map_id not in d.coords:
+            continue
+        svg_text, box = _partial_charge(text, d.boxes.get(map_id), d.coords[map_id])
+        overlay.append(svg_text)
+        d.obstacles.append(box)
     for arrow in step.arrows:
         placed = _place_arrow(arrow, d.coords, d.boxes, d.obstacles, d.atom_pts, d.bond_px, d.bond_segments)
         if placed is None:
@@ -583,6 +632,7 @@ def render_step(
         "ts_bracket": bracket is not None,
         "labelled_carbons": d.labelled_carbons,
         "frame": [round(v, 1) for v in frame],
+        "glyphs": {str(k): [[round(v, 2) for v in b] for b in g] for k, g in d.glyphs.items()},
     }
     data = json.dumps(geo, separators=(",", ":"))
     overlay_group = f"<g class='mechanism-overlay' data-geometry='{data}'>{''.join(overlay)}</g>"

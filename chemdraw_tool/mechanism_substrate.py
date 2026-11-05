@@ -296,6 +296,18 @@ def _halide_and_nucleophile(frags: list[_Frag], family: str):
     return substrate, c_idx, x_idx, nuc_frag, nuc_name, nu_idx
 
 
+def _neutral(mol: Chem.Mol, map_id: int) -> Chem.Mol:
+    """Kopie mit neutralem Atom map_id, Wasserstoffzahl unverändert (kein Radikal, kein neues H)."""
+    rw = Chem.RWMol(mol)
+    atom = rw.GetAtomWithIdx(_idx(rw, map_id))
+    atom.SetNumExplicitHs(atom.GetTotalNumHs())
+    atom.SetNoImplicit(True)
+    atom.SetFormalCharge(0)
+    atom.SetNumRadicalElectrons(0)
+    rw.UpdatePropertyCache(strict=False)
+    return rw.GetMol()
+
+
 def _carbon_class(mol: Chem.Mol, c_idx: int, x_idx: int) -> tuple[int, bool, bool]:
     """(Zahl der C-Nachbarn, benzylisch, allylisch) am Halogen-Kohlenstoff."""
     atom = mol.GetAtomWithIdx(c_idx)
@@ -385,8 +397,11 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
             "tertiary halide — SN2 needs a methyl, primary or secondary alkyl halide; use sn1")
     nuc_m, sub_m = _assign_maps([(nuc.mol, {nu_idx: NU}), (substrate.mol, {c_idx: C, x_idx: X})])
 
-    ts = _cut(sub_m, C, X, {X: -1}, keep_h=(C,))
+    # Übergangszustand: Nucleophil und Abgangsgruppe neutral gezeichnet, je δ⁻ als Notiz
+    # (partial_charges) — zwei volle Ladungen ergäben −2 statt −1 (Sichtung 05.11.2026, R2)
+    ts = _cut(sub_m, C, X, {}, keep_h=(C, X))
     ts_c, ts_x = _frag_with(ts, C), _frag_with(ts, X)
+    ts_nuc = _neutral(nuc_m, NU)
     ts_c.GetAtomWithIdx(_idx(ts_c, C)).SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
     product = _react("[C@:1]-[Cl,Br,I:2].[*-:3]>>[C@@:1]-[*+0:3].[*-:2]", [sub_m, nuc_m])
     prod = _frag_with(product, NU)
@@ -407,13 +422,14 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
         ),
         MechanismStep(
             label="Backside attack (transition state)",
-            molecules=[_smi(ts_c), _smi(nuc_m), _smi(ts_x)],
+            molecules=[_smi(ts_c), _smi(ts_nuc), _smi(ts_x)],
             arrows=[
                 CurvedArrow(source=(NU, "lone_pair"), target=(C, "atom"), style="full"),
                 CurvedArrow(source=(C, "bond_to", X), target=(X, "atom"), style="full"),
             ],
             is_transition_state=True,
             partial_bonds=[(NU, C), (C, X)],
+            partial_charges={NU: "δ−", X: "δ−"},
             mol_gap=1.8,
             anchors=[
                 {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN2_TS, _SN2_TS_RING)},

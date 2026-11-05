@@ -27,6 +27,10 @@ class MechanismStep:
     # daneben. Auch die festen Vorlagen tragen Anker: sie sind der Substratweg mit den
     # Beispiel-Substraten (Etappe E, 05.11.2026).
     anchors: list[dict[int, tuple[float, float]]] = field(default_factory=list)
+    # Teilladungen, die statt einer Formalladung am Atom stehen ({Map-ID: "δ−"}): im
+    # SN2-Übergangszustand tragen Nucleophil und Abgangsgruppe je δ⁻, nicht je eine volle
+    # Ladung (Clayden Kap. 15; Sichtung 05.11.2026). Die Moleküle des Schritts sind dort neutral.
+    partial_charges: dict[int, str] = field(default_factory=dict)
 
 
 @dataclass

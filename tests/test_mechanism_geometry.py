@@ -230,3 +230,25 @@ def test_keine_bindung_laeuft_durch_ein_beschriftungszeichen(ergebnisse, cid, rt
                     fehler.append(f"{cid} Schritt {nr} ({step.label}): Bindung läuft durch ein Zeichen von atom-{m.group(1)}")
                     break
     assert not fehler, "\n".join(fehler)
+
+
+SN2_FAELLE = [c for c in CASES if c[1] == "sn2"]
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), SN2_FAELLE, ids=[c[0] for c in SN2_FAELLE])
+def test_sn2_uebergangszustand_traegt_delta_minus_statt_voller_ladungen(ergebnisse, cid, rt, subs):
+    """Sichtung 05.11.2026 (R2): „N≡C⁻ ··· C ··· Br⁻“ hat die Gesamtladung −2 statt −1. Im
+    Übergangszustand ist die Ladung auf Nucleophil und Abgangsgruppe verteilt: beide δ⁻ (Clayden
+    Kap. 15), Klammern und ‡ bleiben. Kein „⁻“-Glyph (ein flacher Strich) an NU und X."""
+    from chemdraw_tool.mechanism_substrate import NU, X
+
+    payload = _payload(ergebnisse, rt, subs)
+    ts = [s for s in payload.steps if s.is_transition_state]
+    assert len(ts) == 1, f"{cid}: {len(ts)} Übergangszustände"
+    svg = ts[0].svg
+    # δ als Zeichenreferenz (das RDKit-SVG ist iso-8859-1 deklariert)
+    assert svg.count("&#948;") == 2, f"{cid}: {svg.count('&#948;')}× δ im Übergangszustand"
+    glyphen = geometry_of(svg)["glyphs"]
+    for m in (NU, X):
+        flach = [g for g in glyphen[str(m)] if g[3] - g[1] < 2.0]
+        assert not flach, f"{cid}: Atom {m} trägt im Übergangszustand ein volles Ladungszeichen {flach}"
