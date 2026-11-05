@@ -183,3 +183,10 @@ alle Schritte, aufgerufen in `generate_mechanism` für Substrat- und Vorlagenweg
 (Test `test_alle_schritte_teilen_eine_viewbox`). Grenze: bei langen Ketten (Stearinsäure) bestimmt
 die Kette den Rahmen, das Reaktionszentrum wird bei 420 px Breite klein — Abkürzung (R = C₁₇H₃₅)
 wäre der nächste Schritt, nicht gebaut. Prüfung: tests/test_mechanism_geometry.py.
+
+**Ladung links, wenn die Bindung rechts abgeht (R1, Sichtung 05.11.2026):** RDKit setzt die Ladung
+eines Atoms ohne H immer oben rechts, auch über eine nach rechts gehende Bindung — im Azid lag das
+„⁻“ des endständigen N unter der Doppelbindung (gelesen als N=N⁺=N⁻). `_draw` gibt solchen Atomen
+(Ladung, kein H, alle Nachbarn rechts) die Beschriftung `<sup>-</sup>N` per `_displayLabel`.
+Prüfung: `test_keine_bindung_laeuft_durch_ein_beschriftungszeichen` — jedes Glyph einzeln gegen jede
+gerade Bindungslinie, über Matrix und Vorlagen.

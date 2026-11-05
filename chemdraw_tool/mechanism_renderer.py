@@ -109,6 +109,28 @@ def _label_boxes(svg: str) -> tuple[dict[int, Box], list[Box]]:
     return boxes, notes
 
 
+def _charge_left_where_bond_goes_right(mol: Chem.RWMol) -> None:
+    """Ladung links vom Symbol, wenn die Bindungen des Atoms nach rechts gehen.
+
+    RDKit setzt die Ladung eines Atoms ohne H immer oben rechts — auch wenn dort die Bindung
+    abgeht. Im Azid lag das „⁻“ des endständigen N dann unter der Doppelbindung, der Leser sah
+    N=N⁺=N⁻ statt ⁻N=N⁺=N⁻ (Sichtung 05.11.2026, R1). `_displayLabel` ersetzt die ganze
+    Beschriftung; Atome mit H behalten RDKits eigene Ausrichtung (HO⁻/OH⁻).
+    """
+    if not mol.GetNumConformers():
+        return
+    conf = mol.GetConformer()
+    for atom in mol.GetAtoms():
+        charge = atom.GetFormalCharge()
+        if not charge or atom.GetTotalNumHs() or atom.GetIsotope() or not atom.GetDegree():
+            continue
+        here = conf.GetAtomPosition(atom.GetIdx())
+        if all(conf.GetAtomPosition(n.GetIdx()).x - here.x > 0.1 for n in atom.GetNeighbors()):
+            sign = "+" if charge > 0 else "-"
+            amount = f"{abs(charge)}" if abs(charge) > 1 else ""
+            atom.SetProp("_displayLabel", f"<sup>{amount}{sign}</sup>{atom.GetSymbol()}")
+
+
 def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIGHT) -> _Drawing:
     """Moleküle zeichnen; Koordinaten, Beschriftungen und gemessene Bindungslänge zurückgeben."""
     idx_to_map: dict[int, int] = {}
@@ -126,6 +148,7 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
     mol = Chem.RWMol(combined)
     for atom in mol.GetAtoms():
         atom.SetAtomMapNum(0)
+    _charge_left_where_bond_goes_right(mol)
 
     # CIP ausdrücklich zuweisen (neuer Labeler), damit die Stereo-Notiz (R)/(S) zeigt — SN2-Produkt
     # von (R)-2-Brombutan + CN⁻ ist (S). Bruchstücke eines Übergangszustands können den Labeler

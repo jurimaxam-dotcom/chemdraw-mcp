@@ -19,6 +19,7 @@ Regeln (docs/mechanismus-substrate-design.md, „Pfeil-Geometrie“):
 from __future__ import annotations
 
 import math
+import re
 import statistics
 
 import pytest
@@ -199,3 +200,33 @@ def test_alle_schritte_teilen_eine_viewbox(ergebnisse, cid, rt, subs):
     boxen = [re.findall(r"viewBox='([^']*)'", s.svg) for s in payload.steps]
     assert all(len(b) == 1 for b in boxen), f"{cid}: nicht genau eine viewBox je SVG"
     assert len({b[0] for b in boxen}) == 1, f"{cid}: {len({b[0] for b in boxen})} verschiedene viewBoxen"
+
+
+_GLYPH = re.compile(r"<path class='atom-(\d+)' d='([^']*)'")
+_BOND_LINE = re.compile(r"<path class='bond-\d+[^']*' d='M ([\d.-]+),([\d.-]+) L ([\d.-]+),([\d.-]+)'")
+_ZAHL = re.compile(r"-?\d+(?:\.\d+)?")
+# Halbe Strichstärke der Bindungen (bondLineWidth 2.5): so weit reicht die Linie über ihre Mitte
+_HALBER_STRICH = 1.25
+
+
+@pytest.mark.parametrize(("cid", "rt", "subs"), CASES, ids=[c[0] for c in CASES])
+def test_keine_bindung_laeuft_durch_ein_beschriftungszeichen(ergebnisse, cid, rt, subs):
+    """Sichtung 05.11.2026 (R1): im Azid lag das „⁻“ des endständigen N unter der Doppelbindung —
+    RDKit setzt die Ladung oben rechts, auch wenn die Bindung nach rechts geht; der Leser sah
+    N=N⁺=N⁻ statt ⁻N=N⁺=N⁻. Geprüft wird jedes Glyph (Atomsymbol, H, Ladung) einzeln gegen jede
+    gerade Bindungslinie des RDKit-SVG; Keile (Polygone) erfasst der Ausdruck nicht.
+    """
+    payload = _payload(ergebnisse, rt, subs)
+    fehler = []
+    for nr, step in enumerate(payload.steps, 1):
+        linien = [tuple(map(float, m.groups())) for m in _BOND_LINE.finditer(step.svg)]
+        for m in _GLYPH.finditer(step.svg):
+            werte = [float(v) for v in _ZAHL.findall(m.group(2))]
+            xs, ys = werte[0::2], werte[1::2]
+            box = (min(xs) - _HALBER_STRICH, min(ys) - _HALBER_STRICH, max(xs) + _HALBER_STRICH,
+                   max(ys) + _HALBER_STRICH)
+            for ax, ay, bx, by in linien:
+                if any(_innen((ax + (bx - ax) * i / 200, ay + (by - ay) * i / 200), box) for i in range(201)):
+                    fehler.append(f"{cid} Schritt {nr} ({step.label}): Bindung läuft durch ein Zeichen von atom-{m.group(1)}")
+                    break
+    assert not fehler, "\n".join(fehler)
