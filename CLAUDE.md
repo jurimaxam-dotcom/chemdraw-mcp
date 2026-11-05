@@ -99,6 +99,11 @@ regenerated to make a diff disappear**:
   aspirin) no longer turns it red — it measures the renderer only. Regenerate
   only for an intentional rendering change or an RDKit *drawing-code* change,
   and look at the result; never touch the coordinate fixture to do so.
+  The layout half is guarded separately: `tests/test_layout_guard.py` pins
+  where `generate_2d` puts the atoms for seven probes (direct comparison, so a
+  mirror counts). Red there means an RDKit update turns or mirrors what users
+  get — look at before/after, then bless deliberately with `UPDATE_LAYOUT=1`
+  in the commit that moves the version.
   Playwright's double pin is test-enforced too (`tests/test_dependency_pins.py`).
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.

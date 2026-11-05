@@ -33,9 +33,11 @@ B) Goldens jetzt neu, Pin weg · C) Pin behalten. **Entschieden: A** (Jay delegi
 - [x] Schritt 1 auf main: `tests/__fixtures__/aspirin.coords.json` (aus rdkit 2026.3.6, Goldens unverändert), Golden-Test setzt
   die Koordinaten; Beleg: unter 2026.9.1 `4 passed`, eine Koordinate +0,3 → `2 failed`. `tests/test_dependency_pins.py` prüft
   Playwright pyproject ↔ package.json; Beleg: Mutation package.json 1.64.1 → `1 failed` „Playwright-Drift“. CLAUDE.md angepasst.
-- [ ] Schritt 2 (wartet auf Jays Merge von #7): `rdkit<2026.9` → `"rdkit"`, `uv lock`, Gate unter 2026.9.1, Kommentar im pyproject weg.
-- Kann: Layout-Wächter (paarweise Atomabstände, spiegelungsinvariant; schlägt bei 2026.9 trotzdem an, weil die COOH-Sauerstoffe
-  tauschen — eigene Bless-Regel nötig). Geparkt.
+- [x] Layout-Wächter `tests/test_layout_guard.py` (Hinweis Nebenagent: ohne ihn rutscht ein gedrehtes/gespiegeltes Nutzerbild
+  durch): 7 Proben, direkter Koordinatenvergleich (Spiegelung zählt), Bless `UPDATE_LAYOUT=1`. Beleg: ohne Referenz `8 failed`,
+  unter rdkit 2026.9.1 genau aspirin/benzene/glucose/ibuprofen rot (`4 failed, 4 passed`), unter Lock `8 passed`.
+- [ ] Schritt 2 (wartet auf Jays Merge von #7): `rdkit<2026.9` → `"rdkit"`, `uv lock`, Wächter rot → Vorher/Nachher-Bild der
+  vier Proben ansehen, `UPDATE_LAYOUT=1` im selben Commit, Gate unter 2026.9.1, Kommentar im pyproject weg.
 **Dependabot abgenommen (17:40, Hauptsession, Faden geschlossen):** PR #7 grün (py3.11/py3.13), Ursache des Rots war rdkit 2026.9.1
 (Compute2DCoords spiegelt Aspirin/Glucose → Golden-SVGs rot), nicht Playwright; Fix `98e4342` auf dem PR-Branch: `rdkit<2026.9` mit
 Begründung im pyproject, Playwright beidseitig 1.64.1, Goldens/Snapshots unverändert (Branch-Diff geprüft).
