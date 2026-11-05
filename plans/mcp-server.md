@@ -1,5 +1,42 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex nach E-Handtest und Kontext-Neustart (05.11.2026)
+
+**Nächster Schritt:** neue Tisch-Nachrichten am Projektort lesen. Der eigene
+E-Handtest ist vollständig erledigt (`998386d`); keine Wiederholung und keine
+Produktfixes ohne neuen Auftrag. Claudes Abnahme des Berichts und Jays „passt“
+zur Gestaltung stehen noch aus. Release 0.8.0 bleibt bis zur E-Abnahme gesperrt
+und der Release-Klick bleibt Jays Hand.
+
+**Dateien/Beweise:** `docs/desktop-abnahme-etappe-e-2026-11-05.md`, Abschnitte
+„Fall 1“ bis „Fall 6“ sowie „Ergebnis und Rücksetzen“; Screenshots und AX-Texte
+unter `/tmp/chemdraw-desktop-test/etappe-e/`. Getesteter Produktstand `59eee39`,
+Desktop-Neustart auf `f2c7729` (nur Plan-Nachtrag). SN2-Stereolabel, Klammern/‡,
+freie Pfeile, Namenstitel auch bei SMILES, sieben Fischer-Schritte einschließlich
+Protontransfer/OH₂⁺ und Diels-Alder-Familienhinweis sichtbar geprüft. SN1-Panel
+nach beauftragtem Zusatz grün; Originalprompt ohne Tool. Ring in der sichtbaren
+Übersicht regelmäßig ohne C-Labels; Schrittumschaltung dieses Falls wegen
+AX-/Screenshot-Widerspruch **nicht** abgenommen. Kein Produktcode geändert.
+
+**Offene Tisch-Fäden:** ursprünglicher Auftrag
+`20261105-131815-etappe-e-mechanismen-vor` #6 (Hop 6/6, voll); Fortsetzung
+`20261105-142437-etappe-e-desktop-handtest` #2 Bericht an Claude `w4W:p4`,
+#3 Status zum Neustart. Nach Antwort dort weiterlesen; aktuell keine ungelesene
+Nachricht. Keine eigene zeitgebundene Wartefrist, kein Hintergrundjob und kein
+halber Edit. Reservierungen nach dem Plan-Commit freigeben.
+
+**Offene Fragen an Jay:** „Welle 3 eigenes Profil?“ und „Abfragemodus auch für
+Reaktionen?“ — **unbeantwortet — nicht bauen**. Jays „passt“ zu den
+E-Kontaktbögen: **unbeantwortet — nicht bauen**; keine Zustimmung unterstellen.
+
+**Zugesagte Prüfmethoden:** sichtbarer Desktop mit frischen Chats, tatsächlichen
+Toolparametern, Screenshots und AX-Belegen; Routing-Stichprobe vom Paneltest
+trennen. Gate/Handshake-Zahlen aus dem Auftrag nicht als selbst geprüft ausgeben.
+Desktop abschließend neu gestartet, leerer Chat bestätigt (`final-state.txt/png`),
+Repo-Prozesse aktiv, Bundle deaktiviert; Konfiguration und Bundle-Einstellung
+bytegleich zum Start (`identity-after.json`). Dokuprüfung vor Commit grün,
+keine offene Freigabe im frischen Fenster.
+
 ## Weiter bei — Etappe E: Mechanismen sauber vor dem Release (Jay 05.11.2026, Claude-Folgesession per Auftrag)
 
 **Jay (05.11.):** „Das macht viel mehr Sinn, das vor dem Release sauber zu machen. Lehrbuchabbildungen als Orientierung für
@@ -35,7 +72,9 @@ nur die Ziel-SHA wird die neue Spitze von main.
 
 **Stand 05.11. (Claude):** Befunde 1–4 + Befund 5 (Fischer-Protonentransfer, Clayden Kap. 10) gebaut, Commits
 `522a8c4`…`59eee39`; Geometrie-Test + Matrix (33 Fälle, `tests/mechanism_matrix.py`) im Gate; Gate rc=0 (7793), Handshake 16/12
-auf `59eee39`; README-Bild neu. Kontaktbögen an Jay (SendUserFile). Offen: Jays „passt“ · Codex-Handtest (Faden #6) · dann Release-Zeile.
+auf `59eee39`; README-Bild neu. Kontaktbögen an Jay (SendUserFile).
+- [x] Codex-Handtest durchgeführt und dokumentiert (`998386d`, Bericht im Fortsetzungsfaden #2; Grenzen siehe oberster Weiter-bei-Block).
+- [ ] Claude: Handtest-Bericht abnehmen; Jays „passt“ zu den Kontaktbögen einholen; erst danach Release-Zeile.
 Bekannte Grenzen (nicht gebaut): lange Ketten (Stearinsäure) bei gemeinsamem Rahmen winzig; ÜZ zeigt volle Ladungen statt δ⁻.
 
 Arbeitsweise: Opus-Arbeiter je Bau-Etappe (`model: opus`, Effort medium), Brief nach `~/.claude/docs/modell-prompting/opus-5.md`;
