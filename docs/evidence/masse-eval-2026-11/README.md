@@ -19,7 +19,7 @@ Rohprotokoll des Identitätslaufs: `identitaet-lauf.json`.
 | Resolver | Prozessstart 04.11. 23:19:34, alter Code im Speicher; Fix-Commit 05.11. 00:04:42 | Repo-Stand mit Fix (`inspect.getsource` geprüft) |
 | Ergebnis | 591 grün · 80 gelb · 40 rot | 591 grün · 1 gelb · 119 rot |
 | Laufzeit | 62 min (Backoff 10 s + Wiederholung je „Quelle weg“) | 37 min |
-| Dateien | `identitaet-lauf-1-vor-nci-fix.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+| Dateien | `identitaet-lauf-1-vor-nci-fix.{json,md}` | `identitaet-lauf-2-vor-de-namen.{json,md}` |
 
 Übergänge je Eingabe: 591 grün→grün, 40 rot→rot, 1 gelb→gelb (paritaprevir, Referenz `unsicher`),
 **79 gelb→rot**. Diese 79 waren „Quelle weg (partial)“: NCI CIR meldet einen unbekannten Namen als
@@ -29,6 +29,33 @@ Der Fix ändert die Nutzer-Meldung, nicht die Auflösung: 75 der 80 `not_found` 
 Wikidata-Labels ohne PubChem-Synonym (5 englische mit Präfix oder Sonderzeichen: (RS)-ketamine, (RS)-methadone, (S)-(−)-timolol, β-lactulose, nitroprusside); 74 der 77 betroffenen Stoffe
 sind über ihre englische/INN-Eingabe grün. Befund für später: deutsche Trivialnamen brauchen einen
 eigenen Weg (de.wikipedia-Weiterleitung oder Endungsregeln -on/-one, -in/-ine, -säure/-ic acid).
+→ umgesetzt als Endungsregeln, siehe nächster Abschnitt.
+
+## Lauf 2 → Fix → Lauf 3 (Identität, 05.11.2026)
+
+Fix `abee1a5`: `chemdraw_tool/de_names.py` schreibt einen deutschen Trivialnamen ins Englische um
+(INN-Endungen -on/-id/-in/-at/-im/-an, -säure → „ic acid“ samt deutscher Stämme, Kation vorn/Anion
+hinten, Racemat-Präfix, griechische Buchstaben). Der Resolver fragt PubChem damit **erst nach allen
+anderen Quellen** — ein in Lauf 2 aufgelöster Name nimmt denselben Weg.
+
+| | Lauf 2 | Lauf 3 (mit `abee1a5`) |
+|---|---|---|
+| Ergebnis | 591 grün · 1 gelb · 119 rot | **658 grün · 1 gelb · 52 rot** |
+| nicht aufgelöst | 80 (de 75 · en 5) | 9 (de 7 · en 2) |
+| Laufzeit | 37 min | 12 min (Median 0,5 s; PubChem antwortete schneller, kein Codeeffekt belegt) |
+| Dateien | `identitaet-lauf-2-vor-de-namen.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Übergänge je Eingabe: 591 grün→grün (**kein grüner Fall gekippt**), 67 rot→grün, 52 rot→rot,
+1 gelb→gelb. Von den 52 roten wechselten 4 von „nicht aufgelöst“ zu „gefunden, aber abweichend“:
+L-Scopolamin und Pantothensäure (Stereo, wie ihre englischen Eingaben), Docusat (freie Säure statt
+Na-Salz) und β-Lactulose (gleiche Formel, andere Ringform) — gedeutet in `identitaet.md`, kein falscher Stoff.
+
+**Überanpassung geprüft (Holdout).** Die Regeln wurden an genau den 80 Fällen eingestellt, an denen
+Lauf 3 misst. Darum zusätzlich `holdout_de_namen.py`: die Regeln über die 177 deutschen Eingaben, die
+schon in Lauf 2 direkt grün waren (nie zum Einstellen benutzt), Variante an PubChem, InChIKey gegen
+Wikidata. Ergebnis 05.11.: 133 mit Variante → **121 gleich · 1 Stereo (Nicotin → Nicotine) ·
+0 anderer Stoff** · 11 unbekannt; 44 ohne Variante. Offen: das Ergebnis sagt dem Nutzer nicht, dass
+über die englische Schreibweise gefunden wurde.
 
 ## Woher die Erwartung kommt
 

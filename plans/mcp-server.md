@@ -1,5 +1,19 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
+
+- [x] **Befund 1 (deutsche Trivialnamen ohne PubChem-Synonym)** — `abee1a5`: `chemdraw_tool/de_names.py` (reine Funktion,
+  Regeln nur aus der Vorab-Messung) + letzter Kaskadenschritt in `resolve_name` (nach NCI, aus dem Original, nur PubChem).
+  Belege: Tests rot gesehen (3 failed) → 108 grün; Gate rc=0 (8036 passed). Lauf 3 über `stoffe-masse.json`:
+  **658 grün · 1 gelb · 52 rot** (Lauf 2: 591/1/119), 591 grün→grün, 67 rot→grün, nicht aufgelöst 80 → 9.
+  Holdout gegen Überanpassung (`docs/evidence/masse-eval-2026-11/holdout_de_namen.py`, 177 nie benutzte deutsche Eingaben):
+  121 gleich · 1 Stereo · **0 anderer Stoff**. Bericht: `docs/evidence/masse-eval-2026-11/README.md` § Lauf 2 → Fix → Lauf 3.
+- [ ] Kann: Ergebnis vermerkt „gefunden als *Dexamethasone*“ (Payload + Tool-Snapshot, eigener Schritt).
+
+**Nächster Schritt:** Befund 2 — OPSIN zerlegt Trivialnamen (chloroxylenol, methyldopa, methylthioninium chloride, tropicamide):
+OPSIN-Treffer gegen PubChem gegenprüfen oder OPSIN nur für systematische Namen. Liste der Befunde 2–5 im Abschnitt
+„Release-Klick 0.8.0 … Masse-Eval“ unten. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
 ## Weiter bei — Dependabot + rdkit 2026.9 + README-Politur erledigt (Session 8b06750a, 05.11.2026 23:00)
 
 **Erledigt 05.11. abends:** PR #8 und #7 per Rebase gemergt (Squash/Merge-Commit im Repo aus). rdkit 2026.9.1 übernommen
@@ -240,7 +254,7 @@ dann `gh run list --workflow publish.yml`, PyPI-Umgebung freigeben (pending_depl
 Registry `./scripts/publish-registry.sh` (isLatest). Release-Klick bleibt Jays Hand (Auftrag 04.11.: „0.8.0 vorbereiten“).
 
 **Befunde für danach (nicht in 0.8.0, Reihenfolge nach Nutzen):**
-1. Deutsche Trivialnamen ohne PubChem-Synonym (75 Eingaben, 74 Stoffe über INN grün): eigener Weg im Resolver —
+1. ✅ (05.11., `abee1a5`, Lauf 3) Deutsche Trivialnamen ohne PubChem-Synonym (75 Eingaben, 74 Stoffe über INN grün): eigener Weg im Resolver —
    de.wikipedia-Weiterleitung auf den englischen Artikel oder Endungsregeln (-on/-one, -in/-ine, -säure/-ic acid), dann
    Lauf 3 über `stoffe-masse.json`.
 2. OPSIN gewinnt vor PubChem und zerlegt Trivialnamen (chloroxylenol, methyldopa, methylthioninium chloride, tropicamide):

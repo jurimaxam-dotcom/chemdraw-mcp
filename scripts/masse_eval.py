@@ -857,6 +857,14 @@ IDENT_DEUTUNG: dict[str, str] = {
         "PubChem führt den deutschen Namen als eigenes Record CID 44402564 (C23H29FN4O2, Dihydro-Form); "
         "per curl auf /compound/name/Risperidon/cids nachgeprüft. Synonymfehler bei PubChem, wie (−)-Ephedrin."
     ),
+    "Docusat": (
+        "Seit Lauf 3 über die englische Schreibweise 'Docusate' gefunden: PubChem liefert die freie "
+        "Sulfonsäure (C20H38O7S), Wikidata erwartet das Natrium-Anion. Gleicher Wirkstoff, kein falscher Stoff."
+    ),
+    "β-lactulose": (
+        "Seit Lauf 3 über 'beta-lactulose' gefunden: gleiche Formel C12H22O11 und gleiche Stereo-Schicht, "
+        "PubChem modelliert eine andere Ringform der Fructose-Einheit. Kein falscher Stoff."
+    ),
     "fumaric acid": (
         "Referenzfehler: Wikidata Q125026916 (Formel C20H33N3) ist nicht Fumarsäure; der Resolver liefert "
         "PubChems Fumaric Acid (C4H4O4). Lehrbuch-Liste beim nächsten `liste`-Lauf auf Q139857 pinnen."
