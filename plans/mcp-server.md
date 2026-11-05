@@ -29,8 +29,13 @@ Chromium 1248). Gate rc=0 (7542 passed), CI py3.11/py3.13 grün, Befund im PR-Ko
 Koordinaten rendert rdkit 2026.9.1 beide Goldens **byte-gleich** (Skript `scratchpad/frozen2.py`, Kontrolle unter 2026.3.6 ebenfalls
 gleich; Molblock-Umweg verfälscht schon allein, daher Koordinaten direkt setzen). **Jay:** A) Test entkoppeln (Koordinaten als
 committete Fixture, optional Layout-Wächter über paarweise Atomabstände, spiegelungsinvariant) + Pin weg + rdkit 2026.9 ·
-B) Goldens jetzt neu, Pin weg · C) Pin behalten. Empfehlung A. Dazu: Test, der Playwright-Version in pyproject.toml gegen
-package.json prüft (dependabot.yml hat kein npm → Python-Bump färbt sonst nur still).
+B) Goldens jetzt neu, Pin weg · C) Pin behalten. **Entschieden: A** (Jay delegierte an den Advisor, 05.11.).
+- [x] Schritt 1 auf main: `tests/__fixtures__/aspirin.coords.json` (aus rdkit 2026.3.6, Goldens unverändert), Golden-Test setzt
+  die Koordinaten; Beleg: unter 2026.9.1 `4 passed`, eine Koordinate +0,3 → `2 failed`. `tests/test_dependency_pins.py` prüft
+  Playwright pyproject ↔ package.json; Beleg: Mutation package.json 1.64.1 → `1 failed` „Playwright-Drift“. CLAUDE.md angepasst.
+- [ ] Schritt 2 (wartet auf Jays Merge von #7): `rdkit<2026.9` → `"rdkit"`, `uv lock`, Gate unter 2026.9.1, Kommentar im pyproject weg.
+- Kann: Layout-Wächter (paarweise Atomabstände, spiegelungsinvariant; schlägt bei 2026.9 trotzdem an, weil die COOH-Sauerstoffe
+  tauschen — eigene Bless-Regel nötig). Geparkt.
 **Dependabot abgenommen (17:40, Hauptsession, Faden geschlossen):** PR #7 grün (py3.11/py3.13), Ursache des Rots war rdkit 2026.9.1
 (Compute2DCoords spiegelt Aspirin/Glucose → Golden-SVGs rot), nicht Playwright; Fix `98e4342` auf dem PR-Branch: `rdkit<2026.9` mit
 Begründung im pyproject, Playwright beidseitig 1.64.1, Goldens/Snapshots unverändert (Branch-Diff geprüft).

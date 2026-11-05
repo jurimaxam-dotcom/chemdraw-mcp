@@ -10,19 +10,28 @@ Gate gerutscht.
 Diese Datei schließt das: die Default-Ausgabe wird gegen eingefrorene Bytes
 verglichen.
 
+Die 2D-Koordinaten kommen eingefroren aus `aspirin.coords.json`, nicht aus
+RDKits Layout. Grund (Dependabot-PR #7, 05.11.2026): rdkit 2026.9 legt Aspirin
+gespiegelt an, zeichnet dieselben Koordinaten aber byte-gleich. Der Test misst
+damit nur noch den eigenen Renderer; eine Layout-Änderung von RDKit ist kein
+Rendering-Fehler und färbt ihn nicht mehr rot.
+
 WANN DIE GOLDEN-DATEIEN NEU ERZEUGT WERDEN DÜRFEN: nur bei einer ABSICHTLICHEN
-Rendering-Änderung oder einem RDKit-Update — und dann bewusst, mit Sichtprüfung
-des Ergebnisses. Niemals, um einen roten Test verschwinden zu lassen; genau
-dafür ist er da. Erzeugen mit:
+Rendering-Änderung oder wenn RDKits Zeichencode (nicht das Layout) sich ändert —
+und dann bewusst, mit Sichtprüfung des Ergebnisses. Niemals, um einen roten Test
+verschwinden zu lassen; genau dafür ist er da. Die Koordinaten-Fixture bleibt
+dabei unverändert. Erzeugen mit:
     uv run python -c "from tests.test_render_golden import _write_goldens; _write_goldens()"
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 from rdkit import Chem
+from rdkit.Geometry import Point3D
 
 from chemdraw_tool.generator import generate_2d
 from chemdraw_tool.image_export import render_molecule_svg
@@ -34,6 +43,7 @@ FIXTURES = Path(__file__).parent / "__fixtures__"
 # bindungen, Heteroatomen und Atomlabels — die Merkmale, an denen sich eine
 # Rendering-Änderung zeigt.
 PROBE_SMILES = "CC(=O)Oc1ccccc1C(=O)O"
+COORDS = FIXTURES / "aspirin.coords.json"
 
 def _normalise(svg: str) -> str:
     """Entfernt, was sich ohne Rendering-Änderung unterscheiden darf."""
@@ -41,7 +51,19 @@ def _normalise(svg: str) -> str:
 
 
 def _probe_mol():
-    return generate_2d(Chem.MolFromSmiles(PROBE_SMILES))
+    """Aspirin wie im Produktionsweg (SMILES → generate_2d), Koordinaten eingefroren.
+
+    Die Atomindizes folgen der SMILES-Reihenfolge; der Assert fängt eine
+    Fixture, die nicht mehr zum SMILES passt.
+    """
+    frozen = json.loads(COORDS.read_text(encoding="utf-8"))
+    assert frozen["smiles"] == PROBE_SMILES, "Koordinaten-Fixture gehört zu einem anderen SMILES"
+    mol = generate_2d(Chem.MolFromSmiles(PROBE_SMILES))
+    conf = mol.GetConformer()
+    assert conf.GetNumAtoms() == len(frozen["coords"]), "Atomanzahl ≠ Koordinaten-Fixture"
+    for i, (x, y) in enumerate(frozen["coords"]):
+        conf.SetAtomPosition(i, Point3D(x, y, 0.0))
+    return mol
 
 
 def _render_ui_preview() -> str:

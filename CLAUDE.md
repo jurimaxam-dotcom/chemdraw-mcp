@@ -94,8 +94,12 @@ Two frozen renderings guard against silent visual drift, and **neither may be
 regenerated to make a diff disappear**:
 
 - `tests/__fixtures__/*.golden.svg` — the Python renderer's default output
-  (both paths: UI preview and file export). Regenerate only for an intentional
-  rendering change or an RDKit bump, and look at the result.
+  (both paths: UI preview and file export). The input coordinates are frozen in
+  `aspirin.coords.json`, so an RDKit *layout* change (rdkit 2026.9 mirrors
+  aspirin) no longer turns it red — it measures the renderer only. Regenerate
+  only for an intentional rendering change or an RDKit *drawing-code* change,
+  and look at the result; never touch the coordinate fixture to do so.
+  Playwright's double pin is test-enforced too (`tests/test_dependency_pins.py`).
 - `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
 
