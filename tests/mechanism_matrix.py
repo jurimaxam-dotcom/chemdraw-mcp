@@ -32,7 +32,9 @@ MATRIX: list[tuple[str, str, list[str], str]] = [
     ("sn1-tritylchlorid-wasser", "sn1", ["ClC(c1ccccc1)(c1ccccc1)c1ccccc1", "O"], ""),
     ("sn1-1-methylcyclohexylbromid-wasser", "sn1", ["CC1(Br)CCCCC1", "O"], ""),
     ("sn1-allylbromid-wasser", "sn1", ["C=CC(C)(C)Br", "O"], ""),
-    ("sn1-tbubr-cyanid-salz", "sn1", ["CC(C)(C)Br", "[Na+].[C-]#N"], ""),
+    # tert-Halogenid + Cyanid ist kein Lehrbuch-SN1 (E2 überwiegt, am Kation eher Isonitril,
+    # Kornblum) — Sichtung 05.11.2026; der Azid-Abfang des Kations ist der klassische Fall
+    ("sn1-tbucl-azid-salz", "sn1", ["CC(C)(C)Cl", "[Na+].[N-]=[N+]=[N-]"], ""),
     ("sn1-tbui-isopropanol", "sn1", ["CC(C)(C)I", "CC(C)O"], ""),
     # --- Fischer: eine COOH + primärer/sekundärer Alkohol -----------------------------
     ("fischer-essigsaeure-ethanol", "fischer_ester", ["CC(=O)O", "CCO"], ""),

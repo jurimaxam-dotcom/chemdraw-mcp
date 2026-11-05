@@ -114,7 +114,8 @@ def test_sn1_tert_butylchlorid_wasser():
 
 def test_sn1_mit_anion_und_alkohol():
     assert _canon("CC(C)(C)OCC") in [_plain(s) for s in build_steps("sn1", ["CC(C)(C)Br", "CCO"])[-1].molecules]
-    assert _canon("CC(C)(C)C#N") in [_plain(s) for s in build_steps("sn1", ["CC(C)(C)Br", "[C-]#N"])[-1].molecules]
+    azid = build_steps("sn1", ["CC(C)(C)Cl", "[Na+].[N-]=[N+]=[N-]"])  # Azid-Abfang des Kations
+    assert _canon("CC(C)(C)N=[N+]=[N-]") in [_plain(s) for s in azid[-1].molecules]
 
 
 def test_sn1_benzylisch_stereogen_heisst_racemisch():
@@ -341,3 +342,14 @@ def test_sn1_anion_bindung_laeuft_nicht_durch_die_ladung():
     (nu_x, nu_y) = nuc_anker[NU]
     nachbar = next(p for m, p in nuc_anker.items() if m != NU)
     assert nachbar[1] < nu_y - 0.3, f"Nachbar {nachbar} liegt nicht unterhalb von {nu_x, nu_y}"
+
+
+def test_matrix_zeigt_kein_sn1_mit_cyanid():
+    """Sichtung 05.11.2026 (R3): tertiäres Halogenid + Cyanid ist kein Lehrbuch-SN1 — E2 überwiegt,
+    am Kation entsteht eher das Isonitril (Kornblum). Die Fähigkeit bleibt im Code, die Matrix
+    (Kontaktbögen, Gutachter) zeigt stattdessen den Azid-Abfang."""
+    from tests.mechanism_matrix import MATRIX
+
+    sn1 = [(cid, subs) for cid, rt, subs, _ in MATRIX if rt == "sn1"]
+    assert not [cid for cid, subs in sn1 if any("C-]#N" in s for s in subs)]
+    assert any("[N-]=[N+]=[N-]" in s for _, subs in sn1 for s in subs), "Azid-Abfang fehlt in der Matrix"

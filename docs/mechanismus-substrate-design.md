@@ -104,6 +104,9 @@ Sechsring (90°/270°) oder zog ein Ringatom gerade und beschriftete es mit „C
   (Wasser, primärer/sekundärer/tertiärer Alkohol) oder anionisches Nucleophil (dieselbe Liste wie
   SN2). Primär/sekundär ohne Stabilisierung → „use sn2". Allyl-Umlagerung wird nicht gezeichnet
   (nur das direkte Produkt).
+  Tertiäres Halogenid + Cyanid wird gezeichnet, steht aber nicht in der Substrat-Matrix: kein
+  Lehrbuch-SN1 (E2 überwiegt, am Kation entsteht nach Kornblum eher das Isonitril; Sichtung
+  05.11.2026) — die Matrix zeigt stattdessen den Azid-Abfang des tert-Butyl-Kations.
 - **Fischer:** Carbonsäure mit genau einer COOH-Gruppe + primärer oder sekundärer Alkohol
   (auch Methanol), zwei getrennte Moleküle. Tertiärer Alkohol, Phenol, Hydroxysäure in einem
   Molekül → Ablehnung mit Grund.
