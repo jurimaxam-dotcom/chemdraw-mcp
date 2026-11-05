@@ -16,6 +16,8 @@ from urllib.parse import quote
 import requests
 from rdkit import Chem, RDLogger
 
+from chemdraw_tool.de_names import english_variant
+
 logger = logging.getLogger(__name__)
 
 # resolve() now attempts a SMILES parse on every input (parse-first), so real
@@ -883,6 +885,13 @@ def resolve_name(name: str) -> str:
 
     if smiles := _nci_cir_lookup(name, report):
         return smiles
+
+    # Ganz hinten, damit kein heute aufgelöster Name einen anderen Weg nimmt.
+    # Aus dem Original gebaut — "Maleinsaeure" hat kein "-säure" mehr.
+    if (english := english_variant(name)) and english != transliterated:
+        logger.info("Retrying with English spelling: %r → %r", name, english)
+        if smiles := _pubchem_lookup(english, report):
+            return smiles
 
     logger.info(
         "Resolution failed for %r: %s",

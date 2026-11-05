@@ -523,9 +523,11 @@ def test_nci_page_not_found_500_is_not_found(mock_get, _opsin):
     mock_get.side_effect = [
         _http_resp(404),
         _nci_resp(500, "<h1>Page not found (404)</h1>\n"),
+        _http_resp(404),  # englische Variante "Nifedipine", ebenfalls unbekannt
     ]
     with pytest.raises(NameResolutionError) as exc:
         resolve_name("Nifedipin")
+    assert mock_get.call_count == 3
     assert exc.value.kind == "not_found"
     msg = str(exc.value)
     assert "retry" not in msg.lower()
@@ -543,3 +545,65 @@ def test_nci_real_500_stays_source_error(mock_get, _opsin):
     with pytest.raises(NameResolutionError) as exc:
         resolve_name("Nifedipin")
     assert exc.value.kind == "partial"
+
+
+# --- Deutsche Trivialnamen: englische Variante als letzter Versuch -----------
+# Masse-Eval 11/2026: 75 deutsche Eingaben ohne PubChem-Synonym (Amilorid,
+# Dexamethason, Maleinsäure). Die Variante steht GANZ HINTEN, damit kein heute
+# aufgelöster Name einen anderen Weg nimmt — sie greift nur, wo sonst
+# not_found stünde.
+
+
+def _only_for(hit_name: str, smiles: str = "CC(=O)O"):
+    """PubChem-Attrappe: trifft nur für genau diesen Namen."""
+    calls: list[str] = []
+
+    def lookup(name, report=None):
+        calls.append(name)
+        if name == hit_name:
+            return smiles
+        resolver._record(report, resolver._PUBCHEM, resolver._NOT_FOUND, "name unknown")
+        return None
+
+    return lookup, calls
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_german_name_falls_back_to_english_variant_last(mock_nci, mock_opsin):
+    lookup, calls = _only_for("Dexamethasone")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Dexamethason") == "CC(=O)O"
+    assert calls == ["Dexamethason", "Dexamethasone"]
+    # NCI wurde mit dem Original gefragt, bevor die Variante drankam
+    assert [c.args[0] for c in mock_nci.call_args_list] == ["Dexamethason"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_umlaut_name_variant_is_built_from_the_original(mock_nci, mock_opsin):
+    """'Maleinsaeure' hat kein -säure mehr — die Regel braucht das Original."""
+    lookup, calls = _only_for("Maleinic acid")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Maleinsäure") == "CC(=O)O"
+    assert calls == ["Maleinsäure", "Maleinsaeure", "Maleinic acid"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_direct_hit_never_asks_for_the_variant(mock_nci, mock_opsin):
+    lookup, calls = _only_for("Dexamethason")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        resolve_name("Dexamethason")
+    assert calls == ["Dexamethason"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_variant_miss_keeps_not_found(mock_nci, mock_opsin):
+    lookup, calls = _only_for("nothing")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        with pytest.raises(NameResolutionError) as exc:
+            resolve_name("Dexamethason")
+    assert exc.value.kind == "not_found"
+    assert calls == ["Dexamethason", "Dexamethasone"]

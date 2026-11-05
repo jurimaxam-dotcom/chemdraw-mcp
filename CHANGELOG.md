@@ -6,6 +6,16 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **German trivial names resolve more often.** When no source knows a German
+  name, the resolver now tries its English spelling as a last step: drug-name
+  endings (Dexamethason → dexamethasone, Amilorid → amiloride, Lamivudin →
+  lamivudine), acids (Maleinsäure → maleinic acid, Bernsteinsäure → succinic
+  acid), salts (Natriumlactat → sodium lactate, Alcuroniumchlorid → alcuronium
+  chloride) and a racemate prefix ((RS)-Ketamin → ketamine). Names that
+  resolved before take exactly the same path as before.
+
 ## [0.8.0] — 2026-11-05
 
 ### Added
