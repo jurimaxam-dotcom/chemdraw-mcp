@@ -1,6 +1,16 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — 0.8.0 veröffentlicht, Etappe F abgenommen (Claude-Hauptsession, 05.11.2026 17:05)
+## Weiter bei — Dependabot + rdkit 2026.9 + README-Politur erledigt (Session 8b06750a, 05.11.2026 23:00)
+
+**Erledigt 05.11. abends:** PR #8 und #7 per Rebase gemergt (Squash/Merge-Commit im Repo aus). rdkit 2026.9.1 übernommen
+(`2d8fd0b`): Golden-Test misst nur noch den Renderer (`910892b`, eingefrorene Koordinaten), Layout-Wächter `tests/test_layout_guard.py`
+(`39e7088`) bewusst neu bestätigt, Playwright-Doppel-Pin als Test. README-Politur (Plan `chemdraw-vermarktung/plans/vermarktung.md`
+§ README-Politur): Codex `7b653a6`/`722c0bc` (GIFs eng, `demo-video.sh` schneidet selbst), Opus `1f4cb10`/`3139aa5` (Galerie,
+407→139 Zeilen, docs/), selbst nachgeprüft (34 Links 200, twine PASSED). Tisch-Fäden 20261105-163128, -222933, -222945, -223556 geschlossen.
+**Nächster Schritt:** Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten) als eigene Etappe · README-Änderungen gehen
+erst mit dem nächsten Release auf PyPI · Kann: Galeriebilder gleich hoch (nur per Beschnitt in `assets/`).
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
 
 **Release 0.8.0 ist draußen (Jay 05.11. 16:15: „du darfst es machen“ — einmalige Freigabe für diesen Klick, keine Dauererlaubnis):**
 `gh release create v0.8.0 --target 566a060…` → https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.8.0, Tag zeigt auf
