@@ -33,6 +33,11 @@ nur die Ziel-SHA wird die neue Spitze von main.
 - **Schluss:** Golden-SVGs bewusst neu und gesichtet (`UPDATE_…`-Pfad im selben Commit), Gate rc=0, Desktop-Handtest durch Codex
   (`tisch auftrag codex`, Screenshots nach `/tmp/chemdraw-desktop-test/`), CHANGELOG 0.8.0 ergänzt. **Erst dann** Release-Zeile an Jay.
 
+**Stand 05.11. (Claude):** Befunde 1–4 + Befund 5 (Fischer-Protonentransfer, Clayden Kap. 10) gebaut, Commits
+`522a8c4`…`59eee39`; Geometrie-Test + Matrix (33 Fälle, `tests/mechanism_matrix.py`) im Gate; Gate rc=0 (7793), Handshake 16/12
+auf `59eee39`; README-Bild neu. Kontaktbögen an Jay (SendUserFile). Offen: Jays „passt“ · Codex-Handtest (Faden #6) · dann Release-Zeile.
+Bekannte Grenzen (nicht gebaut): lange Ketten (Stearinsäure) bei gemeinsamem Rahmen winzig; ÜZ zeigt volle Ladungen statt δ⁻.
+
 Arbeitsweise: Opus-Arbeiter je Bau-Etappe (`model: opus`, Effort medium), Brief nach `~/.claude/docs/modell-prompting/opus-5.md`;
 TDD, Vorlage bleibt als Rückfall. Codex vorher per Tisch informieren (Dateien `chemdraw_tool/mechanism*.py`, `ui/src`, Tests).
 
