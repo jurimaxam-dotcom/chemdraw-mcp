@@ -24,8 +24,13 @@ Faden `20261105-163128-dependabot-pr-7-nach` (Session `8b06750a`); Bericht bring
 rdkit 2026.9.1 — `Compute2DCoords` spiegelt Aspirin/Glucose, dreht Ibuprofen/Benzol (Gegenprobe: nur rdkit zurück → grün).
 Fix: `rdkit<2026.9` in `pyproject.toml` (gilt auch für PyPI), Playwright npm-seitig auf 1.64.1 nachgezogen (Pixel-Snapshot hält,
 Chromium 1248). Gate rc=0 (7542 passed), CI py3.11/py3.13 grün, Befund im PR-Kommentar. Merge = Jays Klick:
-`gh pr merge 7 --squash --delete-branch`. **Jay:** neue rdkit-Orientierung übernehmen (Goldens mit Sichtprüfung neu, Pin weg)
-oder Pin behalten? Empfehlung: Pin behalten bis zum nächsten rdkit-Release, dann neu messen.
+`gh pr merge 7 --squash --delete-branch`. Pin ist Zwischenstand, keine Lösung (kehrt bei jedem rdkit-Release wieder).
+**Befund (Advisor + Messung 05.11.):** der Golden-Test misst Renderer UND RDKit-Layout zugleich. Mit eingefrorenen Aspirin-
+Koordinaten rendert rdkit 2026.9.1 beide Goldens **byte-gleich** (Skript `scratchpad/frozen2.py`, Kontrolle unter 2026.3.6 ebenfalls
+gleich; Molblock-Umweg verfälscht schon allein, daher Koordinaten direkt setzen). **Jay:** A) Test entkoppeln (Koordinaten als
+committete Fixture, optional Layout-Wächter über paarweise Atomabstände, spiegelungsinvariant) + Pin weg + rdkit 2026.9 ·
+B) Goldens jetzt neu, Pin weg · C) Pin behalten. Empfehlung A. Dazu: Test, der Playwright-Version in pyproject.toml gegen
+package.json prüft (dependabot.yml hat kein npm → Python-Bump färbt sonst nur still).
 **Dependabot abgenommen (17:40, Hauptsession, Faden geschlossen):** PR #7 grün (py3.11/py3.13), Ursache des Rots war rdkit 2026.9.1
 (Compute2DCoords spiegelt Aspirin/Glucose → Golden-SVGs rot), nicht Playwright; Fix `98e4342` auf dem PR-Branch: `rdkit<2026.9` mit
 Begründung im pyproject, Playwright beidseitig 1.64.1, Goldens/Snapshots unverändert (Branch-Diff geprüft).
