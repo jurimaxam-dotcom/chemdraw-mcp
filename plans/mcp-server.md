@@ -1,10 +1,13 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Codex nach Stereo-Audit (06.11.2026)
+## Weiter bei — rifabutin-Tautomer + timolol (06.11.2026)
 
-**Nächster Schritt:** Opus-Kreuzabnahme zu `b67ceb7` beim Chef verfolgen; Auftrag/Bericht
-im Faden `20261106-140408-stereo-referenzen` (#4 Bericht). Nur auf konkreten Folgeauftrag
-nachbessern. Keine feste Wartefrist, eigenen laufenden Jobs, halbfertigen Edits oder roten Tests im Fix.
+**Nächster Chef-Schritt:** Opus-Abschlussbericht zu `3476636` mit Lauf 10 gegen
+Lauf 9 abwarten (nur rifabutin rot→gelb erwartet), dann zusammen mit Codex-Urteil
+Chef-Diff, Gate und Nachzählung. Lauf 10 läuft noch bei Opus. Codex hat den
+Code-Teil unabhängig mit **ABNEHMEN** geprüft (159 Tests, eigene Schutzproben,
+drei Live-Fälle); dies nimmt den laufenden Masse-Lauf nicht vorweg.
+Faden: `20261106-220250-zwei-teile-a-kreuzabnahme`.
 
 - [x] `b67ceb7` gepusht: 711 Referenz-SMILES / 414 ursprüngliche Keys geprüft,
   411 PubChem-Recordantworten und 3 dokumentierte 404. Vier Referenzen / fünf Eingaben
@@ -171,8 +174,11 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
 Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
 - ✅ **„gefunden als“ abgenommen 06.11. ~16:05:** `849d2a9` (Opus-Bauer). Codex-Kreuzabnahme: Mutationen 7/3 rot, Snapshots nur Schema, Gate grün; sein NACHBESSERN verworfen — Ephedrin wörtlich bei PubChem (meine Erwartung falsch); **Desktop-Grenze:** das Modell übersetzt „Dexamethason“ selbst ins Englische, foundAs bleibt dann leer (Screenshots `/tmp/chemdraw-desktop-test/found-as/`). Chef: Diff, Gate rc=0 8239. Fäden `…151146`, `…152425` + Pane pH zu. Plan-Haken Z.~184 damit erledigt.
 - ✅ **Referenz-Audit abgenommen 06.11. ~16:35:** `bfbae23` (Regenerationsschutz im echten `baue_liste`, Mutation rot; Neuwertung 674/1/36) + Evidence-Nachbesserung `3ba7bda` (Vinblastin unsicher, Doxycyclin = Tautomer, Xylit = CID 6912 geteilt) + `51d3e10` (zwei von Codex nicht belegte „PubChem Preferred“-Sätze gestrichen — Keys gaben PUG 404). Opus-Gutachter 2 Runden; Chef grep + JSON-Parse. Fäden `…151201`, `…155948`, `…162404` + Pane pJ zu. Rest: Vinblastin-Fixture ohne `unsicher`-Flag (zählt rot) · Sulfasalazin-Begründung „Preferred-Summary“ ohne CID nicht live gegengeprüft.
-- ✅ **Salznamen deutsch abgenommen 06.11. ~17:15:** `2d8aaaf`/`8e971e4` (Opus-Bauer): `de_names.salt_variant` als letzter Kaskadenschritt, found_as gesetzt. Codex-Kreuzabnahme ABNEHMEN (M1–M5 rot, Live-Fälle + 5 eigene, Lauf/Salzliste nachgezählt). Chef: Diff gelesen, Gate rc=0 8271, **Lauf 9 = 674/1/36** nachgezählt (Schlüssel = Lauf 8). Salzliste Holdout 43→100, 0 richtig→anders. Fäden `…160852`, `…175918` + Pane pK zu. Folgepunkte: 18+32 Salznamen not_found · `_ANIONS` ⊇ `_SALT_WORD`-Anionen als Strukturtest (Hydrogentartrat, tosylat, hydroiodid) · identitaet.md zählt 413 statt 414 Stoffe.
-**Nächster Chef-Schritt (Stand 06.11. ~17:15, Kontext-Neustart fällig):** kein Faden offen. Folgepunkte vergeben: `_ANIONS`-Strukturtest + identitaet.md-Zählfehler + Vinblastin-Flag/Sulfasalazin-Gegenprüfung an Codex · rifabutin/(S)-(−)-timolol not_found an Opus-Bauer. Je Faden: Bericht → Kreuzabnahme → Chef Diff + Gate + Nachzählung.
+- ✅ **Salznamen deutsch abgenommen 06.11. ~17:15:** `2d8aaaf`/`8e971e4` (Opus-Bauer): `de_names.salt_variant` als letzter Kaskadenschritt, found_as gesetzt. Codex-Kreuzabnahme ABNEHMEN (M1–M5 rot, Live-Fälle + 5 eigene, Lauf/Salzliste nachgezählt). Chef: Diff gelesen, Gate rc=0 8271, **Lauf 9 = 674/1/36** nachgezählt (Schlüssel = Lauf 8). Salzliste Holdout 43→100, 0 richtig→anders. Fäden `…160852`, `…175918` + Pane pK zu. Rest: 18+32 Salznamen not_found. Strukturtest und Berichtszählung separat abgenommen, siehe Folgepunkte unten.
+- ✅ **Salznamen-Folgepunkte abgenommen 06.11. ~22:00:** `630b5ac` (Codex): neun Anion-Schreibweisen ergänzt, Strukturtest gegen den Anion-Teil von `resolver._SALT_WORD`, drei Verhaltenstests. Chef: Diff gelesen, **62 passed**, **Gate rc=0**. Zählung: **414 Wikidata-Stoffe / 413 unterschiedliche InChIKeys**, weil cocaine und Kokain jetzt denselben Key haben. Faden `20261106-215435-chemdraw-mcp-folgepunkte-salznam` geschlossen.
+- **Offen — Opus `3476636`:** rifabutin-Tautomere als eigene gelbe Klasse, Drehsinn neben erhaltenem R/S als letzter timolol-Kaskadenschritt. **Lauf 10 läuft bei Opus**; Codex-Kreuzabnahme **Code-Teil ABNEHMEN**: `uv run pytest tests/test_resolver.py tests/test_identitaet_tautomer.py -q` → **159 passed**; eigene Formel-/Verknüpfungs-/Kanontautomer-Gegenproben bleiben rot, Gelb wird nie Grün. Drei eigene Live-Fälle: rifabutin → `AZFBLLCNOQPJGJ-VXTBVIBXSA-N`, gelb/tautomer; `(S)-(-)-timolol` → `BLJRIMJGRPQVNF-JTQLQIEISA-N`; `(R)-(+)-timolol` → `BLJRIMJGRPQVNF-SNVBAGLBSA-N` (jeweils PubChem bestätigt). Evidence `/tmp/chemdraw-opus-kreuz-live.json`, Faden `20261106-220250-zwei-teile-a-kreuzabnahme`.
+- **Geparkt:** Referenzentscheid Vinblastin-Stereo und Sulfasalazin-E/Z. Resolver = namentlich abgefragter PubChem-Record, Fixture abweichend; Vinblastin ohne `unsicher`-Flag. Befund in `docs/evidence/masse-eval-2026-11/identitaet.md`; keine stille Fixture-/Wertungsänderung.
+**Nächster Chef-Schritt (Stand 06.11. ~22:05):** Opus-Abschlussbericht mit **Lauf 10 vs. 9** (nur rifabutin rot→gelb erwartet) + Codex-Urteil → Chef Diff/Gate/Nachzählung. Code-Abnahme allein schließt den laufenden Masse-Lauf nicht ab.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
