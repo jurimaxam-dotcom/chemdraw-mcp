@@ -1,6 +1,10 @@
 # Abgleich: was Anthropic veröffentlicht — und wo wir stehen
 
-Stand 24.10.2026; Remote-Panels und lokale Desktop-Pfade erneut geprüft (Abschnitt 5).
+Stand 06.11.2026 (Etappe E2, Mechanismus-Panel): `--check` 0 neu, 19 geändert, 0 weg — gelesen:
+MCP-Apps-Schnellstart und `apps/build` nur Formatierung bzw. Node ≥ 20 im Beispiel (unser Panel baut
+schon mit Node ≥ 20), Spezifikation `server/tools` nur ein verschobenes `annotations`-Beispiel;
+ext-apps 2.0.4 ist ein Beispiel-Patch. Keine Folge für Hinweiszeile und ⇌ im Mechanismus-Panel.
+Davor: Stand 24.10.2026; Remote-Panels und lokale Desktop-Pfade erneut geprüft (Abschnitt 5).
 `--check`: 0 neue, 58 geänderte, 0 entfernte Seiten. Überwiegend Link-/Exportformatierung,
 aber auch inhaltliche Änderungen an Verzeichnis-Veröffentlichung und OAuth-Verwaltung.
 Keine Server-, Panel- oder Abhängigkeitsänderung in dieser Etappe.

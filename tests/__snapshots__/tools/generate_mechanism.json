@@ -73,9 +73,22 @@
         "title": "Name",
         "type": "string"
       },
+      "notes": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Notes",
+        "type": "array"
+      },
       "reaction_type": {
         "title": "Reaction Type",
         "type": "string"
+      },
+      "reversible": {
+        "default": false,
+        "title": "Reversible",
+        "type": "boolean"
       },
       "steps": {
         "items": {

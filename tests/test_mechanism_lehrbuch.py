@@ -60,4 +60,18 @@ def test_os_11_4_chirales_tertiaeres_halogenid_racemisiert():
 def test_clayden_fischer_essigsaeure_ethanol_gibt_ethylacetat():
     steps = build_steps("fischer_ester", ["CC(=O)O", "CCO"])
     produkte = sorted(_plain(s) for s in steps[-1].molecules)
-    assert produkte == sorted([_canon("CCOC(C)=O"), _canon("O"), _canon("CC[OH2+]")]), produkte
+    # Quelle: Ester + Wasser, H⁺ zurückgebildet. Gezeichnet wird das Katalysator-Proton im Alkohol
+    # gelöst (EtOH₂⁺, Etappe E2) — geprüft wird die Aussage der Quelle, nicht unsere Darstellung:
+    # Ester und Wasser genau einmal, und der Rest ist genau ein H⁺ auf dem eingesetzten Alkohol.
+    assert _canon("CCOC(C)=O") in produkte and _canon("O") in produkte, produkte
+    rest = [p for p in produkte if p not in (_canon("CCOC(C)=O"), _canon("O"))]
+    assert len(rest) == 1, rest
+    if rest[0] != "[H+]":
+        mol = Chem.RWMol(Chem.MolFromSmiles(rest[0]))
+        assert Chem.GetFormalCharge(mol) == +1, rest
+        o = next(a for a in mol.GetAtoms() if a.GetFormalCharge() == 1)
+        o.SetFormalCharge(0)
+        o.SetNumExplicitHs(o.GetTotalNumHs() - 1)
+        o.SetNoImplicit(True)
+        Chem.SanitizeMol(mol)
+        assert Chem.MolToSmiles(mol) == _canon("CCO"), rest  # Ethanol + H⁺, nichts anderes

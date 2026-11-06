@@ -4,7 +4,8 @@
 
 Zeichnet jeden Fall aus tests/mechanism_matrix.py über generate_mechanism (der echte Tool-Weg),
 schreibt je Schritt SVG + PNG und setzt daraus kontakt-<familie>.png zusammen — das Bild für die
-Sichtung durch einen Gutachter oder Jays 10-Sekunden-Blick. Braucht rsvg-convert und ImageMagick
+Sichtung durch einen Gutachter oder Jays 10-Sekunden-Blick. Hinweise (E1/E2) stehen hinter dem Titel,
+reversible Mechanismen bekommen ⇌ zwischen den Schritten — beides wie im Panel. Braucht rsvg-convert und ImageMagick
 (`magick`). Die Schrift muss „⁺“ und „δ“ kennen (Arial zeigte „H  regenerated“ ohne ⁺).
 """
 
@@ -59,9 +60,16 @@ def main(argv: list[str]) -> Path:
             _run("magick", png, "-gravity", "North", "-splice", "0x26", "-font", font, "-pointsize", "15",
                  "-annotate", "+0+4", f"{i + 1}. {step.label}", labelled)
             pngs.append(labelled)
+        if payload.reversible:
+            # Gleichgewicht (Fischer): ⇌ zwischen den Schritten, wie im Panel
+            eq = out / "equilibrium.png"
+            _run("magick", "-size", "40x420", "xc:white", "-font", font, "-pointsize", "30", "-gravity", "center",
+                 "-annotate", "+0+0", "⇌", eq)
+            pngs = [p for png in pngs for p in (png, eq)][:-1]
         row = out / f"{case_id}-row.png"
+        title = payload.name + "".join(f"   ▸ {note}" for note in payload.notes)
         _run("magick", *pngs, "-gravity", "center", "+append", "-gravity", "NorthWest", "-splice", "0x30",
-             "-font", font, "-pointsize", "18", "-annotate", "+8+4", payload.name, row)
+             "-font", font, "-pointsize", "18", "-annotate", "+8+4", title, row)
         rows.append(row)
     if not rows:
         raise SystemExit(f"keine Matrixfälle für '{family}'")

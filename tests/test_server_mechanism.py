@@ -320,3 +320,15 @@ def test_smiles_detection_is_parse_first_not_string_equality(monkeypatch):
     monkeypatch.setattr(server, "resolve", canonical)
     r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
     assert r.name.endswith("— (R)-2-bromobutane + cyanide"), r.name
+
+
+def test_payload_nennt_konkurrenz_und_gleichgewicht():
+    """Etappe E2: der Hinweis auf E1/E2 und das Gleichgewicht der Fischer-Veresterung stehen im
+    Ergebnis (Modell und Panel lesen sie), nicht nur in einer Antwort, die das Modell vielleicht gibt."""
+    sn2 = generate_mechanism("sn2", ["CC(C)I", "[OH-]"])
+    assert any("E2" in n for n in sn2.notes) and sn2.reversible is False
+    fischer = generate_mechanism("fischer_ester", ["CC(=O)O", "CCO"])
+    assert fischer.reversible is True and fischer.notes == []
+    assert generate_mechanism("sn2", ["CI", "[OH-]"]).notes == []
+    vorlage = generate_mechanism("fischer_ester", [])
+    assert vorlage.reversible is True  # auch das Lehrbuchbeispiel ist ein Gleichgewicht

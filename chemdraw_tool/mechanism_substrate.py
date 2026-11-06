@@ -825,6 +825,46 @@ def _deprotonate(mol: Chem.Mol) -> Chem.Mol:
     return _sanitize(rw)
 
 
+# --- Konkurrenz durch Eliminierung -------------------------------------------------------
+# Gezeichnet wird nur die Substitution; wo eine Eliminierung ernsthaft konkurriert, sagt das
+# Ergebnis es in einem Satz (Gutachter GELB, Etappe E2: Isopropyliodid + OH⁻, tBuI + iPrOH).
+# Regeln nach OpenStax 11.12 (Zusammenfassung SN1/SN2/E1/E2) und Clayden Kap. 17:
+# - SN2: sekundäres Halogenid + starke Base (OH⁻, RO⁻) → E2; sperriges tert-Alkoxid → E2 auch primär
+# - SN1: das Kation verliert ein β-H → E1, sobald ein sp³-Nachbar-C ein H trägt (nicht bei Trityl,
+#   Benzhydryl: deren Nachbarn sind Aromaten)
+E2_NOTE = ("E2 elimination competes: a strong base such as OH⁻ or RO⁻ also removes a β-hydrogen from a "
+           "secondary halide and gives an alkene. Only the substitution is drawn.")
+E2_BULKY_NOTE = ("E2 elimination competes: a bulky base such as tert-butoxide removes a β-hydrogen even "
+                 "from a primary halide and mostly gives the alkene. Only the substitution is drawn.")
+E1_NOTE = ("E1 elimination competes: the carbocation can also lose a β-hydrogen and give an alkene, "
+           "more so on heating. Only the substitution is drawn.")
+
+
+def _has_beta_h(mol: Chem.Mol, c_idx: int, x_idx: int) -> bool:
+    return any(n.GetAtomicNum() == 6 and not n.GetIsAromatic() and n.GetTotalNumHs() > 0
+               for n in mol.GetAtomWithIdx(c_idx).GetNeighbors() if n.GetIdx() != x_idx)
+
+
+def competition_notes(reaction_type: str, smiles_list: list[str]) -> list[str]:
+    """Hinweise auf eine konkurrierende Eliminierung ([] = keine); Eingaben wie build_steps."""
+    if reaction_type not in ("sn1", "sn2"):
+        return []
+    substrate, c_idx, x_idx, nuc, nuc_name, nu_idx = _halide_and_nucleophile(_fragments(smiles_list),
+                                                                            reaction_type)
+    if not _has_beta_h(substrate.mol, c_idx, x_idx):
+        return []
+    if reaction_type == "sn1":
+        return [E1_NOTE]
+    n_c, _benzylic, _allylic = _carbon_class(substrate.mol, c_idx, x_idx)
+    if nuc_name.startswith("alkoxide"):
+        o_carbon = next(n for n in nuc.mol.GetAtomWithIdx(nu_idx).GetNeighbors())
+        if sum(1 for n in o_carbon.GetNeighbors() if n.GetAtomicNum() == 6) == 3:
+            return [E2_BULKY_NOTE]
+    if n_c == 2 and nuc_name.startswith(("hydroxide", "alkoxide")):
+        return [E2_NOTE]
+    return []
+
+
 _BUILDERS = {"sn2": _sn2, "sn1": _sn1, "fischer_ester": _fischer}
 
 

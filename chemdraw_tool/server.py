@@ -3749,6 +3749,7 @@ def generate_mechanism(
         SUPPORT,
         UnsupportedSubstrates,
         build_steps,
+        competition_notes,
     )
     from chemdraw_tool.templates import get_template, list_templates
 
@@ -3766,6 +3767,7 @@ def generate_mechanism(
         )
 
     fallback_reason = ""
+    notes: list[str] = []
     step_payloads: list[MechanismStepPayload] = []
     if not substrates:
         fallback_reason = "no substrates given"
@@ -3796,6 +3798,8 @@ def generate_mechanism(
             except Exception as exc:  # noqa: BLE001 — Layout-/Renderfehler → Vorlage
                 fallback_reason = f"the layout failed for these substrates ({exc})"
                 step_payloads = []
+            else:
+                notes = competition_notes(reaction_type, resolved)
 
     if step_payloads:
         # Titel nennt die Eingaben wörtlich — das ist, was gezeichnet ist (Etappe B, 04.11.2026)
@@ -3828,6 +3832,8 @@ def generate_mechanism(
         current_step=clamped_step,
         substrates_drawn=not fallback_reason,
         fallback_reason=fallback_reason,
+        notes=notes,
+        reversible=reaction_type == "fischer_ester",
     )
 
 

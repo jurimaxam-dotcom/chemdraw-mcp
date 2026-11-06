@@ -8,6 +8,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Mechanisms follow textbook conventions more closely.** SN2 draws the
+  curved arrows on the reactants and the transition state without arrows; the
+  SN1 carbocation is drawn trigonal planar; a second solvent molecule (water or
+  the alcohol) takes the proton instead of a free H⁺, so SN1 with water ends in
+  ROH + X⁻ + H₃O⁺; the Fischer esterification moves the proton in two steps via
+  the alcohol and now has 8 steps instead of 7 (`current_step` numbers after
+  step 3 shift by one); long alkyl chains are labelled C₁₇H₃₅ instead of drawn
+  out. The mechanism result carries `notes` (E1/E2 elimination competes, e.g.
+  isopropyl iodide + OH⁻) and `reversible` (Fischer), and the panel shows both:
+  the note under the title, ⇌ between the steps.
+
 - **German trivial names resolve more often.** When no source knows a German
   name, the resolver now tries its English spelling as a last step: drug-name
   endings (Dexamethason → dexamethasone, Amilorid → amiloride, Lamivudin →

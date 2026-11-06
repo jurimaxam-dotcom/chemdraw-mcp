@@ -46,14 +46,18 @@ gemappten Moleküls → Liste für das Layout (`layout_anchored`).
     Konfiguration invertieren (`molInversionFlag`); am achiralen Zentrum wirkungslos.
   - SN1-Produkt: `[C+:1].[*:3]>>[C+0:1]-[*+0:3]` für Anionen. Wasser/Alkohol (Runde 3,
     05.11.2026): `[C+:1].[O:3]>>[C+0:1]-[O+:3]` → Oxonium-Ion, ein H als eigenes Atom
-    (`H_LEAVING` = 9), Deprotonierung per `_drop_h` → ROH/ROR′ + X⁻ + H⁺ (siehe (g)10).
-  - Fischer (Etappe E, 05.11.2026, nach Clayden Kap. 10 — sieben Stationen): Protonierung
+    (`H_LEAVING` = 9), Deprotonierung durch ein zweites Lösungsmittelmolekül (Map `BASE` = 5,
+    Etappe E2) → ROH/ROR′ + X⁻ + H₃O⁺/ROH₂⁺ (siehe (g)10). Trägt das Oxonium-O bei Wasser zwei H,
+    stehen beide als Atome (`H_OTHER` = 10) — nie „OH⁺“ plus ein loses H.
+  - Fischer (Etappe E, 05.11.2026, nach Clayden Kap. 10 — seit E2 acht Stationen): Protonierung
     `[C:1]=[O:2]>>[C+:1]-[O:2]` — die protonierte Säure wird **bewusst als Carbokation-Grenzformel
     C⁺(OH)₂** gezeichnet (die Grenzformel, an der der Alkohol angreift; die C=O⁺H-Form ist
     gleichwertig); Angriff `[C+:1].[O:4]>>[C+0:1]-[O+:4]` → Oxonium am Alkohol-O, sein H als
-    eigenes Atom (Map 8); **Protonentransfer** O4–H → O3 (`RWMol`: Bindung umhängen, O4 neutral,
-    O3 +1) → C–OH₂⁺; **Wasserabspaltung**: C–O3 bricht, O2 bildet C=O⁺H (H als Atom, Map 7) →
-    protonierter Ester + H₂O; **Deprotonierung** → Ester + H₂O + H⁺. Jedes Zwischenprodukt wird
+    eigenes Atom (Map 8); **Protonentransfer in zwei Schritten über ein Alkoholmolekül** (Etappe E2,
+    Map `BASE` = 5): der Alkohol holt das H vom Oxonium (→ neutrales Tetraeder-Intermediat + ROH₂⁺),
+    dann holt O3 es vom ROH₂⁺ → C–OH₂⁺; **Wasserabspaltung**: C–O3 bricht, O2 bildet C=O⁺H (H als
+    Atom, Map 7) → protonierter Ester + H₂O; **Deprotonierung durch den Alkohol** → Ester + H₂O +
+    ROH₂⁺ (das Katalysator-Proton, im Lösungsmittel). Jedes Zwischenprodukt wird
     voll sanitisiert (Valenz, Ladung), Test `test_fischer_folgt_clayden_mit_protonentransfer`.
   - Nach `RunReactants` tragen die Template-Atome keine Map mehr, sondern `old_mapno`;
     die Map wird sofort zurückgeschrieben. Aus mehreren Produktsätzen wird derjenige gewählt,
@@ -160,10 +164,13 @@ Reaction Mechanisms". Keine Abbildung übernommen.
 | 3 | Neue Bindung: Spitze zum Zielatom bzw. zur Mitte der entstehenden Bindung; neues freies Paar (Abgangsgruppe): Spitze zum Atom, das es trägt | [LT-Malik] Regel 3–4; [LT-Curly] | Renderer, Geometrie-Test |
 | 4 | Oktettregel: bekommt ein volles Atom ein Paar, muss im selben Schritt eins gehen (SN2: C–X bricht, während Nu–C entsteht → zwei Pfeile in einem Schritt) | [OS-6.5] Regel 4; Clayden Kap. 15 | SN2-Schritt 2 |
 | 5 | Pfeile sind gekrümmt, auch wenn das Paar „geradeaus" wandert; Pfeil und Beschriftungen überschneiden sich nicht | [LT-Curly]; Lesbarkeit | Geometrie-Test |
+| 6a | Pfeile an den Edukten, der Übergangszustand ist ihr Ergebnis und trägt keine Pfeile (Etappe E2) | Clayden Kap. 15 | SN2-Schritt 1 „Reactants: backside attack“; `check_bookkeeping` prüft über den ÜZ hinweg |
 | 6 | Übergangszustand in eckigen Klammern mit ‡, Teilbindungen gestrichelt, Ladung als δ⁻ verteilt: Nucleophil und Abgangsgruppe je δ⁻, keine vollen Ladungen (sonst Summe −2 statt −1) | Clayden Kap. 15 | Renderer (Klammern); ÜZ-Moleküle neutral, `MechanismStep.partial_charges` {NU, X: „δ−“} als Text oben rechts am Symbol (Runde 3, R2); `test_sn2_uebergangszustand_traegt_delta_minus_statt_voller_ladungen` |
 | 7 | SN2 kehrt die Konfiguration um (Walden); das Produkt trägt seinen CIP-Deskriptor | Clayden Kap. 15 | Schrittlabel + Stereo-Annotation |
 | 8 | SN1 über planares Kation → Angriff von beiden Seiten, stereogenes Zentrum „racemic" | Clayden Kap. 15 | Schrittlabel |
-| 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | Sieben Stationen: Edukte, Protonierung, Angriff (→ Oxonium), Protonentransfer (→ OH₂⁺), Wasserabspaltung mit Rückbildung von C=O⁺H, Deprotonierung (H⁺ zurück), Produkte. Protonierte Säure als Grenzformel C⁺(OH)₂ gezeichnet (siehe (b)); Reversibilität nur im Text, nicht als ⇌ |
+| 9 | Fischer-Veresterung: Protonierung des Carbonyl-O, Angriff des Alkohols, Protonentransfer, Wasser verlässt als OH₂⁺, Deprotonierung; jeder Schritt reversibel | Clayden Kap. 10 | Acht Stationen (Etappe E2): Edukte, Protonierung, Angriff (→ Oxonium), Deprotonierung durch den Alkohol, Protonierung des OH (→ OH₂⁺), Wasserabspaltung mit Rückbildung von C=O⁺H, Deprotonierung durch den Alkohol (Katalysator zurück als ROH₂⁺), Produkte. Protonierte Säure als Grenzformel C⁺(OH)₂ gezeichnet (siehe (b)); Reversibilität als ⇌ zwischen den Schritten im Panel (`MechanismPayload.reversible`) |
+| 8a | Carbokation trigonal-planar (120°), nicht T-förmig (Etappe E2) | Clayden Kap. 15 | `_SN1_PLANAR` im Kation- und Angriffsschritt; `test_sn1_carbokation_ist_trigonal_planar` |
+| 8b | Eliminierung konkurriert: sekundäres Halogenid + OH⁻/RO⁻ → E2, sperriges tert-Alkoxid → E2 auch primär, Kation mit β-H → E1 (Etappe E2) | OpenStax 11.12; Clayden Kap. 17 | `competition_notes` → `MechanismPayload.notes`, Hinweiszeile im Panel; gezeichnet wird nur die Substitution |
 | 10 | SN1 mit neutralem Nucleophil (Wasser, Alkohol): der Angriff gibt das Oxonium-Ion R–OH₂⁺ bzw. R–O⁺(H)R′; erst die Deprotonierung (Pfeil von der O–H-Bindung zum O) gibt das Produkt, H⁺ steht in den Produkten | Clayden Kap. 15; [OS-11.4] OpenStax 11.4 „The SN1 Reaction“ (Hydrolyse von tert-Butylbromid über das protonierte Alkohol-Kation) | Sechs Stationen: Edukte, Abgang, Kation, Angriff, „Oxonium ion“, „Products“; Anionen fünf. Buchführung ohne Ausnahme, `test_gesamtladung_bleibt_erhalten` (Runde 3, R4) |
 
 **Befund aus (g)9 (behoben 05.11.2026):** Die Fischer-Ableitung ließ Wasser von einem neutralen
@@ -186,8 +193,9 @@ Konflikt Box vs. Mitte: Box gewinnt — liegt die Mitte in der Box, zählt nur d
 Gleicher Maßstab beim Anzeigen braucht gleiche viewBoxen: `mechanism_renderer.unify_frames` über
 alle Schritte, aufgerufen in `generate_mechanism` für Substrat- und Vorlagenweg
 (Test `test_alle_schritte_teilen_eine_viewbox`). Grenze: bei langen Ketten (Stearinsäure) bestimmt
-die Kette den Rahmen, das Reaktionszentrum wird bei 420 px Breite klein — Abkürzung (R = C₁₇H₃₅)
-wäre der nächste Schritt, nicht gebaut. Prüfung: tests/test_mechanism_geometry.py.
+die Kette den Rahmen, das Reaktionszentrum wurde bei 420 px Breite klein — seit Etappe E2 kürzt
+`mechanism_renderer.abbreviate_chains` unverzweigte gesättigte Endketten ab 5 C im Bild zu „C₁₇H₃₅“
+(die Schritt-SMILES bleiben vollständig; CIP wird vorher am vollen Molekül bestimmt). Prüfung: tests/test_mechanism_geometry.py.
 
 **Ladung links, wenn die Bindung rechts abgeht (R1, Sichtung 05.11.2026):** RDKit setzt die Ladung
 eines Atoms ohne H immer oben rechts, auch über eine nach rechts gehende Bindung — im Azid lag das

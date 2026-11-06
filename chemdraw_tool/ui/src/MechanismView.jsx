@@ -36,18 +36,33 @@ function StepIndicator({ current, total, onStepClick }) {
   );
 }
 
-function StepArrow() {
+// reversible (Fischer): jeder Schritt ist ein Gleichgewicht — zwei Halbpfeile ⇌, senkrecht
+// (hin links nach unten, zurück rechts nach oben), statt eines einfachen Pfeils (Etappe E2).
+function StepArrow({ reversible }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", flexShrink: 0, padding: "0 2px" }}>
-      <svg width="20" height="26" viewBox="0 0 20 26">
-        <line x1="10" y1="2" x2="10" y2="16" stroke="var(--fg-muted)" strokeWidth="1.5" />
-        <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
-      </svg>
+    <div
+      data-arrow={reversible ? "equilibrium" : "forward"}
+      title={reversible ? "equilibrium" : undefined}
+      style={{ display: "flex", alignItems: "center", flexShrink: 0, padding: "0 2px" }}
+    >
+      {reversible ? (
+        <svg width="20" height="26" viewBox="0 0 20 26">
+          <line x1="7" y1="2" x2="7" y2="23" stroke="var(--fg-muted)" strokeWidth="1.5" />
+          <polyline points="3,17 7,23" fill="none" stroke="var(--fg-muted)" strokeWidth="1.5" />
+          <line x1="13" y1="3" x2="13" y2="24" stroke="var(--fg-muted)" strokeWidth="1.5" />
+          <polyline points="17,9 13,3" fill="none" stroke="var(--fg-muted)" strokeWidth="1.5" />
+        </svg>
+      ) : (
+        <svg width="20" height="26" viewBox="0 0 20 26">
+          <line x1="10" y1="2" x2="10" y2="16" stroke="var(--fg-muted)" strokeWidth="1.5" />
+          <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
+        </svg>
+      )}
     </div>
   );
 }
 
-function OverviewMode({ steps, onStepClick }) {
+function OverviewMode({ steps, reversible, onStepClick }) {
   return (
     <div
       style={{
@@ -62,7 +77,7 @@ function OverviewMode({ steps, onStepClick }) {
     >
       {steps.map((step, i) => (
         <React.Fragment key={i}>
-          {i > 0 && <StepArrow />}
+          {i > 0 && <StepArrow reversible={reversible} />}
           <div
             onClick={() => onStepClick(i)}
             style={{
@@ -229,6 +244,23 @@ export default function MechanismView({ data }) {
         subtitle={data.reaction_type}
       />
 
+      {(data.notes || []).map((note, i) => (
+        <div
+          key={i}
+          className="mech-note"
+          style={{
+            fontSize: 11,
+            color: "var(--fg-muted)",
+            borderLeft: "2px solid var(--accent)",
+            padding: "2px 8px",
+            marginBottom: 6,
+            flexShrink: 0,
+          }}
+        >
+          {note}
+        </div>
+      ))}
+
       <div
         style={{
           display: "flex",
@@ -278,7 +310,7 @@ export default function MechanismView({ data }) {
         }}
       >
         {mode === "overview" ? (
-          <OverviewMode steps={steps} onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
+          <OverviewMode steps={steps} reversible={!!data.reversible} onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
         ) : (
           <StepMode
             steps={steps}

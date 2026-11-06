@@ -307,6 +307,10 @@ class MechanismPayload(BaseModel):
     substrates_drawn: bool = False
     # Warum die Vorlage gezeichnet ist, obwohl die Substrate passen ("" im Normalfall)
     fallback_reason: str = ""
+    # Etappe E2: konkurrierende Eliminierung (E1/E2) in einem Satz je Hinweis; [] = keine
+    notes: list[str] = []
+    # Etappe E2: jeder Schritt ist ein Gleichgewicht (Fischer) — das Panel zeichnet ⇌ statt →
+    reversible: bool = False
 
 
 class ReactionSpec(BaseModel):

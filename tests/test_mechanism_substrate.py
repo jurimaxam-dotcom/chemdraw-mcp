@@ -449,3 +449,37 @@ def test_sn1_carbokation_ist_trigonal_planar(halogenid):
     for label in ("Carbocation (intermediate)", "Nucleophilic attack"):
         step = next(s for s in steps if s.label == label)
         assert _winkel_am_kation(step) == pytest.approx([120, 120, 120], abs=3), label
+
+
+# --- Konkurrenz durch Eliminierung (Gutachter GELB, Etappe E2) -------------------------------
+
+
+@pytest.mark.parametrize("rt, smiles, erwartet", [
+    ("sn2", ["CC(C)I", "[OH-]"], "E2"),                  # sekundär + starke Base [OS-11.12]
+    ("sn2", ["CC(C)Br", "CC[O-]"], "E2"),                # sekundär + Alkoxid
+    ("sn2", ["CCBr", "CC(C)(C)[O-]"], "E2"),             # primär + sperriges tert-Alkoxid
+    ("sn1", ["CC(C)(C)I", "CC(C)O"], "E1"),              # tertiäres Kation mit β-H
+    ("sn1", ["CC(C)(C)Cl", "[N-]=[N+]=[N-]"], "E1"),
+    ("sn1", ["C[C@@H](Br)c1ccccc1", "O"], "E1"),         # Methyl-H am 1-Phenylethyl-Kation
+])
+def test_eliminierung_als_konkurrenz_wird_genannt(rt, smiles, erwartet):
+    """OpenStax 11.12 (Zusammenfassung SN1/SN2/E1/E2): sekundäre Halogenide mit starker Base
+    eliminieren nach E2; tertiäre Kationen verlieren nach E1 ein β-H. Clayden Kap. 17."""
+    from chemdraw_tool.mechanism_substrate import competition_notes
+
+    notes = competition_notes(rt, smiles)
+    assert len(notes) == 1 and erwartet in notes[0], notes
+
+
+@pytest.mark.parametrize("rt, smiles", [
+    ("sn2", ["CI", "[OH-]"]),                            # Methyl: kein β-H
+    ("sn2", ["CC(C)I", "[I-]"]),                         # sekundär, aber schwach basisch
+    ("sn2", ["CCCCCl", "[N-]=[N+]=[N-]"]),               # primär + Azid
+    ("sn1", ["ClC(c1ccccc1)(c1ccccc1)c1ccccc1", "O"]),   # Trityl: kein β-H
+    ("sn1", ["ClC(c1ccccc1)c1ccccc1", "CO"]),            # Benzhydryl: kein β-H
+    ("fischer_ester", ["CC(=O)O", "CCO"]),
+])
+def test_ohne_konkurrenz_kein_hinweis(rt, smiles):
+    from chemdraw_tool.mechanism_substrate import competition_notes
+
+    assert competition_notes(rt, smiles) == []
