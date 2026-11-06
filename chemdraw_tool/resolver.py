@@ -490,9 +490,22 @@ def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     Fehlgriffe; OPSIN und PubChem uneinig bei 7, PubChem richtig bei 6. Der
     siebte ist 'Glycin' — PubChems deutsches Synonym zeigt auf den Fotoentwickler;
     die englische Schreibweise bestätigt OPSIN. Kennt PubChem den Namen nicht
-    oder ist es nicht erreichbar, bleibt OPSINs Antwort (offline wie bisher).
+    oder ist es nicht erreichbar, bleibt OPSINs Antwort.
+
+    Salze (Nachbesserung nach Codex-Abnahme, gemessen an 22 Fällen): PubChem
+    führt "sodium phosphate" als Hydrogenphosphat-Anion (Ladung −2) und
+    Silikate in anderer Stöchiometrie; jede dieser Kippen war kohlenstofffrei,
+    jeder Gewinn organisch. Darum: ohne Kohlenstoff keine Gegenfrage — OPSIN
+    baut die Zusammensetzung aus dem Namen, wie vor Befund 2, und das spart den
+    Netzaufruf. Eine Ladungsregel (geladene PubChem-Antwort → OPSIN) wurde
+    gemessen und verworfen: sie deckt nichts über die Kohlenstoffregel hinaus ab
+    und kippt "diiodo-L-tyrosine" (PubChem: richtiges Gerüst als Anion, OPSIN:
+    N,N-Diiod) zurück auf den falschen Stoff.
     """
     if _SYSTEMATIC_MARK.search(name):
+        return opsin_smiles
+    opsin_mol = Chem.MolFromSmiles(opsin_smiles)
+    if opsin_mol is None or not any(a.GetAtomicNum() == 6 for a in opsin_mol.GetAtoms()):
         return opsin_smiles
     pubchem = _pubchem_lookup(name, report)
     opsin_key = _skeleton(opsin_smiles)

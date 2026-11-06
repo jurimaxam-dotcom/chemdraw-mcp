@@ -285,6 +285,66 @@ def test_name_with_locants_never_cross_checked(_opsin, mock_pubchem):
     mock_pubchem.assert_not_called()
 
 
+# Nachbesserung (Codex-Abnahme 06.11.): PubChem führt "sodium phosphate" als
+# Hydrogenphosphat-Anion (Ladung −2) und Silikate in anderer Stöchiometrie.
+# Gemessen an 22 Fällen: jede Salz-Kippe ist kohlenstofffrei, jeder Gewinn
+# organisch. Werte = echte Antworten von OPSIN/PubChem (06.11.2026).
+_SALZE = {
+    # Name: (OPSIN, PubChem, erwartet)
+    "sodium phosphate": (
+        "[O-]P(=O)([O-])[O-].[Na+].[Na+].[Na+]",
+        "[O-]P(=O)([O-])[O-].[Na+]",
+        "OPSIN",
+    ),
+    "calcium silicate": (
+        "[Si]([O-])([O-])([O-])[O-].[Ca+2].[Ca+2]",
+        "O[Si](O)(O)[O-].O[Si](O)(O)[O-].[Ca+2]",
+        "OPSIN",
+    ),
+    "sodium silicate": (
+        "[Si]([O-])([O-])([O-])[O-].[Na+].[Na+].[Na+].[Na+]",
+        "[O-][Si](=O)[O-].[Na+].[Na+]",
+        "OPSIN",
+    ),
+    "magnesium oxide": ("[O-2].[Mg+2]", "O=[Mg]", "OPSIN"),
+    # organisch, gleiches Muster wie Lauf 4 — hier muss PubChem gewinnen
+    "sodium calcium edetate": (
+        "C(N(CC(=O)[O-])CC(=O)O)CN(CC(=O)[O-])CC(=O)[O-].[Ca+2].[Na+]",
+        "C(CN(CC(=O)[O-])CC(=O)[O-])N(CC(=O)[O-])CC(=O)[O-].[Na+].[Na+].[Ca+2]",
+        "PubChem",
+    ),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_SALZE))
+def test_salt_cross_check_keeps_opsin_for_inorganic_names(name):
+    opsin, pubchem, wer = _SALZE[name]
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        assert resolve_name(name) == (opsin if wer == "OPSIN" else pubchem)
+
+
+def test_sodium_phosphate_stays_neutral_trisodium_salt():
+    """Abnahme 1: Na3PO4, Ladung 0, Gerüst RYFMWSXOAZQYPI."""
+    opsin, pubchem, _ = _SALZE["sodium phosphate"]
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        mol = Chem.MolFromSmiles(resolve_name("sodium phosphate"))
+    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+    assert CalcMolFormula(mol) == "Na3O4P"
+    assert Chem.GetFormalCharge(mol) == 0
+    assert Chem.MolToInchiKey(mol).startswith("RYFMWSXOAZQYPI")
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup", return_value="N[C@@H](Cc1cc(I)c(O)c(I)c1)C(=O)[O-]")
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value="IN([C@@H](CC1=CC=C(C=C1)O)C(=O)O)I")
+def test_charged_pubchem_answer_with_right_skeleton_still_wins(_opsin, _pubchem):
+    """Holdout 06.11.: PubChem führt Diiodtyrosin als Anion; OPSIN baut N,N-Diiod.
+    Eine Ladungsregel würde hier den falschen Stoff wählen — darum gibt es keine."""
+    smiles = resolve_name("diiodo-L-tyrosine")
+    assert Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)).startswith("NYPYHUZRZVSYKL")
+
+
 # --- Fehler-Diagnose: nicht gefunden vs. Netzproblem vs. Mischform ----------
 # Vorher warf JEDER Kaskaden-Ausfall dieselbe Meldung ("Use an English/IUPAC
 # name…") — bei Netzausfall schickt das den Nutzer auf eine aussichtslose
