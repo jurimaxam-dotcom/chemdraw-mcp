@@ -1,5 +1,40 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex nach Stereo-Audit (06.11.2026)
+
+**Nächster Schritt:** Opus-Kreuzabnahme zu `b67ceb7` beim Chef verfolgen; Auftrag/Bericht
+im Faden `20261106-140408-stereo-referenzen` (#4 Bericht). Nur auf konkreten Folgeauftrag
+nachbessern. Keine feste Wartefrist, eigenen laufenden Jobs, halbfertigen Edits oder roten Tests im Fix.
+
+- [x] `b67ceb7` gepusht: 711 Referenz-SMILES / 414 ursprüngliche Keys geprüft,
+  411 PubChem-Recordantworten und 3 dokumentierte 404. Vier Referenzen / fünf Eingaben
+  mit unabhängig bestätigter vollständiger Stereo korrigiert: Clindamycin, Cocaine,
+  Vitamin-B5-Pantothensäure (beide Sprachen), alpha,alpha-Trehalose. Nicotin bleibt unklar.
+- [x] Alter Clindamycin-Auditsatz berichtigt: Existenz eines partiellen ChEMBL-Keys
+  bestätigte keine vollständige Stereo. Alle Quellen/Entscheidungen im eigenen Evidence-Ordner.
+- [x] Reine Neuwertung eingefrorener Lauf-7-Antworten (`9b3cbbd`): **668/1/42 → 673/1/37**,
+  genau fünf rot→grün, 706 andere Zeilen und sämtliche Zeiten unverändert. Kein Resolverlauf.
+  Aktuelle Fixture: 711 Namen / 413 unterschiedliche Keys (cocaine und Kokain jetzt gleich).
+- [x] Datenprüfung fünf rot→fünf grün; alle 711 Referenz-SMILES schlüsselkonform.
+  Gate rc=0: **8213 passed / 16 skipped**, `/tmp/chemdraw-stereo-referenzen-gate.log`
+  (geteilter Baum mit fremdem Salzform-WIP). Eigene Leases freigegeben.
+- [x] Befund 3 abgenommen: Bericht `20261106-134101-abnahme-befund-3` #3,
+  eigener vollständiger Live-Lauf gegen damalige Fixture **668/1/42**, 8205/16 Gate grün;
+  Ergebnis unter `/tmp/chemdraw-befund3-abnahme-aktuelle-fixture.json`, danach als Lauf 7 übernommen.
+
+**Dateien/Beweise:** `tests/identity/stoffe-masse.json`,
+`docs/evidence/masse-eval-2026-11/stereo-referenzen/{README.md,audit.json,korrekturen.json,vergleich.json,lauf-7-neuwertung.json}`,
+`docs/evidence/masse-eval-2026-11/referenzkorrektur/referenz-audit.json` (Clindamycin-Berichtigung).
+Prüfmethode bei Daten-Nachbesserung: externe benannte Quelle + kompletter Key, RDKit-Zentren,
+Kompatibilität bekannter Stereo, Neuwertung gleicher Antworten; dann `./test.sh > log`, rc/Output berichten.
+Keine E/Z-/Atropisomerie-/Metallkoordinations-Vollprüfung oder neue Resolvermessung zugesagt.
+**Bekannte Grenze:** `masse_eval.py liste` kann partielle Quellobjekte erneut wählen;
+Regenerationsschutz war außerhalb der erlaubten Datenpfade, als Code-Folgepunkt beim Chef gemeldet.
+Fremdes Salzform-WIP in Resolver/Tests und dessen eingefrorenem Lauf nicht übernehmen.
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Neustart:** `HERDR_PANE_ID` fehlt bisher in dieser Laufzeit. Skript einmal aufrufen und tatsächlichen
+Fehler melden; keine fremde Pane wählen. Ältere Weiter-bei-Abschnitte unten sind historische Prüfstände.
+
 ## Weiter bei — Codex nach Befund 4, vor Kontext-Neustart (06.11.2026)
 
 **Nächster Schritt:** Kein eigener Folgeauftrag offen. Befund 4 (`530e9a9`) ist nach Kreuzabnahme
