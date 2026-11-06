@@ -1,5 +1,33 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex nach Befund 4, vor Kontext-Neustart (06.11.2026)
+
+**Nächster Schritt:** Kreuzabnahme zu `530e9a9` durch den vom Chef beauftragten Opus-Gutachter
+abwarten; Rückmeldung im Faden `20261106-115136-befund-4-referenzliste` lesen (eigener Bericht #3).
+Nur bei konkretem Folgeauftrag nachbessern. Keine eigene Wartefrist, laufenden Jobs oder halbfertigen Edits.
+Fremdes Befund-3-WIP (`resolver.py`, `tests/test_resolver.py`, Holdout und eingefrorener Lauf 5) nicht übernehmen.
+
+- [x] Befund 4 gebaut und gepusht: `530e9a9`, zwei unabhängig belegte Referenzkorrekturen,
+  Neubau-Regressionsschutz, atomarer 7-Tage-ChEMBL-Namenscache inkl. Refresh und Fehler-Recovery.
+- [x] 46 rote Fälle auditiert; keine weitere gesicherte Elternstoff-/Prodrug-/Salz-Verwechslung.
+  Reine Neuwertung derselben Lauf-5-Antworten: **664/1/46 → 666/1/44**; kein neuer Resolverlauf.
+- [x] Eigene Auswertungstests **10 passed**, alle acht neuen Tests rot bzw. per Mutation rot gesehen.
+  Vollständiges Gate rc=0: **8203 passed / 16 skipped**, `/tmp/chemdraw-befund4-gate.log`
+  (geteilter Baum enthielt zusätzlich fremdes Befund-3-WIP). Alle eigenen Datei-Leases freigegeben.
+- [x] Befund 2 Runde 3 abgenommen: `8978be7`, Hydrate/Edetat/Goldthiomalat live geprüft,
+  301 gespeicherte Vergleichspaare unabhängig ausgewertet, Gate **8189/16**;
+  Abschlussbericht `20261106-105531-abnahme-befund-2` #6, Hop-Limit erreicht, dort nicht mehr schreiben.
+
+**Dateien/Beweise:** `scripts/masse_eval.py` (`REFERENZ_KORREKTUREN`, `_chembl_namen`),
+`tests/identity/stoffe-masse.json`, `tests/test_masse_eval_identity.py`,
+`docs/evidence/masse-eval-2026-11/referenzkorrektur/README.md` und die dortigen Audit-/Laufdateien.
+Prüfmethode bei Änderungen: erst passende Regression rot, gezielte Tests, dann `./test.sh > log`, rc und
+Output berichten; keine Golden-/Snapshot-Anpassungen zugesagt. Metadaten-Cache warm 0,000293 s,
+Resultat wie alte Funktion; ganzer Bericht 28,322 s. Kaltaufrufe und PubChem bleiben netzabhängig.
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Neustart:** `HERDR_PANE_ID` fehlt hier weiterhin. Skript einmal aufrufen und Fehler melden;
+keine fremde Pane adressieren. Ältere Weiter-bei-Abschnitte unten sind historisch und kein neuer Bauauftrag.
+
 ## Weiter bei — Codex nach Kreuzabnahme Runde 2 (06.11.2026)
 
 **Nächster Schritt:** Erst bei neuem Tisch-Auftrag den Bericht der laufenden Runde 3 prüfen
