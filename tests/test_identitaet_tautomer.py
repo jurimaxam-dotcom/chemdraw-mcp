@@ -53,4 +53,7 @@ def test_tautomers_are_counted_apart_from_green_and_other_yellow():
         {"status": identitaet.GELB, "text": "Quelle weg (partial)"},
         {"status": identitaet.ROT},
     ]
-    assert identitaet.zaehlung(ergebnisse) == "1 grün · 1 gelb (Quelle/Luecke) · 1 gelb (Tautomer) · 1 rot (falscher Stoff/Fehler)"
+    assert identitaet.zaehlung(ergebnisse) == (
+        "1 grün · 1 gelb (Quelle/Luecke) · 1 gelb (Tautomer) · 0 gelb (E/Z fehlt) · "
+        "1 rot (falscher Stoff/Fehler)"
+    )

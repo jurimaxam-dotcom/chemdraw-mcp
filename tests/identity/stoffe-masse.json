@@ -4530,7 +4530,9 @@
    "formel": "C46H58N4O9",
    "gruppe": "Arzneistoff (WHO-EML)",
    "quelle": "wikidata:Q282629 + chembl:CHEMBL22969",
-   "smiles_referenz": "CC[C@@]1(C[C@@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O"
+   "smiles_referenz": "CC[C@@]1(C[C@@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+   "unsicher": true,
+   "notiz": "Widerspruch an einem Zentrum (Brückenkopf-CH der oberen Hälfte): ChEMBL CHEMBL159, FDA GSRS 5V9KLZ54CY, DrugBank DB00570, PDB-Ligand VLB führen JXLYSJRDGCGARV-CFWMRBGOSA-N; ChEBI 27375/KEGG D08675/Wikidata die Fixture-Form (Faden 20261106-222728)"
   },
   {
    "eingabe": "Vinblastin",
@@ -4539,7 +4541,9 @@
    "formel": "C46H58N4O9",
    "gruppe": "Arzneistoff (WHO-EML)",
    "quelle": "wikidata:Q282629 + chembl:CHEMBL22969",
-   "smiles_referenz": "CC[C@@]1(C[C@@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O"
+   "smiles_referenz": "CC[C@@]1(C[C@@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+   "unsicher": true,
+   "notiz": "Widerspruch an einem Zentrum (Brückenkopf-CH der oberen Hälfte): ChEMBL CHEMBL159, FDA GSRS 5V9KLZ54CY, DrugBank DB00570, PDB-Ligand VLB führen JXLYSJRDGCGARV-CFWMRBGOSA-N; ChEBI 27375/KEGG D08675/Wikidata die Fixture-Form (Faden 20261106-222728)"
   },
   {
    "eingabe": "vincristine",

@@ -42,6 +42,8 @@ bedeuten Verschiedenes, der InChIKey trennt sie schichtweise:
                (Hydrochlorid statt freier Base o. ä.; nur mit "smiles_referenz")
     tautomer — Skelett verschieden, aber Formel, /c und Kanontautomer gleich:
                GELB, eigene Zeile in der Zählung (nur mit "smiles_referenz")
+    ez_fehlt — Gerüst gleich, Ergebnis ohne Stereo, Referenz nur mit E/Z (/b):
+               GELB, eigene Zeile in der Zählung (nur mit "smiles_referenz")
 Einträge mit "unsicher": true (Referenzquellen widersprechen sich) werden
 bei Abweichung GELB, nie ROT.
 """
@@ -130,6 +132,13 @@ def pruefe(eintrag: dict) -> dict:
         referenz = eintrag.get("smiles_referenz")
         if art != "ladung" and referenz and gleicher_elternstoff(mol, referenz):
             art = "salz"
+        if art == "stereo" and referenz and nur_ez_fehlt(mol, referenz):
+            return {
+                "status": GELB,
+                "art": "ez_fehlt",
+                "erhalten": schluessel,
+                "text": f"E/Z der Referenz fehlt: {schluessel} statt {erwartet}",
+            }
         if art == "skelett" and referenz and gleiches_tautomer(mol, referenz):
             return {
                 "status": GELB,
@@ -211,15 +220,38 @@ def gleiches_tautomer(mol, referenz_smiles: str) -> bool:
         return False
 
 
+def _stereoschichten(mol) -> set[str]:
+    """Stereoschichten der Standard-InChI: b (Doppelbindung), t/m/s (Zentren)."""
+    return {s[0] for s in inchi.MolToInchi(mol).split("/")[2:] if s[:1] in "btms"}
+
+
+def nur_ez_fehlt(mol, referenz_smiles: str) -> bool:
+    """Ergebnis ohne Stereo, Referenz nur mit Doppelbindungsgeometrie (/b).
+
+    Sulfasalazin (06.11.2026): PubChem führt die Azo-Bindung ohne E/Z, ChEMBL,
+    ChEBI, FDA GSRS und Wikidata als E. Fehlt Zentrums- oder Ringstereo (/t),
+    bleibt es rot — Racemat statt R-Adrenalin, cis/trans-offene Tranexamsäure.
+    Der erste Key-Block ist hier schon gleich (art == "stereo").
+    """
+    referenz = Chem.MolFromSmiles(referenz_smiles)
+    if mol is None or referenz is None:
+        return False
+    try:
+        return not _stereoschichten(mol) and _stereoschichten(referenz) == {"b"}
+    except Exception:
+        return False
+
+
 def zaehlung(ergebnisse: list[dict]) -> str:
     """Zusammenfassungszeile; Tautomere gelb, aber getrennt gezählt."""
     rot = sum(e["status"] == ROT for e in ergebnisse)
     tautomer = sum(e["status"] == GELB and e.get("art") == "tautomer" for e in ergebnisse)
-    gelb = sum(e["status"] == GELB for e in ergebnisse) - tautomer
-    gruen = len(ergebnisse) - rot - gelb - tautomer
+    ez = sum(e["status"] == GELB and e.get("art") == "ez_fehlt" for e in ergebnisse)
+    gelb = sum(e["status"] == GELB for e in ergebnisse) - tautomer - ez
+    gruen = len(ergebnisse) - rot - gelb - tautomer - ez
     return (
         f"{gruen} grün · {gelb} gelb (Quelle/Luecke) · {tautomer} gelb (Tautomer) · "
-        f"{rot} rot (falscher Stoff/Fehler)"
+        f"{ez} gelb (E/Z fehlt) · {rot} rot (falscher Stoff/Fehler)"
     )
 
 
