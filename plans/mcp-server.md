@@ -169,7 +169,11 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   kein Produktcode. Nicotin bewusst unverändert. Faden geschlossen.
 **Danach:** `referenz-audit.json`: ≥ 10 weitere Einträge „Referenz bestätigt (ChEMBL-Key)“ mit derselben zu weiten Begründung wie Clindamycin prüfen · Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
 Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
-**Nächster Chef-Schritt:** Berichte Salzform/Stereo prüfen → Kreuzabnahme über Kreuz → Diff + Gate selbst → schließen.
+**Nächster Chef-Schritt (Stand 06.11. ~14:35, Chef-Kontext-Neustart):** einziger offener Bau-Faden `20261106-140408-befund-salzform`
+(Opus-Bauer, Session 1de8b073, rechter Split im Workspace w4W; Bericht kommt an diese Pane w4W:p6) → Bericht lesen → Codex-Kreuzabnahme in neuem
+Faden (Prüfmethode wie Befund 3: Hauptfälle live, Befund-2/3-Gegenproben, Holdout aus Einzelliste nachzählen, Lauf gegen aktuelle Fixture,
+Gate) → Chef: Diff lesen + `./test.sh > log; rc` selbst + Laufdatei mit json+Counter nachzählen → Faden + Pane schließen. Danach Folgepunkte
+aus **Danach:** vergeben (Audit-Begründungen + Regenerationsschutz an Codex; „gefunden als“ an Opus-Bauer).
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
