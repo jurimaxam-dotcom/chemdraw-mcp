@@ -573,8 +573,8 @@ _SALT_WORD = re.compile(
     r"(?i)hydro(?:chlorid|bromid|iodid)|chlorid|bromid|[ij]odid|sulfat|sulphat"
     r"|mesy?lat|mesilat|besy?lat|besilat|tosylat|maleat|fumarat|tartrat|citrat"
     r"|acetat|phosphat|nitrat|succinat|lactat|gluconat|natrium|sodium|kalium"
-    r"|potassium|calcium|kalzium|magnesium|lithium|ammonium|zink|zinc|eisen"
-    r"|iron|ferr|meglumin|salz|salt|hydrat"
+    r"|potassium|calcium|kalzium|magnesium|lithium|ammonium|zink|\beisen"
+    r"|ferr|meglumin|salz|hydrat|\b(?:iron|zinc|salt)\b"  # Buspiron ≠ iron, Ameisensäure ≠ Eisen
 )
 
 

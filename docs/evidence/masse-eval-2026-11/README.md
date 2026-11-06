@@ -272,8 +272,13 @@ genau **4**.
 | Tigecyclin | 2 Komp. (Hydrat) | 1 | keinen (Tautomer) |
 
 Die Zeile, die die Regel widerlegt hätte — direkt Salz, Variante frei, Referenz = Salz, Name ohne
-Salzwort — ist leer. Kein Name der Messung trägt ein Salzwort; der Salzwort-Schutz ist daher nur
-an Proben belegt (Tests unten), nicht an der Fixture.
+Salzwort — ist leer. Keiner der 4 Namen trägt ein Salzwort. 19 andere Namen der Messung tragen eins
+(Natriumperborat, Eisengluconat, Calciumcarbonat …), erreichen die Zeile aber nie: gleiche
+Komponentenzahl in beiden Formen oder Variante unbekannt. Der Salzwort-Schutz ist daher nur an Proben
+belegt (Tests unten). Über alle 711 Fixture-Eingaben trifft `_SALT_WORD` 35 Namen — echte Salz-/Ester-
+namen (Kaliumchlorid, Medroxyprogesteronacetat, Isosorbiddinitrat …); ein Fehltreffer hält nur das
+heutige Verhalten. Erste Fassung traf „Buspiron"/„Spironolacton" (*iron*) und „Ameisensäure" (*eisen*):
+jetzt Wortgrenzen, Test `test_salt_word_needs_a_whole_word_for_iron_zinc_salt`.
 
 **Regel** (`_pubchem_checked`, nach dem Stammvergleich aus Befund 3): gleiches Stammmolekül, Variante
 **eine** Komponente, Direkttreffer mehrere, und der Name nennt kein Gegenion (`_SALT_WORD`: hydrochlorid,
@@ -283,9 +288,8 @@ Gegenionen Information (Edetat, Goldthiomalat). Kein Stoffname verdrahtet.
 
 **Tests** (`tests/test_resolver.py`): `test_name_without_salt_word_gets_the_free_form` (Bendamustin,
 Phenelzin, echte PubChem-SMILES) rot vor dem Fix; ersetzt den Pin `test_salt_form_of_the_direct_hit_is_kept_too`.
-`test_name_with_salt_word_keeps_the_salt` (7 Namen). Mutationen: M1 keine Salzregel → 2 rot; M2 kein
-Salzwort-Schutz → 5 rot (Bendamustinhydrochlorid, Phenelzinsulfat, Natriumcitrat, Kaliumcitrat,
-Docusat-Natrium); M3 Stammvergleich weg → 2 rot (Ephedrin, Risperidon).
+`test_name_with_salt_word_keeps_the_salt` (10 Namen, 3 davon ohne Variante — dort greift die Regel ohnehin nicht). Mutationen: M1 keine Salzregel → 2 rot; M2 kein
+Salzwort-Schutz → 7 rot (alle 7 Proben mit Variante); M3 Stammvergleich weg → 2 rot (Ephedrin, Risperidon).
 
 | | Lauf 7 | Lauf 8 |
 |---|---|---|
@@ -297,7 +301,9 @@ Docusat-Natrium); M3 Stammvergleich weg → 2 rot (Ephedrin, Risperidon).
 Lauf 8 lief gegen die Fixture-Fassung von `530e9a9` (wie Lauf 7, `shasum` gleich), damit nur die
 Salzregel den Unterschied macht; `identitaet.md` ist gegen dieselbe Fassung erzeugt. Die Stereo-Referenzen
 aus `b67ceb7` (Codex, landete während des Laufs; Lauf-7-Neuwertung dort 673/1/37) sind nicht drin —
-Bendamustin berühren sie nicht.
+Bendamustin berühren sie nicht. **Lauf 8 nachbewertet gegen `b67ceb7`: 674 grün · 1 gelb · 36 rot**
+(offline aus den `erhalten`-Schlüsseln der roten Fälle, kein zweiter Netzlauf; die 5 geänderten Referenzen
+waren in Lauf 8 alle rot und werden grün = 673/1/37 aus Codex' Lauf-7-Neuwertung + Bendamustin).
 
 **Holdout** (`holdout_pubchem_check.py`, 553 im Geltungsbereich): 539 richtig wie vorher,
 **1 behoben (Phenelzin), 0 gekippt**, 13 weiter falsch. Tigecyclin wechselt vom Hydrat zur wasserfreien

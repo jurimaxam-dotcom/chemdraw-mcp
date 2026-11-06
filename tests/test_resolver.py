@@ -974,9 +974,18 @@ def test_name_without_salt_word_gets_the_free_form(_opsin, name):
     assert calls == [name, variante]
 
 
+@pytest.mark.parametrize("name", ["Buspiron", "Spironolacton", "Tandospiron", "Bendamustin",
+                                  "Phenelzin", "Salbutamol", "Ameisensäure"])
+def test_salt_word_needs_a_whole_word_for_iron_zinc_salt(name):
+    """"-iron" (Buspiron, Spironolacton) ist kein Eisen — sonst blockiert der
+    Schutz die Salzregel für jeden solchen INN."""
+    assert not resolver._SALT_WORD.search(name)
+
+
 @pytest.mark.parametrize("name", [
     "Bendamustinhydrochlorid", "bendamustine hydrochloride", "Phenelzinsulfat",
     "Natriumcitrat", "sodium citrate", "Kaliumcitrat", "Docusat-Natrium",
+    "Eisengluconat", "iron sucrose", "zinc oxide",
 ])
 @patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
 def test_name_with_salt_word_keeps_the_salt(_opsin, name):
