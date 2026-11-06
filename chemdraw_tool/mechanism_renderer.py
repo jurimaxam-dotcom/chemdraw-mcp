@@ -258,7 +258,13 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
     for i in partial_idx:
         atom = mol.GetAtomWithIdx(i)
         if atom.GetAtomicNum() == 6:  # Nitril-C ohne Ladung bliebe ein unbeschriftetes Linienende
-            atom.SetProp("_displayLabel", "C")
+            # Zentrum mit H (ÜZ, primär/sekundär): „CH₂“/„CH“, H auf der bindungsfreien Seite
+            n_h = atom.GetTotalNumHs()
+            h = ("H" + (f"<sub>{n_h}</sub>" if n_h > 1 else "")) if n_h else ""
+            conf = mol.GetConformer() if mol.GetNumConformers() else None
+            right = conf is not None and any(
+                conf.GetAtomPosition(n.GetIdx()).x - conf.GetAtomPosition(i).x > 0.3 for n in atom.GetNeighbors())
+            atom.SetProp("_displayLabel", f"{h}C" if right else f"C{h}")
 
     def render() -> rdMolDraw2D.MolDraw2DSVG:
         drawer = rdMolDraw2D.MolDraw2DSVG(max(width, CANVAS_W), max(height, CANVAS_H))
@@ -675,7 +681,10 @@ def render_step(
     Der Datensatz steht zusätzlich im SVG (`data-geometry` an der Overlay-Gruppe), damit ihn
     der Geometrie-Test auch hinter `generate_mechanism` erreicht.
     """
-    d = _draw(mols, width, height, partial=tuple(step.partial_charges))
+    # Atome an Teilbindungen behalten ihr Symbol: das primäre ÜZ-Zentrum war sonst ein
+    # unbeschriftetes Strichende zwischen zwei Teilbindungen (Gutachter E2) — so steht „CH₂“ da
+    marked = tuple(dict.fromkeys([*step.partial_charges, *(m for b in step.partial_bonds for m in b)]))
+    d = _draw(mols, width, height, partial=marked)
     overlay: list[str] = []
     arrows = []
     extent_pts = list(d.atom_pts)

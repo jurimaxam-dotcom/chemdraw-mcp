@@ -559,11 +559,11 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
         ),
         MechanismStep(
             label="Nucleophilic attack",
-            molecules=[_smi(cation), _smi(nuc_m)],
+            molecules=[_smi(cation), _smi(nuc_m), _smi(halide)],  # X⁻ läuft mit (Ladung 0 je Bild)
             arrows=[CurvedArrow(source=(NU, "lone_pair"), target=(C, "atom"), style="full")],
             # Nachbar schräg nach unten: RDKit setzt die Ladung oben rechts an das angreifende Atom,
             # eine waagrechte Bindung nach rechts lief durch das „⁻“ von C⁻≡N (Kontaktbogen 05.11.)
-            anchors=[planar, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0)],
+            anchors=[planar, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0), {}],
         ),
         *last,
     ]
@@ -712,7 +712,8 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
             anchors=[{**ester_anchor, H_PLUS: (o2[0] * 2.0, o2[1] * 2.0)}, base_high, {}],
         ),
         MechanismStep(
-            label="Products", molecules=[_smi(ester), _smi(water), _smi(base_end)],
+            # ROH₂⁺ ist das zurückgebildete Katalysator-H⁺, im Alkohol gelöst (Gutachter E2)
+            label="Products (ROH₂⁺ = catalyst H⁺)", molecules=[_smi(ester), _smi(water), _smi(base_end)],
             anchors=[ester_anchor, {}, {}], arrows=[],
         ),
     ]
@@ -836,7 +837,7 @@ def _deprotonate(mol: Chem.Mol) -> Chem.Mol:
 # - SN2: sekundäres Halogenid + starke Base (OH⁻, RO⁻) → E2; sperriges tert-Alkoxid → E2 auch primär
 # - SN1: das Kation verliert ein β-H → E1, sobald ein sp³-Nachbar-C ein H trägt (nicht bei Trityl,
 #   Benzhydryl: deren Nachbarn sind Aromaten)
-E2_NOTE = ("E2 elimination competes: a strong base such as OH⁻ or RO⁻ also removes a β-hydrogen from a "
+E2_NOTE = ("E2 elimination competes and is often the main pathway: a strong base such as OH⁻ or RO⁻ also removes a β-hydrogen from a "
            "secondary halide and gives an alkene. Only the substitution is drawn.")
 E2_BULKY_NOTE = ("E2 elimination competes: a bulky base such as tert-butoxide removes a β-hydrogen even "
                  "from a primary halide and mostly gives the alkene. Only the substitution is drawn.")

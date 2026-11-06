@@ -226,3 +226,13 @@ def test_abkuerzung_behaelt_den_cip_deskriptor():
     p = generate_mechanism("sn2", ["CCCCCC[C@@H](C)Br", "[OH-]"])
     assert "CIP_Code" in p.steps[0].svg and "CIP_Code" in p.steps[-1].svg
     assert p.steps[-1].label.endswith("(S)")
+
+
+def test_primaeres_zentrum_im_uebergangszustand_ist_beschriftet():
+    """Gutachter E2: beim primären Substrat endeten beide Teilbindungen vor einem unbeschrifteten
+    Strichende — das Zentrum muss als CH₂ dastehen wie das sekundäre als CH."""
+    from chemdraw_tool.mechanism_renderer import geometry_of
+    from chemdraw_tool.server import generate_mechanism
+
+    ts = generate_mechanism("sn2", ["CCBr", "[I-]"]).steps[1]
+    assert "1" in geometry_of(ts.svg)["boxes"], "Zentrum C (Map 1) ohne Beschriftung"

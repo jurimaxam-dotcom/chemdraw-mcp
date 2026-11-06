@@ -250,7 +250,7 @@ def test_fischer_folgt_clayden_mit_protonentransfer():
         "Protonation of an OH group",
         "Loss of water",
         "Deprotonation (catalyst regenerated)",
-        "Products",
+        "Products (ROH₂⁺ = catalyst H⁺)",
     ]
     for step in steps:
         for smi in step.molecules:
@@ -483,3 +483,21 @@ def test_ohne_konkurrenz_kein_hinweis(rt, smiles):
     from chemdraw_tool.mechanism_substrate import competition_notes
 
     assert competition_notes(rt, smiles) == []
+
+
+def test_sn1_angriffsschritt_behaelt_das_halogenid():
+    """Gutachter E2: in „Nucleophilic attack“ fehlte X⁻ — das Bild trug +1, alle anderen 0."""
+    steps = build_steps("sn1", ["CC(C)(C)Cl", "O"])
+    angriff = next(s for s in steps if s.label == "Nucleophilic attack")
+    assert _canon("[Cl-]") in [_plain(s) for s in angriff.molecules]
+
+
+def test_fischer_produkt_nennt_das_katalysator_proton():
+    """Gutachter E2: ROH₂⁺ am Ende ist das zurückgebildete H⁺ — das Label sagt es."""
+    assert build_steps("fischer_ester", ["CC(=O)O", "CCO"])[-1].label == "Products (ROH₂⁺ = catalyst H⁺)"
+
+
+def test_e2_hinweis_nennt_e2_als_hauptweg():
+    from chemdraw_tool.mechanism_substrate import competition_notes
+
+    assert "often the main pathway" in competition_notes("sn2", ["CC(C)I", "[OH-]"])[0]
