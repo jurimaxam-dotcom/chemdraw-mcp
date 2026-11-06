@@ -57,6 +57,47 @@ Wikidata. Ergebnis 05.11.: 133 mit Variante → **121 gleich · 1 Stereo (Nicoti
 0 anderer Stoff** · 11 unbekannt; 44 ohne Variante. Offen: das Ergebnis sagt dem Nutzer nicht, dass
 über die englische Schreibweise gefunden wurde.
 
+## Lauf 3 → Fix → Lauf 4 (Identität, 06.11.2026)
+
+Befund 2: OPSIN gewann vor PubChem und zerlegte Trivialnamen systematisch — „tropic-amide“
+(Tropasäureamid), „methyl-dopa“ (N-Methyl-DOPA), „chloro-xylen-ol“ (nicht-aromatischer Ring),
+„methyl-thioninium“ (Thiepinium-Ring). **Messung vor dem Fix** über alle 233 OPSIN-Treffer aus
+`stoffe-masse.json` und `stoffe.json`: 226 richtiges Gerüst, 7 falsch (davon fumaric acid ein
+Referenzfehler). Ein Trennmerkmal im Namen gibt es nicht — 225 der 233 Treffer tragen keine Ziffer,
+darunter alle Fehlgriffe und 218 richtige. Gegenprobe PubChem: Gerüst uneinig bei 7, PubChem richtig
+bei 6; der siebte ist **Glycin** (PubChems deutsches Synonym zeigt auf den Fotoentwickler
+N-(4-Hydroxyphenyl)glycin, OPSIN hat recht). Tiebreak gemessen an allen 7: PubChems Synonymliste
+der OPSIN-Struktur trennt nicht (Glycine führt „Glycin“ nicht), die englische Schreibweise
+(`english_variant`: Glycin → Glycine) trennt 7/7.
+
+Fix `41da7c4` (`_opsin_checked` in `chemdraw_tool/resolver.py`): Name mit Lokanten (Ziffer, Klammer,
+`N,N-`/`O-`/`o-`/`m-`/`p-`) → OPSIN offline wie bisher, nie ins Netz. Sonst PubChem gegenfragen; nur
+ein anderes Gerüst (erster InChIKey-Block) zählt; bestätigt die englische Schreibweise OPSIN, bleibt
+OPSIN; sonst gewinnt PubChems Record. Kennt PubChem den Namen nicht oder ist offline → OPSIN.
+
+| | Lauf 3 | Lauf 4 (mit `41da7c4`) |
+|---|---|---|
+| Ergebnis | 658 grün · 1 gelb · 52 rot | **664 grün · 1 gelb · 46 rot** |
+| rot „skelett“ / „salz“ | 17 / 3 | 12 / 2 |
+| Laufzeit | 12 min, Median 0,51 s | 13 min, Median 0,54 s |
+| Median der 222 OPSIN-Eingaben | 0,0 s (offline) | **0,5 s** (ein PubChem-Aufruf mehr) |
+| Dateien | `identitaet-lauf-3-vor-opsin-check.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Übergänge: 658 grün→grün (**kein grüner Fall gekippt**), 6 rot→grün (chloroxylenol, methyldopa,
+methylthioninium chloride, sodium calcium edetate, tropicamide, Tropicamid), 46 rot→rot. Der Preis
+ist die Latenz: ein Trivialname, den OPSIN kennt („ethanol“), kostet jetzt einen PubChem-Aufruf
+(~0,5 s) statt 0,0 s; offline bleibt er so schnell wie vorher.
+
+**Überanpassung geprüft (Holdout).** `holdout_opsin_check.py` nimmt Wikidata-Arzneistoffe mit
+ATC-Code (≥ 15 Wikipedia-Sprachen, genau ein InChIKey), die in keiner der beiden Listen stehen:
+1119 Stoffe, davon 131 mit OPSIN-Treffer. Ergebnis 06.11.: **116 gleich und richtig · 10 neu behoben**
+(u. a. chlorobutanol, diethyltoluamide, aminocaproic acid, aminophenazone, magnesium oxide) ·
+**1 gekippt** · 4 vorher wie nachher falsch (Salze/Komplexe: aluminium chlorohydrate, sodium chlorite,
+iron(II) gluconate, magnesium citrate). Gekippt ist **calcium silicate**: OPSIN baut Ca₂SiO₄
+(= Wikidata), PubChems Record zum Namen ist Ca(H₃SiO₄)₂ — anorganische Stöchiometrie, die Quellen
+modellieren verschieden. Bewusst nicht wegjustiert (eine Regel für einen Holdout-Fall wäre die
+Überanpassung, die der Holdout messen soll).
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:

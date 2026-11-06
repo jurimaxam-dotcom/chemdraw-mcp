@@ -827,20 +827,9 @@ def ph_pruefen(_: argparse.Namespace) -> int:
 PROTOKOLL = EVIDENZ / "identitaet-lauf.json"
 
 # Handdeutung einzelner Fälle (Eingabe → Satz), nach Sichtung des Laufs.
+# Die vier OPSIN-Fehlgriffe (chloroxylenol, methyldopa, methylthioninium chloride,
+# tropicamide) sind seit Lauf 4 grün — ihre Deutung steht im eingefrorenen Lauf 3.
 IDENT_DEUTUNG: dict[str, str] = {
-    "chloroxylenol": (
-        "OPSIN (0,0 s, offline) zerlegt den Trivialnamen systematisch in chloro-xylen-ol und baut "
-        "ein nicht-aromatisches Cyclohexadienol (CC1C(=CC=CC1(C)O)Cl) — gemeint ist PCMX, "
-        "4-Chlor-3,5-dimethylphenol. OPSIN gewinnt vor PubChem, darum fragt niemand nach."
-    ),
-    "methyldopa": (
-        "OPSIN (offline, 0,0 s) liest 'methyl' + 'dopa' als N-Methyl-L-DOPA (CN[C@H](C(=O)O)…); "
-        "Methyldopa ist α-Methyl-DOPA. Zweiter OPSIN-Fehlgriff bei einem Trivialnamen."
-    ),
-    "methylthioninium chloride": (
-        "OPSIN baut aus 'methyl-thioninium' einen Methylthiepinium-Ring ([Cl-].CC=1[SH+]C=CC=CC=CC1) "
-        "statt Methylenblau — dritter OPSIN-Fehlgriff, wieder offline in 0,0 s."
-    ),
     "Bendamustin": "PubChem führt den deutschen Namen beim Hydrochlorid — Salz statt Wirkstoff.",
     "(−)-Ephedrin": (
         "PubChem selbst ordnet das Synonym '(−)-Ephedrin' CID 104213 zu (1-Brom-3-methyl-5-nitrobenzol; "
@@ -850,11 +839,6 @@ IDENT_DEUTUNG: dict[str, str] = {
     "Prussian blue": "Eisen-Cyanid-Gerüst; Wikidata und PubChem modellieren den Komplex verschieden — kein Zeichenfall.",
     "Berliner Blau": "wie Prussian blue.",
     # Nachgeprüft 05.11. per PubChem-Titel beider InChIKeys (erwartet vs. erhalten):
-    "tropicamide": (
-        "OPSIN (0,0 s, offline) liest 'tropic-amide' und baut das Amid der Tropasäure "
-        "(C(C(CO)c1ccccc1)(=O)N) — vierter OPSIN-Fehlgriff bei einem Trivialnamen."
-    ),
-    "Tropicamid": "wie tropicamide (OPSIN).",
     "Risperidon": (
         "PubChem führt den deutschen Namen als eigenes Record CID 44402564 (C23H29FN4O2, Dihydro-Form); "
         "per curl auf /compound/name/Risperidon/cids nachgeprüft. Synonymfehler bei PubChem, wie (−)-Ephedrin."

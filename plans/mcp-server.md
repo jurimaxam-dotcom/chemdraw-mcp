@@ -75,9 +75,16 @@ Befund 4 Referenzliste (fumaric acid → Q139857, tenofovir disoproxil) · Kann 
   121 gleich · 1 Stereo · **0 anderer Stoff**. Bericht: `docs/evidence/masse-eval-2026-11/README.md` § Lauf 2 → Fix → Lauf 3.
 - [ ] Kann: Ergebnis vermerkt „gefunden als *Dexamethasone*“ (Payload + Tool-Snapshot, eigener Schritt).
 
-**Nächster Schritt:** Befund 2 — OPSIN zerlegt Trivialnamen (chloroxylenol, methyldopa, methylthioninium chloride, tropicamide):
-OPSIN-Treffer gegen PubChem gegenprüfen oder OPSIN nur für systematische Namen. Liste der Befunde 2–5 im Abschnitt
-„Release-Klick 0.8.0 … Masse-Eval“ unten. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+- [x] **Befund 2 (OPSIN zerlegt Trivialnamen)** — `41da7c4`: `_opsin_checked` in `resolver.py` — Name mit Lokanten bleibt
+  offline, sonst PubChem gegenfragen, anderes Gerüst → PubChem; Tiebreak englische Schreibweise (Glycin); offline → OPSIN.
+  Messung vorab: 233 OPSIN-Treffer, kein Trennmerkmal im Namen, uneinig 7, PubChem richtig 6. Tests: 1 rot → grün, Mutation
+  (Tiebreak/Lokant-Regel aus) → 4 failed; Gate rc=0 (8059 passed). Lauf 4: **664 grün · 1 gelb · 46 rot** (Lauf 3 eingefroren als
+  `identitaet-lauf-3-vor-opsin-check.*`), 6 rot→grün, kein grüner Fall gekippt; Median der OPSIN-Eingaben 0,0 → 0,5 s.
+  Holdout `holdout_opsin_check.py` (131 OPSIN-Treffer aus 1119 ATC-Stoffen außerhalb der Listen): 10 behoben · **1 gekippt
+  (calcium silicate, anorganische Stöchiometrie)** · 116 gleich. Bericht: `docs/evidence/masse-eval-2026-11/README.md` § Lauf 3 → Fix → Lauf 4.
+
+**Nächster Schritt:** Befund 3 (PubChem-Synonymfehler, Formel-Plausibilität) laut Warteschlange im Abschnitt Orchestrierung.
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
 ## Weiter bei — Dependabot + rdkit 2026.9 + README-Politur erledigt (Session 8b06750a, 05.11.2026 23:00)
 
