@@ -2,9 +2,9 @@
 
 Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (414 Stoffe): 668 grün · 1 gelb · 42 rot.**
+**711 Eingaben (414 Stoffe): 669 grün · 1 gelb · 41 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 14 min · Median 0.6 s · 90 % ≤ 4.3 s · langsamste 9.3 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 14 min · Median 0.6 s · 90 % ≤ 4.4 s · langsamste 12.2 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
@@ -13,7 +13,7 @@ Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-mass
 | stereo | 23 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | nicht aufgelöst | 9 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
 | skelett | 8 | anderes Gerüst — falscher Stoff |
-| salz | 2 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
+| salz | 1 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
 
 Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 
@@ -78,7 +78,6 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 
 | Eingabe | Sprache | erwartet | erhalten | ChEMBL-Name des Erhaltenen | Deutung |
 |---|---|---|---|---|---|
-| Bendamustin | de | `YTKUWDBFDASYHO-UHFFFAOYSA-N` | `ZHSKUOZOLHMKEA-UHFFFAOYSA-N` | bendamustine hydrochloride | PubChem führt den deutschen Namen beim Hydrochlorid — Salz statt Wirkstoff. |
 | Docusat | de | `APSBXTVYXVQYAB-UHFFFAOYSA-M` | `HNSDLXPSAYFUHK-UHFFFAOYSA-N` | docusate | Seit Lauf 3 über die englische Schreibweise 'Docusate' gefunden: PubChem liefert die freie Sulfonsäure (C20H38O7S), Wikidata erwartet das Natrium-Anion. Gleicher Wirkstoff, kein falscher Stoff. |
 
 ## Gelb
@@ -91,13 +90,13 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| Zoledronsäure | 9.3 | gruen |
-| Phthalsäure | 9.2 | gruen |
-| Levofolinsäure | 9.1 | gruen |
-| 4-Aminosalicylsäure | 9.0 | gruen |
+| Amidotrizoesäure | 12.2 | gruen |
+| Acrylsäure | 9.4 | gruen |
+| γ-Aminobuttersäure | 9.3 | gruen |
+| Malonsäure | 9.1 | gruen |
+| 4-Aminosalicylsäure | 9.1 | gruen |
+| Zoledronsäure | 8.9 | gruen |
 | Nicotinsäure | 8.8 | gruen |
-| Maleinsäure | 8.8 | gruen |
-| Acrylsäure | 8.8 | gruen |
-| Amidotrizoesäure | 8.7 | gruen |
-| Malonsäure | 8.5 | gruen |
-| γ-Aminobuttersäure | 8.5 | gruen |
+| Pantothensäure | 8.6 | rot |
+| Maleinsäure | 8.5 | gruen |
+| meso-Dimercaptobernsteinsäure | 8.3 | gruen |

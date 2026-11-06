@@ -942,11 +942,52 @@ def test_salt_form_of_the_variant_is_no_correction(_opsin):
     assert calls == ["Centrophenoxin", "Centrophenoxine"]
 
 
+# Salzform-Befund (06.11.2026): Ein INN ohne Salzwort meint den freien Stoff.
+# PubChem führt "Bendamustin" als Hydrochlorid (CID 77082), "Phenelzin" als
+# Sulfat (CID 61100); die englische Variante trifft jeweils die freie Base
+# (CID 65628, 3675) — dieselbe, die Wikidata als Referenz führt. Gleiches
+# Stammmolekül, verschieden viele Komponenten → die Form ohne Gegenion.
+# Werte = echte PubChem-Antworten vom 06.11.2026.
+_SALZFORM = {
+    # Eingabe: (Variante, PubChem für Eingabe, PubChem für Variante)
+    "Bendamustin": (
+        "Bendamustine",
+        "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O.Cl",
+        "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O",
+    ),
+    "Phenelzin": (
+        "Phenelzine",
+        "C1=CC=C(C=C1)CCNN.OS(=O)(=O)O",
+        "C1=CC=C(C=C1)CCNN",
+    ),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_SALZFORM))
 @patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-def test_salt_form_of_the_direct_hit_is_kept_too(_opsin):
-    """Bendamustin: direkt HCl-Salz, Variante freie Base → auch hier keine Korrektur
-    (die Salzform ist ein eigener Befund, nicht Befund 3)."""
-    base = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O"
-    lookup, _ = _pubchem_table({"Bendamustin": base + ".Cl", "Bendamustine": base})
+def test_name_without_salt_word_gets_the_free_form(_opsin, name):
+    """INN ohne Salzwort, PubChem direkt = Salz, Variante = freie Base → freie Base."""
+    variante, direkt, frei = _SALZFORM[name]
+    lookup, calls = _pubchem_table({name: direkt, variante: frei})
     with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
-        assert resolve_name("Bendamustin") == base + ".Cl"
+        assert resolve_name(name) == frei
+    assert calls == [name, variante]
+
+
+@pytest.mark.parametrize("name", [
+    "Bendamustinhydrochlorid", "bendamustine hydrochloride", "Phenelzinsulfat",
+    "Natriumcitrat", "sodium citrate", "Kaliumcitrat", "Docusat-Natrium",
+])
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_name_with_salt_word_keeps_the_salt(_opsin, name):
+    """Nennt der Name das Gegenion, ist das Salz gemeint — auch wenn die
+    Variante (zufällig) die freie Form trifft."""
+    salz = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O.Cl"
+    frei = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O"
+    variante = resolver._spelling_variant(name)
+    table = {name: salz}
+    if variante:
+        table[variante] = frei
+    lookup, _ = _pubchem_table(table)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name(name) == salz

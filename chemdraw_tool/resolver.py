@@ -567,6 +567,22 @@ def _parent_skeleton(smiles: str | None) -> str | None:
     return Chem.MolToInchiKey(parent).split("-")[0]
 
 
+# Wörter, mit denen ein Name selbst ein Gegenion oder eine Salzform nennt —
+# auch angehängt ("Bendamustinhydrochlorid"). Dann ist das Salz gemeint.
+_SALT_WORD = re.compile(
+    r"(?i)hydro(?:chlorid|bromid|iodid)|chlorid|bromid|[ij]odid|sulfat|sulphat"
+    r"|mesy?lat|mesilat|besy?lat|besilat|tosylat|maleat|fumarat|tartrat|citrat"
+    r"|acetat|phosphat|nitrat|succinat|lactat|gluconat|natrium|sodium|kalium"
+    r"|potassium|calcium|kalzium|magnesium|lithium|ammonium|zink|zinc|eisen"
+    r"|iron|ferr|meglumin|salz|salt|hydrat"
+)
+
+
+def _components(smiles: str) -> int:
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    return len(Chem.GetMolFrags(mol)) if mol is not None else 0
+
+
 def _pubchem_checked(name: str, smiles: str, report: list) -> str:
     """PubChem-Direkttreffer gegen die Schreibvariante desselben Namens prüfen.
 
@@ -580,15 +596,28 @@ def _pubchem_checked(name: str, smiles: str, report: list) -> str:
     mit ihnen kippte der Holdout Centrophenoxin auf das HCl-Salz der Variante.
     Kennt PubChem die Variante nicht oder ist das Netz weg, bleibt der
     Direkttreffer. Preis: ein Aufruf mehr, nur für Namen mit Variante.
+
+    Salzform-Befund (06.11.2026): Gleiches Stammmolekül, aber der Direkttreffer
+    ist ein Salz und die Variante der freie Stoff ("Bendamustin" → HCl,
+    "Phenelzin" → Sulfat) → die freie Form, denn ein INN ohne Salzwort meint
+    den Stoff selbst. Nennt der Name ein Gegenion (_SALT_WORD), bleibt das Salz.
+    Umgekehrt (Centrophenoxin: direkt frei, Variante HCl) bleibt der
+    Direkttreffer — die Regel wählt nur die Form ohne Gegenion.
     """
     variant = _spelling_variant(name)
     if variant is None:
         return smiles
     other = _pubchem_lookup(variant, report)
-    if _parent_skeleton(other) in (None, _parent_skeleton(smiles)):
+    other_parent = _parent_skeleton(other)
+    if other_parent is None:
         return smiles
-    logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
-    return other
+    if other_parent != _parent_skeleton(smiles):
+        logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
+        return other
+    if _components(other) == 1 < _components(smiles) and not _SALT_WORD.search(name):
+        logger.info("PubChem gives %r as a salt, %r as the free form — using the free form", name, variant)
+        return other
+    return smiles
 
 
 def _transliterate(name: str) -> str | None:

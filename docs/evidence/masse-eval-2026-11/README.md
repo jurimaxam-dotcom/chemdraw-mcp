@@ -244,8 +244,67 @@ Rückfallpfad über `english_variant` ist unverändert.
 **Lauf 7: 668 grün · 1 gelb · 42 rot (Befund 3 + Referenzkorrektur Befund 4)** — derselbe Code (`052d3fe`)
 gegen die aktuelle Fixture (`530e9a9`); Protokoll aus Codex' Kreuzabnahme (Faden `20261106-134101`).
 Gegenüber Lauf 6 ändern sich genau die zwei korrigierten Referenzen (fumaric acid, tenofovir disoproxil:
-rot → grün). Lauf 6 eingefroren als `identitaet-lauf-6-vor-referenzkorrektur.{json,md}`; `identitaet-lauf.json`
-und `identitaet.md` sind jetzt Lauf 7.
+rot → grün). Lauf 6 eingefroren als `identitaet-lauf-6-vor-referenzkorrektur.{json,md}`.
+
+## Lauf 7 → Fix → Lauf 8 (Salzform, 06.11.2026)
+
+**Diagnose.** „INN ohne Salzwort → PubChem liefert das Salz" ist kleiner als vermutet. PubChem
+(`/compound/name/<n>/property/Title,MolecularFormula,InChIKey,SMILES/JSON`):
+
+| Eingabe | PubChem direkt | englische Variante | Referenz (Wikidata) | Klasse |
+|---|---|---|---|---|
+| Bendamustin | CID 77082 Bendamustine Hydrochloride, C₁₆H₂₂Cl₃N₃O₂ | „bendamustine" → CID 65628, freie Base | freie Base YTKUWDBF… | **Salzform** |
+| Phenelzin (Holdout) | CID 61100 Phenelzine Sulfate | „phenelzine" → CID 3675, freie Base | freie Base RMUCZJUI… | **Salzform** |
+| Carboplatin | CID 426756, beide Schreibweisen gleich (`[NH2-]`/`[Pt+2]`-Darstellung) | dieselbe | OLESAACU…-L | nicht Salzform: Komplex-Darstellung |
+| Doxycyclin/doxycycline | CID 54671203, beide gleich, Carboximidsäure | dieselbe | JBIWCJUY… | nicht Salzform: Tautomer (wie Minocyclin, Oxytetracyclin, Tigecyclin, Chlortetracyclin im Holdout) |
+| Hydroxycobalamin | CID 16056828 (C₆₂H₉₀, -L) | „Hydroxocobalamin" wäre CID 44475014 (-K) | -K | nicht Salzform: Schreibweise Hydroxy-/Hydroxo-, `english_variant` erreicht sie nicht |
+| Docusat | kein Treffer | — | Docusat-**Natrium** (-M) | umgekehrte Richtung, `identitaet.md` führt es als `salz`; nicht auf diesem Weg |
+
+**Messung** (`salzform_mess.py` → `salzform_mess.json`, alle 692 Namen auf dem PubChem-direkt-Weg mit Variante: 139 aus der Fixture,
+553 Holdout; 116 davon Variante unbekannt). Gleiches Stammmolekül, aber verschieden viele Komponenten:
+genau **4**.
+
+| Name | direkt | Variante | Referenz trifft |
+|---|---|---|---|
+| Bendamustin | 2 Komp. (HCl) | 1 | Variante |
+| Phenelzin | 2 Komp. (Sulfat) | 1 | Variante |
+| Centrophenoxin | 1 | 2 Komp. (HCl) | direkt |
+| Tigecyclin | 2 Komp. (Hydrat) | 1 | keinen (Tautomer) |
+
+Die Zeile, die die Regel widerlegt hätte — direkt Salz, Variante frei, Referenz = Salz, Name ohne
+Salzwort — ist leer. Kein Name der Messung trägt ein Salzwort; der Salzwort-Schutz ist daher nur
+an Proben belegt (Tests unten), nicht an der Fixture.
+
+**Regel** (`_pubchem_checked`, nach dem Stammvergleich aus Befund 3): gleiches Stammmolekül, Variante
+**eine** Komponente, Direkttreffer mehrere, und der Name nennt kein Gegenion (`_SALT_WORD`: hydrochlorid,
+sulfat, natrium/sodium, kalium/potassium, citrat, hydrat … auch angehängt) → die freie Form. Umgekehrt
+(Centrophenoxin) bleibt der Direkttreffer. `_skeleton`/`_opsin_checked` unverändert — dort tragen
+Gegenionen Information (Edetat, Goldthiomalat). Kein Stoffname verdrahtet.
+
+**Tests** (`tests/test_resolver.py`): `test_name_without_salt_word_gets_the_free_form` (Bendamustin,
+Phenelzin, echte PubChem-SMILES) rot vor dem Fix; ersetzt den Pin `test_salt_form_of_the_direct_hit_is_kept_too`.
+`test_name_with_salt_word_keeps_the_salt` (7 Namen). Mutationen: M1 keine Salzregel → 2 rot; M2 kein
+Salzwort-Schutz → 5 rot (Bendamustinhydrochlorid, Phenelzinsulfat, Natriumcitrat, Kaliumcitrat,
+Docusat-Natrium); M3 Stammvergleich weg → 2 rot (Ephedrin, Risperidon).
+
+| | Lauf 7 | Lauf 8 |
+|---|---|---|
+| Ergebnis | 668 grün · 1 gelb · 42 rot | **669 grün · 1 gelb · 41 rot** |
+| Übergänge | — | 668 grün→grün (**kein grüner Fall gekippt**), 1 rot→grün (Bendamustin), 41 rot→rot mit unverändertem Schlüssel |
+| Laufzeit | 14 min, Median 0,63 s | 14 min, Median 0,63 s |
+| Dateien | `identitaet-lauf-7-vor-salzform.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Lauf 8 lief gegen die Fixture-Fassung von `530e9a9` (wie Lauf 7, `shasum` gleich), damit nur die
+Salzregel den Unterschied macht; `identitaet.md` ist gegen dieselbe Fassung erzeugt. Die Stereo-Referenzen
+aus `b67ceb7` (Codex, landete während des Laufs; Lauf-7-Neuwertung dort 673/1/37) sind nicht drin —
+Bendamustin berühren sie nicht.
+
+**Holdout** (`holdout_pubchem_check.py`, 553 im Geltungsbereich): 539 richtig wie vorher,
+**1 behoben (Phenelzin), 0 gekippt**, 13 weiter falsch. Tigecyclin wechselt vom Hydrat zur wasserfreien
+Form und bleibt falsch (Tautomer). Einzelfälle in `holdout_pubchem_check.json`.
+
+**Offen:** Tetracyclin-Tautomere (Doxycyclin + 4 Holdout), Hydroxy-/Hydroxocobalamin, Docusat
+(Referenz ist das Natriumsalz) — je eigene Klasse, nicht Salzform.
 
 ## Woher die Erwartung kommt
 

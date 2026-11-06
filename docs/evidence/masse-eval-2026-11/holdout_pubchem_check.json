@@ -2116,8 +2116,8 @@
   "variante": "Phenelzine",
   "erwartet": "RMUCZJUITONUFY-UHFFFAOYSA-N",
   "alt": "RXBKMJIPNDOHFR-UHFFFAOYSA-N",
-  "neu": "RXBKMJIPNDOHFR-UHFFFAOYSA-N",
-  "urteil": "gleich (beide falsch)"
+  "neu": "RMUCZJUITONUFY-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
  },
  {
   "name": "Phenolphthalein",
@@ -2700,8 +2700,8 @@
   "variante": "Tigecycline",
   "erwartet": "FPZLLRFZJZRHSY-HJYUBDRYSA-N",
   "alt": "SUGZODNQTKYJAW-KXLOKULZSA-N",
-  "neu": "SUGZODNQTKYJAW-KXLOKULZSA-N",
-  "urteil": "gleich (beide falsch)"
+  "neu": "SOVUOXKZCCAWOJ-HJYUBDRYSA-N",
+  "urteil": "beide falsch, verschieden"
  },
  {
   "name": "Tirofiban",
