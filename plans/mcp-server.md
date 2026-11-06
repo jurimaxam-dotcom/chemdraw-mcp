@@ -2,6 +2,15 @@
 
 ## Weiter bei — Codex-Neustart nach Befund 5 (06.11.2026)
 
+**Erneuter Neustart-Prüfpunkt (06.11., HEAD `e38d28d`):** IR-Folgeauftrag weiterhin unbegonnen;
+keine eigenen halbfertigen Edits oder laufenden Jobs. Faden `20261106-104425-ir-bericht-deterministisch`
+bleibt offen, zuletzt #3 Status zum erneuten Neustart. Drei ungetrackte Dateien
+`docs/evidence/masse-eval-2026-11/{holdout_opsin_check.py,identitaet-lauf-3-vor-opsin-check.json,identitaet-lauf-3-vor-opsin-check.md}`
+gehören zur parallelen Befund-2-Arbeit und bleiben unangetastet. Der fremde Commit `e38d28d` betrifft
+Fischer-Protonentransfer über ein Alkoholmolekül (acht Stationen); Diff-Stat gelesen, hier nicht abgenommen.
+Neustartskript nach diesem Plan-Commit aufrufen; fehlt `HERDR_PANE_ID`, Fehler melden und keine fremde Pane wählen.
+Nach erfolgreichem Neustart direkt den folgenden Auftrag beginnen, keinen weiteren Neustart ohne neuen Anlass.
+
 **Nächster Schritt:** Folgeauftrag `20261106-104425-ir-bericht-deterministisch` lesen und ausführen:
 `scripts/masse_eval.py` sortiert bei häufigsten Banden Gleichstände bisher instabil. Stabil nach Bandname sortieren;
 in `tests/test_masse_eval_ir.py` einen zweimal erzeugten Bericht auf Byte-Gleichheit prüfen (erst rot sehen),
