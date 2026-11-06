@@ -93,7 +93,8 @@
     "chembl_name": null,
     "chembl_key": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
     "chembl_formel": "C18H33ClN2O5S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Berichtigt 06.11.: ChEMBL bestätigte nur den gespeicherten Key, nicht vollständige Stereo. Zwei C-Zentren unbestimmt; vollständiger benannter Record PubChem 446598 / CHEMBL1753: KDLRVYVGXIQJDK-AWPVFWJPSA-N. Siehe ../stereo-referenzen/README.md.",
+    "korrektur_quelle": "https://pubchem.ncbi.nlm.nih.gov/compound/446598"
   },
   {
     "eingabe": "clomifene",

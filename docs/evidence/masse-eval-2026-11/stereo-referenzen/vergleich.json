@@ -1,0 +1,57 @@
+{
+  "baseline_commit": "9b3cbbd",
+  "baseline": "docs/evidence/masse-eval-2026-11/identitaet-lauf.json",
+  "methode": "Nur Referenzen ändern; kein Resolverlauf. Sämtliche Beobachtungen und Zeiten unverändert.",
+  "vorher": {
+    "gruen": 668,
+    "rot": 42,
+    "gelb": 1
+  },
+  "nachher": {
+    "gruen": 673,
+    "rot": 37,
+    "gelb": 1
+  },
+  "aenderungen": [
+    {
+      "eingabe": "clindamycin",
+      "vorher": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+      "nachher": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "erhalten_unveraendert": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "status_vorher": "rot",
+      "status_nachher": "gruen"
+    },
+    {
+      "eingabe": "cocaine",
+      "vorher": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+      "nachher": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "erhalten_unveraendert": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "status_vorher": "rot",
+      "status_nachher": "gruen"
+    },
+    {
+      "eingabe": "pantothenic acid",
+      "vorher": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "nachher": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "erhalten_unveraendert": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "status_vorher": "rot",
+      "status_nachher": "gruen"
+    },
+    {
+      "eingabe": "Pantothensäure",
+      "vorher": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "nachher": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "erhalten_unveraendert": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "status_vorher": "rot",
+      "status_nachher": "gruen"
+    },
+    {
+      "eingabe": "trehalose",
+      "vorher": "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+      "nachher": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+      "erhalten_unveraendert": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+      "status_vorher": "rot",
+      "status_nachher": "gruen"
+    }
+  ]
+}

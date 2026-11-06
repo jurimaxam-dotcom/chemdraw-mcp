@@ -1,0 +1,448 @@
+[
+  {
+    "eingabe": "clindamycin",
+    "vorher": {
+      "eingabe": "clindamycin",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+      "formel": "C18H33ClN2O5S",
+      "gruppe": "Arzneistoff (WHO-EML)",
+      "quelle": "wikidata:Q422273 + chembl:CHEMBL376185",
+      "smiles_referenz": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)NC([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)C(C)Cl"
+    },
+    "nachher": {
+      "eingabe": "clindamycin",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "formel": "C18H33ClN2O5S",
+      "gruppe": "Arzneistoff (WHO-EML)",
+      "quelle": "pubchem:446598 + chembl:CHEMBL1753",
+      "smiles_referenz": "CCC[C@@H]1C[C@@H](C(=O)N[C@@H]([C@H]2O[C@H](SC)[C@H](O)[C@@H](O)[C@H]2O)[C@H](C)Cl)N(C)C1",
+      "notiz": "Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher KDLRVYVGXIQJDK-NOWPCOIGSA-N (wikidata:Q422273 + chembl:CHEMBL376185). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
+    },
+    "reference_centers_before": {
+      "centers": [
+        {
+          "atom": 3,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 12,
+          "element": "C",
+          "cip": "?"
+        },
+        {
+          "atom": 13,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 14,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 15,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 16,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 17,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 24,
+          "element": "C",
+          "cip": "?"
+        }
+      ],
+      "assigned": 7,
+      "unassigned": 2,
+      "unassigned_carbon": 2
+    },
+    "pubchem_centers_after": {
+      "centers": [
+        {
+          "atom": 3,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 12,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 13,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 14,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 15,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 16,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 17,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 24,
+          "element": "C",
+          "cip": "S"
+        }
+      ],
+      "assigned": 9,
+      "unassigned": 0,
+      "unassigned_carbon": 0
+    },
+    "pubchem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/446598",
+    "chembl_link": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1753.json",
+    "chebi_link": null
+  },
+  {
+    "eingabe": "cocaine",
+    "vorher": {
+      "eingabe": "cocaine",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+      "formel": "C17H21NO4",
+      "gruppe": "Naturstoff/Botenstoff",
+      "quelle": "wikidata:Q105381234 + chembl:CHEMBL19151",
+      "smiles_referenz": "COC(=O)[C@@H]1C2CCC(C[C@@H]1OC(=O)c1ccccc1)N2C"
+    },
+    "nachher": {
+      "eingabe": "cocaine",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "formel": "C17H21NO4",
+      "gruppe": "Naturstoff/Botenstoff",
+      "quelle": "pubchem:446220 + chembl:CHEMBL370805 + chebi:CHEBI:27958",
+      "smiles_referenz": "COC(=O)[C@H]1[C@@H](OC(=O)c2ccccc2)C[C@@H]2CC[C@H]1N2C",
+      "notiz": "Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher ZPUCINDJVBIVPJ-PFSRBDOWSA-N (wikidata:Q105381234 + chembl:CHEMBL19151). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
+    },
+    "reference_centers_before": {
+      "centers": [
+        {
+          "atom": 4,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "?"
+        },
+        {
+          "atom": 8,
+          "element": "C",
+          "cip": "?"
+        },
+        {
+          "atom": 10,
+          "element": "C",
+          "cip": "S"
+        }
+      ],
+      "assigned": 2,
+      "unassigned": 2,
+      "unassigned_carbon": 2
+    },
+    "pubchem_centers_after": {
+      "centers": [
+        {
+          "atom": 2,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 6,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 7,
+          "element": "C",
+          "cip": "S"
+        }
+      ],
+      "assigned": 4,
+      "unassigned": 0,
+      "unassigned_carbon": 0
+    },
+    "pubchem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/446220",
+    "chembl_link": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL370805.json",
+    "chebi_link": "https://www.ebi.ac.uk/chebi/CHEBI:27958"
+  },
+  {
+    "eingabe": "pantothenic acid",
+    "vorher": {
+      "eingabe": "pantothenic acid",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "formel": "C9H17NO5",
+      "gruppe": "Vitamin/Cofaktor",
+      "quelle": "wikidata:Q179894 + chembl:CHEMBL2110806",
+      "smiles_referenz": "CC(C)(CO)C(C(=O)NCCC(=O)O)O"
+    },
+    "nachher": {
+      "eingabe": "pantothenic acid",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "formel": "C9H17NO5",
+      "gruppe": "Vitamin/Cofaktor",
+      "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+      "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+      "notiz": "Festgelegte Erwartung: (R)-Pantothensäure als Vitamin B5. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher GHOKWGTUZJEAQD-UHFFFAOYSA-N (wikidata:Q179894 + chembl:CHEMBL2110806). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
+    },
+    "reference_centers_before": {
+      "centers": [
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "?"
+        }
+      ],
+      "assigned": 0,
+      "unassigned": 1,
+      "unassigned_carbon": 1
+    },
+    "pubchem_centers_after": {
+      "centers": [
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "R"
+        }
+      ],
+      "assigned": 1,
+      "unassigned": 0,
+      "unassigned_carbon": 0
+    },
+    "pubchem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/6613",
+    "chembl_link": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1594.json",
+    "chebi_link": "https://www.ebi.ac.uk/chebi/CHEBI:46905"
+  },
+  {
+    "eingabe": "Pantothensäure",
+    "vorher": {
+      "eingabe": "Pantothensäure",
+      "sprache": "de (wikidata-Label = de.wikipedia)",
+      "inchikey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "formel": "C9H17NO5",
+      "gruppe": "Vitamin/Cofaktor",
+      "quelle": "wikidata:Q179894 + chembl:CHEMBL2110806",
+      "smiles_referenz": "CC(C)(CO)C(C(=O)NCCC(=O)O)O"
+    },
+    "nachher": {
+      "eingabe": "Pantothensäure",
+      "sprache": "de (wikidata-Label = de.wikipedia)",
+      "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "formel": "C9H17NO5",
+      "gruppe": "Vitamin/Cofaktor",
+      "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+      "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+      "notiz": "Festgelegte Erwartung: (R)-Pantothensäure als Vitamin B5. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher GHOKWGTUZJEAQD-UHFFFAOYSA-N (wikidata:Q179894 + chembl:CHEMBL2110806). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
+    },
+    "reference_centers_before": {
+      "centers": [
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "?"
+        }
+      ],
+      "assigned": 0,
+      "unassigned": 1,
+      "unassigned_carbon": 1
+    },
+    "pubchem_centers_after": {
+      "centers": [
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "R"
+        }
+      ],
+      "assigned": 1,
+      "unassigned": 0,
+      "unassigned_carbon": 0
+    },
+    "pubchem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/6613",
+    "chembl_link": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1594.json",
+    "chebi_link": "https://www.ebi.ac.uk/chebi/CHEBI:46905"
+  },
+  {
+    "eingabe": "trehalose",
+    "vorher": {
+      "eingabe": "trehalose",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+      "formel": "C12H22O11",
+      "gruppe": "Zucker/Zuckeralkohol",
+      "quelle": "wikidata:Q27109935",
+      "smiles_referenz": "C([C@@H]1[C@H]([C@@H]([C@H](C(O1)OC2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O",
+      "notiz": "in ChEMBL nicht unter diesem InChIKey — nur Wikidata"
+    },
+    "nachher": {
+      "eingabe": "trehalose",
+      "sprache": "en (wikidata-Label)",
+      "inchikey": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+      "formel": "C12H22O11",
+      "gruppe": "Zucker/Zuckeralkohol",
+      "quelle": "pubchem:7427 + chembl:CHEMBL1236395 + chebi:CHEBI:16551",
+      "smiles_referenz": "OC[C@H]1O[C@H](O[C@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@H]2O)[C@H](O)[C@@H](O)[C@@H]1O",
+      "notiz": "Festgelegte Erwartung: alpha,alpha-Trehalose. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher HDTRYLNUVZCQOY-MFAKQEFJSA-N (wikidata:Q27109935). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
+    },
+    "reference_centers_before": {
+      "centers": [
+        {
+          "atom": 1,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 2,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 3,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 4,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "?"
+        },
+        {
+          "atom": 8,
+          "element": "C",
+          "cip": "?"
+        },
+        {
+          "atom": 9,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 10,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 11,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 12,
+          "element": "C",
+          "cip": "R"
+        }
+      ],
+      "assigned": 8,
+      "unassigned": 2,
+      "unassigned_carbon": 2
+    },
+    "pubchem_centers_after": {
+      "centers": [
+        {
+          "atom": 1,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 2,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 3,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 4,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 5,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 8,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 9,
+          "element": "C",
+          "cip": "R"
+        },
+        {
+          "atom": 10,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 11,
+          "element": "C",
+          "cip": "S"
+        },
+        {
+          "atom": 12,
+          "element": "C",
+          "cip": "R"
+        }
+      ],
+      "assigned": 10,
+      "unassigned": 0,
+      "unassigned_carbon": 0
+    },
+    "pubchem_link": "https://pubchem.ncbi.nlm.nih.gov/compound/7427",
+    "chembl_link": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1236395.json",
+    "chebi_link": "https://www.ebi.ac.uk/chebi/CHEBI:16551"
+  }
+]

@@ -1,7 +1,7 @@
 {
  "zweck": "Masse-Evaluation der Namensauflösung: Eingabe → erwarteter InChIKey aus einer Quelle AUSSERHALB der Auflösungskette. Gefahren von scripts/identitaet.py --datei tests/identity/stoffe-masse.json, NICHT vom Auto-Gate (braucht Netz).",
  "aufgenommen": "2026-11-04",
- "herkunft": "Erwartungs-InChIKey = Wikidata P235 (https://query.wikidata.org/sparql). Stoffauswahl: (1) alle Wikidata-Objekte mit Rolle 'WHO essential medicines' (P2868 = Q35456) und genau einem InChIKey, (2) eine eigene Liste von Lehrbuch-Grundstoffen (englische Labels, in scripts/masse_eval.py LEHRBUCH). Gegenprobe: ChEMBL (https://www.ebi.ac.uk/chembl/api/data/molecule) per InChIKey; 'chembl:…' in 'quelle' heißt, ChEMBL führt genau diesen Schlüssel. 'unsicher': ChEMBL führt unter der verlinkten ID einen anderen Schlüssel — der Lauf wertet solche Einträge nie als rot. Eingaben: INN (P2275), englisches und deutsches Wikidata-Label. Neu bauen: uv run python scripts/masse_eval.py liste",
+ "herkunft": "Erwartungs-InChIKey = Wikidata P235 (https://query.wikidata.org/sparql). Stoffauswahl: (1) alle Wikidata-Objekte mit Rolle 'WHO essential medicines' (P2868 = Q35456) und genau einem InChIKey, (2) eine eigene Liste von Lehrbuch-Grundstoffen (englische Labels, in scripts/masse_eval.py LEHRBUCH). Gegenprobe: ChEMBL (https://www.ebi.ac.uk/chembl/api/data/molecule) per InChIKey; 'chembl:…' in 'quelle' heißt, ChEMBL führt genau diesen Schlüssel. 'unsicher': ChEMBL führt unter der verlinkten ID einen anderen Schlüssel — der Lauf wertet solche Einträge nie als rot. Eingaben: INN (P2275), englisches und deutsches Wikidata-Label. Neu bauen: uv run python scripts/masse_eval.py liste. Stereo-Ausnahmen nach Audit 06.11.2026: Clindamycin, Cocaine, Vitamin-B5-Pantothensäure und alpha,alpha-Trehalose verwenden unabhängig bestätigte PubChem/ChEMBL-Hauptrecords; quelle/notiz je Eintrag und docs/evidence/masse-eval-2026-11/stereo-referenzen/ dokumentieren den vollständigen Key statt partieller Wikidata-Stereochemie.",
  "verworfen": [
   {
    "qid": "Q170002",
@@ -1464,11 +1464,12 @@
   {
    "eingabe": "clindamycin",
    "sprache": "en (wikidata-Label)",
-   "inchikey": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+   "inchikey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
    "formel": "C18H33ClN2O5S",
    "gruppe": "Arzneistoff (WHO-EML)",
-   "quelle": "wikidata:Q422273 + chembl:CHEMBL376185",
-   "smiles_referenz": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)NC([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)C(C)Cl"
+   "quelle": "pubchem:446598 + chembl:CHEMBL1753",
+   "smiles_referenz": "CCC[C@@H]1C[C@@H](C(=O)N[C@@H]([C@H]2O[C@H](SC)[C@H](O)[C@@H](O)[C@H]2O)[C@H](C)Cl)N(C)C1",
+   "notiz": "Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher KDLRVYVGXIQJDK-NOWPCOIGSA-N (wikidata:Q422273 + chembl:CHEMBL376185). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
   },
   {
    "eingabe": "clofazimine",
@@ -5652,11 +5653,12 @@
   {
    "eingabe": "cocaine",
    "sprache": "en (wikidata-Label)",
-   "inchikey": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+   "inchikey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
    "formel": "C17H21NO4",
    "gruppe": "Naturstoff/Botenstoff",
-   "quelle": "wikidata:Q105381234 + chembl:CHEMBL19151",
-   "smiles_referenz": "COC(=O)[C@@H]1C2CCC(C[C@@H]1OC(=O)c1ccccc1)N2C"
+   "quelle": "pubchem:446220 + chembl:CHEMBL370805 + chebi:CHEBI:27958",
+   "smiles_referenz": "COC(=O)[C@H]1[C@@H](OC(=O)c2ccccc2)C[C@@H]2CC[C@H]1N2C",
+   "notiz": "Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher ZPUCINDJVBIVPJ-PFSRBDOWSA-N (wikidata:Q105381234 + chembl:CHEMBL19151). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
   },
   {
    "eingabe": "Kokain",
@@ -6472,20 +6474,22 @@
   {
    "eingabe": "pantothenic acid",
    "sprache": "en (wikidata-Label)",
-   "inchikey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+   "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
    "formel": "C9H17NO5",
    "gruppe": "Vitamin/Cofaktor",
-   "quelle": "wikidata:Q179894 + chembl:CHEMBL2110806",
-   "smiles_referenz": "CC(C)(CO)C(C(=O)NCCC(=O)O)O"
+   "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+   "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+   "notiz": "Festgelegte Erwartung: (R)-Pantothensäure als Vitamin B5. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher GHOKWGTUZJEAQD-UHFFFAOYSA-N (wikidata:Q179894 + chembl:CHEMBL2110806). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
   },
   {
    "eingabe": "Pantothensäure",
    "sprache": "de (wikidata-Label = de.wikipedia)",
-   "inchikey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+   "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
    "formel": "C9H17NO5",
    "gruppe": "Vitamin/Cofaktor",
-   "quelle": "wikidata:Q179894 + chembl:CHEMBL2110806",
-   "smiles_referenz": "CC(C)(CO)C(C(=O)NCCC(=O)O)O"
+   "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+   "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+   "notiz": "Festgelegte Erwartung: (R)-Pantothensäure als Vitamin B5. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher GHOKWGTUZJEAQD-UHFFFAOYSA-N (wikidata:Q179894 + chembl:CHEMBL2110806). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
   },
   {
    "eingabe": "sucrose",
@@ -6508,12 +6512,12 @@
   {
    "eingabe": "trehalose",
    "sprache": "en (wikidata-Label)",
-   "inchikey": "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+   "inchikey": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
    "formel": "C12H22O11",
    "gruppe": "Zucker/Zuckeralkohol",
-   "quelle": "wikidata:Q27109935",
-   "smiles_referenz": "C([C@@H]1[C@H]([C@@H]([C@H](C(O1)OC2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O",
-   "notiz": "in ChEMBL nicht unter diesem InChIKey — nur Wikidata"
+   "quelle": "pubchem:7427 + chembl:CHEMBL1236395 + chebi:CHEBI:16551",
+   "smiles_referenz": "OC[C@H]1O[C@H](O[C@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@H]2O)[C@H](O)[C@@H](O)[C@@H]1O",
+   "notiz": "Festgelegte Erwartung: alpha,alpha-Trehalose. Stereo-Audit 06.11.2026: benannter Hauptrecord, bekannte Konfiguration kompatibel; vorher HDTRYLNUVZCQOY-MFAKQEFJSA-N (wikidata:Q27109935). Belege: docs/evidence/masse-eval-2026-11/stereo-referenzen/README.md."
   },
   {
    "eingabe": "xylitol",
