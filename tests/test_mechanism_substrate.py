@@ -9,7 +9,7 @@ from rdkit import Chem
 from rdkit.Chem import rdCIPLabeler
 
 from chemdraw_tool.mechanism import CurvedArrow
-from chemdraw_tool.mechanism_substrate import C, NU, UnsupportedSubstrates, build_steps
+from chemdraw_tool.mechanism_substrate import NU, C, UnsupportedSubstrates, build_steps
 from tests.mechanism_matrix import MATRIX
 
 
