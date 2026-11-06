@@ -54,16 +54,23 @@ Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine
   § Release-Reihenfolge, per Test verankert.
 - Hinweis: `release_check.py` ist heute rot (rc=1), weil [Unreleased] Einträge hat — beim nächsten Release erst verschieben.
 
-## Orchestrierung (Jay 06.11.2026: „alles autonom, Sessions spawnen, bei zu hohem Kontext schließen, Codex nutzen“)
+## Orchestrierung (Jay 06.11.2026: „alles autonom, Sessions spawnen, bei zu hohem Kontext schließen, Codex nutzen, nach Tisch-/Dreier-Regeln absprechen“) — Stand 06.11. ~11:00
 
-Orchestrator = Claude-Hauptsession `f31ab414` (herdr `w4W:p6`). Berichte sind Behauptungen → Diff + Tests selbst nachprüfen, dann Faden schließen, Pane schließen.
-**Läuft:** Befund 2 OPSIN (Claude `3d35f9c4`, Faden `20261106-102746-masse-eval-befund-2`) ·
-E2 Lehrbuch-Feinschliff (Claude `76129dfa`, Faden `20261106-103546-etappe-e2`).
-**Zur Abnahme berichtet:** Befund 5 pH-Klemme + IR (Codex, `a3f62dd`, Faden `20261106-103348-masse-eval-befund-5`, #5/#6).
-**Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` (28 Tests grün, `release_check.py` rc=1 solange [Unreleased] gefüllt — gewollt).
-**Warteschlange (nach Befund 2, weil resolver.py bzw. stoffe-masse.json):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) ·
-Befund 4 Referenzliste (fumaric acid → Q139857, tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
-**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation, offene Jay-Fragen (Welle 3, Abfragemodus).
+Chef = frische Claude-Hauptsession nach Kontext-Neustart (vorher `f31ab414`). **Dreier-Regeln:** Chef baut nicht (auch keine bauenden
+Unteragenten) — jede Bau-Etappe per Faden an Opus-Bauer (`cc-oeffnen --auftrag`) oder Codex; **Abnahme über Kreuz** (Codex prüft Opus-Arbeit
+und umgekehrt), Chef prüft danach Diff + Tests selbst, schließt Faden + Pane. Geteilter Arbeitsbaum: jeder `git add` nur eigene Pfade;
+am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropic/*`, `CHANGELOG.md` — Eigentümer klären).
+**Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` · Befund 5 pH/IR `a3f62dd` (Codex) · IR-Bericht deterministisch `3b060db`.
+**Offen — Fäden mit ID:**
+- `20261106-102746-masse-eval-befund-2` (Opus-Bauer Pane `w4W:pD`, `41da7c4`/`e228047`, Lauf 4 664/1/46): Bericht #3 da.
+- `20261106-105531-abnahme-befund-2` (Codex-Kreuzabnahme): Verdikt laut Helfer-Live **nachbessern** (Auswahlregel übernimmt zu viel) —
+  **nächster Schritt:** Codex-Bericht lesen, Nachbesserung per Faden an Pane `w4W:pD` (oder frischen Opus-Bauer, falls pD-Kontext hoch), danach erneut Codex prüfen lassen.
+- `20261106-103546-etappe-e2` (Opus-Bauer Pane `w4W:pE`, Commits c578c81/e38d28d/2367126/4af8627, Lint-Fix 6b83479): Bericht steht aus →
+  dann Kreuzabnahme durch Codex.
+**Warteschlange (nach Abnahme Befund 2):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) · Befund 4 Referenzliste (fumaric acid → Q139857,
+tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
+**Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
+**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
 ## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
 
