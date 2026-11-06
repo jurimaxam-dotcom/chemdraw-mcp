@@ -16,6 +16,15 @@ this project uses [Semantic Versioning](https://semver.org/).
   chloride) and a racemate prefix ((RS)-Ketamin → ketamine). Names that
   resolved before take exactly the same path as before.
 
+### Fixed
+
+- **Trivial names no longer get split like systematic names.** OPSIN read
+  "tropicamide" as tropic acid amide, "methyldopa" as N-methyl-DOPA and
+  "chloroxylenol" as a non-aromatic ring. A name without locants (no digits,
+  brackets, N-/O-/o-/m-/p- prefixes) is now checked against PubChem; when the
+  skeletons differ, PubChem's record wins. Names with locants stay offline, and
+  without network OPSIN's answer is used as before.
+
 ## [0.8.0] — 2026-11-05
 
 ### Added

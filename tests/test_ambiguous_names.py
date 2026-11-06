@@ -152,6 +152,8 @@ def test_explicit_isomer_names_still_go_to_the_cascade(monkeypatch, text):
         return "C"
 
     monkeypatch.setattr(resolver, "_opsin_lookup", opsin)
+    # Namen ohne Lokanten prüft der Resolver gegen PubChem — hier offline halten.
+    monkeypatch.setattr(resolver, "_pubchem_lookup", lambda name, report=None: None)
     smiles, _ = resolve(text)
     assert smiles == "C"
     assert asked == [text]

@@ -470,6 +470,42 @@ def _opsin_lookup(name: str) -> str | None:
     return smiles
 
 
+# Lokanten, Klammern, Stereodeskriptoren: der Name ist systematisch gebaut und
+# bleibt offline — er geht NIE ins Netz. "N,N-", "O-", "p-" zählen als Lokant.
+_SYSTEMATIC_MARK = re.compile(r"\d|[(\[]|(?:^|[\s,-])[NOSPomp]'?(?:,[NOSP]'?)*-")
+
+
+def _skeleton(smiles: str | None) -> str | None:
+    """Erster InChIKey-Block = Konnektivität; Stereo und Ladung zählen nicht."""
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    return Chem.MolToInchiKey(mol).split("-")[0] if mol is not None else None
+
+
+def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
+    """OPSIN-Treffer für einen Namen ohne Lokanten gegen PubChem prüfen.
+
+    Masse-Eval-Befund 2 (06.11.2026): OPSIN zerlegt Trivialnamen systematisch
+    ("tropic-amide", "methyl-dopa", "chloro-xylen-ol") und gewann vor PubChem.
+    Gemessen über 233 OPSIN-Treffer: 225 tragen keine Lokanten, darunter alle
+    Fehlgriffe; OPSIN und PubChem uneinig bei 7, PubChem richtig bei 6. Der
+    siebte ist 'Glycin' — PubChems deutsches Synonym zeigt auf den Fotoentwickler;
+    die englische Schreibweise bestätigt OPSIN. Kennt PubChem den Namen nicht
+    oder ist es nicht erreichbar, bleibt OPSINs Antwort (offline wie bisher).
+    """
+    if _SYSTEMATIC_MARK.search(name):
+        return opsin_smiles
+    pubchem = _pubchem_lookup(name, report)
+    opsin_key = _skeleton(opsin_smiles)
+    if pubchem is None or _skeleton(pubchem) in (None, opsin_key):
+        return opsin_smiles
+    english = english_variant(name)
+    if english and english != name:
+        if _skeleton(_pubchem_lookup(english, report)) == opsin_key:
+            return opsin_smiles
+    logger.info("OPSIN read %r as %s, PubChem disagrees — using PubChem", name, opsin_smiles)
+    return pubchem
+
+
 def _transliterate(name: str) -> str | None:
     """Replace umlauts with ASCII equivalents. Returns None if no change."""
     result = name.translate(_UMLAUT_MAP)
@@ -870,7 +906,7 @@ def resolve_name(name: str) -> str:
     report: list[_Attempt] = []
 
     if smiles := _opsin_lookup(name):
-        return smiles
+        return _opsin_checked(name, smiles, report)
 
     if smiles := _pubchem_lookup(name, report):
         return smiles

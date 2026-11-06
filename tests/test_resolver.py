@@ -232,6 +232,59 @@ def test_resolve_systematic_stereo_name_offline(mock_pubchem, mock_nci):
     assert Chem.MolToInchiKey(mol) == "QIVBCDIJIAJPQS-VIFPVBQESA-N"
 
 
+# --- Masse-Eval-Befund 2: OPSIN zerlegt Trivialnamen ---------------------------
+# OPSIN liest "tropic-amide" als Tropasäureamid, "methyl-dopa" als N-Methyl-DOPA.
+# Messung 06.11. (233 OPSIN-Treffer): kein Trennmerkmal im Namen, aber ohne
+# Lokanten fragt der Resolver PubChem gegen; nur ein anderes Gerüst zählt.
+
+_OPSIN_TROPICAMIDE = "C(C(CO)C1=CC=CC=C1)(=O)N"  # was OPSIN baut
+_PUBCHEM_TROPICAMIDE = "CCN(CC1=CC=NC=C1)C(=O)C(CO)C2=CC=CC=C2"
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup", return_value=_PUBCHEM_TROPICAMIDE)
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
+def test_trivial_name_opsin_misparse_loses_to_pubchem(_opsin, _pubchem):
+    assert resolve_name("tropicamide") == _PUBCHEM_TROPICAMIDE
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
+def test_trivial_name_offline_keeps_opsin_answer(_opsin):
+    """Ohne Netz bleibt OPSINs Antwort — "ethanol" muss offline gehen."""
+
+    def offline(name, report=None):
+        resolver._record(report, resolver._PUBCHEM, *resolver._classify_error(
+            requests.exceptions.ConnectionError("down")))
+        return None
+
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=offline):
+        assert resolve_name("tropicamide") == _OPSIN_TROPICAMIDE
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup", return_value="N[C@@H](CC)C(=O)O")
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value="NC(CC)C(=O)O")
+def test_trivial_name_same_skeleton_keeps_opsin(_opsin, _pubchem):
+    """Nur das Gerüst entscheidet — ein Stereo-Unterschied ist keine Uneinigkeit."""
+    assert resolve_name("butyrine") == "NC(CC)C(=O)O"
+
+
+def test_german_name_wrong_pubchem_synonym_keeps_opsin():
+    """PubChem führt 'Glycin' beim Fotoentwickler; 'Glycine' bestätigt OPSIN."""
+    answers = {"Glycin": "OC(=O)CNc1ccc(O)cc1", "Glycine": "C(C(=O)O)N"}
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value="NCC(=O)O"), \
+         patch("chemdraw_tool.resolver._pubchem_lookup",
+               side_effect=lambda n, report=None: answers.get(n)):
+        assert resolve_name("Glycin") == "NCC(=O)O"
+
+
+@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value="CC(C)O")
+def test_name_with_locants_never_cross_checked(_opsin, mock_pubchem):
+    for name in ("propan-2-ol", "(R)-butan-2-ol", "N,N-dimethylformamide"):
+        resolve_name.cache_clear()
+        resolve_name(name)
+    mock_pubchem.assert_not_called()
+
+
 # --- Fehler-Diagnose: nicht gefunden vs. Netzproblem vs. Mischform ----------
 # Vorher warf JEDER Kaskaden-Ausfall dieselbe Meldung ("Use an English/IUPAC
 # name…") — bei Netzausfall schickt das den Nutzer auf eine aussichtslose
