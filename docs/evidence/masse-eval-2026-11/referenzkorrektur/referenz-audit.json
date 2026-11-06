@@ -9,7 +9,10 @@
     "chembl_name": "SCOPOLAMINE",
     "chembl_key": "STECJAGHUSJQJN-FWXGHANASA-N",
     "chembl_formel": "C17H21NO4",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL569713 hat den vollständigen Referenz-Key; PubChem Scopolamine bevorzugt denselben Key. Die PUG-Namenssuche enthält auch einen partiellen gleichnamigen Record, der nicht der bevorzugte Datensatz ist.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "L-Scopolamin",
@@ -21,7 +24,10 @@
     "chembl_name": "SCOPOLAMINE",
     "chembl_key": "STECJAGHUSJQJN-FWXGHANASA-N",
     "chembl_formel": "C17H21NO4",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: wie englisches Alias L-scopolamine; bevorzugter PubChem-Key und ChEMBL stimmen mit der Referenz überein. Die direkte deutsche PUG-Suche liefert keinen Grund, den vollständigen ChEMBL-Key zu entfernen.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Prussian blue",
@@ -69,7 +75,10 @@
     "chembl_name": null,
     "chembl_key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
     "chembl_formel": "C48H56N6O8S2",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert, Stereo-Sicherheit mittel: ChEMBL CHEMBL3182097 enthält den gespeicherten vollständig definierten Key; direkter PubChem-Record CID 12598398 lässt sechs Atome unbestimmt. Das belegt keine fehlende Stereo im ChEMBL-Key.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Cefixim Anhydrat",
@@ -81,7 +90,10 @@
     "chembl_name": "CEFIXIME",
     "chembl_key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
     "chembl_formel": "C16H15N5O7S2",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem CID 5362065 und ChEMBL CHEMBL1541 stimmen mit dem gespeicherten Key überein; beide Tetraederzentren sind definiert.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "clindamycin",
@@ -106,7 +118,10 @@
     "chembl_name": "CLOMIPHENE",
     "chembl_key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
     "chembl_formel": "C26H28ClNO",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem CID 2800 und ChEMBL CHEMBL2355051 stimmen überein; RDKit findet keine tetraedrischen Chiralitätszentren. Der ungespezifizierte Key ist hier kein Hinweis auf fehlende tetraedrische Stereo.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Docusat",
@@ -130,7 +145,10 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL1433, PubChem bevorzugter Doxycycline-Record und PDBe DXT führen den gespeicherten Key. Die PUG-Namenssuche liefert CID 54671203 mit einem anderen ersten Key-Block (6-Epi-Record), also keinen Gegenbeleg zum bevorzugten Arzneistoffrecord.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Doxycyclin",
@@ -142,7 +160,10 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: wie doxycycline; ChEMBL, PubChem Preferred und PDBe DXT stimmen auf den gespeicherten Key. PUG-Alias-CID 54671203 ist ein anderer 6-Epi-Record.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "(−)-Ephedrin",
@@ -154,7 +175,10 @@
     "chembl_name": "EPHEDRINE",
     "chembl_key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
     "chembl_formel": "C10H15NO",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL211456 und PubChem English-Preferred Ephedrine CID 9294 stimmen auf den vollständigen gespeicherten Key. Die direkte deutsche PUG-Suche liefert CID 104213, 1-bromo-3-methyl-5-nitrobenzene, einen verirrten Synonymtreffer; das ist ein Auflösungsbefund, kein Referenzfehler.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Hydroxycobalamin",
@@ -178,7 +202,10 @@
     "chembl_name": "ISOSORBIDE DINITRATE",
     "chembl_key": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
     "chembl_formel": "C6H8N2O8",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: die deutsche PUG-Suche trifft einen anderen voll definierten Stereo-Key (CID 6604217); die benannte englische PubChem-Hauptstruktur CID 6883, ChEMBL CHEMBL6622 und ChEBI:6061 stimmen mit dem gespeicherten Key überein. Kein Referenzwechsel.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "β-lactulose",
@@ -190,7 +217,10 @@
     "chembl_name": "LACTULOSE",
     "chembl_key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
     "chembl_formel": "C12H22O11",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: der lokale Alias ist in PubChem nicht direkt bekannt; PubChem Lactulose CID 11333 und ChEMBL CHEMBL296306 stimmen mit dem gespeicherten vollständigen Stereo-Key überein.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Mefloquin",
@@ -202,7 +232,10 @@
     "chembl_name": "MEFLOQUINE",
     "chembl_key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
     "chembl_formel": "C17H16F6N2O",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert, Name stereochemisch racemisch/unspezifiziert: ChEMBL CHEMBL416956 und PubChem Preferred Mefloquine CID 4046 haben denselben Key mit zwei unbestimmten Zentren. Die deutsche PUG-Suche liefert dagegen das einzelne (-)-Enantiomer CID 40692. Kein Beleg, die racemische Referenz gegen dieses Enantiomer auszutauschen.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "N-Methylglucaminantimonat",
@@ -226,7 +259,10 @@
     "chembl_name": "NALOXONE",
     "chembl_key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
     "chembl_formel": "C19H21NO4",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL80 und PubChem Preferred Naloxone CID 5284596 stimmen mit dem vollständig stereodefinierten Referenz-Key überein. Die deutsche PUG-Suche findet zusätzlich CID 16395294 mit einem unbestimmten Zentrum; das ist ein alternativer Alias-Record.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "nitroprusside",
@@ -262,7 +298,10 @@
     "chembl_name": "PENICILLAMINE",
     "chembl_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
     "chembl_formel": "C5H11NO2S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem CID 5852 und ChEMBL CHEMBL1430 bestätigen den vollständigen Key mit einem definierten Zentrum.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Penicillamin",
@@ -274,7 +313,10 @@
     "chembl_name": "PENICILLAMINE",
     "chembl_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
     "chembl_formel": "C5H11NO2S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: wie penicillamine; PubChem CID 5852 und ChEMBL CHEMBL1430 bestätigen den vollständigen Key mit einem definierten Zentrum.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Povidon-Iod",
@@ -286,7 +328,10 @@
     "chembl_name": null,
     "chembl_key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
     "chembl_formel": "C6H9I2NO",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert, Identität nicht vollständig unabhängig gegengeprüft: direkte PubChem-Suche liefert 404; ChEMBL CHEMBL5424182 hat keine tetraedrischen Zentren. Kein Hinweis auf unvollständige tetraedrische Stereo, aber PubChem-Bestätigung fehlt.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "rifabutin",
@@ -298,7 +343,10 @@
     "chembl_name": "RIFABUTIN",
     "chembl_key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
     "chembl_formel": "C46H62N4O11",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL444633, ChEBI:45367 und PubChem Reference Collection nennen den gespeicherten Key. Die PUG-Namenssuche auf CID 135415564 liefert einen abweichenden Struktur-Key; PubChem führt damit eine interne Record-Diskrepanz. Kein unabhängiger Beleg für eine Referenzänderung.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Risperidon",
@@ -310,7 +358,10 @@
     "chembl_name": "RISPERIDONE",
     "chembl_key": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
     "chembl_formel": "C23H27FN4O2",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL85 und PubChem Preferred Risperidone CID 5073 stimmen auf denselben Key; keine tetraedrischen Chiralitätszentren. Die deutsche PUG-Direktsuche liefert einen anderen Alias-Record CID 44402564 und ist kein Referenzbeleg.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "sulfasalazine",
@@ -322,7 +373,10 @@
     "chembl_name": "SULFASALAZINE",
     "chembl_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
     "chembl_formel": "C18H14N4O5S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL421 und PubChem Preferred Sulfasalazine führen den gespeicherten Key mit E/Z-Stereochemie. PUG-Standard-CID 5339 liefert einen Key ohne dieses E/Z, daher zählt die Preferred-Summary als benannter Hauptrecord; keine Änderung.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Sulfasalazin",
@@ -334,7 +388,10 @@
     "chembl_name": "SULFASALAZINE",
     "chembl_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
     "chembl_formel": "C18H14N4O5S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: wie sulfasalazine; ChEMBL und PubChem Preferred bestätigen den E/Z-Key. Der generische PUG-CID ohne E/Z wird nicht als Hauptrecord gewertet.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "tenofovir disoproxil",
@@ -358,7 +415,10 @@
     "chembl_name": "TIMOLOL",
     "chembl_key": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
     "chembl_formel": "C13H24N4O3S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL499 und PubChem CID 33624 stimmen auf den vollständigen Key; das eine tetraedrische Zentrum ist definiert.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "tranexamic acid",
@@ -370,7 +430,10 @@
     "chembl_name": "TRANEXAMIC ACID",
     "chembl_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
     "chembl_formel": "C8H15NO2",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL877 und ChEBI:48669 definieren die trans-Form mit gespeichertem Key. PubChem CID 5526 liefert nur die stereochemisch unbestimmte Grundstruktur; das widerlegt die ausdrücklich trans definierte Referenz nicht.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Tranexamsäure",
@@ -382,7 +445,10 @@
     "chembl_name": "TRANEXAMIC ACID",
     "chembl_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
     "chembl_formel": "C8H15NO2",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: wie tranexamic acid; ChEBI definiert die trans-Form und bestätigt den Key, ChEMBL stimmt ebenfalls. PubChem CID 5526 ist stereochemisch allgemeiner.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "vinblastine",
@@ -394,7 +460,10 @@
     "chembl_name": null,
     "chembl_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
     "chembl_formel": "C46H58N4O9",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert / Stereo bleibt unklar: ChEMBL CHEMBL22969 und ChEBI:27375 bestätigen den alten Key. PubChem CID 13342 ist vollständig für neun Zentren, ändert aber zugleich ein bereits gesetztes C-Zentrum relativ zur Referenz; beide Strukturen lassen das N-Zentrum offen. Eine Umstellung wäre nicht quellenbelegt.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Vinblastin",
@@ -406,7 +475,10 @@
     "chembl_name": null,
     "chembl_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
     "chembl_formel": "C46H58N4O9",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert / Stereo bleibt unklar: wie vinblastine. ChEMBL und ChEBI bestätigen den gespeicherten Key; PubChem CID 13342 widerspricht an einem bereits spezifizierten C-Zentrum. Kein sicherer Ersatz.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Vinorelbin",
@@ -418,7 +490,10 @@
     "chembl_name": "VINORELBINE",
     "chembl_key": "GBABOYUKABKIAF-IELIFDKJSA-N",
     "chembl_formel": "C45H54N4O8",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem CID 5311497 und ChEMBL CHEMBL553025 stimmen auf den gespeicherten Key; ChEMBL lässt im RDKit-Scan ein N-Zentrum unzugewiesen, PubChem zählt acht definierte Atomzentren und liefert denselben Key. Kein fehlendes C-Zentrum und kein Referenzwechsel.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Metamizol (freie Säure)",
@@ -430,7 +505,10 @@
     "chembl_name": "METAMIZOLE",
     "chembl_key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
     "chembl_formel": "C13H17N3O4S",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: ChEMBL CHEMBL461522 und PubChem CID 3111 stimmen überein; es gibt keine tetraedrischen Zentren.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Citral A+B",
@@ -442,7 +520,10 @@
     "chembl_name": null,
     "chembl_key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
     "chembl_formel": "C10H16O",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert, Stereo-/Identitätssicherheit mittel: PubChem liefert für den Namen 404; ChEMBL CHEMBL2297541 und die Fixture führen einen A+B-Eintrag ohne tetraedrische Zentren. Ohne diskreten PubChem-Hauptrecord keine Änderung.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "cocaine",
@@ -454,7 +535,10 @@
     "chembl_name": null,
     "chembl_key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
     "chembl_formel": "C17H21NO4",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Korrigiert: CHEMBL19151 bestätigt nur den alten Key mit zwei unbestimmten C-Zentren. PubChem CID 446220 und ChEMBL CHEMBL370805 liefern denselben vollständig definierten Key ZPUCINDJVBIVPJ-LJISPDSOSA-N; ChEBI:27958 stimmt überein.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Adrenalin",
@@ -466,7 +550,10 @@
     "chembl_name": "EPINEPHRINE",
     "chembl_key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
     "chembl_formel": "C9H13NO3",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem Epinephrine CID 5816 und ChEMBL CHEMBL679 stimmen auf den gespeicherten Key mit einem definierten Zentrum.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Ethylendiamintetraessigsäure",
@@ -478,7 +565,10 @@
     "chembl_name": "EDETIC ACID",
     "chembl_key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
     "chembl_formel": "C10H16N2O8",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert: PubChem EDTA CID 6049 und ChEMBL CHEMBL858 stimmen auf den gespeicherten Key; keine tetraedrischen Zentren.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "fumaric acid",
@@ -514,7 +604,10 @@
     "chembl_name": "PANTOTHENIC ACID, RACEMIC",
     "chembl_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
     "chembl_formel": "C9H17NO5",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Korrigiert: CHEMBL2110806 ist ausdrücklich PANTOTHENIC ACID, RACEMIC und bestätigt nur den unbestimmten alten Key. PubChem CID 6613 und ChEMBL CHEMBL1594 stimmen auf den vollständigen R-Key GHOKWGTUZJEAQD-ZETCQYMHSA-N; ChEBI:46905 ist R-Pantothensäure.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "Pantothensäure",
@@ -526,7 +619,10 @@
     "chembl_name": "PANTOTHENIC ACID, RACEMIC",
     "chembl_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
     "chembl_formel": "C9H17NO5",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Korrigiert: wie pantothenic acid; die alte Quelle CHEMBL2110806 ist racemisch/unspezifiziert. PubChem CID 6613, CHEMBL1594 und ChEBI:46905 bestätigen den vollständigen R-Key GHOKWGTUZJEAQD-ZETCQYMHSA-N.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   },
   {
     "eingabe": "trehalose",
@@ -550,6 +646,9 @@
     "chembl_name": "XYLITOL",
     "chembl_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
     "chembl_formel": "C5H12O5",
-    "bewertung": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen"
+    "bewertung": "Unverändert, Datenquellenkonflikt dokumentiert: ChEMBL CHEMBL96783 und PubChem Preferred Reference Collection nennen den vollständigen Key HEBKCHPVOIAQTA-SCDXWVJYSA-N. Die PUG REST Abfrage für CID 6912 gibt stattdessen NGQZWQHPSA mit einem unbestimmten Zentrum zurück. Keine Änderung; PUG REST und PubChem Preferred sind inkonsistent.",
+    "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
+    "sicherheit": "hoch",
+    "stereo_audit": "../stereo-regenerationsschutz/README.md"
   }
 ]

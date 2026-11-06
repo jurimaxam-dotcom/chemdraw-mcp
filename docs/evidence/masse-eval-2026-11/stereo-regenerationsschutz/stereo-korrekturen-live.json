@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-06",
+  "pubchem_queries": [
+    {
+      "name": "clindamycin",
+      "pubchem_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/clindamycin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem": {
+        "CID": 446598,
+        "MolecularFormula": "C18H33ClN2O5S",
+        "SMILES": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@H](C)Cl",
+        "InChIKey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+        "AtomStereoCount": 9,
+        "DefinedAtomStereoCount": 9,
+        "UndefinedAtomStereoCount": 0,
+        "Title": "Clindamycin"
+      },
+      "chembl_id": "CHEMBL1753",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1753.json",
+      "chembl_key": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "chembl_name": "CLINDAMYCIN"
+    },
+    {
+      "name": "cocaine",
+      "pubchem_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/cocaine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem": {
+        "CID": 446220,
+        "MolecularFormula": "C17H21NO4",
+        "SMILES": "CN1[C@H]2CC[C@@H]1[C@H]([C@H](C2)OC(=O)C3=CC=CC=C3)C(=O)OC",
+        "InChIKey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+        "AtomStereoCount": 4,
+        "DefinedAtomStereoCount": 4,
+        "UndefinedAtomStereoCount": 0,
+        "Title": "Cocaine"
+      },
+      "chembl_id": "CHEMBL370805",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL370805.json",
+      "chembl_key": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "chembl_name": "COCAINE"
+    },
+    {
+      "name": "pantothenic acid",
+      "pubchem_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/pantothenic%20acid/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem": {
+        "CID": 6613,
+        "MolecularFormula": "C9H17NO5",
+        "SMILES": "CC(C)(CO)[C@H](C(=O)NCCC(=O)O)O",
+        "InChIKey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+        "AtomStereoCount": 1,
+        "DefinedAtomStereoCount": 1,
+        "UndefinedAtomStereoCount": 0,
+        "Title": "Pantothenic Acid"
+      },
+      "chembl_id": "CHEMBL1594",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1594.json",
+      "chembl_key": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "chembl_name": "PANTOTHENIC ACID"
+    },
+    {
+      "name": "trehalose",
+      "pubchem_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/trehalose/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem": {
+        "CID": 7427,
+        "MolecularFormula": "C12H22O11",
+        "SMILES": "C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O[C@@H]2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O",
+        "InChIKey": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+        "AtomStereoCount": 10,
+        "DefinedAtomStereoCount": 10,
+        "UndefinedAtomStereoCount": 0,
+        "Title": "Trehalose"
+      },
+      "chembl_id": "CHEMBL1236395",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1236395.json",
+      "chembl_key": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+      "chembl_name": "TREHALOSE"
+    }
+  ]
+}

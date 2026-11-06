@@ -1,0 +1,4208 @@
+{
+  "date": "2026-11-06",
+  "method": {
+    "scope": "All 33 historical audit rows whose assessment was exactly/started with Referenz bestätigt (ChEMBL-Key); 26 unique ChEMBL records.",
+    "pubchem": "PUG REST by the exact fixture label, plus query by the ChEMBL preferred name; selected/summarized same-connectivity records; raw query errors retained.",
+    "chembl": "Live ChEMBL molecule JSON for each of the 26 source IDs; RDKit FindMolChiralCenters(includeUnassigned=True,useLegacyImplementation=False), computed InChIKey/formula retained.",
+    "selection": "No reference changed from a resolver response. A source was changed only where the named PubChem main record and independent ChEMBL/ChEBI record agreed on the more specific stereo structure."
+  },
+  "counts": {
+    "historical_rows": 33,
+    "unique_chembl_records": 26,
+    "pubchem_exact_label_queries": 33,
+    "preferred_name_queries": 26,
+    "chembl_live_records": 26,
+    "corrected_reference_rows_from_old_confirmed_group": 3,
+    "corrected_distinct_stereo_references_from_group": 2,
+    "previously_corrected_inputs_from_b67": 5
+  },
+  "entries": [
+    {
+      "eingabe": "L-scopolamine",
+      "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q337188",
+      "chembl_id": "CHEMBL569713",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL569713.json",
+      "chembl_live": {
+        "id": "CHEMBL569713",
+        "http": 200,
+        "pref_name": "SCOPOLAMINE",
+        "chirality": 1,
+        "key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "formula": "C17H21NO4",
+        "canonical_smiles": "CN1[C@@H]2C[C@@H](OC(=O)[C@H](CO)c3ccccc3)C[C@H]1[C@@H]1O[C@@H]12",
+        "rdkit": {
+          "total": 6,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "R"
+            ],
+            [
+              4,
+              "s"
+            ],
+            [
+              8,
+              "S"
+            ],
+            [
+              18,
+              "S"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              21,
+              "R"
+            ]
+          ],
+          "key": "STECJAGHUSJQJN-FWXGHANASA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/L-scopolamine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "L-scopolamine",
+        "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "chembl_name": "SCOPOLAMINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 3000322,
+              "Title": "Boro-Scopol",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-USLFZFAMSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-USLFZFAMSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "SCOPOLAMINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/SCOPOLAMINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "SCOPOLAMINE",
+        "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "same_connectivity": [
+          {
+            "CID": 3000322,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-USLFZFAMSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Boro-Scopol"
+          },
+          {
+            "CID": 5184,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3C2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-UHFFFAOYSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 5,
+            "Title": "9-Methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl tropate"
+          },
+          {
+            "CID": 11968014,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-SFSMXDMGSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc200302"
+          },
+          {
+            "CID": 153311,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1C3C2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-MKXJHAPZSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "Npc172518"
+          },
+          {
+            "CID": 6451257,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-QBMZJCKTSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 4,
+            "UndefinedAtomStereoCount": 1,
+            "Title": "Npc117351"
+          },
+          {
+            "CID": 452977,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YXPYLGEYSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc234378"
+          },
+          {
+            "CID": 2723877,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3C2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-PMFPHFEJSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 4,
+            "Title": "Npc267466"
+          },
+          {
+            "CID": 6432494,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YOHVKPHQSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 2,
+            "UndefinedAtomStereoCount": 3,
+            "Title": "6-beta,7-beta-Epoxy-3-alpha-tropanyl S-(-)-tropate"
+          },
+          {
+            "CID": 638340,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@@H]3[C@H]2O3)OC(=O)[C@@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-UQTPLXADSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Lopac-S-1875"
+          },
+          {
+            "CID": 3081743,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YOPVGWMHSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "[(1R,2S,4R,5S)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] (2S)-3-hydroxy-2-phenylpropanoate"
+          },
+          {
+            "CID": 5284456,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@H]2CC(C[C@H]1[C@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YXMSTPNBSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc190558"
+          },
+          {
+            "CID": 9916237,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-XSZHVHBUSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "Scopolamine"
+          },
+          {
+            "CID": 16399351,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3[C@@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-BAPHQMLMSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 4,
+            "Title": "[(4R)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] 3-hydroxy-2-phenylpropanoate"
+          },
+          {
+            "CID": 134767951,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)[C@@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-XUDOQVRBSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "((2R,4S)-9-methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl) (2R)-3-hydroxy-2-phenylpropanoate"
+          }
+        ],
+        "records": 14,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL569713 hat den vollständigen Referenz-Key; PubChem Scopolamine bevorzugt denselben Key. Die PUG-Namenssuche enthält auch einen partiellen gleichnamigen Record, der nicht der bevorzugte Datensatz ist.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Scopolamine"
+      ]
+    },
+    {
+      "eingabe": "L-Scopolamin",
+      "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q337188",
+      "chembl_id": "CHEMBL569713",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL569713.json",
+      "chembl_live": {
+        "id": "CHEMBL569713",
+        "http": 200,
+        "pref_name": "SCOPOLAMINE",
+        "chirality": 1,
+        "key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "formula": "C17H21NO4",
+        "canonical_smiles": "CN1[C@@H]2C[C@@H](OC(=O)[C@H](CO)c3ccccc3)C[C@H]1[C@@H]1O[C@@H]12",
+        "rdkit": {
+          "total": 6,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "R"
+            ],
+            [
+              4,
+              "s"
+            ],
+            [
+              8,
+              "S"
+            ],
+            [
+              18,
+              "S"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              21,
+              "R"
+            ]
+          ],
+          "key": "STECJAGHUSJQJN-FWXGHANASA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/L-Scopolamin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "L-Scopolamin",
+        "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "chembl_name": "SCOPOLAMINE",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "SCOPOLAMINE",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 3000322,
+              "Title": "Boro-Scopol",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-USLFZFAMSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-USLFZFAMSA-N"
+              }
+            },
+            {
+              "CID": 5184,
+              "Title": "9-Methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl tropate",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-UHFFFAOYSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 5,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 6,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "?"
+                  ],
+                  [
+                    8,
+                    "?"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-UHFFFAOYSA-N"
+              }
+            },
+            {
+              "CID": 11968014,
+              "Title": "Npc200302",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-SFSMXDMGSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-SFSMXDMGSA-N"
+              }
+            },
+            {
+              "CID": 153311,
+              "Title": "Npc172518",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-MKXJHAPZSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 3,
+              "UndefinedAtomStereoCount": 2,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 3,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "?"
+                  ],
+                  [
+                    8,
+                    "?"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-MKXJHAPZSA-N"
+              }
+            },
+            {
+              "CID": 6451257,
+              "Title": "Npc117351",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-QBMZJCKTSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 4,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 2,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-QBMZJCKTSA-N"
+              }
+            },
+            {
+              "CID": 452977,
+              "Title": "Npc234378",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-YXPYLGEYSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-YXPYLGEYSA-N"
+              }
+            },
+            {
+              "CID": 2723877,
+              "Title": "Npc267466",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-PMFPHFEJSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 4,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 5,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "?"
+                  ],
+                  [
+                    8,
+                    "?"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-PMFPHFEJSA-N"
+              }
+            },
+            {
+              "CID": 6432494,
+              "Title": "6-beta,7-beta-Epoxy-3-alpha-tropanyl S-(-)-tropate",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-YOHVKPHQSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 2,
+              "UndefinedAtomStereoCount": 3,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 4,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-YOHVKPHQSA-N"
+              }
+            },
+            {
+              "CID": 638340,
+              "Title": "Lopac-S-1875",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-UQTPLXADSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "R"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-UQTPLXADSA-N"
+              }
+            },
+            {
+              "CID": 3081743,
+              "Title": "[(1R,2S,4R,5S)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] (2S)-3-hydroxy-2-phenylpropanoate",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-YOPVGWMHSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-YOPVGWMHSA-N"
+              }
+            },
+            {
+              "CID": 5284456,
+              "Title": "Npc190558",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-YXMSTPNBSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 5,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-YXMSTPNBSA-N"
+              }
+            },
+            {
+              "CID": 9916237,
+              "Title": "Scopolamine",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-XSZHVHBUSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 3,
+              "UndefinedAtomStereoCount": 2,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 3,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "S"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-XSZHVHBUSA-N"
+              }
+            },
+            {
+              "CID": 16399351,
+              "Title": "[(4R)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] 3-hydroxy-2-phenylpropanoate",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-BAPHQMLMSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 4,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 5,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "?"
+                  ],
+                  [
+                    8,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-BAPHQMLMSA-N"
+              }
+            },
+            {
+              "CID": 134767951,
+              "Title": "((2R,4S)-9-methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl) (2R)-3-hydroxy-2-phenylpropanoate",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "STECJAGHUSJQJN-XUDOQVRBSA-N",
+              "AtomStereoCount": 5,
+              "DefinedAtomStereoCount": 3,
+              "UndefinedAtomStereoCount": 2,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 3,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "R"
+                  ]
+                ],
+                "key": "STECJAGHUSJQJN-XUDOQVRBSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "SCOPOLAMINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/SCOPOLAMINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "SCOPOLAMINE",
+        "reference_key": "STECJAGHUSJQJN-FWXGHANASA-N",
+        "same_connectivity": [
+          {
+            "CID": 3000322,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-USLFZFAMSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Boro-Scopol"
+          },
+          {
+            "CID": 5184,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3C2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-UHFFFAOYSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 5,
+            "Title": "9-Methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl tropate"
+          },
+          {
+            "CID": 11968014,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-SFSMXDMGSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc200302"
+          },
+          {
+            "CID": 153311,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1C3C2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-MKXJHAPZSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "Npc172518"
+          },
+          {
+            "CID": 6451257,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-QBMZJCKTSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 4,
+            "UndefinedAtomStereoCount": 1,
+            "Title": "Npc117351"
+          },
+          {
+            "CID": 452977,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@H]2CC(C[C@H]1[C@H]3[C@@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YXPYLGEYSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc234378"
+          },
+          {
+            "CID": 2723877,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3C2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-PMFPHFEJSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 4,
+            "Title": "Npc267466"
+          },
+          {
+            "CID": 6432494,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YOHVKPHQSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 2,
+            "UndefinedAtomStereoCount": 3,
+            "Title": "6-beta,7-beta-Epoxy-3-alpha-tropanyl S-(-)-tropate"
+          },
+          {
+            "CID": 638340,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@@H]3[C@H]2O3)OC(=O)[C@@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-UQTPLXADSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Lopac-S-1875"
+          },
+          {
+            "CID": 3081743,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@@H]2CC(C[C@H]1[C@@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YOPVGWMHSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "[(1R,2S,4R,5S)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] (2S)-3-hydroxy-2-phenylpropanoate"
+          },
+          {
+            "CID": 5284456,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@H]2CC(C[C@H]1[C@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-YXMSTPNBSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 5,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Npc190558"
+          },
+          {
+            "CID": 9916237,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)[C@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-XSZHVHBUSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "Scopolamine"
+          },
+          {
+            "CID": 16399351,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1C3[C@@H]2O3)OC(=O)C(CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-BAPHQMLMSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 4,
+            "Title": "[(4R)-9-methyl-3-oxa-9-azatricyclo[3.3.1.02,4]nonan-7-yl] 3-hydroxy-2-phenylpropanoate"
+          },
+          {
+            "CID": 134767951,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1C2CC(CC1[C@@H]3[C@H]2O3)OC(=O)[C@@H](CO)C4=CC=CC=C4",
+            "InChIKey": "STECJAGHUSJQJN-XUDOQVRBSA-N",
+            "AtomStereoCount": 5,
+            "DefinedAtomStereoCount": 3,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "((2R,4S)-9-methyl-3-oxa-9-azatricyclo(3.3.1.02,4)nonan-7-yl) (2R)-3-hydroxy-2-phenylpropanoate"
+          }
+        ],
+        "records": 14,
+        "error": null
+      },
+      "assessment": "Unverändert: wie englisches Alias L-scopolamine; bevorzugter PubChem-Key und ChEMBL stimmen mit der Referenz überein. Die direkte deutsche PUG-Suche liefert keinen Grund, den vollständigen ChEMBL-Key zu entfernen.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Scopolamine"
+      ]
+    },
+    {
+      "eingabe": "Benzylpenicillin-Benzathin",
+      "reference_key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q868435",
+      "chembl_id": "CHEMBL3182097",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL3182097.json",
+      "chembl_live": {
+        "id": "CHEMBL3182097",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+        "formula": "C48H56N6O8S2",
+        "canonical_smiles": "CC1(C)S[C@@H]2[C@H](NC(=O)Cc3ccccc3)C(=O)N2[C@H]1C(=O)O.CC1(C)S[C@@H]2[C@H](NC(=O)Cc3ccccc3)C(=O)N2[C@H]1C(=O)O.c1ccc(CNCCNCc2ccccc2)cc1",
+        "rdkit": {
+          "total": 6,
+          "unassigned": 0,
+          "atoms": [
+            [
+              4,
+              "R"
+            ],
+            [
+              5,
+              "R"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              27,
+              "R"
+            ],
+            [
+              28,
+              "R"
+            ],
+            [
+              42,
+              "S"
+            ]
+          ],
+          "key": "BVGLIYRKPOITBQ-ANPZCEIESA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Benzylpenicillin-Benzathin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Benzylpenicillin-Benzathin",
+        "reference_key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+        "chembl_name": null,
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 12598398,
+              "Title": "Benzylpenicillin Benzathin",
+              "MolecularFormula": "C48H56N6O8S2",
+              "InChIKey": "BVGLIYRKPOITBQ-UHFFFAOYSA-N",
+              "AtomStereoCount": 6,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 6,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 6,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    4,
+                    "?"
+                  ],
+                  [
+                    6,
+                    "?"
+                  ],
+                  [
+                    25,
+                    "?"
+                  ],
+                  [
+                    27,
+                    "?"
+                  ],
+                  [
+                    29,
+                    "?"
+                  ]
+                ],
+                "key": "BVGLIYRKPOITBQ-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "Benzylpenicillin-Benzathin",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Benzylpenicillin-Benzathin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "Benzylpenicillin-Benzathin",
+        "reference_key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+        "same_connectivity": [
+          {
+            "CID": 12598398,
+            "MolecularFormula": "C48H56N6O8S2",
+            "SMILES": "CC1(C(N2C(S1)C(C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C.CC1(C(N2C(S1)C(C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C.C1=CC=C(C=C1)CNCCNCC2=CC=CC=C2",
+            "InChIKey": "BVGLIYRKPOITBQ-UHFFFAOYSA-N",
+            "AtomStereoCount": 6,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 6,
+            "Title": "Benzylpenicillin Benzathin"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert, Stereo-Sicherheit mittel: ChEMBL CHEMBL3182097 enthält den gespeicherten vollständig definierten Key; direkter PubChem-Record CID 12598398 lässt sechs Atome unbestimmt. Das belegt keine fehlende Stereo im ChEMBL-Key.",
+      "confidence": "mittel",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/12598398"
+      ]
+    },
+    {
+      "eingabe": "Cefixim Anhydrat",
+      "reference_key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q163901",
+      "chembl_id": "CHEMBL1541",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1541.json",
+      "chembl_live": {
+        "id": "CHEMBL1541",
+        "http": 200,
+        "pref_name": "CEFIXIME",
+        "chirality": 1,
+        "key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+        "formula": "C16H15N5O7S2",
+        "canonical_smiles": "C=CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)/C(=N\\OCC(=O)O)c3csc(N)n3)[C@H]2SC1",
+        "rdkit": {
+          "total": 2,
+          "unassigned": 0,
+          "atoms": [
+            [
+              10,
+              "R"
+            ],
+            [
+              27,
+              "R"
+            ]
+          ],
+          "key": "OKBVVJOGVLARMR-QSWIMTSFSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Cefixim%20Anhydrat/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Cefixim Anhydrat",
+        "reference_key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+        "chembl_name": "CEFIXIME",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "CEFIXIME",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5362065,
+              "Title": "Cefixime",
+              "MolecularFormula": "C16H15N5O7S2",
+              "InChIKey": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+              "AtomStereoCount": 2,
+              "DefinedAtomStereoCount": 2,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 2,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    5,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "R"
+                  ]
+                ],
+                "key": "OKBVVJOGVLARMR-QSWIMTSFSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "CEFIXIME",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/CEFIXIME/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "CEFIXIME",
+        "reference_key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5362065,
+            "MolecularFormula": "C16H15N5O7S2",
+            "SMILES": "C=CC1=C(N2[C@@H]([C@@H](C2=O)NC(=O)/C(=N\\OCC(=O)O)/C3=CSC(=N3)N)SC1)C(=O)O",
+            "InChIKey": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+            "AtomStereoCount": 2,
+            "DefinedAtomStereoCount": 2,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Cefixime"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem CID 5362065 und ChEMBL CHEMBL1541 stimmen mit dem gespeicherten Key überein; beide Tetraederzentren sind definiert.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5362065"
+      ]
+    },
+    {
+      "eingabe": "clomifene",
+      "reference_key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q418730",
+      "chembl_id": "CHEMBL2355051",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL2355051.json",
+      "chembl_live": {
+        "id": "CHEMBL2355051",
+        "http": 200,
+        "pref_name": "CLOMIPHENE",
+        "chirality": 2,
+        "key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+        "formula": "C26H28ClNO",
+        "canonical_smiles": "CCN(CC)CCOc1ccc(C(=C(Cl)c2ccccc2)c2ccccc2)cc1",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/clomifene/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "clomifene",
+        "reference_key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+        "chembl_name": "CLOMIPHENE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 1548955,
+              "Title": "Zuclomiphene",
+              "MolecularFormula": "C26H28ClNO",
+              "InChIKey": "GKIRPKYJQBWNGO-QPLCGJKRSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "GKIRPKYJQBWNGO-QPLCGJKRSA-N"
+              }
+            },
+            {
+              "CID": 1548953,
+              "Title": "Enclomiphene",
+              "MolecularFormula": "C26H28ClNO",
+              "InChIKey": "GKIRPKYJQBWNGO-OCEACIFDSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "GKIRPKYJQBWNGO-OCEACIFDSA-N"
+              }
+            },
+            {
+              "CID": 2800,
+              "Title": "Clomiphene",
+              "MolecularFormula": "C26H28ClNO",
+              "InChIKey": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "CLOMIPHENE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/CLOMIPHENE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "CLOMIPHENE",
+        "reference_key": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 2800,
+            "MolecularFormula": "C26H28ClNO",
+            "SMILES": "CCN(CC)CCOC1=CC=C(C=C1)C(=C(C2=CC=CC=C2)Cl)C3=CC=CC=C3",
+            "InChIKey": "GKIRPKYJQBWNGO-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Clomiphene"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem CID 2800 und ChEMBL CHEMBL2355051 stimmen überein; RDKit findet keine tetraedrischen Chiralitätszentren. Der ungespezifizierte Key ist hier kein Hinweis auf fehlende tetraedrische Stereo.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/2800"
+      ]
+    },
+    {
+      "eingabe": "doxycycline",
+      "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q422442",
+      "chembl_id": "CHEMBL1433",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1433.json",
+      "chembl_live": {
+        "id": "CHEMBL1433",
+        "http": 200,
+        "pref_name": "DOXYCYCLINE ANHYDROUS",
+        "chirality": 1,
+        "key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "formula": "C22H24N2O8",
+        "canonical_smiles": "C[C@H]1c2cccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@@H]21",
+        "rdkit": {
+          "total": 6,
+          "unassigned": 0,
+          "atoms": [
+            [
+              1,
+              "R"
+            ],
+            [
+              14,
+              "S"
+            ],
+            [
+              24,
+              "S"
+            ],
+            [
+              28,
+              "R"
+            ],
+            [
+              29,
+              "S"
+            ],
+            [
+              31,
+              "R"
+            ]
+          ],
+          "key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/doxycycline/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "doxycycline",
+        "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "chembl_name": "DOXYCYCLINE ANHYDROUS",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 54671203,
+              "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid",
+              "MolecularFormula": "C22H24N2O8",
+              "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+              "AtomStereoCount": 6,
+              "DefinedAtomStereoCount": 6,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    1,
+                    "R"
+                  ],
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    3,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    5,
+                    "S"
+                  ],
+                  [
+                    10,
+                    "R"
+                  ]
+                ],
+                "key": "SGKRLCUYIXIAHR-AKNGSSGZSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "DOXYCYCLINE ANHYDROUS",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/DOXYCYCLINE%20ANHYDROUS/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "DOXYCYCLINE ANHYDROUS",
+        "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "same_connectivity": [],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL1433, PubChem bevorzugter Doxycycline-Record und PDBe DXT führen den gespeicherten Key. Die PUG-Namenssuche liefert CID 54671203 mit einem anderen ersten Key-Block (6-Epi-Record), also keinen Gegenbeleg zum bevorzugten Arzneistoffrecord.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
+        "https://www.ebi.ac.uk/pdbe-srv/pdbechem/chemicalCompound/show/DXT"
+      ]
+    },
+    {
+      "eingabe": "Doxycyclin",
+      "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q422442",
+      "chembl_id": "CHEMBL1433",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1433.json",
+      "chembl_live": {
+        "id": "CHEMBL1433",
+        "http": 200,
+        "pref_name": "DOXYCYCLINE ANHYDROUS",
+        "chirality": 1,
+        "key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "formula": "C22H24N2O8",
+        "canonical_smiles": "C[C@H]1c2cccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@@H]21",
+        "rdkit": {
+          "total": 6,
+          "unassigned": 0,
+          "atoms": [
+            [
+              1,
+              "R"
+            ],
+            [
+              14,
+              "S"
+            ],
+            [
+              24,
+              "S"
+            ],
+            [
+              28,
+              "R"
+            ],
+            [
+              29,
+              "S"
+            ],
+            [
+              31,
+              "R"
+            ]
+          ],
+          "key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Doxycyclin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Doxycyclin",
+        "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "chembl_name": "DOXYCYCLINE ANHYDROUS",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 54671203,
+              "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid",
+              "MolecularFormula": "C22H24N2O8",
+              "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+              "AtomStereoCount": 6,
+              "DefinedAtomStereoCount": 6,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 6,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    1,
+                    "R"
+                  ],
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    3,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    5,
+                    "S"
+                  ],
+                  [
+                    10,
+                    "R"
+                  ]
+                ],
+                "key": "SGKRLCUYIXIAHR-AKNGSSGZSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "DOXYCYCLINE ANHYDROUS",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/DOXYCYCLINE%20ANHYDROUS/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "DOXYCYCLINE ANHYDROUS",
+        "reference_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "same_connectivity": [],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: wie doxycycline; ChEMBL, PubChem Preferred und PDBe DXT stimmen auf den gespeicherten Key. PUG-Alias-CID 54671203 ist ein anderer 6-Epi-Record.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
+        "https://www.ebi.ac.uk/pdbe-srv/pdbechem/chemicalCompound/show/DXT"
+      ]
+    },
+    {
+      "eingabe": "(−)-Ephedrin",
+      "reference_key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q219626",
+      "chembl_id": "CHEMBL211456",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL211456.json",
+      "chembl_live": {
+        "id": "CHEMBL211456",
+        "http": 200,
+        "pref_name": "EPHEDRINE",
+        "chirality": 1,
+        "key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+        "formula": "C10H15NO",
+        "canonical_smiles": "CN[C@@H](C)[C@H](O)c1ccccc1",
+        "rdkit": {
+          "total": 2,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "S"
+            ],
+            [
+              4,
+              "R"
+            ]
+          ],
+          "key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/%28%E2%88%92%29-Ephedrin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "(−)-Ephedrin",
+        "reference_key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+        "chembl_name": "EPHEDRINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 104213,
+              "Title": "1-Bromo-3-methyl-5-nitrobenzene",
+              "MolecularFormula": "C7H6BrNO2",
+              "InChIKey": "MWFDNXJPZUOTJB-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "MWFDNXJPZUOTJB-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "EPHEDRINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/EPHEDRINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "EPHEDRINE",
+        "reference_key": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+        "same_connectivity": [
+          {
+            "CID": 9294,
+            "MolecularFormula": "C10H15NO",
+            "SMILES": "C[C@@H]([C@@H](C1=CC=CC=C1)O)NC",
+            "InChIKey": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+            "AtomStereoCount": 2,
+            "DefinedAtomStereoCount": 2,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Ephedrine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL211456 und PubChem English-Preferred Ephedrine CID 9294 stimmen auf den vollständigen gespeicherten Key. Die direkte deutsche PUG-Suche liefert CID 104213, 1-bromo-3-methyl-5-nitrobenzene, einen verirrten Synonymtreffer; das ist ein Auflösungsbefund, kein Referenzfehler.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/9294"
+      ]
+    },
+    {
+      "eingabe": "Isosorbiddinitrat",
+      "reference_key": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q179748",
+      "chembl_id": "CHEMBL6622",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL6622.json",
+      "chembl_live": {
+        "id": "CHEMBL6622",
+        "http": 200,
+        "pref_name": "ISOSORBIDE DINITRATE",
+        "chirality": 1,
+        "key": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+        "formula": "C6H8N2O8",
+        "canonical_smiles": "O=[N+]([O-])O[C@H]1CO[C@H]2[C@@H]1OC[C@H]2O[N+](=O)[O-]",
+        "rdkit": {
+          "total": 4,
+          "unassigned": 0,
+          "atoms": [
+            [
+              4,
+              "S"
+            ],
+            [
+              7,
+              "S"
+            ],
+            [
+              8,
+              "S"
+            ],
+            [
+              11,
+              "R"
+            ]
+          ],
+          "key": "MOYKHGMNXAOIAT-JGWLITMVSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Isosorbiddinitrat/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Isosorbiddinitrat",
+        "reference_key": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+        "chembl_name": "ISOSORBIDE DINITRATE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 6604217,
+              "Title": "Isosorbiddinitrat",
+              "MolecularFormula": "C6H8N2O8",
+              "InChIKey": "MOYKHGMNXAOIAT-OMMKOOBNSA-N",
+              "AtomStereoCount": 4,
+              "DefinedAtomStereoCount": 4,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 4,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    1,
+                    "S"
+                  ],
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    3,
+                    "S"
+                  ],
+                  [
+                    5,
+                    "S"
+                  ]
+                ],
+                "key": "MOYKHGMNXAOIAT-OMMKOOBNSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "ISOSORBIDE DINITRATE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/ISOSORBIDE%20DINITRATE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "ISOSORBIDE DINITRATE",
+        "reference_key": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+        "same_connectivity": [
+          {
+            "CID": 6883,
+            "MolecularFormula": "C6H8N2O8",
+            "SMILES": "C1[C@H]([C@@H]2[C@H](O1)[C@H](CO2)O[N+](=O)[O-])O[N+](=O)[O-]",
+            "InChIKey": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+            "AtomStereoCount": 4,
+            "DefinedAtomStereoCount": 4,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Isosorbide Dinitrate"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: die deutsche PUG-Suche trifft einen anderen voll definierten Stereo-Key (CID 6604217); die benannte englische PubChem-Hauptstruktur CID 6883, ChEMBL CHEMBL6622 und ChEBI:6061 stimmen mit dem gespeicherten Key überein. Kein Referenzwechsel.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/6883",
+        "https://www.ebi.ac.uk/chebi/CHEBI:6061"
+      ]
+    },
+    {
+      "eingabe": "β-lactulose",
+      "reference_key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q422689",
+      "chembl_id": "CHEMBL296306",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL296306.json",
+      "chembl_live": {
+        "id": "CHEMBL296306",
+        "http": 200,
+        "pref_name": "LACTULOSE",
+        "chirality": 1,
+        "key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+        "formula": "C12H22O11",
+        "canonical_smiles": "OC[C@H]1O[C@@H](O[C@@H]2[C@@H](CO)O[C@](O)(CO)[C@H]2O)[C@H](O)[C@@H](O)[C@H]1O",
+        "rdkit": {
+          "total": 9,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "R"
+            ],
+            [
+              4,
+              "S"
+            ],
+            [
+              6,
+              "S"
+            ],
+            [
+              7,
+              "R"
+            ],
+            [
+              11,
+              "R"
+            ],
+            [
+              15,
+              "S"
+            ],
+            [
+              17,
+              "R"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              21,
+              "R"
+            ]
+          ],
+          "key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/%CE%B2-lactulose/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "β-lactulose",
+        "reference_key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+        "chembl_name": "LACTULOSE",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "LACTULOSE",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 11333,
+              "Title": "Lactulose",
+              "MolecularFormula": "C12H22O11",
+              "InChIKey": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+              "AtomStereoCount": 9,
+              "DefinedAtomStereoCount": 9,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 9,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    1,
+                    "R"
+                  ],
+                  [
+                    2,
+                    "R"
+                  ],
+                  [
+                    3,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    5,
+                    "S"
+                  ],
+                  [
+                    8,
+                    "S"
+                  ],
+                  [
+                    9,
+                    "R"
+                  ],
+                  [
+                    11,
+                    "R"
+                  ],
+                  [
+                    12,
+                    "S"
+                  ]
+                ],
+                "key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "LACTULOSE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/LACTULOSE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "LACTULOSE",
+        "reference_key": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+        "same_connectivity": [
+          {
+            "CID": 11333,
+            "MolecularFormula": "C12H22O11",
+            "SMILES": "C([C@@H]1[C@@H]([C@@H]([C@H]([C@@H](O1)O[C@@H]2[C@H](O[C@@]([C@H]2O)(CO)O)CO)O)O)O)O",
+            "InChIKey": "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+            "AtomStereoCount": 9,
+            "DefinedAtomStereoCount": 9,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Lactulose"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: der lokale Alias ist in PubChem nicht direkt bekannt; PubChem Lactulose CID 11333 und ChEMBL CHEMBL296306 stimmen mit dem gespeicherten vollständigen Stereo-Key überein.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/11333"
+      ]
+    },
+    {
+      "eingabe": "Mefloquin",
+      "reference_key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q736270",
+      "chembl_id": "CHEMBL416956",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL416956.json",
+      "chembl_live": {
+        "id": "CHEMBL416956",
+        "http": 200,
+        "pref_name": "MEFLOQUINE",
+        "chirality": 0,
+        "key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+        "formula": "C17H16F6N2O",
+        "canonical_smiles": "OC(c1cc(C(F)(F)F)nc2c(C(F)(F)F)cccc12)C1CCCCN1",
+        "rdkit": {
+          "total": 2,
+          "unassigned": 2,
+          "atoms": [
+            [
+              1,
+              "?"
+            ],
+            [
+              20,
+              "?"
+            ]
+          ],
+          "key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Mefloquin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Mefloquin",
+        "reference_key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+        "chembl_name": "MEFLOQUINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 40692,
+              "Title": "(-)-Mefloquine",
+              "MolecularFormula": "C17H16F6N2O",
+              "InChIKey": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+              "AtomStereoCount": 2,
+              "DefinedAtomStereoCount": 2,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 2,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ]
+                ],
+                "key": "XEEQGYMUWCZPDN-DOMZBBRYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "MEFLOQUINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/MEFLOQUINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "MEFLOQUINE",
+        "reference_key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 4046,
+            "MolecularFormula": "C17H16F6N2O",
+            "SMILES": "C1CCNC(C1)C(C2=CC(=NC3=C2C=CC=C3C(F)(F)F)C(F)(F)F)O",
+            "InChIKey": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+            "AtomStereoCount": 2,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 2,
+            "Title": "Mefloquine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert, Name stereochemisch racemisch/unspezifiziert: ChEMBL CHEMBL416956 und PubChem Preferred Mefloquine CID 4046 haben denselben Key mit zwei unbestimmten Zentren. Die deutsche PUG-Suche liefert dagegen das einzelne (-)-Enantiomer CID 40692. Kein Beleg, die racemische Referenz gegen dieses Enantiomer auszutauschen.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/40692",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/4046"
+      ]
+    },
+    {
+      "eingabe": "Naloxon",
+      "reference_key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q282902",
+      "chembl_id": "CHEMBL80",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL80.json",
+      "chembl_live": {
+        "id": "CHEMBL80",
+        "http": 200,
+        "pref_name": "NALOXONE",
+        "chirality": 1,
+        "key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+        "formula": "C19H21NO4",
+        "canonical_smiles": "C=CCN1CC[C@]23c4c5ccc(O)c4O[C@H]2C(=O)CC[C@@]3(O)[C@H]1C5",
+        "rdkit": {
+          "total": 4,
+          "unassigned": 0,
+          "atoms": [
+            [
+              6,
+              "S"
+            ],
+            [
+              15,
+              "R"
+            ],
+            [
+              20,
+              "S"
+            ],
+            [
+              22,
+              "R"
+            ]
+          ],
+          "key": "UZHSEJADLWPNLE-GRGSLBFTSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Naloxon/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Naloxon",
+        "reference_key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+        "chembl_name": "NALOXONE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 16395294,
+              "Title": "Naloxon",
+              "MolecularFormula": "C19H21NO4",
+              "InChIKey": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+              "AtomStereoCount": 4,
+              "DefinedAtomStereoCount": 3,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 4,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    12,
+                    "S"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "UZHSEJADLWPNLE-BIAVLDQUSA-N"
+              }
+            },
+            {
+              "CID": 89727402,
+              "Title": "(4aR,7aR,12bS)-4a,9-dihydroxy-3-prop-2-enyl-2,4,5,6,7a,13-hexahydro-1H-4,12-methanobenzofuro[3,2-e]isoquinolin-7-one",
+              "MolecularFormula": "C19H21NO4",
+              "InChIKey": "UZHSEJADLWPNLE-CISDCURYSA-N",
+              "AtomStereoCount": 4,
+              "DefinedAtomStereoCount": 3,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 4,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    7,
+                    "R"
+                  ],
+                  [
+                    12,
+                    "R"
+                  ],
+                  [
+                    13,
+                    "?"
+                  ]
+                ],
+                "key": "UZHSEJADLWPNLE-CISDCURYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "NALOXONE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/NALOXONE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "NALOXONE",
+        "reference_key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5284596,
+            "MolecularFormula": "C19H21NO4",
+            "SMILES": "C=CCN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O)O4)O",
+            "InChIKey": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+            "AtomStereoCount": 4,
+            "DefinedAtomStereoCount": 4,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Naloxone"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL80 und PubChem Preferred Naloxone CID 5284596 stimmen mit dem vollständig stereodefinierten Referenz-Key überein. Die deutsche PUG-Suche findet zusätzlich CID 16395294 mit einem unbestimmten Zentrum; das ist ein alternativer Alias-Record.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5284596"
+      ]
+    },
+    {
+      "eingabe": "penicillamine",
+      "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q421239",
+      "chembl_id": "CHEMBL1430",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1430.json",
+      "chembl_live": {
+        "id": "CHEMBL1430",
+        "http": 200,
+        "pref_name": "PENICILLAMINE",
+        "chirality": 1,
+        "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "formula": "C5H11NO2S",
+        "canonical_smiles": "CC(C)(S)[C@@H](N)C(=O)O",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 0,
+          "atoms": [
+            [
+              4,
+              "S"
+            ]
+          ],
+          "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/penicillamine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "penicillamine",
+        "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "chembl_name": "PENICILLAMINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5852,
+              "Title": "Penicillamine",
+              "MolecularFormula": "C5H11NO2S",
+              "InChIKey": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    3,
+                    "S"
+                  ]
+                ],
+                "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "PENICILLAMINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/PENICILLAMINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "PENICILLAMINE",
+        "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "same_connectivity": [
+          {
+            "CID": 5852,
+            "MolecularFormula": "C5H11NO2S",
+            "SMILES": "CC(C)([C@H](C(=O)O)N)S",
+            "InChIKey": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Penicillamine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem CID 5852 und ChEMBL CHEMBL1430 bestätigen den vollständigen Key mit einem definierten Zentrum.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5852"
+      ]
+    },
+    {
+      "eingabe": "Penicillamin",
+      "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q421239",
+      "chembl_id": "CHEMBL1430",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1430.json",
+      "chembl_live": {
+        "id": "CHEMBL1430",
+        "http": 200,
+        "pref_name": "PENICILLAMINE",
+        "chirality": 1,
+        "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "formula": "C5H11NO2S",
+        "canonical_smiles": "CC(C)(S)[C@@H](N)C(=O)O",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 0,
+          "atoms": [
+            [
+              4,
+              "S"
+            ]
+          ],
+          "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Penicillamin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Penicillamin",
+        "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "chembl_name": "PENICILLAMINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5852,
+              "Title": "Penicillamine",
+              "MolecularFormula": "C5H11NO2S",
+              "InChIKey": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    3,
+                    "S"
+                  ]
+                ],
+                "key": "VVNCNSJFMMFHPL-VKHMYHEASA-N"
+              }
+            },
+            {
+              "CID": 4727,
+              "Title": "(+-)-Penicillamine",
+              "MolecularFormula": "C5H11NO2S",
+              "InChIKey": "VVNCNSJFMMFHPL-UHFFFAOYSA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    3,
+                    "?"
+                  ]
+                ],
+                "key": "VVNCNSJFMMFHPL-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "PENICILLAMINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/PENICILLAMINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "PENICILLAMINE",
+        "reference_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+        "same_connectivity": [
+          {
+            "CID": 5852,
+            "MolecularFormula": "C5H11NO2S",
+            "SMILES": "CC(C)([C@H](C(=O)O)N)S",
+            "InChIKey": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Penicillamine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: wie penicillamine; PubChem CID 5852 und ChEMBL CHEMBL1430 bestätigen den vollständigen Key mit einem definierten Zentrum.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5852"
+      ]
+    },
+    {
+      "eingabe": "Povidon-Iod",
+      "reference_key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q241516",
+      "chembl_id": "CHEMBL5424182",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL5424182.json",
+      "chembl_live": {
+        "id": "CHEMBL5424182",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+        "formula": "C6H9I2NO",
+        "canonical_smiles": "C=CN1CCCC1=O.II",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Povidon-Iod/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Povidon-Iod",
+        "reference_key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+        "chembl_name": null,
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "Povidon-Iod",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Povidon-Iod/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "Povidon-Iod",
+        "reference_key": "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+        "same_connectivity": [],
+        "records": 0,
+        "error": "HTTP Error 404: PUGREST.NotFound"
+      },
+      "assessment": "Unverändert, Identität nicht vollständig unabhängig gegengeprüft: direkte PubChem-Suche liefert 404; ChEMBL CHEMBL5424182 hat keine tetraedrischen Zentren. Kein Hinweis auf unvollständige tetraedrische Stereo, aber PubChem-Bestätigung fehlt.",
+      "confidence": "mittel",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL5424182.json"
+      ]
+    },
+    {
+      "eingabe": "rifabutin",
+      "reference_key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q1135705",
+      "chembl_id": "CHEMBL444633",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL444633.json",
+      "chembl_live": {
+        "id": "CHEMBL444633",
+        "http": 200,
+        "pref_name": "RIFABUTIN",
+        "chirality": 1,
+        "key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+        "formula": "C46H62N4O11",
+        "canonical_smiles": "CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(c3C2=O)C2=NC3(CCN(CC(C)C)CC3)NC2=C(NC(=O)/C(C)=C\\C=C\\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C)C4=O",
+        "rdkit": {
+          "total": 9,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "S"
+            ],
+            [
+              6,
+              "S"
+            ],
+            [
+              42,
+              "S"
+            ],
+            [
+              44,
+              "S"
+            ],
+            [
+              46,
+              "R"
+            ],
+            [
+              48,
+              "R"
+            ],
+            [
+              50,
+              "R"
+            ],
+            [
+              52,
+              "S"
+            ],
+            [
+              57,
+              "R"
+            ]
+          ],
+          "key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/rifabutin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "rifabutin",
+        "reference_key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+        "chembl_name": "RIFABUTIN",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 135415564,
+              "Title": "Rifabutin",
+              "MolecularFormula": "C46H62N4O11",
+              "InChIKey": "AZFBLLCNOQPJGJ-VXTBVIBXSA-N",
+              "AtomStereoCount": 9,
+              "DefinedAtomStereoCount": 9,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 9,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    1,
+                    "S"
+                  ],
+                  [
+                    20,
+                    "S"
+                  ],
+                  [
+                    26,
+                    "S"
+                  ],
+                  [
+                    27,
+                    "R"
+                  ],
+                  [
+                    28,
+                    "S"
+                  ],
+                  [
+                    29,
+                    "R"
+                  ],
+                  [
+                    30,
+                    "R"
+                  ],
+                  [
+                    31,
+                    "R"
+                  ],
+                  [
+                    32,
+                    "S"
+                  ]
+                ],
+                "key": "AZFBLLCNOQPJGJ-VXTBVIBXSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "RIFABUTIN",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/RIFABUTIN/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "RIFABUTIN",
+        "reference_key": "ATEBXHFBFRCZMA-VXTBVIBXSA-N",
+        "same_connectivity": [],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL444633, ChEBI:45367 und PubChem Reference Collection nennen den gespeicherten Key. Die PUG-Namenssuche auf CID 135415564 liefert einen abweichenden Struktur-Key; PubChem führt damit eine interne Record-Diskrepanz. Kein unabhängiger Beleg für eine Referenzänderung.",
+      "confidence": "mittel",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chebi/CHEBI:45367",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Rifabutin",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/135415564"
+      ]
+    },
+    {
+      "eingabe": "Risperidon",
+      "reference_key": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q412443",
+      "chembl_id": "CHEMBL85",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL85.json",
+      "chembl_live": {
+        "id": "CHEMBL85",
+        "http": 200,
+        "pref_name": "RISPERIDONE",
+        "chirality": 2,
+        "key": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+        "formula": "C23H27FN4O2",
+        "canonical_smiles": "Cc1nc2n(c(=O)c1CCN1CCC(c3noc4cc(F)ccc34)CC1)CCCC2",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "RAPZEAPATHNIPO-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Risperidon/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Risperidon",
+        "reference_key": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+        "chembl_name": "RISPERIDONE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 44402564,
+              "Title": "Risperidon",
+              "MolecularFormula": "C23H29FN4O2",
+              "InChIKey": "WDNMHZRFIIOXOD-UHFFFAOYSA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    20,
+                    "?"
+                  ]
+                ],
+                "key": "WDNMHZRFIIOXOD-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "RISPERIDONE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/RISPERIDONE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "RISPERIDONE",
+        "reference_key": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5073,
+            "MolecularFormula": "C23H27FN4O2",
+            "SMILES": "CC1=C(C(=O)N2CCCCC2=N1)CCN3CCC(CC3)C4=NOC5=C4C=CC(=C5)F",
+            "InChIKey": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Risperidone"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL85 und PubChem Preferred Risperidone CID 5073 stimmen auf denselben Key; keine tetraedrischen Chiralitätszentren. Die deutsche PUG-Direktsuche liefert einen anderen Alias-Record CID 44402564 und ist kein Referenzbeleg.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5073"
+      ]
+    },
+    {
+      "eingabe": "sulfasalazine",
+      "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q420035",
+      "chembl_id": "CHEMBL421",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL421.json",
+      "chembl_live": {
+        "id": "CHEMBL421",
+        "http": 200,
+        "pref_name": "SULFASALAZINE",
+        "chirality": 2,
+        "key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "formula": "C18H14N4O5S",
+        "canonical_smiles": "O=C(O)c1cc(/N=N/c2ccc(S(=O)(=O)Nc3ccccn3)cc2)ccc1O",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "NCEXYHBECQHGNR-QZQOTICOSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/sulfasalazine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "sulfasalazine",
+        "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "chembl_name": "SULFASALAZINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5339,
+              "Title": "Sulfasalazine",
+              "MolecularFormula": "C18H14N4O5S",
+              "InChIKey": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "NCEXYHBECQHGNR-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "SULFASALAZINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/SULFASALAZINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "SULFASALAZINE",
+        "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5339,
+            "MolecularFormula": "C18H14N4O5S",
+            "SMILES": "C1=CC=NC(=C1)NS(=O)(=O)C2=CC=C(C=C2)N=NC3=CC(=C(C=C3)O)C(=O)O",
+            "InChIKey": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Sulfasalazine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL421 und PubChem Preferred Sulfasalazine führen den gespeicherten Key mit E/Z-Stereochemie. PUG-Standard-CID 5339 liefert einen Key ohne dieses E/Z, daher zählt die Preferred-Summary als benannter Hauptrecord; keine Änderung.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Sulfasalazine",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5339"
+      ]
+    },
+    {
+      "eingabe": "Sulfasalazin",
+      "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q420035",
+      "chembl_id": "CHEMBL421",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL421.json",
+      "chembl_live": {
+        "id": "CHEMBL421",
+        "http": 200,
+        "pref_name": "SULFASALAZINE",
+        "chirality": 2,
+        "key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "formula": "C18H14N4O5S",
+        "canonical_smiles": "O=C(O)c1cc(/N=N/c2ccc(S(=O)(=O)Nc3ccccn3)cc2)ccc1O",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "NCEXYHBECQHGNR-QZQOTICOSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Sulfasalazin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Sulfasalazin",
+        "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "chembl_name": "SULFASALAZINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5339,
+              "Title": "Sulfasalazine",
+              "MolecularFormula": "C18H14N4O5S",
+              "InChIKey": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "NCEXYHBECQHGNR-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "SULFASALAZINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/SULFASALAZINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "SULFASALAZINE",
+        "reference_key": "NCEXYHBECQHGNR-QZQOTICOSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5339,
+            "MolecularFormula": "C18H14N4O5S",
+            "SMILES": "C1=CC=NC(=C1)NS(=O)(=O)C2=CC=C(C=C2)N=NC3=CC(=C(C=C3)O)C(=O)O",
+            "InChIKey": "NCEXYHBECQHGNR-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Sulfasalazine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: wie sulfasalazine; ChEMBL und PubChem Preferred bestätigen den E/Z-Key. Der generische PUG-CID ohne E/Z wird nicht als Hauptrecord gewertet.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Sulfasalazine",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5339"
+      ]
+    },
+    {
+      "eingabe": "(S)-(−)-timolol",
+      "reference_key": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q413994",
+      "chembl_id": "CHEMBL499",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL499.json",
+      "chembl_live": {
+        "id": "CHEMBL499",
+        "http": 200,
+        "pref_name": "TIMOLOL",
+        "chirality": 1,
+        "key": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+        "formula": "C13H24N4O3S",
+        "canonical_smiles": "CC(C)(C)NC[C@H](O)COc1nsnc1N1CCOCC1",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 0,
+          "atoms": [
+            [
+              6,
+              "S"
+            ]
+          ],
+          "key": "BLJRIMJGRPQVNF-JTQLQIEISA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/%28S%29-%28%E2%88%92%29-timolol/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "(S)-(−)-timolol",
+        "reference_key": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+        "chembl_name": "TIMOLOL",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "TIMOLOL",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 33624,
+              "Title": "Timolol",
+              "MolecularFormula": "C13H24N4O3S",
+              "InChIKey": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    6,
+                    "S"
+                  ]
+                ],
+                "key": "BLJRIMJGRPQVNF-JTQLQIEISA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "TIMOLOL",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/TIMOLOL/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "TIMOLOL",
+        "reference_key": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+        "same_connectivity": [
+          {
+            "CID": 33624,
+            "MolecularFormula": "C13H24N4O3S",
+            "SMILES": "CC(C)(C)NC[C@@H](COC1=NSN=C1N2CCOCC2)O",
+            "InChIKey": "BLJRIMJGRPQVNF-JTQLQIEISA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Timolol"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL499 und PubChem CID 33624 stimmen auf den vollständigen Key; das eine tetraedrische Zentrum ist definiert.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/33624"
+      ]
+    },
+    {
+      "eingabe": "tranexamic acid",
+      "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q418666",
+      "chembl_id": "CHEMBL877",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL877.json",
+      "chembl_live": {
+        "id": "CHEMBL877",
+        "http": 200,
+        "pref_name": "TRANEXAMIC ACID",
+        "chirality": 1,
+        "key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "formula": "C8H15NO2",
+        "canonical_smiles": "NC[C@H]1CC[C@H](C(=O)O)CC1",
+        "rdkit": {
+          "total": 2,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "r"
+            ],
+            [
+              5,
+              "r"
+            ]
+          ],
+          "key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/tranexamic%20acid/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "tranexamic acid",
+        "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "chembl_name": "TRANEXAMIC ACID",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5526,
+              "Title": "4-(Aminomethyl)cyclohexanecarboxylic acid",
+              "MolecularFormula": "C8H15NO2",
+              "InChIKey": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 2,
+                "unassigned": 2,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    5,
+                    "?"
+                  ]
+                ],
+                "key": "GYDJEQRTZSCIOI-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "TRANEXAMIC ACID",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/TRANEXAMIC%20ACID/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "TRANEXAMIC ACID",
+        "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5526,
+            "MolecularFormula": "C8H15NO2",
+            "SMILES": "C1CC(CCC1CN)C(=O)O",
+            "InChIKey": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "4-(Aminomethyl)cyclohexanecarboxylic acid"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL877 und ChEBI:48669 definieren die trans-Form mit gespeichertem Key. PubChem CID 5526 liefert nur die stereochemisch unbestimmte Grundstruktur; das widerlegt die ausdrücklich trans definierte Referenz nicht.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chebi/CHEBI:48669",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5526"
+      ]
+    },
+    {
+      "eingabe": "Tranexamsäure",
+      "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q418666",
+      "chembl_id": "CHEMBL877",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL877.json",
+      "chembl_live": {
+        "id": "CHEMBL877",
+        "http": 200,
+        "pref_name": "TRANEXAMIC ACID",
+        "chirality": 1,
+        "key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "formula": "C8H15NO2",
+        "canonical_smiles": "NC[C@H]1CC[C@H](C(=O)O)CC1",
+        "rdkit": {
+          "total": 2,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "r"
+            ],
+            [
+              5,
+              "r"
+            ]
+          ],
+          "key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Tranexams%C3%A4ure/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Tranexamsäure",
+        "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "chembl_name": "TRANEXAMIC ACID",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "TRANEXAMIC ACID",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5526,
+              "Title": "4-(Aminomethyl)cyclohexanecarboxylic acid",
+              "MolecularFormula": "C8H15NO2",
+              "InChIKey": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 2,
+                "unassigned": 2,
+                "atoms": [
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    5,
+                    "?"
+                  ]
+                ],
+                "key": "GYDJEQRTZSCIOI-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "TRANEXAMIC ACID",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/TRANEXAMIC%20ACID/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "TRANEXAMIC ACID",
+        "reference_key": "GYDJEQRTZSCIOI-LJGSYFOKSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5526,
+            "MolecularFormula": "C8H15NO2",
+            "SMILES": "C1CC(CCC1CN)C(=O)O",
+            "InChIKey": "GYDJEQRTZSCIOI-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "4-(Aminomethyl)cyclohexanecarboxylic acid"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: wie tranexamic acid; ChEBI definiert die trans-Form und bestätigt den Key, ChEMBL stimmt ebenfalls. PubChem CID 5526 ist stereochemisch allgemeiner.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chebi/CHEBI:48669",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5526"
+      ]
+    },
+    {
+      "eingabe": "vinblastine",
+      "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q282629",
+      "chembl_id": "CHEMBL22969",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL22969.json",
+      "chembl_live": {
+        "id": "CHEMBL22969",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "formula": "C46H58N4O9",
+        "canonical_smiles": "CC[C@]1(O)C[C@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit": {
+          "total": 10,
+          "unassigned": 1,
+          "atoms": [
+            [
+              2,
+              "S"
+            ],
+            [
+              5,
+              "S"
+            ],
+            [
+              7,
+              "?"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              34,
+              "R"
+            ],
+            [
+              35,
+              "S"
+            ],
+            [
+              41,
+              "R"
+            ],
+            [
+              46,
+              "R"
+            ],
+            [
+              55,
+              "R"
+            ],
+            [
+              56,
+              "R"
+            ]
+          ],
+          "key": "JXLYSJRDGCGARV-XQKSVPLYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/vinblastine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "vinblastine",
+        "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "chembl_name": null,
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 13342,
+              "Title": "Vinblastine",
+              "MolecularFormula": "C46H58N4O9",
+              "InChIKey": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+              "AtomStereoCount": 9,
+              "DefinedAtomStereoCount": 9,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 10,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    11,
+                    "?"
+                  ],
+                  [
+                    27,
+                    "R"
+                  ],
+                  [
+                    31,
+                    "R"
+                  ],
+                  [
+                    32,
+                    "R"
+                  ],
+                  [
+                    36,
+                    "R"
+                  ],
+                  [
+                    37,
+                    "S"
+                  ],
+                  [
+                    38,
+                    "R"
+                  ]
+                ],
+                "key": "JXLYSJRDGCGARV-CFWMRBGOSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "vinblastine",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/vinblastine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "vinblastine",
+        "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 13342,
+            "MolecularFormula": "C46H58N4O9",
+            "SMILES": "CC[C@@]1(C[C@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+            "InChIKey": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+            "AtomStereoCount": 9,
+            "DefinedAtomStereoCount": 9,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Vinblastine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert / Stereo bleibt unklar: ChEMBL CHEMBL22969 und ChEBI:27375 bestätigen den alten Key. PubChem CID 13342 ist vollständig für neun Zentren, ändert aber zugleich ein bereits gesetztes C-Zentrum relativ zur Referenz; beide Strukturen lassen das N-Zentrum offen. Eine Umstellung wäre nicht quellenbelegt.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chebi/CHEBI:27375",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
+      ]
+    },
+    {
+      "eingabe": "Vinblastin",
+      "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q282629",
+      "chembl_id": "CHEMBL22969",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL22969.json",
+      "chembl_live": {
+        "id": "CHEMBL22969",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "formula": "C46H58N4O9",
+        "canonical_smiles": "CC[C@]1(O)C[C@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit": {
+          "total": 10,
+          "unassigned": 1,
+          "atoms": [
+            [
+              2,
+              "S"
+            ],
+            [
+              5,
+              "S"
+            ],
+            [
+              7,
+              "?"
+            ],
+            [
+              19,
+              "S"
+            ],
+            [
+              34,
+              "R"
+            ],
+            [
+              35,
+              "S"
+            ],
+            [
+              41,
+              "R"
+            ],
+            [
+              46,
+              "R"
+            ],
+            [
+              55,
+              "R"
+            ],
+            [
+              56,
+              "R"
+            ]
+          ],
+          "key": "JXLYSJRDGCGARV-XQKSVPLYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Vinblastin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Vinblastin",
+        "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "chembl_name": null,
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 13342,
+              "Title": "Vinblastine",
+              "MolecularFormula": "C46H58N4O9",
+              "InChIKey": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+              "AtomStereoCount": 9,
+              "DefinedAtomStereoCount": 9,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 10,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    2,
+                    "S"
+                  ],
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    11,
+                    "?"
+                  ],
+                  [
+                    27,
+                    "R"
+                  ],
+                  [
+                    31,
+                    "R"
+                  ],
+                  [
+                    32,
+                    "R"
+                  ],
+                  [
+                    36,
+                    "R"
+                  ],
+                  [
+                    37,
+                    "S"
+                  ],
+                  [
+                    38,
+                    "R"
+                  ]
+                ],
+                "key": "JXLYSJRDGCGARV-CFWMRBGOSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "Vinblastin",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Vinblastin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "Vinblastin",
+        "reference_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 13342,
+            "MolecularFormula": "C46H58N4O9",
+            "SMILES": "CC[C@@]1(C[C@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+            "InChIKey": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+            "AtomStereoCount": 9,
+            "DefinedAtomStereoCount": 9,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Vinblastine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert / Stereo bleibt unklar: wie vinblastine. ChEMBL und ChEBI bestätigen den gespeicherten Key; PubChem CID 13342 widerspricht an einem bereits spezifizierten C-Zentrum. Kein sicherer Ersatz.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chebi/CHEBI:27375",
+        "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
+      ]
+    },
+    {
+      "eingabe": "Vinorelbin",
+      "reference_key": "GBABOYUKABKIAF-IELIFDKJSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q420532",
+      "chembl_id": "CHEMBL553025",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL553025.json",
+      "chembl_live": {
+        "id": "CHEMBL553025",
+        "http": 200,
+        "pref_name": "VINORELBINE",
+        "chirality": 1,
+        "key": "GBABOYUKABKIAF-IELIFDKJSA-N",
+        "formula": "C45H54N4O8",
+        "canonical_smiles": "CCC1=C[C@@H]2CN(C1)Cc1c([nH]c3ccccc13)[C@@](C(=O)OC)(c1cc3c(cc1OC)N(C)[C@H]1[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]4(CC)C=CCN5CC[C@]31[C@@H]54)C2",
+        "rdkit": {
+          "total": 9,
+          "unassigned": 1,
+          "atoms": [
+            [
+              4,
+              "R"
+            ],
+            [
+              6,
+              "?"
+            ],
+            [
+              18,
+              "S"
+            ],
+            [
+              33,
+              "R"
+            ],
+            [
+              34,
+              "S"
+            ],
+            [
+              40,
+              "R"
+            ],
+            [
+              45,
+              "R"
+            ],
+            [
+              54,
+              "R"
+            ],
+            [
+              55,
+              "R"
+            ]
+          ],
+          "key": "GBABOYUKABKIAF-IELIFDKJSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Vinorelbin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Vinorelbin",
+        "reference_key": "GBABOYUKABKIAF-IELIFDKJSA-N",
+        "chembl_name": "VINORELBINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 44424639,
+              "Title": "methyl (1R,9R,10R,11R,12R,19R)-11-(acetyloxy)-12-ethyl-4-[(12S,14R)-16-ethyl-12-(methoxycarbonyl)-1,10-diazatetracyclo[12.3.1.0^{3,11}.0^{4,9}]octadeca-3(11),4,6,8,15-pentaen-12-yl]-10-hydroxy-5-methoxy-8-methyl-8,16-diazapentacyclo[10.6.1.0^{1,9}.0^{2,7}.0^{16,19}]nonadeca-2,4,6,13-tetraene-10-carboxylate",
+              "MolecularFormula": "C45H54N4O8",
+              "InChIKey": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+              "AtomStereoCount": 8,
+              "DefinedAtomStereoCount": 8,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 9,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    4,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "S"
+                  ],
+                  [
+                    10,
+                    "?"
+                  ],
+                  [
+                    26,
+                    "R"
+                  ],
+                  [
+                    30,
+                    "R"
+                  ],
+                  [
+                    31,
+                    "R"
+                  ],
+                  [
+                    35,
+                    "R"
+                  ],
+                  [
+                    36,
+                    "R"
+                  ],
+                  [
+                    37,
+                    "R"
+                  ]
+                ],
+                "key": "GBABOYUKABKIAF-GHYRFKGUSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "VINORELBINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/VINORELBINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "VINORELBINE",
+        "reference_key": "GBABOYUKABKIAF-IELIFDKJSA-N",
+        "same_connectivity": [
+          {
+            "CID": 5311497,
+            "MolecularFormula": "C45H54N4O8",
+            "SMILES": "CCC1=C[C@H]2C[C@@](C3=C(CN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC",
+            "InChIKey": "GBABOYUKABKIAF-IELIFDKJSA-N",
+            "AtomStereoCount": 8,
+            "DefinedAtomStereoCount": 8,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Vinorelbine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem CID 5311497 und ChEMBL CHEMBL553025 stimmen auf den gespeicherten Key; ChEMBL lässt im RDKit-Scan ein N-Zentrum unzugewiesen, PubChem zählt acht definierte Atomzentren und liefert denselben Key. Kein fehlendes C-Zentrum und kein Referenzwechsel.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Vinorelbine"
+      ]
+    },
+    {
+      "eingabe": "Metamizol (freie Säure)",
+      "reference_key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q56719288",
+      "chembl_id": "CHEMBL461522",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL461522.json",
+      "chembl_live": {
+        "id": "CHEMBL461522",
+        "http": 200,
+        "pref_name": "METAMIZOLE",
+        "chirality": 2,
+        "key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+        "formula": "C13H17N3O4S",
+        "canonical_smiles": "Cc1c(N(C)CS(=O)(=O)O)c(=O)n(-c2ccccc2)n1C",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Metamizol%20%28freie%20S%C3%A4ure%29/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Metamizol (freie Säure)",
+        "reference_key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+        "chembl_name": "METAMIZOLE",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "METAMIZOLE",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 3111,
+              "Title": "Metamizole",
+              "MolecularFormula": "C13H17N3O4S",
+              "InChIKey": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "METAMIZOLE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/METAMIZOLE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "METAMIZOLE",
+        "reference_key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 3111,
+            "MolecularFormula": "C13H17N3O4S",
+            "SMILES": "CC1=C(C(=O)N(N1C)C2=CC=CC=C2)N(C)CS(=O)(=O)O",
+            "InChIKey": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Metamizole"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: ChEMBL CHEMBL461522 und PubChem CID 3111 stimmen überein; es gibt keine tetraedrischen Zentren.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/3111"
+      ]
+    },
+    {
+      "eingabe": "Citral A+B",
+      "reference_key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q60176530",
+      "chembl_id": "CHEMBL2297541",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL2297541.json",
+      "chembl_live": {
+        "id": "CHEMBL2297541",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+        "formula": "C10H16O",
+        "canonical_smiles": "CC(C)=CCCC(C)=CC=O",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Citral%20A%2BB/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Citral A+B",
+        "reference_key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+        "chembl_name": null,
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "Citral A+B",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Citral%20A%2BB/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "Citral A+B",
+        "reference_key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+        "same_connectivity": [],
+        "records": 0,
+        "error": "HTTP Error 404: PUGREST.NotFound"
+      },
+      "assessment": "Unverändert, Stereo-/Identitätssicherheit mittel: PubChem liefert für den Namen 404; ChEMBL CHEMBL2297541 und die Fixture führen einen A+B-Eintrag ohne tetraedrische Zentren. Ohne diskreten PubChem-Hauptrecord keine Änderung.",
+      "confidence": "mittel",
+      "supporting_sources": [
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL2297541.json"
+      ]
+    },
+    {
+      "eingabe": "cocaine",
+      "reference_key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q105381234",
+      "chembl_id": "CHEMBL19151",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL19151.json",
+      "chembl_live": {
+        "id": "CHEMBL19151",
+        "http": 200,
+        "pref_name": null,
+        "chirality": -1,
+        "key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+        "formula": "C17H21NO4",
+        "canonical_smiles": "COC(=O)[C@@H]1C2CCC(C[C@@H]1OC(=O)c1ccccc1)N2C",
+        "rdkit": {
+          "total": 4,
+          "unassigned": 2,
+          "atoms": [
+            [
+              4,
+              "R"
+            ],
+            [
+              5,
+              "?"
+            ],
+            [
+              8,
+              "?"
+            ],
+            [
+              10,
+              "S"
+            ]
+          ],
+          "key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/cocaine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "cocaine",
+        "reference_key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+        "chembl_name": null,
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 446220,
+              "Title": "Cocaine",
+              "MolecularFormula": "C17H21NO4",
+              "InChIKey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+              "AtomStereoCount": 4,
+              "DefinedAtomStereoCount": 4,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 4,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    2,
+                    "S"
+                  ],
+                  [
+                    5,
+                    "R"
+                  ],
+                  [
+                    6,
+                    "R"
+                  ],
+                  [
+                    7,
+                    "S"
+                  ]
+                ],
+                "key": "ZPUCINDJVBIVPJ-LJISPDSOSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "cocaine",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/cocaine/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "cocaine",
+        "reference_key": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+        "same_connectivity": [
+          {
+            "CID": 446220,
+            "MolecularFormula": "C17H21NO4",
+            "SMILES": "CN1[C@H]2CC[C@@H]1[C@H]([C@H](C2)OC(=O)C3=CC=CC=C3)C(=O)OC",
+            "InChIKey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+            "AtomStereoCount": 4,
+            "DefinedAtomStereoCount": 4,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Cocaine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Korrigiert: CHEMBL19151 bestätigt nur den alten Key mit zwei unbestimmten C-Zentren. PubChem CID 446220 und ChEMBL CHEMBL370805 liefern denselben vollständig definierten Key ZPUCINDJVBIVPJ-LJISPDSOSA-N; ChEBI:27958 stimmt überein.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/446220",
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL370805.json",
+        "https://www.ebi.ac.uk/chebi/CHEBI:27958"
+      ]
+    },
+    {
+      "eingabe": "Adrenalin",
+      "reference_key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q132621",
+      "chembl_id": "CHEMBL679",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL679.json",
+      "chembl_live": {
+        "id": "CHEMBL679",
+        "http": 200,
+        "pref_name": "EPINEPHRINE",
+        "chirality": 1,
+        "key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+        "formula": "C9H13NO3",
+        "canonical_smiles": "CNC[C@H](O)c1ccc(O)c(O)c1",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 0,
+          "atoms": [
+            [
+              3,
+              "R"
+            ]
+          ],
+          "key": "UCTWMZQNUQWSLP-VIFPVBQESA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Adrenalin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Adrenalin",
+        "reference_key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+        "chembl_name": "EPINEPHRINE",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 5816,
+              "Title": "Epinephrine",
+              "MolecularFormula": "C9H13NO3",
+              "InChIKey": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    3,
+                    "R"
+                  ]
+                ],
+                "key": "UCTWMZQNUQWSLP-VIFPVBQESA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "EPINEPHRINE",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/EPINEPHRINE/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "EPINEPHRINE",
+        "reference_key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+        "same_connectivity": [
+          {
+            "CID": 5816,
+            "MolecularFormula": "C9H13NO3",
+            "SMILES": "CNC[C@@H](C1=CC(=C(C=C1)O)O)O",
+            "InChIKey": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 1,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Epinephrine"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem Epinephrine CID 5816 und ChEMBL CHEMBL679 stimmen auf den gespeicherten Key mit einem definierten Zentrum.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/5816"
+      ]
+    },
+    {
+      "eingabe": "Ethylendiamintetraessigsäure",
+      "reference_key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q408032",
+      "chembl_id": "CHEMBL858",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL858.json",
+      "chembl_live": {
+        "id": "CHEMBL858",
+        "http": 200,
+        "pref_name": "EDETIC ACID",
+        "chirality": 2,
+        "key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+        "formula": "C10H16N2O8",
+        "canonical_smiles": "O=C(O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O",
+        "rdkit": {
+          "total": 0,
+          "unassigned": 0,
+          "atoms": [],
+          "key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Ethylendiamintetraessigs%C3%A4ure/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Ethylendiamintetraessigsäure",
+        "reference_key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+        "chembl_name": "EDETIC ACID",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "EDETIC ACID",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 6049,
+              "Title": "Ethylenediaminetetraacetic Acid",
+              "MolecularFormula": "C10H16N2O8",
+              "InChIKey": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+              "AtomStereoCount": 0,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 0,
+                "unassigned": 0,
+                "atoms": [],
+                "key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "EDETIC ACID",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/EDETIC%20ACID/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "EDETIC ACID",
+        "reference_key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 6049,
+            "MolecularFormula": "C10H16N2O8",
+            "SMILES": "C(CN(CC(=O)O)CC(=O)O)N(CC(=O)O)CC(=O)O",
+            "InChIKey": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+            "AtomStereoCount": 0,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "Ethylenediaminetetraacetic Acid"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert: PubChem EDTA CID 6049 und ChEMBL CHEMBL858 stimmen auf den gespeicherten Key; keine tetraedrischen Zentren.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/6049"
+      ]
+    },
+    {
+      "eingabe": "pantothenic acid",
+      "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q179894",
+      "chembl_id": "CHEMBL2110806",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL2110806.json",
+      "chembl_live": {
+        "id": "CHEMBL2110806",
+        "http": 200,
+        "pref_name": "PANTOTHENIC ACID, RACEMIC",
+        "chirality": 0,
+        "key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "formula": "C9H17NO5",
+        "canonical_smiles": "CC(C)(CO)C(O)C(=O)NCCC(=O)O",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 1,
+          "atoms": [
+            [
+              5,
+              "?"
+            ]
+          ],
+          "key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/pantothenic%20acid/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "pantothenic acid",
+        "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "chembl_name": "PANTOTHENIC ACID, RACEMIC",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 6613,
+              "Title": "Pantothenic Acid",
+              "MolecularFormula": "C9H17NO5",
+              "InChIKey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 1,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 0,
+                "atoms": [
+                  [
+                    5,
+                    "R"
+                  ]
+                ],
+                "key": "GHOKWGTUZJEAQD-ZETCQYMHSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "PANTOTHENIC ACID, RACEMIC",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/PANTOTHENIC%20ACID%2C%20RACEMIC/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "PANTOTHENIC ACID, RACEMIC",
+        "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 988,
+            "MolecularFormula": "C9H17NO5",
+            "SMILES": "CC(C)(CO)C(C(=O)NCCC(=O)O)O",
+            "InChIKey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 1,
+            "Title": "(+-)-Pantothenic acid"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Korrigiert: CHEMBL2110806 ist ausdrücklich PANTOTHENIC ACID, RACEMIC und bestätigt nur den unbestimmten alten Key. PubChem CID 6613 und ChEMBL CHEMBL1594 stimmen auf den vollständigen R-Key GHOKWGTUZJEAQD-ZETCQYMHSA-N; ChEBI:46905 ist R-Pantothensäure.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/6613",
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1594.json",
+        "https://www.ebi.ac.uk/chebi/CHEBI:46905"
+      ]
+    },
+    {
+      "eingabe": "Pantothensäure",
+      "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q179894",
+      "chembl_id": "CHEMBL2110806",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL2110806.json",
+      "chembl_live": {
+        "id": "CHEMBL2110806",
+        "http": 200,
+        "pref_name": "PANTOTHENIC ACID, RACEMIC",
+        "chirality": 0,
+        "key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "formula": "C9H17NO5",
+        "canonical_smiles": "CC(C)(CO)C(O)C(=O)NCCC(=O)O",
+        "rdkit": {
+          "total": 1,
+          "unassigned": 1,
+          "atoms": [
+            [
+              5,
+              "?"
+            ]
+          ],
+          "key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Pantothens%C3%A4ure/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Pantothensäure",
+        "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "chembl_name": "PANTOTHENIC ACID, RACEMIC",
+        "query": {
+          "error": "HTTPError: HTTP Error 404: PUGREST.NotFound"
+        },
+        "fallback": {
+          "name": "PANTOTHENIC ACID, RACEMIC",
+          "http": 200,
+          "properties": [
+            {
+              "CID": 988,
+              "Title": "(+-)-Pantothenic acid",
+              "MolecularFormula": "C9H17NO5",
+              "InChIKey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+              "AtomStereoCount": 1,
+              "DefinedAtomStereoCount": 0,
+              "UndefinedAtomStereoCount": 1,
+              "rdkit": {
+                "total": 1,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    5,
+                    "?"
+                  ]
+                ],
+                "key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N"
+              }
+            }
+          ]
+        }
+      },
+      "pubchem_preferred_name_query": "PANTOTHENIC ACID, RACEMIC",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/PANTOTHENIC%20ACID%2C%20RACEMIC/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "PANTOTHENIC ACID, RACEMIC",
+        "reference_key": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 988,
+            "MolecularFormula": "C9H17NO5",
+            "SMILES": "CC(C)(CO)C(C(=O)NCCC(=O)O)O",
+            "InChIKey": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+            "AtomStereoCount": 1,
+            "DefinedAtomStereoCount": 0,
+            "UndefinedAtomStereoCount": 1,
+            "Title": "(+-)-Pantothenic acid"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Korrigiert: wie pantothenic acid; die alte Quelle CHEMBL2110806 ist racemisch/unspezifiziert. PubChem CID 6613, CHEMBL1594 und ChEBI:46905 bestätigen den vollständigen R-Key GHOKWGTUZJEAQD-ZETCQYMHSA-N.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/6613",
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1594.json",
+        "https://www.ebi.ac.uk/chebi/CHEBI:46905"
+      ]
+    },
+    {
+      "eingabe": "Xylit",
+      "reference_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+      "wikidata_url": "https://www.wikidata.org/wiki/Q212093",
+      "chembl_id": "CHEMBL96783",
+      "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL96783.json",
+      "chembl_live": {
+        "id": "CHEMBL96783",
+        "http": 200,
+        "pref_name": "XYLITOL",
+        "chirality": 1,
+        "key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+        "formula": "C5H12O5",
+        "canonical_smiles": "OC[C@@H](O)[C@H](O)[C@@H](O)CO",
+        "rdkit": {
+          "total": 3,
+          "unassigned": 0,
+          "atoms": [
+            [
+              2,
+              "R"
+            ],
+            [
+              4,
+              "r"
+            ],
+            [
+              6,
+              "S"
+            ]
+          ],
+          "key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N"
+        }
+      },
+      "pubchem_direct_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Xylit/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_direct_live": {
+        "name": "Xylit",
+        "reference_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+        "chembl_name": "XYLITOL",
+        "query": {
+          "http": 200,
+          "properties": [
+            {
+              "CID": 6912,
+              "Title": "(2S,4R)-Pentane-1,2,3,4,5-Pentol",
+              "MolecularFormula": "C5H12O5",
+              "InChIKey": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+              "AtomStereoCount": 2,
+              "DefinedAtomStereoCount": 2,
+              "UndefinedAtomStereoCount": 0,
+              "rdkit": {
+                "total": 3,
+                "unassigned": 1,
+                "atoms": [
+                  [
+                    1,
+                    "R"
+                  ],
+                  [
+                    2,
+                    "?"
+                  ],
+                  [
+                    3,
+                    "S"
+                  ]
+                ],
+                "key": "HEBKCHPVOIAQTA-NGQZWQHPSA-N"
+              }
+            }
+          ]
+        },
+        "fallback": null
+      },
+      "pubchem_preferred_name_query": "XYLITOL",
+      "pubchem_preferred_query_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/XYLITOL/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+      "pubchem_preferred_live_same_connectivity": {
+        "name": "XYLITOL",
+        "reference_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+        "same_connectivity": [
+          {
+            "CID": 6912,
+            "MolecularFormula": "C5H12O5",
+            "SMILES": "C([C@H](C([C@H](CO)O)O)O)O",
+            "InChIKey": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+            "AtomStereoCount": 2,
+            "DefinedAtomStereoCount": 2,
+            "UndefinedAtomStereoCount": 0,
+            "Title": "(2S,4R)-Pentane-1,2,3,4,5-Pentol"
+          }
+        ],
+        "records": 1,
+        "error": null
+      },
+      "assessment": "Unverändert, Datenquellenkonflikt dokumentiert: ChEMBL CHEMBL96783 und PubChem Preferred Reference Collection nennen den vollständigen Key HEBKCHPVOIAQTA-SCDXWVJYSA-N. Die PUG REST Abfrage für CID 6912 gibt stattdessen NGQZWQHPSA mit einem unbestimmten Zentrum zurück. Keine Änderung; PUG REST und PubChem Preferred sind inkonsistent.",
+      "confidence": "hoch",
+      "supporting_sources": [
+        "https://pubchem.ncbi.nlm.nih.gov/compound/Xylitol",
+        "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL96783.json"
+      ]
+    }
+  ],
+  "previously_corrected_clindamycin": {
+    "name": "clindamycin",
+    "pubchem_query": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/clindamycin/property/Title,MolecularFormula,InChIKey,SMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+    "pubchem": {
+      "CID": 446598,
+      "MolecularFormula": "C18H33ClN2O5S",
+      "SMILES": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@H](C)Cl",
+      "InChIKey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "AtomStereoCount": 9,
+      "DefinedAtomStereoCount": 9,
+      "UndefinedAtomStereoCount": 0,
+      "Title": "Clindamycin"
+    },
+    "chembl_id": "CHEMBL1753",
+    "chembl_url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1753.json",
+    "chembl_key": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+    "chembl_name": "CLINDAMYCIN"
+  },
+  "source_note": "PubChem and ChEMBL were queried live on 2026-11-06. PubChem Preferred summary pages and ChEBI source links are recorded in each relevant assessment; PUG REST name-search discrepancies are kept distinct from preferred summary records."
+}

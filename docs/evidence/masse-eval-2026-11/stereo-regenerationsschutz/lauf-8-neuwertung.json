@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-06",
+  "source_responses": "../identitaet-lauf.json",
+  "source_sha256": "73019e2ab85040f3de5308b87a76d640f29c4a809cd27cd64b0da42a1808d181",
+  "fixture": "../../../../tests/identity/stoffe-masse.json",
+  "fixture_sha256": "55bb2cb78fe6305ba5b1d734e4bf1c7f7bb62600f0fd70c47c0a600aceb8adc4",
+  "method": "Frozen resolver response only: compare erhalten (or text if no erhalten) with current fixture inchikey; preserve gelb; no resolver run.",
+  "rows": 711,
+  "counts_before": {
+    "gruen": 669,
+    "rot": 41,
+    "gelb": 1
+  },
+  "counts_after": {
+    "gruen": 674,
+    "rot": 36,
+    "gelb": 1
+  },
+  "deltas": [
+    {
+      "eingabe": "clindamycin",
+      "vorher": "rot",
+      "nachher": "gruen",
+      "erhalten": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+      "erwartet_alt": "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+      "erwartet_neu": "KDLRVYVGXIQJDK-AWPVFWJPSA-N"
+    },
+    {
+      "eingabe": "cocaine",
+      "vorher": "rot",
+      "nachher": "gruen",
+      "erhalten": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "erwartet_alt": "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+      "erwartet_neu": "ZPUCINDJVBIVPJ-LJISPDSOSA-N"
+    },
+    {
+      "eingabe": "pantothenic acid",
+      "vorher": "rot",
+      "nachher": "gruen",
+      "erhalten": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "erwartet_alt": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "erwartet_neu": "GHOKWGTUZJEAQD-ZETCQYMHSA-N"
+    },
+    {
+      "eingabe": "Pantothensäure",
+      "vorher": "rot",
+      "nachher": "gruen",
+      "erhalten": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+      "erwartet_alt": "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+      "erwartet_neu": "GHOKWGTUZJEAQD-ZETCQYMHSA-N"
+    },
+    {
+      "eingabe": "trehalose",
+      "vorher": "rot",
+      "nachher": "gruen",
+      "erhalten": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+      "erwartet_alt": "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+      "erwartet_neu": "HDTRYLNUVZCQOY-LIZSDCNHSA-N"
+    }
+  ]
+}

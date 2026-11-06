@@ -63,6 +63,40 @@ REFERENZ_KORREKTUREN = {
         "quelle": "wikidata:Q27132753 + chembl:CHEMBL1538",
         "smiles_referenz": "CC(C)OC(=O)OCOP(=O)(CO[C@H](C)Cn1cnc2c(N)ncnc21)OCOC(=O)OC(C)C",
     },
+    # Stereo-Audit 06.11.2026: Wikidata/ChEMBL bestätigten teils einen
+    # InChIKey mit fehlenden Zentren. Diese benannten Hauptrecords sind durch
+    # PubChem und ChEMBL, bei den Naturstoffen zusätzlich ChEBI, gegengeprüft.
+    # Quellen und Begründung: docs/evidence/masse-eval-2026-11/stereo-referenzen/.
+    "clindamycin": {
+        "inchikey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
+        "formel": "C18H33ClN2O5S",
+        "quelle": "pubchem:446598 + chembl:CHEMBL1753",
+        "smiles_referenz": "CCC[C@@H]1C[C@@H](C(=O)N[C@@H]([C@H]2O[C@H](SC)[C@H](O)[C@@H](O)[C@H]2O)[C@H](C)Cl)N(C)C1",
+    },
+    "cocaine": {
+        "inchikey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+        "formel": "C17H21NO4",
+        "quelle": "pubchem:446220 + chembl:CHEMBL370805 + chebi:CHEBI:27958",
+        "smiles_referenz": "COC(=O)[C@H]1[C@@H](OC(=O)c2ccccc2)C[C@@H]2CC[C@H]1N2C",
+    },
+    "pantothenic acid": {
+        "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+        "formel": "C9H17NO5",
+        "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+        "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+    },
+    "pantothensäure": {
+        "inchikey": "GHOKWGTUZJEAQD-ZETCQYMHSA-N",
+        "formel": "C9H17NO5",
+        "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
+        "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+    },
+    "trehalose": {
+        "inchikey": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
+        "formel": "C12H22O11",
+        "quelle": "pubchem:7427 + chembl:CHEMBL1236395 + chebi:CHEBI:16551",
+        "smiles_referenz": "OC[C@H]1O[C@H](O[C@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@H]2O)[C@H](O)[C@@H](O)[C@@H]1O",
+    },
 }
 
 # WHO Model List of Essential Medicines: Wikidata-Rolle P2868 = Q35456.
@@ -355,7 +389,7 @@ def baue_liste(_: argparse.Namespace) -> int:
                 continue
             gesehen.add(name.casefold())
             eintrag = {"eingabe": name, "sprache": herkunft, **basis}
-            if korrektur := REFERENZ_KORREKTUREN.get(name):
+            if korrektur := REFERENZ_KORREKTUREN.get(name.casefold()):
                 eintrag.update(korrektur)
                 eintrag.pop("notiz", None)
                 eintrag.pop("unsicher", None)

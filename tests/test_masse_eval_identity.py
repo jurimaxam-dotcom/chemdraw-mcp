@@ -54,6 +54,53 @@ def test_rebuilding_list_keeps_verified_references_despite_bad_source_labels(tmp
     assert "notiz" not in result["fumaric acid"]
 
 
+def test_rebuilding_list_keeps_stereo_reference_corrections(tmp_path, monkeypatch):
+    # Wikidata/ChEMBL haben diese Namen mit unvollständiger Stereo verknüpft.
+    # Der Builder muss die unabhängig belegten Hauptrecords wieder einsetzen.
+    fixture_path = masse_eval.REPO / "tests" / "identity" / "stoffe-masse.json"
+    fixture_keys = {
+        row["eingabe"]: row["inchikey"]
+        for row in json.loads(fixture_path.read_text())["stoffe"]
+    }
+    records = [
+        ("Q422273", "clindamycin", None,
+         "KDLRVYVGXIQJDK-NOWPCOIGSA-N",
+         "CCC[C@@H]1C[C@H](N(C1)C)C(=O)NC([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)C(C)Cl"),
+        ("Q105381234", "cocaine", None,
+         "ZPUCINDJVBIVPJ-PFSRBDOWSA-N",
+         "COC(=O)[C@@H]1C2CCC(C[C@@H]1OC(=O)c1ccccc1)N2C"),
+        ("Q179894", "pantothenic acid", "Pantothensäure",
+         "GHOKWGTUZJEAQD-UHFFFAOYSA-N",
+         "CC(C)(CO)C(C(=O)NCCC(=O)O)O"),
+        ("Q27109935", "trehalose", None,
+         "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
+         "C([C@@H]1[C@H]([C@@H]([C@H](C(O1)OC2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O"),
+    ]
+    lehr = {}
+    for qid, en, de, key, smiles in records:
+        mol = Chem.MolFromSmiles(smiles)
+        assert mol is not None and Chem.MolToInchiKey(mol) == key
+        lehr[qid] = {
+            "keys": {key}, "smiles": {smiles}, "chembl": set(), "inn": None,
+            "de": de, "en": en, "gruppe": "test", "suchwort": en,
+        }
+    monkeypatch.setattr(masse_eval, "_lehrbuch", lambda: lehr)
+    monkeypatch.setattr(masse_eval, "_eml", lambda: {})
+    monkeypatch.setattr(masse_eval, "LEHRBUCH", {"test": [row[1] for row in records]})
+    monkeypatch.setattr(masse_eval, "_chembl_nach_keys", lambda keys: {})
+    monkeypatch.setattr(masse_eval, "_chembl_nach_ids", lambda ids: {})
+    monkeypatch.setattr(masse_eval, "REPO", tmp_path)
+    monkeypatch.setattr(masse_eval, "LISTE", tmp_path / "liste.json")
+    curated = tmp_path / "kuratiert.json"
+    curated.write_text('{"stoffe": []}')
+    monkeypatch.setattr(masse_eval, "KURATIERT", curated)
+
+    assert masse_eval.baue_liste(argparse.Namespace()) == 0
+    result = {x["eingabe"]: x for x in json.loads(masse_eval.LISTE.read_text())["stoffe"]}
+    for name in ("clindamycin", "cocaine", "pantothenic acid", "Pantothensäure", "trehalose"):
+        assert result[name]["inchikey"] == fixture_keys[name]
+
+
 @pytest.fixture
 def name_cache(tmp_path, monkeypatch):
     cache = tmp_path / "chembl-namen.json"
