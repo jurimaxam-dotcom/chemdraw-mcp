@@ -174,3 +174,55 @@ def test_pfeil_kann_auf_eine_bindung_zeigen():
     c1, o2 = geo["centres"]["1"], geo["centres"]["2"]
     mitte = ((c1[0] + o2[0]) / 2, (c1[1] + o2[1]) / 2)
     assert math.dist(a["tip"], mitte) <= 0.35 * geo["bond_px"]
+
+
+# --- Lange Ketten als CₙH₂ₙ₊₁ (Gutachter GELB, Etappe E2) ---------------------------------
+
+
+def _viewbox_width(svg: str) -> float:
+    return float(re.search(r"viewBox='([^']*)'", svg).group(1).split()[2])
+
+
+def test_lange_kette_wird_als_summenformel_abgekuerzt():
+    """Stearinsäure: die C₁₇-Kette bestimmte den Rahmen, das Reaktionszentrum wurde bei 420 px winzig.
+    Gekürzt nur im Bild — die Schritt-SMILES behalten alle Atome (Buchführung, Lehrbuchtests)."""
+    from chemdraw_tool.mechanism_renderer import abbreviate_chains
+
+    mol = Chem.RWMol(Chem.MolFromSmiles("CCCCCCCCCCCCCCCCCC(=O)O"))
+    AllChem.Compute2DCoords(mol)
+    labels = abbreviate_chains(mol, keep=set())
+    assert mol.GetNumAtoms() == 4  # Etikett-C + COOH
+    (idx,) = labels
+    assert mol.GetAtomWithIdx(idx).GetProp("_displayLabel") == "C<sub>17</sub>H<sub>35</sub>"
+
+
+@pytest.mark.parametrize("smiles, atome", [
+    ("CCCCO", 5),          # Butyl: bleibt gezeichnet (unter der Schwelle)
+    ("CC(C)CCO", 6),       # verzweigt: bleibt
+    ("OC1CCCCC1", 7),      # Ring: bleibt
+])
+def test_kurze_verzweigte_und_ringketten_bleiben(smiles, atome):
+    from chemdraw_tool.mechanism_renderer import abbreviate_chains
+
+    mol = Chem.RWMol(Chem.MolFromSmiles(smiles))
+    AllChem.Compute2DCoords(mol)
+    assert abbreviate_chains(mol, keep=set()) == set()
+    assert mol.GetNumAtoms() == atome
+
+
+def test_stearinsaeure_bekommt_den_rahmen_einer_kurzen_saeure():
+    from chemdraw_tool.server import generate_mechanism
+
+    kurz = generate_mechanism("fischer_ester", ["CC(=O)O", "CO"]).steps[0].svg
+    lang = generate_mechanism("fischer_ester", ["CCCCCCCCCCCCCCCCCC(=O)O", "CO"]).steps[0].svg
+    assert _viewbox_width(lang) < 1.4 * _viewbox_width(kurz)
+
+
+def test_abkuerzung_behaelt_den_cip_deskriptor():
+    """(R)-2-Bromoctan → (S)-Octan-2-ol [OS-11.2]: nach dem Kürzen sieht die Hexylkette aus wie ein
+    Methyl — der Deskriptor muss am vollen Molekül bestimmt sein, nicht am gekürzten."""
+    from chemdraw_tool.server import generate_mechanism
+
+    p = generate_mechanism("sn2", ["CCCCCC[C@@H](C)Br", "[OH-]"])
+    assert "CIP_Code" in p.steps[0].svg and "CIP_Code" in p.steps[-1].svg
+    assert p.steps[-1].label.endswith("(S)")

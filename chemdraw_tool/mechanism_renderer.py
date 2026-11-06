@@ -172,36 +172,75 @@ def _show_carbon_h(mol: Chem.RWMol, glyphs: dict[int, list[Box]]) -> bool:
     return changed
 
 
+# Ab so vielen Kohlenstoffen wird eine unverzweigte Alkylkette als CₙH₂ₙ₊₁ beschriftet (Gutachter
+# GELB, Etappe E2): Stearinsäure (C₁₇) machte den Rahmen 1147 px breit, das Reaktionszentrum winzig.
+# Butyl bleibt gezeichnet — kurze Ketten liest man als Gerüst schneller als als Formel.
+CHAIN_MIN = 5
+# Map-IDs ab hier sind Atome außerhalb des Reaktionszentrums (mechanism_substrate.FIRST_FREE_MAP)
+_FIRST_FREE_MAP = 100
+
+
+def abbreviate_chains(mol: Chem.RWMol, keep: set[int]) -> set[int]:
+    """Unverzweigte, gesättigte, endständige Alkylketten ab CHAIN_MIN C zu einem Etikett-Atom kürzen.
+
+    Das C, das an den Rest des Moleküls bindet, bleibt (Lage, Bindung, Stereo-Nachbarschaft) und
+    trägt „C₁₇H₃₅“ bzw. nach links „H₃₅C₁₇“; die übrigen Kettenatome gehen. Nie gekürzt: Atome in
+    `keep`, Ringatome, Aromaten, geladene Atome, Stereozentren, Mehrfachbindungen. Nur fürs Bild —
+    die Schritt-SMILES behalten alle Atome. Gibt die Indizes der Etikett-Atome zurück (nach dem Kürzen).
+    """
+    def eligible(atom: Chem.Atom) -> bool:
+        return (atom.GetAtomicNum() == 6 and not atom.GetIsAromatic() and not atom.IsInRing()
+                and atom.GetFormalCharge() == 0 and atom.GetIsotope() == 0 and atom.GetIdx() not in keep
+                and atom.GetDegree() <= 2 and atom.GetChiralTag() == Chem.ChiralType.CHI_UNSPECIFIED
+                and all(b.GetBondType() == Chem.BondType.SINGLE for b in atom.GetBonds()))
+
+    remove: set[int] = set()
+    for end in mol.GetAtoms():
+        if end.GetDegree() != 1 or not eligible(end) or end.GetIdx() in remove:
+            continue
+        path, prev, cur = [end.GetIdx()], -1, end
+        while True:
+            nxt = [n for n in cur.GetNeighbors() if n.GetIdx() != prev]
+            if not nxt:  # das ganze Molekül ist eine Kette (kein Anknüpfungspunkt): nicht kürzen
+                path = []
+                break
+            if eligible(nxt[0]) and nxt[0].GetDegree() == 2:
+                prev, cur = cur.GetIdx(), nxt[0]
+                path.append(cur.GetIdx())
+                continue
+            break
+        if len(path) < CHAIN_MIN:
+            continue
+        n = len(path)
+        label = mol.GetAtomWithIdx(path[-1])
+        label.SetProp("_displayLabel", f"C<sub>{n}</sub>H<sub>{2 * n + 1}</sub>")
+        label.SetProp("_displayLabelW", f"H<sub>{2 * n + 1}</sub>C<sub>{n}</sub>")
+        label.SetIntProp("_chain", n)
+        label.SetNoImplicit(True)
+        label.SetNumExplicitHs(0)
+        remove.update(path[:-1])
+    for idx in sorted(remove, reverse=True):
+        mol.RemoveAtom(idx)
+    return {a.GetIdx() for a in mol.GetAtoms() if a.HasProp("_chain")}
+
+
 def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIGHT,
           partial: tuple[int, ...] = ()) -> _Drawing:
     """Moleküle zeichnen; Koordinaten, Beschriftungen und gemessene Bindungslänge zurückgeben.
 
     partial: Map-IDs mit Teilladung (δ⁻) — sie behalten ihr Symbol, auch ein endständiges C.
     """
-    idx_to_map: dict[int, int] = {}
-    offset = 0
-    for m in mols:
-        for atom in m.GetAtoms():
-            map_id = atom.GetAtomMapNum()
-            if map_id != 0:
-                idx_to_map[atom.GetIdx() + offset] = map_id
-        offset += m.GetNumAtoms()
-
     combined = mols[0]
     for m in mols[1:]:
         combined = Chem.CombineMols(combined, m)
     mol = Chem.RWMol(combined)
     for atom in mol.GetAtoms():
+        atom.SetIntProp("_map", atom.GetAtomMapNum())
         atom.SetAtomMapNum(0)
-    _charge_left_where_bond_goes_right(mol)
-    partial_idx = {i for i, m in idx_to_map.items() if m in partial}
-    for i in partial_idx:
-        atom = mol.GetAtomWithIdx(i)
-        if atom.GetAtomicNum() == 6:  # Nitril-C ohne Ladung bliebe ein unbeschriftetes Linienende
-            atom.SetProp("_displayLabel", "C")
 
     # CIP ausdrücklich zuweisen (neuer Labeler), damit die Stereo-Notiz (R)/(S) zeigt — SN2-Produkt
-    # von (R)-2-Brombutan + CN⁻ ist (S). Bruchstücke eines Übergangszustands können den Labeler
+    # von (R)-2-Brombutan + CN⁻ ist (S). Am vollen Molekül, vor dem Kürzen der Ketten: gekürzt sieht
+    # eine Hexylkette aus wie ein Methyl. Bruchstücke eines Übergangszustands können den Labeler
     # stolpern lassen; dann bleibt das Bild ohne Notiz statt ohne Bild.
     try:
         from rdkit.Chem import rdCIPLabeler
@@ -209,6 +248,17 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
         rdCIPLabeler.AssignCIPLabels(mol)
     except Exception:  # noqa: BLE001
         pass
+    # Reaktionszentrum (Map < 100) und Teilladungen sind nie Teil einer Abkürzung
+    abbreviate_chains(mol, keep={a.GetIdx() for a in mol.GetAtoms()
+                                 if 0 < a.GetIntProp("_map") < _FIRST_FREE_MAP or a.GetIntProp("_map") in partial})
+    idx_to_map = {a.GetIdx(): a.GetIntProp("_map") for a in mol.GetAtoms() if a.GetIntProp("_map")}
+    abbreviated = {a.GetIdx() for a in mol.GetAtoms() if a.HasProp("_chain")}
+    _charge_left_where_bond_goes_right(mol)
+    partial_idx = {i for i, m in idx_to_map.items() if m in partial}
+    for i in partial_idx:
+        atom = mol.GetAtomWithIdx(i)
+        if atom.GetAtomicNum() == 6:  # Nitril-C ohne Ladung bliebe ein unbeschriftetes Linienende
+            atom.SetProp("_displayLabel", "C")
 
     def render() -> rdMolDraw2D.MolDraw2DSVG:
         drawer = rdMolDraw2D.MolDraw2DSVG(max(width, CANVAS_W), max(height, CANVAS_H))
@@ -247,7 +297,7 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
         idx_to_map.get(i, 0)
         for i in raw_boxes
         if (a := mol.GetAtomWithIdx(i)).GetAtomicNum() == 6 and a.GetFormalCharge() == 0 and a.GetIsotope() == 0
-        and i not in partial_idx
+        and i not in partial_idx and i not in abbreviated
     )
     glyphs = {idx_to_map[i]: g for i, g in _glyph_boxes(svg).items() if i in idx_to_map}
     segments = [(atom_pts[b.GetBeginAtomIdx()], atom_pts[b.GetEndAtomIdx()]) for b in mol.GetBonds()]
