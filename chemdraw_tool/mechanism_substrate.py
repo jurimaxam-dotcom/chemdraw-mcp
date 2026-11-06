@@ -648,12 +648,16 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
     o2 = _ray(60)
     ester_anchor = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: o2, O_ALCOHOL: _ray(-60),
                     **_tail(ester, O_ALCOHOL, _ray(-60), 1.0, exclude=(C_ACID,))}
-    # Lösungsmittel-Alkohol: rechts unter dem wandernden H bzw. rechts über dem H an O2
-    base_low = _tail(base, BASE, (2.2, -1.9), 1.0)
+    # Lösungsmittel-Alkohol unter dem Tetraeder, auf der Seite des kleineren Rests: rechts liegt der
+    # Alkoholrest R′, links der Säurerest R. Benzylalkohol rechts schob das Lösungsmittel so weit
+    # nach außen, dass der Pfeil durch den Ring lief (Kontaktbogen E2, 06.11.2026).
+    heavy = lambda mol: mol.GetNumHeavyAtoms()  # noqa: E731
+    side = -1.0 if heavy(alcohol.mol) - 1 > heavy(acid.mol) - 3 else 1.0
+    base_low = _tail(base, BASE, (2.2, -1.9) if side > 0 else (0.0, -2.4), side)
     base_high = _tail(base, BASE, (o2[0] * 2.0 + 1.2, o2[1] * 2.0 + 0.6), 1.0)
-    # ROH₂⁺ gibt sein H an O3 (unten): das H links neben dem O, nahe O3
-    base_h_anchor = {**_tail(base_h, BASE, (1.3, -1.9), 1.0, exclude=(H_MOVING, H_OTHER)),
-                     H_MOVING: (0.4, -1.9)}
+    # ROH₂⁺ gibt sein H an O3 (unten): das H zwischen O3 und dem Lösungsmittel-O
+    base_h_anchor = {**_tail(base_h, BASE, (1.3 * side, -1.9), side, exclude=(H_MOVING, H_OTHER)),
+                     H_MOVING: (0.4 * side, -1.9)}
     return [
         MechanismStep(
             label="Reactants", molecules=[_smi(acid_m), _smi(alc_m), _smi(proton)], arrows=[],
