@@ -8,6 +8,9 @@ keiner der beiden Listen stehen. Gezählt wird nur, wo OPSIN etwas liefert:
 alt = OPSIN allein (Stand vor Befund 2), neu = resolve_name heute.
 
     uv run python docs/evidence/masse-eval-2026-11/holdout_opsin_check.py   # Netz, ~5 min
+
+Jeder OPSIN-Treffer landet als Einzelfall in `holdout_opsin_check.json`
+(Name, erwartet, alt, neu, Urteil), damit die Zähler nachprüfbar sind.
 """
 
 import json
@@ -56,7 +59,8 @@ def main():
         if b["nik"]["value"] == "1" and b["label"]["value"].lower() not in BEKANNT
     ]
     zahl = Counter()
-    for name, erwartet in stoffe:
+    faelle = []
+    for name, erwartet in sorted(stoffe):
         alt = skelett(resolver._opsin_lookup(name))
         if not alt:
             zahl["OPSIN liefert nichts"] += 1
@@ -69,18 +73,20 @@ def main():
         time.sleep(0.2)
         a, n, e = (alt or "")[:14], (neu or "")[:14], erwartet[:14]
         if a == n:
-            zahl["gleich (alt richtig)" if a == e else "gleich (beide falsch)"] += 1
-            if a != e:
-                print(f"=  {name}: beide {alt}, erwartet {erwartet}")
+            urteil = "gleich (alt richtig)" if a == e else "gleich (beide falsch)"
         elif n == e:
-            zahl["neu behebt"] += 1
-            print(f"+  {name}")
+            urteil = "neu behebt"
         elif a == e:
-            zahl["neu bricht"] += 1
-            print(f"XX {name}: OPSIN richtig, neu {neu}")
+            urteil = "neu bricht"
         else:
-            zahl["beide falsch, verschieden"] += 1
-            print(f"?  {name}: alt {alt} neu {neu} erwartet {erwartet}")
+            urteil = "beide falsch, verschieden"
+        zahl[urteil] += 1
+        faelle.append({"name": name, "erwartet": erwartet, "alt": alt, "neu": neu, "urteil": urteil})
+        if urteil != "gleich (alt richtig)":
+            print(f"{urteil:26} {name}: alt {alt} neu {neu} erwartet {erwartet}")
+    (HIER / "holdout_opsin_check.json").write_text(
+        json.dumps(faelle, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     print(f"Holdout: {len(stoffe)} Wikidata-Stoffe außerhalb der Listen · {dict(zahl)}")
 
 

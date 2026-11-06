@@ -4,7 +4,7 @@ Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/s
 
 **711 Eingaben (414 Stoffe): 664 grün · 1 gelb · 46 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 13 min · Median 0.5 s · 90 % ≤ 4.3 s · langsamste 10.7 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 14 min · Median 0.6 s · 90 % ≤ 4.4 s · langsamste 10.3 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
@@ -95,13 +95,13 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| Pantothensäure | 10.7 | rot |
-| Nicotinsäure | 9.6 | gruen |
-| Acrylsäure | 9.0 | gruen |
-| Malonsäure | 9.0 | gruen |
-| Zoledronsäure | 8.9 | gruen |
-| Maleinsäure | 8.9 | gruen |
-| Ethylendiamintetraessigsäure | 8.8 | rot |
-| Amidotrizoesäure | 8.6 | gruen |
-| Phthalsäure | 8.6 | gruen |
-| 4-Aminosalicylsäure | 8.5 | gruen |
+| Zoledronsäure | 10.3 | gruen |
+| Amidotrizoesäure | 10.0 | gruen |
+| Levofolinsäure | 9.5 | gruen |
+| Malonsäure | 9.4 | gruen |
+| 4-Aminosalicylsäure | 9.1 | gruen |
+| Phthalsäure | 8.9 | gruen |
+| γ-Aminobuttersäure | 8.8 | gruen |
+| Glycolsäure | 8.7 | gruen |
+| Nicotinsäure | 8.6 | gruen |
+| Metamizol (freie Säure) | 8.6 | rot |

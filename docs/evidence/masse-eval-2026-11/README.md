@@ -86,7 +86,7 @@ OPSIN; sonst gewinnt PubChems Record. Kennt PubChem den Namen nicht oder ist off
 Übergänge: 658 grün→grün (**kein grüner Fall gekippt**), 6 rot→grün (chloroxylenol, methyldopa,
 methylthioninium chloride, sodium calcium edetate, tropicamide, Tropicamid), 46 rot→rot. Der Preis
 ist die Latenz: ein Trivialname, den OPSIN kennt („ethanol“), kostet jetzt einen PubChem-Aufruf
-(~0,5 s) statt 0,0 s; offline bleibt er so schnell wie vorher.
+(~0,5 s) statt 0,0 s. ~~Offline bleibt er so schnell wie vorher~~ — falsch, korrigiert in § Lauf 4 → Fix → Lauf 5.
 
 **Überanpassung geprüft (Holdout).** `holdout_opsin_check.py` nimmt Wikidata-Arzneistoffe mit
 ATC-Code (≥ 15 Wikipedia-Sprachen, genau ein InChIKey), die in keiner der beiden Listen stehen:
@@ -96,7 +96,68 @@ ATC-Code (≥ 15 Wikipedia-Sprachen, genau ein InChIKey), die in keiner der beid
 iron(II) gluconate, magnesium citrate). Gekippt ist **calcium silicate**: OPSIN baut Ca₂SiO₄
 (= Wikidata), PubChems Record zum Namen ist Ca(H₃SiO₄)₂ — anorganische Stöchiometrie, die Quellen
 modellieren verschieden. Bewusst nicht wegjustiert (eine Regel für einen Holdout-Fall wäre die
-Überanpassung, die der Holdout messen soll).
+Überanpassung, die der Holdout messen soll). *Nachtrag: Codex' Kreuzabnahme fand dahinter ein Muster
+(Salze), behoben in § Lauf 4 → Fix → Lauf 5.*
+
+## Lauf 4 → Fix → Lauf 5 (Identität, Salze, 06.11.2026)
+
+Codex-Kreuzabnahme (Faden `20261106-105531-abnahme-befund-2`, Verdikt NACHBESSERN): die Gegenprüfung
+übernahm PubChem bei anderem Gerüst ohne Salzprüfung — `resolve_name('sodium phosphate')` lieferte das
+Anion `[O-]P(=O)([O-])[O-].[Na+]` (Ladung −2) statt Na₃PO₄; Silikate kippten in der Stöchiometrie.
+**Messung** an 22 Fällen (Codex' 14 Salze + Silikate/MgO + die 6 Gewinne aus Lauf 4 + Glycin): jede
+Salz-Kippe war **kohlenstofffrei**, jeder Gewinn **organisch**. Startpunkt „geladene PubChem-Antwort →
+OPSIN“ gemessen und **verworfen**: deckt nichts über die Kohlenstoffregel hinaus ab und kippt im Holdout
+`diiodo-L-tyrosine` (PubChem: richtiges Gerüst als Anion; OPSIN: N,N-Diiod) zurück auf den falschen Stoff.
+
+Fix `038ace4`: OPSIN-Treffer ohne Kohlenstoff → OPSIN, **kein Netzaufruf** (Zusammensetzung aus dem
+Namen, wie vor Befund 2). Kein Name ist verdrahtet.
+
+| | Lauf 4 | Lauf 5 (mit `038ace4`) |
+|---|---|---|
+| Ergebnis | 664 grün · 1 gelb · 46 rot | **664 grün · 1 gelb · 46 rot**, je Eingabe identisch (auch der erhaltene Schlüssel) |
+| Laufzeit | 13 min, Median 0,54 s | 14 min, Median 0,61 s (Netzschwankung; kein Codepfad wurde langsamer) |
+| Dateien | `identitaet-lauf-4-vor-salzregel.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+**Regressionstabelle** (`resolve_name` live, 06.11.; „Quelle“ = wessen Antwort zurückkommt):
+
+| Name | Formel | Ladung | InChIKey | Quelle |
+|---|---|---:|---|---|
+| sodium phosphate | Na3O4P | 0 | `RYFMWSXOAZQYPI-UHFFFAOYSA-K` | OPSIN |
+| trisodium phosphate | Na3O4P | 0 | `RYFMWSXOAZQYPI-UHFFFAOYSA-K` | OPSIN |
+| calcium silicate | Ca2O4Si | 0 | `JHLNERQLKQQLRZ-UHFFFAOYSA-N` | OPSIN |
+| sodium silicate | Na4O4Si | 0 | `POWFTOSLLWLEBN-UHFFFAOYSA-N` | OPSIN |
+| potassium silicate | K4O4Si | 0 | `RLQWHDODQVOVKU-UHFFFAOYSA-N` | OPSIN |
+| magnesium silicate | Mg2O4Si | 0 | `HCWCAKKEBCNQJP-UHFFFAOYSA-N` | OPSIN |
+| magnesium oxide | MgO | 0 | `AXZKOIWUVFPNLO-UHFFFAOYSA-N` | OPSIN |
+| calcium phosphate | Ca3O8P2 | 0 | `QORWJWZARLRLPR-UHFFFAOYSA-H` | OPSIN |
+| magnesium phosphate | Mg3O8P2 | 0 | `GVALZJMUIHGIMD-UHFFFAOYSA-H` | OPSIN |
+| sodium carbonate | CNa2O3 | 0 | `CDBYLPFSWZWCQE-UHFFFAOYSA-L` | OPSIN |
+| calcium carbonate | CCaO3 | 0 | `VTYYLEPIZMXCLO-UHFFFAOYSA-L` | OPSIN |
+| sodium chlorite | ClNaO2 | 0 | `WEKMZMIIYLFEIJ-UHFFFAOYSA-N` | OPSIN |
+| calcium sulfate | CaO4S | 0 | `OSGAYBCDTDRGGQ-UHFFFAOYSA-L` | OPSIN |
+| aluminium sulfate | Al2O12S3 | 0 | `DIZPMCHEQGEION-UHFFFAOYSA-H` | OPSIN |
+| calcium sulfite | CaO3S | 0 | `GBAOBIBJACZTNA-UHFFFAOYSA-L` | OPSIN |
+| chloroxylenol | C8H9ClO | 0 | `OSDLLIBGSJNGJE-UHFFFAOYSA-N` | PubChem |
+| methyldopa | C10H13NO4 | 0 | `CJCSPKMFHVPWAR-JTQLQIEISA-N` | PubChem |
+| methylthioninium chloride | C16H18ClN3S | 0 | `CXKWCBBOMKCUKX-UHFFFAOYSA-M` | PubChem |
+| sodium calcium edetate | C10H12CaN2Na2O8 | 0 | `SHWNNYZBHZIQQV-UHFFFAOYSA-J` | PubChem |
+| tropicamide / Tropicamid | C17H20N2O2 | 0 | `BGDKAVGWHJFAGW-UHFFFAOYSA-N` | PubChem |
+| Glycin | C2H5NO2 | 0 | `DHMQDGOQFOQNFH-UHFFFAOYSA-N` | OPSIN (Tiebreak) |
+
+Carbonate (C-haltig) erreichen die Gegenprüfung, PubChem bestätigt dort das Gerüst → OPSIN bleibt.
+
+**Holdout neu** (`holdout_opsin_check.py`, Einzelfälle in `holdout_opsin_check.json`): 1119 ATC-Stoffe,
+131 OPSIN-Treffer → **117 gleich und richtig · 9 neu behoben · 0 gekippt** · 5 vorher wie nachher
+abweichend. calcium silicate ist wieder Ca₂SiO₄ (= Wikidata, PubChem CID 14941). **magnesium oxide**
+war in Lauf 4 als „behoben“ gezählt: beide Antworten sind MgO, nur die Schreibweise unterscheidet sich
+(`[Mg+2].[O-2]` vs. Wikidatas `O=[Mg]`) — kein Stoffwechsel, also weder Gewinn noch Verlust. Neu behoben
+ist diiodo-L-tyrosine (Gerüst richtig, PubChem liefert das Anion).
+
+**Offline-Latenz, korrigiert.** Der Resolver kennt keinen gemerkten Offline-Zustand; jeder organische
+Trivialname, den OPSIN kennt, fragt PubChem einmal (danach greift der Ergebnis-Cache). Gemessen 06.11.
+ohne Mock (`_PUBCHEM_URL` umgebogen): **Blackhole-Host 3,0 s** je Name (Connect-Timeout aus
+`_TIMEOUT = (3, 10)`), **DNS-Fehler 0,07 s**, Name mit Lokanten oder ohne Kohlenstoff 0,0 s. Vor Befund 2
+waren es überall 0,0 s.
 
 ## Woher die Erwartung kommt
 

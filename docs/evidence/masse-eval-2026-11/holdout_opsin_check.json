@@ -1,0 +1,919 @@
+[
+ {
+  "name": "(-)-pentazocine",
+  "erwartet": "VOKSWYLNZZRQPF-GDIGMMSISA-N",
+  "alt": "VOKSWYLNZZRQPF-UHFFFAOYSA-N",
+  "neu": "VOKSWYLNZZRQPF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-ketoprofen",
+  "erwartet": "DKYWVDODHFEZIM-UHFFFAOYSA-N",
+  "alt": "DKYWVDODHFEZIM-UHFFFAOYSA-N",
+  "neu": "DKYWVDODHFEZIM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-mandelic acid",
+  "erwartet": "IWYDHOAUDWTVEP-UHFFFAOYSA-N",
+  "alt": "IWYDHOAUDWTVEP-UHFFFAOYSA-N",
+  "neu": "IWYDHOAUDWTVEP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "2-phenylphenol",
+  "erwartet": "LLEMOWNGBBNAJR-UHFFFAOYSA-N",
+  "alt": "LLEMOWNGBBNAJR-UHFFFAOYSA-N",
+  "neu": "LLEMOWNGBBNAJR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "3-acetylamino-4-hydroxyphenyl arsonic acid",
+  "erwartet": "ODFJOVXVLFUVNQ-UHFFFAOYSA-N",
+  "alt": "ODFJOVXVLFUVNQ-UHFFFAOYSA-N",
+  "neu": "ODFJOVXVLFUVNQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "4-hexylresorcinol",
+  "erwartet": "WFJIVOKAWHGMBH-UHFFFAOYSA-N",
+  "alt": "WFJIVOKAWHGMBH-UHFFFAOYSA-N",
+  "neu": "WFJIVOKAWHGMBH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "D-glucosamine",
+  "erwartet": "MSWZFWKMSRAUBD-IVMDWMLBSA-N",
+  "alt": "MSWZFWKMSRAUBD-IVMDWMLBSA-N",
+  "neu": "MSWZFWKMSRAUBD-IVMDWMLBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "D-sorbitol",
+  "erwartet": "FBPFZTCFMRRESA-JGWLITMVSA-N",
+  "alt": "FBPFZTCFMRRESA-JGWLITMVSA-N",
+  "neu": "FBPFZTCFMRRESA-JGWLITMVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "DL-lactic acid",
+  "erwartet": "JVTAAEKCZFNVCJ-UHFFFAOYSA-N",
+  "alt": "JVTAAEKCZFNVCJ-UHFFFAOYSA-N",
+  "neu": "JVTAAEKCZFNVCJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "DL-lysine",
+  "erwartet": "KDXKERNSBIXSRK-UHFFFAOYSA-N",
+  "alt": "KDXKERNSBIXSRK-UHFFFAOYSA-N",
+  "neu": "KDXKERNSBIXSRK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "DL-panthenol",
+  "erwartet": "SNPLKNRPJHDVJA-UHFFFAOYSA-N",
+  "alt": "SNPLKNRPJHDVJA-UHFFFAOYSA-N",
+  "neu": "SNPLKNRPJHDVJA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "L-thyroxine",
+  "erwartet": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "alt": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "neu": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "S-adenosylmethionine",
+  "erwartet": "MEFKEPWMEQBLKI-AIRLBKTGSA-N",
+  "alt": "MEFKEPWMEQBLKI-AIRLBKTGSA-O",
+  "neu": "MEFKEPWMEQBLKI-AIRLBKTGSA-O",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aluminium chlorohydrate",
+  "erwartet": "ZGRQKCWNBYXGOB-UHFFFAOYSA-H",
+  "alt": "NNCOOIBIVIODKO-UHFFFAOYSA-N",
+  "neu": "NNCOOIBIVIODKO-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "aluminium oxide",
+  "erwartet": "PNEYBMLMFCGWSK-UHFFFAOYSA-N",
+  "alt": "PNEYBMLMFCGWSK-UHFFFAOYSA-N",
+  "neu": "PNEYBMLMFCGWSK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aluminium phosphate",
+  "erwartet": "ILRRQNADMUWWFW-UHFFFAOYSA-K",
+  "alt": "ILRRQNADMUWWFW-UHFFFAOYSA-K",
+  "neu": "ILRRQNADMUWWFW-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aluminum chloride",
+  "erwartet": "VSCWAEJMTAWNJL-UHFFFAOYSA-K",
+  "alt": "VSCWAEJMTAWNJL-UHFFFAOYSA-K",
+  "neu": "VSCWAEJMTAWNJL-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aluminum hydroxide",
+  "erwartet": "WNROFYMDJYEPJX-UHFFFAOYSA-K",
+  "alt": "WNROFYMDJYEPJX-UHFFFAOYSA-K",
+  "neu": "WNROFYMDJYEPJX-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aminocaproic acid",
+  "erwartet": "SLXKOJJOQWFEFD-UHFFFAOYSA-N",
+  "alt": "LRQKBLKVPFOOQJ-UHFFFAOYSA-N",
+  "neu": "SLXKOJJOQWFEFD-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "aminolevulinic acid",
+  "erwartet": "ZGXJTSGNIOSYLO-UHFFFAOYSA-N",
+  "alt": "QUCHWTCTBHQQDU-UHFFFAOYSA-N",
+  "neu": "ZGXJTSGNIOSYLO-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "aminophenazone",
+  "erwartet": "RMMXTBMQSGEXHJ-UHFFFAOYSA-N",
+  "alt": "SEBVCBGKXLMBQW-UHFFFAOYSA-N",
+  "neu": "RMMXTBMQSGEXHJ-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "ammonium chloride",
+  "erwartet": "NLXLAEXVIDQMFP-UHFFFAOYSA-N",
+  "alt": "NLXLAEXVIDQMFP-UHFFFAOYSA-N",
+  "neu": "NLXLAEXVIDQMFP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ammonium ferric citrate",
+  "erwartet": "FRHBOQMZUOWXQL-UHFFFAOYSA-L",
+  "alt": "FRHBOQMZUOWXQL-UHFFFAOYSA-L",
+  "neu": "FRHBOQMZUOWXQL-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "azelaic acid",
+  "erwartet": "BDJRBEYXGGNYIS-UHFFFAOYSA-N",
+  "alt": "BDJRBEYXGGNYIS-UHFFFAOYSA-N",
+  "neu": "BDJRBEYXGGNYIS-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "beta-fructose 1,6-bisphosphate",
+  "erwartet": "RNBGYGVWRKECFJ-ARQDHWQXSA-N",
+  "alt": "RNBGYGVWRKECFJ-ARQDHWQXSA-N",
+  "neu": "RNBGYGVWRKECFJ-ARQDHWQXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "biguanide",
+  "erwartet": "XNCOSPRUTUOJCJ-UHFFFAOYSA-N",
+  "alt": "XNCOSPRUTUOJCJ-UHFFFAOYSA-N",
+  "neu": "XNCOSPRUTUOJCJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "busulfan",
+  "erwartet": "COVZYZSDYWQREU-UHFFFAOYSA-N",
+  "alt": "COVZYZSDYWQREU-UHFFFAOYSA-N",
+  "neu": "COVZYZSDYWQREU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium DL-lactate",
+  "erwartet": "MKJXYGKVIBWPFZ-UHFFFAOYSA-L",
+  "alt": "MKJXYGKVIBWPFZ-UHFFFAOYSA-L",
+  "neu": "MKJXYGKVIBWPFZ-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium acetate",
+  "erwartet": "VSGNNIFQASZAOI-UHFFFAOYSA-L",
+  "alt": "VSGNNIFQASZAOI-UHFFFAOYSA-L",
+  "neu": "VSGNNIFQASZAOI-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium carbonate",
+  "erwartet": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "alt": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "neu": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium chloride",
+  "erwartet": "UXVMQQNJUSDDNG-UHFFFAOYSA-L",
+  "alt": "UXVMQQNJUSDDNG-UHFFFAOYSA-L",
+  "neu": "UXVMQQNJUSDDNG-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium citrate",
+  "erwartet": "FNAQSUUGMSOBHW-UHFFFAOYSA-H",
+  "alt": "FNAQSUUGMSOBHW-UHFFFAOYSA-H",
+  "neu": "FNAQSUUGMSOBHW-UHFFFAOYSA-H",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "calcium cyanamide",
+  "erwartet": "MYFXBBAEXORJNB-UHFFFAOYSA-N",
+  "alt": "LHQWDZSUXOBDOJ-UHFFFAOYSA-N",
+  "neu": "MYFXBBAEXORJNB-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "calcium silicate",
+  "erwartet": "JHLNERQLKQQLRZ-UHFFFAOYSA-N",
+  "alt": "JHLNERQLKQQLRZ-UHFFFAOYSA-N",
+  "neu": "JHLNERQLKQQLRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "camphor",
+  "erwartet": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+  "alt": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+  "neu": "DSSYKIVIOFKYAU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "carbon dioxide",
+  "erwartet": "CURLTUGMZLYLDI-UHFFFAOYSA-N",
+  "alt": "CURLTUGMZLYLDI-UHFFFAOYSA-N",
+  "neu": "CURLTUGMZLYLDI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "carnitine",
+  "erwartet": "PHIQHXFUZVPYII-UHFFFAOYSA-N",
+  "alt": "PHIQHXFUZVPYII-UHFFFAOYSA-N",
+  "neu": "PHIQHXFUZVPYII-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chloral hydrate",
+  "erwartet": "RNFNDJAIBTYOQL-UHFFFAOYSA-N",
+  "alt": "RNFNDJAIBTYOQL-UHFFFAOYSA-N",
+  "neu": "RNFNDJAIBTYOQL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlorobutanol",
+  "erwartet": "OSASVXMJTNOKOY-UHFFFAOYSA-N",
+  "alt": "LVZIWKFQFKNSMO-UHFFFAOYSA-N",
+  "neu": "OSASVXMJTNOKOY-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "chloroethane",
+  "erwartet": "HRYZWHHZPQKTII-UHFFFAOYSA-N",
+  "alt": "HRYZWHHZPQKTII-UHFFFAOYSA-N",
+  "neu": "HRYZWHHZPQKTII-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "citric acid",
+  "erwartet": "KRKNYBCHXYNGOX-UHFFFAOYSA-N",
+  "alt": "KRKNYBCHXYNGOX-UHFFFAOYSA-N",
+  "neu": "KRKNYBCHXYNGOX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cupric sulfate",
+  "erwartet": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "alt": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "neu": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cysteamine",
+  "erwartet": "UFULAYFCSOUIOV-UHFFFAOYSA-N",
+  "alt": "UFULAYFCSOUIOV-UHFFFAOYSA-N",
+  "neu": "UFULAYFCSOUIOV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dibutyl phthalate",
+  "erwartet": "DOIRQSBPFJWKBE-UHFFFAOYSA-N",
+  "alt": "DOIRQSBPFJWKBE-UHFFFAOYSA-N",
+  "neu": "DOIRQSBPFJWKBE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "diethylstilbestrol",
+  "erwartet": "RGLYKWWBQGJZGM-ISLYRVAYSA-N",
+  "alt": "RGLYKWWBQGJZGM-ISLYRVAYSA-N",
+  "neu": "RGLYKWWBQGJZGM-ISLYRVAYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "diethyltoluamide",
+  "erwartet": "MMOXZBCLCQITDF-UHFFFAOYSA-N",
+  "alt": "DBFZLABDXGUEIY-UHFFFAOYSA-N",
+  "neu": "MMOXZBCLCQITDF-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "dihydrocodeine",
+  "erwartet": "RBOXVHNMENFORY-DNJOTXNNSA-N",
+  "alt": "RBOXVHNMENFORY-DNJOTXNNSA-N",
+  "neu": "RBOXVHNMENFORY-DNJOTXNNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "diiodo-L-tyrosine",
+  "erwartet": "NYPYHUZRZVSYKL-ZETCQYMHSA-N",
+  "alt": "ZNJCNZUENFLSJJ-QMMMGPOBSA-N",
+  "neu": "NYPYHUZRZVSYKL-ZETCQYMHSA-M",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "dimethyl fumarate",
+  "erwartet": "LDCRTTXIJACKKU-ONEGZZNKSA-N",
+  "alt": "LDCRTTXIJACKKU-ONEGZZNKSA-N",
+  "neu": "LDCRTTXIJACKKU-ONEGZZNKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dimethyl phthalate",
+  "erwartet": "NIQCNGHVCWTJSM-UHFFFAOYSA-N",
+  "alt": "NIQCNGHVCWTJSM-UHFFFAOYSA-N",
+  "neu": "NIQCNGHVCWTJSM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "divinyl ether",
+  "erwartet": "QYKIQEUNHZKYBP-UHFFFAOYSA-N",
+  "alt": "QYKIQEUNHZKYBP-UHFFFAOYSA-N",
+  "neu": "QYKIQEUNHZKYBP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "docosanol",
+  "erwartet": "NOPFSRXAKWQILS-UHFFFAOYSA-N",
+  "alt": "NOPFSRXAKWQILS-UHFFFAOYSA-N",
+  "neu": "NOPFSRXAKWQILS-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dysprosium",
+  "erwartet": "KBQHZAAAGSGFKK-UHFFFAOYSA-N",
+  "alt": "KBQHZAAAGSGFKK-UHFFFAOYSA-N",
+  "neu": "KBQHZAAAGSGFKK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ethylmorphine",
+  "erwartet": "OGDVEMNWJVYAJL-LEPYJNQMSA-N",
+  "alt": "OGDVEMNWJVYAJL-LEPYJNQMSA-N",
+  "neu": "OGDVEMNWJVYAJL-LEPYJNQMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ferrous chloride",
+  "erwartet": "NMCUIPGRVMDVDB-UHFFFAOYSA-L",
+  "alt": "NMCUIPGRVMDVDB-UHFFFAOYSA-L",
+  "neu": "NMCUIPGRVMDVDB-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "glutathione",
+  "erwartet": "RWSXRVCMGQZWBV-WDSKDSINSA-N",
+  "alt": "RWSXRVCMGQZWBV-WDSKDSINSA-N",
+  "neu": "RWSXRVCMGQZWBV-WDSKDSINSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "gold monosodium thiomalate",
+  "erwartet": "LTEMOXGFFHXNNS-UHFFFAOYSA-L",
+  "alt": "AGHLUVOCTHWMJV-UHFFFAOYSA-J",
+  "neu": "LTEMOXGFFHXNNS-UHFFFAOYSA-L",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "helium",
+  "erwartet": "SWQJXJOGLNCZEY-UHFFFAOYSA-N",
+  "alt": "SWQJXJOGLNCZEY-UHFFFAOYSA-N",
+  "neu": "SWQJXJOGLNCZEY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "heroin",
+  "erwartet": "GVGLGOZIDCSQPN-PVHGPHFFSA-N",
+  "alt": "GVGLGOZIDCSQPN-PVHGPHFFSA-N",
+  "neu": "GVGLGOZIDCSQPN-PVHGPHFFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "hydrocodone",
+  "erwartet": "LLPOLZWFYMWNKH-CMKMFDCUSA-N",
+  "alt": "LLPOLZWFYMWNKH-CMKMFDCUSA-N",
+  "neu": "LLPOLZWFYMWNKH-CMKMFDCUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "hydrogen peroxide",
+  "erwartet": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "alt": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "neu": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "hydromorphone",
+  "erwartet": "WVLOADHCBXTIJK-YNHQPCIGSA-N",
+  "alt": "WVLOADHCBXTIJK-YNHQPCIGSA-N",
+  "neu": "WVLOADHCBXTIJK-YNHQPCIGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "idoxuridine",
+  "erwartet": "XQFRJNBWHJMXHO-RRKCRQDMSA-N",
+  "alt": "XQFRJNBWHJMXHO-RRKCRQDMSA-N",
+  "neu": "XQFRJNBWHJMXHO-RRKCRQDMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "inosine",
+  "erwartet": "UGQMRVRMYYASKQ-KQYNXXCUSA-N",
+  "alt": "UGQMRVRMYYASKQ-KQYNXXCUSA-N",
+  "neu": "UGQMRVRMYYASKQ-KQYNXXCUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iodoform",
+  "erwartet": "OKJPEAGHQZHRQV-UHFFFAOYSA-N",
+  "alt": "OKJPEAGHQZHRQV-UHFFFAOYSA-N",
+  "neu": "OKJPEAGHQZHRQV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iron(II) carbonate",
+  "erwartet": "RAQDACVRFCEPDA-UHFFFAOYSA-L",
+  "alt": "RAQDACVRFCEPDA-UHFFFAOYSA-L",
+  "neu": "RAQDACVRFCEPDA-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iron(II) fumarate",
+  "erwartet": "PMVSDNDAUGGCCE-TYYBGVCCSA-L",
+  "alt": "PMVSDNDAUGGCCE-TYYBGVCCSA-L",
+  "neu": "PMVSDNDAUGGCCE-TYYBGVCCSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iron(II) gluconate",
+  "erwartet": "QDUZQOIJXPPTLY-GMBKLUGCSA-N",
+  "alt": "VRIVJOXICYMTAG-IYEMJOQQSA-L",
+  "neu": "VRIVJOXICYMTAG-IYEMJOQQSA-L",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "iron(II) iodide",
+  "erwartet": "BQZGVMWPHXIKEQ-UHFFFAOYSA-L",
+  "alt": "BQZGVMWPHXIKEQ-UHFFFAOYSA-L",
+  "neu": "BQZGVMWPHXIKEQ-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iron(II) sulfate",
+  "erwartet": "BAUYGSIQEAFULO-UHFFFAOYSA-L",
+  "alt": "BAUYGSIQEAFULO-UHFFFAOYSA-L",
+  "neu": "BAUYGSIQEAFULO-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "keto-D-fructose",
+  "erwartet": "BJHIKXHVCXFQLS-UYFOZJQFSA-N",
+  "alt": "BJHIKXHVCXFQLS-UYFOZJQFSA-N",
+  "neu": "BJHIKXHVCXFQLS-UYFOZJQFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "lanthanum carbonate",
+  "erwartet": "NZPIUJUFIFZSPW-UHFFFAOYSA-H",
+  "alt": "NZPIUJUFIFZSPW-UHFFFAOYSA-H",
+  "neu": "NZPIUJUFIFZSPW-UHFFFAOYSA-H",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "magnesium carbonate",
+  "erwartet": "ZLNQQNXFFQJAID-UHFFFAOYSA-L",
+  "alt": "ZLNQQNXFFQJAID-UHFFFAOYSA-L",
+  "neu": "ZLNQQNXFFQJAID-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "magnesium chloride",
+  "erwartet": "TWRXJAOTZQYOKJ-UHFFFAOYSA-L",
+  "alt": "TWRXJAOTZQYOKJ-UHFFFAOYSA-L",
+  "neu": "TWRXJAOTZQYOKJ-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "magnesium citrate",
+  "erwartet": "DIXGJWCZQHXZNR-UHFFFAOYSA-L",
+  "alt": "PLSARIKBYIPYPF-UHFFFAOYSA-H",
+  "neu": "PLSARIKBYIPYPF-UHFFFAOYSA-H",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "magnesium hydroxide",
+  "erwartet": "VTHJTEIRLNZDEV-UHFFFAOYSA-L",
+  "alt": "VTHJTEIRLNZDEV-UHFFFAOYSA-L",
+  "neu": "VTHJTEIRLNZDEV-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "magnesium oxide",
+  "erwartet": "CPLXHLVBOLITMK-UHFFFAOYSA-N",
+  "alt": "AXZKOIWUVFPNLO-UHFFFAOYSA-N",
+  "neu": "AXZKOIWUVFPNLO-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "magnesium sulfate",
+  "erwartet": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "alt": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "neu": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "mercuric chloride",
+  "erwartet": "LWJROJCJINYWOX-UHFFFAOYSA-L",
+  "alt": "LWJROJCJINYWOX-UHFFFAOYSA-L",
+  "neu": "LWJROJCJINYWOX-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "mercury(II) iodide",
+  "erwartet": "YFDLHELOZYVNJE-UHFFFAOYSA-L",
+  "alt": "YFDLHELOZYVNJE-UHFFFAOYSA-L",
+  "neu": "YFDLHELOZYVNJE-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "nitroglycerin",
+  "erwartet": "SNIOPGDIGTZGOP-UHFFFAOYSA-N",
+  "alt": "SNIOPGDIGTZGOP-UHFFFAOYSA-N",
+  "neu": "SNIOPGDIGTZGOP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "nitrous oxide",
+  "erwartet": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "alt": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "neu": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "orthoboric acid",
+  "erwartet": "KGBXLFKZBHKPEV-UHFFFAOYSA-N",
+  "alt": "KGBXLFKZBHKPEV-UHFFFAOYSA-N",
+  "neu": "KGBXLFKZBHKPEV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "oxolinic acid",
+  "erwartet": "KYGZCKSPAKDVKC-UHFFFAOYSA-N",
+  "alt": "KYGZCKSPAKDVKC-UHFFFAOYSA-N",
+  "neu": "KYGZCKSPAKDVKC-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pentaerythritol tetranitrate",
+  "erwartet": "TZRXHJWUDPFEEY-UHFFFAOYSA-N",
+  "alt": "TZRXHJWUDPFEEY-UHFFFAOYSA-N",
+  "neu": "TZRXHJWUDPFEEY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phenyl salicylate",
+  "erwartet": "ZQBAKBUEJOMQEX-UHFFFAOYSA-N",
+  "alt": "ZQBAKBUEJOMQEX-UHFFFAOYSA-N",
+  "neu": "ZQBAKBUEJOMQEX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phloroglucinol",
+  "erwartet": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "alt": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "neu": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phosphocreatine",
+  "erwartet": "DRBBFCLWYRJSJZ-UHFFFAOYSA-N",
+  "alt": "CFPWPNDPUSLDPF-UHFFFAOYSA-N",
+  "neu": "DRBBFCLWYRJSJZ-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "piperazine",
+  "erwartet": "GLUUGHFHXGJENI-UHFFFAOYSA-N",
+  "alt": "GLUUGHFHXGJENI-UHFFFAOYSA-N",
+  "neu": "GLUUGHFHXGJENI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium",
+  "erwartet": "ZLMJMSJWJFRBEC-UHFFFAOYSA-N",
+  "alt": "ZLMJMSJWJFRBEC-UHFFFAOYSA-N",
+  "neu": "ZLMJMSJWJFRBEC-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium acetate",
+  "erwartet": "SCVFZCLFOSHCOH-UHFFFAOYSA-M",
+  "alt": "SCVFZCLFOSHCOH-UHFFFAOYSA-M",
+  "neu": "SCVFZCLFOSHCOH-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium hydrogen carbonate",
+  "erwartet": "TYJJADVDDVDEDZ-UHFFFAOYSA-M",
+  "alt": "TYJJADVDDVDEDZ-UHFFFAOYSA-M",
+  "neu": "TYJJADVDDVDEDZ-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium hydrogen tartrate",
+  "erwartet": "KYKNRZGSIGMXFH-UHFFFAOYSA-M",
+  "alt": "KYKNRZGSIGMXFH-UHFFFAOYSA-M",
+  "neu": "KYKNRZGSIGMXFH-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium iodide",
+  "erwartet": "NLKNQRATVPKPDG-UHFFFAOYSA-M",
+  "alt": "NLKNQRATVPKPDG-UHFFFAOYSA-M",
+  "neu": "NLKNQRATVPKPDG-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium perchlorate",
+  "erwartet": "YLMGFJXSLBMXHK-UHFFFAOYSA-M",
+  "alt": "YLMGFJXSLBMXHK-UHFFFAOYSA-M",
+  "neu": "YLMGFJXSLBMXHK-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "potassium permanganate",
+  "erwartet": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "alt": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "neu": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "propylthiouracil",
+  "erwartet": "KNAHARQHSZJURB-UHFFFAOYSA-N",
+  "alt": "KNAHARQHSZJURB-UHFFFAOYSA-N",
+  "neu": "KNAHARQHSZJURB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pyridoxal phosphate",
+  "erwartet": "NGVDGCNFYWLIFO-UHFFFAOYSA-N",
+  "alt": "NGVDGCNFYWLIFO-UHFFFAOYSA-N",
+  "neu": "NGVDGCNFYWLIFO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "salicylamide",
+  "erwartet": "SKZKKFZAGNVIMN-UHFFFAOYSA-N",
+  "alt": "SKZKKFZAGNVIMN-UHFFFAOYSA-N",
+  "neu": "SKZKKFZAGNVIMN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "silver nitrate",
+  "erwartet": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "alt": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "neu": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium acetate",
+  "erwartet": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "alt": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "neu": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium benzoate",
+  "erwartet": "WXMKPNITSTVMEF-UHFFFAOYSA-M",
+  "alt": "WXMKPNITSTVMEF-UHFFFAOYSA-M",
+  "neu": "WXMKPNITSTVMEF-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium bicarbonate",
+  "erwartet": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "alt": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "neu": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium chloride",
+  "erwartet": "FAPWRFPIFSIZLT-UHFFFAOYSA-M",
+  "alt": "FAPWRFPIFSIZLT-UHFFFAOYSA-M",
+  "neu": "FAPWRFPIFSIZLT-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium chlorite",
+  "erwartet": "UKLNMMHNWFDKNT-UHFFFAOYSA-M",
+  "alt": "WEKMZMIIYLFEIJ-UHFFFAOYSA-N",
+  "neu": "WEKMZMIIYLFEIJ-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "sodium fluoride",
+  "erwartet": "PUZPDOWCWNUUKD-UHFFFAOYSA-M",
+  "alt": "PUZPDOWCWNUUKD-UHFFFAOYSA-M",
+  "neu": "PUZPDOWCWNUUKD-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium hypochlorite",
+  "erwartet": "SUKJFIGYRHOWBL-UHFFFAOYSA-N",
+  "alt": "SUKJFIGYRHOWBL-UHFFFAOYSA-N",
+  "neu": "SUKJFIGYRHOWBL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium lauryl sulfate",
+  "erwartet": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "alt": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "neu": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium monofluorophosphate",
+  "erwartet": "BFDWBSRJQZPEEB-UHFFFAOYSA-L",
+  "alt": "BFDWBSRJQZPEEB-UHFFFAOYSA-L",
+  "neu": "BFDWBSRJQZPEEB-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium nitrite",
+  "erwartet": "LPXPTNMVRIOKMN-UHFFFAOYSA-M",
+  "alt": "LPXPTNMVRIOKMN-UHFFFAOYSA-M",
+  "neu": "LPXPTNMVRIOKMN-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium propionate",
+  "erwartet": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "alt": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "neu": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium salicylate",
+  "erwartet": "ABBQHOQBGMUPJH-UHFFFAOYSA-M",
+  "alt": "ABBQHOQBGMUPJH-UHFFFAOYSA-M",
+  "neu": "ABBQHOQBGMUPJH-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium selenate",
+  "erwartet": "MHQOTKLEMKRJIR-UHFFFAOYSA-L",
+  "alt": "MHQOTKLEMKRJIR-UHFFFAOYSA-L",
+  "neu": "MHQOTKLEMKRJIR-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium selenite",
+  "erwartet": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "alt": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "neu": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium sulfate",
+  "erwartet": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "alt": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "neu": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sodium thiosulfate",
+  "erwartet": "AKHNMLFCWUSKQB-UHFFFAOYSA-L",
+  "alt": "AKHNMLFCWUSKQB-UHFFFAOYSA-L",
+  "neu": "AKHNMLFCWUSKQB-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "succinimide",
+  "erwartet": "KZNICNPSHKQLFF-UHFFFAOYSA-N",
+  "alt": "KZNICNPSHKQLFF-UHFFFAOYSA-N",
+  "neu": "KZNICNPSHKQLFF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sulfur hexafluoride",
+  "erwartet": "SFZCNBIFKDRMGX-UHFFFAOYSA-N",
+  "alt": "SFZCNBIFKDRMGX-UHFFFAOYSA-N",
+  "neu": "SFZCNBIFKDRMGX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tin(II) fluoride",
+  "erwartet": "ANOBYBYXJXCGBS-UHFFFAOYSA-L",
+  "alt": "ANOBYBYXJXCGBS-UHFFFAOYSA-L",
+  "neu": "ANOBYBYXJXCGBS-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "trichloroethene",
+  "erwartet": "XSTXAVWGXDQKEL-UHFFFAOYSA-N",
+  "alt": "XSTXAVWGXDQKEL-UHFFFAOYSA-N",
+  "neu": "XSTXAVWGXDQKEL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "triethylenetetramine",
+  "erwartet": "VILCJCGEZXAXTO-UHFFFAOYSA-N",
+  "alt": "VILCJCGEZXAXTO-UHFFFAOYSA-N",
+  "neu": "VILCJCGEZXAXTO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tripotassium citrate",
+  "erwartet": "QEEAPRPFLLJWCF-UHFFFAOYSA-K",
+  "alt": "QEEAPRPFLLJWCF-UHFFFAOYSA-K",
+  "neu": "QEEAPRPFLLJWCF-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "trisodium phosphate",
+  "erwartet": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "alt": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "neu": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "undecylenic acid",
+  "erwartet": "FRPZMMHWLSIFAZ-UHFFFAOYSA-N",
+  "alt": "FRPZMMHWLSIFAZ-UHFFFAOYSA-N",
+  "neu": "FRPZMMHWLSIFAZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "urea",
+  "erwartet": "XSQUKJJJFZCRTK-UHFFFAOYSA-N",
+  "alt": "XSQUKJJJFZCRTK-UHFFFAOYSA-N",
+  "neu": "XSQUKJJJFZCRTK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "vitamin C",
+  "erwartet": "CIWBSHSKHKDKBQ-JLAZNSOCSA-N",
+  "alt": "CIWBSHSKHKDKBQ-JLAZNSOCSA-N",
+  "neu": "CIWBSHSKHKDKBQ-JLAZNSOCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "xenon",
+  "erwartet": "FHNFHKCVQCLJFQ-UHFFFAOYSA-N",
+  "alt": "FHNFHKCVQCLJFQ-UHFFFAOYSA-N",
+  "neu": "FHNFHKCVQCLJFQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "zinc acetate",
+  "erwartet": "DJWUNCQRNNEAKC-UHFFFAOYSA-L",
+  "alt": "DJWUNCQRNNEAKC-UHFFFAOYSA-L",
+  "neu": "DJWUNCQRNNEAKC-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "zinc chloride",
+  "erwartet": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "alt": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "neu": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "zinc sulfate",
+  "erwartet": "NWONKYPBYAMBJT-UHFFFAOYSA-L",
+  "alt": "NWONKYPBYAMBJT-UHFFFAOYSA-L",
+  "neu": "NWONKYPBYAMBJT-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "β-carotene",
+  "erwartet": "OENHQHLEOONYIE-JLTXGRSLSA-N",
+  "alt": "OENHQHLEOONYIE-JLTXGRSLSA-N",
+  "neu": "OENHQHLEOONYIE-JLTXGRSLSA-N",
+  "urteil": "gleich (alt richtig)"
+ }
+]
