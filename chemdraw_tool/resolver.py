@@ -545,24 +545,47 @@ def _spelling_variant(name: str) -> str | None:
     return variant if variant != name else None
 
 
+def _parent_skeleton(smiles: str | None) -> str | None:
+    """Erster InChIKey-Block der größten organischen Komponente (Stammmolekül).
+
+    Anders als _skeleton fallen hier Gegenionen weg: Dort steht OPSINs Bau aus
+    dem Namen gegen PubChem, und die Gegenionen tragen Information (Edetat
+    Na2Ca, Goldthiomalat). Hier stehen zwei PubChem-Records für denselben Namen
+    gegeneinander, und ob einer als HCl-Salz oder freie Base hinterlegt ist,
+    ist Depositor-Form, kein anderer Stoff. Ohne Kohlenstoff → _skeleton.
+    """
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    if mol is None:
+        return None
+    organic = [
+        f for f in Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
+        if any(a.GetAtomicNum() == 6 for a in f.GetAtoms())
+    ]
+    if not organic:
+        return _skeleton(smiles)
+    parent = max(organic, key=lambda f: f.GetNumHeavyAtoms())
+    return Chem.MolToInchiKey(parent).split("-")[0]
+
+
 def _pubchem_checked(name: str, smiles: str, report: list) -> str:
     """PubChem-Direkttreffer gegen die Schreibvariante desselben Namens prüfen.
 
     Masse-Eval-Befund 3 (06.11.2026): PubChem führt verirrte Depositor-Synonyme.
     "(−)-Ephedrin" trifft genau einen Record, 1-Bromo-3-methyl-5-nitrobenzene
     (CID 104213); "Risperidon" trifft nur CID 44402564, ein Dihydro-Analogon mit
-    5 Synonymen. Eine Schreibweise ändert kein Gerüst — widersprechen sich Name
-    und Variante, ist einer der beiden ein Synonymfehler. Gemessen über 139
-    Eingaben auf diesem Weg: 5 uneinig, 4-mal hatte die Variante recht, nie der
-    Originalname (der fünfte, rifabutin, ist in beiden Formen falsch). Darum
-    gewinnt die Variante. Kennt PubChem sie nicht oder ist das Netz weg, bleibt
-    der Direkttreffer. Preis: ein Aufruf mehr, nur für Namen mit Variante.
+    5 Synonymen. Eine Schreibweise ändert kein Stammmolekül — weicht es zwischen
+    Name und Variante ab, ist einer der beiden ein Synonymfehler, und die
+    Variante gewinnt (Lauf 5: nie hatte der Originalname recht; Holdout: 3
+    behoben, 0 gekippt). Verglichen wird ohne Gegenionen (_parent_skeleton):
+    mit ihnen kippte der Holdout Centrophenoxin auf das HCl-Salz der Variante.
+    Kennt PubChem die Variante nicht oder ist das Netz weg, bleibt der
+    Direkttreffer. Preis: ein Aufruf mehr, nur für Namen mit Variante.
     """
     variant = _spelling_variant(name)
     if variant is None:
         return smiles
     other = _pubchem_lookup(variant, report)
-    if _skeleton(other) in (None, _skeleton(smiles)):
+    if _parent_skeleton(other) in (None, _parent_skeleton(smiles)):
         return smiles
     logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
     return other

@@ -185,6 +185,62 @@ unverändert. **Kein Lauf 6:** R1 ändert eine Entscheidung nur bei einer Wasser
 Lauf-5-Eingaben gibt es keine solche Abweichung (Messung oben). Holdout neu: 117 gleich · 9 behoben ·
 **0 gekippt** · 5 beide abweichend, alle 131 Einzelfälle identisch zum vorigen Stand.
 
+## Lauf 5 → Fix → Lauf 6 (PubChem-Synonymfehler, Befund 3, 06.11.2026)
+
+**Diagnose.** Beide gemeldeten Fälle sind **ein einziger CID** mit verirrtem Depositor-Synonym, kein
+Mehrfachtreffer und keine Stereo-Frage (`/compound/name/<n>/cids/JSON`):
+
+| Eingabe | CIDs | Record | Synonyme | richtig wäre |
+|---|---|---|---:|---|
+| (−)-Ephedrin | `[104213]` | 1-Bromo-3-methyl-5-nitrobenzene, C₇H₆BrNO₂ — nur `(-)-ephedrin` passt | 35 | „Ephedrin“/„(−)-ephedrine“ → CID 9294 (136 Synonyme) |
+| Risperidon | `[44402564]` (auch `name_type=word`) | Dihydro-Analogon C₂₃H₂₉FN₄O₂, Titel „Risperidon“ | 5 | „risperidone“ → CID 5073 (282 Synonyme) |
+
+Dieselbe Klasse wie Glycin in Befund 2 (deutsches Synonym → falscher Record), nur schweigt hier OPSIN
+und der PubChem-Direkttreffer war unangefochten. Wikidata/ChEMBL zur Laufzeit war nicht nötig: die
+englische Schreibweise beim selben Dienst reicht.
+
+**Messung** (alle 711 Eingaben; Variante = `english_variant` ohne Stereo-Klammerpräfix `(−)/(+)/(S)/(RS)/(E)`):
+139 nehmen den PubChem-direkt-Weg und haben eine Variante; Name und Variante uneinig bei 5, **die Variante
+richtig bei 4, der Originalname bei 0** (rifabutin: beide falsch). Holdout (`holdout_pubchem_check.py`,
+Wikidata-ATC-Stoffe mit englischem und deutschem Label, nicht in den Listen; 2145 Labels, **553 im
+Geltungsbereich**) trennte zwei Klassen:
+
+| Klasse | Fälle | Stammmolekül gleich? |
+|---|---|---|
+| Synonymfehler (anderer Stoff) | (−)-Ephedrin, Risperidon, rifabutin · Holdout: Cinnarizin (→ Clofibrat-Ester), Entacapon (→ Aldehyd-Vorstufe), Clorazepat | nein |
+| Salzform (Gegenion/Protonierung) | Bendamustin (direkt HCl), Hydroxycobalamin · Holdout: Centrophenoxin (Variante HCl), Phenelzin (direkt Sulfat), Carboplatin/carboplatin | ja |
+
+| Regel | Lauf 6 | Holdout (553) |
+|---|---|---|
+| R1: Variante gewinnt bei anderem Gerüst inkl. Gegenionen (`_skeleton`) | 668 grün, +4 | 6 behoben · **1 gekippt** (Centrophenoxin → HCl-Salz) — **verworfen** |
+| **R2 (gebaut): Variante gewinnt nur bei anderem Stammmolekül** (`_parent_skeleton`, größte organische Komponente) | **666 grün, +2** | **3 behoben · 0 gekippt** · 536 gleich richtig · 14 beide falsch |
+
+R1 kippte Salzformen in beide Richtungen, je nachdem, welche Form der Depositor der Variante hinterlegt
+hat — Zufall, kein Regelgewinn. Fix `_pubchem_checked` + `_parent_skeleton` in `chemdraw_tool/resolver.py`:
+nach einem PubChem-Direkttreffer einmal die Variante fragen; anderes Stammmolekül → Variante; gleiches,
+unbekannt oder Netz weg → Direkttreffer. `_skeleton` (OPSIN-Gegenprüfung) bleibt unverändert, dort
+tragen Gegenionen Information (Edetat, Goldthiomalat). Kein Name verdrahtet.
+
+| | Lauf 5 | Lauf 6 (mit R2) |
+|---|---|---|
+| Ergebnis | 664 grün · 1 gelb · 46 rot | **666 grün · 1 gelb · 44 rot** |
+| Übergänge | — | 664 grün→grün (**kein grüner Fall gekippt**), 2 rot→grün ((−)-Ephedrin, Risperidon), 44 rot→rot |
+| Laufzeit | 14 min, Median 0,61 s | 16 min, Median 0,73 s (R1-Lauf derselben Codepfade: 0,65 s — Netzschwankung plus ein Aufruf) |
+| Dateien | `identitaet-lauf-5-vor-befund-3.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Lauf 6 lief gegen die Fixture **vor Befund 4** (Stand `8978be7`; `530e9a9` mit den Referenzkorrekturen
+landete während des Laufs), damit nur Befund 3 den Unterschied macht. `identitaet.md` ist gegen dieselbe
+Fixture erzeugt.
+
+**Preis.** Jeder PubChem-Direkttreffer mit Variante kostet einen Aufruf mehr (139 von 711 Eingaben),
+**auch englische -in-Namen** („Aspirin“ fragt „Aspirine“) — `english_variant` kennt die Sprache der
+Eingabe nicht. Danach greift der Ergebnis-Cache. Offline unverändert: ohne Direkttreffer keine Variantenprobe.
+
+**Offen:** rifabutin bleibt rot (beide Formen falsch, jetzt anderer Schlüssel); Bendamustin bleibt rot
+als Salzform („INN ohne Salzwort → PubChem liefert das Hydrochlorid“, Vorschlag für einen eigenen Befund);
+`(S)-(−)-timolol` bleibt `not_found` — die Präfixregel greift nur nach einem Direkttreffer, der
+Rückfallpfad über `english_variant` ist unverändert.
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:

@@ -784,9 +784,9 @@ def test_nci_real_500_stays_source_error(mock_get, _opsin):
 
 # --- Deutsche Trivialnamen: englische Variante als letzter Versuch -----------
 # Masse-Eval 11/2026: 75 deutsche Eingaben ohne PubChem-Synonym (Amilorid,
-# Dexamethason, Maleinsäure). Die Variante steht GANZ HINTEN, damit kein heute
-# aufgelöster Name einen anderen Weg nimmt — sie greift nur, wo sonst
-# not_found stünde.
+# Dexamethason, Maleinsäure). Als Auflösungsweg steht die Variante GANZ HINTEN —
+# sie greift nur, wo sonst not_found stünde. Seit Befund 3 prüft sie zusätzlich
+# einen Direkttreffer gegen (siehe „PubChem-Synonymfehler“ unten).
 
 
 def _only_for(hit_name: str, smiles: str = "CC(=O)O"):
@@ -850,9 +850,10 @@ def test_variant_miss_keeps_not_found(mock_nci, mock_opsin):
 # "(−)-Ephedrin" trifft als Synonym genau einen Record: CID 104213,
 # 1-Bromo-3-methyl-5-nitrobenzene (35 Synonyme, nur "(-)-ephedrin" passt).
 # "Risperidon" trifft CID 44402564, ein Dihydro-Analogon mit 5 Synonymen.
-# Eine Schreibweise ändert kein Gerüst: Gemessen über 139 Eingaben, die den
-# PubChem-direkt-Weg mit Variante nehmen, widersprachen sich Name und Variante
-# 5-mal — 4-mal hatte die Variante recht, nie der Originalname. Werte = echte
+# Eine Schreibweise ändert kein Stammmolekül. Verglichen wird die größte
+# organische Komponente: Gegenionen/Protonierung sind Depositor-Form, kein
+# anderer Stoff (Centrophenoxin: Variante = HCl-Salz; mit Gegenionen im
+# Vergleich kippte der Holdout 1 von 553 Fällen auf das Salz). Werte = echte
 # PubChem-Antworten vom 06.11.2026.
 _SYNONYMFEHLER = {
     # Eingabe: (Variante, PubChem für Eingabe, PubChem für Variante)
@@ -928,3 +929,24 @@ def test_unreachable_variant_keeps_the_direct_answer(_opsin):
         return None
     with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Risperidon") == _SYNONYMFEHLER["Risperidon"][1]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_salt_form_of_the_variant_is_no_correction(_opsin):
+    """Centrophenoxin: direkt freie Base (richtig), Variante HCl-Salz → Formkonflikt."""
+    base = "CN(C)CCOC(=O)COC1=CC=C(C=C1)Cl"
+    lookup, calls = _pubchem_table({"Centrophenoxin": base,
+                                    "Centrophenoxine": base + ".Cl"})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Centrophenoxin") == base
+    assert calls == ["Centrophenoxin", "Centrophenoxine"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_salt_form_of_the_direct_hit_is_kept_too(_opsin):
+    """Bendamustin: direkt HCl-Salz, Variante freie Base → auch hier keine Korrektur
+    (die Salzform ist ein eigener Befund, nicht Befund 3)."""
+    base = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O"
+    lookup, _ = _pubchem_table({"Bendamustin": base + ".Cl", "Bendamustine": base})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Bendamustin") == base + ".Cl"
