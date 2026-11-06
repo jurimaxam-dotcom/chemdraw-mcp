@@ -2,15 +2,15 @@
 
 Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 675 grün · 1 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 32 rot.**
+**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 18 min · Median 0.8 s · 90 % ≤ 4.8 s · langsamste 11.0 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 16 min · Median 0.7 s · 90 % ≤ 4.4 s · langsamste 12.0 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
 | Art | Zahl | Bedeutung |
 |---|---:|---|
-| stereo | 18 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
+| stereo | 14 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | nicht aufgelöst | 8 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
 | skelett | 5 | anderes Gerüst — falscher Stoff |
 | salz | 1 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
@@ -32,12 +32,8 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 | Naloxon | de | `UZHSEJADLWPNLE-GRGSLBFTSA-N` | `UZHSEJADLWPNLE-BIAVLDQUSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | penicillamine | en | `VVNCNSJFMMFHPL-VKHMYHEASA-N` | `VVNCNSJFMMFHPL-GSVOUGTGSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Penicillamin | de | `VVNCNSJFMMFHPL-VKHMYHEASA-N` | `VVNCNSJFMMFHPL-GSVOUGTGSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| sulfasalazine | en | `NCEXYHBECQHGNR-QZQOTICOSA-N` | `NCEXYHBECQHGNR-UHFFFAOYSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| Sulfasalazin | de | `NCEXYHBECQHGNR-QZQOTICOSA-N` | `NCEXYHBECQHGNR-UHFFFAOYSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | tranexamic acid | en | `GYDJEQRTZSCIOI-LJGSYFOKSA-N` | `GYDJEQRTZSCIOI-UHFFFAOYSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Tranexamsäure | de | `GYDJEQRTZSCIOI-LJGSYFOKSA-N` | `GYDJEQRTZSCIOI-UHFFFAOYSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| vinblastine | en | `JXLYSJRDGCGARV-XQKSVPLYSA-N` | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | vinblastine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| Vinblastin | de | `JXLYSJRDGCGARV-XQKSVPLYSA-N` | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | vinblastine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Vinorelbin | de | `GBABOYUKABKIAF-IELIFDKJSA-N` | `GBABOYUKABKIAF-GHYRFKGUSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Adrenalin | de | `UCTWMZQNUQWSLP-VIFPVBQESA-N` | `UCTWMZQNUQWSLP-UHFFFAOYSA-N` | racepinephrine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Xylit | de | `HEBKCHPVOIAQTA-SCDXWVJYSA-N` | `HEBKCHPVOIAQTA-NGQZWQHPSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
@@ -75,8 +71,9 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 
 | Art | Zahl |
 |---|---:|
-| Quelle/Referenz | 1 |
+| Quelle/Referenz | 3 |
 | Tautomer | 3 |
+| E/Z fehlt | 2 |
 
 ## Gelb
 
@@ -86,18 +83,22 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 | Doxycyclin | Tautomer der Referenz: SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N |
 | paritaprevir | Referenz unsicher, abweichend (stereo): UAUIUKWPKRJZJV-QPLHLKROSA-N statt UAUIUKWPKRJZJV-MDJGTQRPSA-N |
 | rifabutin | Tautomer der Referenz: AZFBLLCNOQPJGJ-VXTBVIBXSA-N statt ATEBXHFBFRCZMA-VXTBVIBXSA-N |
+| sulfasalazine | E/Z der Referenz fehlt: NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N |
+| Sulfasalazin | E/Z der Referenz fehlt: NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N |
+| vinblastine | Referenz unsicher, abweichend (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N |
+| Vinblastin | Referenz unsicher, abweichend (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N |
 
 ## Langsamste Eingaben
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| meso-Dimercaptobernsteinsäure | 11.0 | gruen |
-| Phthalsäure | 10.6 | gruen |
-| Acrylsäure | 9.9 | gruen |
-| Levofolinsäure | 9.8 | gruen |
-| Amidotrizoesäure | 9.4 | gruen |
-| Nicotinsäure | 9.3 | gruen |
-| Ethylendiamintetraessigsäure | 9.2 | rot |
-| 4-Aminosalicylsäure | 9.2 | gruen |
-| Pantothensäure | 9.1 | gruen |
-| Glycolsäure | 9.1 | gruen |
+| 4-Aminosalicylsäure | 12.0 | gruen |
+| Pantothensäure | 11.0 | gruen |
+| Levofolinsäure | 9.6 | gruen |
+| Amidotrizoesäure | 9.5 | gruen |
+| Ethylendiamintetraessigsäure | 9.4 | rot |
+| meso-Dimercaptobernsteinsäure | 8.6 | gruen |
+| Zoledronsäure | 8.6 | gruen |
+| Glycolsäure | 8.6 | gruen |
+| γ-Aminobuttersäure | 8.5 | gruen |
+| Acrylsäure | 8.5 | gruen |

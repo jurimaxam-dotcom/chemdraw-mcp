@@ -1,0 +1,31 @@
+{
+  "resolver_change": "3476636: _same_tautomer in _pubchem_checked",
+  "before_file": "holdout_pubchem_check-vor-tautomer.json",
+  "before_sha256": "d7995c0ee21766499493c4221d0a49df57da0a37653ee785219ae5c3cd6f6e53",
+  "after_file": "holdout_pubchem_check.json",
+  "after_sha256": "d7995c0ee21766499493c4221d0a49df57da0a37653ee785219ae5c3cd6f6e53",
+  "before_count": 553,
+  "after_count": 553,
+  "common_count": 553,
+  "added": [],
+  "removed": [],
+  "expected_key_changes": [],
+  "before_verdicts": {
+    "gleich (alt richtig)": 536,
+    "gleich (beide falsch)": 12,
+    "neu behebt": 4,
+    "beide falsch, verschieden": 1
+  },
+  "after_verdicts": {
+    "gleich (alt richtig)": 536,
+    "gleich (beide falsch)": 12,
+    "neu behebt": 4,
+    "beide falsch, verschieden": 1
+  },
+  "before_skeleton_correct": 540,
+  "after_skeleton_correct": 540,
+  "before_full_key_correct": 505,
+  "after_full_key_correct": 505,
+  "full_key_changes": [],
+  "previously_correct_to_different": []
+}

@@ -46,6 +46,14 @@ SPARQL = "https://query.wikidata.org/sparql"
 CHEMBL = "https://www.ebi.ac.uk/chembl/api/data/molecule.json"
 CHEMBL_NAMEN_CACHE = REPO / ".cache" / "masse-eval" / "chembl-namen.json"
 
+# Chef-Entscheid 06.11.: Quellenwiderspruch bleibt auch nach Neubau sichtbar.
+_VINBLASTIN_NOTIZ = (
+    'Widerspruch an einem Zentrum (Brückenkopf-CH der oberen Hälfte): ChEMBL CHEMBL159, FDA '
+    'GSRS 5V9KLZ54CY, DrugBank DB00570, PDB-Ligand VLB führen JXLYSJRDGCGARV-CFWMRBGOSA-N; '
+    'ChEBI 27375/KEGG D08675/Wikidata die Fixture-Form (Faden 20261106-222728)'
+)
+REFERENZ_UNSICHER = dict.fromkeys(("vinblastine", "vinblastin"), _VINBLASTIN_NOTIZ)
+
 # Falsch beschriftete Wikidata-Objekte dürfen beim Neubau nicht wieder gewinnen.
 # Nachgeprüft 06.11.2026, Quellen/alte Werte: Evidence referenzkorrektur/README.md.
 # https://www.wikidata.org/wiki/Q139857 + ChEMBL503160
@@ -393,6 +401,9 @@ def baue_liste(_: argparse.Namespace) -> int:
                 eintrag.update(korrektur)
                 eintrag.pop("notiz", None)
                 eintrag.pop("unsicher", None)
+            if unsichere_referenz := REFERENZ_UNSICHER.get(name.casefold()):
+                eintrag["unsicher"] = True
+                eintrag["notiz"] = unsichere_referenz
             stoffe.append(eintrag)
 
     daten = {
@@ -1061,7 +1072,8 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
     rot = [e for e in lauf if e["status"] == "rot"]
     gelb = [e for e in lauf if e["status"] == "gelb"]
     tautomere = sum(e.get("art") == "tautomer" for e in gelb)
-    gelb_quelle = len(gelb) - tautomere
+    ez_fehlt = sum(e.get("art") == "ez_fehlt" for e in gelb)
+    gelb_quelle = len(gelb) - tautomere - ez_fehlt
     referenzen = [liste[e["eingabe"]] for e in lauf]
     stoffe = len({e.get("quelle", e["inchikey"]).split(" + ")[0] for e in referenzen})
     keys = len({e["inchikey"] for e in referenzen})
@@ -1084,7 +1096,7 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
         "",
         f"**{len(lauf)} Eingaben ({stoffe} Wikidata-Stoffe, {keys} unterschiedliche InChIKeys): "
         f"{zahl['gruen']} grün · {gelb_quelle} gelb (Quelle/Referenz) · "
-        f"{tautomere} gelb (Tautomer) · {zahl['rot']} rot.**",
+        f"{tautomere} gelb (Tautomer) · {ez_fehlt} gelb (E/Z fehlt) · {zahl['rot']} rot.**",
         "",
         f"Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). "
         f"Laufzeit gesamt {gesamt / 60:.0f} min · Median {q(0.5):.1f} s · 90 % ≤ {q(0.9):.1f} s · "
@@ -1124,7 +1136,8 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
         md.append("")
     md += [
         "## Gelb nach Art", "", "| Art | Zahl |", "|---|---:|",
-        f"| Quelle/Referenz | {gelb_quelle} |", f"| Tautomer | {tautomere} |", "",
+        f"| Quelle/Referenz | {gelb_quelle} |", f"| Tautomer | {tautomere} |",
+        f"| E/Z fehlt | {ez_fehlt} |", "",
         "## Gelb", "", "| Eingabe | Grund |", "|---|---|",
     ]
     md += [f"| {e['eingabe']} | {e['text']} |" for e in gelb] or ["| — | — |"]

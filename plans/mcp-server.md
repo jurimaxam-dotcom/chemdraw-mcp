@@ -1,13 +1,15 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — rifabutin-Tautomer + timolol (06.11.2026)
+## Weiter bei — Abschlussabnahme Tautomer-/Referenz-Folgepunkte (06.11.2026)
 
-**Stand:** Tautomer/timolol `3476636` + Lauf 10 `44edf11` sind abgenommen:
-**675 grün · 1 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 32 rot**.
-Chef: Diff, Codex-Kreuzabnahme, Gate rc=0, 711 Zeilen nachgezählt.
-**Folgeauftrag Codex:** Bericht mit eigener Tautomer-Zeile aus Lauf 10 erzeugen,
-PubChem-Holdout vor/nach `_same_tautomer` prüfen, dann Chef-Abnahme der Folgepunkte.
-Faden: `20261106-222719-folgepunkte-aus-opus-3476636`.
+**Stand:** Tautomer/timolol `3476636` + Lauf 10 `44edf11` sind vom Chef abgenommen.
+Folgepunkte: Bericht getrennt nach Quelle/Referenz, Tautomer und E/Z fehlt;
+PubChem-Holdout alle **553 vollständigen Ergebniskeys unverändert, 0 richtig→anders**;
+Vinblastin-Rebuild-Schutz. Opus-Referenzentscheid `5a2ea90`, Lauf 11 `7ae85ac`:
+**675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot**.
+**Nächster Chef-Schritt:** Abschlussbericht im Faden
+`20261106-222719-folgepunkte-aus-opus-3476636` prüfen, Diff/Gate/Nachzählung;
+danach den nächsten Bauauftrag schneiden.
 
 - [x] `b67ceb7` gepusht: 711 Referenz-SMILES / 414 ursprüngliche Keys geprüft,
   411 PubChem-Recordantworten und 3 dokumentierte 404. Vier Referenzen / fünf Eingaben
@@ -181,9 +183,10 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 - ✅ **Salznamen deutsch abgenommen 06.11. ~17:15:** `2d8aaaf`/`8e971e4` (Opus-Bauer): `de_names.salt_variant` als letzter Kaskadenschritt, found_as gesetzt. Codex-Kreuzabnahme ABNEHMEN (M1–M5 rot, Live-Fälle + 5 eigene, Lauf/Salzliste nachgezählt). Chef: Diff gelesen, Gate rc=0 8271, **Lauf 9 = 674/1/36** nachgezählt (Schlüssel = Lauf 8). Salzliste Holdout 43→100, 0 richtig→anders. Fäden `…160852`, `…175918` + Pane pK zu. Rest: 18+32 Salznamen not_found. Strukturtest und Berichtszählung separat abgenommen, siehe Folgepunkte unten.
 - ✅ **Salznamen-Folgepunkte abgenommen 06.11. ~22:00:** `630b5ac` (Codex): neun Anion-Schreibweisen ergänzt, Strukturtest gegen den Anion-Teil von `resolver._SALT_WORD`, drei Verhaltenstests. Chef: Diff gelesen, **62 passed**, **Gate rc=0**. Zählung: **414 Wikidata-Stoffe / 413 unterschiedliche InChIKeys**, weil cocaine und Kokain jetzt denselben Key haben. Faden `20261106-215435-chemdraw-mcp-folgepunkte-salznam` geschlossen.
 - ✅ **Tautomer/timolol abgenommen 06.11. ~22:27 — Opus `3476636` / Lauf `44edf11`:** rifabutin-Tautomere als eigene gelbe Klasse, Drehsinn neben erhaltenem R/S als letzter timolol-Kaskadenschritt. **Lauf 10 = 675 grün · 1 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 32 rot**, Chef selbst nachgezählt, Gate rc=0; Codex-Kreuzabnahme **Code-Teil ABNEHMEN**: `uv run pytest tests/test_resolver.py tests/test_identitaet_tautomer.py -q` → **159 passed**; eigene Formel-/Verknüpfungs-/Kanontautomer-Gegenproben bleiben rot, Gelb wird nie Grün. Drei eigene Live-Fälle: rifabutin → `AZFBLLCNOQPJGJ-VXTBVIBXSA-N`, gelb/tautomer; `(S)-(-)-timolol` → `BLJRIMJGRPQVNF-JTQLQIEISA-N`; `(R)-(+)-timolol` → `BLJRIMJGRPQVNF-SNVBAGLBSA-N` (jeweils PubChem bestätigt). Evidence `/tmp/chemdraw-opus-kreuz-live.json`, Faden `20261106-220250-zwei-teile-a-kreuzabnahme`.
-- **Geparkt:** Referenzentscheid Vinblastin-Stereo und Sulfasalazin-E/Z. Resolver = namentlich abgefragter PubChem-Record, Fixture abweichend; Vinblastin ohne `unsicher`-Flag. Befund in `docs/evidence/masse-eval-2026-11/identitaet.md`; keine stille Fixture-/Wertungsänderung.
+- **Referenzentscheid umgesetzt, 06.11.:** Opus `5a2ea90`, Lauf 11 `7ae85ac`: Vinblastin beide Schreibweisen `unsicher=true` mit Begründung, Key unverändert; Sulfasalazin beide Schreibweisen gelb/`ez_fehlt`. **675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot**, nur vier rot→gelb gegenüber Lauf 10, kein neuer grüner Fall. Der Quellenwiderspruch bei Vinblastin bleibt sichtbar. Codex-Berichtsauswertung und `REFERENZ_UNSICHER` sichern Zählung und Neubau separat ab.
+- **Tautomer-Folgepunkte Codex:** Berichtsteil `5081b6d` mit zwei Rot-Grün-Tests und Gate rc=0 (8288 passed / 16 skipped). Neuer Holdout: 2145 Labels / 553 Fälle, alle vollständigen Keys bytegleich zur gesicherten Vorversion, **0 richtig→anders**; Vergleich `docs/evidence/masse-eval-2026-11/holdout_pubchem_check-tautomer-vergleich.json`. E/Z-Zählung und Vinblastin-Regenerationsschutz nach Opus-Commit ergänzt (vier neue Rotprüfungen → 25 betroffene Tests grün); aktueller Bericht aus Lauf 11. **Gesamtgate rc=0: 8298 passed / 16 skipped**, Log `/tmp/chemdraw-tautomer-ez-rebuild-gate.log`. Abschlussabnahme beim Chef im Faden `20261106-222719-folgepunkte-aus-opus-3476636`.
 **Lauf 10 vs. 9 nachgezählt:** 674 grün→grün, 32 rot→rot, 1 gelb→gelb, 3 rot→gelb (doxycycline, Doxycyclin, rifabutin), 1 rot→grün (`(S)-(−)-timolol`). Die frühere Erwartung „nur rifabutin“ ist damit durch den abgenommenen vollständigen Lauf ersetzt.
-**Nächster Chef-Schritt (Stand 06.11. ~22:30):** Codex-Folgeauftrag `20261106-222719-folgepunkte-aus-opus-3476636` abnehmen: Berichtsauswertung mit eigener Tautomer-Zeile, regenerierter Lauf-10-Bericht, neuer PubChem-Holdout mit 0 richtig→anders; danach Chef Diff/Gate/Nachzählung. Vinblastin-/Sulfasalazin-Referenzen bleiben geparkt.
+**Nächster Chef-Schritt (Stand 06.11. ~23:00):** erweiterten Codex-Folgeauftrag `20261106-222719-folgepunkte-aus-opus-3476636` abnehmen: Bericht und Rohdaten Lauf 11 nachzählen, getrennte Tautomer-/E/Z-Zeilen, Vinblastin-Rebuild-Schutz und Holdout-Beleg prüfen; danach Chef Diff/Gate/Nachzählung.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.

@@ -190,6 +190,8 @@ def report_with_tautomers(tmp_path, monkeypatch):
         {"eingabe": "uncertain", "inchikey": "C", "quelle": "wikidata:Q3 + chembl:3"},
         # Gleicher Key wie Q1, aber ein weiterer Wikidata-Stoff (cocaine/Kokain).
         {"eingabe": "wrong", "inchikey": "A", "quelle": "wikidata:Q4 + chembl:4"},
+        {"eingabe": "ez", "inchikey": "D", "quelle": "wikidata:Q5 + chembl:5"},
+        {"eingabe": "ez alias", "inchikey": "D", "quelle": "wikidata:Q5 + chembl:5"},
     ]
     results = [
         {"eingabe": "correct", "status": "gruen", "text": "A"},
@@ -197,6 +199,8 @@ def report_with_tautomers(tmp_path, monkeypatch):
         {"eingabe": "tautomer alias", "status": "gelb", "art": "tautomer", "text": "Tautomer"},
         {"eingabe": "uncertain", "status": "gelb", "text": "Referenz unsicher"},
         {"eingabe": "wrong", "status": "rot", "art": "stereo", "text": "wrong", "erwartet": "A"},
+        {"eingabe": "ez", "status": "gelb", "art": "ez_fehlt", "text": "E/Z fehlt"},
+        {"eingabe": "ez alias", "status": "gelb", "art": "ez_fehlt", "text": "E/Z fehlt"},
     ]
     for result in results:
         result["sekunden"] = 0.1
@@ -215,10 +219,52 @@ def report_with_tautomers(tmp_path, monkeypatch):
 
 
 def test_identity_report_separates_tautomers_from_green_and_other_yellow(report_with_tautomers):
-    assert "1 grün · 1 gelb (Quelle/Referenz) · 2 gelb (Tautomer) · 1 rot" in report_with_tautomers
+    assert "1 grün · 1 gelb (Quelle/Referenz) · 2 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 1 rot" in report_with_tautomers
     assert "| Tautomer | 2 |" in report_with_tautomers
     assert "| Quelle/Referenz | 1 |" in report_with_tautomers
 
 
 def test_identity_report_distinguishes_source_compounds_from_distinct_keys(report_with_tautomers):
-    assert "5 Eingaben (4 Wikidata-Stoffe, 3 unterschiedliche InChIKeys)" in report_with_tautomers
+    assert "7 Eingaben (5 Wikidata-Stoffe, 4 unterschiedliche InChIKeys)" in report_with_tautomers
+
+
+def test_report_does_not_count_missing_ez_as_green_or_source_yellow(report_with_tautomers):
+    assert "| E/Z fehlt | 2 |" in report_with_tautomers
+    assert "1 grün · 1 gelb (Quelle/Referenz)" in report_with_tautomers
+
+
+@pytest.mark.parametrize("confirmed_correction", [False, True])
+def test_rebuilding_list_keeps_vinblastine_uncertain_after_corrections(
+    tmp_path, monkeypatch, confirmed_correction,
+):
+    fixture = json.loads(masse_eval.LISTE.read_text())["stoffe"]
+    reference = next(row for row in fixture if row["eingabe"] == "vinblastine")
+    key = reference["inchikey"]
+    source = {
+        "keys": {key}, "smiles": {reference["smiles_referenz"]},
+        "chembl": {"CHEMBL22969"}, "inn": None, "de": "Vinblastin",
+        "en": "vinblastine", "suchwort": "vinblastine", "gruppe": "test",
+    }
+    monkeypatch.setattr(masse_eval, "_lehrbuch", lambda: {"Q282629": source})
+    monkeypatch.setattr(masse_eval, "_eml", lambda: {})
+    monkeypatch.setattr(masse_eval, "LEHRBUCH", {"test": ["vinblastine"]})
+    monkeypatch.setattr(masse_eval, "_chembl_nach_keys", lambda keys: {key: "CHEMBL22969"})
+    monkeypatch.setattr(masse_eval, "_chembl_nach_ids", lambda ids: {})
+    if confirmed_correction:
+        # Selbst der Zweig, der unsicher/notiz entfernt, darf den Entscheid nicht verlieren.
+        monkeypatch.setitem(masse_eval.REFERENZ_KORREKTUREN, "vinblastine", {
+            field: reference[field]
+            for field in ("inchikey", "formel", "quelle", "smiles_referenz")
+        })
+    monkeypatch.setattr(masse_eval, "REPO", tmp_path)
+    monkeypatch.setattr(masse_eval, "LISTE", tmp_path / "liste.json")
+    curated = tmp_path / "kuratiert.json"
+    curated.write_text('{"stoffe": []}')
+    monkeypatch.setattr(masse_eval, "KURATIERT", curated)
+    assert masse_eval.baue_liste(argparse.Namespace()) == 0
+    rows = json.loads(masse_eval.LISTE.read_text())["stoffe"]
+    assert {row["eingabe"] for row in rows} == {"vinblastine", "Vinblastin"}
+    for row in rows:
+        assert row["inchikey"] == key
+        assert row.get("unsicher") is True
+        assert row.get("notiz") == reference["notiz"]

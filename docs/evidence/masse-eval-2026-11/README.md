@@ -461,3 +461,47 @@ Rohdaten davor: `identitaet-lauf-9-vor-tautomer.json`, danach:
 `uv run python scripts/masse_eval.py identitaet` reproduziert und hat eine eigene
 Zeile „Tautomer“ unter „Gelb nach Art“. Der Referenzentscheid
 Vinblastin-Stereo/Sulfasalazin-E/Z bleibt geparkt; keine Fixture geändert.
+
+
+### Holdout nach `_same_tautomer` (06.11.2026)
+
+Erneut ausgeführt: `uv run python docs/evidence/masse-eval-2026-11/holdout_pubchem_check.py`
+(2145 Wikidata-Labels, davon 553 im Geltungsbereich; Laufzeit diesmal ca. 29 min).
+Die vorherige Fassung ist als `holdout_pubchem_check-vor-tautomer.json` gesichert.
+Alle 553 Namen, Referenzkeys und vollständigen Ergebnis-InChIKeys sind identisch;
+**0 richtig→anders**. Beide JSON-Dateien sind bytegleich (SHA-256
+`d7995c0ee21766499493c4221d0a49df57da0a37653ee785219ae5c3cd6f6e53`).
+Maschinenlesbarer Vergleich: `holdout_pubchem_check-tautomer-vergleich.json`.
+
+| Maß | vorher | nachher |
+|---|---:|---:|
+| Fälle im Geltungsbereich | 553 | 553 |
+| Gerüst richtig | 540 | 540 |
+| Vollständiger InChIKey richtig | 505 | 505 |
+| Vollständiger Ergebnis-Key geändert | — | **0** |
+
+Die bisherige Wertung bleibt: 536 gleich/alt richtig, 4 durch die Variantenprobe
+behoben, 12 gleich/beide falsch, 1 beide falsch/verschieden. Bekannte Tautomer-,
+Stereo- und Komplex-Abweichungen bleiben einzeln sichtbar; sie sind keine neuen
+Verschlechterungen. Die bloße Gerüstwertung ersetzt hier nicht den zusätzlichen
+Vergleich der vollständigen Keys.
+
+### Referenzentscheid — Lauf 11 (06.11.2026)
+
+Opus-Code `5a2ea90`, Rohdaten `7ae85ac`: **675 grün · 3 gelb (Quelle/Referenz) ·
+3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot**. Gegen den eingefrorenen
+`identitaet-lauf-10-vor-referenzentscheid.json` werden nur vier rote Fälle gelb:
+vinblastine/Vinblastin (begründeter Quellenwiderspruch, `unsicher=true`) und
+sulfasalazine/Sulfasalazin (`art=ez_fehlt`). Alle Keys bleiben unverändert;
+kein zusätzlicher grüner Fall. Der Bericht trennt die drei gelben Gruppen
+in Kopfzeile und Tabelle. Die vorher geparkten Referenzentscheide sind damit
+umgesetzt, der Quellenwiderspruch bei Vinblastin bleibt ausdrücklich offen.
+
+`scripts/masse_eval.py` sichert den Vinblastin-Entscheid in `REFERENZ_UNSICHER`:
+Der Listen-Neubau setzt Flag und genaue Begründung nach den bestätigten
+Referenzkorrekturen, damit deren Bereinigung sie nicht entfernt. Der bestehende
+InChIKey wird dabei nicht geändert. Regression: beide Schreibweisen, jeweils
+mit und ohne bestätigte Korrektur im Neubau getestet. Tautomer und E/Z fehlt
+werden ausschließlich aus Gelb gezählt, niemals Grün oder Quelle/Referenz
+zugeschlagen. Aktuellen Bericht reproduzieren:
+`uv run python scripts/masse_eval.py identitaet`.
