@@ -2,9 +2,10 @@
 
 ## Weiter bei — Codex nach Befund 4, vor Kontext-Neustart (06.11.2026)
 
-**Nächster Schritt:** Kreuzabnahme zu `530e9a9` durch den vom Chef beauftragten Opus-Gutachter
-abwarten; Rückmeldung im Faden `20261106-115136-befund-4-referenzliste` lesen (eigener Bericht #3).
-Nur bei konkretem Folgeauftrag nachbessern. Keine eigene Wartefrist, laufenden Jobs oder halbfertigen Edits.
+**Nächster Schritt:** Kein eigener Folgeauftrag offen. Befund 4 (`530e9a9`) ist nach Kreuzabnahme
+vom Chef abgenommen und der Faden `20261106-115136-befund-4-referenzliste` geschlossen
+(Chef-Planstand `a2fc4e8`, eigener Bericht #3). Erst auf neuen konkreten Tisch-Auftrag weiterarbeiten.
+Keine eigene Wartefrist, laufenden Jobs oder halbfertigen Edits.
 Fremdes Befund-3-WIP (`resolver.py`, `tests/test_resolver.py`, Holdout und eingefrorener Lauf 5) nicht übernehmen.
 
 - [x] Befund 4 gebaut und gepusht: `530e9a9`, zwei unabhängig belegte Referenzkorrekturen,
