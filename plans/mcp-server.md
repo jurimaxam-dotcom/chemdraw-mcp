@@ -163,17 +163,13 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
 - ✅ **Befund 3 abgenommen 06.11. ~14:00:** `0285017`/`052d3fe` + Evidence `9b3cbbd`. Codex-Kreuzabnahme `…134101` ABNEHMEN (Ephedrin/Risperidon live
   richtig, Befund-2-Proben gleich, Holdout 536/3/0/14, Blackhole: +3 s nur bei Abbruch nach Direkttreffer). Chef: Diff gelesen, Gate rc=0 8205,
   **Lauf 7 = 668/1/42** selbst nachgezählt (Befund 3 + 4). Fäden + Pane pF geschlossen.
-- **Salzform** (Bendamustin/Phenelzin/Carboplatin → HCl): frischer Opus-Bauer, Faden `20261106-140408-befund-salzform` → danach Codex-Kreuzabnahme.
+- ✅ **Salzform abgenommen 06.11. ~15:10:** `c48173d`/`61567c3`/`10e7313` (Opus-Bauer): INN ohne Salzwort → freie Form, wenn PubChem direkt Salz und Variante frei bei gleichem Stamm; `_SALT_WORD` mit Wortgrenzen. Carboplatin/Tetracyclin-Tautomere/Hydroxocobalamin/Docusat = andere Klassen. Codex-Kreuzabnahme alle Punkte ja (M1/M2/M3 rot, Holdout +Phenelzin 0 gekippt, Live-Gegenproben Befund 2/3 richtig); sein NACHBESSERN (`Bendamustinhydrochlorid` not_found) ist keine Regression — Worktree `30d8cfd` liefert dasselbe → Folgepunkt. Chef: Diff gelesen, Gate rc=0 8223, **Lauf 8 = 669/1/41** nachgezählt (nur Bendamustin rot→grün; offline gegen b67ceb7 674/1/36). Fäden `…140408`, `…150235` + Pane pG geschlossen.
 - ✅ **Stereo-Referenzen abgenommen 06.11.:** `b67ceb7` (Codex), Opus-Gutachter ABNEHMEN: genau 5 Fixture-Einträge (Clindamycin, Cocaine,
   Pantothensäure de+en, Trehalose), Keys live PubChem+ChEMBL, Stereo fachlich richtig, Neuwertung **673/1/37** nachgezählt (genau 5 Zeilen),
   kein Produktcode. Nicotin bewusst unverändert. Faden geschlossen.
-**Danach:** `referenz-audit.json`: ≥ 10 weitere Einträge „Referenz bestätigt (ChEMBL-Key)“ mit derselben zu weiten Begründung wie Clindamycin prüfen · Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
+**Danach:** deutsche zusammengesetzte Salznamen (`Bendamustinhydrochlorid` not_found, englisch `Bendamustine hydrochloride` geht) · Hydrat-Zweig der Salzregel (Tigecyclin) ohne Unit-Test · `referenz-audit.json`: ≥ 10 weitere Einträge „Referenz bestätigt (ChEMBL-Key)“ mit derselben zu weiten Begründung wie Clindamycin prüfen · Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
 Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
-**Nächster Chef-Schritt (Stand 06.11. ~14:35, Chef-Kontext-Neustart):** einziger offener Bau-Faden `20261106-140408-befund-salzform`
-(Opus-Bauer, Session 1de8b073, rechter Split im Workspace w4W; Bericht kommt an diese Pane w4W:p6) → Bericht lesen → Codex-Kreuzabnahme in neuem
-Faden (Prüfmethode wie Befund 3: Hauptfälle live, Befund-2/3-Gegenproben, Holdout aus Einzelliste nachzählen, Lauf gegen aktuelle Fixture,
-Gate) → Chef: Diff lesen + `./test.sh > log; rc` selbst + Laufdatei mit json+Counter nachzählen → Faden + Pane schließen. Danach Folgepunkte
-aus **Danach:** vergeben (Audit-Begründungen + Regenerationsschutz an Codex; „gefunden als“ an Opus-Bauer).
+**Nächster Chef-Schritt (Stand 06.11. ~15:15):** kein Bau-Faden offen. Folgepunkte aus **Danach:** vergeben — „gefunden als“ an frischen Opus-Bauer; Audit-Begründungen + Regenerationsschutz an Codex (5h-Kontingent leer bis 15:29); Salznamen danach (berührt resolver.py, nicht parallel zu „gefunden als“). Je Faden: Bericht → Kreuzabnahme → Chef Diff + Gate + Nachzählung.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
