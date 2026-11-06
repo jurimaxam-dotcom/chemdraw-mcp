@@ -1,17 +1,69 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Triage der 28 roten Fälle (06.11.2026)
+## Weiter bei — Codex: Lauf 12 nach Kontext-Neustart (06.11.2026 ~23:25)
 
-**Stand:** Tautomer-/Referenz-Folgepunkte **abgenommen**: `5a2ea90` / `7ae85ac` /
-`5081b6d` / `fc717cd`. Chef: Diff `masse_eval.py` gelesen, **25 passed**, eigenes
-**Gate rc=0**, `identitaet.md` gegen Lauf 11 nachgezählt:
-**675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot**.
-Holdout: **553 vollständige Ergebniskeys unverändert, 0 richtig→anders**.
-Alter Faden `20261106-222719-folgepunkte-aus-opus-3476636` geschlossen;
-Abnahme im Folgefaden `20261106-230209-abnahme-faden-20261106-222719`.
-**Offen:** Opus-Triage der 28 roten Fälle, Faden `20261106-225717`.
-**Nächster Chef-Schritt:** Triage entgegennehmen, danach Bau-Schnitt entscheiden.
-**Jay-Frage weiterhin offen:** Abfragemodus auch für Reaktionen?
+**Nächster Schritt:** Lauf-12-Auftrag aus Tisch-Faden
+`20261106-232415-schnitt-2-3ba3ff2-abgenommen` #1 ausführen; #2 bestätigt die
+Übernahme vor dem Kontext-Neustart. Rolle bleibt **Bauer Codex** (`w57:p5`),
+Chef Claude `w57:p3`; Rückfragen und Abschlussbericht in diesen Faden.
+Zuerst Tischpost lesen und betroffene Dateien selbst reservieren.
+
+- [x] **Schnitt 1 `0f174ea` + Schnitt 2 `3ba3ff2` vom Chef abgenommen**
+  (Faden oben #1): Resolver-Diff gelesen, Chef-Gate rc=0 auf gemeinsamem HEAD.
+  Alter Schnitt-2-Faden `20261106-231238-chemdraw-mcp-schnitt-2` geschlossen.
+- [x] Schnitt 2: fünf Zielfälle live richtiger voller Fixture-Key (Cefixim Anhydrat,
+  N-Methylglucaminantimonat, Metamizol freie Säure, EDTA, Citral A+B). Geschlossene
+  Form-Whitelist, volle Kaskade erst nach gescheitertem Original, R/S und Drehwert
+  bleiben; `found_as` gesetzt. 236 gezielte Tests grün; Gate **8328 passed / 16 skipped**,
+  rc=0, `/tmp/chemdraw-schnitt2-final-gate.log`. Deutscher Holdout 177 Fälle
+  vor/nach bytegleich, **0 richtig→anders**; sieben Penicillin-Namen zusätzlich live richtig.
+- [ ] **Lauf 12 auf HEAD (beide Schnitte):** Erst aktuellen Lauf 11 als
+  `docs/evidence/masse-eval-2026-11/identitaet-lauf-11-vor-schnitt-1-2.json` sichern
+  (vorhandene Sicherung nicht blind überschreiben). Start-Commit/Fixture-Hash belegen.
+  Dann `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json
+  --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json` in frischem Prozess.
+  Prüfen: vollständige Eingabemenge und Statuszahlen, keine Teilantwort als Endstand.
+- [ ] **Vergleich je Eingabe gegen Lauf 11:** vollständige Liste aller semantischen
+  Änderungen (Status, Art, erwarteter/erhaltener voller Key, Text/Umweg; Laufzeiten
+  separat). Bei Grün steht der erhaltene Key im Feld `text`, sonst ggf. `erhalten`.
+  Prüfen: **0 grün→anders**, nicht nur gleicher erster Key-Block; fehlende/zusätzliche
+  Eingaben ausdrücklich ausweisen. Vergleich als Evidence im vorhandenen Ordner ablegen.
+- [ ] **Bericht erzeugen und committen:** `uv run python scripts/masse_eval.py identitaet`
+  → `docs/evidence/masse-eval-2026-11/identitaet.md`, alle gelben Klassen getrennt,
+  Rohzahlen selbst nachzählen. Rohdaten, Vergleich und Bericht committen/pushen.
+- [ ] **Chef-Stand nachtragen und berichten:** tatsächliche Lauf-12-Zahl oben und im
+  Chef-Abschnitt festhalten; Schnitt 1/2 abgenommen. Offen bleibt Opus-Kippmessung
+  Schnitt 3 (eigener Faden, Messbasis **ohne form_variant**), danach Chef-Entscheid
+  Schnitt 3; clomifene ggf. gelb `gemisch` ist noch keine freigegebene Umsetzung.
+  Plan committen, Kopfblock-Bericht `status/abnahme/dateien/offen` an Chef im Faden oben.
+
+**Dateien/Zeilen und Beweise:** `scripts/identitaet.py:262` (Runner),
+`scripts/masse_eval.py` (`identitaet_bericht`), `tests/identity/stoffe-masse.json`,
+`docs/evidence/masse-eval-2026-11/identitaet-lauf.json` und `identitaet.md`;
+Schnitt 2 in `chemdraw_tool/de_names.py:108` / `:149`,
+`chemdraw_tool/resolver.py:1121`, `tests/test_resolver.py:1209`.
+Dauerhafte Belege: `docs/evidence/masse-eval-2026-11/schnitt-2-de-namen/`
+(README, Live-Keys, Holdout vor/nach/Vergleich, Varianten-Delta, Penicillin-Live).
+
+**Wartezeiten/Folgeaktion:** beim Neustart kein eigener Hintergrundjob, keine rote
+Fix-Etappe, kein halbfertiger Edit; Lauf 12 ist **noch nicht gestartet**. Der Netzlauf
+braucht einen überwachten frischen Prozess (letzte volle Läufe ca. 18–20 min,
+kein zugesagter Endzeitpunkt). Bei Ende Exitcode/volle JSON prüfen, dann vergleichen;
+bei Quellen-Ausfällen gelbe Fälle belegen, keinen Teillauf als Abnahme zählen.
+
+**Zugesagte Prüfmethoden/Beweisformen:** Befehl + Datei-Log, vollständige Rohdaten,
+Nachzählung pro Status/gelber Art, kompletter Eingabe-Vergleich und voller Key für
+alle zuvor grünen Fälle; keine neue Resolver-/Fixture-Änderung ohne Bauauftrag.
+Opus' Schnitt-3-Messung enthält die neue Form-Fallback-Stufe noch nicht.
+
+**Frage an Jay (unbeantwortet — nicht bauen):** „Soll der Abfragemodus auch
+Reaktionen/Mechanismen abdecken (Edukte verdecken)?“
+Welle 3 ist bereits entschieden: zweiter Konnektor `chemdraw-pharma` mit `full`.
+
+**Vorstufen:** Tautomer-/Referenz-Folgepunkte `5a2ea90` / `7ae85ac` / `5081b6d` /
+`fc717cd` abgenommen; Lauf 11 **675 grün · 3 gelb Quelle/Referenz · 3 gelb Tautomer ·
+2 gelb E/Z fehlt · 28 rot**. Neuere Schnitt-1-Referenzen erst in Lauf 12 werten.
+
 
 - [x] `b67ceb7` gepusht: 711 Referenz-SMILES / 414 ursprüngliche Keys geprüft,
   411 PubChem-Recordantworten und 3 dokumentierte 404. Vier Referenzen / fünf Eingaben
