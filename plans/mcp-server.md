@@ -1,5 +1,36 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex nach Kreuzabnahme Runde 2 (06.11.2026)
+
+**Nächster Schritt:** Erst bei neuem Tisch-Auftrag den Bericht der laufenden Runde 3 prüfen
+(Bauer-Faden `20261106-113525-folge-zu-20261106-102746`, Chef-Auftrag zur Kreuzabnahme
+`20261106-105531-abnahme-befund-2`, zuletzt #4 Codex-Bericht). Kein eigener Bauauftrag offen;
+keine halbfertigen Edits, roten Tests im Fix oder laufenden eigenen Hintergrundjobs. Keine feste
+Wartefrist; Folgeaktion bei Bericht: Diff und gezielte Tests unabhängig prüfen, Ergebnis an Chef.
+
+- [x] Kreuzabnahme Runde 1: `41da7c4`/`e228047`, 139 gezielte Tests grün;
+  NaPO4-Ladungsfehler und Silikat-Stöchiometriewechsel gemeldet (Abnahme-Faden #2).
+- [x] Kreuzabnahme Runde 2: `038ace4`/`236df52`, 146 gezielte Tests grün;
+  alte Salzfehler behoben, Holdout 117/9/0/5 aus 131 Einzelzeilen nachgerechnet,
+  Lauf 5 664/1/46 bei 711 eindeutigen Eingaben bestätigt. Echter Blackhole-Test nach
+  OPSIN-Warmup: Ethanol 3,013/3,017 s, Struktur-Fallback erhalten. **Nachbessern** wegen
+  `potassium citrate`: wasserfrei → Monohydrat, Abnahme-Faden #4. Chef hat Runde 3 vergeben.
+- [x] Desktop-Handtest E2: drei Originalprompts (SN2, Fischer, SN1) jeweils
+  `generate_mechanism`, alle Erwartungen und Next/Back grün; Bericht
+  `20261106-103546-etappe-e2` #4, Faden inzwischen geschlossen.
+  Beweisbilder `/tmp/chemdraw-desktop-test/etappe-e2/`; keine Release-Paket-Abnahme.
+
+**Prüfpfade für Runde 3:** `chemdraw_tool/resolver.py` (`_opsin_checked`, bislang Zeilen 484–519),
+`tests/test_resolver.py`, `docs/evidence/masse-eval-2026-11/{README.md,holdout_opsin_check.json,identitaet-lauf.json}`.
+Prüfmethode: `uv run pytest tests/test_resolver.py tests/test_ambiguous_names.py -q`, echte Gegenprobe
+der Hydratvarianten (potassium citrate / tripotassium citrate / anhydrous / monohydrate),
+Formel + Ladung + InChIKey, bisherige sechs Trivialnamen-Gewinne und Diiodtyrosin/Edetat erhalten;
+kein Golden-/Test-Blessen. Keine komplette Gate-Wiederholung oder neue Desktop-Runde zugesagt.
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Neustartgrenze:** `HERDR_PANE_ID` fehlt weiterhin in dieser Laufzeit. Skript einmal aufrufen,
+Fehler offen melden; keine fremde Pane wählen und nicht ohne neuen Anlass Neustartschleifen starten.
+Ältere Neustartabschnitte unten sind historisch; der zurückgezogene IR-Auftrag wird nicht erneut begonnen.
+
 ## Weiter bei — Codex-Neustart nach Befund 5 (06.11.2026)
 
 **Aktuell, ersetzt den Folgeauftrag unten:** Orchestrator hat den IR-Auftrag in Faden
