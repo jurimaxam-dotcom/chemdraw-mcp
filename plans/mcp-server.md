@@ -13,6 +13,16 @@
   § Release-Reihenfolge, per Test verankert.
 - Hinweis: `release_check.py` ist heute rot (rc=1), weil [Unreleased] Einträge hat — beim nächsten Release erst verschieben.
 
+## Orchestrierung (Jay 06.11.2026: „alles autonom, Sessions spawnen, bei zu hohem Kontext schließen, Codex nutzen“)
+
+Orchestrator = Claude-Hauptsession `f31ab414` (herdr `w4W:p6`). Berichte sind Behauptungen → Diff + Tests selbst nachprüfen, dann Faden schließen, Pane schließen.
+**Läuft:** Befund 2 OPSIN (Claude `3d35f9c4`, Faden `20261106-102746-masse-eval-befund-2`) · Befund 5 pH-Klemme + IR (Codex, Faden
+`20261106-103348-masse-eval-befund-5`) · E2 Lehrbuch-Feinschliff (Claude `76129dfa`, Faden `20261106-103546-etappe-e2`).
+**Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` (28 Tests grün, `release_check.py` rc=1 solange [Unreleased] gefüllt — gewollt).
+**Warteschlange (nach Befund 2, weil resolver.py bzw. stoffe-masse.json):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) ·
+Befund 4 Referenzliste (fumaric acid → Q139857, tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
+**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation, offene Jay-Fragen (Welle 3, Abfragemodus).
+
 ## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
 
 - [x] **Befund 1 (deutsche Trivialnamen ohne PubChem-Synonym)** — `abee1a5`: `chemdraw_tool/de_names.py` (reine Funktion,
