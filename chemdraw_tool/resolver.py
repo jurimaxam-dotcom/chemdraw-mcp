@@ -476,9 +476,23 @@ _SYSTEMATIC_MARK = re.compile(r"\d|[(\[]|(?:^|[\s,-])[NOSPomp]'?(?:,[NOSP]'?)*-"
 
 
 def _skeleton(smiles: str | None) -> str | None:
-    """Erster InChIKey-Block = Konnektivität; Stereo und Ladung zählen nicht."""
+    """Erster InChIKey-Block ohne Kristallwasser; Stereo und Ladung zählen nicht.
+
+    Wasser-Komponenten fallen vorher weg: "potassium citrate" baut OPSIN
+    wasserfrei, PubChem führt das Monohydrat — ein Formkonflikt, keine
+    Gerüstkorrektur. Gegenionen bleiben drin, denn dort hat PubChem gemessen
+    recht (Edetat Na2Ca statt NaCa, Goldthiomalat Au/Na statt Au2-Dimer).
+    """
     mol = Chem.MolFromSmiles(smiles) if smiles else None
-    return Chem.MolToInchiKey(mol).split("-")[0] if mol is not None else None
+    if mol is None:
+        return None
+    frags = Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
+    parts = [f for f in frags if Chem.MolToSmiles(f) != "O"]
+    if parts and len(parts) < len(frags):  # reines Wasser bleibt Wasser
+        mol = parts[0]
+        for frag in parts[1:]:
+            mol = Chem.CombineMols(mol, frag)
+    return Chem.MolToInchiKey(mol).split("-")[0]
 
 
 def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
@@ -493,7 +507,7 @@ def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     oder ist es nicht erreichbar, bleibt OPSINs Antwort.
 
     Salze (Nachbesserung nach Codex-Abnahme, gemessen an 22 Fällen): PubChem
-    führt "sodium phosphate" als Hydrogenphosphat-Anion (Ladung −2) und
+    führt "sodium phosphate" als Na⁺ + PO₄³⁻ (Nettoladung −2) und
     Silikate in anderer Stöchiometrie; jede dieser Kippen war kohlenstofffrei,
     jeder Gewinn organisch. Darum: ohne Kohlenstoff keine Gegenfrage — OPSIN
     baut die Zusammensetzung aus dem Namen, wie vor Befund 2, und das spart den

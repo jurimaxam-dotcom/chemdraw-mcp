@@ -159,6 +159,32 @@ ohne Mock (`_PUBCHEM_URL` umgebogen): **Blackhole-Host 3,0 s** je Name (Connect-
 `_TIMEOUT = (3, 10)`), **DNS-Fehler 0,07 s**, Name mit Lokanten oder ohne Kohlenstoff 0,0 s. Vor Befund 2
 waren es überall 0,0 s.
 
+### Nachbesserung: Kristallwasser ist ein Formkonflikt (06.11.2026)
+
+Codex-Abnahme #4 fand **potassium citrate**: OPSIN baut das wasserfreie Salz C₆H₅K₃O₇, PubChem
+führt unter dem Namen das Monohydrat C₆H₇K₃O₈ (CID 2735208); die Gegenprüfung wertete das als
+Gerüstkorrektur und schaltete still um. Vorgabe des Orchestrators: ein Formkonflikt (gleiche organische
+Grundstruktur, nur Wasser/Gegenionen/Ladung anders) behält OPSIN. Vorab gemessen über **301 OPSIN-Treffer**
+mit Kohlenstoff ohne Lokant (alle Lauf-5-Eingaben, Holdout, Codex' Gegenproben plus Hydratnamen), drei Regeln:
+
+| Regel | Vergleich | weicht von heute ab bei | Ergebnis |
+|---|---|---|---|
+| R0 (bisher) | 1. InChIKey-Block der ganzen SMILES | — | potassium citrate → Monohydrat |
+| **R1 (gebaut)** | dasselbe ohne Wasser-Komponenten | nur potassium citrate | wasserfrei ✓, sonst gleich |
+| R2 (Vorschlag) | größte organische Komponente | potassium citrate, **sodium calcium edetate, gold monosodium thiomalate** | kippt zwei Gewinne |
+
+R2 widerlegt den Teil „Gegenionen“: Bei Edetat baut OPSIN NaCa-EDTA (eine Carbonsäure protoniert),
+richtig ist Na₂Ca (Wikidata SHWNNYZBHZIQQV); bei Goldthiomalat baut OPSIN ein Au³⁺-Dimer, richtig ist
+Au⁺/Na⁺ (LTEMOXGFFHXNNS). Dort entscheidet die Gegenionen-Zusammensetzung über den Stoff, PubChem hat
+recht. Darum zieht `_skeleton` nur Wasser ab. Mutation R2 statt R1 → 2 Tests rot (genau diese beiden).
+
+Live (ohne Mock): potassium citrate C₆H₅K₃O₇ QEEAPRPFLLJWCF · potassium citrate monohydrate C₆H₇K₃O₈
+PJAHUDTUZRZBKM · tripotassium citrate C₆H₅K₃O₇; Edetat, Goldthiomalat, diiodo-L-tyrosine, die Lauf-4-Gewinne,
+Glycin, sodium phosphate und 14 organische Salze (Citrate, Acetate, Tartrat, Lactat, Oxalat, Bicarbonat)
+unverändert. **Kein Lauf 6:** R1 ändert eine Entscheidung nur bei einer Wasser-Komponente; unter allen
+Lauf-5-Eingaben gibt es keine solche Abweichung (Messung oben). Holdout neu: 117 gleich · 9 behoben ·
+**0 gekippt** · 5 beide abweichend, alle 131 Einzelfälle identisch zum vorigen Stand.
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:

@@ -345,6 +345,125 @@ def test_charged_pubchem_answer_with_right_skeleton_still_wins(_opsin, _pubchem)
     assert Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)).startswith("NYPYHUZRZVSYKL")
 
 
+# Formkonflikt (Codex-Abnahme #4, 06.11.): PubChem führt "potassium citrate"
+# als Monohydrat (CID 2735208), OPSIN baut das wasserfreie Salz aus dem Namen.
+# Kristallwasser ist keine Gerüstkorrektur. Gemessen über 301 OPSIN-Treffer:
+# nur Wasser abziehen ändert genau diesen Fall; die größte organische
+# Komponente zu vergleichen kippte zwei Gewinne, deren Gegenionen PubChem
+# richtig hat (Edetat Na2Ca, Goldthiomalat Au/Na). Werte = echte Antworten.
+_FORMEN = {
+    # Name: (OPSIN, PubChem, erwartet)
+    "potassium citrate": (
+        "C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[K+].[K+].[K+]",
+        "C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.O.[K+].[K+].[K+]",
+        "OPSIN",
+    ),
+    "potassium citrate monohydrate": (
+        "C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[K+].[K+].[K+].O",
+        "C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.O.[K+].[K+].[K+]",
+        "OPSIN",
+    ),
+    "gold monosodium thiomalate": (
+        "C(C(S)CC(=O)[O-])(=O)[O-].[Na+].[Au+3].C(C(S)CC(=O)[O-])(=O)[O-]",
+        "C(C(C(=O)[O-])S)C(=O)[O-].[Na+].[Au+]",
+        "PubChem",
+    ),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_FORMEN))
+def test_water_alone_is_a_form_conflict_not_a_correction(name):
+    opsin, pubchem, wer = _FORMEN[name]
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        assert resolve_name(name) == (opsin if wer == "OPSIN" else pubchem)
+
+
+def test_potassium_citrate_stays_anhydrous():
+    opsin, pubchem, _ = _FORMEN["potassium citrate"]
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        mol = Chem.MolFromSmiles(resolve_name("potassium citrate"))
+    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+    assert CalcMolFormula(mol) == "C6H5K3O7"
+    assert Chem.MolToInchiKey(mol).startswith("QEEAPRPFLLJWCF")
+
+
+# Erweiterte Gegenprobe aus Codex-Abnahme #4: organische Salze, bei denen OPSIN
+# und PubChem dieselbe Zusammensetzung liefern (nur andere Schreibweise) — kein
+# Umschalten. Echte Antwortpaare (OPSIN, PubChem), gemessen 06.11.2026.
+_SALZE_ORGANISCH = {
+    'sodium citrate': (
+        'C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Na+].[Na+].[Na+]',
+        'C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.[Na+].[Na+].[Na+]',
+    ),
+    'calcium gluconate': (
+        'O=C([C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO)[O-].[Ca+2].O=C([C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO)[O-]',
+        'C([C@H]([C@H]([C@@H]([C@H](C(=O)[O-])O)O)O)O)O.C([C@H]([C@H]([C@@H]([C@H](C(=O)[O-])O)O)O)O)O.[Ca+2]',
+    ),
+    'sodium acetate': (
+        'C(C)(=O)[O-].[Na+]',
+        'CC(=O)[O-].[Na+]',
+    ),
+    'magnesium stearate': (
+        'C(CCCCCCCCCCCCCCCCC)(=O)[O-].[Mg+2].C(CCCCCCCCCCCCCCCCC)(=O)[O-]',
+        'CCCCCCCCCCCCCCCCCC(=O)[O-].CCCCCCCCCCCCCCCCCC(=O)[O-].[Mg+2]',
+    ),
+    'calcium citrate': (
+        'C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Ca+2].C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Ca+2].[Ca+2]',
+        'C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.[Ca+2].[Ca+2].[Ca+2]',
+    ),
+    'magnesium citrate': (
+        'C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Mg+2].C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Mg+2].[Mg+2]',
+        'C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.[Mg+2].[Mg+2].[Mg+2]',
+    ),
+    'sodium tartrate': (
+        'C(=O)([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+        '[C@@H]([C@H](C(=O)[O-])O)(C(=O)[O-])O.[Na+].[Na+]',
+    ),
+    'aluminium acetate': (
+        'C(C)(=O)[O-].[Al+3].C(C)(=O)[O-].C(C)(=O)[O-]',
+        'CC(=O)[O-].CC(=O)[O-].CC(=O)[O-].[Al+3]',
+    ),
+    'silver acetate': (
+        'C(C)(=O)[O-].[Ag+]',
+        'CC(=O)[O-].[Ag+]',
+    ),
+    'lithium citrate': (
+        'C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Li+].[Li+].[Li+]',
+        '[Li+].[Li+].[Li+].C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O',
+    ),
+    'calcium lactate': (
+        'C(C(O)C)(=O)[O-].[Ca+2].C(C(O)C)(=O)[O-]',
+        'CC(C(=O)[O-])O.CC(C(=O)[O-])O.[Ca+2]',
+    ),
+    'sodium oxalate': (
+        'C(C(=O)[O-])(=O)[O-].[Na+].[Na+]',
+        'C(=O)(C(=O)[O-])[O-].[Na+].[Na+]',
+    ),
+    'calcium acetate': (
+        'C(C)(=O)[O-].[Ca+2].C(C)(=O)[O-]',
+        'CC(=O)[O-].CC(=O)[O-].[Ca+2]',
+    ),
+    'sodium bicarbonate': (
+        'C([O-])(O)=O.[Na+]',
+        'C(=O)(O)[O-].[Na+]',
+    ),
+    'sodium citrate dihydrate': (
+        'O.O.C(CC(O)(C(=O)[O-])CC(=O)[O-])(=O)[O-].[Na+].[Na+].[Na+]',
+        'C(C(=O)[O-])C(CC(=O)[O-])(C(=O)[O-])O.O.O.[Na+].[Na+].[Na+]',
+    ),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_SALZE_ORGANISCH))
+def test_organic_salt_same_composition_keeps_opsin(name):
+    opsin, pubchem = _SALZE_ORGANISCH[name]
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        assert resolve_name(name) == opsin
+
+
 # --- Fehler-Diagnose: nicht gefunden vs. Netzproblem vs. Mischform ----------
 # Vorher warf JEDER Kaskaden-Ausfall dieselbe Meldung ("Use an English/IUPAC
 # name…") — bei Netzausfall schickt das den Nutzer auf eine aussichtslose
