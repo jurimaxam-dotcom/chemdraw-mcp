@@ -533,6 +533,41 @@ def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     return pubchem
 
 
+# Stereo-Klammerpräfixe "(−)-", "(+)-", "(S)-", "(RS)-", "(E)-", auch gekettet
+# ("(S)-(−)-timolol"). Sie legen die Form fest, nie das Gerüst.
+_STEREO_PREFIX = re.compile(r"^(?:\((?:[+\-−±]|RS|rs|[RS](?:,\s?[RS])*|[EZ])\)-)+")
+
+
+def _spelling_variant(name: str) -> str | None:
+    """Derselbe Stoff anders geschrieben: englisch und ohne Stereopräfix, oder None."""
+    core = _STEREO_PREFIX.sub("", name)
+    variant = english_variant(core) or core
+    return variant if variant != name else None
+
+
+def _pubchem_checked(name: str, smiles: str, report: list) -> str:
+    """PubChem-Direkttreffer gegen die Schreibvariante desselben Namens prüfen.
+
+    Masse-Eval-Befund 3 (06.11.2026): PubChem führt verirrte Depositor-Synonyme.
+    "(−)-Ephedrin" trifft genau einen Record, 1-Bromo-3-methyl-5-nitrobenzene
+    (CID 104213); "Risperidon" trifft nur CID 44402564, ein Dihydro-Analogon mit
+    5 Synonymen. Eine Schreibweise ändert kein Gerüst — widersprechen sich Name
+    und Variante, ist einer der beiden ein Synonymfehler. Gemessen über 139
+    Eingaben auf diesem Weg: 5 uneinig, 4-mal hatte die Variante recht, nie der
+    Originalname (der fünfte, rifabutin, ist in beiden Formen falsch). Darum
+    gewinnt die Variante. Kennt PubChem sie nicht oder ist das Netz weg, bleibt
+    der Direkttreffer. Preis: ein Aufruf mehr, nur für Namen mit Variante.
+    """
+    variant = _spelling_variant(name)
+    if variant is None:
+        return smiles
+    other = _pubchem_lookup(variant, report)
+    if _skeleton(other) in (None, _skeleton(smiles)):
+        return smiles
+    logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
+    return other
+
+
 def _transliterate(name: str) -> str | None:
     """Replace umlauts with ASCII equivalents. Returns None if no change."""
     result = name.translate(_UMLAUT_MAP)
@@ -936,7 +971,7 @@ def resolve_name(name: str) -> str:
         return _opsin_checked(name, smiles, report)
 
     if smiles := _pubchem_lookup(name, report):
-        return smiles
+        return _pubchem_checked(name, smiles, report)
 
     transliterated = _transliterate(name)
     if transliterated:

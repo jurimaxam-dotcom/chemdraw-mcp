@@ -185,7 +185,7 @@ def test_resolve_name_path_still_works_for_real_names(mock_pubchem):
     """'Aspirin' parsed nicht als SMILES → Namens-Pfad bleibt intakt."""
     mock_pubchem.return_value = "CC(=O)Oc1ccccc1C(=O)O"
     smiles, mol = resolve("Aspirin")
-    mock_pubchem.assert_called_once()
+    assert mock_pubchem.call_args_list[0].args[0] == "Aspirin"
     assert mol.GetNumAtoms() == 13
 
 
@@ -617,9 +617,11 @@ def test_unreachable_host_is_not_dialed_twice(mock_get, _opsin):
 def test_successful_resolution_is_cached(mock_get, _opsin):
     mock_get.return_value = _ok_pubchem_resp()
     first = resolve_name("Aspirin")
+    nach_erstem = mock_get.call_count  # Treffer + Variantenprobe (Befund 3)
     second = resolve_name("Aspirin")
     assert first == second
-    assert mock_get.call_count == 1
+    assert nach_erstem >= 1
+    assert mock_get.call_count == nach_erstem
 
 
 @patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
@@ -642,9 +644,10 @@ def test_failed_resolution_is_not_cached(mock_get, _opsin):
 def test_cache_is_clearable(mock_get, _opsin):
     mock_get.return_value = _ok_pubchem_resp()
     resolve_name("Aspirin")
+    je_lauf = mock_get.call_count
     resolver.resolve_name.cache_clear()
     resolve_name("Aspirin")
-    assert mock_get.call_count == 2
+    assert mock_get.call_count == 2 * je_lauf
 
 
 # --- Kaputtes SMILES nie in die Namenskaskade (Etappe 1, 26.10.2026) ---------
@@ -823,11 +826,13 @@ def test_umlaut_name_variant_is_built_from_the_original(mock_nci, mock_opsin):
 
 @patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
 @patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
-def test_direct_hit_never_asks_for_the_variant(mock_nci, mock_opsin):
+def test_direct_hit_keeps_its_answer_when_the_variant_is_unknown(mock_nci, mock_opsin):
+    """Seit Befund 3 fragt ein Direkttreffer die Variante einmal gegen (siehe
+    unten); kennt PubChem die Variante nicht, bleibt der Direkttreffer."""
     lookup, calls = _only_for("Dexamethason")
     with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
-        resolve_name("Dexamethason")
-    assert calls == ["Dexamethason"]
+        assert resolve_name("Dexamethason") == "CC(=O)O"
+    assert calls == ["Dexamethason", "Dexamethasone"]
 
 
 @patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
@@ -839,3 +844,87 @@ def test_variant_miss_keeps_not_found(mock_nci, mock_opsin):
             resolve_name("Dexamethason")
     assert exc.value.kind == "not_found"
     assert calls == ["Dexamethason", "Dexamethasone"]
+
+
+# --- PubChem-Synonymfehler (Masse-Eval-Befund 3, 06.11.2026) ----------------
+# "(−)-Ephedrin" trifft als Synonym genau einen Record: CID 104213,
+# 1-Bromo-3-methyl-5-nitrobenzene (35 Synonyme, nur "(-)-ephedrin" passt).
+# "Risperidon" trifft CID 44402564, ein Dihydro-Analogon mit 5 Synonymen.
+# Eine Schreibweise ändert kein Gerüst: Gemessen über 139 Eingaben, die den
+# PubChem-direkt-Weg mit Variante nehmen, widersprachen sich Name und Variante
+# 5-mal — 4-mal hatte die Variante recht, nie der Originalname. Werte = echte
+# PubChem-Antworten vom 06.11.2026.
+_SYNONYMFEHLER = {
+    # Eingabe: (Variante, PubChem für Eingabe, PubChem für Variante)
+    "(−)-Ephedrin": (
+        "Ephedrine",
+        "CC1=CC(=CC(=C1)Br)[N+](=O)[O-]",
+        "C[C@@H]([C@@H](C1=CC=CC=C1)O)NC",
+    ),
+    "Risperidon": (
+        "Risperidone",
+        "CC1=C(C(=O)N2CCCCC2=N1)CCN3CCC(CC3)C4C5=C(C=C(C=C5)F)ON4",
+        "CC1=C(C(=O)N2CCCCC2=N1)CCN3CCC(CC3)C4=NOC5=C4C=CC(=C5)F",
+    ),
+}
+
+
+def _pubchem_table(table: dict):
+    calls: list[str] = []
+
+    def lookup(name, report=None):
+        calls.append(name)
+        if name in table:
+            return table[name]
+        resolver._record(report, resolver._PUBCHEM, resolver._NOT_FOUND, "name unknown")
+        return None
+
+    return lookup, calls
+
+
+@pytest.mark.parametrize("name", sorted(_SYNONYMFEHLER))
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_variant_overrules_a_stray_pubchem_synonym(_opsin, name):
+    variante, direkt, richtig = _SYNONYMFEHLER[name]
+    lookup, calls = _pubchem_table({name: direkt, variante: richtig})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name(name) == richtig
+    assert calls == [name, variante]
+
+
+def test_stereo_prefix_is_dropped_for_the_variant():
+    """(−)/(+)/(S)/(RS)-Klammerpräfixe ändern kein Gerüst — die Variante fragt ohne."""
+    assert resolver._spelling_variant("(−)-Ephedrin") == "Ephedrine"
+    assert resolver._spelling_variant("(S)-(−)-timolol") == "timolol"
+    assert resolver._spelling_variant("(+)-Pseudoephedrin") == "Pseudoephedrine"
+    assert resolver._spelling_variant("risperidone") is None
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_agreeing_variant_keeps_the_direct_answer(_opsin):
+    """Gleiches Gerüst, andere Form (Stereo, Schreibweise) → Direkttreffer bleibt."""
+    lookup, calls = _pubchem_table({"Procain": "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N",
+                                    "Procaine": "NC1=CC=C(C=C1)C(=O)OCCN(CC)CC"})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Procain") == "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N"
+    assert calls == ["Procain", "Procaine"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_name_without_variant_costs_no_second_call(_opsin):
+    lookup, calls = _pubchem_table({"risperidone": "C"})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("risperidone") == "C"
+    assert calls == ["risperidone"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_unreachable_variant_keeps_the_direct_answer(_opsin):
+    """Netz weg zwischen den beiden Fragen → kein Fehler, Direkttreffer bleibt."""
+    def lookup(name, report=None):
+        if name == "Risperidon":
+            return _SYNONYMFEHLER["Risperidon"][1]
+        resolver._record(report, resolver._PUBCHEM, resolver._UNREACHABLE, "timeout")
+        return None
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Risperidon") == _SYNONYMFEHLER["Risperidon"][1]
