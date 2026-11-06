@@ -2,6 +2,12 @@
 
 ## Weiter bei — Codex-Neustart nach Befund 5 (06.11.2026)
 
+**Aktuell, ersetzt den Folgeauftrag unten:** Orchestrator hat den IR-Auftrag in Faden
+`20261106-104425-ir-bericht-deterministisch` #4 zurückgezogen; ein Claude-Unteragent übernimmt.
+Codex baut daran nicht weiter. `tisch gib-frei scripts/masse_eval.py tests/test_masse_eval_ir.py`
+ausgeführt. Plan-Prüfpunkt `6de375e` gepusht; Neustartskript scheiterte mit
+`HERDR_PANE_ID: nicht in herdr — kein Neustart möglich`. Keine eigene Arbeit oder Wartefrist offen.
+
 **Erneuter Neustart-Prüfpunkt (06.11., HEAD `e38d28d`):** IR-Folgeauftrag weiterhin unbegonnen;
 keine eigenen halbfertigen Edits oder laufenden Jobs. Faden `20261106-104425-ir-bericht-deterministisch`
 bleibt offen, zuletzt #3 Status zum erneuten Neustart. Drei ungetrackte Dateien
