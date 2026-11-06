@@ -518,7 +518,9 @@ def ir_abdeckung(_: argparse.Namespace) -> int:
         "|---|---|",
     ]
     for g, c in sorted(stattdessen.items(), key=lambda kv: -len(luecke[kv[0]])):
-        top = ", ".join(f"{n} ({k})" for n, k in c.most_common(4))
+        # Gleichstand nach Name: Counter.most_common folgt sonst der Set-Reihenfolge (PYTHONHASHSEED).
+        haeufigste = sorted(c.items(), key=lambda nk: (-nk[1], nk[0]))[:4]
+        top = ", ".join(f"{n} ({k})" for n, k in haeufigste)
         zeilen.append(f"| {g} | {top} |")
     zeilen += [
         "",

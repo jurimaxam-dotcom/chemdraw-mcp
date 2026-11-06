@@ -30,15 +30,15 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 | Gruppe | häufigste gemeldete Gruppen |
 |---|---|
 | Heteroaromat (Ring-N/O/S) | C–H (aromatic) (55), C–H (alkane, sp³) (43), N–H (primary amine) (25), O–H (alcohol) (19) |
-| Heteroaromat-NH (Pyrrol/Indol/Imidazol) | C–H (aromatic) (47), C–H (alkane, sp³) (37), C=C (aromatic ring) (23), N–H (primary amine) (15) |
-| Carbamat | C=O (ester) (15), C–H (aromatic) (15), C=O (amide, band I) (15), C–H (alkane, sp³) (15) |
-| β-Lactam | O–H (carboxylic acid) (14), C=O (carboxylic acid) (14), C=O (amide, band I) (14), C–H (alkane, sp³) (14) |
-| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | C–H (alkane, sp³) (12), C–H (aromatic) (9), C=C (aromatic ring) (8), C–Cl (chloro compound) (3) |
-| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C=O (ester) (2) |
-| Phosphat/Phosphonat | P–O (phosphorus ester) (5), C–H (alkane, sp³) (5), C–Cl (chloro compound) (2), C–H (aromatic) (2) |
-| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), N–H (primary amine) (1), C–H (aromatic) (1) |
+| Heteroaromat-NH (Pyrrol/Indol/Imidazol) | C–H (aromatic) (47), C–H (alkane, sp³) (37), C=C (aromatic ring) (23), C–O (ether) (15) |
+| Carbamat | C=O (amide, band I) (15), C=O (ester) (15), C–H (alkane, sp³) (15), C–H (aromatic) (15) |
+| β-Lactam | C=O (amide, band I) (14), C=O (carboxylic acid) (14), C–H (alkane, sp³) (14), O–H (carboxylic acid) (14) |
+| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | C–H (alkane, sp³) (12), C–H (aromatic) (9), C=C (aromatic ring) (8), C=O (amide, band I) (3) |
+| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C=O (amide, band I) (2) |
+| Phosphat/Phosphonat | C–H (alkane, sp³) (5), P–O (phosphorus ester) (5), C=C (alkene) (2), C=C (aromatic ring) (2) |
+| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), C=C (alkene) (1), C=N (imine / oxime) (1) |
 | Imid | C=O (amide, band I) (4), N–H (amide) (4), C–H (alkane, sp³) (3), C–H (aromatic) (3) |
-| Sulfonamid | N–H (primary amine) (1), C–H (aromatic) (1), O–H (carboxylic acid) (1), C=N (imine / oxime) (1) |
+| Sulfonamid | C=N (imine / oxime) (1), C=O (amide, band I) (1), C=O (carboxylic acid) (1), C–H (alkane, sp³) (1) |
 | Nitratester | C–H (alkane, sp³) (1), C–O (ether) (1) |
 | Formaldehyd |  |
 
