@@ -26,6 +26,7 @@ import argparse
 import datetime as dt
 import json
 import sys
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -43,6 +44,26 @@ EVIDENZ = REPO / "docs" / "evidence" / "masse-eval-2026-11"
 UA = "chemdraw-mcp-masse-eval/0.1 (https://github.com/jurimaxam-dotcom/chemdraw-mcp)"
 SPARQL = "https://query.wikidata.org/sparql"
 CHEMBL = "https://www.ebi.ac.uk/chembl/api/data/molecule.json"
+CHEMBL_NAMEN_CACHE = REPO / ".cache" / "masse-eval" / "chembl-namen.json"
+
+# Falsch beschriftete Wikidata-Objekte dürfen beim Neubau nicht wieder gewinnen.
+# Nachgeprüft 06.11.2026, Quellen/alte Werte: Evidence referenzkorrektur/README.md.
+# https://www.wikidata.org/wiki/Q139857 + ChEMBL503160
+# https://www.wikidata.org/wiki/Q27132753 + ChEMBL1538 (Prodrug, nicht Tenofovir)
+REFERENZ_KORREKTUREN = {
+    "fumaric acid": {
+        "inchikey": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+        "formel": "C4H4O4",
+        "quelle": "wikidata:Q139857 + chembl:CHEMBL503160",
+        "smiles_referenz": "O=C(O)/C=C/C(=O)O",
+    },
+    "tenofovir disoproxil": {
+        "inchikey": "JFVZFKDSXNQEJW-CQSZACIVSA-N",
+        "formel": "C19H30N5O10P",
+        "quelle": "wikidata:Q27132753 + chembl:CHEMBL1538",
+        "smiles_referenz": "CC(C)OC(=O)OCOP(=O)(CO[C@H](C)Cn1cnc2c(N)ncnc21)OCOC(=O)OC(C)C",
+    },
+}
 
 # WHO Model List of Essential Medicines: Wikidata-Rolle P2868 = Q35456.
 EML_ROLLE = "Q35456"
@@ -333,7 +354,12 @@ def baue_liste(_: argparse.Namespace) -> int:
             if name.casefold() in kuratiert or name.casefold() in gesehen:
                 continue
             gesehen.add(name.casefold())
-            stoffe.append({"eingabe": name, "sprache": herkunft, **basis})
+            eintrag = {"eingabe": name, "sprache": herkunft, **basis}
+            if korrektur := REFERENZ_KORREKTUREN.get(name):
+                eintrag.update(korrektur)
+                eintrag.pop("notiz", None)
+                eintrag.pop("unsicher", None)
+            stoffe.append(eintrag)
 
     daten = {
         "zweck": (
@@ -919,10 +945,36 @@ def _nachklassifizieren(rot: list[dict], liste: dict[str, dict]) -> None:
             e["art"] = "salz"
 
 
-def _chembl_namen(keys: list[str]) -> dict[str, str]:
+def _chembl_namen(keys: list[str], *, refresh: bool = False) -> dict[str, str]:
+    """Berichtsmetadaten sieben Tage halten; Ausfälle bleiben wiederholbar.
+
+    Nur erfolgreich beantwortete Batches bestätigen auch fehlende Namen.
+    Cache- oder Schreibfehler ändern das Ergebnis des Netzaufrufs nicht.
+    """
+    try:
+        cache = json.loads(CHEMBL_NAMEN_CACHE.read_text(encoding="utf-8"))
+        entries = cache.get("entries", {}) if cache.get("version") == 1 else {}
+        if not isinstance(entries, dict):
+            entries = {}
+    except (OSError, ValueError, AttributeError):
+        entries = {}
+    now = time.time()
+    pending = []
     namen: dict[str, str] = {}
-    for start in range(0, len(keys), 40):
-        teil = keys[start : start + 40]
+    for key in sorted(set(keys)):
+        item = entries.get(key)
+        if (not refresh and isinstance(item, dict)
+                and isinstance(item.get("at"), (int, float))
+                and "name" in item
+                and 0 <= now - item["at"] < 7 * 86400
+                and (item.get("name") is None or isinstance(item.get("name"), str))):
+            if item.get("name"):
+                namen[key] = item["name"]
+        else:
+            pending.append(key)
+    changed = False
+    for start in range(0, len(pending), 40):
+        teil = pending[start : start + 40]
         url = CHEMBL + "?" + urllib.parse.urlencode(
             {
                 "molecule_structures__standard_inchi_key__in": ",".join(teil),
@@ -933,17 +985,40 @@ def _chembl_namen(keys: list[str]) -> dict[str, str]:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         try:
             with urllib.request.urlopen(req, timeout=120) as resp:
-                for m in json.load(resp)["molecules"]:
+                molecules = json.load(resp)["molecules"]
+                batch = {}
+                for m in molecules:
                     k = (m.get("molecule_structures") or {}).get("standard_inchi_key")
-                    if k and m.get("pref_name"):
-                        namen[k] = m["pref_name"].lower()
-        except OSError:
+                    if k in teil and m.get("pref_name"):
+                        batch[k] = m["pref_name"].lower()
+                namen.update(batch)
+                for key in teil:
+                    entries[key] = {"name": batch.get(key), "at": now}
+                changed = True
+        except (OSError, ValueError, KeyError):
             pass
         time.sleep(0.5)
+    if changed:
+        tmp = None
+        try:
+            CHEMBL_NAMEN_CACHE.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False,
+                                             dir=CHEMBL_NAMEN_CACHE.parent) as handle:
+                tmp = Path(handle.name)
+                json.dump({"version": 1, "entries": entries}, handle, sort_keys=True)
+            tmp.replace(CHEMBL_NAMEN_CACHE)
+        except OSError:
+            pass
+        finally:
+            if tmp is not None:
+                try:
+                    tmp.unlink(missing_ok=True)
+                except OSError:
+                    pass
     return namen
 
 
-def identitaet_bericht(_: argparse.Namespace) -> int:
+def identitaet_bericht(args: argparse.Namespace) -> int:
     liste = {e["eingabe"]: e for e in json.loads(LISTE.read_text(encoding="utf-8"))["stoffe"]}
     # Nur Eingaben, die (noch) in der Liste stehen — die Liste kann nach dem Lauf
     # strenger gefiltert worden sein.
@@ -952,7 +1027,8 @@ def identitaet_bericht(_: argparse.Namespace) -> int:
     rot = [e for e in lauf if e["status"] == "rot"]
     gelb = [e for e in lauf if e["status"] == "gelb"]
     _nachklassifizieren(rot, liste)
-    namen = _chembl_namen(sorted({e["erhalten"] for e in rot if e.get("erhalten")}))
+    namen = _chembl_namen(sorted({e["erhalten"] for e in rot if e.get("erhalten")}),
+                          refresh=getattr(args, "refresh_names", False))
     zeiten = sorted(e["sekunden"] for e in lauf)
     gesamt = sum(zeiten)
 
@@ -1029,7 +1105,9 @@ def main() -> int:
     sub = parser.add_subparsers(dest="befehl", required=True)
     sub.add_parser("liste", help="Stoffliste aus Wikidata/ChEMBL bauen").set_defaults(f=baue_liste)
     sub.add_parser("ir", help="IR-Regelabdeckung (offline)").set_defaults(f=ir_abdeckung)
-    sub.add_parser("identitaet", help="Bericht aus dem Identitätsprotokoll").set_defaults(f=identitaet_bericht)
+    bericht = sub.add_parser("identitaet", help="Bericht aus dem Identitätsprotokoll")
+    bericht.add_argument("--refresh-names", action="store_true", help="ChEMBL-Namenscache neu laden")
+    bericht.set_defaults(f=identitaet_bericht)
     sub.add_parser("ph", help="pH-Aufgaben gegen ph_calc (offline)").set_defaults(f=ph_pruefen)
     sub.add_parser("ph-referenz", help="Referenzwerte mit sympy neu rechnen").set_defaults(f=ph_referenz)
     args = parser.parse_args()

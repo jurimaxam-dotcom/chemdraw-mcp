@@ -1,0 +1,30 @@
+{
+  "methode": "Nur neue Referenz gegen gespeicherte Antworten aus Lauf 5, kein Resolveraufruf",
+  "baseline_commit": "236df52",
+  "vorher": {
+    "gruen": 664,
+    "rot": 46,
+    "gelb": 1
+  },
+  "nachher": {
+    "gruen": 666,
+    "rot": 44,
+    "gelb": 1
+  },
+  "aenderungen": [
+    {
+      "eingabe": "tenofovir disoproxil",
+      "alt": "SGOIRFVFHAKUTI-ZCFIWIBFSA-N",
+      "neu": "JFVZFKDSXNQEJW-CQSZACIVSA-N",
+      "erhalten_unveraendert": "JFVZFKDSXNQEJW-CQSZACIVSA-N",
+      "status": "rot → gruen"
+    },
+    {
+      "eingabe": "fumaric acid",
+      "alt": "BVSPPBKONISENN-SLHNCBLASA-N",
+      "neu": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+      "erhalten_unveraendert": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+      "status": "rot → gruen"
+    }
+  ]
+}
