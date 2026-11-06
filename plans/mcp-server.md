@@ -67,8 +67,8 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   PubChem ohne Salz-/Ladungsprüfung (`sodium phosphate` → Ladung −2 statt Na3PO4; Silikate andere Stöchiometrie); README-Satz „offline so
   schnell wie vorher“ falsch (Timeout 3/10 s). **Nachbesserung als Auftrag #4 an `w4W:pD`** (Faden `…102746`, 8 Kriterien, Lauf 5 + Holdout-Einzelliste).
   **Nächster Schritt:** Bericht #5 abwarten → Codex prüft erneut in `…105531` (Hop 3, Prüfpunkte + „Offline-Latenz real gemessen?“) → Chef Diff + Gate selbst → beide Fäden schließen.
-- `20261106-103546-etappe-e2` (Opus-Bauer Pane `w4W:pE`, Commits c578c81/e38d28d/2367126/4af8627, Lint-Fix 6b83479): Bericht steht aus →
-  dann Kreuzabnahme durch Codex.
+- ~~`20261106-103546-etappe-e2`~~ **erledigt + geschlossen 06.11.:** Bericht #5, Codex-Desktop-Handtest #4 grün (SN2/SN1/Fischer),
+  Chef-Nachprüfung: 8 Commits auf origin/main, `pytest -k mechanism` 931 passed. Rest-GELB (Kosmetik) geparkt.
 **Warteschlange (nach Abnahme Befund 2):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) · Befund 4 Referenzliste (fumaric acid → Q139857,
 tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
