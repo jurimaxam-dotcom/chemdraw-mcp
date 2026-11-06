@@ -125,16 +125,14 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
 - ✅ **Befund 2 abgenommen 06.11. ~11:50** (3 Runden): `41da7c4`/`e228047` → Salz-Fix `038ace4`/`236df52` → Kristallwasser `8978be7`
   (Gegenionen bleiben, R2 hätte Edetat/Goldthiomalat gekippt). Codex #6 ABNEHMEN (Hydrate, Chloralhydrat, 301er-Messung reproduziert);
   Chef-Gate rc=0 8189 passed. Lauf 5 664/1/46, Holdout 117/9/0/5/0 gekippt. Fäden `…102746`, `…105531`, `…113525` geschlossen, Panes pD/pE zu.
-- **Befund 3** PubChem-Synonymfehler: gebaut `0285017`/`052d3fe` (Pane `w4W:pF`, Faden `…115126`, Bericht #2): verirrte Depositor-Synonyme,
-  Schreibvariante gewinnt nur bei anderem Stammmolekül; Lauf 6 (gegen Fixture VOR Befund 4) 666/1/44, (−)-Ephedrin + Risperidon rot→grün, Gate 8205.
-  **Codex-Kreuzabnahme Faden `20261106-134101-abnahme-befund-3`** inkl. Lauf gegen aktuelle Fixture (erwartet 668/1/42).
-  Offen laut Bauer: Salzform-Befund (Bendamustin/Phenelzin/Carboplatin → HCl), rifabutin, (S)-(−)-timolol not_found, +1 Aufruf bei 139/711.
-- ✅ **Befund 4 abgenommen 06.11. ~12:20:** `530e9a9` (Codex), Opus-Gutachter (Unteragent) ABNEHMEN: Fixture nur 2 Einträge, Keys live
-  Wikidata/PubChem/RDKit gleich, Neuwertung 666/1/44 nachgezählt (genau 2 Zeilen), Cache fail-safe + gitignored, 8 Tests grün, kein Produktcode.
-  Faden geschlossen. **Nebenbefund → Warteschlange:** Clindamycin-Referenz (Q422273, KDLRVYVGXIQJDK-NOWPCOIGSA) hat unbestimmte Seitenketten-
-  Stereo, Resolver (CID 446598, AWPVFWJPSA) ist richtig → falsches Rot; Audit nannte es „bestätigt“.
-**Danach:** Stereo-Referenzen auf fehlende Stereozentren prüfen (Clindamycin zuerst) · Kann „gefunden als <englisch>“ im Ergebnis.
-**Nächster Chef-Schritt:** Codex-Bericht `…134101` lesen → Diff + Gate selbst → Faden + Pane schließen.
+- ✅ **Befund 3 abgenommen 06.11. ~14:00:** `0285017`/`052d3fe` + Evidence `9b3cbbd`. Codex-Kreuzabnahme `…134101` ABNEHMEN (Ephedrin/Risperidon live
+  richtig, Befund-2-Proben gleich, Holdout 536/3/0/14, Blackhole: +3 s nur bei Abbruch nach Direkttreffer). Chef: Diff gelesen, Gate rc=0 8205,
+  **Lauf 7 = 668/1/42** selbst nachgezählt (Befund 3 + 4). Fäden + Pane pF geschlossen.
+- **Salzform** (Bendamustin/Phenelzin/Carboplatin → HCl): frischer Opus-Bauer, Faden `20261106-140408-befund-salzform` → danach Codex-Kreuzabnahme.
+- **Stereo-Referenzen** (Clindamycin zuerst, Audit berichtigen): Codex `w4W:p8`, Faden `20261106-140408-stereo-referenzen` → danach Opus-Gutachter.
+  Codex-Kontingent 79 % (voll ~14:41, frei 15:30) — bei Abbruch nach 15:30 erneut wecken.
+**Danach:** Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
+**Nächster Chef-Schritt:** Berichte Salzform/Stereo prüfen → Kreuzabnahme über Kreuz → Diff + Gate selbst → schließen.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
