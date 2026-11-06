@@ -34,7 +34,8 @@ Keine E/Z-/Atropisomerie-/Metallkoordinations-Vollprüfung oder neue Resolvermes
 **Bekannte Grenze:** `masse_eval.py liste` kann partielle Quellobjekte erneut wählen;
 Regenerationsschutz war außerhalb der erlaubten Datenpfade, als Code-Folgepunkt beim Chef gemeldet.
 Fremdes Salzform-WIP in Resolver/Tests und dessen eingefrorenem Lauf nicht übernehmen.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustart:** `HERDR_PANE_ID` fehlt bisher in dieser Laufzeit. Skript einmal aufrufen und tatsächlichen
 Fehler melden; keine fremde Pane wählen. Ältere Weiter-bei-Abschnitte unten sind historische Prüfstände.
 
@@ -63,7 +64,8 @@ Fremdes Befund-3-WIP (`resolver.py`, `tests/test_resolver.py`, Holdout und einge
 Prüfmethode bei Änderungen: erst passende Regression rot, gezielte Tests, dann `./test.sh > log`, rc und
 Output berichten; keine Golden-/Snapshot-Anpassungen zugesagt. Metadaten-Cache warm 0,000293 s,
 Resultat wie alte Funktion; ganzer Bericht 28,322 s. Kaltaufrufe und PubChem bleiben netzabhängig.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustart:** `HERDR_PANE_ID` fehlt hier weiterhin. Skript einmal aufrufen und Fehler melden;
 keine fremde Pane adressieren. Ältere Weiter-bei-Abschnitte unten sind historisch und kein neuer Bauauftrag.
 
@@ -93,7 +95,8 @@ Prüfmethode: `uv run pytest tests/test_resolver.py tests/test_ambiguous_names.p
 der Hydratvarianten (potassium citrate / tripotassium citrate / anhydrous / monohydrate),
 Formel + Ladung + InChIKey, bisherige sechs Trivialnamen-Gewinne und Diiodtyrosin/Edetat erhalten;
 kein Golden-/Test-Blessen. Keine komplette Gate-Wiederholung oder neue Desktop-Runde zugesagt.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustartgrenze:** `HERDR_PANE_ID` fehlt weiterhin in dieser Laufzeit. Skript einmal aufrufen,
 Fehler offen melden; keine fremde Pane wählen und nicht ohne neuen Anlass Neustartschleifen starten.
 Ältere Neustartabschnitte unten sind historisch; der zurückgezogene IR-Auftrag wird nicht erneut begonnen.
@@ -137,7 +140,8 @@ Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine
 `docs/evidence/masse-eval-2026-11/{ph,ir-abdeckung,ir-quellen}.md`. IR-Unterklassen und Desktop-Befunde bleiben offen.
 **Fremde Arbeit erhalten:** Befund 2 bearbeitet Resolver/Identitäts-Evidence, E2 Mechanismen; Änderungen im geteilten Arbeitsbaum
 (einschließlich erneut geändertem `ir-abdeckung.md`) stammen nach unserem Commit aus parallelen Sessions und sind nicht mitzustagen.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Doku-Aktualität bei jedem Release (Jay 06.11.2026, Tisch-Faden 20261106-102729-jay-06-11-readme)
 
@@ -180,7 +184,8 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 - **Geparkt:** Referenzentscheid Vinblastin-Stereo und Sulfasalazin-E/Z. Resolver = namentlich abgefragter PubChem-Record, Fixture abweichend; Vinblastin ohne `unsicher`-Flag. Befund in `docs/evidence/masse-eval-2026-11/identitaet.md`; keine stille Fixture-/Wertungsänderung.
 **Nächster Chef-Schritt (Stand 06.11. ~22:05):** Opus-Abschlussbericht mit **Lauf 10 vs. 9** (nur rifabutin rot→gelb erwartet) + Codex-Urteil → Chef Diff/Gate/Nachzählung. Code-Abnahme allein schließt den laufenden Masse-Lauf nicht ab.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
-**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
 
@@ -207,7 +212,8 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 - [ ] Kann: gemerkter Offline-Zustand im Resolver (nach Verbindungsfehler ~60 s keine Gegenfrage) spart die 3 s im Blackhole-Fall.
 
 **Nächster Schritt:** Befund 3 (PubChem-Synonymfehler, Formel-Plausibilität) laut Warteschlange im Abschnitt Orchestrierung.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Dependabot + rdkit 2026.9 + README-Politur erledigt (Session 8b06750a, 05.11.2026 23:00)
 
@@ -218,7 +224,8 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 407→139 Zeilen, docs/), selbst nachgeprüft (34 Links 200, twine PASSED). Tisch-Fäden 20261105-163128, -222933, -222945, -223556 geschlossen.
 **Nächster Schritt:** Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten) als eigene Etappe · README-Änderungen gehen
 erst mit dem nächsten Release auf PyPI · Kann: Galeriebilder gleich hoch (nur per Beschnitt in `assets/`).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 
 **Release 0.8.0 ist draußen (Jay 05.11. 16:15: „du darfst es machen“ — einmalige Freigabe für diesen Klick, keine Dauererlaubnis):**
@@ -267,7 +274,8 @@ rdkit-Pin behalten (Empfehlung: ja — Default-Rendering darf sich nicht still �
 mit Sichtprüfung neu und Pin weg?
 **Nächster Schritt:** nach Jays Merges `git pull`, Gate einmal auf main · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · ✓ E2 Lehrbuch-Feinschliff erledigt 06.11. (Abschnitt darunter).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Release-Klick 0.8.0 (Jays Hand), Etappe E abgenommen (Claude-Hauptsession, 05.11.2026 16:25)
 
@@ -298,7 +306,8 @@ tBuI + iPrOH) · Deprotonierung über Lösungsmittel statt freies H⁺ · Fische
 (Stearin, Octan) abkürzen (R = C₁₇H₃₅) · Oxonium-Label „OH⁺ + H“ einheitlicher. Fachlich korrekt, nur Konvention/Lesbarkeit.
 
 **Danach:** Etappe F Marketing-Repo (eigene Session) · Dependabot-Branches · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Etappe E Runde 3: Befunde der unabhängigen Sichtung (Claude-Hauptsession, 05.11.2026 15:40)
 
@@ -348,7 +357,8 @@ Tool-Nennung = Desktop-Routing; Schrittumschaltung Ringfall nicht bestätigt).
 `vermarktung/ax-claude.swift` für Handtests braucht · Dependabot-Branches als eigene Etappe · Befunde aus der Masse-Eval (Abschnitt
 „Release-Klick 0.8.0“ unten, Punkte 1–5).
 
-**Fragen an Jay (unbeantwortet — nicht bauen):** „passt“ zu den E-Kontaktbögen · Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** „passt“ zu den E-Kontaktbögen · Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 **Offene Tisch-Fäden:** `20261105-131815-etappe-e-mechanismen-vor` (E-Session `w4W:p4`, Hop 6/6 voll; Bericht der E-Session steht noch
 aus) · `20261105-142437-etappe-e-desktop-handtest` von Codex geschlossen. Nebenbefund: Prozess 65536 ist ein liegengebliebener
@@ -379,7 +389,9 @@ AX-/Screenshot-Widerspruch **nicht** abgenommen. Kein Produktcode geändert.
 Nachricht. Keine eigene zeitgebundene Wartefrist, kein Hintergrundjob und kein
 halber Edit. Reservierungen nach dem Plan-Commit freigeben.
 
-**Offene Fragen an Jay:** „Welle 3 eigenes Profil?“ und „Abfragemodus auch für
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
+
+**Offene Fragen an Jay:** „Abfragemodus auch für
 Reaktionen?“ — **unbeantwortet — nicht bauen**. Jays „passt“ zu den
 E-Kontaktbögen: **unbeantwortet — nicht bauen**; keine Zustimmung unterstellen.
 
@@ -498,7 +510,8 @@ CLAUDE.md), `tests/test_wheel_contents.py`, `demo-video.sh`, README-GIF-Aufnahme
 Danach Branch `worktree-agent-…` löschen (Tag bleibt). Videos selbst nie ins Repo. Erst nach E, weil Codex `ax-claude.swift`
 für den E-Handtest braucht.
 
-**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 Offene Tisch-Fäden: `20261105-001817-etappe-a-masse-eval` (Claude↔Codex, Reservierung; wird mit dem Bericht geschlossen).
 
@@ -533,7 +546,9 @@ erweiterte Einzelberechtigungen vollständig zurückgesetzt und nochmals geprüf
 pH-Test mit Einmalfreigabe. Keine offene Installation und kein eigener
 Hintergrundjob, der nach dem Neustart ausgewertet werden muss.
 
-**Offene Entscheidungen:** „Welle 3 eigenes Profil?“ und „Abfragemodus auch für
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
+
+**Offene Entscheidungen:** „Abfragemodus auch für
 Reaktionen?“ — **unbeantwortet — nicht bauen**. Vier gesicherte Branch-Entscheidungen
 stehen mit Wortlaut im D-Befund; keine Branch-Löschung ohne Entscheidung.
 Release-Befunde: Manifest „six tools“ laut Release-Abschnitt bereits behoben
@@ -579,7 +594,8 @@ SN2-Produkt ohne (S)-Label im Panel (`docs/desktop-abnahme-mechanismus-2026-11-0
 
 **Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md`
 (mcp-2-migration behalten/archivieren · origin/mcp-2-migration-v2 löschen · worktree-agent Demo-Commits übernehmen ·
-Dependabot-Update als eigene Etappe) · Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+Dependabot-Update als eigene Etappe) · Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 Offene Tisch-Fäden: keine zu dieser Arbeit (`20261104-234915` erledigt 00:05).
 
@@ -697,7 +713,8 @@ Erst 10 Kernfälle (~3 $, Kosten je Fall messen), dann Freigabe für ~60 × 3 (~
 API-Schlüssel (`ANTHROPIC_API_KEY` oder `ant auth login`; heute weder Key noch `ant` noch SDK da). Grenze: sagt
 Desktop-Routing NICHT verlässlich voraus (CC mit Tool-Suche 18/18 vs. Desktop 0/9) — dafür bleibt Codex' Klicktest.
 
-**Fragen an Jay, geparkt (nicht in diesem Release):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+**Fragen an Jay, geparkt (nicht in diesem Release):** Abfragemodus auch für Reaktionen?
+**Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 - [x] (a) alte Erweiterung aus, Desktop neu gestartet (Claude, 23:05)
 - [x] (b) **Codex:** Desktop-Messlauf aller 16 Tools mit natürlichen Prompts (Faden `20261102-230541-desktop-abnahme-0-7`),
@@ -713,11 +730,11 @@ Desktop-Routing NICHT verlässlich voraus (CC mit Tool-Suche 18/18 vs. Desktop 0
       **Für 0.7.1:** Manifest „six tools“ (behoben dbd94e5) · Erstinstallation brauchte zweiten Neustart (10-s-Host-Timeout beim uv-Install) ·
       Anki-Panel zählt Notizen (14) statt Karten (16).
 - danach: README-Bilder (Calculate, Anki, Look up; `wave2-titration-acetic.png` neu) · zuletzt Shorts S1/S8–S11
-- Welle 3 (Profil-Entscheid, Jay) erst nach 0.7.0
+- Welle 3 erst nach 0.7.0; Profil-Entscheid beantwortet (Jay 06.11.): zweiter Konnektor `chemdraw-pharma` mit `full`.
 
 Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees) · adjustText verworfen (scipy).
 
-## Basis-Ausbau: Vollumfang zurück ins Standardprofil (Jay 30.10.2026)
+## Basis-Ausbau: Wellen 1/2 im Standardprofil, Welle 3 als zweiter Konnektor (Jay 06.11.2026)
 
 > Auftrag Jay 30.10.: die 16 fürs Release zurückgenommenen Tools sauber wieder ins
 > Standardprofil holen (`MVP_TOOLS`, `chemdraw_tool/server.py:258`), danach README hochwertig,
@@ -729,10 +746,15 @@ Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees) · adjustText verworfen (
 > Aufteilung: **Opus** = `server.py`, Tool-Snapshots, `cases.yaml`, Python-Tests ·
 > **Codex** = Fälle in `host.e2e.mjs`, README-Bilder, Desktop-Handtest.
 
-- [ ] **Jay:** Welle 3 (Vertiefung) ins Standardprofil oder in ein eigenes Profil? Davon hängt ab,
-  ob `CHEMDRAW_PROFILE` am Ende wegfällt.
+- [x] **Jay-Entscheid 06.11.2026:** Welle 3 als zweiter Konnektor `chemdraw-pharma`
+  (`CHEMDRAW_PROFILE=full`); `chemdraw` bleibt `mvp`. Kein drittes Profil,
+  `CHEMDRAW_PROFILE` bleibt. Beleg: Tisch-Faden `20261106-222336-jay-entscheid-06-11` #1.
 
-**Definition of Done je Tool** (jeder Tool-Haken unten heißt: alle Punkte erfüllt)
+**Definition of Done je Tool** (jeder Tool-Haken unten heißt: alle Punkte erfüllt).
+Schritt 3 zur Aufnahme in `MVP_TOOLS` gilt nur für Wellen 1/2. Welle 3 bleibt
+im bereits vorhandenen `full`-Profil; dort Auswahltexte/Zäune und Routing prüfen,
+keine Aufnahme der sieben Vertiefungs-Tools ins MVP. Ältere Aufträge oben zur
+Rückkehr aller Tools ins Standardprofil sind insoweit durch den Entscheid 06.11. ersetzt.
 
 1. Ist-Zustand im Vollprofil messen: `CHEMDRAW_PROFILE=full`, ein echter Aufruf über den Server;
    bei Panel-Tools zusätzlich das Panel in `test:host` (heute deckt `src/host/host.e2e.mjs` nur
@@ -747,7 +769,7 @@ Geparkt: Git-Ballast (`mcp-2-migration` + 2 Worktrees) · adjustText verworfen (
    „Not this tool for: … (use <neues Tool>)"-Zeile — `test_server_profiles.py` prüft nur
    `mentioned <= MVP`, nicht dass der Zaun zurückkommt; je Zaun ein Test.
    **Mitwandernde Texte:** Satz „Other features are temporarily disabled" in `_MVP_INSTRUCTIONS`
-   (stimmt nach Welle 3 nicht mehr) · Testname `test_default_and_explicit_mvp_offer_exactly_seven_tools`
+   (bleibt für die sieben nur in `full` verfügbaren Tools zutreffend) · Testname `test_default_and_explicit_mvp_offer_exactly_seven_tools`
    · Zahlen „7 tools, 6 with a panel" in `CLAUDE.md` und README § Profiles.
 4. Routing-Fall in `evals/tool-routing/cases.yaml` mit `expect` und `forbidden` (Regel dort: drei
    verschiedenartige Prompts je kritischem Tool); `tests/test_eval_cases.py` grün.
@@ -853,7 +875,56 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
   beidseitig zu Titrationskurve/Speziesverteilung, Standardprofil 16 Tools / 12 Panels).
   Offen: Desktop-Handtest + Host-Fälle/README (Codex).
 
-### Welle 3 — Vertiefung (später)
+### Welle 3 — Vertiefung: zweiter Konnektor (nach 0.7.0)
+
+**Ziel / Jay-Entscheid 06.11.2026:** Claude Desktop bietet zwei Konnektoren aus
+demselben Serverpaket: `chemdraw` mit `CHEMDRAW_PROFILE=mvp` (16 Tools / 12 Panels)
+und `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full` (23 Tools / 16 Panels).
+Nach Einrichtung wechselt Jay im Konnektor-Menü des Chats ohne Desktop-Neustart.
+Die erstmalige Registrierung/Installation ist davon getrennt abzunehmen.
+**Grenzen:** nur zwei bestehende Profile, kein drittes Profil; MVP bleibt unverändert.
+Umsetzung erst nach 0.7.0 (Reihenfolge Jay 02.11.; Release-Haken oben erfüllt).
+Der Menüwechsel ist das gewünschte Verhalten, noch keine bestätigte Desktop-Abnahme.
+
+**Abgleich 06.11.2026:** `create_server("mvp").list_tools()` und
+`create_server("full").list_tools()` nachgezählt: **16 + genau 7 = 23**, MVP ist
+Teilmenge von full. Die sieben Namen der Differenz sind exakt die sieben
+Tool-Haken unten. `generate_mechanism` ist schon im MVP; Nutzersubstrate erweitern
+dieses Tool und erhöhen die Toolzahl nicht. Deshalb entspricht MVP + Welle 3 dem
+bestehenden `full`-Profil. Anthropic-Doku-Check: 0 neu / 0 geändert / 0 weg;
+Paket-Nebenversionen separat gemeldet, keine Abhängigkeit hier verändert.
+
+**Konnektoren einrichten und abnehmen (noch nicht gebaut):**
+
+- [ ] `chemdraw_tool/desktop_config.py` + `install.sh`: zwei Einträge `chemdraw`
+  (`env.CHEMDRAW_PROFILE=mvp`) und `chemdraw-pharma` (`full`) idempotent registrieren;
+  absolute Startbefehle, Backup und fremde Server erhalten. Bestehendes `chemdraw-tool`
+  kontrolliert migrieren, damit kein dritter ChemDraw-Eintrag bleibt.
+  Prüfen: `uv run pytest tests/test_install_config.py tests/test_desktop_config_shipped.py`
+  nach neuen Rot-Grün-Fällen für zweimalige Installation/Migration → zwei passende
+  Einträge, fremde Einstellungen unverändert, grüner Lauf.
+- [ ] `.mcpb`-Weg: beide Konnektoren mit eindeutigen Extension-IDs und festem
+  Profil installierbar machen; derselbe Server/Launcher, keine konkurrierende
+  automatische Registrierung. Prüfen: `uv run pytest tests/test_mcpb_start.py`
+  mit neuen Fällen für beide Profile → grün; echte Desktop-Installation → beide
+  Konnektoren mit 16 bzw. 23 Tools, erster Start samt Launcher abgenommen.
+- [ ] `scripts/handshake.sh`: beide registrierten Konnektoren getrennt prüfen,
+  erwartete Kataloge aus dem jeweiligen Profil ableiten, GUI-PATH beibehalten.
+  Prüfen: `./scripts/handshake.sh` → zwei echte stdio-Handshakes, `chemdraw`
+  16 Tools / 12 Panels und `chemdraw-pharma` 23 Tools / 16 Panels, Exit 0.
+- [ ] README-Abschnitt „Profiles“: beide Installationswege, zwei Konnektornamen,
+  Profilwerte und Wechsel im Chat beschreiben. Prüfen:
+  `rg -n 'chemdraw-pharma|CHEMDRAW_PROFILE|Profiles' README.md` → beide Konnektoren und
+  Profilwerte erklärt; Schritte stimmen mit Desktop-Abnahme überein.
+- [ ] Desktop-Wechsel abnehmen: frischer Chat, `chemdraw` auswählen und
+  Struktur zeichnen; im Menü zu `chemdraw-pharma` wechseln und `calculate_content`
+  aufrufen; zurück zu `chemdraw`, Struktur zeichnen. Prüfen: Codex-Handtest mit
+  Screenshots unter `/tmp/chemdraw-desktop-test/profile/` → passende Werkzeuge je
+  Konnektor, erfolgreicher Hin-/Rückwechsel ohne Neustart; `./test.sh` +
+  `npm --prefix chemdraw_tool/ui run test:host` → grün.
+
+**Vertiefungs-Tools und Erweiterung:**
+
 - [ ] calculate_solution
 - [ ] calculate_content
 - [ ] calculate_pharmacokinetics
@@ -865,7 +936,8 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 
 ### README hochwertig (nach Welle 2)
 - [ ] Je Bereich (Zeichnen · Laborgrafik · Nachschlagen · Rechnen · Anki) ein echtes Bild aus
-  einem echten Aufruf; heutiges „Full-profile feature reference" und „Profiles" auflösen.
+  einem echten Aufruf; „Full-profile feature reference“ überarbeiten und „Profiles“
+  auf die zwei Konnektoren `chemdraw`/`chemdraw-pharma` aktualisieren.
 - [ ] Installationsweg Desktop-Extension (`.mcpb`) zuerst, `install.sh`/PyPI danach.
 - [ ] Werkzeugtabelle: Tool · Bereich · Beispiel-Prompt · Panel ja/nein.
 - [ ] Danach Shorts: `plans/vermarktung.md` § „Shorts je Workflow" (Jay 26.10.) — dort weiter.
