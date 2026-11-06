@@ -163,7 +163,7 @@ def test_title_names_the_users_substances(monkeypatch):
 @pytest.mark.parametrize("reaction_type, substrates, n", [
     ("sn2", ["C[C@@H](Br)CC", "[C-]#N"], 3),
     ("sn1", ["CC(C)(C)Cl", "O"], 6),
-    ("fischer_ester", ["CCC(=O)O", "CCO"], 7),
+    ("fischer_ester", ["CCC(=O)O", "CCO"], 8),
 ])
 def test_three_families_draw_real_substrates(reaction_type, substrates, n):
     result = generate_mechanism(reaction_type, substrates)

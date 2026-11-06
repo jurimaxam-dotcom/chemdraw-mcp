@@ -611,9 +611,11 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
             "(a tertiary one eliminates instead)")
 
     c1, o2, o3 = acid_hits[0]
-    acid_m, alc_m = _assign_maps([
+    # Zweite Kopie des Alkohols = Lösungsmittel: sie überträgt die Protonen (Map BASE am O)
+    acid_m, alc_m, base = _assign_maps([
         (acid.mol, {c1: C_ACID, o2: O_CARBONYL, o3: O_HYDROXY}),
         (alcohol.mol, {o_idx: O_ALCOHOL}),
+        (alcohol.mol, {o_idx: BASE}),
     ])
     proton = Chem.MolFromSmiles(f"[H+:{H_PLUS}]")
 
@@ -621,24 +623,37 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
     cation = _react("[C:1]=[O:2].[H+]>>[C+:1]-[O+0:2]", [acid_m, proton])[0]
     # Angriff des Alkohols: Oxonium am Alkohol-O, dessen H als eigenes Atom (wandert gleich weiter)
     oxonium = _explicit_h(_react("[C+:1].[O:4]>>[C+0:1]-[O+:4]", [cation, alc_m])[0], O_ALCOHOL, H_MOVING)
-    # Protonentransfer O4–H → O3: aus dem OH wird OH₂⁺, die Abgangsgruppe ist Wasser
-    # In Schritt 5 trägt kein Pfeil mehr das gewanderte H: es wird wieder implizit („OH₂⁺“), sonst
-    # landet der Pfeil der Wasserabspaltung auf seiner Bindung (Kontaktbogen 05.11.2026)
-    water_on = _implicit_h(_move_h(oxonium, H_MOVING, O_ALCOHOL, O_HYDROXY), H_MOVING)
+    # Protonentransfer in zwei Schritten über ein Alkoholmolekül (Clayden Kap. 10; Gutachter GELB,
+    # Etappe E2): der Alkohol holt das H vom Oxonium (→ neutrales Tetraeder-Intermediat + ROH₂⁺),
+    # dann holt das OH es vom ROH₂⁺ (→ OH₂⁺, Abgangsgruppe Wasser). Am ROH₂⁺ stehen beide H als
+    # Atome — das wandernde ist Pfeilziel, und ein gezeichnetes H heißt: alle H gezeichnet.
+    tetra = _drop_h(oxonium, H_MOVING, O_ALCOHOL)
+    base_h = _explicit_h(_explicit_h(_protonate(base, BASE), BASE, H_MOVING), BASE, H_OTHER)
+    # In der Wasserabspaltung trägt kein Pfeil mehr das gewanderte H: es ist implizit („OH₂⁺“),
+    # sonst landet der Pfeil der Wasserabspaltung auf seiner Bindung (Kontaktbogen 05.11.2026)
+    water_on = _protonate(tetra, O_HYDROXY)
     # Wasser geht, O2 bildet C=O⁺H zurück: protonierter Ester (H an O2 als Atom, es geht im nächsten Schritt)
     prot_ester, water = _lose_water(water_on)
     ester = _deprotonate(prot_ester)
+    # Das Katalysator-Proton landet am Lösungsmittel: ROH₂⁺ (implizite H, kein Pfeil mehr daran)
+    base_end = _protonate(base, BASE)
 
     rest = _neighbours(acid_m, C_ACID, exclude=(O_CARBONYL, O_HYDROXY))
     r = {rest[0]: (-1.0, 0.0)} if rest else {}
     trigonal = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: _ray(60), O_HYDROXY: _ray(-60)}
     # Tetraedrisch: O2 oben, O3 unten, Alkohol-O rechts; das wandernde H sitzt unter dem Alkohol-O,
-    # neben O3 — der Protonentransfer ist ein kurzer Pfeil, und das H bleibt in Schritt 5 am Ort.
+    # neben O3 — beide Protonentransfer-Pfeile bleiben kurz.
     tetra_anchor = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: (0.0, 1.0), O_HYDROXY: (0.0, -1.0),
                     **_tail(oxonium, O_ALCOHOL, (1.0, 0.0), 1.0, exclude=(C_ACID, H_MOVING))}
     o2 = _ray(60)
     ester_anchor = {C_ACID: (0.0, 0.0), **r, O_CARBONYL: o2, O_ALCOHOL: _ray(-60),
                     **_tail(ester, O_ALCOHOL, _ray(-60), 1.0, exclude=(C_ACID,))}
+    # Lösungsmittel-Alkohol: rechts unter dem wandernden H bzw. rechts über dem H an O2
+    base_low = _tail(base, BASE, (2.2, -1.9), 1.0)
+    base_high = _tail(base, BASE, (o2[0] * 2.0 + 1.2, o2[1] * 2.0 + 0.6), 1.0)
+    # ROH₂⁺ gibt sein H an O3 (unten): das H links neben dem O, nahe O3
+    base_h_anchor = {**_tail(base_h, BASE, (1.3, -1.9), 1.0, exclude=(H_MOVING, H_OTHER)),
+                     H_MOVING: (0.4, -1.9)}
     return [
         MechanismStep(
             label="Reactants", molecules=[_smi(acid_m), _smi(alc_m), _smi(proton)], arrows=[],
@@ -657,31 +672,43 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
             anchors=[trigonal, _tail(alc_m, O_ALCOHOL, (2.4, 0.0), 1.0)],
         ),
         MechanismStep(
-            label="Proton transfer to an OH group",
-            molecules=[_smi(oxonium)],
+            label="Deprotonation by the alcohol",
+            molecules=[_smi(oxonium), _smi(base)],
             arrows=[
-                CurvedArrow(source=(O_HYDROXY, "lone_pair"), target=(H_MOVING, "atom"), style="full"),
+                CurvedArrow(source=(BASE, "lone_pair"), target=(H_MOVING, "atom"), style="full"),
                 CurvedArrow(source=(H_MOVING, "bond_to", O_ALCOHOL), target=(O_ALCOHOL, "atom"), style="full"),
             ],
-            anchors=[{**tetra_anchor, H_MOVING: (1.0, -1.0)}],
+            anchors=[{**tetra_anchor, H_MOVING: (1.0, -1.0)}, base_low],
+        ),
+        MechanismStep(
+            label="Protonation of an OH group",
+            molecules=[_smi(tetra), _smi(base_h)],
+            arrows=[
+                CurvedArrow(source=(O_HYDROXY, "lone_pair"), target=(H_MOVING, "atom"), style="full"),
+                CurvedArrow(source=(H_MOVING, "bond_to", BASE), target=(BASE, "atom"), style="full"),
+            ],
+            anchors=[tetra_anchor, base_h_anchor],
         ),
         MechanismStep(
             label="Loss of water",
-            molecules=[_smi(water_on)],
+            molecules=[_smi(water_on), _smi(base)],
             arrows=[
                 CurvedArrow(source=(C_ACID, "bond_to", O_HYDROXY), target=(O_HYDROXY, "atom"), style="full"),
                 CurvedArrow(source=(O_CARBONYL, "lone_pair"), target=(C_ACID, "bond_to", O_CARBONYL), style="full"),
             ],
-            anchors=[tetra_anchor],
+            anchors=[tetra_anchor, {}],
         ),
         MechanismStep(
-            label="Deprotonation (H⁺ regenerated)",
-            molecules=[_smi(prot_ester), _smi(water)],
-            arrows=[CurvedArrow(source=(H_PLUS, "bond_to", O_CARBONYL), target=(O_CARBONYL, "atom"), style="full")],
-            anchors=[{**ester_anchor, H_PLUS: (o2[0] * 2.0, o2[1] * 2.0)}, {}],
+            label="Deprotonation (catalyst regenerated)",
+            molecules=[_smi(prot_ester), _smi(base), _smi(water)],
+            arrows=[
+                CurvedArrow(source=(BASE, "lone_pair"), target=(H_PLUS, "atom"), style="full"),
+                CurvedArrow(source=(H_PLUS, "bond_to", O_CARBONYL), target=(O_CARBONYL, "atom"), style="full"),
+            ],
+            anchors=[{**ester_anchor, H_PLUS: (o2[0] * 2.0, o2[1] * 2.0)}, base_high, {}],
         ),
         MechanismStep(
-            label="Products", molecules=[_smi(ester), _smi(water), _smi(proton)],
+            label="Products", molecules=[_smi(ester), _smi(water), _smi(base_end)],
             anchors=[ester_anchor, {}, {}], arrows=[],
         ),
     ]

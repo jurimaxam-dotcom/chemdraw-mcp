@@ -220,16 +220,22 @@ def _charge_at(step, map_id: int) -> int:
 
 def test_fischer_propionsaeure_ethanol():
     steps = build_steps("fischer_ester", ["CCC(=O)O", "CCO"])
-    assert len(steps) == 7
-    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted([_canon("CCC(=O)OCC"), _canon("O"), "[H+]"])
+    assert len(steps) == 8
+    # Das Katalysator-Proton kommt beim Alkohol (Lösungsmittel) an: protoniertes Ethanol
+    assert sorted(_plain(s) for s in steps[-1].molecules) == sorted(
+        [_canon("CCC(=O)OCC"), _canon("O"), _canon("CC[OH2+]")])
     _arrows_point_at_drawn_atoms(steps)
 
 
 def test_fischer_folgt_clayden_mit_protonentransfer():
     """Design (g)9, Clayden Kap. 10: Wasser verlässt das Molekül als OH₂⁺, nicht als neutrales OH.
-    Reihenfolge: Protonierung → Angriff → Protonentransfer → Wasserabspaltung → Deprotonierung."""
+    Reihenfolge: Protonierung → Angriff → Deprotonierung → Protonierung des OH → Wasserabspaltung
+    → Deprotonierung. Der Protonentransfer läuft in zwei Schritten über ein Alkoholmolekül
+    (Lösungsmittel), nicht intramolekular (Gutachter GELB, Etappe E2)."""
     from chemdraw_tool.mechanism_substrate import (
+        BASE,
         C_ACID,
+        H_MOVING,
         O_ALCOHOL,
         O_CARBONYL,
         O_HYDROXY,
@@ -240,26 +246,31 @@ def test_fischer_folgt_clayden_mit_protonentransfer():
         "Reactants",
         "Protonation of the carbonyl group",
         "Nucleophilic attack of the alcohol",
-        "Proton transfer to an OH group",
+        "Deprotonation by the alcohol",
+        "Protonation of an OH group",
         "Loss of water",
-        "Deprotonation (H⁺ regenerated)",
+        "Deprotonation (catalyst regenerated)",
         "Products",
     ]
     for step in steps:
         for smi in step.molecules:
             _sanitized(smi)  # Valenz und Ladung jedes Zwischenprodukts gültig
-    # Ladung wandert: Oxonium am Alkohol-O → OH₂⁺ → protonierter Ester → neutral
+    # Ladung wandert: Oxonium am Alkohol-O → Alkohol (ROH₂⁺) → OH₂⁺ → protonierter Ester → ROH₂⁺
     assert _charge_at(steps[3], O_ALCOHOL) == +1
-    assert _charge_at(steps[4], O_HYDROXY) == +1 and _charge_at(steps[4], O_ALCOHOL) == 0
-    assert _charge_at(steps[5], O_CARBONYL) == +1
-    assert sum(Chem.GetFormalCharge(_sanitized(s)) for s in steps[6].molecules) == +1  # H⁺ zurück
-    # Pfeile: Protonentransfer O3 → H, Wasser geht mit dem Bindungspaar, O2 drückt zurück zu C=O⁺H
-    pt = {(a.source[:2], a.target[:2]) for a in steps[3].arrows}
-    assert ((O_HYDROXY, "lone_pair"), (8, "atom")) in pt
-    loss = steps[4].arrows
+    assert _charge_at(steps[4], O_ALCOHOL) == 0 and _charge_at(steps[4], BASE) == +1
+    assert _charge_at(steps[5], O_HYDROXY) == +1 and _charge_at(steps[5], BASE) == 0
+    assert _charge_at(steps[6], O_CARBONYL) == +1
+    assert _charge_at(steps[7], BASE) == +1  # Katalysator-Proton zurück, am Lösungsmittel
+    # Zwei Pfeilpaare: Alkohol holt das H vom Oxonium, das OH holt es vom ROH₂⁺
+    assert {(a.source, a.target) for a in steps[3].arrows} == {
+        ((BASE, "lone_pair"), (H_MOVING, "atom")), ((H_MOVING, "bond_to", O_ALCOHOL), (O_ALCOHOL, "atom"))}
+    assert {(a.source, a.target) for a in steps[4].arrows} == {
+        ((O_HYDROXY, "lone_pair"), (H_MOVING, "atom")), ((H_MOVING, "bond_to", BASE), (BASE, "atom"))}
+    loss = steps[5].arrows
     assert any(a.source == (C_ACID, "bond_to", O_HYDROXY) and a.target == (O_HYDROXY, "atom") for a in loss)
     assert any(a.source == (O_CARBONYL, "lone_pair") and a.target == (C_ACID, "bond_to", O_CARBONYL) for a in loss)
-    assert any(a.target == (O_CARBONYL, "atom") for a in steps[5].arrows)
+    assert any(a.target == (O_CARBONYL, "atom") for a in steps[6].arrows)
+    assert any(a.source == (BASE, "lone_pair") for a in steps[6].arrows)
 
 
 def test_vorlage_und_substratweg_sagen_dasselbe():
@@ -296,7 +307,7 @@ def test_fischer_grenze_mit_grund(smiles, grund):
 @pytest.mark.parametrize("rt, smiles, n", [
     ("sn2", ["CBr", "[OH-]"], 3),
     ("sn1", ["CC(C)(C)Br", "O"], 6),
-    ("fischer_ester", ["CC(=O)O", "CO"], 7),
+    ("fischer_ester", ["CC(=O)O", "CO"], 8),
 ])
 def test_lehrbuchbeispiele_laufen_ueber_den_substratweg(rt, smiles, n):
     assert len(build_steps(rt, smiles)) == n

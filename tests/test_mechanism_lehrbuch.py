@@ -9,7 +9,9 @@ Quellen (frei zugänglich):
 - [OS-11.4] OpenStax 11.4 „The SN1 Reaction": ein chirales tertiäres Halogenid gibt über das
   planare Kation ein racemisches Produkt.
 - [OS-21.3] OpenStax 21.3 „Chemistry of Acid Halides"/Clayden Kap. 10: Fischer-Veresterung von
-  Essigsäure mit Ethanol gibt Ethylacetat und Wasser, H⁺ wird zurückgebildet.
+  Essigsäure mit Ethanol gibt Ethylacetat und Wasser, H⁺ wird zurückgebildet. Seit Etappe E2
+  (06.11.2026) wandern Protonen über das Lösungsmittel: das zurückgebildete H⁺ steht als
+  protonierter Alkohol (EtOH₂⁺) da — dasselbe Proton, im Alkohol gelöst, kein freies H⁺.
 """
 
 from rdkit import Chem
@@ -58,4 +60,4 @@ def test_os_11_4_chirales_tertiaeres_halogenid_racemisiert():
 def test_clayden_fischer_essigsaeure_ethanol_gibt_ethylacetat():
     steps = build_steps("fischer_ester", ["CC(=O)O", "CCO"])
     produkte = sorted(_plain(s) for s in steps[-1].molecules)
-    assert produkte == sorted([_canon("CCOC(C)=O"), _canon("O"), _canon("[H+]")]), produkte
+    assert produkte == sorted([_canon("CCOC(C)=O"), _canon("O"), _canon("CC[OH2+]")]), produkte
