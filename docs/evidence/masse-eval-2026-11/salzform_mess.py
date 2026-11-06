@@ -4,10 +4,15 @@
 
 Läuft im Repo-Wurzelordner; setzt fort, was in der Ausgabedatei schon steht.
 """
-import json, sys, time
+import json
+import sys
+import time
 from pathlib import Path
+
 from rdkit import Chem, RDLogger
+
 from chemdraw_tool import resolver
+
 RDLogger.DisableLog("rdApp.*")
 REPO = Path.cwd()
 OUT = Path(sys.argv[1])
@@ -21,9 +26,11 @@ def nfrag(s):
     m = Chem.MolFromSmiles(s) if s else None
     return len(Chem.GetMolFrags(m)) if m is not None else None
 for name, erw, quelle in names:
-    if name in cache: continue
+    if name in cache:
+        continue
     var = resolver._spelling_variant(name)
-    if var is None: continue
+    if var is None:
+        continue
     if quelle == "lauf" and resolver._opsin_lookup(name):
         continue
     d = resolver._pubchem_lookup(name, [])
