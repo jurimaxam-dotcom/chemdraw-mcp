@@ -98,7 +98,7 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   Chef-Gate rc=0 8189 passed. Lauf 5 664/1/46, Holdout 117/9/0/5/0 gekippt. Fäden `…102746`, `…105531`, `…113525` geschlossen, Panes pD/pE zu.
 - **Befund 3** PubChem-Synonymfehler: frischer Opus-Bauer Pane `w4W:pF`, Faden `20261106-115126-befund-3-synonymfehler` → danach Codex-Kreuzabnahme.
 - **Befund 4** Referenzliste (fumaric acid → Q139857, tenofovir disoproxil, `_chembl_namen` schneller): Codex `w4W:p8`, Faden
-  `20261106-115136-befund-4-referenzliste` → danach Opus-Gutachter. Datei-Grenze: Codex hält `stoffe-masse.json`/`masse_eval.py`, Bauer `resolver.py`.
+  `20261106-115136-befund-4-referenzliste` → **gebaut `530e9a9`** (Neuwertung 664/1/46 → 666/1/44, Audit aller 46 roten, ChEMBL-Cache), Opus-Gutachter (Unteragent) prüft. Datei-Grenze: Codex hält `stoffe-masse.json`/`masse_eval.py`, Bauer `resolver.py`.
 **Danach:** Kann „gefunden als <englisch>“ im Ergebnis.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
