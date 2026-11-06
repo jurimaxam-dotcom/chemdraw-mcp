@@ -62,11 +62,11 @@ und umgekehrt), Chef prüft danach Diff + Tests selbst, schließt Faden + Pane. 
 am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropic/*`, `CHANGELOG.md` — Eigentümer klären).
 **Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` · Befund 5 pH/IR `a3f62dd` (Codex) · IR-Bericht deterministisch `3b060db`.
 **Offen — Fäden mit ID:**
-- `20261106-102746-masse-eval-befund-2` (Opus-Bauer Pane `w4W:pD`, `41da7c4`/`e228047`, Lauf 4 664/1/46): Bericht #3 da.
-- `20261106-105531-abnahme-befund-2` (Codex-Kreuzabnahme, Bericht #2 gelesen 06.11. ~11:10): **NACHBESSERN** — `_opsin_checked` übernimmt
-  PubChem ohne Salz-/Ladungsprüfung (`sodium phosphate` → Ladung −2 statt Na3PO4; Silikate andere Stöchiometrie); README-Satz „offline so
-  schnell wie vorher“ falsch (Timeout 3/10 s). **Nachbesserung als Auftrag #4 an `w4W:pD`** (Faden `…102746`, 8 Kriterien, Lauf 5 + Holdout-Einzelliste).
-  **Nächster Schritt:** Bericht #5 abwarten → Codex prüft erneut in `…105531` (Hop 3, Prüfpunkte + „Offline-Latenz real gemessen?“) → Chef Diff + Gate selbst → beide Fäden schließen.
+- Befund 2: Runde 1 `41da7c4`/`e228047`, Runde 2 Salz-Fix `038ace4`/`236df52` (OPSIN ohne C = keine Gegenfrage; Lauf 5 664/1/46, Holdout
+  117/9/0/5) — Chef-Gate rc=0 (8170 passed). Codex #4: Salze/Ladungsregel/Latenz/Zähler ok, **NACHBESSERN**: `potassium citrate` kippt still auf
+  PubChem-Monohydrat. Chef-Entscheid: Formkonflikt (gleiche organische Grundstruktur, nur Wasser/Gegenionen) → OPSIN behalten. **Runde 3 an
+  `w4W:pD`, Faden `20261106-113525-folge-zu-20261106-102746`** (`…102746` geschlossen). **Nächster Schritt:** Bericht → Codex prüft in `…105531`
+  (Hop 5) → Chef Diff + Gate → Fäden schließen → Befund 3 vergeben.
 - ~~`20261106-103546-etappe-e2`~~ **erledigt + geschlossen 06.11.:** Bericht #5, Codex-Desktop-Handtest #4 grün (SN2/SN1/Fischer),
   Chef-Nachprüfung: 8 Commits auf origin/main, `pytest -k mechanism` 931 passed. Rest-GELB (Kosmetik) geparkt.
 **Warteschlange (nach Abnahme Befund 2):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) · Befund 4 Referenzliste (fumaric acid → Q139857,
