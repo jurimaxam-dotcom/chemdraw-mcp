@@ -284,61 +284,46 @@
       "pubchem_name_query": {
         "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/doxycycline/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
         "http": 200,
-        "resolved_cid": 54671203,
-        "name_query_result": {
-          "CID": 54671203,
-          "MolecularFormula": "C22H24N2O8",
-          "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
-          "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
-          "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
-          "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
-          "AtomStereoCount": 6,
-          "DefinedAtomStereoCount": 6,
-          "UndefinedAtomStereoCount": 0,
-          "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+        "raw_response": {
+          "PropertyTable": {
+            "Properties": [
+              {
+                "CID": 54671203,
+                "MolecularFormula": "C22H24N2O8",
+                "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+                "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+                "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+                "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
+                "AtomStereoCount": 6,
+                "DefinedAtomStereoCount": 6,
+                "UndefinedAtomStereoCount": 0,
+                "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+              }
+            ]
+          }
         }
       },
       "pubchem_cid_54671203": {
         "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/54671203/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
         "http": 200,
-        "properties": {
-          "CID": 54671203,
-          "MolecularFormula": "C22H24N2O8",
-          "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
-          "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
-          "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
-          "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
-          "AtomStereoCount": 6,
-          "DefinedAtomStereoCount": 6,
-          "UndefinedAtomStereoCount": 0,
-          "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
-        },
-        "rdkit_chiral_centers": [
-          [
-            1,
-            "R"
-          ],
-          [
-            2,
-            "R"
-          ],
-          [
-            3,
-            "S"
-          ],
-          [
-            4,
-            "R"
-          ],
-          [
-            5,
-            "S"
-          ],
-          [
-            10,
-            "R"
-          ]
-        ]
+        "raw_response": {
+          "PropertyTable": {
+            "Properties": [
+              {
+                "CID": 54671203,
+                "MolecularFormula": "C22H24N2O8",
+                "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+                "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+                "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+                "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
+                "AtomStereoCount": 6,
+                "DefinedAtomStereoCount": 6,
+                "UndefinedAtomStereoCount": 0,
+                "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+              }
+            ]
+          }
+        }
       },
       "pubchem_page": "https://pubchem.ncbi.nlm.nih.gov/compound/54671203",
       "rdkit_tautomer_check": {
@@ -412,11 +397,44 @@
         "same_canonical_tautomer": true,
         "interpretation": "The input InChIKey first block differs (connectivity/tautomer layer), while the stereo block AKNGSSGZSA is identical; RDKit produces the same canonical tautomer and stereo key. This supports a tautomer, not a 6-epimer. PUG Title says carboximidic acid while IUPACName says carboxamide; both labels are preserved as returned."
       },
-      "pubchem_preferred_page": {
-        "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
-        "preferred_inchikey": "JBIWCJUYHHGXTC-AKNGSSGZSA-N"
+      "pubchem_cid_page": "https://pubchem.ncbi.nlm.nih.gov/compound/54671203",
+      "pubchem_doxiciclina_recheck": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Doxiciclina/property/Title,IUPACName,MolecularFormula,InChIKey/JSON",
+        "http": 200,
+        "raw_response": {
+          "PropertyTable": {
+            "Properties": [
+              {
+                "CID": 54671203,
+                "MolecularFormula": "C22H24N2O8",
+                "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+                "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
+                "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+              },
+              {
+                "CID": 54684461,
+                "MolecularFormula": "C22H26N2O9",
+                "InChIKey": "FZKWRPSUNUOXKJ-CVHRZJFOSA-N",
+                "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide;hydrate",
+                "Title": "Invertin"
+              }
+            ]
+          }
+        }
       },
-      "pubchem_cid_page": "https://pubchem.ncbi.nlm.nih.gov/compound/54671203"
+      "pubchem_inchikey_lookup": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/JBIWCJUYHHGXTC-AKNGSSGZSA-N/cids/JSON",
+        "http": 404,
+        "raw_response": {
+          "Fault": {
+            "Code": "PUGREST.NotFound",
+            "Message": "No CID found",
+            "Details": [
+              "No CID found that matches the given InChI key"
+            ]
+          }
+        }
+      }
     },
     "xylitol": {
       "decision": "keep_reference_explain_shared_unspecified_pubchem_cid",
@@ -425,65 +443,57 @@
         "xylitol": {
           "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/xylitol/cids/JSON",
           "http": 200,
-          "cids": [
-            6912
-          ]
+          "raw_response": {
+            "IdentifierList": {
+              "CID": [
+                6912
+              ]
+            }
+          }
         },
         "ribitol": {
           "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/ribitol/cids/JSON",
           "http": 200,
-          "cids": [
-            6912
-          ]
+          "raw_response": {
+            "IdentifierList": {
+              "CID": [
+                6912
+              ]
+            }
+          }
         },
         "adonitol": {
           "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/adonitol/cids/JSON",
           "http": 200,
-          "cids": [
-            6912
-          ]
+          "raw_response": {
+            "IdentifierList": {
+              "CID": [
+                6912
+              ]
+            }
+          }
         }
       },
       "pubchem_cid_6912": {
         "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6912/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
         "http": 200,
-        "properties": {
-          "CID": 6912,
-          "MolecularFormula": "C5H12O5",
-          "SMILES": "C([C@H](C([C@H](CO)O)O)O)O",
-          "ConnectivitySMILES": "C(C(C(C(CO)O)O)O)O",
-          "InChIKey": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
-          "IUPACName": "(2R,4S)-pentane-1,2,3,4,5-pentol",
-          "AtomStereoCount": 2,
-          "DefinedAtomStereoCount": 2,
-          "UndefinedAtomStereoCount": 0,
-          "Title": "(2S,4R)-Pentane-1,2,3,4,5-Pentol"
-        },
-        "rdkit_chiral_centers": [
-          [
-            1,
-            "R"
-          ],
-          [
-            2,
-            "?"
-          ],
-          [
-            3,
-            "S"
-          ]
-        ]
-      },
-      "preferred_records": {
-        "xylitol": {
-          "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Xylitol",
-          "title": "Xylitol",
-          "preferred_inchikey": "HEBKCHPVOIAQTA-SCDXWVJYSA-N"
-        },
-        "ribitol": {
-          "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Ribitol",
-          "title": "Ribitol",
-          "preferred_inchikey": "HEBKCHPVOIAQTA-ZXFHETKHSA-N"
+        "raw_response": {
+          "PropertyTable": {
+            "Properties": [
+              {
+                "CID": 6912,
+                "MolecularFormula": "C5H12O5",
+                "SMILES": "C([C@H](C([C@H](CO)O)O)O)O",
+                "ConnectivitySMILES": "C(C(C(C(CO)O)O)O)O",
+                "InChIKey": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+                "IUPACName": "(2R,4S)-pentane-1,2,3,4,5-pentol",
+                "AtomStereoCount": 2,
+                "DefinedAtomStereoCount": 2,
+                "UndefinedAtomStereoCount": 0,
+                "Title": "(2S,4R)-Pentane-1,2,3,4,5-Pentol"
+              }
+            ]
+          }
         }
       },
       "chembl_xylitol": {
@@ -512,7 +522,35 @@
           ]
         ]
       },
-      "interpretation": "PubChem PUG name lookup maps xylitol, ribitol and adonitol to the same CID 6912, whose record has an unspecified center and key NGQZWQHPSA. PubChem Preferred pages separately identify Xylitol with SCDXWVJYSA and Ribitol with ZXFHETKHSA; ChEMBL96783 agrees with the Xylitol key. Thus CID 6912 is a shared under-specified record, not a unique stereochemical identification. Retain the fully defined Xylitol reference."
+      "interpretation": "PubChem PUG name lookup maps xylitol, ribitol and adonitol to the same CID 6912, whose record has an unspecified center and key NGQZWQHPSA. ChEMBL CHEMBL96783 supports the fully specified Xylitol key. Since the shared CID 6912 is under-specified, it is not a unique stereochemical counterexample; retain the Xylitol reference.",
+      "pubchem_key_lookups": {
+        "xylitol_claimed_key": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/HEBKCHPVOIAQTA-SCDXWVJYSA-N/cids/JSON",
+          "http": 404,
+          "raw_response": {
+            "Fault": {
+              "Code": "PUGREST.NotFound",
+              "Message": "No CID found",
+              "Details": [
+                "No CID found that matches the given InChI key"
+              ]
+            }
+          }
+        },
+        "ribitol_claimed_key": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/HEBKCHPVOIAQTA-ZXFHETKHSA-N/cids/JSON",
+          "http": 404,
+          "raw_response": {
+            "Fault": {
+              "Code": "PUGREST.NotFound",
+              "Message": "No CID found",
+              "Details": [
+                "No CID found that matches the given InChI key"
+              ]
+            }
+          }
+        }
+      }
     }
   }
 }

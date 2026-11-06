@@ -145,7 +145,7 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Unverändert: Der PubChem Preferred-Eintrag „Doxiciclina“ führt reproduzierbar den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N; ChEMBL CHEMBL1433 bestätigt ihn. Die getrennte PUG-Namensabfrage doxycycline löst CID 54671203 auf. Dessen Title nennt „carboximidic acid“, IUPACName „carboxamide“; die stereo-erhaltende RDKit-Tautomer-Kanonisierung bestätigt die Tautomerform, kein 6-Epimer. Kein Referenzwechsel. Query-URLs und Ausgabe: korrekturen-kreuzabnahme.json.",
+    "bewertung": "Unverändert: ChEMBL CHEMBL1433 führt den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N. Die belegte PubChem-PUG-Namensabfrage liefert CID 54671203 mit SGKRLCUYIXIAHR-AKNGSSGZSA-N; RDKit-Tautomer-Kanonisierung der ChEMBL- und CID-Strukturen ergibt denselben Key VXVNYCRICCVPTD-REFUAFEPSA-N. Das ist ein Tautomer, kein 6-Epimer; die ChEMBL-Referenz bleibt.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
     "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.doxycycline"
@@ -160,7 +160,7 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Unverändert: Der PubChem Preferred-Eintrag „Doxiciclina“ führt reproduzierbar den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N; ChEMBL CHEMBL1433 bestätigt ihn. Die getrennte PUG-Namensabfrage doxycycline löst CID 54671203 auf. Dessen Title nennt „carboximidic acid“, IUPACName „carboxamide“; die stereo-erhaltende RDKit-Tautomer-Kanonisierung bestätigt die Tautomerform, kein 6-Epimer. Kein Referenzwechsel. Query-URLs und Ausgabe: korrekturen-kreuzabnahme.json.",
+    "bewertung": "Unverändert: ChEMBL CHEMBL1433 führt den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N. Die belegte PubChem-PUG-Namensabfrage liefert CID 54671203 mit SGKRLCUYIXIAHR-AKNGSSGZSA-N; RDKit-Tautomer-Kanonisierung der ChEMBL- und CID-Strukturen ergibt denselben Key VXVNYCRICCVPTD-REFUAFEPSA-N. Das ist ein Tautomer, kein 6-Epimer; die ChEMBL-Referenz bleibt.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
     "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.doxycycline"
@@ -650,7 +650,7 @@
     "chembl_name": "XYLITOL",
     "chembl_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
     "chembl_formel": "C5H12O5",
-    "bewertung": "Unverändert: PubChem PUG REST ordnet die Namensabfragen xylitol, ribitol und adonitol derselben unbestimmten CID 6912 (HEBKCHPVOIAQTA-NGQZWQHPSA-N) zu. Das erklärt den konfliktträchtigen API-Treffer: CID 6912 ist kein eindeutiger stereochemischer Gegenbeleg. Die PubChem Preferred-Seiten führen getrennte vollständige Keys für Xylitol (HEBKCHPVOIAQTA-SCDXWVJYSA-N) und Ribitol (HEBKCHPVOIAQTA-ZXFHETKHSA-N); ChEMBL CHEMBL96783 stimmt für Xylitol auf den gespeicherten Key. Details/Query: korrekturen-kreuzabnahme.json.",
+    "bewertung": "Unverändert: ChEMBL CHEMBL96783 führt den gespeicherten vollständigen Key HEBKCHPVOIAQTA-SCDXWVJYSA-N. Die belegten PubChem-PUG-Namensabfragen xylitol und ribitol liefern beide CID 6912; dessen Record lässt ein Zentrum offen (HEBKCHPVOIAQTA-NGQZWQHPSA-N). Die gemeinsame unterbestimmte CID-Abfrage ist kein stereochemisch eindeutiger Gegenbeleg zum ChEMBL-Eintrag.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
     "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.xylitol"
