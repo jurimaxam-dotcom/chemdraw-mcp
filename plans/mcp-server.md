@@ -152,7 +152,7 @@ Begründung im pyproject, Playwright beidseitig 1.64.1, Goldens/Snapshots unver�
 rdkit-Pin behalten (Empfehlung: ja — Default-Rendering darf sich nicht still ändern) oder bei nächstem bewussten RDKit-Bump Goldens
 mit Sichtprüfung neu und Pin weg?
 **Nächster Schritt:** nach Jays Merges `git pull`, Gate einmal auf main · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
-· Geparkt: E2 Lehrbuch-Feinschliff (GELB-Liste im Abschnitt darunter).
+· ✓ E2 Lehrbuch-Feinschliff erledigt 06.11. (Abschnitt darunter).
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
 ## Weiter bei — Release-Klick 0.8.0 (Jays Hand), Etappe E abgenommen (Claude-Hauptsession, 05.11.2026 16:25)
@@ -173,7 +173,12 @@ gh api -X POST repos/jurimaxam-dotcom/chemdraw-mcp/actions/runs/<run-id>/pending
 ```
 Jobs `bundle` und `registry` laufen im Workflow mit (Fallback `./scripts/publish-registry.sh`).
 
-**Geparkt (GELB des Gutachters, nach dem Release, eigene Etappe „E2 Lehrbuch-Feinschliff“):** SN2-Pfeile an die Edukte statt in den ÜZ
+**✓ Erledigt 06.11.2026 (Etappe E2, Claude `76129dfa`, `20beea9`…`9e206a9`):** alle acht Punkte unten gebaut, Gate rc=0
+(8170 Tests), Handshake 16/12, blinder Opus-Gutachter auf neuen Kontaktbögen: kein ROT (SN2 GELB, SN1/Fischer GRÜN), billige
+GELB-Befunde umgesetzt; Codex-Desktop-Handtest grün (`/tmp/chemdraw-desktop-test/etappe-e2/`). **Rest-GELB (geparkt, Kosmetik):**
+Cyclohexylbromid + I⁻ (Pfeil/I···Br-Linie durch den Ring) · Fischer ohne Resonanzpfeil C⁺(OH)₂ ↔ C=O⁺H (bewusst, Design (b)) ·
+Benzylalkohol-ROH₂⁺ als „H₂O⁺–CH₂Ph“ gesetzt · Kontaktbogen schneidet lange Hinweistexte ab (nur Skript, Panel bricht um).
+**War geparkt (GELB des Gutachters, nach dem Release, eigene Etappe „E2 Lehrbuch-Feinschliff“):** SN2-Pfeile an die Edukte statt in den ÜZ
 (Clayden-Konvention) · Carbokation trigonal-planar (120°) statt T-förmig · E1/E2-Konkurrenzhinweis im Text (Isopropyliodid + OH⁻,
 tBuI + iPrOH) · Deprotonierung über Lösungsmittel statt freies H⁺ · Fischer-Protonentransfer zweistufig · ⇌ bei Fischer · lange Ketten
 (Stearin, Octan) abkürzen (R = C₁₇H₃₅) · Oxonium-Label „OH⁺ + H“ einheitlicher. Fachlich korrekt, nur Konvention/Lesbarkeit.
