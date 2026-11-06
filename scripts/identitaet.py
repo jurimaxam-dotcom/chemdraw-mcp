@@ -40,6 +40,8 @@ bedeuten Verschiedenes, der InChIKey trennt sie schichtweise:
     ladung   — nur das letzte Zeichen verschieden (Protonierung/Salzform)
     salz     — Schlüssel verschieden, aber größtes Fragment neutralisiert gleich
                (Hydrochlorid statt freier Base o. ä.; nur mit "smiles_referenz")
+    tautomer — Skelett verschieden, aber Formel, /c und Kanontautomer gleich:
+               GELB, eigene Zeile in der Zählung (nur mit "smiles_referenz")
 Einträge mit "unsicher": true (Referenzquellen widersprechen sich) werden
 bei Abweichung GELB, nie ROT.
 """
@@ -128,6 +130,13 @@ def pruefe(eintrag: dict) -> dict:
         referenz = eintrag.get("smiles_referenz")
         if art != "ladung" and referenz and gleicher_elternstoff(mol, referenz):
             art = "salz"
+        if art == "skelett" and referenz and gleiches_tautomer(mol, referenz):
+            return {
+                "status": GELB,
+                "art": "tautomer",
+                "erhalten": schluessel,
+                "text": f"Tautomer der Referenz: {schluessel} statt {erwartet}",
+            }
         if eintrag.get("unsicher"):
             return {
                 "status": GELB,
@@ -170,6 +179,48 @@ def elternkey(mol) -> str | None:
 def gleicher_elternstoff(mol, referenz_smiles: str) -> bool:
     a = elternkey(mol)
     return a is not None and a == elternkey(Chem.MolFromSmiles(referenz_smiles))
+
+
+def gleiches_tautomer(mol, referenz_smiles: str) -> bool:
+    """Derselbe Stoff, anders tautomer geschrieben — alle drei müssen stimmen.
+
+    rifabutin (Lauf 9): PubChem und ChEMBL führen verschiedene Tautomere, die
+    Standard-InChI führt sie nicht zusammen. Gleich sein müssen Summenformel,
+    InChI-/c-Schicht und RDKit-Kanontautomer (Chef-Vorgabe 06.11.2026): /c
+    allein hielte 1,3- und 1,4-Cyclohexadien für gleich, der Kanontautomer
+    allein vertraute RDKits Transformationsregeln blind.
+    """
+    from rdkit.Chem.MolStandardize import rdMolStandardize
+
+    referenz = Chem.MolFromSmiles(referenz_smiles)
+    if mol is None or referenz is None:
+        return False
+
+    def schichten(m) -> tuple[str, str]:
+        teile = inchi.MolToInchi(m).split("/")
+        formel = teile[1] if len(teile) > 1 else ""
+        verknuepfung = next((s for s in teile[2:] if s.startswith("c")), "")
+        return formel, verknuepfung
+
+    try:
+        if schichten(mol) != schichten(referenz):
+            return False
+        kanon = rdMolStandardize.TautomerEnumerator().Canonicalize
+        return inchi.MolToInchiKey(kanon(mol)) == inchi.MolToInchiKey(kanon(referenz))
+    except Exception:
+        return False
+
+
+def zaehlung(ergebnisse: list[dict]) -> str:
+    """Zusammenfassungszeile; Tautomere gelb, aber getrennt gezählt."""
+    rot = sum(e["status"] == ROT for e in ergebnisse)
+    tautomer = sum(e["status"] == GELB and e.get("art") == "tautomer" for e in ergebnisse)
+    gelb = sum(e["status"] == GELB for e in ergebnisse) - tautomer
+    gruen = len(ergebnisse) - rot - gelb - tautomer
+    return (
+        f"{gruen} grün · {gelb} gelb (Quelle/Luecke) · {tautomer} gelb (Tautomer) · "
+        f"{rot} rot (falscher Stoff/Fehler)"
+    )
 
 
 def _quelle_weg(ergebnis: dict) -> bool:
@@ -216,15 +267,11 @@ def main() -> int:
         )
 
     rot = [e for e in ergebnisse if e["status"] == ROT]
-    gelb = [e for e in ergebnisse if e["status"] == GELB]
 
     if als_json:
         print(json.dumps(ergebnisse, ensure_ascii=False, indent=1))
     else:
-        print(
-            f"\n{len(ergebnisse) - len(rot) - len(gelb)} grün · "
-            f"{len(gelb)} gelb (Quelle/Luecke) · {len(rot)} rot (falscher Stoff/Fehler)"
-        )
+        print(f"\n{zaehlung(ergebnisse)}")
         if rot:
             print("\nROT — hier zeigt der Server etwas anderes an, als der Name sagt:")
             for e in rot:

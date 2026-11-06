@@ -546,6 +546,26 @@ def _spelling_variant(name: str) -> str | None:
     return variant if variant != name else None
 
 
+# Drehsinn-Gruppen "(+)-", "(−)-", "(-)-", "(±)-" innerhalb der Präfixkette.
+_ROTATION_GROUP = re.compile(r"\((?:[+\-−±])\)-")
+_DESCRIPTOR_GROUP = re.compile(r"\((?:RS|rs|[RS](?:,\s?[RS])*)\)-")
+
+
+def _rotation_variant(name: str) -> str | None:
+    """'(S)-(−)-timolol' → '(S)-timolol': Drehsinn weg, nur neben R/S.
+
+    Lauf 9 (06.11.2026): Die Kette aus Deskriptor und Drehsinn kennt weder
+    PubChem noch NCI, "(S)-timolol" trifft. Neben R/S ist der Drehsinn
+    redundant. Ohne R/S ist er die einzige Stereoangabe und bleibt — und R/S
+    bleibt immer, denn das nackte "timolol" ist bei PubChem das S-Enantiomer.
+    """
+    match = _STEREO_PREFIX.match(name)
+    if not match or not _DESCRIPTOR_GROUP.search(match.group()):
+        return None
+    prefix = _ROTATION_GROUP.sub("", match.group())
+    return prefix + name[match.end():] if prefix != match.group() else None
+
+
 def _parent_skeleton(smiles: str | None) -> str | None:
     """Erster InChIKey-Block der größten organischen Komponente (Stammmolekül).
 
@@ -577,6 +597,31 @@ _SALT_WORD = re.compile(
     r"|potassium|calcium|kalzium|magnesium|lithium|ammonium|zink|\beisen"
     r"|ferr|meglumin|salz|hydrat|\b(?:iron|zinc|salt)\b"  # Buspiron ≠ iron, Ameisensäure ≠ Eisen
 )
+
+
+def _same_tautomer(a: str, b: str) -> bool:
+    """Gleiches Stammmolekül, nur anders tautomer geschrieben?
+
+    rifabutin (Lauf 9, 06.11.2026): PubChem liefert für "rifabutin" und
+    "rifabutine" zwei Tautomere, die die Standard-InChI nicht zusammenführt
+    (erster Key-Block verschieden, Formel und /c-Schicht gleich). Ohne diesen
+    Vergleich kippte die Gegenprobe auf die Variante. RDKits Kanontautomer kostet
+    bei rifabutin ~0,5 s — deshalb nur, wenn die Gerüste schon abweichen.
+    """
+    from rdkit.Chem.MolStandardize import rdMolStandardize
+
+    keys = []
+    for smiles in (a, b):
+        mol = Chem.MolFromSmiles(smiles) if smiles else None
+        if mol is None:
+            return False
+        try:
+            parent = rdMolStandardize.LargestFragmentChooser().choose(mol)
+            canonical = rdMolStandardize.TautomerEnumerator().Canonicalize(parent)
+        except Exception:  # RDKit-Randfall: im Zweifel verschieden
+            return False
+        keys.append(Chem.MolToInchiKey(canonical).split("-")[0])
+    return keys[0] == keys[1]
 
 
 def _components(smiles: str) -> int:
@@ -614,7 +659,7 @@ def _pubchem_checked(name: str, smiles: str, report: list) -> tuple[str, str]:
     other_parent = _parent_skeleton(other)
     if other_parent is None:
         return smiles, name
-    if other_parent != _parent_skeleton(smiles):
+    if other_parent != _parent_skeleton(smiles) and not _same_tautomer(other, smiles):
         logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
         return other, variant
     if _components(other) == 1 < _components(smiles) and not _SALT_WORD.search(name):
@@ -1034,6 +1079,7 @@ def resolve_name_route(name: str) -> Resolution:
     5. NCI CIR with the original name
     6. PubChem with the English spelling (de_names.english_variant)
     7. PubChem with only the counter-ion in English (de_names.salt_variant)
+    8. PubChem without the rotation sign beside R/S ("(S)-(−)-x" → "(S)-x")
 
     Cached via lru_cache: identische Namen gehen nur einmal ins Netz.
     Wichtig — lru_cache speichert KEINE Ausnahmen: ein Fehlschlag (offline!)
@@ -1081,6 +1127,12 @@ def resolve_name_route(name: str) -> Resolution:
         logger.info("Retrying with English counter-ion: %r → %r", name, salt)
         if smiles := _pubchem_lookup(salt, report):
             return Resolution(smiles, _found_as(name, salt))
+
+    # Drehsinn neben R/S ("(S)-(−)-timolol"), ganz hinten aus demselben Grund.
+    if rotation := _rotation_variant(name):
+        logger.info("Retrying without the rotation sign: %r → %r", name, rotation)
+        if smiles := _pubchem_lookup(rotation, report):
+            return Resolution(smiles, _found_as(name, rotation))
 
     logger.info(
         "Resolution failed for %r: %s",

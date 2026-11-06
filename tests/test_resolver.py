@@ -1124,3 +1124,77 @@ def test_resolve_carries_found_as_and_stays_a_pair(monkeypatch):
     smiles, mol = result  # alle übrigen Aufrufer entpacken weiter zwei Werte
     assert (smiles, result.found_as) == ("CCO", "Ethanol") and mol is not None
     assert resolver.resolve("CCO").found_as == ""
+
+
+# --- rifabutin + (S)-(−)-timolol (Lauf 9, 06.11.2026) ----------------------
+# Echte PubChem-Antworten 06.11.2026: "rifabutin" und "rifabutine" liefern zwei
+# Tautomere desselben Stoffs (Imidazolin-NH an anderer Stelle, gleiche
+# InChI-Formel + /c-Schicht, gleicher RDKit-Kanontautomer). Die Standard-InChI
+# führt diese Tautomerie nicht zusammen — erster Key-Block AZFB… vs. ZWBT….
+# Die Gegenprobe darf das nicht als zweiten Stoff lesen: sonst kippt sie auf
+# die Variante und meldet „found as rifabutine".
+_RIFABUTIN_PC = (
+    "C[C@H]1/C=C/C=C(\\C(=O)NC2=C(C3=C(C4=C(C(=C3O)C)O[C@@](C4=O)(O/C=C/[C@@H]([C@H]"
+    "([C@H]([C@@H]([C@@H]([C@@H]([C@H]1O)C)O)C)OC(=O)C)C)OC)C)C5=NC6(CCN(CC6)CC(C)C)"
+    "N=C25)O)/C"
+)
+_RIFABUTIN_PC_E = (
+    "C[C@H]1/C=C/C=C(\\C(=O)N=C2C(=C3C(=C4C2=NC5(N4)CCN(CC5)CC(C)C)C6=C(C(=C3O)C)"
+    "O[C@@](C6=O)(O/C=C/[C@@H]([C@H]([C@H]([C@@H]([C@@H]([C@@H]([C@H]1O)C)O)C)"
+    "OC(=O)C)C)OC)C)O)/C"
+)
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_tautomer_of_the_variant_is_not_another_compound(_nci, _opsin):
+    answers = {"rifabutin": _RIFABUTIN_PC, "rifabutine": _RIFABUTIN_PC_E}
+    with patch("chemdraw_tool.resolver._pubchem_lookup",
+               side_effect=lambda n, report=None: answers.get(n)):
+        assert resolver.resolve_name_route("rifabutin") == (_RIFABUTIN_PC, "")
+
+
+def test_parent_skeleton_still_separates_constitutional_isomers():
+    """Gegenprobe zur Lockerung: Propanol-1 und -2 haben dieselbe Formel."""
+    assert resolver._parent_skeleton("CCCO") != resolver._parent_skeleton("CC(C)O")
+
+
+# "(S)-(−)-timolol": OPSIN None, PubChem 404, NCI 500 (echte Antworten
+# 06.11.2026) — die Kette aus Deskriptor und Drehsinn kennt keine Quelle,
+# "(S)-timolol" trifft. Der Drehsinn ist neben R/S redundant; R/S bleibt, denn
+# ohne ihn liefert PubChem für "(R)-X" das andere Enantiomer oder das Racemat.
+_S_TIMOLOL = "CC(C)(C)NC[C@@H](COC1=NSN=C1N2CCOCC2)O"
+
+
+@pytest.mark.parametrize("name", ["(S)-(−)-timolol", "(S)-(-)-timolol"])
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_rotation_sign_beside_a_descriptor_is_dropped_last(_nci, _opsin, name):
+    lookup, calls = _only_for("(S)-timolol", _S_TIMOLOL)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route(name) == (_S_TIMOLOL, "(S)-timolol")
+    assert calls[-1] == "(S)-timolol"
+
+
+@pytest.mark.parametrize("name", ["(−)-timolol", "(+)-Ephedrin"])
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_rotation_sign_alone_is_never_dropped(_nci, _opsin, name):
+    """Ohne R/S trägt der Drehsinn die einzige Stereoangabe."""
+    lookup, calls = _only_for("timolol", _S_TIMOLOL)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        with pytest.raises(NameResolutionError):
+            resolve_name(name)
+    assert "timolol" not in calls
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_r_descriptor_never_lands_on_the_s_record(_nci, _opsin):
+    """'(R)-(+)-x' fragt '(R)-x', nie das nackte 'x' (dort läge das S-Enantiomer)."""
+    lookup, calls = _only_for("timolol", _S_TIMOLOL)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        with pytest.raises(NameResolutionError):
+            resolve_name("(R)-(+)-timolol")
+    assert calls[-1] == "(R)-timolol"
+    assert "timolol" not in calls
