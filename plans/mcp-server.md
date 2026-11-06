@@ -1,5 +1,19 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Opus-Bauer: Kippmessung Schnitt 3 gemessen (06.11.2026 ~23:55)
+
+- [x] **Triage Lauf 11** (Faden `20261106-225717-chemdraw-mcp-triage-der`, zu): 28 rot = 14 Resolver-Fehlgriff · 5 Referenz
+  falsch · 5 Stereo in Quelle verloren · 3 andere Kodierung · 1 Polymer. Schnitt 1 `0f174ea` abgenommen.
+- [x] **Kippmessung Schnitt 3** (nur gemessen, kein Resolver-Commit): Belege `docs/evidence/masse-eval-2026-11/kippmessung-stereo/`
+  (`ergebnis.md`, Regeln wörtlich). Record-Replay über 711 + Holdout PubChem 553 + Holdout OPSIN 131, 0 Cache-Fehlgriffe.
+  A (`_pubchem_checked` Block 1+2, nur ohne Stereo-/D-/L-Präfix): **0 grün gekippt**, 3 rot→grün (Mefloquin, Naloxon,
+  Vinorelbin), Holdout PubChem 5 gekippt (Lincomycin ×2, Prostacyclin ×2, Vareniclin) / 6 behoben / 2 beide falsch.
+  B (`_opsin_checked` Block 1+2): **6 grün gekippt** (Alanin, Phenylalanin, xylitol, citral, nicotine, Nicotin), 3 rot→grün.
+  B′ (B nur wenn PubChem ≥ so viele Stereoelemente): **3 gekippt** (citral, nicotine, Nicotin), 3 rot→grün.
+  Messbasis = HEAD 327216f, **ohne** Codex' Schnitt 2 (Form-Zusätze) — Citral-Fälle neu bewerten.
+- [ ] Chef: Entscheid Schnitt 3 (Empfehlung im Faden `…-schnitt-3-kippmessung`); offen ungeprüft: Fixture-Keys Nicotin/Citral,
+  Wikidata-Keys Lincomycin/Prostacyclin.
+
 ## Weiter bei — Codex: Lauf 12 nach Kontext-Neustart (06.11.2026 ~23:25)
 
 **Nächster Schritt:** Lauf-12-Auftrag aus Tisch-Faden

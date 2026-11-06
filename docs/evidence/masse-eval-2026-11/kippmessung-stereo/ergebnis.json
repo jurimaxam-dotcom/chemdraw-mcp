@@ -1,0 +1,1165 @@
+{
+ "treue_record_vs_basis": {
+  "stoffe": [],
+  "holdout_pubchem": [],
+  "holdout_opsin": []
+ },
+ "memo_fehlgriffe": [],
+ "gruen_heute": 675,
+ "gruen_lauf11": 675,
+ "nur_lauf11_gruen": [],
+ "nur_heute_gruen": [],
+ "varianten": {
+  "A": {
+   "gruen_gekippt": [],
+   "rot_gelb_zu_gruen": [
+    {
+     "eingabe": "Mefloquin",
+     "erwartet": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "vorher": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+     "nachher": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Naloxon",
+     "erwartet": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "vorher": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+     "nachher": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "mehr definiert (Obermenge)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Vinorelbin",
+     "erwartet": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "vorher": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+     "nachher": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "sonst_geaendert": [],
+   "holdout": {
+    "holdout_pubchem": {
+     "gleich": 540,
+     "behoben": [
+      {
+       "name": "Cyproteron",
+       "erwartet": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "vorher": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+       "nachher": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Galantamin",
+       "erwartet": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "vorher": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+       "nachher": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Methyltestosteron",
+       "erwartet": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "vorher": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+       "nachher": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "stereo_art": "mehr definiert (Obermenge)"
+      },
+      {
+       "name": "Repaglinid",
+       "erwartet": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "vorher": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+       "nachher": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Rivastigmin",
+       "erwartet": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "vorher": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+       "nachher": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Tolterodin",
+       "erwartet": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "vorher": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+       "nachher": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "stereo_art": "flach→definiert"
+      }
+     ],
+     "gekippt": [
+      {
+       "name": "Lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Vareniclin",
+       "erwartet": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "vorher": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "nachher": "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      }
+     ],
+     "beide falsch, verschieden": [
+      {
+       "name": "Colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      },
+      {
+       "name": "colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      }
+     ]
+    },
+    "holdout_opsin": {
+     "gleich": 131,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    }
+   },
+   "de_holdout_teilmenge_geaendert": []
+  },
+  "B": {
+   "gruen_gekippt": [
+    {
+     "eingabe": "Alanin",
+     "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "vorher": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "nachher": "QNAYBMKLOCPYGJ-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Phenylalanin",
+     "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "vorher": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "nachher": "COLNVLDHVKWLRT-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "citral",
+     "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "vorher": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "nachher": "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "nicotine",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "xylitol",
+     "erwartet": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+     "vorher": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+     "nachher": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "weniger definiert (Teilmenge)",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "rot_gelb_zu_gruen": [
+    {
+     "eingabe": "penicillamine",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Penicillamin",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Adrenalin",
+     "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "vorher": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+     "nachher": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "sonst_geaendert": [],
+   "holdout": {
+    "holdout_pubchem": {
+     "gleich": 553,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    },
+    "holdout_opsin": {
+     "gleich": 131,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    }
+   },
+   "de_holdout_teilmenge_geaendert": [
+    {
+     "eingabe": "Alanin",
+     "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "vorher": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "nachher": "QNAYBMKLOCPYGJ-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Phenylalanin",
+     "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "vorher": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "nachher": "COLNVLDHVKWLRT-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ]
+  },
+  "B'": {
+   "gruen_gekippt": [
+    {
+     "eingabe": "citral",
+     "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "vorher": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "nachher": "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "nicotine",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ],
+   "rot_gelb_zu_gruen": [
+    {
+     "eingabe": "penicillamine",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Penicillamin",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Adrenalin",
+     "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "vorher": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+     "nachher": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "sonst_geaendert": [],
+   "holdout": {
+    "holdout_pubchem": {
+     "gleich": 553,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    },
+    "holdout_opsin": {
+     "gleich": 131,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    }
+   },
+   "de_holdout_teilmenge_geaendert": [
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ]
+  },
+  "A+B": {
+   "gruen_gekippt": [
+    {
+     "eingabe": "Alanin",
+     "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "vorher": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "nachher": "QNAYBMKLOCPYGJ-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Phenylalanin",
+     "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "vorher": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "nachher": "COLNVLDHVKWLRT-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "citral",
+     "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "vorher": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "nachher": "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "nicotine",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "xylitol",
+     "erwartet": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+     "vorher": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+     "nachher": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "weniger definiert (Teilmenge)",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "rot_gelb_zu_gruen": [
+    {
+     "eingabe": "Mefloquin",
+     "erwartet": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "vorher": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+     "nachher": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Naloxon",
+     "erwartet": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "vorher": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+     "nachher": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "mehr definiert (Obermenge)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "penicillamine",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Penicillamin",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Vinorelbin",
+     "erwartet": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "vorher": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+     "nachher": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Adrenalin",
+     "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "vorher": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+     "nachher": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "sonst_geaendert": [],
+   "holdout": {
+    "holdout_pubchem": {
+     "gleich": 540,
+     "behoben": [
+      {
+       "name": "Cyproteron",
+       "erwartet": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "vorher": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+       "nachher": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Galantamin",
+       "erwartet": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "vorher": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+       "nachher": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Methyltestosteron",
+       "erwartet": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "vorher": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+       "nachher": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "stereo_art": "mehr definiert (Obermenge)"
+      },
+      {
+       "name": "Repaglinid",
+       "erwartet": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "vorher": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+       "nachher": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Rivastigmin",
+       "erwartet": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "vorher": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+       "nachher": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Tolterodin",
+       "erwartet": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "vorher": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+       "nachher": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "stereo_art": "flach→definiert"
+      }
+     ],
+     "gekippt": [
+      {
+       "name": "Lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Vareniclin",
+       "erwartet": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "vorher": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "nachher": "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      }
+     ],
+     "beide falsch, verschieden": [
+      {
+       "name": "Colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      },
+      {
+       "name": "colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      }
+     ]
+    },
+    "holdout_opsin": {
+     "gleich": 131,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    }
+   },
+   "de_holdout_teilmenge_geaendert": [
+    {
+     "eingabe": "Alanin",
+     "erwartet": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "vorher": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+     "nachher": "QNAYBMKLOCPYGJ-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Phenylalanin",
+     "erwartet": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "vorher": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+     "nachher": "COLNVLDHVKWLRT-UHFFFAOYSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": true
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ]
+  },
+  "A+B'": {
+   "gruen_gekippt": [
+    {
+     "eingabe": "citral",
+     "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "vorher": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+     "nachher": "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "nicotine",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ],
+   "rot_gelb_zu_gruen": [
+    {
+     "eingabe": "Mefloquin",
+     "erwartet": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "vorher": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+     "nachher": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "definiert→flach",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Naloxon",
+     "erwartet": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "vorher": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+     "nachher": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "mehr definiert (Obermenge)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "penicillamine",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Penicillamin",
+     "erwartet": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "vorher": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+     "nachher": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Vinorelbin",
+     "erwartet": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "vorher": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+     "nachher": "GBABOYUKABKIAF-IELIFDKJSA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "anderes Isomer (Widerspruch)",
+     "deutsch_lauf2_gruen": false
+    },
+    {
+     "eingabe": "Adrenalin",
+     "erwartet": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "vorher": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+     "nachher": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+     "status": "rot→gruen",
+     "art_neu": null,
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": false
+    }
+   ],
+   "sonst_geaendert": [],
+   "holdout": {
+    "holdout_pubchem": {
+     "gleich": 540,
+     "behoben": [
+      {
+       "name": "Cyproteron",
+       "erwartet": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "vorher": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+       "nachher": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Galantamin",
+       "erwartet": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "vorher": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+       "nachher": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Methyltestosteron",
+       "erwartet": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "vorher": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+       "nachher": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+       "stereo_art": "mehr definiert (Obermenge)"
+      },
+      {
+       "name": "Repaglinid",
+       "erwartet": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "vorher": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+       "nachher": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Rivastigmin",
+       "erwartet": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "vorher": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+       "nachher": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "Tolterodin",
+       "erwartet": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "vorher": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+       "nachher": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+       "stereo_art": "flach→definiert"
+      }
+     ],
+     "gekippt": [
+      {
+       "name": "Lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "Vareniclin",
+       "erwartet": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "vorher": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+       "nachher": "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+       "stereo_art": "flach→definiert"
+      },
+      {
+       "name": "lincomycin",
+       "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "vorher": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+       "nachher": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      },
+      {
+       "name": "prostacyclin",
+       "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "vorher": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+       "nachher": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+       "stereo_art": "definiert→flach"
+      }
+     ],
+     "beide falsch, verschieden": [
+      {
+       "name": "Colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      },
+      {
+       "name": "colistin",
+       "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+       "vorher": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+       "nachher": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+       "stereo_art": "anderes Isomer (Widerspruch)"
+      }
+     ]
+    },
+    "holdout_opsin": {
+     "gleich": 131,
+     "behoben": [],
+     "gekippt": [],
+     "beide falsch, verschieden": []
+    }
+   },
+   "de_holdout_teilmenge_geaendert": [
+    {
+     "eingabe": "Nicotin",
+     "erwartet": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "vorher": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+     "nachher": "SNICXCGAKADSCV-JTQLQIEISA-N",
+     "status": "gruen→rot",
+     "art_neu": "stereo",
+     "stereo_art": "flach→definiert",
+     "deutsch_lauf2_gruen": true
+    }
+   ]
+  }
+ },
+ "de_holdout_kandidaten": 177,
+ "protokoll_A": [
+  {
+   "regel": "A",
+   "name": "Mefloquin",
+   "variante": "Mefloquine",
+   "direkt": "XEEQGYMUWCZPDN-DOMZBBRYSA-N",
+   "variante_key": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Naloxon",
+   "variante": "Naloxone",
+   "direkt": "UZHSEJADLWPNLE-BIAVLDQUSA-N",
+   "variante_key": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Vinorelbin",
+   "variante": "Vinorelbine",
+   "direkt": "GBABOYUKABKIAF-GHYRFKGUSA-N",
+   "variante_key": "GBABOYUKABKIAF-IELIFDKJSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "(E)-Cefprozil",
+   "variante": "Cefprozil",
+   "direkt": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+   "variante_key": "WDLWHQDACQUCJR-PBFPGSCMSA-N",
+   "gesperrt_praefix": true,
+   "gesperrt_salz": false,
+   "greift": false
+  },
+  {
+   "regel": "A",
+   "name": "(E)-cefprozil",
+   "variante": "cefprozil",
+   "direkt": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+   "variante_key": "WDLWHQDACQUCJR-PBFPGSCMSA-N",
+   "gesperrt_praefix": true,
+   "gesperrt_salz": false,
+   "greift": false
+  },
+  {
+   "regel": "A",
+   "name": "(S)-(−)-colchicine",
+   "variante": "colchicine",
+   "direkt": "IAKHMKGGTNLKSZ-UHFFFAOYSA-N",
+   "variante_key": "IAKHMKGGTNLKSZ-INIZCTEOSA-N",
+   "gesperrt_praefix": true,
+   "gesperrt_salz": false,
+   "greift": false
+  },
+  {
+   "regel": "A",
+   "name": "(S)-etiracetam",
+   "variante": "etiracetam",
+   "direkt": "HPHUVLMMVZITSG-ZCFIWIBFSA-N",
+   "variante_key": "HPHUVLMMVZITSG-UHFFFAOYSA-N",
+   "gesperrt_praefix": true,
+   "gesperrt_salz": false,
+   "greift": false
+  },
+  {
+   "regel": "A",
+   "name": "Colistin",
+   "variante": "Colistine",
+   "direkt": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+   "variante_key": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Cyproteron",
+   "variante": "Cyproterone",
+   "direkt": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+   "variante_key": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Galantamin",
+   "variante": "Galantamine",
+   "direkt": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+   "variante_key": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Lincomycin",
+   "variante": "Lincomycine",
+   "direkt": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+   "variante_key": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Methyltestosteron",
+   "variante": "Methyltestosterone",
+   "direkt": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+   "variante_key": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Prostacyclin",
+   "variante": "Prostacycline",
+   "direkt": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+   "variante_key": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Repaglinid",
+   "variante": "Repaglinide",
+   "direkt": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+   "variante_key": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Rivastigmin",
+   "variante": "Rivastigmine",
+   "direkt": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+   "variante_key": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Tolterodin",
+   "variante": "Tolterodine",
+   "direkt": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+   "variante_key": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "Vareniclin",
+   "variante": "Varenicline",
+   "direkt": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+   "variante_key": "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "colistin",
+   "variante": "colistine",
+   "direkt": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+   "variante_key": "YKQOSKADJPQZHB-RGYSVOEGSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "lincomycin",
+   "variante": "lincomycine",
+   "direkt": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+   "variante_key": "OJMMVQQUTAEWLP-UHFFFAOYSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  },
+  {
+   "regel": "A",
+   "name": "prostacyclin",
+   "variante": "prostacycline",
+   "direkt": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+   "variante_key": "KAQKFAOMNZTLHT-UHFFFAOYSA-N",
+   "gesperrt_praefix": false,
+   "gesperrt_salz": false,
+   "greift": true
+  }
+ ],
+ "protokoll_B": [
+  {
+   "regel": "B",
+   "name": "Alanin",
+   "opsin_key": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+   "pubchem_key": "QNAYBMKLOCPYGJ-UHFFFAOYSA-N",
+   "def_opsin": 1,
+   "def_pubchem": 0,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "Phenylalanin",
+   "opsin_key": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+   "pubchem_key": "COLNVLDHVKWLRT-UHFFFAOYSA-N",
+   "def_opsin": 1,
+   "def_pubchem": 0,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "penicillamine",
+   "opsin_key": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+   "pubchem_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+   "def_opsin": 1,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "Penicillamin",
+   "opsin_key": "VVNCNSJFMMFHPL-GSVOUGTGSA-N",
+   "pubchem_key": "VVNCNSJFMMFHPL-VKHMYHEASA-N",
+   "def_opsin": 1,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "citral",
+   "opsin_key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+   "pubchem_key": "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+   "def_opsin": 0,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "Adrenalin",
+   "opsin_key": "UCTWMZQNUQWSLP-UHFFFAOYSA-N",
+   "pubchem_key": "UCTWMZQNUQWSLP-VIFPVBQESA-N",
+   "def_opsin": 0,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "nicotine",
+   "opsin_key": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+   "pubchem_key": "SNICXCGAKADSCV-JTQLQIEISA-N",
+   "def_opsin": 0,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "Nicotin",
+   "opsin_key": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+   "pubchem_key": "SNICXCGAKADSCV-JTQLQIEISA-N",
+   "def_opsin": 0,
+   "def_pubchem": 1,
+   "greift": true
+  },
+  {
+   "regel": "B",
+   "name": "xylitol",
+   "opsin_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+   "pubchem_key": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+   "def_opsin": 3,
+   "def_pubchem": 2,
+   "greift": true
+  }
+ ]
+}
