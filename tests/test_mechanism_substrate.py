@@ -67,6 +67,17 @@ def test_sn2_zeichnet_das_ganze_substrat_in_jedem_schritt():
     _arrows_point_at_drawn_atoms(steps)
 
 
+def test_sn2_pfeile_stehen_an_den_edukten_nicht_im_uebergangszustand():
+    """Clayden Kap. 15: die Pfeile zeigen, was die Edukte tun; der Übergangszustand ist das
+    Ergebnis dieser Bewegung und trägt Teilbindungen, keine Pfeile (Gutachter GELB, Etappe E)."""
+    steps = build_steps("sn2", ["CCBr", "[I-]"])
+    edukte, ts = steps[0], steps[1]
+    assert {(a.source, a.target) for a in edukte.arrows} == {
+        ((3, "lone_pair"), (1, "atom")), ((1, "bond_to", 2), (2, "atom"))}
+    assert ts.is_transition_state and ts.arrows == []
+    assert set(ts.partial_bonds) == {(3, 1), (1, 2)}
+
+
 def test_sn2_gegenion_faellt_weg():
     steps = build_steps("sn2", ["CCBr", "[Na+].[C-]#N"])
     assert _canon("CCC#N") in [_plain(s) for s in steps[-1].molecules]

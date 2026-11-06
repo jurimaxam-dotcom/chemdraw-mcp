@@ -416,17 +416,21 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
     # Nur Kohlenstoff-/Heteroatom-Substituenten zählen für den Fächer (H ist implizit)
     before = {C: (0.0, 0.0), X: (1.0, 0.0), **_fan(subs, _SN2_BEFORE[len(subs)])}
     return [
+        # Pfeile an den Edukten (Clayden Kap. 15): sie zeigen, was die Edukte tun; der
+        # Übergangszustand ist das Ergebnis und trägt nur Teilbindungen (Gutachter GELB, Etappe E)
         MechanismStep(
-            label="Reactants", molecules=[_smi(sub_m), _smi(nuc_m)], arrows=[],
-            anchors=[before, _tail(nuc_m, NU, (-2.6, 0.0), -1.0)],
-        ),
-        MechanismStep(
-            label="Backside attack (transition state)",
-            molecules=[_smi(ts_c), _smi(ts_nuc), _smi(ts_x)],
+            label="Reactants: backside attack",
+            molecules=[_smi(sub_m), _smi(nuc_m)],
             arrows=[
                 CurvedArrow(source=(NU, "lone_pair"), target=(C, "atom"), style="full"),
                 CurvedArrow(source=(C, "bond_to", X), target=(X, "atom"), style="full"),
             ],
+            anchors=[before, _tail(nuc_m, NU, (-2.6, 0.0), -1.0)],
+        ),
+        MechanismStep(
+            label="Transition state",
+            molecules=[_smi(ts_c), _smi(ts_nuc), _smi(ts_x)],
+            arrows=[],
             is_transition_state=True,
             partial_bonds=[(NU, C), (C, X)],
             partial_charges={NU: "δ−", X: "δ−"},

@@ -130,8 +130,10 @@ def check_bookkeeping(steps) -> None:
             continue
         nxt = steps[i + 1]
         if nxt.is_transition_state:
+            # Pfeile an den Edukten (Clayden), der ÜZ ist ihr Ergebnis: geprüft wird über ihn hinweg
             assert i + 2 < len(steps), "Übergangszustand ohne Produktschritt"
-            arrows, after = nxt.arrows, steps[i + 2]
+            assert not nxt.arrows, f"{nxt.label}: Pfeile gehören an die Edukte, nicht in den ÜZ"
+            arrows, after = step.arrows, steps[i + 2]
             expected = _expected(arrows, h_maps)
             partial = {frozenset(p) for p in nxt.partial_bonds}
             assert partial == {k for k in expected if isinstance(k, frozenset)}, (
@@ -185,8 +187,8 @@ def test_gesamtladung_bleibt_erhalten(cid, rt, subs, _cip):
 def test_falscher_pfeil_faellt_auf():
     """Der Prüfer selbst: ein Pfeil zum falschen Atom muss rot werden (einmal rot gesehen)."""
     steps = copy.deepcopy(build_steps("sn2", ["CCBr", "[I-]"]))
-    ts = steps[1]
-    ts.arrows[0] = CurvedArrow(source=(NU, "lone_pair"), target=(ts.partial_bonds[1][1], "atom"), style="full")
+    edukte, ts = steps[0], steps[1]
+    edukte.arrows[0] = CurvedArrow(source=(NU, "lone_pair"), target=(ts.partial_bonds[1][1], "atom"), style="full")
     with pytest.raises(AssertionError, match="Teilbindungen|Pfeile sagen"):
         check_bookkeeping(steps)
 

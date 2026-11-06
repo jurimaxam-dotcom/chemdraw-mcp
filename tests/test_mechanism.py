@@ -167,8 +167,8 @@ def test_template_labels_are_english():
     sn2 = get_template("sn2")
     assert sn2.name == "Nucleophilic Substitution (SN2)"
     assert [s.label for s in sn2.steps] == [
-        "Reactants",
-        "Backside attack (transition state)",
+        "Reactants: backside attack",
+        "Transition state",
         "Products",
     ]
     german_markers = ("Edukte", "Produkt", "Angriff", "Veresterung", "ierung")
