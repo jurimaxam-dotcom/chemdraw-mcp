@@ -54,6 +54,48 @@ _VINBLASTIN_NOTIZ = (
 )
 REFERENZ_UNSICHER = dict.fromkeys(("vinblastine", "vinblastin"), _VINBLASTIN_NOTIZ)
 
+# Triage Lauf 11 (Chef-Entscheid 06.11.2026): Quellen kodieren denselben Stoff
+# verschieden bzw. die Eingabe lässt die Salzform offen — Abweichung gelb, nie rot.
+_COBALAMIN_NOTIZ = (
+    "Kodierungsunterschied des Cobalt-Komplexes: PubChem-Namenstreffer ({pubchem}) und "
+    "FDA GSRS {gsrs} ({key}) kodieren Co-Bindung/Ladung verschieden; kein Beleg für einen "
+    "anderen Stoff (Triage Lauf 11)"
+)
+REFERENZ_UNSICHER.update({
+    "hydroxycobalamin": _COBALAMIN_NOTIZ.format(
+        pubchem="CID 16056828 DQOCFCZRZOAIBN-WZHZPDAFSA-L, C62H90", gsrs="Q40X8H422O",
+        key="Fixture-Key YOZNUFWCRFCGIH-WZHZPDAFSA-K, C62H89",
+    ),
+    "cyanocobalamin": _COBALAMIN_NOTIZ.format(
+        pubchem="CID 166596686 RMRCNWBMXRMIRW-WZHZPDAFSA-L", gsrs="P6YC3EG204",
+        key="Fixture-Key FDJOLVPMNUYSCM-UVKKECPRSA-L, gleiche Formel",
+    ),
+    "docusat": (
+        "Eingabe nennt kein Gegenion: Fixture = Natriumsalz (Wikidata Q2815334, ChEMBL1905872), "
+        "PubChem 'Docusate' CID 11339 = freie Säure HNSDLXPSAYFUHK-UHFFFAOYSA-N (gleicher "
+        "Elternstoff) — Säure ist vertretbar, daher gelb (Triage Lauf 11)"
+    ),
+})
+
+# Bekannte Lücken: kein Name löst auf bzw. es gibt keine Einzelstruktur. Der
+# Lauf wertet not_found gelb und meldet einen Treffer als "Lücke geschlossen".
+_NITROPRUSSID_NOTIZ = (
+    "Kein Name löst auf (PubChem/NCI/OPSIN not_found). Fixture-Key = Wikidata Q420031 + "
+    "ChEBI:7596 + DrugBank DB00325 (Radikal-Kodierung, kein PubChem-Record); FDA GSRS "
+    "169D1260KM und PubChem CID 124081848 führen YEESUBCSWGVPCE-UHFFFAOYSA-N. Key bleibt, "
+    "weil er zwei Quellen außerhalb der Auflösungskette hat; bei Treffer neu entscheiden"
+)
+REFERENZ_LUECKE = {
+    "nitroprusside": _NITROPRUSSID_NOTIZ,
+    "nitroprussid": _NITROPRUSSID_NOTIZ,
+    "povidon-iod": (
+        "Polymer-Iod-Komplex ohne Einzelstruktur (FDA GSRS 85H0HZU99M: mixture); Fixture-Key "
+        "ist nur der Monomer-Ersatz N-Vinylpyrrolidon + I2; PubChem kennt povidone-iodine nicht"
+    ),
+}
+
+_BERLINER_BLAU_SMILES = "[C-]#N." * 18 + "[Fe+2].[Fe+2].[Fe+2].[Fe+3].[Fe+3].[Fe+3].[Fe+3]"
+
 # Falsch beschriftete Wikidata-Objekte dürfen beim Neubau nicht wieder gewinnen.
 # Nachgeprüft 06.11.2026, Quellen/alte Werte: Evidence referenzkorrektur/README.md.
 # https://www.wikidata.org/wiki/Q139857 + ChEMBL503160
@@ -98,6 +140,27 @@ REFERENZ_KORREKTUREN = {
         "formel": "C9H17NO5",
         "quelle": "pubchem:6613 + chembl:CHEMBL1594 + chebi:CHEBI:46905",
         "smiles_referenz": "CC(C)(CO)[C@@H](O)C(=O)NCCC(=O)O",
+    },
+    # Triage Lauf 11: Wikidata/ChEMBL296306 führen unter "β-lactulose" die
+    # generische/α-Lactulose; PubChem + GSRS + ChEMBL3780860 benennen die β-Form.
+    "β-lactulose": {
+        "inchikey": "NBGXQZRRLOGAJF-FCVZTGTOSA-N",
+        "formel": "C12H22O11",
+        "quelle": "pubchem:76959719 + fdasrs:6PIP1VSZ7W + chembl:CHEMBL3780860",
+        "smiles_referenz": "C1[C@H]([C@H]([C@@H]([C@](O1)(CO)O)O)O[C@H]2[C@@H]([C@H]([C@H]([C@H](O2)CO)O)O)O)O",
+    },
+    # Wikidata-Key DNMNDNSFJMUUFM ([Fe-4]-Komplex) hat keinen PubChem-Record.
+    "prussian blue": {
+        "inchikey": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "formel": "C18Fe7N18",
+        "quelle": "pubchem:2724251 + fdasrs:TLE294X33A",
+        "smiles_referenz": _BERLINER_BLAU_SMILES,
+    },
+    "berliner blau": {
+        "inchikey": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "formel": "C18Fe7N18",
+        "quelle": "pubchem:2724251 + pubchem:129627739 + fdasrs:TLE294X33A",
+        "smiles_referenz": _BERLINER_BLAU_SMILES,
     },
     "trehalose": {
         "inchikey": "HDTRYLNUVZCQOY-LIZSDCNHSA-N",
@@ -404,6 +467,9 @@ def baue_liste(_: argparse.Namespace) -> int:
             if unsichere_referenz := REFERENZ_UNSICHER.get(name.casefold()):
                 eintrag["unsicher"] = True
                 eintrag["notiz"] = unsichere_referenz
+            if luecke := REFERENZ_LUECKE.get(name.casefold()):
+                eintrag["luecke"] = True
+                eintrag["notiz"] = luecke
             stoffe.append(eintrag)
 
     daten = {

@@ -268,3 +268,98 @@ def test_rebuilding_list_keeps_vinblastine_uncertain_after_corrections(
         assert row["inchikey"] == key
         assert row.get("unsicher") is True
         assert row.get("notiz") == reference["notiz"]
+
+
+# Triage Lauf 11 (Chef-Entscheid 06.11.2026): die Wikidata-Werte, mit denen ein
+# Neubau diese Einträge wieder anlegen würde — so standen sie vor der Korrektur.
+_TRIAGE_QUELLEN = {
+    "Q422689": ("lactulose", "β-lactulose", None, "JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+                "C([C@@H]1[C@@H]([C@@H]([C@H]([C@@H](O1)O[C@@H]2[C@H](O[C@@]([C@H]2O)(CO)O)CO)O)O)O)O"),
+    "Q421894": (None, "Prussian blue", "Berliner Blau", "DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+                "[Fe+3].[Fe+3].[Fe+3].[Fe+3].N#C[Fe-4](C#N)(C#N)(C#N)(C#N)C#N."
+                "N#C[Fe-4](C#N)(C#N)(C#N)(C#N)C#N.N#C[Fe-4](C#N)(C#N)(C#N)(C#N)C#N"),
+    "Q420031": (None, "nitroprusside", "Nitroprussid", "ASPOIVQEUUCDQT-UHFFFAOYSA-N",
+                "[C]#N.[C]#N.[C]#N.[C]#N.[C]#N.[Fe-].[N-]=O"),
+    "Q241516": (None, "povidone-iodine", "Povidon-Iod", "CPKVUHPKYQGHMW-UHFFFAOYSA-N",
+                "C=CN1CCCC1=O.II"),
+    "Q2815334": (None, "docusate sodium", "Docusat", "APSBXTVYXVQYAB-UHFFFAOYSA-M",
+                 "CCCCC(CC)COC(=O)CC(C(=O)OCC(CC)CCCC)S(=O)(=O)[O-].[Na+]"),
+}
+
+
+@pytest.fixture
+def triage_neubau(tmp_path, monkeypatch):
+    fixture = {r["eingabe"]: r for r in json.loads(masse_eval.LISTE.read_text())["stoffe"]}
+    quellen = dict(_TRIAGE_QUELLEN)
+    # Cobalamine: Wikidata-Werte = heutige Fixture (nur die Markierung ist neu).
+    for qid, inn, en, de in (("Q73972", "hydroxocobalamin", None, "Hydroxycobalamin"),
+                             ("Q252251", None, "cyanocobalamin", None)):
+        row = fixture[inn or en]
+        quellen[qid] = (inn, en, de, row["inchikey"], row["smiles_referenz"])
+    eml = {}
+    for qid, (inn, en, de, key, smiles) in quellen.items():
+        mol = Chem.MolFromSmiles(smiles)
+        assert mol is not None and Chem.MolToInchiKey(mol) == key
+        eml[qid] = {"keys": {key}, "smiles": {smiles}, "chembl": set(),
+                    "inn": inn, "de": de, "en": en, "suchwort": None}
+    monkeypatch.setattr(masse_eval, "_lehrbuch", lambda: {})
+    monkeypatch.setattr(masse_eval, "_eml", lambda: eml)
+    monkeypatch.setattr(masse_eval, "_chembl_nach_keys", lambda keys: {})
+    monkeypatch.setattr(masse_eval, "_chembl_nach_ids", lambda ids: {})
+    monkeypatch.setattr(masse_eval, "REPO", tmp_path)
+    monkeypatch.setattr(masse_eval, "LISTE", tmp_path / "liste.json")
+    curated = tmp_path / "kuratiert.json"
+    curated.write_text('{"stoffe": []}')
+    monkeypatch.setattr(masse_eval, "KURATIERT", curated)
+    assert masse_eval.baue_liste(argparse.Namespace()) == 0
+    neu = {x["eingabe"]: x for x in json.loads(masse_eval.LISTE.read_text())["stoffe"]}
+    return neu, fixture
+
+
+def test_rebuilding_list_keeps_triage_reference_corrections(triage_neubau):
+    neu, fixture = triage_neubau
+    erwartet = {
+        "β-lactulose": "NBGXQZRRLOGAJF-FCVZTGTOSA-N",
+        "Prussian blue": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "Berliner Blau": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+    }
+    for name, key in erwartet.items():
+        row = neu[name]
+        assert row["inchikey"] == key == fixture[name]["inchikey"]
+        mol = Chem.MolFromSmiles(row["smiles_referenz"])
+        assert Chem.MolToInchiKey(mol) == key
+        assert CalcMolFormula(mol) == row["formel"]
+        assert row["quelle"].count(" + ") >= 1  # mindestens zwei Quellen
+        assert "unsicher" not in row and "luecke" not in row
+    # Der INN-Name desselben Wikidata-Objekts bleibt die generische Lactulose.
+    assert neu["lactulose"]["inchikey"] == "JCQLYHFGKNRPGE-FCVZTGTOSA-N"
+
+
+@pytest.mark.parametrize("name", ["nitroprusside", "Nitroprussid", "Povidon-Iod"])
+def test_rebuilding_list_keeps_known_gaps(triage_neubau, name):
+    neu, fixture = triage_neubau
+    assert neu[name].get("luecke") is True
+    assert neu[name]["notiz"] == fixture[name]["notiz"]
+    assert neu[name]["inchikey"] == fixture[name]["inchikey"]
+    assert fixture[name].get("luecke") is True
+
+
+def test_known_gap_does_not_spread_to_resolvable_sibling(triage_neubau):
+    neu, _ = triage_neubau
+    # povidone-iodine löst NCI auf den Fixture-Key auf — kein Freibrief dort.
+    assert "luecke" not in neu["povidone-iodine"]
+
+
+@pytest.mark.parametrize("name", ["Hydroxycobalamin", "cyanocobalamin", "Docusat"])
+def test_rebuilding_list_keeps_triage_uncertain_references(triage_neubau, name):
+    neu, fixture = triage_neubau
+    assert neu[name].get("unsicher") is True
+    assert neu[name]["notiz"] == fixture[name]["notiz"]
+    assert fixture[name].get("unsicher") is True
+    assert neu[name]["inchikey"] == fixture[name]["inchikey"]
+
+
+@pytest.mark.parametrize("name", ["hydroxocobalamin", "docusate sodium", "lactulose"])
+def test_triage_markings_stay_on_the_named_inputs(triage_neubau, name):
+    neu, _ = triage_neubau
+    assert "unsicher" not in neu[name] and "luecke" not in neu[name]
