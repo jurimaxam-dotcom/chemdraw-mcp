@@ -241,6 +241,12 @@ als Salzform („INN ohne Salzwort → PubChem liefert das Hydrochlorid“, Vors
 `(S)-(−)-timolol` bleibt `not_found` — die Präfixregel greift nur nach einem Direkttreffer, der
 Rückfallpfad über `english_variant` ist unverändert.
 
+**Lauf 7: 668 grün · 1 gelb · 42 rot (Befund 3 + Referenzkorrektur Befund 4)** — derselbe Code (`052d3fe`)
+gegen die aktuelle Fixture (`530e9a9`); Protokoll aus Codex' Kreuzabnahme (Faden `20261106-134101`).
+Gegenüber Lauf 6 ändern sich genau die zwei korrigierten Referenzen (fumaric acid, tenofovir disoproxil:
+rot → grün). Lauf 6 eingefroren als `identitaet-lauf-6-vor-referenzkorrektur.{json,md}`; `identitaet-lauf.json`
+und `identitaet.md` sind jetzt Lauf 7.
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:
