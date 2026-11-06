@@ -177,3 +177,48 @@ def test_report_cli_can_explicitly_refresh_cached_names(monkeypatch):
     monkeypatch.setattr(masse_eval, "identitaet_bericht", lambda args: args_seen.append(args) or 0)
     assert masse_eval.main() == 0
     assert args_seen[0].refresh_names is True
+
+
+@pytest.fixture
+def report_with_tautomers(tmp_path, monkeypatch):
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    entries = [
+        {"eingabe": "correct", "inchikey": "A", "quelle": "wikidata:Q1 + chembl:1"},
+        {"eingabe": "tautomer", "inchikey": "B", "quelle": "wikidata:Q2 + chembl:2"},
+        {"eingabe": "tautomer alias", "inchikey": "B", "quelle": "wikidata:Q2 + chembl:2"},
+        {"eingabe": "uncertain", "inchikey": "C", "quelle": "wikidata:Q3 + chembl:3"},
+        # Gleicher Key wie Q1, aber ein weiterer Wikidata-Stoff (cocaine/Kokain).
+        {"eingabe": "wrong", "inchikey": "A", "quelle": "wikidata:Q4 + chembl:4"},
+    ]
+    results = [
+        {"eingabe": "correct", "status": "gruen", "text": "A"},
+        {"eingabe": "tautomer", "status": "gelb", "art": "tautomer", "text": "Tautomer"},
+        {"eingabe": "tautomer alias", "status": "gelb", "art": "tautomer", "text": "Tautomer"},
+        {"eingabe": "uncertain", "status": "gelb", "text": "Referenz unsicher"},
+        {"eingabe": "wrong", "status": "rot", "art": "stereo", "text": "wrong", "erwartet": "A"},
+    ]
+    for result in results:
+        result["sekunden"] = 0.1
+    fixture = tmp_path / "fixture.json"
+    fixture.write_text(json.dumps({"stoffe": entries}))
+    protocol = tmp_path / "protocol.json"
+    protocol.write_text(json.dumps(results))
+    monkeypatch.setattr(masse_eval, "REPO", tmp_path)
+    monkeypatch.setattr(masse_eval, "LISTE", fixture)
+    monkeypatch.setattr(masse_eval, "PROTOKOLL", protocol)
+    monkeypatch.setattr(masse_eval, "_nachklassifizieren", lambda *args: None)
+    monkeypatch.setattr(masse_eval, "EVIDENZ", evidence)
+    monkeypatch.setattr(masse_eval, "_chembl_namen", lambda *args, **kwargs: {})
+    assert masse_eval.identitaet_bericht(argparse.Namespace()) == 0
+    return (evidence / "identitaet.md").read_text()
+
+
+def test_identity_report_separates_tautomers_from_green_and_other_yellow(report_with_tautomers):
+    assert "1 grün · 1 gelb (Quelle/Referenz) · 2 gelb (Tautomer) · 1 rot" in report_with_tautomers
+    assert "| Tautomer | 2 |" in report_with_tautomers
+    assert "| Quelle/Referenz | 1 |" in report_with_tautomers
+
+
+def test_identity_report_distinguishes_source_compounds_from_distinct_keys(report_with_tautomers):
+    assert "5 Eingaben (4 Wikidata-Stoffe, 3 unterschiedliche InChIKeys)" in report_with_tautomers

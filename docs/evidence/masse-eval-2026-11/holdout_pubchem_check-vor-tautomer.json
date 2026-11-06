@@ -1,0 +1,4426 @@
+[
+ {
+  "name": "(+)-norpseudoephedrine",
+  "variante": "norpseudoephedrine",
+  "erwartet": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "alt": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "neu": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(+)-pseudoephedrine",
+  "variante": "pseudoephedrine",
+  "erwartet": "KWGRBVOPPLSCSI-WCBMZHEXSA-N",
+  "alt": "KWGRBVOPPLSCSI-WCBMZHEXSA-N",
+  "neu": "KWGRBVOPPLSCSI-WCBMZHEXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(E)-Cefprozil",
+  "variante": "Cefprozil",
+  "erwartet": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "alt": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "neu": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(E)-cefprozil",
+  "variante": "cefprozil",
+  "erwartet": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "alt": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "neu": "WDLWHQDACQUCJR-ZAMMOSSLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-Baclofen",
+  "variante": "Baclofen",
+  "erwartet": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "alt": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "neu": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-Oxybutynin",
+  "variante": "Oxybutynine",
+  "erwartet": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "alt": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "neu": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-baclofen",
+  "variante": "baclofen",
+  "erwartet": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "alt": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "neu": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-eflornithine",
+  "variante": "eflornithine",
+  "erwartet": "VLCYCQAOQCDTCN-UHFFFAOYSA-N",
+  "alt": "VLCYCQAOQCDTCN-UHFFFAOYSA-N",
+  "neu": "VLCYCQAOQCDTCN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-mexiletine",
+  "variante": "mexiletine",
+  "erwartet": "VLPIATFUUWWMKC-UHFFFAOYSA-N",
+  "alt": "VLPIATFUUWWMKC-UHFFFAOYSA-N",
+  "neu": "VLPIATFUUWWMKC-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-oxybutynin",
+  "variante": "oxybutynine",
+  "erwartet": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "alt": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "neu": "XIQVNETUBQGFHX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-pentobarbital",
+  "variante": "pentobarbital",
+  "erwartet": "WEXRUCMBJFQVBZ-UHFFFAOYSA-N",
+  "alt": "WEXRUCMBJFQVBZ-UHFFFAOYSA-N",
+  "neu": "WEXRUCMBJFQVBZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-primaquine",
+  "variante": "primaquine",
+  "erwartet": "INDBQLZJXZLFIT-UHFFFAOYSA-N",
+  "alt": "INDBQLZJXZLFIT-UHFFFAOYSA-N",
+  "neu": "INDBQLZJXZLFIT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(RS)-thioctic acid",
+  "variante": "thioctic acid",
+  "erwartet": "AGBQKNBQESQNJD-UHFFFAOYSA-N",
+  "alt": "AGBQKNBQESQNJD-UHFFFAOYSA-N",
+  "neu": "AGBQKNBQESQNJD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(S)-(−)-colchicine",
+  "variante": "colchicine",
+  "erwartet": "IAKHMKGGTNLKSZ-INIZCTEOSA-N",
+  "alt": "IAKHMKGGTNLKSZ-UHFFFAOYSA-N",
+  "neu": "IAKHMKGGTNLKSZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(S)-duloxetine",
+  "variante": "duloxetine",
+  "erwartet": "ZEUITGRIYCTCEM-KRWDZBQOSA-N",
+  "alt": "ZEUITGRIYCTCEM-KRWDZBQOSA-N",
+  "neu": "ZEUITGRIYCTCEM-KRWDZBQOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(S)-etiracetam",
+  "variante": "etiracetam",
+  "erwartet": "HPHUVLMMVZITSG-LURJTMIESA-N",
+  "alt": "HPHUVLMMVZITSG-ZCFIWIBFSA-N",
+  "neu": "HPHUVLMMVZITSG-ZCFIWIBFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(S)-ropivacaine",
+  "variante": "ropivacaine",
+  "erwartet": "ZKMNUMMKYBVTFN-HNNXBMFYSA-N",
+  "alt": "ZKMNUMMKYBVTFN-HNNXBMFYSA-N",
+  "neu": "ZKMNUMMKYBVTFN-HNNXBMFYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(Z)-thiothixene",
+  "variante": "thiothixene",
+  "erwartet": "GFBKORZTTCHDGY-UWVJOHFNSA-N",
+  "alt": "GFBKORZTTCHDGY-UWVJOHFNSA-N",
+  "neu": "GFBKORZTTCHDGY-UWVJOHFNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "(−)-sparteine",
+  "variante": "sparteine",
+  "erwartet": "SLRCCWJSBJZJBV-ZQDZILKHSA-N",
+  "alt": "SLRCCWJSBJZJBV-ZQDZILKHSA-N",
+  "neu": "SLRCCWJSBJZJBV-ZQDZILKHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "17α-hydroxyprogesterone",
+  "variante": "17alpha-hydroxyprogesterone",
+  "erwartet": "DBPWSSGDRRHUNT-CEGNMAFCSA-N",
+  "alt": "DBPWSSGDRRHUNT-CEGNMAFCSA-N",
+  "neu": "DBPWSSGDRRHUNT-CEGNMAFCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Acemetacin",
+  "variante": "Acemetacine",
+  "erwartet": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "alt": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "neu": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Acepromazin",
+  "variante": "Acepromazine",
+  "erwartet": "NOSIYYJFMPDDSA-UHFFFAOYSA-N",
+  "alt": "NOSIYYJFMPDDSA-UHFFFAOYSA-N",
+  "neu": "NOSIYYJFMPDDSA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Acetohexamid",
+  "variante": "Acetohexamide",
+  "erwartet": "VGZSUPCWNCWDAN-UHFFFAOYSA-N",
+  "alt": "VGZSUPCWNCWDAN-UHFFFAOYSA-N",
+  "neu": "VGZSUPCWNCWDAN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Acitretin",
+  "variante": "Acitretine",
+  "erwartet": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "alt": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "neu": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Acrivastin",
+  "variante": "Acrivastine",
+  "erwartet": "PWACSDKDOHSSQD-IUTFFREVSA-N",
+  "alt": "PWACSDKDOHSSQD-IUTFFREVSA-N",
+  "neu": "PWACSDKDOHSSQD-IUTFFREVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ajmalin",
+  "variante": "Ajmaline",
+  "erwartet": "CJDRUOGAGYHKKD-HEFSZTOGSA-N",
+  "alt": "CJDRUOGAGYHKKD-RQBLFBSQSA-N",
+  "neu": "CJDRUOGAGYHKKD-RQBLFBSQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Alfuzosin",
+  "variante": "Alfuzosine",
+  "erwartet": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "alt": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "neu": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Alitretinoin",
+  "variante": "Alitretinoine",
+  "erwartet": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "alt": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "neu": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Almotriptan",
+  "variante": "Almotriptane",
+  "erwartet": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "alt": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "neu": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Alogliptin",
+  "variante": "Alogliptine",
+  "erwartet": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "alt": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "neu": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Alosetron",
+  "variante": "Alosetrone",
+  "erwartet": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "alt": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "neu": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Altretamin",
+  "variante": "Altretamine",
+  "erwartet": "UUVWYPNAQBNQJQ-UHFFFAOYSA-N",
+  "alt": "UUVWYPNAQBNQJQ-UHFFFAOYSA-N",
+  "neu": "UUVWYPNAQBNQJQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Amifampridin",
+  "variante": "Amifampridine",
+  "erwartet": "OYTKINVCDFNREN-UHFFFAOYSA-N",
+  "alt": "OYTKINVCDFNREN-UHFFFAOYSA-N",
+  "neu": "OYTKINVCDFNREN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Aminoglutethimid",
+  "variante": "Aminoglutethimide",
+  "erwartet": "ROBVIMPUHSLWNV-UHFFFAOYSA-N",
+  "alt": "ROBVIMPUHSLWNV-UHFFFAOYSA-N",
+  "neu": "ROBVIMPUHSLWNV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Aminophyllin",
+  "variante": "Aminophylline",
+  "erwartet": "FQPFAHBPWDRTLU-UHFFFAOYSA-N",
+  "alt": "FQPFAHBPWDRTLU-UHFFFAOYSA-N",
+  "neu": "FQPFAHBPWDRTLU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Amorolfin",
+  "variante": "Amorolfine",
+  "erwartet": "MQHLMHIZUIDKOO-AYHJJNSGSA-N",
+  "alt": "MQHLMHIZUIDKOO-AYHJJNSGSA-N",
+  "neu": "MQHLMHIZUIDKOO-AYHJJNSGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Antazolin",
+  "variante": "Antazoline",
+  "erwartet": "REYFJDPCWQRWAA-UHFFFAOYSA-N",
+  "alt": "REYFJDPCWQRWAA-UHFFFAOYSA-N",
+  "neu": "REYFJDPCWQRWAA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Apixaban",
+  "variante": "Apixabane",
+  "erwartet": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "alt": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "neu": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Apomorphin",
+  "variante": "Apomorphine",
+  "erwartet": "VMWNQDUVQKEIOC-CYBMUJFWSA-N",
+  "alt": "VMWNQDUVQKEIOC-CYBMUJFWSA-N",
+  "neu": "VMWNQDUVQKEIOC-CYBMUJFWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Aprotinin",
+  "variante": "Aprotinine",
+  "erwartet": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "alt": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "neu": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Artemisinin",
+  "variante": "Artemisinine",
+  "erwartet": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "alt": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "neu": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Articain",
+  "variante": "Articaine",
+  "erwartet": "QTGIAADRBBLJGA-UHFFFAOYSA-N",
+  "alt": "QTGIAADRBBLJGA-UHFFFAOYSA-N",
+  "neu": "QTGIAADRBBLJGA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Auranofin",
+  "variante": "Auranofine",
+  "erwartet": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "alt": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "neu": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Azlocillin",
+  "variante": "Azlocilline",
+  "erwartet": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "alt": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "neu": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bacampicillin",
+  "variante": "Bacampicilline",
+  "erwartet": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "alt": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "neu": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Besifloxacin",
+  "variante": "Besifloxacine",
+  "erwartet": "QFFGVLORLPOAEC-SNVBAGLBSA-N",
+  "alt": "QFFGVLORLPOAEC-SNVBAGLBSA-N",
+  "neu": "QFFGVLORLPOAEC-SNVBAGLBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bezafibrat",
+  "variante": "Bezafibrate",
+  "erwartet": "IIBYAHWJQTYFKB-UHFFFAOYSA-N",
+  "alt": "IIBYAHWJQTYFKB-UHFFFAOYSA-N",
+  "neu": "IIBYAHWJQTYFKB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bivalirudin",
+  "variante": "Bivalirudine",
+  "erwartet": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "alt": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "neu": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bosentan",
+  "variante": "Bosentane",
+  "erwartet": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "alt": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "neu": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bromfenac",
+  "variante": "Bromofenac",
+  "erwartet": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "alt": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "neu": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bromocriptin",
+  "variante": "Bromocriptine",
+  "erwartet": "OZVBMTJYIDMWIL-AYFBDAFISA-N",
+  "alt": "OZVBMTJYIDMWIL-AYFBDAFISA-N",
+  "neu": "OZVBMTJYIDMWIL-AYFBDAFISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Buprenorphin",
+  "variante": "Buprenorphine",
+  "erwartet": "RMRJXGBAOAMLHD-IHFGGWKQSA-N",
+  "alt": "RMRJXGBAOAMLHD-IHFGGWKQSA-N",
+  "neu": "RMRJXGBAOAMLHD-IHFGGWKQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Bupropion",
+  "variante": "Bupropione",
+  "erwartet": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "alt": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "neu": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Buspiron",
+  "variante": "Buspirone",
+  "erwartet": "QWCRAEMEVRGPNT-UHFFFAOYSA-N",
+  "alt": "QWCRAEMEVRGPNT-UHFFFAOYSA-N",
+  "neu": "QWCRAEMEVRGPNT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "CDP-Cholin",
+  "variante": "CDP-Choline",
+  "erwartet": "RZZPDXZPRHQOCG-OJAKKHQRSA-N",
+  "alt": "RZZPDXZPRHQOCG-OJAKKHQRSA-N",
+  "neu": "RZZPDXZPRHQOCG-OJAKKHQRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Calciumcarbonat",
+  "variante": "calcium carbonate",
+  "erwartet": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "alt": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "neu": "VTYYLEPIZMXCLO-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Camostat",
+  "variante": "Camostate",
+  "erwartet": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "alt": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "neu": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Canagliflozin",
+  "variante": "Canagliflozine",
+  "erwartet": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "alt": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "neu": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Carbenicillin",
+  "variante": "Carbenicilline",
+  "erwartet": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "alt": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "neu": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Carboplatin",
+  "variante": "Carboplatine",
+  "erwartet": "OLESAACUTLOWQZ-UHFFFAOYSA-L",
+  "alt": "VSRXQHXAPYXROS-UHFFFAOYSA-N",
+  "neu": "VSRXQHXAPYXROS-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Carmustin",
+  "variante": "Carmustine",
+  "erwartet": "DLGOEMSEDOSKAD-UHFFFAOYSA-N",
+  "alt": "DLGOEMSEDOSKAD-UHFFFAOYSA-N",
+  "neu": "DLGOEMSEDOSKAD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cathin",
+  "variante": "Cathine",
+  "erwartet": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "alt": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "neu": "DLNKOYKMWOXYQA-IONNQARKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefalotin",
+  "variante": "Cefalotine",
+  "erwartet": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "alt": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "neu": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefapirin",
+  "variante": "Cefapirine",
+  "erwartet": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "alt": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "neu": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefepim",
+  "variante": "Cefepime",
+  "erwartet": "HVFLCNVBZFFHBT-ZKDACBOMSA-N",
+  "alt": "HVFLCNVBZFFHBT-ZKDACBOMSA-N",
+  "neu": "HVFLCNVBZFFHBT-ZKDACBOMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefoperazon",
+  "variante": "Cefoperazone",
+  "erwartet": "GCFBRXLSHGKWDP-XCGNWRKASA-N",
+  "alt": "GCFBRXLSHGKWDP-XCGNWRKASA-N",
+  "neu": "GCFBRXLSHGKWDP-XCGNWRKASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefotetan",
+  "variante": "Cefotetane",
+  "erwartet": "SRZNHPXWXCNNDU-IXOPCIAXSA-N",
+  "alt": "SRZNHPXWXCNNDU-RHBCBLIFSA-N",
+  "neu": "SRZNHPXWXCNNDU-RHBCBLIFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefoxitin",
+  "variante": "Cefoxitine",
+  "erwartet": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "alt": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "neu": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefpodoxim",
+  "variante": "Cefpodoxime",
+  "erwartet": "WYUSVOMTXWRGEK-HBWVYFAYSA-N",
+  "alt": "WYUSVOMTXWRGEK-HBWVYFAYSA-N",
+  "neu": "WYUSVOMTXWRGEK-HBWVYFAYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefradin",
+  "variante": "Cefradine",
+  "erwartet": "RDLPVSKMFDYCOR-UEKVPHQBSA-N",
+  "alt": "RDLPVSKMFDYCOR-UEKVPHQBSA-N",
+  "neu": "RDLPVSKMFDYCOR-UEKVPHQBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ceftizoxim",
+  "variante": "Ceftizoxime",
+  "erwartet": "NNULBSISHYWZJU-LLKWHZGFSA-N",
+  "alt": "NNULBSISHYWZJU-LLKWHZGFSA-N",
+  "neu": "NNULBSISHYWZJU-LLKWHZGFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cefuroxim",
+  "variante": "Cefuroxime",
+  "erwartet": "JFPVXVDWJQMJEE-IZRZKJBUSA-N",
+  "alt": "JFPVXVDWJQMJEE-IZRZKJBUSA-N",
+  "neu": "JFPVXVDWJQMJEE-IZRZKJBUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Centrophenoxin",
+  "variante": "Centrophenoxine",
+  "erwartet": "XZTYGFHCIAKPGJ-UHFFFAOYSA-N",
+  "alt": "XZTYGFHCIAKPGJ-UHFFFAOYSA-N",
+  "neu": "XZTYGFHCIAKPGJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cerivastatin",
+  "variante": "Cerivastatine",
+  "erwartet": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "alt": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "neu": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chinidin",
+  "variante": "Chinidine",
+  "erwartet": "LOUPRKONTZGTKE-LHHVKLHASA-N",
+  "alt": "LOUPRKONTZGTKE-LHHVKLHASA-N",
+  "neu": "LOUPRKONTZGTKE-LHHVKLHASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chloramin T",
+  "variante": "Chloramine T",
+  "erwartet": "VDQQXEISLMTGAB-UHFFFAOYSA-N",
+  "alt": "VDQQXEISLMTGAB-UHFFFAOYSA-N",
+  "neu": "VDQQXEISLMTGAB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorothiazid",
+  "variante": "Chlorothiazide",
+  "erwartet": "JBMKAUGHUNFTOL-UHFFFAOYSA-N",
+  "alt": "JBMKAUGHUNFTOL-UHFFFAOYSA-N",
+  "neu": "JBMKAUGHUNFTOL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorphenamin",
+  "variante": "Chlorophenamine",
+  "erwartet": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "alt": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "neu": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorpropamid",
+  "variante": "Chloropropamide",
+  "erwartet": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "alt": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "neu": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorprothixen",
+  "variante": "Chloroprothixen",
+  "erwartet": "WSPOMRSOLSGNFJ-VGOFMYFVSA-N",
+  "alt": "WSPOMRSOLSGNFJ-AUWJEWJLSA-N",
+  "neu": "WSPOMRSOLSGNFJ-AUWJEWJLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorquinaldol",
+  "variante": "Chloroquinaldol",
+  "erwartet": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "alt": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "neu": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Chlorzoxazon",
+  "variante": "Chlorozoxazone",
+  "erwartet": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "alt": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "neu": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cinnarizin",
+  "variante": "Cinnarizine",
+  "erwartet": "DERZBLKQOCDDDZ-JLHYYAGUSA-N",
+  "alt": "KNHUKKLJHYUCFP-UHFFFAOYSA-N",
+  "neu": "DERZBLKQOCDDDZ-JLHYYAGUSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "Cisplatin",
+  "variante": "Cisplatine",
+  "erwartet": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "alt": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "neu": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Clemastin",
+  "variante": "Clemastine",
+  "erwartet": "YNNUSGIPVFPVBX-NHCUHLMSSA-N",
+  "alt": "YNNUSGIPVFPVBX-NHCUHLMSSA-N",
+  "neu": "YNNUSGIPVFPVBX-NHCUHLMSSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Clofibrat",
+  "variante": "Clofibrate",
+  "erwartet": "KNHUKKLJHYUCFP-UHFFFAOYSA-N",
+  "alt": "KNHUKKLJHYUCFP-UHFFFAOYSA-N",
+  "neu": "KNHUKKLJHYUCFP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Clonidin",
+  "variante": "Clonidine",
+  "erwartet": "GJSURZIOUXUGAL-UHFFFAOYSA-N",
+  "alt": "GJSURZIOUXUGAL-UHFFFAOYSA-N",
+  "neu": "GJSURZIOUXUGAL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Clorazepat",
+  "variante": "Clorazepate",
+  "erwartet": "XDDJGVMJFWAHJX-UHFFFAOYSA-N",
+  "alt": "SDWAACKJISOIGZ-UHFFFAOYSA-N",
+  "neu": "XDDJGVMJFWAHJX-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "Cobicistat",
+  "variante": "Cobicistate",
+  "erwartet": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "alt": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "neu": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Colistin",
+  "variante": "Colistine",
+  "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+  "alt": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+  "neu": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cortison",
+  "variante": "Cortisone",
+  "erwartet": "MFYSYFVPBJMHGN-ZPOLXVRWSA-N",
+  "alt": "MFYSYFVPBJMHGN-ZPOLXVRWSA-N",
+  "neu": "MFYSYFVPBJMHGN-ZPOLXVRWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cyclobenzaprin",
+  "variante": "Cyclobenzaprine",
+  "erwartet": "JURKNVYFZMSNLP-UHFFFAOYSA-N",
+  "alt": "JURKNVYFZMSNLP-UHFFFAOYSA-N",
+  "neu": "JURKNVYFZMSNLP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cyfluthrin",
+  "variante": "Cyfluthrine",
+  "erwartet": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "alt": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "neu": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cypermethrin",
+  "variante": "Cypermethrine",
+  "erwartet": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "alt": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "neu": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cyproheptadin",
+  "variante": "Cyproheptadine",
+  "erwartet": "JJCFRYNCJDLXIK-UHFFFAOYSA-N",
+  "alt": "JJCFRYNCJDLXIK-UHFFFAOYSA-N",
+  "neu": "JJCFRYNCJDLXIK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cyproteron",
+  "variante": "Cyproterone",
+  "erwartet": "DUSHUSLJJMDGTE-ZJPMUUANSA-N",
+  "alt": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+  "neu": "DUSHUSLJJMDGTE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Cytisin",
+  "variante": "Cytisine",
+  "erwartet": "ANJTVLIZGCUXLD-DTWKUNHWSA-N",
+  "alt": "ANJTVLIZGCUXLD-DTWKUNHWSA-N",
+  "neu": "ANJTVLIZGCUXLD-DTWKUNHWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "DL-Ofloxacin",
+  "variante": "DL-Ofloxacine",
+  "erwartet": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "alt": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "neu": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "DL-ofloxacin",
+  "variante": "DL-ofloxacine",
+  "erwartet": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "alt": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "neu": "GSDSWSVVBLHKDQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dapagliflozin",
+  "variante": "Dapagliflozine",
+  "erwartet": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "alt": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "neu": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dapoxetin",
+  "variante": "Dapoxetine",
+  "erwartet": "USRHYDPUVLEVMC-FQEVSTJZSA-N",
+  "alt": "USRHYDPUVLEVMC-FQEVSTJZSA-N",
+  "neu": "USRHYDPUVLEVMC-FQEVSTJZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Daptomycin",
+  "variante": "Daptomycine",
+  "erwartet": "DOAKLVKFURWEDJ-QCMAZARJSA-N",
+  "alt": "DOAKLVKFURWEDJ-QCMAZARJSA-N",
+  "neu": "DOAKLVKFURWEDJ-QCMAZARJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Darifenacin",
+  "variante": "Darifenacine",
+  "erwartet": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "alt": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "neu": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Decitabin",
+  "variante": "Decitabine",
+  "erwartet": "XAUDJQYHKZQPEU-KVQBGUIXSA-N",
+  "alt": "XAUDJQYHKZQPEU-KVQBGUIXSA-N",
+  "neu": "XAUDJQYHKZQPEU-KVQBGUIXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Delafloxacin",
+  "variante": "Delafloxacine",
+  "erwartet": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "alt": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "neu": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Deltamethrin",
+  "variante": "Deltamethrine",
+  "erwartet": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "alt": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "neu": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Desipramin",
+  "variante": "Desipramine",
+  "erwartet": "HCYAFALTSJYZDH-UHFFFAOYSA-N",
+  "alt": "HCYAFALTSJYZDH-UHFFFAOYSA-N",
+  "neu": "HCYAFALTSJYZDH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dextromethorphan",
+  "variante": "Dextromethorphane",
+  "erwartet": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "alt": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "neu": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dibucain",
+  "variante": "Dibucaine",
+  "erwartet": "PUFQVTATUTYEAL-UHFFFAOYSA-N",
+  "alt": "PUFQVTATUTYEAL-UHFFFAOYSA-N",
+  "neu": "PUFQVTATUTYEAL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dicloxacillin",
+  "variante": "Dicloxacilline",
+  "erwartet": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "alt": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "neu": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Digitoxin",
+  "variante": "Digitoxine",
+  "erwartet": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "alt": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "neu": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dihydroartemisinin",
+  "variante": "Dihydroartemisinine",
+  "erwartet": "BJDCWCLMFKKGEE-HVDUHBCDSA-N",
+  "alt": "BJDCWCLMFKKGEE-ISOSDAIHSA-N",
+  "neu": "BJDCWCLMFKKGEE-ISOSDAIHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dihydrotestosteron",
+  "variante": "Dihydrotestosterone",
+  "erwartet": "NVKAWKQGWWIWPM-ABEVXSGRSA-N",
+  "alt": "NVKAWKQGWWIWPM-ABEVXSGRSA-N",
+  "neu": "NVKAWKQGWWIWPM-ABEVXSGRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Diosmin",
+  "variante": "Diosmine",
+  "erwartet": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "alt": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "neu": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Disopyramid",
+  "variante": "Disopyramide",
+  "erwartet": "UVTNFZQICZKOEM-UHFFFAOYSA-N",
+  "alt": "UVTNFZQICZKOEM-UHFFFAOYSA-N",
+  "neu": "UVTNFZQICZKOEM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Distickstoffmonoxid",
+  "variante": "Distickstoffmonoxide",
+  "erwartet": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "alt": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "neu": "GQPLMRYTRLFLPF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dolasetron",
+  "variante": "Dolasetrone",
+  "erwartet": "UKTAZPQNNNJVKR-KJGYPYNMSA-N",
+  "alt": "UKTAZPQNNNJVKR-AKJUYKBHSA-N",
+  "neu": "UKTAZPQNNNJVKR-AKJUYKBHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Domperidon",
+  "variante": "Domperidone",
+  "erwartet": "FGXWKSZFVQUSTL-UHFFFAOYSA-N",
+  "alt": "FGXWKSZFVQUSTL-UHFFFAOYSA-N",
+  "neu": "FGXWKSZFVQUSTL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dorzolamid",
+  "variante": "Dorzolamide",
+  "erwartet": "IAVUPMFITXYVAF-XPUUQOCRSA-N",
+  "alt": "IAVUPMFITXYVAF-XPUUQOCRSA-N",
+  "neu": "IAVUPMFITXYVAF-XPUUQOCRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Doxazosin",
+  "variante": "Doxazosine",
+  "erwartet": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "alt": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "neu": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dutasterid",
+  "variante": "Dutasteride",
+  "erwartet": "JWJOTENAMICLJG-QWBYCMEYSA-N",
+  "alt": "JWJOTENAMICLJG-QWBYCMEYSA-N",
+  "neu": "JWJOTENAMICLJG-QWBYCMEYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Dyclonin",
+  "variante": "Dyclonine",
+  "erwartet": "BZEWSEKUUPWQDQ-UHFFFAOYSA-N",
+  "alt": "BZEWSEKUUPWQDQ-UHFFFAOYSA-N",
+  "neu": "BZEWSEKUUPWQDQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ebastin",
+  "variante": "Ebastine",
+  "erwartet": "MJJALKDDGIKVBE-UHFFFAOYSA-N",
+  "alt": "MJJALKDDGIKVBE-UHFFFAOYSA-N",
+  "neu": "MJJALKDDGIKVBE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Edoxaban",
+  "variante": "Edoxabane",
+  "erwartet": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "alt": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "neu": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Eisengluconat",
+  "variante": "Eisen gluconate",
+  "erwartet": "QDUZQOIJXPPTLY-GMBKLUGCSA-N",
+  "alt": "HEPSNHLVXSZFKR-UHFFFAOYSA-N",
+  "neu": "HEPSNHLVXSZFKR-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Emetin",
+  "variante": "Emetine",
+  "erwartet": "AUVVAXYIELKVAI-CKBKHPSWSA-N",
+  "alt": "AUVVAXYIELKVAI-CKBKHPSWSA-N",
+  "neu": "AUVVAXYIELKVAI-CKBKHPSWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Empagliflozin",
+  "variante": "Empagliflozine",
+  "erwartet": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "alt": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "neu": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Enoxacin",
+  "variante": "Enoxacine",
+  "erwartet": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "alt": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "neu": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Entacapon",
+  "variante": "Entacapone",
+  "erwartet": "JRURYQJSLYLRLN-BJMVGYQFSA-N",
+  "alt": "BBFJODMCHICIAA-UHFFFAOYSA-N",
+  "neu": "JRURYQJSLYLRLN-BJMVGYQFSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "Epirubicin",
+  "variante": "Epirubicine",
+  "erwartet": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "alt": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "neu": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Eplerenon",
+  "variante": "Eplerenone",
+  "erwartet": "JUKPWJGBANNWMW-VWBFHTRKSA-N",
+  "alt": "JUKPWJGBANNWMW-VWBFHTRKSA-N",
+  "neu": "JUKPWJGBANNWMW-VWBFHTRKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Eprosartan",
+  "variante": "Eprosartane",
+  "erwartet": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "alt": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "neu": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ergotamin",
+  "variante": "Ergotamine",
+  "erwartet": "XCGSFFUVFURLIX-VFGNJEKYSA-N",
+  "alt": "XCGSFFUVFURLIX-VFGNJEKYSA-N",
+  "neu": "XCGSFFUVFURLIX-VFGNJEKYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Eribulin",
+  "variante": "Eribuline",
+  "erwartet": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "alt": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "neu": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Estron",
+  "variante": "Estrone",
+  "erwartet": "DNXHEGUUPJUMQT-CBZIJGRNSA-N",
+  "alt": "DNXHEGUUPJUMQT-CBZIJGRNSA-N",
+  "neu": "DNXHEGUUPJUMQT-CBZIJGRNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Eszopiclon",
+  "variante": "Eszopiclone",
+  "erwartet": "GBBSUAFBMRNDJC-INIZCTEOSA-N",
+  "alt": "GBBSUAFBMRNDJC-INIZCTEOSA-N",
+  "neu": "GBBSUAFBMRNDJC-INIZCTEOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Etilefrin",
+  "variante": "Etilefrine",
+  "erwartet": "SQVIAVUSQAWMKL-UHFFFAOYSA-N",
+  "alt": "SQVIAVUSQAWMKL-UHFFFAOYSA-N",
+  "neu": "SQVIAVUSQAWMKL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Exemestan",
+  "variante": "Exemestane",
+  "erwartet": "BFYIZQONLCFLEV-DAELLWKTSA-N",
+  "alt": "BFYIZQONLCFLEV-DAELLWKTSA-N",
+  "neu": "BFYIZQONLCFLEV-DAELLWKTSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Febuxostat",
+  "variante": "Febuxostate",
+  "erwartet": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "alt": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "neu": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fenetyllin",
+  "variante": "Fenetylline",
+  "erwartet": "NMCHYWGKBADVMK-UHFFFAOYSA-N",
+  "alt": "NMCHYWGKBADVMK-UHFFFAOYSA-N",
+  "neu": "NMCHYWGKBADVMK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fidaxomicin",
+  "variante": "Fidaxomicine",
+  "erwartet": "ZVGNESXIJDCBKN-KFGPIHIUSA-N",
+  "alt": "ZVGNESXIJDCBKN-UUEYKCAUSA-N",
+  "neu": "ZVGNESXIJDCBKN-UUEYKCAUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Flibanserin",
+  "variante": "Flibanserine",
+  "erwartet": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "alt": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "neu": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Flucloxacillin",
+  "variante": "Flucloxacilline",
+  "erwartet": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "alt": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "neu": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Flunarizin",
+  "variante": "Flunarizine",
+  "erwartet": "SMANXXCATUTDDT-QPJJXVBHSA-N",
+  "alt": "SMANXXCATUTDDT-QPJJXVBHSA-N",
+  "neu": "SMANXXCATUTDDT-QPJJXVBHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fluorescein",
+  "variante": "Fluoresceine",
+  "erwartet": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "alt": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "neu": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fluoxymesteron",
+  "variante": "Fluoxymesterone",
+  "erwartet": "YLRFCQOZQXIBAB-RBZZARIASA-N",
+  "alt": "YLRFCQOZQXIBAB-RBZZARIASA-N",
+  "neu": "YLRFCQOZQXIBAB-RBZZARIASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fluvastatin",
+  "variante": "Fluvastatine",
+  "erwartet": "FJLGEFLZQAZZCD-MCBHFWOFSA-N",
+  "alt": "FJLGEFLZQAZZCD-JUFISIKESA-N",
+  "neu": "FJLGEFLZQAZZCD-JUFISIKESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fosfomycin",
+  "variante": "Fosfomycine",
+  "erwartet": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "alt": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "neu": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Frovatriptan",
+  "variante": "Frovatriptane",
+  "erwartet": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "alt": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "neu": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Furazolidon",
+  "variante": "Furazolidone",
+  "erwartet": "PLHJDBGFXBMTGZ-UHFFFAOYSA-N",
+  "alt": "PLHJDBGFXBMTGZ-WEVVVXLNSA-N",
+  "neu": "PLHJDBGFXBMTGZ-WEVVVXLNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Fusafungin",
+  "variante": "Fusafungine",
+  "erwartet": "MIZMDSVSLSIMSC-OGLSAIDSSA-N",
+  "alt": "MIZMDSVSLSIMSC-OGLSAIDSSA-N",
+  "neu": "MIZMDSVSLSIMSC-OGLSAIDSSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Gabapentin",
+  "variante": "Gabapentine",
+  "erwartet": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "alt": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "neu": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Galantamin",
+  "variante": "Galantamine",
+  "erwartet": "ASUTZQLVASHGKV-JDFRZJQESA-N",
+  "alt": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+  "neu": "ASUTZQLVASHGKV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Gatifloxacin",
+  "variante": "Gatifloxacine",
+  "erwartet": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "alt": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "neu": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Gentamicin",
+  "variante": "Gentamicine",
+  "erwartet": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "alt": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "neu": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Glatirameracetat",
+  "variante": "Glatiramer acetate",
+  "erwartet": "FHEAIOHRHQGZPC-KIWGSFCNSA-N",
+  "alt": "FHEAIOHRHQGZPC-KIWGSFCNSA-N",
+  "neu": "FHEAIOHRHQGZPC-KIWGSFCNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Glimepirid",
+  "variante": "Glimepiride",
+  "erwartet": "WIGIZIANZCJQQY-RUCARUNLSA-N",
+  "alt": "WIGIZIANZCJQQY-UHFFFAOYSA-N",
+  "neu": "WIGIZIANZCJQQY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Glutethimid",
+  "variante": "Glutethimide",
+  "erwartet": "JMBQKKAJIKAWKF-UHFFFAOYSA-N",
+  "alt": "JMBQKKAJIKAWKF-UHFFFAOYSA-N",
+  "neu": "JMBQKKAJIKAWKF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Glycyrrhizin",
+  "variante": "Glycyrrhizine",
+  "erwartet": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "alt": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "neu": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Goserelin",
+  "variante": "Gosereline",
+  "erwartet": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "alt": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "neu": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Granisetron",
+  "variante": "Granisetrone",
+  "erwartet": "MFWNKCLOYSRHCJ-BTTYYORXSA-N",
+  "alt": "MFWNKCLOYSRHCJ-AGUYFDCRSA-N",
+  "neu": "MFWNKCLOYSRHCJ-AGUYFDCRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Guaifenesin",
+  "variante": "Guaifenesine",
+  "erwartet": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "alt": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "neu": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Hexetidin",
+  "variante": "Hexetidine",
+  "erwartet": "DTOUUUZOYKYHEP-UHFFFAOYSA-N",
+  "alt": "DTOUUUZOYKYHEP-UHFFFAOYSA-N",
+  "neu": "DTOUUUZOYKYHEP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Homatropin",
+  "variante": "Homatropine",
+  "erwartet": "ZTVIKZXZYLEVOL-DGKWVBSXSA-N",
+  "alt": "ZTVIKZXZYLEVOL-DGKWVBSXSA-N",
+  "neu": "ZTVIKZXZYLEVOL-DGKWVBSXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Idarubicin",
+  "variante": "Idarubicine",
+  "erwartet": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "alt": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "neu": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Idebenon",
+  "variante": "Idebenone",
+  "erwartet": "JGPMMRGNQUBGND-UHFFFAOYSA-N",
+  "alt": "JGPMMRGNQUBGND-UHFFFAOYSA-N",
+  "neu": "JGPMMRGNQUBGND-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Imipramin",
+  "variante": "Imipramine",
+  "erwartet": "BCGWQEUPMDMJNV-UHFFFAOYSA-N",
+  "alt": "BCGWQEUPMDMJNV-UHFFFAOYSA-N",
+  "neu": "BCGWQEUPMDMJNV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Indigokarmin",
+  "variante": "Indigokarmine",
+  "erwartet": "KHLVKKOJDHCJMG-QDBORUFSSA-L",
+  "alt": "GSFNWGKBQZDYCL-UHFFFAOYSA-N",
+  "neu": "GSFNWGKBQZDYCL-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Indometacin",
+  "variante": "Indometacine",
+  "erwartet": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "alt": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "neu": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Insulin Lispro",
+  "variante": "Insuline Lispro",
+  "erwartet": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "alt": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "neu": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Insulin aspart",
+  "variante": "Insuline aspart",
+  "erwartet": "WEDIKSVWBUKTRA-WTKGVUNUSA-N",
+  "alt": "VOMXSOIBEJBQNF-UTTRGDHVSA-N",
+  "neu": "VOMXSOIBEJBQNF-UTTRGDHVSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Insulin detemir",
+  "variante": "Insuline detemir",
+  "erwartet": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "alt": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "neu": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Insulin glargin",
+  "variante": "Insuline glargine",
+  "erwartet": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "alt": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "neu": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Insulin lispro",
+  "variante": "Insuline lispro",
+  "erwartet": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "alt": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "neu": "WNRQPCUGRUFHED-DETKDSODSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Iproniazid",
+  "variante": "Iproniazide",
+  "erwartet": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "alt": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "neu": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Irbesartan",
+  "variante": "Irbesartane",
+  "erwartet": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "alt": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "neu": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isocarboxazid",
+  "variante": "Isocarboxazide",
+  "erwartet": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "alt": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "neu": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isoniazid",
+  "variante": "Isoniazide",
+  "erwartet": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "alt": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "neu": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isoprenalin",
+  "variante": "Isoprenaline",
+  "erwartet": "JWZZKOKVBUJMES-UHFFFAOYSA-N",
+  "alt": "JWZZKOKVBUJMES-UHFFFAOYSA-N",
+  "neu": "JWZZKOKVBUJMES-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isosorbidmononitrat",
+  "variante": "Isosorbidmono nitrate",
+  "erwartet": "YWXYYJSYQOXTPL-SLPGGIOYSA-N",
+  "alt": "YWXYYJSYQOXTPL-UNTFVMJOSA-N",
+  "neu": "YWXYYJSYQOXTPL-UNTFVMJOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isotretinoin",
+  "variante": "Isotretinoine",
+  "erwartet": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "alt": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "neu": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Isradipin",
+  "variante": "Isradipine",
+  "erwartet": "HMJIYCCIJYRONP-UHFFFAOYSA-N",
+  "alt": "HMJIYCCIJYRONP-UHFFFAOYSA-N",
+  "neu": "HMJIYCCIJYRONP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Josamycin",
+  "variante": "Josamycine",
+  "erwartet": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "alt": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "neu": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Kaliumpermanganat",
+  "variante": "potassium permanganate",
+  "erwartet": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "alt": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "neu": "VZJVWSHVAAUDKD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Kupfersulfat",
+  "variante": "Kupfer sulfate",
+  "erwartet": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "alt": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "neu": "ARUVKPQLZAKDPS-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Levomepromazin",
+  "variante": "Levomepromazine",
+  "erwartet": "VRQVVMDWGGWHTJ-CQSZACIVSA-N",
+  "alt": "VRQVVMDWGGWHTJ-CQSZACIVSA-N",
+  "neu": "VRQVVMDWGGWHTJ-CQSZACIVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Levosimendan",
+  "variante": "Levosimendane",
+  "erwartet": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "alt": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "neu": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Levothyroxin",
+  "variante": "Levothyroxine",
+  "erwartet": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "alt": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "neu": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Linagliptin",
+  "variante": "Linagliptine",
+  "erwartet": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "alt": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "neu": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Lincomycin",
+  "variante": "Lincomycine",
+  "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "alt": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "neu": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Lindan",
+  "variante": "Lindane",
+  "erwartet": "JLYXXMFPNIAWKQ-GNIYUCBRSA-N",
+  "alt": "JLYXXMFPNIAWKQ-UHFFFAOYSA-N",
+  "neu": "JLYXXMFPNIAWKQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Lomefloxacin",
+  "variante": "Lomefloxacine",
+  "erwartet": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "alt": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "neu": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Lorcaserin",
+  "variante": "Lorcaserine",
+  "erwartet": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "alt": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "neu": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Lovastatin",
+  "variante": "Lovastatine",
+  "erwartet": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "alt": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "neu": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Loxapin",
+  "variante": "Loxapine",
+  "erwartet": "XJGVXQDUIWGIRW-UHFFFAOYSA-N",
+  "alt": "XJGVXQDUIWGIRW-UHFFFAOYSA-N",
+  "neu": "XJGVXQDUIWGIRW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Magnesiumsulfat",
+  "variante": "magnesium sulfate",
+  "erwartet": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "alt": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "neu": "CSNNHWWHGAXBCP-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Malathion",
+  "variante": "Malathione",
+  "erwartet": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "alt": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "neu": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Maprotilin",
+  "variante": "Maprotiline",
+  "erwartet": "QSLMDECMDJKHMQ-UHFFFAOYSA-N",
+  "alt": "QSLMDECMDJKHMQ-UHFFFAOYSA-N",
+  "neu": "QSLMDECMDJKHMQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Medroxyprogesteron",
+  "variante": "Medroxyprogesterone",
+  "erwartet": "FRQMUZJSZHZSGN-HBNHAYAOSA-N",
+  "alt": "FRQMUZJSZHZSGN-HBNHAYAOSA-N",
+  "neu": "FRQMUZJSZHZSGN-HBNHAYAOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Melphalan",
+  "variante": "Melphalane",
+  "erwartet": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "alt": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "neu": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Memantin",
+  "variante": "Memantine",
+  "erwartet": "BUGYDGFZZOZRHP-UHFFFAOYSA-N",
+  "alt": "BUGYDGFZZOZRHP-UHFFFAOYSA-N",
+  "neu": "BUGYDGFZZOZRHP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Meprobamat",
+  "variante": "Meprobamate",
+  "erwartet": "NPPQSCRMBWNHMW-UHFFFAOYSA-N",
+  "alt": "NPPQSCRMBWNHMW-UHFFFAOYSA-N",
+  "neu": "NPPQSCRMBWNHMW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mepyramin",
+  "variante": "Mepyramine",
+  "erwartet": "YECBIJXISLIIDS-UHFFFAOYSA-N",
+  "alt": "YECBIJXISLIIDS-UHFFFAOYSA-N",
+  "neu": "YECBIJXISLIIDS-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Merbromin",
+  "variante": "Merbromine",
+  "erwartet": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "alt": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "neu": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mesalazin",
+  "variante": "Mesalazine",
+  "erwartet": "KBOPZPXVLCULAV-UHFFFAOYSA-N",
+  "alt": "KBOPZPXVLCULAV-UHFFFAOYSA-N",
+  "neu": "KBOPZPXVLCULAV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Metandienon",
+  "variante": "Metandienone",
+  "erwartet": "XWALNWXLMVGSFR-HLXURNFRSA-N",
+  "alt": "XWALNWXLMVGSFR-HLXURNFRSA-N",
+  "neu": "XWALNWXLMVGSFR-HLXURNFRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methaqualon",
+  "variante": "Methaqualone",
+  "erwartet": "JEYCTXHKTXCGPB-UHFFFAOYSA-N",
+  "alt": "JEYCTXHKTXCGPB-UHFFFAOYSA-N",
+  "neu": "JEYCTXHKTXCGPB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methicillin",
+  "variante": "Methicilline",
+  "erwartet": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "alt": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "neu": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methoxyfluran",
+  "variante": "Methoxyflurane",
+  "erwartet": "RFKMCNOHBTXSMU-UHFFFAOYSA-N",
+  "alt": "RFKMCNOHBTXSMU-UHFFFAOYSA-N",
+  "neu": "RFKMCNOHBTXSMU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methylergometrin",
+  "variante": "Methylergometrine",
+  "erwartet": "UNBRKDKAWYKMIV-QWQRMKEZSA-N",
+  "alt": "UNBRKDKAWYKMIV-QWQRMKEZSA-N",
+  "neu": "UNBRKDKAWYKMIV-QWQRMKEZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methyltestosteron",
+  "variante": "Methyltestosterone",
+  "erwartet": "GCKMFJBGXUYNAG-HLXURNFRSA-N",
+  "alt": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+  "neu": "GCKMFJBGXUYNAG-BROHZWGRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methyprylon",
+  "variante": "Methyprylone",
+  "erwartet": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "alt": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "neu": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Methysergid",
+  "variante": "Methysergide",
+  "erwartet": "KPJZHOPZRAFDTN-ZRGWGRIASA-N",
+  "alt": "KPJZHOPZRAFDTN-ZRGWGRIASA-N",
+  "neu": "KPJZHOPZRAFDTN-ZRGWGRIASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mezlocillin",
+  "variante": "Mezlocilline",
+  "erwartet": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "alt": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "neu": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Midodrin",
+  "variante": "Midodrine",
+  "erwartet": "PTKSEFOSCHHMPD-UHFFFAOYSA-N",
+  "alt": "PTKSEFOSCHHMPD-UHFFFAOYSA-N",
+  "neu": "PTKSEFOSCHHMPD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mildronat",
+  "variante": "Mildronate",
+  "erwartet": "PVBQYTCFVWZSJK-UHFFFAOYSA-N",
+  "alt": "PVBQYTCFVWZSJK-UHFFFAOYSA-N",
+  "neu": "PVBQYTCFVWZSJK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Milnacipran",
+  "variante": "Milnaciprane",
+  "erwartet": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "alt": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "neu": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Minocyclin",
+  "variante": "Minocycline",
+  "erwartet": "DYKFCLLONBREIL-KVUCHLLUSA-N",
+  "alt": "FFTVPQUHLQBXQZ-KVUCHLLUSA-N",
+  "neu": "FFTVPQUHLQBXQZ-KVUCHLLUSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Mirabegron",
+  "variante": "Mirabegrone",
+  "erwartet": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "alt": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "neu": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mirtazapin",
+  "variante": "Mirtazapine",
+  "erwartet": "RONZAEMNMFQXRA-UHFFFAOYSA-N",
+  "alt": "RONZAEMNMFQXRA-UHFFFAOYSA-N",
+  "neu": "RONZAEMNMFQXRA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Mitoxantron",
+  "variante": "Mitoxantrone",
+  "erwartet": "KKZJGLLVHKMTCM-UHFFFAOYSA-N",
+  "alt": "KKZJGLLVHKMTCM-UHFFFAOYSA-N",
+  "neu": "KKZJGLLVHKMTCM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Moclobemid",
+  "variante": "Moclobemide",
+  "erwartet": "YHXISWVBGDMDLQ-UHFFFAOYSA-N",
+  "alt": "YHXISWVBGDMDLQ-UHFFFAOYSA-N",
+  "neu": "YHXISWVBGDMDLQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Monobenzon",
+  "variante": "Monobenzone",
+  "erwartet": "VYQNWZOUAUKGHI-UHFFFAOYSA-N",
+  "alt": "VYQNWZOUAUKGHI-UHFFFAOYSA-N",
+  "neu": "VYQNWZOUAUKGHI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Moxonidin",
+  "variante": "Moxonidine",
+  "erwartet": "WPNJAUFVNXKLIM-UHFFFAOYSA-N",
+  "alt": "WPNJAUFVNXKLIM-UHFFFAOYSA-N",
+  "neu": "WPNJAUFVNXKLIM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nabumeton",
+  "variante": "Nabumetone",
+  "erwartet": "BLXXJMDCKKHMKV-UHFFFAOYSA-N",
+  "alt": "BLXXJMDCKKHMKV-UHFFFAOYSA-N",
+  "neu": "BLXXJMDCKKHMKV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Naftifin",
+  "variante": "Naftifine",
+  "erwartet": "OZGNYLLQHRPOBR-DHZHZOJOSA-N",
+  "alt": "OZGNYLLQHRPOBR-DHZHZOJOSA-N",
+  "neu": "OZGNYLLQHRPOBR-DHZHZOJOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nalorphin",
+  "variante": "Nalorphine",
+  "erwartet": "UIQMVEYFGZJHCZ-SSTWWWIQSA-N",
+  "alt": "UIQMVEYFGZJHCZ-SSTWWWIQSA-N",
+  "neu": "UIQMVEYFGZJHCZ-SSTWWWIQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nandrolon",
+  "variante": "Nandrolone",
+  "erwartet": "NPAGDVCDWIYMMC-IZPLOLCNSA-N",
+  "alt": "NPAGDVCDWIYMMC-IZPLOLCNSA-N",
+  "neu": "NPAGDVCDWIYMMC-IZPLOLCNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Naratriptan",
+  "variante": "Naratriptane",
+  "erwartet": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "alt": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "neu": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumacetat",
+  "variante": "sodium acetate",
+  "erwartet": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "alt": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "neu": "VMHLLURERBWHNL-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumhydrogencarbonat",
+  "variante": "sodium hydrogencarbonate",
+  "erwartet": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "alt": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "neu": "UIIMBOGNXHQVGW-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumlaurylsulfat",
+  "variante": "sodium lauryl sulfate",
+  "erwartet": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "alt": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "neu": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumperborat",
+  "variante": "sodium perborate",
+  "erwartet": "JBUKJLNBQDQXLI-UHFFFAOYSA-N",
+  "alt": "YKLJGMBLPUQQOI-UHFFFAOYSA-M",
+  "neu": "YKLJGMBLPUQQOI-UHFFFAOYSA-M",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Natriumpicosulfat",
+  "variante": "sodium pico sulfate",
+  "erwartet": "GOZDTZWAMGHLDY-UHFFFAOYSA-L",
+  "alt": "GOZDTZWAMGHLDY-UHFFFAOYSA-L",
+  "neu": "GOZDTZWAMGHLDY-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumpropionat",
+  "variante": "sodium propionate",
+  "erwartet": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "alt": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "neu": "JXKPEJDQGNYQSM-UHFFFAOYSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumselenit",
+  "variante": "sodium selenit",
+  "erwartet": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "alt": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "neu": "BVTBRVFYZUCAKH-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Natriumsulfat",
+  "variante": "sodium sulfate",
+  "erwartet": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "alt": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "neu": "PMZURENOXWZQFD-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Netilmicin",
+  "variante": "Netilmicine",
+  "erwartet": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "alt": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "neu": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nicergolin",
+  "variante": "Nicergoline",
+  "erwartet": "YSEXMKHXIOCEJA-FVFQAYNVSA-N",
+  "alt": "YSEXMKHXIOCEJA-FVFQAYNVSA-N",
+  "neu": "YSEXMKHXIOCEJA-FVFQAYNVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Niclosamid",
+  "variante": "Niclosamide",
+  "erwartet": "RJMUSRYZPJIFPJ-UHFFFAOYSA-N",
+  "alt": "RJMUSRYZPJIFPJ-UHFFFAOYSA-N",
+  "neu": "RJMUSRYZPJIFPJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nimodipin",
+  "variante": "Nimodipine",
+  "erwartet": "UIAGMCDKSXEBJQ-UHFFFAOYSA-N",
+  "alt": "UIAGMCDKSXEBJQ-UHFFFAOYSA-N",
+  "neu": "UIAGMCDKSXEBJQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nitazoxanid",
+  "variante": "Nitazoxanide",
+  "erwartet": "YQNQNVDNTFHQSW-UHFFFAOYSA-N",
+  "alt": "YQNQNVDNTFHQSW-UHFFFAOYSA-N",
+  "neu": "YQNQNVDNTFHQSW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Nitrendipin",
+  "variante": "Nitrendipine",
+  "erwartet": "PVHUJELLJLJGLN-UHFFFAOYSA-N",
+  "alt": "PVHUJELLJLJGLN-UHFFFAOYSA-N",
+  "neu": "PVHUJELLJLJGLN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Norethisteron",
+  "variante": "Norethisterone",
+  "erwartet": "VIKNJXKGJWUCNN-XGXHKTLJSA-N",
+  "alt": "VIKNJXKGJWUCNN-XGXHKTLJSA-N",
+  "neu": "VIKNJXKGJWUCNN-XGXHKTLJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Norfloxacin",
+  "variante": "Norfloxacine",
+  "erwartet": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "alt": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "neu": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Noscapin",
+  "variante": "Noscapine",
+  "erwartet": "AKNNEGZIBPJZJG-MSOLQXFVSA-N",
+  "alt": "AKNNEGZIBPJZJG-MSOLQXFVSA-N",
+  "neu": "AKNNEGZIBPJZJG-MSOLQXFVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Octopamin",
+  "variante": "Octopamine",
+  "erwartet": "QHGUCRYDKWKLMG-UHFFFAOYSA-N",
+  "alt": "QHGUCRYDKWKLMG-UHFFFAOYSA-N",
+  "neu": "QHGUCRYDKWKLMG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Olanzapin",
+  "variante": "Olanzapine",
+  "erwartet": "KVWDHTXUZHCGIO-UHFFFAOYSA-N",
+  "alt": "KVWDHTXUZHCGIO-UHFFFAOYSA-N",
+  "neu": "KVWDHTXUZHCGIO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Olmesartan",
+  "variante": "Olmesartane",
+  "erwartet": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "alt": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "neu": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ondansetron",
+  "variante": "Ondansetrone",
+  "erwartet": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "alt": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "neu": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Orciprenalin",
+  "variante": "Orciprenaline",
+  "erwartet": "LMOINURANNBYCM-UHFFFAOYSA-N",
+  "alt": "LMOINURANNBYCM-UHFFFAOYSA-N",
+  "neu": "LMOINURANNBYCM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Orlistat",
+  "variante": "Orlistate",
+  "erwartet": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "alt": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "neu": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Orphenadrin",
+  "variante": "Orphenadrine",
+  "erwartet": "QVYRGXJJSLMXQH-UHFFFAOYSA-N",
+  "alt": "QVYRGXJJSLMXQH-UHFFFAOYSA-N",
+  "neu": "QVYRGXJJSLMXQH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Oxacillin",
+  "variante": "Oxacilline",
+  "erwartet": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "alt": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "neu": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Oxaprozin",
+  "variante": "Oxaprozine",
+  "erwartet": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "alt": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "neu": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Oxcarbazepin",
+  "variante": "Oxcarbazepine",
+  "erwartet": "CTRLABGOLIVAIY-UHFFFAOYSA-N",
+  "alt": "CTRLABGOLIVAIY-UHFFFAOYSA-N",
+  "neu": "CTRLABGOLIVAIY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Oxytetracyclin",
+  "variante": "Oxytetracycline",
+  "erwartet": "IWVCMVBTMGNXQD-PXOLEDIWSA-N",
+  "alt": "OWFJMIVZYSDULZ-PXOLEDIWSA-N",
+  "neu": "OWFJMIVZYSDULZ-PXOLEDIWSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "Panobinostat",
+  "variante": "Panobinostate",
+  "erwartet": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "alt": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "neu": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Papaverin",
+  "variante": "Papaverine",
+  "erwartet": "XQYZDYMELSJDRZ-UHFFFAOYSA-N",
+  "alt": "XQYZDYMELSJDRZ-UHFFFAOYSA-N",
+  "neu": "XQYZDYMELSJDRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pemolin",
+  "variante": "Pemoline",
+  "erwartet": "NRNCYVBFPDDJNE-UHFFFAOYSA-N",
+  "alt": "NRNCYVBFPDDJNE-UHFFFAOYSA-N",
+  "neu": "NRNCYVBFPDDJNE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pentostatin",
+  "variante": "Pentostatine",
+  "erwartet": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "alt": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "neu": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pentoxifyllin",
+  "variante": "Pentoxifylline",
+  "erwartet": "BYPFEZZEUUWMEJ-UHFFFAOYSA-N",
+  "alt": "BYPFEZZEUUWMEJ-UHFFFAOYSA-N",
+  "neu": "BYPFEZZEUUWMEJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Perphenazin",
+  "variante": "Perphenazine",
+  "erwartet": "RGCVKNLCSQQDEP-UHFFFAOYSA-N",
+  "alt": "RGCVKNLCSQQDEP-UHFFFAOYSA-N",
+  "neu": "RGCVKNLCSQQDEP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pethidin",
+  "variante": "Pethidine",
+  "erwartet": "XADCESSVHJOZHK-UHFFFAOYSA-N",
+  "alt": "XADCESSVHJOZHK-UHFFFAOYSA-N",
+  "neu": "XADCESSVHJOZHK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phenelzin",
+  "variante": "Phenelzine",
+  "erwartet": "RMUCZJUITONUFY-UHFFFAOYSA-N",
+  "alt": "RXBKMJIPNDOHFR-UHFFFAOYSA-N",
+  "neu": "RMUCZJUITONUFY-UHFFFAOYSA-N",
+  "urteil": "neu behebt"
+ },
+ {
+  "name": "Phenolphthalein",
+  "variante": "Phenolphthaleine",
+  "erwartet": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "alt": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "neu": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phenothrin",
+  "variante": "Phenothrine",
+  "erwartet": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "alt": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "neu": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phenprocoumon",
+  "variante": "Phenprocoumone",
+  "erwartet": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "alt": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "neu": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phentolamin",
+  "variante": "Phentolamine",
+  "erwartet": "MRBDMNSDAVCSSF-UHFFFAOYSA-N",
+  "alt": "MRBDMNSDAVCSSF-UHFFFAOYSA-N",
+  "neu": "MRBDMNSDAVCSSF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phenylbutazon",
+  "variante": "Phenylbutazone",
+  "erwartet": "VYMDGNCVAMGZFE-UHFFFAOYSA-N",
+  "alt": "VYMDGNCVAMGZFE-UHFFFAOYSA-N",
+  "neu": "VYMDGNCVAMGZFE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Phloroglucin",
+  "variante": "Phloroglucine",
+  "erwartet": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "alt": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "neu": "QCDYQQDYXPDABM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Physostigmin",
+  "variante": "Physostigmine",
+  "erwartet": "PIJVFDBKTWXHHD-HIFRSBDPSA-N",
+  "alt": "PIJVFDBKTWXHHD-HIFRSBDPSA-N",
+  "neu": "PIJVFDBKTWXHHD-HIFRSBDPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pimavanserin",
+  "variante": "Pimavanserine",
+  "erwartet": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "alt": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "neu": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Piperacillin",
+  "variante": "Piperacilline",
+  "erwartet": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "alt": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "neu": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pirenzepin",
+  "variante": "Pirenzepine",
+  "erwartet": "RMHMFHUVIITRHF-UHFFFAOYSA-N",
+  "alt": "RMHMFHUVIITRHF-UHFFFAOYSA-N",
+  "neu": "RMHMFHUVIITRHF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Piritramid",
+  "variante": "Piritramide",
+  "erwartet": "IHEHEFLXQFOQJO-UHFFFAOYSA-N",
+  "alt": "IHEHEFLXQFOQJO-UHFFFAOYSA-N",
+  "neu": "IHEHEFLXQFOQJO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pitavastatin",
+  "variante": "Pitavastatine",
+  "erwartet": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "alt": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "neu": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Podophyllotoxin",
+  "variante": "Podophyllotoxine",
+  "erwartet": "YJGVMLPVUAXIQN-XVVDYKMHSA-N",
+  "alt": "YJGVMLPVUAXIQN-XVVDYKMHSA-N",
+  "neu": "YJGVMLPVUAXIQN-XVVDYKMHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pomalidomid",
+  "variante": "Pomalidomide",
+  "erwartet": "UVSMNLNDYGZFPF-UHFFFAOYSA-N",
+  "alt": "UVSMNLNDYGZFPF-UHFFFAOYSA-N",
+  "neu": "UVSMNLNDYGZFPF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pravastatin",
+  "variante": "Pravastatine",
+  "erwartet": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "alt": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "neu": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prazosin",
+  "variante": "Prazosine",
+  "erwartet": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "alt": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "neu": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prednicarbat",
+  "variante": "Prednicarbate",
+  "erwartet": "FNPXMHRZILFCKX-KAJVQRHHSA-N",
+  "alt": "FNPXMHRZILFCKX-KAJVQRHHSA-N",
+  "neu": "FNPXMHRZILFCKX-KAJVQRHHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prednison",
+  "variante": "Prednisone",
+  "erwartet": "XOFYZVNMUHMLCC-ZPOLXVRWSA-N",
+  "alt": "XOFYZVNMUHMLCC-ZPOLXVRWSA-N",
+  "neu": "XOFYZVNMUHMLCC-ZPOLXVRWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Pregabalin",
+  "variante": "Pregabaline",
+  "erwartet": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "alt": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "neu": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prilocain",
+  "variante": "Prilocaine",
+  "erwartet": "MVFGUOIZUNYYSO-UHFFFAOYSA-N",
+  "alt": "MVFGUOIZUNYYSO-UHFFFAOYSA-N",
+  "neu": "MVFGUOIZUNYYSO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Primidon",
+  "variante": "Primidone",
+  "erwartet": "DQMZLTXERSFNPB-UHFFFAOYSA-N",
+  "alt": "DQMZLTXERSFNPB-UHFFFAOYSA-N",
+  "neu": "DQMZLTXERSFNPB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Probenecid",
+  "variante": "Probenecide",
+  "erwartet": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "alt": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "neu": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prochlorperazin",
+  "variante": "Prochloroperazine",
+  "erwartet": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "alt": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "neu": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Promazin",
+  "variante": "Promazine",
+  "erwartet": "ZGUGWUXLJSTTMA-UHFFFAOYSA-N",
+  "alt": "ZGUGWUXLJSTTMA-UHFFFAOYSA-N",
+  "neu": "ZGUGWUXLJSTTMA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Propyphenazon",
+  "variante": "Propyphenazone",
+  "erwartet": "PXWLVJLKJGVOKE-UHFFFAOYSA-N",
+  "alt": "PXWLVJLKJGVOKE-UHFFFAOYSA-N",
+  "neu": "PXWLVJLKJGVOKE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Prostacyclin",
+  "variante": "Prostacycline",
+  "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "alt": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "neu": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ramelteon",
+  "variante": "Ramelteone",
+  "erwartet": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "alt": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "neu": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ranitidin",
+  "variante": "Ranitidine",
+  "erwartet": "VMXUWOKSQNHOCA-UHFFFAOYSA-N",
+  "alt": "VMXUWOKSQNHOCA-UKTHLTGXSA-N",
+  "neu": "VMXUWOKSQNHOCA-UKTHLTGXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Ranolazin",
+  "variante": "Ranolazine",
+  "erwartet": "XKLMZUWKNUAPSZ-UHFFFAOYSA-N",
+  "alt": "XKLMZUWKNUAPSZ-UHFFFAOYSA-N",
+  "neu": "XKLMZUWKNUAPSZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Repaglinid",
+  "variante": "Repaglinide",
+  "erwartet": "FAEKWTJYAYMJKF-QHCPKHFHSA-N",
+  "alt": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+  "neu": "FAEKWTJYAYMJKF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Reserpin",
+  "variante": "Reserpine",
+  "erwartet": "QEVHRUUCFGRFIF-MDEJGZGSSA-N",
+  "alt": "QEVHRUUCFGRFIF-MDEJGZGSSA-N",
+  "neu": "QEVHRUUCFGRFIF-MDEJGZGSSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rifaximin",
+  "variante": "Rifaximine",
+  "erwartet": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "alt": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "neu": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rimantadin",
+  "variante": "Rimantadine",
+  "erwartet": "UBCHPRBFMUDMNC-UHFFFAOYSA-N",
+  "alt": "UBCHPRBFMUDMNC-UHFFFAOYSA-N",
+  "neu": "UBCHPRBFMUDMNC-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Riociguat",
+  "variante": "Riociguate",
+  "erwartet": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "alt": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "neu": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rivaroxaban",
+  "variante": "Rivaroxabane",
+  "erwartet": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "alt": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "neu": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rivastigmin",
+  "variante": "Rivastigmine",
+  "erwartet": "XSVMFMHYUFZWBK-NSHDSACASA-N",
+  "alt": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+  "neu": "XSVMFMHYUFZWBK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rizatriptan",
+  "variante": "Rizatriptane",
+  "erwartet": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "alt": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "neu": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rosuvastatin",
+  "variante": "Rosuvastatine",
+  "erwartet": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "alt": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "neu": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Roxithromycin",
+  "variante": "Roxithromycine",
+  "erwartet": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "alt": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "neu": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Rutin",
+  "variante": "Rutine",
+  "erwartet": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "alt": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "neu": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sapropterin",
+  "variante": "Sapropterine",
+  "erwartet": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "alt": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "neu": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Saxagliptin",
+  "variante": "Saxagliptine",
+  "erwartet": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "alt": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "neu": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sevofluran",
+  "variante": "Sevoflurane",
+  "erwartet": "DFEYYRMXOJXZRJ-UHFFFAOYSA-N",
+  "alt": "DFEYYRMXOJXZRJ-UHFFFAOYSA-N",
+  "neu": "DFEYYRMXOJXZRJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Silbernitrat",
+  "variante": "silver nitrate",
+  "erwartet": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "alt": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "neu": "SQGYOTSLMSWVJD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Silibinin",
+  "variante": "Silibinine",
+  "erwartet": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "alt": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "neu": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Silodosin",
+  "variante": "Silodosine",
+  "erwartet": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "alt": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "neu": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sitagliptin",
+  "variante": "Sitagliptine",
+  "erwartet": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "alt": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "neu": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sparfloxacin",
+  "variante": "Sparfloxacine",
+  "erwartet": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "alt": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "neu": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Stickstoffmonoxid",
+  "variante": "Stickstoffmonoxide",
+  "erwartet": "MWUXSHHQAYIFBG-UHFFFAOYSA-N",
+  "alt": "MWUXSHHQAYIFBG-UHFFFAOYSA-N",
+  "neu": "MWUXSHHQAYIFBG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Streptozocin",
+  "variante": "Streptozocine",
+  "erwartet": "ZSJLQEPLLKMAKR-GKHCUFPYSA-N",
+  "alt": "ZSJLQEPLLKMAKR-GKHCUFPYSA-N",
+  "neu": "ZSJLQEPLLKMAKR-GKHCUFPYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sulfadimidin",
+  "variante": "Sulfadimidine",
+  "erwartet": "ASWVTGNCAZCNNR-UHFFFAOYSA-N",
+  "alt": "ASWVTGNCAZCNNR-UHFFFAOYSA-N",
+  "neu": "ASWVTGNCAZCNNR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sulfamerazin",
+  "variante": "Sulfamerazine",
+  "erwartet": "QPPBRPIAZZHUNT-UHFFFAOYSA-N",
+  "alt": "QPPBRPIAZZHUNT-UHFFFAOYSA-N",
+  "neu": "QPPBRPIAZZHUNT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sulfapyridin",
+  "variante": "Sulfapyridine",
+  "erwartet": "GECHUMIMRBOMGK-UHFFFAOYSA-N",
+  "alt": "GECHUMIMRBOMGK-UHFFFAOYSA-N",
+  "neu": "GECHUMIMRBOMGK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sulfinpyrazon",
+  "variante": "Sulfinpyrazone",
+  "erwartet": "MBGGBVCUIVRRBF-UHFFFAOYSA-N",
+  "alt": "MBGGBVCUIVRRBF-UHFFFAOYSA-N",
+  "neu": "MBGGBVCUIVRRBF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Sumatriptan",
+  "variante": "Sumatriptane",
+  "erwartet": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "alt": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "neu": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Synephrin",
+  "variante": "Synephrine",
+  "erwartet": "YRCWQPVGYLYSOX-UHFFFAOYSA-N",
+  "alt": "YRCWQPVGYLYSOX-UHFFFAOYSA-N",
+  "neu": "YRCWQPVGYLYSOX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tacrin",
+  "variante": "Tacrine",
+  "erwartet": "YLJREFDVOIBQDA-UHFFFAOYSA-N",
+  "alt": "YLJREFDVOIBQDA-UHFFFAOYSA-N",
+  "neu": "YLJREFDVOIBQDA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tamsulosin",
+  "variante": "Tamsulosine",
+  "erwartet": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "alt": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "neu": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tasimelteon",
+  "variante": "Tasimelteone",
+  "erwartet": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "alt": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "neu": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tedizolid",
+  "variante": "Tedizolide",
+  "erwartet": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "alt": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "neu": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Teicoplanin",
+  "variante": "Teicoplanine",
+  "erwartet": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "alt": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "neu": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Telbivudin",
+  "variante": "Telbivudine",
+  "erwartet": "IQFYYKKMVGJFEH-CSMHCCOUSA-N",
+  "alt": "IQFYYKKMVGJFEH-CSMHCCOUSA-N",
+  "neu": "IQFYYKKMVGJFEH-CSMHCCOUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Telmisartan",
+  "variante": "Telmisartane",
+  "erwartet": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "alt": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "neu": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Temozolomid",
+  "variante": "Temozolomide",
+  "erwartet": "BPEGJWRSRHCHSN-UHFFFAOYSA-N",
+  "alt": "BPEGJWRSRHCHSN-UHFFFAOYSA-N",
+  "neu": "BPEGJWRSRHCHSN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Terazosin",
+  "variante": "Terazosine",
+  "erwartet": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "alt": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "neu": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Terbutalin",
+  "variante": "Terbutaline",
+  "erwartet": "XWTYSIMOBUGWOL-UHFFFAOYSA-N",
+  "alt": "XWTYSIMOBUGWOL-UHFFFAOYSA-N",
+  "neu": "XWTYSIMOBUGWOL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Terizidon",
+  "variante": "Terizidone",
+  "erwartet": "ODKYYBOHSVLGNU-UHFFFAOYSA-N",
+  "alt": "ODKYYBOHSVLGNU-UHFFFAOYSA-N",
+  "neu": "ODKYYBOHSVLGNU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Terlipressin",
+  "variante": "Terlipressine",
+  "erwartet": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "alt": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "neu": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tetrabenazin",
+  "variante": "Tetrabenazine",
+  "erwartet": "MKJIEFSOBYUXJB-UHFFFAOYSA-N",
+  "alt": "MKJIEFSOBYUXJB-UHFFFAOYSA-N",
+  "neu": "MKJIEFSOBYUXJB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tetramethrin",
+  "variante": "Tetramethrine",
+  "erwartet": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "alt": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "neu": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tetryzolin",
+  "variante": "Tetryzoline",
+  "erwartet": "BYJAVTDNIXVSPW-UHFFFAOYSA-N",
+  "alt": "BYJAVTDNIXVSPW-UHFFFAOYSA-N",
+  "neu": "BYJAVTDNIXVSPW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Thioridazin",
+  "variante": "Thioridazine",
+  "erwartet": "KLBQZWRITKRQQV-UHFFFAOYSA-N",
+  "alt": "KLBQZWRITKRQQV-UHFFFAOYSA-N",
+  "neu": "KLBQZWRITKRQQV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tigecyclin",
+  "variante": "Tigecycline",
+  "erwartet": "FPZLLRFZJZRHSY-HJYUBDRYSA-N",
+  "alt": "SUGZODNQTKYJAW-KXLOKULZSA-N",
+  "neu": "SOVUOXKZCCAWOJ-HJYUBDRYSA-N",
+  "urteil": "beide falsch, verschieden"
+ },
+ {
+  "name": "Tirofiban",
+  "variante": "Tirofibane",
+  "erwartet": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "alt": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "neu": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tizanidin",
+  "variante": "Tizanidine",
+  "erwartet": "XFYDIVBRZNQMJC-UHFFFAOYSA-N",
+  "alt": "XFYDIVBRZNQMJC-UHFFFAOYSA-N",
+  "neu": "XFYDIVBRZNQMJC-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tobramycin",
+  "variante": "Tobramycine",
+  "erwartet": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "alt": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "neu": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tolbutamid",
+  "variante": "Tolbutamide",
+  "erwartet": "JLRGJRBPOGGCBT-UHFFFAOYSA-N",
+  "alt": "JLRGJRBPOGGCBT-UHFFFAOYSA-N",
+  "neu": "JLRGJRBPOGGCBT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tolterodin",
+  "variante": "Tolterodine",
+  "erwartet": "OOGJQPCLVADCPB-HXUWFJFHSA-N",
+  "alt": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+  "neu": "OOGJQPCLVADCPB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tolvaptan",
+  "variante": "Tolvaptane",
+  "erwartet": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "alt": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "neu": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Topotecan",
+  "variante": "Topotecane",
+  "erwartet": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "alt": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "neu": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trazodon",
+  "variante": "Trazodone",
+  "erwartet": "PHLBKPHSAVXXEF-UHFFFAOYSA-N",
+  "alt": "PHLBKPHSAVXXEF-UHFFFAOYSA-N",
+  "neu": "PHLBKPHSAVXXEF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Triamcinolon",
+  "variante": "Triamcinolone",
+  "erwartet": "GFNANZIMVAIWHM-OBYCQNJPSA-N",
+  "alt": "GFNANZIMVAIWHM-OBYCQNJPSA-N",
+  "neu": "GFNANZIMVAIWHM-OBYCQNJPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trichlorfon",
+  "variante": "Trichlorofone",
+  "erwartet": "NFACJZMKEDPNKN-UHFFFAOYSA-N",
+  "alt": "NFACJZMKEDPNKN-UHFFFAOYSA-N",
+  "neu": "NFACJZMKEDPNKN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Triclosan",
+  "variante": "Triclosane",
+  "erwartet": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "alt": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "neu": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trifluoperazin",
+  "variante": "Trifluoperazine",
+  "erwartet": "ZEWQUBUPAILYHI-UHFFFAOYSA-N",
+  "alt": "ZEWQUBUPAILYHI-UHFFFAOYSA-N",
+  "neu": "ZEWQUBUPAILYHI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trimethadion",
+  "variante": "Trimethadione",
+  "erwartet": "IRYJRGCIQBGHIV-UHFFFAOYSA-N",
+  "alt": "IRYJRGCIQBGHIV-UHFFFAOYSA-N",
+  "neu": "IRYJRGCIQBGHIV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trinatriumphosphat",
+  "variante": "Trinatrium phosphate",
+  "erwartet": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "alt": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "neu": "RYFMWSXOAZQYPI-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Triprolidin",
+  "variante": "Triprolidine",
+  "erwartet": "CBEQULMOCCWAQT-WOJGMQOQSA-N",
+  "alt": "CBEQULMOCCWAQT-WOJGMQOQSA-N",
+  "neu": "CBEQULMOCCWAQT-WOJGMQOQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Troleandomycin",
+  "variante": "Troleandomycine",
+  "erwartet": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "alt": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "neu": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tropisetron",
+  "variante": "Tropisetrone",
+  "erwartet": "ZNRGQMMCGHDTEI-ITGUQSILSA-N",
+  "alt": "ZNRGQMMCGHDTEI-FUNVUKJBSA-N",
+  "neu": "ZNRGQMMCGHDTEI-FUNVUKJBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Trovafloxacin",
+  "variante": "Trovafloxacine",
+  "erwartet": "WVPSKSLAZQPAKQ-CDMJZVDBSA-N",
+  "alt": "WVPSKSLAZQPAKQ-SOSAQKQKSA-N",
+  "neu": "WVPSKSLAZQPAKQ-SOSAQKQKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Tubocurarin",
+  "variante": "Tubocurarine",
+  "erwartet": "JFJZZMVDLULRGK-URLMMPGGSA-O",
+  "alt": "JFJZZMVDLULRGK-URLMMPGGSA-O",
+  "neu": "JFJZZMVDLULRGK-URLMMPGGSA-O",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Urotropin",
+  "variante": "Urotropine",
+  "erwartet": "VKYKSIONXSXAKP-UHFFFAOYSA-N",
+  "alt": "VKYKSIONXSXAKP-UHFFFAOYSA-N",
+  "neu": "VKYKSIONXSXAKP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Valsartan",
+  "variante": "Valsartane",
+  "erwartet": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "alt": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "neu": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vareniclin",
+  "variante": "Varenicline",
+  "erwartet": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+  "alt": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+  "neu": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Venlafaxin",
+  "variante": "Venlafaxine",
+  "erwartet": "PNVNVHUZROJLTJ-UHFFFAOYSA-N",
+  "alt": "PNVNVHUZROJLTJ-UHFFFAOYSA-N",
+  "neu": "PNVNVHUZROJLTJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vidarabin",
+  "variante": "Vidarabine",
+  "erwartet": "OIRDTQYFTABQOQ-UHTZMRCNSA-N",
+  "alt": "OIRDTQYFTABQOQ-UHTZMRCNSA-N",
+  "neu": "OIRDTQYFTABQOQ-UHTZMRCNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vigabatrin",
+  "variante": "Vigabatrine",
+  "erwartet": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "alt": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "neu": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vildagliptin",
+  "variante": "Vildagliptine",
+  "erwartet": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "alt": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "neu": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Viloxazin",
+  "variante": "Viloxazine",
+  "erwartet": "YWPHCCPCQOJSGZ-UHFFFAOYSA-N",
+  "alt": "YWPHCCPCQOJSGZ-UHFFFAOYSA-N",
+  "neu": "YWPHCCPCQOJSGZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vincamin",
+  "variante": "Vincamine",
+  "erwartet": "RXPRRQLKFXBCSJ-GIVPXCGWSA-N",
+  "alt": "RXPRRQLKFXBCSJ-GIVPXCGWSA-N",
+  "neu": "RXPRRQLKFXBCSJ-GIVPXCGWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vindesin",
+  "variante": "Vindesine",
+  "erwartet": "HHJUWIANJFBDHT-KOTLKJBCSA-N",
+  "alt": "HHJUWIANJFBDHT-KOTLKJBCSA-N",
+  "neu": "HHJUWIANJFBDHT-KOTLKJBCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vinpocetin",
+  "variante": "Vinpocetine",
+  "erwartet": "DDNCQMVWWZOMLN-IRLDBZIGSA-N",
+  "alt": "DDNCQMVWWZOMLN-IRLDBZIGSA-N",
+  "neu": "DDNCQMVWWZOMLN-IRLDBZIGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Vorinostat",
+  "variante": "Vorinostate",
+  "erwartet": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "alt": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "neu": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Wasserstoffperoxid",
+  "variante": "Wasserstoffperoxide",
+  "erwartet": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "alt": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "neu": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Yohimbin",
+  "variante": "Yohimbine",
+  "erwartet": "BLGXFZZNTVWLAY-SCYLSFHTSA-N",
+  "alt": "BLGXFZZNTVWLAY-SCYLSFHTSA-N",
+  "neu": "BLGXFZZNTVWLAY-SCYLSFHTSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Zaleplon",
+  "variante": "Zaleplone",
+  "erwartet": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "alt": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "neu": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Zimelidin",
+  "variante": "Zimelidine",
+  "erwartet": "OYPPVKRFBIWMSX-SXGWCWSVSA-N",
+  "alt": "OYPPVKRFBIWMSX-SXGWCWSVSA-N",
+  "neu": "OYPPVKRFBIWMSX-SXGWCWSVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Zinkchlorid",
+  "variante": "zinc chloride",
+  "erwartet": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "alt": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "neu": "JIAARYAFYJHUJI-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "Zolmitriptan",
+  "variante": "Zolmitriptane",
+  "erwartet": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "alt": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "neu": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "acemetacin",
+  "variante": "acemetacine",
+  "erwartet": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "alt": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "neu": "FSQKKOOTNAMONP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "acitretin",
+  "variante": "acitretine",
+  "erwartet": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "alt": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "neu": "IHUNBGSDBOWDMA-AQFIFDHZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "alfuzosin",
+  "variante": "alfuzosine",
+  "erwartet": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "alt": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "neu": "WNMJYKCGWZFFKR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "alitretinoin",
+  "variante": "alitretinoine",
+  "erwartet": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "alt": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "neu": "SHGAZHPCJJPHSC-ZVCIMWCZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "almotriptan",
+  "variante": "almotriptane",
+  "erwartet": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "alt": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "neu": "WKEMJKQOLOHJLZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "alogliptin",
+  "variante": "alogliptine",
+  "erwartet": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "alt": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "neu": "ZSBOMTDTBDDKMP-OAHLLOKOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "alosetron",
+  "variante": "alosetrone",
+  "erwartet": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "alt": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "neu": "JSWZEAMFRNKZNL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "alvimopan",
+  "variante": "alvimopane",
+  "erwartet": "UPNUIXSCZBYVBB-JVFUWBCBSA-N",
+  "alt": "UPNUIXSCZBYVBB-JVFUWBCBSA-N",
+  "neu": "UPNUIXSCZBYVBB-JVFUWBCBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "amdinocillin",
+  "variante": "amdinocilline",
+  "erwartet": "BWWVAEOLVKTZFQ-ISVUSNJMSA-N",
+  "alt": "BWWVAEOLVKTZFQ-NTZNESFSSA-N",
+  "neu": "BWWVAEOLVKTZFQ-NTZNESFSSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "anidulafungin",
+  "variante": "anidulafungine",
+  "erwartet": "JHVAMHSQVVQIOT-MFAJLEFUSA-N",
+  "alt": "JHVAMHSQVVQIOT-MFAJLEFUSA-N",
+  "neu": "JHVAMHSQVVQIOT-MFAJLEFUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "anthralin",
+  "variante": "anthraline",
+  "erwartet": "NUZWLKWWNNJHPT-UHFFFAOYSA-N",
+  "alt": "NUZWLKWWNNJHPT-UHFFFAOYSA-N",
+  "neu": "NUZWLKWWNNJHPT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "apixaban",
+  "variante": "apixabane",
+  "erwartet": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "alt": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "neu": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "aprotinin",
+  "variante": "aprotinine",
+  "erwartet": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "alt": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "neu": "ZPNFWUPYTFPOJU-LPYSRVMUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "artemisinin",
+  "variante": "artemisinine",
+  "erwartet": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "alt": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "neu": "BLUAFEHZUWYNDE-NNWCWBAJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "auranofin",
+  "variante": "auranofine",
+  "erwartet": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "alt": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "neu": "AUJRCFUBUPVWSZ-XTZHGVARSA-M",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "azlocillin",
+  "variante": "azlocilline",
+  "erwartet": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "alt": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "neu": "JTWOMNBEOCYFNV-NFFDBFGFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "bacampicillin",
+  "variante": "bacampicilline",
+  "erwartet": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "alt": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "neu": "PFOLLRNADZZWEX-FFGRCDKISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "bivalirudin",
+  "variante": "bivalirudine",
+  "erwartet": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "alt": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "neu": "OIRCOABEOLEUMC-GEJPAHFPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "bosentan",
+  "variante": "bosentane",
+  "erwartet": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "alt": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "neu": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "bromfenac",
+  "variante": "bromofenac",
+  "erwartet": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "alt": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "neu": "ZBPLOVFIXSTCRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "brompheniramine",
+  "variante": "bromopheniramine",
+  "erwartet": "ZDIGNSYAACHWNL-UHFFFAOYSA-N",
+  "alt": "ZDIGNSYAACHWNL-UHFFFAOYSA-N",
+  "neu": "ZDIGNSYAACHWNL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "bupropion",
+  "variante": "bupropione",
+  "erwartet": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "alt": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "neu": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "camostat",
+  "variante": "camostate",
+  "erwartet": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "alt": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "neu": "XASIMHXSUQUHLV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "canagliflozin",
+  "variante": "canagliflozine",
+  "erwartet": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "alt": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "neu": "XTNGUQKDFGDXSJ-ZXGKGEBGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "carbenicillin",
+  "variante": "carbenicilline",
+  "erwartet": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "alt": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "neu": "FPPNZSSZRUTDAP-UWFZAAFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "carboplatin",
+  "variante": "carboplatine",
+  "erwartet": "OLESAACUTLOWQZ-UHFFFAOYSA-L",
+  "alt": "VSRXQHXAPYXROS-UHFFFAOYSA-N",
+  "neu": "VSRXQHXAPYXROS-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "cefapirin",
+  "variante": "cefapirine",
+  "erwartet": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "alt": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "neu": "UQLLWWBDSUHNEB-CZUORRHYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cefonicid",
+  "variante": "cefonicide",
+  "erwartet": "DYAIAHUQIPBDIP-AXAPSJFSSA-N",
+  "alt": "DYAIAHUQIPBDIP-AXAPSJFSSA-N",
+  "neu": "DYAIAHUQIPBDIP-AXAPSJFSSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cefoxitin",
+  "variante": "cefoxitine",
+  "erwartet": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "alt": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "neu": "WZOZEZRFJCJXNZ-ZBFHGGJFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cephalothin",
+  "variante": "cephalothine",
+  "erwartet": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "alt": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "neu": "XIURVHNZVLADCM-IUODEOHRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cerivastatin",
+  "variante": "cerivastatine",
+  "erwartet": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "alt": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "neu": "SEERZIQQUAZTOL-ANMDKAQQSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlorcyclizine",
+  "variante": "chlorocyclizine",
+  "erwartet": "WFNAKBGANONZEQ-UHFFFAOYSA-N",
+  "alt": "WFNAKBGANONZEQ-UHFFFAOYSA-N",
+  "neu": "WFNAKBGANONZEQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlordiazepoxide",
+  "variante": "chlorodiazepoxide",
+  "erwartet": "ANTSCNMPPGJYLG-UHFFFAOYSA-N",
+  "alt": "BUCORZSTKDOEKQ-UHFFFAOYSA-N",
+  "neu": "BUCORZSTKDOEKQ-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "chlorpheniramine",
+  "variante": "chloropheniramine",
+  "erwartet": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "alt": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "neu": "SOYKEARSMXGVTM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlorpropamide",
+  "variante": "chloropropamide",
+  "erwartet": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "alt": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "neu": "RKWGIWYCVPQPMF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlorquinaldol",
+  "variante": "chloroquinaldol",
+  "erwartet": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "alt": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "neu": "GPTXWRGISTZRIO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlortetracycline",
+  "variante": "chlorotetracycline",
+  "erwartet": "CYDMQBQPVICBEU-XRNKAMNCSA-N",
+  "alt": "DHPRQBPJLMKORJ-XRNKAMNCSA-N",
+  "neu": "DHPRQBPJLMKORJ-XRNKAMNCSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "chlorthalidone",
+  "variante": "chlorothalidone",
+  "erwartet": "JIVPVXMEBJLZRO-UHFFFAOYSA-N",
+  "alt": "JIVPVXMEBJLZRO-UHFFFAOYSA-N",
+  "neu": "JIVPVXMEBJLZRO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "chlorzoxazone",
+  "variante": "chlorozoxazone",
+  "erwartet": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "alt": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "neu": "TZFWDZFKRBELIQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cisplatin",
+  "variante": "cisplatine",
+  "erwartet": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "alt": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "neu": "LXZZYRPGZAFOLE-UHFFFAOYSA-L",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cobicistat",
+  "variante": "cobicistate",
+  "erwartet": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "alt": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "neu": "ZCIGNRJZKPOIKD-CQXVEOKZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "colistin",
+  "variante": "colistine",
+  "erwartet": "YKQOSKADJPQZHB-BRLOSWAASA-N",
+  "alt": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+  "neu": "YKQOSKADJPQZHB-QNPLFGSASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cyfluthrin",
+  "variante": "cyfluthrine",
+  "erwartet": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "alt": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "neu": "QQODLKZGRKWIFG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "cypermethrin",
+  "variante": "cypermethrine",
+  "erwartet": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "alt": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "neu": "KAATUXNTWXVJKI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dapagliflozin",
+  "variante": "dapagliflozine",
+  "erwartet": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "alt": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "neu": "JVHXJTBJCFBINQ-ADAARDCZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "darifenacin",
+  "variante": "darifenacine",
+  "erwartet": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "alt": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "neu": "HXGBXQDTNZMWGS-RUZDIDTESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "delafloxacin",
+  "variante": "delafloxacine",
+  "erwartet": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "alt": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "neu": "DYDCPNMLZGFQTM-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "deltamethrin",
+  "variante": "deltamethrine",
+  "erwartet": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "alt": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "neu": "OWZREIFADZCYQD-NSHGMRRFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dextromethorphan",
+  "variante": "dextromethorphane",
+  "erwartet": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "alt": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "neu": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dicloxacillin",
+  "variante": "dicloxacilline",
+  "erwartet": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "alt": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "neu": "YFAGHNZHGGCZAX-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "digitoxin",
+  "variante": "digitoxine",
+  "erwartet": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "alt": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "neu": "WDJUZGPOPHTGOT-XUDUSOBPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dihydroartemisinin",
+  "variante": "dihydroartemisinine",
+  "erwartet": "BJDCWCLMFKKGEE-HVDUHBCDSA-N",
+  "alt": "BJDCWCLMFKKGEE-ISOSDAIHSA-N",
+  "neu": "BJDCWCLMFKKGEE-ISOSDAIHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dihydrostreptomycin",
+  "variante": "dihydrostreptomycine",
+  "erwartet": "ASXBYYWOLISCLQ-HZYVHMACSA-N",
+  "alt": "ASXBYYWOLISCLQ-HZYVHMACSA-N",
+  "neu": "ASXBYYWOLISCLQ-HZYVHMACSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "diosmin",
+  "variante": "diosmine",
+  "erwartet": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "alt": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "neu": "GZSOSUNBTXMUFQ-YFAPSIMESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "dolasetron",
+  "variante": "dolasetrone",
+  "erwartet": "UKTAZPQNNNJVKR-KJGYPYNMSA-N",
+  "alt": "UKTAZPQNNNJVKR-AKJUYKBHSA-N",
+  "neu": "UKTAZPQNNNJVKR-AKJUYKBHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "doxazosin",
+  "variante": "doxazosine",
+  "erwartet": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "alt": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "neu": "RUZYUOTYCVRMRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "edoxaban",
+  "variante": "edoxabane",
+  "erwartet": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "alt": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "neu": "HGVDHZBSSITLCT-JLJPHGGASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "empagliflozin",
+  "variante": "empagliflozine",
+  "erwartet": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "alt": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "neu": "OBWASQILIWPZMG-QZMOQZSNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "enoxacin",
+  "variante": "enoxacine",
+  "erwartet": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "alt": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "neu": "IDYZIJYBMGIQMJ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "epirubicin",
+  "variante": "epirubicine",
+  "erwartet": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "alt": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "neu": "AOJJSUZBOXZQNB-VTZDEGQISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "eprosartan",
+  "variante": "eprosartane",
+  "erwartet": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "alt": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "neu": "OROAFUQRIXKEMV-LDADJPATSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "eribulin",
+  "variante": "eribuline",
+  "erwartet": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "alt": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "neu": "UFNVPOGXISZXJD-JBQZKEIOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ethchlorvynol",
+  "variante": "ethchlorovynol",
+  "erwartet": "ZEHYJZXQEQOSON-UHFFFAOYSA-N",
+  "alt": "ZEHYJZXQEQOSON-AATRIKPKSA-N",
+  "neu": "ZEHYJZXQEQOSON-AATRIKPKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "febuxostat",
+  "variante": "febuxostate",
+  "erwartet": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "alt": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "neu": "BQSJTQLCZDPROO-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "fidaxomicin",
+  "variante": "fidaxomicine",
+  "erwartet": "ZVGNESXIJDCBKN-KFGPIHIUSA-N",
+  "alt": "ZVGNESXIJDCBKN-UUEYKCAUSA-N",
+  "neu": "ZVGNESXIJDCBKN-UUEYKCAUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "flibanserin",
+  "variante": "flibanserine",
+  "erwartet": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "alt": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "neu": "PPRRDFIXUUSXRA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "flucloxacillin",
+  "variante": "flucloxacilline",
+  "erwartet": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "alt": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "neu": "UIOFUWFRIANQPC-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "fluorescein",
+  "variante": "fluoresceine",
+  "erwartet": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "alt": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "neu": "GNBHRKFJIUUOQI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "fluvastatin",
+  "variante": "fluvastatine",
+  "erwartet": "FJLGEFLZQAZZCD-MCBHFWOFSA-N",
+  "alt": "FJLGEFLZQAZZCD-JUFISIKESA-N",
+  "neu": "FJLGEFLZQAZZCD-JUFISIKESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "fosfomycin",
+  "variante": "fosfomycine",
+  "erwartet": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "alt": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "neu": "YMDXZJFXQJVXBF-STHAYSLISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "frovatriptan",
+  "variante": "frovatriptane",
+  "erwartet": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "alt": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "neu": "XPSQPHWEGNHMSK-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "g-Strophanthin",
+  "variante": "g-Strophanthine",
+  "erwartet": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "alt": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "neu": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "gabapentin",
+  "variante": "gabapentine",
+  "erwartet": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "alt": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "neu": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "gatifloxacin",
+  "variante": "gatifloxacine",
+  "erwartet": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "alt": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "neu": "XUBOMFCQGDBHNK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "gemifloxacin",
+  "variante": "gemifloxacine",
+  "erwartet": "ZRCVYEYHRGVLOC-HYARGMPZSA-N",
+  "alt": "ZRCVYEYHRGVLOC-HYARGMPZSA-N",
+  "neu": "ZRCVYEYHRGVLOC-HYARGMPZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "gentamicin",
+  "variante": "gentamicine",
+  "erwartet": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "alt": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "neu": "CEAZRRDELHUEMR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "glycyrrhizin",
+  "variante": "glycyrrhizine",
+  "erwartet": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "alt": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "neu": "LPLVUJXQOOQHMX-QWBHMCJMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "goserelin",
+  "variante": "gosereline",
+  "erwartet": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "alt": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "neu": "BLCLNMBMMGCOAS-URPVMXJPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "granisetron",
+  "variante": "granisetrone",
+  "erwartet": "MFWNKCLOYSRHCJ-BTTYYORXSA-N",
+  "alt": "MFWNKCLOYSRHCJ-AGUYFDCRSA-N",
+  "neu": "MFWNKCLOYSRHCJ-AGUYFDCRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "guaifenesin",
+  "variante": "guaifenesine",
+  "erwartet": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "alt": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "neu": "HSRJKNPTNIJEKV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "idarubicin",
+  "variante": "idarubicine",
+  "erwartet": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "alt": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "neu": "XDXDZDZNSLXDNA-TZNDIEGXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "indomethacin",
+  "variante": "indomethacine",
+  "erwartet": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "alt": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "neu": "CGIGDMFJXJATDK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "insulin aspart",
+  "variante": "insuline aspart",
+  "erwartet": "WEDIKSVWBUKTRA-WTKGVUNUSA-N",
+  "alt": "VOMXSOIBEJBQNF-UTTRGDHVSA-N",
+  "neu": "VOMXSOIBEJBQNF-UTTRGDHVSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "insulin detemir",
+  "variante": "insuline detemir",
+  "erwartet": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "alt": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "neu": "UGOZVNFCFYTPAZ-IOXYNQHNSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "insulin glargine",
+  "variante": "insuline glargine",
+  "erwartet": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "alt": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "neu": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "iproniazid",
+  "variante": "iproniazide",
+  "erwartet": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "alt": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "neu": "NYMGNSNKLVNMIA-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "irbesartan",
+  "variante": "irbesartane",
+  "erwartet": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "alt": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "neu": "YOSHYTLCDANDAN-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "isocarboxazid",
+  "variante": "isocarboxazide",
+  "erwartet": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "alt": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "neu": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "isoniazid",
+  "variante": "isoniazide",
+  "erwartet": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "alt": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "neu": "QRXWMOHMRWLFEY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "isotretinoin",
+  "variante": "isotretinoine",
+  "erwartet": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "alt": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "neu": "SHGAZHPCJJPHSC-XFYACQKRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "josamycin",
+  "variante": "josamycine",
+  "erwartet": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "alt": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "neu": "XJSFLOJWULLJQS-NGVXBBESSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "levosimendan",
+  "variante": "levosimendane",
+  "erwartet": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "alt": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "neu": "WHXMKTBCFHIYNQ-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "linagliptin",
+  "variante": "linagliptine",
+  "erwartet": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "alt": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "neu": "LTXREWYXXSTFRX-QGZVFWFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "lincomycin",
+  "variante": "lincomycine",
+  "erwartet": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "alt": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "neu": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "lomefloxacin",
+  "variante": "lomefloxacine",
+  "erwartet": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "alt": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "neu": "ZEKZLJVOYLTDKK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "lorcaserin",
+  "variante": "lorcaserine",
+  "erwartet": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "alt": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "neu": "XTTZERNUQAFMOF-QMMMGPOBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "lovastatin",
+  "variante": "lovastatine",
+  "erwartet": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "alt": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "neu": "PCZOHLXUXFIOCF-BXMDZJJMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "malathion",
+  "variante": "malathione",
+  "erwartet": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "alt": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "neu": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "melphalan",
+  "variante": "melphalane",
+  "erwartet": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "alt": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "neu": "SGDBTWWWUNNDEQ-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "merbromin",
+  "variante": "merbromine",
+  "erwartet": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "alt": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "neu": "SQFDQLBYJKFDDO-UHFFFAOYSA-K",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "methicillin",
+  "variante": "methicilline",
+  "erwartet": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "alt": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "neu": "RJQXTJLFIWVMTO-TYNCELHUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "methyprylon",
+  "variante": "methyprylone",
+  "erwartet": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "alt": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "neu": "SIDLZWOQUZRBRU-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "mezlocillin",
+  "variante": "mezlocilline",
+  "erwartet": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "alt": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "neu": "YPBATNHYBCGSSN-VWPFQQQWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "micafungin",
+  "variante": "micafungine",
+  "erwartet": "PIEUQSKUWLMALL-YABMTYFHSA-N",
+  "alt": "PIEUQSKUWLMALL-YABMTYFHSA-N",
+  "neu": "PIEUQSKUWLMALL-YABMTYFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "milnacipran",
+  "variante": "milnaciprane",
+  "erwartet": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "alt": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "neu": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "mirabegron",
+  "variante": "mirabegrone",
+  "erwartet": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "alt": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "neu": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "nafcillin",
+  "variante": "nafcilline",
+  "erwartet": "GPXLMGHLHQJAGZ-JTDSTZFVSA-N",
+  "alt": "GPXLMGHLHQJAGZ-JTDSTZFVSA-N",
+  "neu": "GPXLMGHLHQJAGZ-JTDSTZFVSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "naratriptan",
+  "variante": "naratriptane",
+  "erwartet": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "alt": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "neu": "AMKVXSZCKVJAGH-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "netilmicin",
+  "variante": "netilmicine",
+  "erwartet": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "alt": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "neu": "CIDUJQMULVCIBT-MQDUPKMGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "norfloxacin",
+  "variante": "norfloxacine",
+  "erwartet": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "alt": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "neu": "OGJPXUAPXNRGGI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "olmesartan",
+  "variante": "olmesartane",
+  "erwartet": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "alt": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "neu": "VTRAEEWXHOVJFV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ondansetron",
+  "variante": "ondansetrone",
+  "erwartet": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "alt": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "neu": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "oritavancin",
+  "variante": "oritavancine",
+  "erwartet": "VHFGEBVPHAGQPI-LXKZPTCJSA-N",
+  "alt": "VHFGEBVPHAGQPI-LXKZPTCJSA-N",
+  "neu": "VHFGEBVPHAGQPI-LXKZPTCJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "orlistat",
+  "variante": "orlistate",
+  "erwartet": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "alt": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "neu": "AHLBNYSZXLDEJQ-FWEHEUNISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ouabain",
+  "variante": "ouabaine",
+  "erwartet": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "alt": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "neu": "LPMXVESGRSUGHW-HBYQJFLCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "oxacillin",
+  "variante": "oxacilline",
+  "erwartet": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "alt": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "neu": "UWYHMGVUTGAWSP-JKIFEVAISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "oxaprozin",
+  "variante": "oxaprozine",
+  "erwartet": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "alt": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "neu": "OFPXSFXSNFPTHF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "panobinostat",
+  "variante": "panobinostate",
+  "erwartet": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "alt": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "neu": "FPOHNWQLNRZRFC-ZHACJKMWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pefloxacin",
+  "variante": "pefloxacine",
+  "erwartet": "FHFYDNQZQSQIAI-UHFFFAOYSA-N",
+  "alt": "FHFYDNQZQSQIAI-UHFFFAOYSA-N",
+  "neu": "FHFYDNQZQSQIAI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pentostatin",
+  "variante": "pentostatine",
+  "erwartet": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "alt": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "neu": "FPVKHBSQESCIEP-JQCXWYLXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phenolphthalein",
+  "variante": "phenolphthaleine",
+  "erwartet": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "alt": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "neu": "KJFMBFZCATUALV-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phenolsulfonphthalein",
+  "variante": "phenolsulfonphthaleine",
+  "erwartet": "BELBBZDIHDAJOR-UHFFFAOYSA-N",
+  "alt": "BELBBZDIHDAJOR-UHFFFAOYSA-N",
+  "neu": "BELBBZDIHDAJOR-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phenothrin",
+  "variante": "phenothrine",
+  "erwartet": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "alt": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "neu": "SBNFWQZLDJGRLK-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "phenprocoumon",
+  "variante": "phenprocoumone",
+  "erwartet": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "alt": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "neu": "DQDAYGNAKTZFIW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pimavanserin",
+  "variante": "pimavanserine",
+  "erwartet": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "alt": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "neu": "RKEWSXXUOLRFBX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "piperacillin",
+  "variante": "piperacilline",
+  "erwartet": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "alt": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "neu": "IVBHGBMCVLDMKU-GXNBUGAJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pitavastatin",
+  "variante": "pitavastatine",
+  "erwartet": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "alt": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "neu": "VGYFMXBACGZSIL-MCBHFWOFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pivampicillin",
+  "variante": "pivampicilline",
+  "erwartet": "ZEMIJUDPLILVNQ-ZXFNITATSA-N",
+  "alt": "ZEMIJUDPLILVNQ-ZXFNITATSA-N",
+  "neu": "ZEMIJUDPLILVNQ-ZXFNITATSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pravastatin",
+  "variante": "pravastatine",
+  "erwartet": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "alt": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "neu": "TUZYXOIXSAXUGO-PZAWKZKUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "prazosin",
+  "variante": "prazosine",
+  "erwartet": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "alt": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "neu": "IENZQIKPVFGBNW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "pregabalin",
+  "variante": "pregabaline",
+  "erwartet": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "alt": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "neu": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "probenecid",
+  "variante": "probenecide",
+  "erwartet": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "alt": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "neu": "DBABZHXKTCFAPX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "prochlorperazine",
+  "variante": "prochloroperazine",
+  "erwartet": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "alt": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "neu": "WIKYUJGCLQQFNW-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "prostacyclin",
+  "variante": "prostacycline",
+  "erwartet": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "alt": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "neu": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ramelteon",
+  "variante": "ramelteone",
+  "erwartet": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "alt": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "neu": "YLXDSYKOBKBWJQ-LBPRGKRZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "retapamulin",
+  "variante": "retapamuline",
+  "erwartet": "STZYTFJPGGDRJD-NHUWBDDWSA-N",
+  "alt": "STZYTFJPGGDRJD-FJJJPKKESA-N",
+  "neu": "STZYTFJPGGDRJD-FJJJPKKESA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "rifaximin",
+  "variante": "rifaximine",
+  "erwartet": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "alt": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "neu": "NZCRJKRKKOLAOJ-XRCRFVBUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "riociguat",
+  "variante": "riociguate",
+  "erwartet": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "alt": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "neu": "WXXSNCNJFUAIDG-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "rivaroxaban",
+  "variante": "rivaroxabane",
+  "erwartet": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "alt": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "neu": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "rizatriptan",
+  "variante": "rizatriptane",
+  "erwartet": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "alt": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "neu": "ULFRLSNUDGIQQP-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "romidepsin",
+  "variante": "romidepsine",
+  "erwartet": "OHRURASPPZQGQM-GCCNXGTGSA-N",
+  "alt": "OHRURASPPZQGQM-GCCNXGTGSA-N",
+  "neu": "OHRURASPPZQGQM-GCCNXGTGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "rosuvastatin",
+  "variante": "rosuvastatine",
+  "erwartet": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "alt": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "neu": "BPRHUIZQVSMCRT-VEUZHWNKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "roxithromycin",
+  "variante": "roxithromycine",
+  "erwartet": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "alt": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "neu": "RXZBMPWDPOLZGW-XMRMVWPWSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "rutin",
+  "variante": "rutine",
+  "erwartet": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "alt": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "neu": "IKGXIBQEEMLURG-NVPNHPEKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sapropterin",
+  "variante": "sapropterine",
+  "erwartet": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "alt": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "neu": "FNKQXYHWGSIFBK-RPDRRWSUSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "saxagliptin",
+  "variante": "saxagliptine",
+  "erwartet": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "alt": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "neu": "QGJUIPDUBHWZPV-SGTAVMJGSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "secretin",
+  "variante": "secretine",
+  "erwartet": "OWMZNFCDEHGFEP-NFBCVYDUSA-N",
+  "alt": "KKNIUBFRGPFELP-UHFFFAOYSA-N",
+  "neu": "KKNIUBFRGPFELP-UHFFFAOYSA-N",
+  "urteil": "gleich (beide falsch)"
+ },
+ {
+  "name": "silibinin A",
+  "variante": "silibinine A",
+  "erwartet": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "alt": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "neu": "SEBFKMXJBCUCAI-HKTJVKLFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "silodosin",
+  "variante": "silodosine",
+  "erwartet": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "alt": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "neu": "PNCPYILNMDWPEY-QGZVFWFLSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sitagliptin",
+  "variante": "sitagliptine",
+  "erwartet": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "alt": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "neu": "MFFMDFFZMYYVKS-SECBINFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sparfloxacin",
+  "variante": "sparfloxacine",
+  "erwartet": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "alt": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "neu": "DZZWHBIBMUVIIW-DTORHVGOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "sumatriptan",
+  "variante": "sumatriptane",
+  "erwartet": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "alt": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "neu": "KQKPFRSPSRPDEB-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tamsulosin",
+  "variante": "tamsulosine",
+  "erwartet": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "alt": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "neu": "DRHKJLXJIQTDTD-OAHLLOKOSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tasimelteon",
+  "variante": "tasimelteone",
+  "erwartet": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "alt": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "neu": "PTOIAAWZLUQTIO-GXFFZTMASA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tedizolid",
+  "variante": "tedizolide",
+  "erwartet": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "alt": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "neu": "XFALPSLJIHVRKE-GFCCVEGCSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "teicoplanin",
+  "variante": "teicoplanine",
+  "erwartet": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "alt": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "neu": "BJNLLBUOHPVGFT-CAYRISATSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "telmisartan",
+  "variante": "telmisartane",
+  "erwartet": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "alt": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "neu": "RMMXLENWKUUMAY-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "terazosin",
+  "variante": "terazosine",
+  "erwartet": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "alt": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "neu": "VCKUSRYTPJJLNI-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "terlipressin",
+  "variante": "terlipressine",
+  "erwartet": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "alt": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "neu": "BENFXAYNYRLAIU-QSVFAHTRSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tesamorelin",
+  "variante": "tesamoreline",
+  "erwartet": "QBEPNUQJQWDYKU-BMGKTWPMSA-N",
+  "alt": "QBEPNUQJQWDYKU-BMGKTWPMSA-N",
+  "neu": "QBEPNUQJQWDYKU-BMGKTWPMSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tetramethrin",
+  "variante": "tetramethrine",
+  "erwartet": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "alt": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "neu": "CXBMCYHAMVGWJQ-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "ticarcillin",
+  "variante": "ticarcilline",
+  "erwartet": "OHKOGUYZJXTSFX-KZFFXBSXSA-N",
+  "alt": "OHKOGUYZJXTSFX-KZFFXBSXSA-N",
+  "neu": "OHKOGUYZJXTSFX-KZFFXBSXSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tirofiban",
+  "variante": "tirofibane",
+  "erwartet": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "alt": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "neu": "COKMIXFXJJXBQG-NRFANRHFSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tobramycin",
+  "variante": "tobramycine",
+  "erwartet": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "alt": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "neu": "NLVFBUXFDBBNBW-PBSUHMDJSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tolmetin",
+  "variante": "tolmetine",
+  "erwartet": "UPSPUYADGBWSHF-UHFFFAOYSA-N",
+  "alt": "UPSPUYADGBWSHF-UHFFFAOYSA-N",
+  "neu": "UPSPUYADGBWSHF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tolvaptan",
+  "variante": "tolvaptane",
+  "erwartet": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "alt": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "neu": "GYHCTFXIZSNGJT-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "topotecan",
+  "variante": "topotecane",
+  "erwartet": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "alt": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "neu": "UCFGDBYHRUNTLO-QHCPKHFHSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "triclosan",
+  "variante": "triclosane",
+  "erwartet": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "alt": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "neu": "XEFQLINVKFYRCS-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "triptorelin",
+  "variante": "triptoreline",
+  "erwartet": "VXKHXGOKWPXYNA-PGBVPBMZSA-N",
+  "alt": "VXKHXGOKWPXYNA-PGBVPBMZSA-N",
+  "neu": "VXKHXGOKWPXYNA-PGBVPBMZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "troleandomycin",
+  "variante": "troleandomycine",
+  "erwartet": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "alt": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "neu": "LQCLVBQBTUVCEQ-QTFUVMRISA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "tropisetron",
+  "variante": "tropisetrone",
+  "erwartet": "ZNRGQMMCGHDTEI-ITGUQSILSA-N",
+  "alt": "ZNRGQMMCGHDTEI-FUNVUKJBSA-N",
+  "neu": "ZNRGQMMCGHDTEI-FUNVUKJBSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "trovafloxacin",
+  "variante": "trovafloxacine",
+  "erwartet": "WVPSKSLAZQPAKQ-CDMJZVDBSA-N",
+  "alt": "WVPSKSLAZQPAKQ-SOSAQKQKSA-N",
+  "neu": "WVPSKSLAZQPAKQ-SOSAQKQKSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "valsartan",
+  "variante": "valsartane",
+  "erwartet": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "alt": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "neu": "ACWBQPMHZXGDFX-QFIPXVFZSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "vigabatrin",
+  "variante": "vigabatrine",
+  "erwartet": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "alt": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "neu": "PJDFLNIOAUIZSL-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "vildagliptin",
+  "variante": "vildagliptine",
+  "erwartet": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "alt": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "neu": "SYOKIDBDQMKNDQ-XWTIBIIYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "vorinostat",
+  "variante": "vorinostate",
+  "erwartet": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "alt": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "neu": "WAEXFXRVDQXREF-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "zaleplon",
+  "variante": "zaleplone",
+  "erwartet": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "alt": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "neu": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+  "urteil": "gleich (alt richtig)"
+ },
+ {
+  "name": "zolmitriptan",
+  "variante": "zolmitriptane",
+  "erwartet": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "alt": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "neu": "ULSDMUVEXKOYBU-ZDUSSCGKSA-N",
+  "urteil": "gleich (alt richtig)"
+ }
+]

@@ -2,20 +2,20 @@
 
 Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 674 grün · 1 gelb · 36 rot.**
+**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 675 grün · 1 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 32 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 13 min · Median 0.6 s · 90 % ≤ 4.0 s · langsamste 18.6 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 18 min · Median 0.8 s · 90 % ≤ 4.8 s · langsamste 11.0 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
 | Art | Zahl | Bedeutung |
 |---|---:|---|
 | stereo | 18 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| nicht aufgelöst | 9 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
-| skelett | 8 | anderes Gerüst — falscher Stoff |
+| nicht aufgelöst | 8 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
+| skelett | 5 | anderes Gerüst — falscher Stoff |
 | salz | 1 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
 
-Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
+Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 
 ## Alle roten Fälle
 
@@ -51,7 +51,6 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 | nitroprusside | en | `ASPOIVQEUUCDQT-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
 | Nitroprussid | de | `ASPOIVQEUUCDQT-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
 | Povidon-Iod | de | `CPKVUHPKYQGHMW-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| (S)-(−)-timolol | en | `BLJRIMJGRPQVNF-JTQLQIEISA-N` | `—` |  | nicht aufloesbar (not_found) |
 | Metamizol (freie Säure) | de | `LVWZTYCIRDMTEY-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
 | Citral A+B | de | `WTEVQBCEXWBHNA-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
 | Ethylendiamintetraessigsäure | de | `KCXVZYZYPLLWCC-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
@@ -62,11 +61,8 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 |---|---|---|---|---|---|
 | Prussian blue | en | `DNMNDNSFJMUUFM-UHFFFAOYSA-N` | `DCYOBGZUOMKFPA-UHFFFAOYSA-N` |  | Eisen-Cyanid-Gerüst; Wikidata und PubChem modellieren den Komplex verschieden — kein Zeichenfall. |
 | Berliner Blau | de | `DNMNDNSFJMUUFM-UHFFFAOYSA-N` | `DCYOBGZUOMKFPA-UHFFFAOYSA-N` |  | wie Prussian blue. |
-| doxycycline | en | `JBIWCJUYHHGXTC-AKNGSSGZSA-N` | `SGKRLCUYIXIAHR-AKNGSSGZSA-N` |  | Tautomer: gleiche Formel C22H24N2O8, PubChem modelliert die Carboximidsäure-Form; den Wikidata/ChEMBL-Schlüssel kennt PubChem nicht. Kein falscher Stoff. |
-| Doxycyclin | de | `JBIWCJUYHHGXTC-AKNGSSGZSA-N` | `SGKRLCUYIXIAHR-AKNGSSGZSA-N` |  | wie doxycycline (Tautomer). |
 | Hydroxycobalamin | de | `YOZNUFWCRFCGIH-WZHZPDAFSA-K` | `DQOCFCZRZOAIBN-WZHZPDAFSA-L` |  | Cobalt-Komplex, PubChem-Record als Hydrat mit anderer Ladungsschreibweise — wie cyanocobalamin. |
 | β-lactulose | en | `JCQLYHFGKNRPGE-FCVZTGTOSA-N` | `NBGXQZRRLOGAJF-FCVZTGTOSA-N` |  | Seit Lauf 3 über 'beta-lactulose' gefunden: gleiche Formel C12H22O11 und gleiche Stereo-Schicht, PubChem modelliert eine andere Ringform der Fructose-Einheit. Kein falscher Stoff. |
-| rifabutin | en | `ATEBXHFBFRCZMA-VXTBVIBXSA-N` | `ZWBTYMGEBZUQTK-PVLSIAFMSA-N` |  | Gleiche Formel C46H62N4O11, den erwarteten Schlüssel kennt PubChem nicht; erhalten ist PubChems Rifabutin. Tautomer-/Darstellungsunterschied der Referenz, kein falscher Stoff. |
 | cyanocobalamin | en | `FDJOLVPMNUYSCM-UVKKECPRSA-L` | `RMRCNWBMXRMIRW-WZHZPDAFSA-L` |  | Gleiche Formel C63H88CoN14O14P; Cobalt-Komplex, von Wikidata und PubChem verschieden modelliert (wie Prussian blue). PubChems Titel des Erhaltenen: Cyanocobalamin. |
 
 ### salz
@@ -75,57 +71,33 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 |---|---|---|---|---|---|
 | Docusat | de | `APSBXTVYXVQYAB-UHFFFAOYSA-M` | `HNSDLXPSAYFUHK-UHFFFAOYSA-N` | docusate | Seit Lauf 3 über die englische Schreibweise 'Docusate' gefunden: PubChem liefert die freie Sulfonsäure (C20H38O7S), Wikidata erwartet das Natrium-Anion. Gleicher Wirkstoff, kein falscher Stoff. |
 
+## Gelb nach Art
+
+| Art | Zahl |
+|---|---:|
+| Quelle/Referenz | 1 |
+| Tautomer | 3 |
+
 ## Gelb
 
 | Eingabe | Grund |
 |---|---|
+| doxycycline | Tautomer der Referenz: SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N |
+| Doxycyclin | Tautomer der Referenz: SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N |
 | paritaprevir | Referenz unsicher, abweichend (stereo): UAUIUKWPKRJZJV-QPLHLKROSA-N statt UAUIUKWPKRJZJV-MDJGTQRPSA-N |
+| rifabutin | Tautomer der Referenz: AZFBLLCNOQPJGJ-VXTBVIBXSA-N statt ATEBXHFBFRCZMA-VXTBVIBXSA-N |
 
 ## Langsamste Eingaben
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| N-Methylglucaminantimonat | 18.6 | rot |
-| γ-Aminobuttersäure | 9.1 | gruen |
-| Malonsäure | 8.9 | gruen |
-| Maleinsäure | 8.6 | gruen |
-| Phthalsäure | 8.4 | gruen |
-| Acrylsäure | 8.4 | gruen |
-| Ethylendiamintetraessigsäure | 8.4 | rot |
-| Glycolsäure | 8.4 | gruen |
-| 4-Aminosalicylsäure | 8.4 | gruen |
-| Zoledronsäure | 8.3 | gruen |
-
-## Live-Gegenprüfung Vinblastin und Sulfasalazin (06.11.2026)
-
-Für beide deutschen und englischen Eingaben wurde `resolve()` frisch aufgerufen
-und der InChIKey des zurückgegebenen RDKit-Moleküls mit PubChem PUG REST verglichen:
-
-```bash
-uv run python - <<'PYTHON'
-from rdkit import Chem
-from chemdraw_tool.resolver import resolve
-for name in ("vinblastine", "Vinblastin", "sulfasalazine", "Sulfasalazin"):
-    print(name, Chem.MolToInchiKey(resolve(name)[1]))
-PYTHON
-```
-
-| Eingabe | resolve() und PubChem (jeweils HTTP 200) | PubChem-CID | Fixture |
-|---|---|---|---|
-| vinblastine / Vinblastin | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | 13342 | `JXLYSJRDGCGARV-XQKSVPLYSA-N` |
-| sulfasalazine / Sulfasalazin | `NCEXYHBECQHGNR-UHFFFAOYSA-N` | 5339 | `NCEXYHBECQHGNR-QZQOTICOSA-N` |
-
-Direkte Gegenprobe (liefert CID, Titel und InChIKey):
-[Vinblastine](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/vinblastine/property/Title,InChIKey/JSON),
-[Vinblastin](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Vinblastin/property/Title,InChIKey/JSON),
-[Sulfasalazine](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/sulfasalazine/property/Title,InChIKey/JSON),
-[Sulfasalazin](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Sulfasalazin/property/Title,InChIKey/JSON).
-
-Damit stimmt der Resolver in allen vier Fällen mit dem namentlich abgefragten
-PubChem-Record überein. Das beweist keine Übereinstimmung mit der unabhängigen
-Referenz: Bei Vinblastin fehlt in beiden Fixture-Einträgen weiterhin `unsicher`,
-obwohl der Stereo-Audit den Fall ausdrücklich offenließ. Bei Sulfasalazin ist
-der Fixture-Key E/Z-spezifisch, der gelieferte CID 5339 dagegen ohne E/Z-Angabe.
-Die frühere Begründung mit einer „Preferred-Summary“ ohne nachprüfbare CID ist
-hierdurch nicht bestätigt. Weder Fixture noch Wertung wurden durch diese
-Gegenprüfung geändert; die Referenzentscheidung bleibt separat abzunehmen.
+| meso-Dimercaptobernsteinsäure | 11.0 | gruen |
+| Phthalsäure | 10.6 | gruen |
+| Acrylsäure | 9.9 | gruen |
+| Levofolinsäure | 9.8 | gruen |
+| Amidotrizoesäure | 9.4 | gruen |
+| Nicotinsäure | 9.3 | gruen |
+| Ethylendiamintetraessigsäure | 9.2 | rot |
+| 4-Aminosalicylsäure | 9.2 | gruen |
+| Pantothensäure | 9.1 | gruen |
+| Glycolsäure | 9.1 | gruen |

@@ -1060,6 +1060,11 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
     zahl = Counter(e["status"] for e in lauf)
     rot = [e for e in lauf if e["status"] == "rot"]
     gelb = [e for e in lauf if e["status"] == "gelb"]
+    tautomere = sum(e.get("art") == "tautomer" for e in gelb)
+    gelb_quelle = len(gelb) - tautomere
+    referenzen = [liste[e["eingabe"]] for e in lauf]
+    stoffe = len({e.get("quelle", e["inchikey"]).split(" + ")[0] for e in referenzen})
+    keys = len({e["inchikey"] for e in referenzen})
     _nachklassifizieren(rot, liste)
     namen = _chembl_namen(sorted({e["erhalten"] for e in rot if e.get("erhalten")}),
                           refresh=getattr(args, "refresh_names", False))
@@ -1077,8 +1082,9 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
         "--protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: "
         "`uv run python scripts/masse_eval.py identitaet`",
         "",
-        f"**{len(lauf)} Eingaben ({len({liste[e['eingabe']]['inchikey'] for e in lauf if e['eingabe'] in liste})} Stoffe): "
-        f"{zahl['gruen']} grün · {zahl['gelb']} gelb · {zahl['rot']} rot.**",
+        f"**{len(lauf)} Eingaben ({stoffe} Wikidata-Stoffe, {keys} unterschiedliche InChIKeys): "
+        f"{zahl['gruen']} grün · {gelb_quelle} gelb (Quelle/Referenz) · "
+        f"{tautomere} gelb (Tautomer) · {zahl['rot']} rot.**",
         "",
         f"Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). "
         f"Laufzeit gesamt {gesamt / 60:.0f} min · Median {q(0.5):.1f} s · 90 % ≤ {q(0.9):.1f} s · "
@@ -1116,7 +1122,11 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
                 f"{namen.get(erhalten, '')} | {deutung} |"
             )
         md.append("")
-    md += ["## Gelb", "", "| Eingabe | Grund |", "|---|---|"]
+    md += [
+        "## Gelb nach Art", "", "| Art | Zahl |", "|---|---:|",
+        f"| Quelle/Referenz | {gelb_quelle} |", f"| Tautomer | {tautomere} |", "",
+        "## Gelb", "", "| Eingabe | Grund |", "|---|---|",
+    ]
     md += [f"| {e['eingabe']} | {e['text']} |" for e in gelb] or ["| — | — |"]
     md += [
         "",

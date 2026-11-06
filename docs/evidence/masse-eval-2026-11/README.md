@@ -434,3 +434,30 @@ die Variante; 121 gleich, 1 Stereo/Form (Nicotin), **0 anderer Stoff**, 11 nicht
 - IR: „Lücke" heißt, keine Regel feuert; ob eine gefeuerte Regel den richtigen Bereich nennt,
   prüft der Lauf nur dort, wo die eigene Liste eine bessere Gruppe kennt (β-Lactam, Carbamat).
 - pH: ideale Lösung (Aktivität = Konzentration), pKw = 14, 25 °C — wie `ph_calc` selbst.
+
+
+## Tautomer/timolol — Lauf 10 und Berichtsaufteilung (06.11.2026)
+
+Code `3476636`, Lauf-Evidence `44edf11`; Chef-Abnahme: Diff, Codex-Kreuzabnahme,
+Gate rc=0 und alle 711 Zeilen selbst nachgezählt. Die Berichtsauswertung zählt
+`status=gruen` direkt und teilt `status=gelb` separat in Quelle/Referenz und
+Tautomer auf. Tautomere werden damit nie als grün ausgegeben.
+
+| | Lauf 9 | Lauf 10 |
+|---|---|---|
+| Grün | 674 | **675** |
+| Gelb (Quelle/Referenz) | 1 | **1** |
+| Gelb (Tautomer) | 0 | **3** |
+| Rot | 36 | **32** |
+| Eingaben / Wikidata-Stoffe / unterschiedliche Keys | 711 / 414 / 413 | 711 / 414 / 413 |
+
+Nachgezählte Übergänge: 674 grün→grün, 32 rot→rot, 1 gelb→gelb,
+**3 rot→gelb** (doxycycline, Doxycyclin, rifabutin) und **1 rot→grün**
+(`(S)-(−)-timolol`). Vorheriger Bericht samt Live-Gegenprüfung
+Vinblastin/Sulfasalazin bleibt in
+[`identitaet-lauf-9-vor-tautomer.md`](identitaet-lauf-9-vor-tautomer.md) erhalten;
+Rohdaten davor: `identitaet-lauf-9-vor-tautomer.json`, danach:
+`identitaet-lauf.json`. Der aktuelle Bericht wird mit
+`uv run python scripts/masse_eval.py identitaet` reproduziert und hat eine eigene
+Zeile „Tautomer“ unter „Gelb nach Art“. Der Referenzentscheid
+Vinblastin-Stereo/Sulfasalazin-E/Z bleibt geparkt; keine Fixture geändert.
