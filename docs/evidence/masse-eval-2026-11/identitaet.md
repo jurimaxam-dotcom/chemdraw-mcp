@@ -2,7 +2,7 @@
 
 Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (413 Stoffe): 674 grün · 1 gelb · 36 rot.**
+**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 674 grün · 1 gelb · 36 rot.**
 
 Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 13 min · Median 0.6 s · 90 % ≤ 4.0 s · langsamste 18.6 s je Eingabe (inkl. 0,3 s Pause).
 
@@ -95,3 +95,37 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 | Glycolsäure | 8.4 | gruen |
 | 4-Aminosalicylsäure | 8.4 | gruen |
 | Zoledronsäure | 8.3 | gruen |
+
+## Live-Gegenprüfung Vinblastin und Sulfasalazin (06.11.2026)
+
+Für beide deutschen und englischen Eingaben wurde `resolve()` frisch aufgerufen
+und der InChIKey des zurückgegebenen RDKit-Moleküls mit PubChem PUG REST verglichen:
+
+```bash
+uv run python - <<'PYTHON'
+from rdkit import Chem
+from chemdraw_tool.resolver import resolve
+for name in ("vinblastine", "Vinblastin", "sulfasalazine", "Sulfasalazin"):
+    print(name, Chem.MolToInchiKey(resolve(name)[1]))
+PYTHON
+```
+
+| Eingabe | resolve() und PubChem (jeweils HTTP 200) | PubChem-CID | Fixture |
+|---|---|---|---|
+| vinblastine / Vinblastin | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | 13342 | `JXLYSJRDGCGARV-XQKSVPLYSA-N` |
+| sulfasalazine / Sulfasalazin | `NCEXYHBECQHGNR-UHFFFAOYSA-N` | 5339 | `NCEXYHBECQHGNR-QZQOTICOSA-N` |
+
+Direkte Gegenprobe (liefert CID, Titel und InChIKey):
+[Vinblastine](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/vinblastine/property/Title,InChIKey/JSON),
+[Vinblastin](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Vinblastin/property/Title,InChIKey/JSON),
+[Sulfasalazine](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/sulfasalazine/property/Title,InChIKey/JSON),
+[Sulfasalazin](https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/Sulfasalazin/property/Title,InChIKey/JSON).
+
+Damit stimmt der Resolver in allen vier Fällen mit dem namentlich abgefragten
+PubChem-Record überein. Das beweist keine Übereinstimmung mit der unabhängigen
+Referenz: Bei Vinblastin fehlt in beiden Fixture-Einträgen weiterhin `unsicher`,
+obwohl der Stereo-Audit den Fall ausdrücklich offenließ. Bei Sulfasalazin ist
+der Fixture-Key E/Z-spezifisch, der gelieferte CID 5339 dagegen ohne E/Z-Angabe.
+Die frühere Begründung mit einer „Preferred-Summary“ ohne nachprüfbare CID ist
+hierdurch nicht bestätigt. Weder Fixture noch Wertung wurden durch diese
+Gegenprüfung geändert; die Referenzentscheidung bleibt separat abzunehmen.

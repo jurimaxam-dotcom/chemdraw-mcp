@@ -121,3 +121,53 @@ def test_no_salt_variant_without_counterion_or_when_english_variant_is_the_same(
 def test_sodium_and_potassium_also_stand_behind_the_stem(german, english):
     """-Natrium/-Kalium hinten ist das Gegenion wie -chlorid; vorn bleibt es Kation."""
     assert english_variant(german) == english
+
+
+def test_all_salt_word_anion_spellings_have_a_translation():
+    """Die endliche Anion-Sprache des Salzschutzes muss übersetzbar sein.
+
+    Nur der Anion-Abschnitt vor natrium; Kationen und Salz/Hydrat sind keine
+    Anion-Suffixe. Der Parser bleibt testintern, neue Regex-Operatoren fallen rot.
+    """
+    from itertools import product
+    from re import _parser
+
+    from chemdraw_tool.de_names import _ANIONS
+    from chemdraw_tool.resolver import _SALT_WORD
+
+    def expand(tokens):
+        words = [""]
+        for op, value in tokens:
+            if op is _parser.LITERAL:
+                choices = [chr(value)]
+            elif op is _parser.IN:
+                assert all(kind is _parser.LITERAL for kind, _ in value)
+                choices = [chr(char) for _, char in value]
+            elif op is _parser.SUBPATTERN:
+                choices = expand(value[-1])
+            elif op is _parser.BRANCH:
+                choices = [word for branch in value[1] for word in expand(branch)]
+            elif op is _parser.MAX_REPEAT:
+                low, high, child = value
+                assert (low, high) == (0, 1)
+                choices = [""] + expand(child)
+            else:
+                pytest.fail(f"Ungeprüfter Regex-Operator: {op}")
+            words = [left + right for left, right in product(words, choices)]
+        return words
+
+    anions = set(expand(_parser.parse(_SALT_WORD.pattern.split("|natrium")[0], 0)))
+    # Hydrogentartrat wird vom Salzschutz über das angehängte tartrat erkannt.
+    anions.add("hydrogentartrat")
+    assert all(_SALT_WORD.search(word) for word in anions)
+    assert not (missing := anions - _ANIONS.keys()), sorted(missing)
+
+
+@pytest.mark.parametrize(
+    ("german", "english"),
+    [("Metoprololhydrogentartrat", "Metoprolol hydrogen tartrate"),
+     ("Sorafenibtosylat", "Sorafenib tosylate"),
+     ("Amiloridhydroiodid", "Amiloride hydroiodide")],
+)
+def test_long_and_new_counterions_are_not_split_at_short_suffixes(german, english):
+    assert english_variant(german) == english
