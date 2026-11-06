@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import threading
 import warnings
+from typing import NamedTuple
 from urllib.parse import quote
 
 import requests
@@ -583,7 +584,7 @@ def _components(smiles: str) -> int:
     return len(Chem.GetMolFrags(mol)) if mol is not None else 0
 
 
-def _pubchem_checked(name: str, smiles: str, report: list) -> str:
+def _pubchem_checked(name: str, smiles: str, report: list) -> tuple[str, str]:
     """PubChem-Direkttreffer gegen die Schreibvariante desselben Namens prüfen.
 
     Masse-Eval-Befund 3 (06.11.2026): PubChem führt verirrte Depositor-Synonyme.
@@ -603,21 +604,23 @@ def _pubchem_checked(name: str, smiles: str, report: list) -> str:
     den Stoff selbst. Nennt der Name ein Gegenion (_SALT_WORD), bleibt das Salz.
     Umgekehrt (Centrophenoxin: direkt frei, Variante HCl) bleibt der
     Direkttreffer — die Regel wählt nur die Form ohne Gegenion.
+
+    Rückgabe: (SMILES, Suchname, der es geliefert hat) — für „found as".
     """
     variant = _spelling_variant(name)
     if variant is None:
-        return smiles
+        return smiles, name
     other = _pubchem_lookup(variant, report)
     other_parent = _parent_skeleton(other)
     if other_parent is None:
-        return smiles
+        return smiles, name
     if other_parent != _parent_skeleton(smiles):
         logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
-        return other
+        return other, variant
     if _components(other) == 1 < _components(smiles) and not _SALT_WORD.search(name):
         logger.info("PubChem gives %r as a salt, %r as the free form — using the free form", name, variant)
-        return other
-    return smiles
+        return other, variant
+    return smiles, name
 
 
 def _transliterate(name: str) -> str | None:
@@ -996,8 +999,31 @@ def _ambiguous_error(name: str, candidates: list[IsomerCandidate]) -> NameResolu
     )
 
 
-@functools.lru_cache(maxsize=512)
+class Resolution(NamedTuple):
+    """Ergebnis der Namenskaskade.
+
+    found_as: die Schreibweise, unter der der Stoff tatsächlich gefunden wurde,
+    wenn sie nicht die Eingabe ist (englische Variante, Transliteration,
+    Salzform-/Synonymregel) — sonst "". Damit sieht der Nutzer einen Umweg und
+    kann einen falschen Treffer erkennen ("found as Dexamethasone").
+    """
+
+    smiles: str
+    found_as: str = ""
+
+
+def _found_as(name: str, query: str) -> str:
+    """Suchname als Hinweis — leer, wenn er nur in Groß/Kleinschreibung abweicht."""
+    return "" if query.strip().casefold() == name.strip().casefold() else query
+
+
 def resolve_name(name: str) -> str:
+    """Resolve a compound name to SMILES (see resolve_name_route)."""
+    return resolve_name_route(name).smiles
+
+
+@functools.lru_cache(maxsize=512)
+def resolve_name_route(name: str) -> Resolution:
     """Resolve a compound name to SMILES via fallback cascade.
 
     0. Known family names ("xylene", "Glucose") raise kind="ambiguous"
@@ -1019,29 +1045,32 @@ def resolve_name(name: str) -> str:
 
     report: list[_Attempt] = []
 
+    # OPSIN liest den Namen selbst; gewinnt PubChem die Gegenprobe, war es
+    # derselbe Name — beides ist kein Umweg, also kein found_as.
     if smiles := _opsin_lookup(name):
-        return _opsin_checked(name, smiles, report)
+        return Resolution(_opsin_checked(name, smiles, report))
 
     if smiles := _pubchem_lookup(name, report):
-        return _pubchem_checked(name, smiles, report)
+        smiles, query = _pubchem_checked(name, smiles, report)
+        return Resolution(smiles, _found_as(name, query))
 
     transliterated = _transliterate(name)
     if transliterated:
         logger.info("Retrying with transliterated name: %r → %r", name, transliterated)
         if smiles := _pubchem_lookup(transliterated, report):
-            return smiles
+            return Resolution(smiles, _found_as(name, transliterated))
         if smiles := _nci_cir_lookup(transliterated, report):
-            return smiles
+            return Resolution(smiles, _found_as(name, transliterated))
 
     if smiles := _nci_cir_lookup(name, report):
-        return smiles
+        return Resolution(smiles)
 
     # Ganz hinten, damit kein heute aufgelöster Name einen anderen Weg nimmt.
     # Aus dem Original gebaut — "Maleinsaeure" hat kein "-säure" mehr.
     if (english := english_variant(name)) and english != transliterated:
         logger.info("Retrying with English spelling: %r → %r", name, english)
         if smiles := _pubchem_lookup(english, report):
-            return smiles
+            return Resolution(smiles, _found_as(name, english))
 
     logger.info(
         "Resolution failed for %r: %s",
@@ -1052,7 +1081,28 @@ def resolve_name(name: str) -> str:
     raise _resolution_error(name, report)
 
 
-def resolve(input_str: str) -> tuple[str, Chem.Mol]:
+# Tests und Messskripte leeren den Cache über resolve_name.
+resolve_name.cache_clear = resolve_name_route.cache_clear  # type: ignore[attr-defined]
+resolve_name.cache_info = resolve_name_route.cache_info  # type: ignore[attr-defined]
+
+
+class Resolved(tuple):
+    """(smiles, mol) wie immer — plus .found_as aus der Kaskade.
+
+    Ein Tupel, damit `smiles, mol = resolve(x)` bei allen Aufrufern und
+    Test-Attrappen gleich bleibt; wer den Umweg zeigen will, liest
+    `getattr(r, "found_as", "")` (Attrappen liefern schlichte Tupel).
+    """
+
+    found_as: str
+
+    def __new__(cls, smiles: str, mol: Chem.Mol, found_as: str = ""):
+        self = super().__new__(cls, (smiles, mol))
+        self.found_as = found_as
+        return self
+
+
+def resolve(input_str: str) -> Resolved:
     # Parse-first: anything that RDKit accepts as SMILES IS treated as SMILES.
     # The character heuristic (is_smiles) misses short valid SMILES without
     # special characters — "O" (water) and "CO" (methanol) went down the NAME
@@ -1064,7 +1114,7 @@ def resolve(input_str: str) -> tuple[str, Chem.Mol]:
     if " " not in candidate and not _STEREO_PREFIX.match(candidate):
         mol = validate_smiles(candidate)
         if mol is not None:
-            return candidate, mol
+            return Resolved(candidate, mol)
         # Kaputtes SMILES bekommt eine eigene Diagnose und geht NIE in die
         # Namenskaskade — dort würde es still zu einem anderen Stoff (NCI:
         # "c1cccc1" → Cyclopentan) oder bekäme einen falschen Rat.
@@ -1073,8 +1123,8 @@ def resolve(input_str: str) -> tuple[str, Chem.Mol]:
                 fault, name=input_str, kind="invalid_smiles", attempts=[]
             )
 
-    smiles = resolve_name(input_str)
+    smiles, found_as = resolve_name_route(input_str)
     mol = validate_smiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
-    return smiles, mol
+    return Resolved(smiles, mol, found_as)

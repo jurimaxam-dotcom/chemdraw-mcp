@@ -554,6 +554,15 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
     return properties
 
 
+def _found_as(resolved) -> str:
+    """Schreibweise, unter der resolve() den Namen fand ("" wenn wörtlich).
+
+    Kommt aus der Kaskade selbst (resolver.Resolved), kein zweiter Netzaufruf;
+    Test-Attrappen liefern schlichte Tupel → "".
+    """
+    return getattr(resolved, "found_as", "")
+
+
 def _stereo_fields(mol, atoms: list) -> dict:
     """stereoWarnings + stereoNote fürs Payload, passend zur Atomliste `atoms`.
 
@@ -831,13 +840,15 @@ def generate_molecule(
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
     try:
-        smiles, mol = resolve(name_or_smiles)
+        resolved = resolve(name_or_smiles)
     except NameResolutionError as exc:
         if exc.kind != "ambiguous":
             raise
         # Erfolgsantwort statt Fehler: der Host verwirft isError-Antworten
         # (toolData.js), die Vorschaubilder brauchen ein Payload.
         return _ambiguous_payload(name_or_smiles, exc.candidates)
+    smiles, mol = resolved
+    found_as = _found_as(resolved)
     if stereo_variants:
         return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
     if view and view not in ("all_h", "fischer", "haworth"):
@@ -913,6 +924,7 @@ def generate_molecule(
         properties=properties,
         functionalGroups=groups,
         **_stereo_fields(mol, atoms),
+        foundAs=found_as,
         lipinski=lipinski,
         files=files,
         cdxml_path=cdxml_path,
@@ -3150,7 +3162,9 @@ with predict_spectrum or repeat those facts via lookup unless asked.
     )
 
     # Resolve & render SVG (thumbnail size for DatabaseView sidebar)
-    smiles, mol = resolve(name)
+    resolved = resolve(name)
+    smiles, mol = resolved
+    found_as = _found_as(resolved)
     mol = generate_2d(mol)
     svg = render_svg(mol, width=150, height=120, fill_container=True)
 
@@ -3232,6 +3246,7 @@ with predict_spectrum or repeat those facts via lookup unless asked.
         atoms=atoms,
         functionalGroups=groups,
         **_stereo_fields(mol, atoms),
+        foundAs=found_as,
         name=name,
         smiles=smiles,
     )
@@ -3514,7 +3529,7 @@ def batch_generate(
 
     for name_or_smiles in molecules:
         try:
-            smiles, mol = resolve(name_or_smiles)
+            resolved = resolve(name_or_smiles)
         except NameResolutionError as exc:
             logging.getLogger(__name__).warning(
                 "Could not resolve %r (%s), skipping", name_or_smiles, exc.kind
@@ -3533,6 +3548,8 @@ def batch_generate(
             )
             failed.append(name_or_smiles)
             continue
+        smiles, mol = resolved
+        found_as = _found_as(resolved)
 
         mol = generate_2d(mol)
 
@@ -3580,6 +3597,7 @@ def batch_generate(
                 properties=properties,
                 functionalGroups=groups,
                 **_stereo_fields(mol, atoms),
+                foundAs=found_as,
                 lipinski=lipinski,
                 files=files,
                 cdxml_path=cdxml_path,

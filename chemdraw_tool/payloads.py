@@ -81,6 +81,9 @@ class MoleculePayload(BaseModel):
     # Befund als Satz fürs Modell, falls kein Panel angezeigt wird.
     stereoWarnings: list[StereoWarning] = []
     stereoNote: str = ""
+    # Schreibweise, unter der der Name gefunden wurde, wenn nicht wörtlich
+    # ("Dexamethason" → "Dexamethasone"); "" bei wörtlichem Treffer/SMILES.
+    foundAs: str = ""
     lipinski: LipinskiData | None = None
     # Geschriebene Dateien: {"png": pfad, "svg": pfad, "cdxml": pfad}.
     # PNG/SVG sind die Primärformate; cdxml nur auf Anforderung (dann ist
@@ -287,6 +290,7 @@ class DatabasePayload(BaseModel):
     functionalGroups: list[FunctionalGroup] = []
     stereoWarnings: list[StereoWarning] = []
     stereoNote: str = ""
+    foundAs: str = ""
     name: str = ""
     smiles: str = ""
 

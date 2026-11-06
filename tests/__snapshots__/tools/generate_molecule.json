@@ -281,6 +281,11 @@
         "title": "Files",
         "type": "object"
       },
+      "foundAs": {
+        "default": "",
+        "title": "Foundas",
+        "type": "string"
+      },
       "functionalGroups": {
         "default": [],
         "items": {

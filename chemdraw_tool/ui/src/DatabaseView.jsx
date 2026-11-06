@@ -25,7 +25,7 @@ export default function DatabaseView({ data }) {
       {(data.name || hasStructure) && (
         <header className="panel-header">
           {data.name ? (
-            <SectionHeader title={data.name} subtitle={data.formula} />
+            <SectionHeader title={data.name} subtitle={data.formula} foundAs={data.foundAs} />
           ) : (
             <div />
           )}

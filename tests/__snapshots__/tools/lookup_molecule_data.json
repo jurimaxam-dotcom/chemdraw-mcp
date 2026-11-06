@@ -353,6 +353,11 @@
         "title": "Atoms",
         "type": "array"
       },
+      "foundAs": {
+        "default": "",
+        "title": "Foundas",
+        "type": "string"
+      },
       "functionalGroups": {
         "default": [],
         "items": {

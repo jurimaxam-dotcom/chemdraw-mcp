@@ -1,6 +1,7 @@
 import React, { useCallback, useId, useRef, useState } from "react";
 import AmbiguousView from "./AmbiguousView";
 import CopyButton from "./components/CopyButton";
+import FoundAs from "./components/FoundAs";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
 import AddToAnkiButton from "./components/AddToAnkiButton";
@@ -201,6 +202,7 @@ export default function MoleculeView({ data }) {
         <div className="panel-heading">
           <h2 className="panel-title">{data.name || "Molecule"}</h2>
           {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
+          <FoundAs value={data.foundAs} />
         </div>
         <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}

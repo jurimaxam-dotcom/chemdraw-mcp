@@ -653,8 +653,8 @@ def test_cache_is_clearable(mock_get, _opsin):
 # --- Kaputtes SMILES nie in die Namenskaskade (Etappe 1, 26.10.2026) ---------
 # Gemessen: "c1cccc1" wurde über NCI still zu Cyclopentan, "C1CCC" bekam
 # „retry once the connection is stable“, "CN(C)(C)C" „Use the English name“.
-# Beweis, dass keine Namensquelle gefragt wird: resolve_name ist der einzige
-# Eingang in die Kaskade und wirft hier sofort.
+# Beweis, dass keine Namensquelle gefragt wird: resolve_name_route ist der
+# einzige Eingang in die Kaskade und wirft hier sofort.
 
 
 @pytest.fixture
@@ -662,7 +662,7 @@ def _no_cascade(monkeypatch):
     def forbidden(name):
         raise AssertionError(f"Namenskaskade betreten für {name!r}")
 
-    monkeypatch.setattr(resolver, "resolve_name", forbidden)
+    monkeypatch.setattr(resolver, "resolve_name_route", forbidden)
 
 
 @pytest.mark.parametrize(
@@ -705,9 +705,9 @@ def test_names_and_formulas_still_go_to_the_cascade(monkeypatch, name):
 
     def fake(n):
         seen.append(n)
-        return "C"
+        return resolver.Resolution("C")
 
-    monkeypatch.setattr(resolver, "resolve_name", fake)
+    monkeypatch.setattr(resolver, "resolve_name_route", fake)
     smiles, _ = resolve(name)
     assert seen == [name]
     assert smiles == "C"
@@ -721,7 +721,7 @@ def test_fixture_inputs_are_never_classified_invalid_smiles(monkeypatch):
 
     fixture = Path(__file__).parent / "identity" / "stoffe.json"
     entries = json.loads(fixture.read_text(encoding="utf-8"))["stoffe"]
-    monkeypatch.setattr(resolver, "resolve_name", lambda n: "C")
+    monkeypatch.setattr(resolver, "resolve_name_route", lambda n: resolver.Resolution("C"))
     for entry in entries:
         if "fehler" in entry:
             continue
@@ -1000,3 +1000,83 @@ def test_name_with_salt_word_keeps_the_salt(_opsin, name):
     lookup, _ = _pubchem_table(table)
     with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name(name) == salz
+
+
+# --- „found as": der Umweg wird sichtbar (Folgepunkt Masse-Eval, 06.11.2026) --
+# Löst resolve_name einen Namen nicht wörtlich, sondern über eine andere
+# Schreibweise auf, nennt das Ergebnis diese Schreibweise — so lässt sich ein
+# falscher Treffer erkennen. Wörtliche Treffer bleiben ohne Hinweis.
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_found_as_names_the_english_variant(_nci, _opsin):
+    lookup, _ = _only_for("Dexamethasone")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        route = resolver.resolve_name_route("Dexamethason")
+    assert route == ("CC(=O)O", "Dexamethasone")
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_found_as_names_the_transliteration(_nci, _opsin):
+    lookup, _ = _only_for("Maleinsaeure")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route("Maleinsäure").found_as == "Maleinsaeure"
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_found_as_names_the_transliteration_via_nci(_opsin):
+    lookup, _ = _only_for("nothing")
+
+    def nci(name, report=None):
+        return "CC(=O)O" if name == "Maleinsaeure" else None
+
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup), \
+         patch("chemdraw_tool.resolver._nci_cir_lookup", side_effect=nci):
+        assert resolver.resolve_name_route("Maleinsäure").found_as == "Maleinsaeure"
+
+
+@pytest.mark.parametrize("name", sorted(_SALZFORM))
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_found_as_names_the_variant_of_the_salt_rule(_opsin, name):
+    variante, direkt, frei = _SALZFORM[name]
+    lookup, _ = _pubchem_table({name: direkt, variante: frei})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route(name) == (frei, variante)
+
+
+@pytest.mark.parametrize("name", sorted(_SYNONYMFEHLER))
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_found_as_names_the_variant_that_overruled_a_synonym(_opsin, name):
+    variante, direkt, richtig = _SYNONYMFEHLER[name]
+    lookup, _ = _pubchem_table({name: direkt, variante: richtig})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route(name).found_as == variante
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_literal_hit_has_no_found_as(_opsin):
+    """Direkttreffer, Variante bestätigt nur → kein Hinweis (Procain bleibt Procain)."""
+    lookup, _ = _pubchem_table({"Procain": "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N",
+                                "Procaine": "NC1=CC=C(C=C1)C(=O)OCCN(CC)CC"})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route("Procain").found_as == ""
+        assert resolver.resolve_name_route("risperidone").found_as == ""
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_found_as_ignores_a_pure_case_difference(_nci, _opsin):
+    lookup, _ = _only_for("Dexamethasone")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver._found_as("dexamethasone", "Dexamethasone") == ""
+
+
+def test_resolve_carries_found_as_and_stays_a_pair(monkeypatch):
+    monkeypatch.setattr(resolver, "resolve_name_route",
+                        lambda n: resolver.Resolution("CCO", "Ethanol"))
+    result = resolver.resolve("Äthanol")
+    smiles, mol = result  # alle übrigen Aufrufer entpacken weiter zwei Werte
+    assert (smiles, result.found_as) == ("CCO", "Ethanol") and mol is not None
+    assert resolver.resolve("CCO").found_as == ""
