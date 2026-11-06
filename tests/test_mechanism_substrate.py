@@ -117,20 +117,25 @@ def test_sn2_tertiaer_verweist_auf_sn1():
 
 def test_sn1_tert_butylchlorid_wasser():
     """Neutrales Nucleophil: Angriff gibt das Oxonium-Ion, erst die Deprotonierung das Produkt
-    (Clayden Kap. 15; OpenStax 11.4) — sechs Stationen, Sichtung 05.11.2026 (R4)."""
-    from chemdraw_tool.mechanism_substrate import H_LEAVING
+    (Clayden Kap. 15; OpenStax 11.4) — sechs Stationen, Sichtung 05.11.2026 (R4).
+    Das Proton nimmt ein zweites Wassermolekül auf, kein freies H⁺ (Gutachter GELB, Etappe E2)."""
+    from chemdraw_tool.mechanism_substrate import BASE, H_LEAVING
 
     steps = build_steps("sn1", ["CC(C)(C)Cl", "O"])
     assert [s.label for s in steps] == [
         "Reactants", "Leaving group departs", "Carbocation (intermediate)", "Nucleophilic attack",
-        "Oxonium ion", "Products",
+        "Oxonium ion: deprotonation by the solvent", "Products",
     ]
     assert _canon("C[C+](C)C") in [_plain(s) for s in steps[2].molecules]
     assert _canon("[Cl-]") in [_plain(s) for s in steps[2].molecules]
-    assert sorted(_plain(s) for s in steps[4].molecules) == sorted([_canon("CC(C)(C)[OH2+]"), _canon("[Cl-]")])
-    assert steps[4].arrows == [CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full")]
+    assert sorted(_plain(s) for s in steps[4].molecules) == sorted(
+        [_canon("CC(C)(C)[OH2+]"), _canon("O"), _canon("[Cl-]")])
+    assert steps[4].arrows == [
+        CurvedArrow(source=(BASE, "lone_pair"), target=(H_LEAVING, "atom"), style="full"),
+        CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full"),
+    ]
     assert sorted(_plain(s) for s in steps[-1].molecules) == sorted(
-        [_canon("CC(C)(C)O"), _canon("[Cl-]"), "[H+]"])
+        [_canon("CC(C)(C)O"), _canon("[Cl-]"), _canon("[OH3+]")])
     _arrows_point_at_drawn_atoms(steps)
 
 
@@ -139,6 +144,19 @@ def test_sn1_alkohol_gibt_das_alkyloxonium_ion():
     assert len(steps) == 6
     assert _canon("C[OH+]C(C)(C)C") in [_plain(s) for s in steps[4].molecules]
     assert _canon("COC(C)(C)C") in [_plain(s) for s in steps[-1].molecules]
+    assert _canon("C[OH2+]") in [_plain(s) for s in steps[-1].molecules]  # protoniertes Methanol
+
+
+@pytest.mark.parametrize("cid, rt, subs, _cip", MATRIX, ids=[m[0] for m in MATRIX])
+def test_gezeichnetes_h_heisst_alle_h_gezeichnet(cid, rt, subs, _cip):
+    """Trägt ein Atom ein H als eigenes Atom (Pfeilziel), stehen dort alle seine H als Atome — sonst
+    zeigt das Bild „OH⁺“ plus ein loses „H“ am selben O (Gutachter GELB, Etappe E2)."""
+    for step in build_steps(rt, subs):
+        for smi in step.molecules:
+            for atom in _sanitized(smi).GetAtoms():
+                drawn = sum(1 for n in atom.GetNeighbors() if n.GetAtomicNum() == 1)
+                if atom.GetAtomicNum() != 1 and drawn:
+                    assert atom.GetTotalNumHs() == 0, (cid, step.label, smi, atom.GetSymbol())
 
 
 def test_sn1_anion_behaelt_fuenf_schritte():

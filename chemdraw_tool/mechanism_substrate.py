@@ -473,18 +473,29 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
         raise UnsupportedSubstrates(
             "SN1 needs a tertiary or benzylic halide (a carbocation that is stabilised); "
             "for a methyl, primary or secondary alkyl halide use sn2")
-    sub_m, nuc_m = _assign_maps([(substrate.mol, {c_idx: C, x_idx: X}), (nuc.mol, {nu_idx: NU})])
+    neutral = nuc.mol.GetAtomWithIdx(nu_idx).GetFormalCharge() == 0
+    # Neutrales Nucleophil = Lösungsmittel: ein zweites Molekül davon nimmt im letzten Schritt das
+    # Proton auf (Clayden Kap. 15; OpenStax 11.4) — kein freies H⁺ (Gutachter GELB, Etappe E2)
+    sub_m, nuc_m, *solvent = _assign_maps(
+        [(substrate.mol, {c_idx: C, x_idx: X}), (nuc.mol, {nu_idx: NU})]
+        + ([(nuc.mol, {nu_idx: BASE})] if neutral else []))
 
     cation_parts = _cut(sub_m, C, X, {C: +1, X: -1})
     cation, halide = _frag_with(cation_parts, C), _frag_with(cation_parts, X)
-    neutral = nuc_m.GetAtomWithIdx(_idx(nuc_m, NU)).GetFormalCharge() == 0
     oxonium = None
     if neutral:
         # Wasser/Alkohol: der Angriff gibt das Oxonium-Ion, erst die Deprotonierung das Produkt
         # (Clayden Kap. 15; OpenStax 11.4) — Sichtung 05.11.2026 (R4). Das abgehende H ist ein
-        # eigenes Atom, damit der Pfeil der Deprotonierung eine Bindung als Quelle hat.
+        # eigenes Atom, damit der Pfeil der Deprotonierung eine Bindung als Quelle hat; ein
+        # zweites H (Wasser) steht dann ebenfalls als Atom, nicht als „OH⁺“ plus loses H.
         oxonium = _explicit_h(_react("[C+:1].[O:3]>>[C+0:1]-[O+:3]", [Chem.Mol(cation), nuc_m])[0], NU, H_LEAVING)
-        product = _drop_h(oxonium, H_LEAVING, NU)
+        if oxonium.GetAtomWithIdx(_idx(oxonium, NU)).GetTotalNumHs():
+            oxonium = _explicit_h(oxonium, NU, H_OTHER)
+            product = _implicit_h(_drop_h(oxonium, H_LEAVING, NU), H_OTHER)
+        else:
+            product = _drop_h(oxonium, H_LEAVING, NU)
+        base = solvent[0]
+        base_h = _protonate(base, BASE)
     else:
         product = _react("[C+:1].[*:3]>>[C+0:1]-[*+0:3]", [Chem.Mol(cation), nuc_m])[0]
     for atom in product.GetAtoms():
@@ -503,19 +514,24 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
     planar = {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN1_PLANAR, _SN1_PLANAR_RING)}
     product_anchor = {**centre, **_tail(product, NU, (1.0, 0.0), 1.0, exclude=(C,))}
     if neutral:
-        proton = Chem.MolFromSmiles(f"[H+:{H_LEAVING}]")
-        # Oxonium: R′ (Alkohol) nach rechts oben, das abgehende H nach rechts unten — der Pfeil
-        # O–H → O hat so eine freie Seite und kreuzt die neue C–O-Bindung nicht
+        # Oxonium: R′ (Alkohol) bzw. das zweite H nach rechts oben, das abgehende H nach rechts
+        # unten — der Pfeil O–H → O hat so eine freie Seite und kreuzt die neue C–O-Bindung nicht.
+        # Das Lösungsmolekül steht rechts unter dem abgehenden H, sein O-Paar greift es an.
         ox_anchor = {**centre, **_tail(oxonium, NU, (1.0, 0.0), 1.0, exclude=(C, H_LEAVING), tilt=-60.0),
                      H_LEAVING: (1.5, -0.866)}
+        base_anchor = _tail(base, BASE, (2.9, -1.6), 1.0)
         last = [
             MechanismStep(
-                label="Oxonium ion", molecules=[_smi(oxonium), _smi(halide)],
-                arrows=[CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full")],
-                anchors=[ox_anchor, {}],
+                label="Oxonium ion: deprotonation by the solvent",
+                molecules=[_smi(oxonium), _smi(base), _smi(halide)],
+                arrows=[
+                    CurvedArrow(source=(BASE, "lone_pair"), target=(H_LEAVING, "atom"), style="full"),
+                    CurvedArrow(source=(H_LEAVING, "bond_to", NU), target=(NU, "atom"), style="full"),
+                ],
+                anchors=[ox_anchor, base_anchor, {}],
             ),
             MechanismStep(
-                label=label, molecules=[_smi(product), _smi(halide), _smi(proton)], arrows=[],
+                label=label, molecules=[_smi(product), _smi(halide), _smi(base_h)], arrows=[],
                 anchors=[product_anchor, {}, {}],
             ),
         ]
@@ -675,6 +691,18 @@ def _fischer(frags: list[_Frag]) -> list[MechanismStep]:
 H_MOVING = 8
 # SN1 mit Wasser/Alkohol: das H, das das Oxonium-Ion als H⁺ verlässt (als Atom gezeichnet)
 H_LEAVING = 9
+# SN1 mit Wasser: das zweite H am Oxonium-O (als Atom gezeichnet, damit es nicht „OH⁺“ plus H heißt)
+H_OTHER = 10
+# O des Lösungsmittelmoleküls, das ein Proton aufnimmt (SN1 mit Wasser/Alkohol)
+BASE = 5
+
+
+def _protonate(mol: Chem.Mol, map_id: int) -> Chem.Mol:
+    """Atom map_id nimmt ein Proton auf: ein H mehr, Ladung +1 (H₂O → H₃O⁺, ROH → ROH₂⁺)."""
+    rw = Chem.RWMol(mol)
+    atom = rw.GetAtomWithIdx(_idx(rw, map_id))
+    _set_hs(atom, atom.GetTotalNumHs() + 1, atom.GetFormalCharge() + 1)
+    return _sanitize(rw)
 
 
 def _drop_h(mol: Chem.Mol, h_map: int, heavy_map: int) -> Chem.Mol:
