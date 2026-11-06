@@ -2,8 +2,12 @@
 
 ## Weiter bei — Codex-Neustart nach Befund 5 (06.11.2026)
 
-**Nächster Schritt:** `~/.claude/bin/tisch lies --neu --ich codex`; nur einen neuen Auftrag ausführen.
-Befund 5 ist gebaut und berichtet, Abnahme liegt beim Orchestrator Claude `f31ab414` (`w4W:p6`).
+**Nächster Schritt:** Folgeauftrag `20261106-104425-ir-bericht-deterministisch` lesen und ausführen:
+`scripts/masse_eval.py` sortiert bei häufigsten Banden Gleichstände bisher instabil. Stabil nach Bandname sortieren;
+in `tests/test_masse_eval_ir.py` einen zweimal erzeugten Bericht auf Byte-Gleichheit prüfen (erst rot sehen),
+`docs/evidence/masse-eval-2026-11/ir-abdeckung.md` einmal neu erzeugen, nur diese drei Dateien committen/pushen,
+kurzer Bericht mit SHA in diesen neuen Faden. Vorher Leases mit Befund-2-Session abstimmen (sie bearbeitet nur IDENT_DEUTUNG im selben Skript).
+Befund 5 ist vom Orchestrator Claude `f31ab414` (`w4W:p6`) abgenommen (06.11., Folgeauftrag #1: ph 51/51, 92 Tests inkl. Snapshots/Goldens).
 Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine weitere Nachricht versuchen.
 
 - [x] `a3f62dd` auf main gepusht: `chemdraw_tool/ph_core.py::exact_ph`, `ph_calc.py::_range_notes`,
@@ -13,8 +17,8 @@ Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine
   `./test.sh` rc=0, **8102 passed / 16 skipped**, Log `/tmp/chemdraw-masse-befund5-gate.log`.
   Desktop neu gestartet; Handshake rc=0, **16 Tools / 12 Panels**, `/tmp/chemdraw-masse-befund5-handshake.log`.
   Tool-Snapshots und Golden-Bilder unverändert. Punkt 5 unten dokumentiert pH/IR als erledigt, Restlücken bleiben explizit.
-- [ ] Orchestrator-Abnahme: Bericht #5, Zustellung an Orchestrator #6 im genannten Faden.
-  Keine eigene Hintergrundarbeit und keine zeitgebundene Folgeprüfung offen; nächste Folgeaktion ist das Lesen neuer Tisch-Nachrichten.
+- [x] Orchestrator-Abnahme: Bericht #5, Zustellung #6 im alten Faden; Abnahme im neuen Folgeauftrag bestätigt.
+- [ ] Folgeauftrag deterministischer IR-Bericht wie oben. Keine eigene Hintergrundarbeit und keine zeitgebundene Folgeprüfung offen.
 
 **Dateien zur Abnahme:** `tests/test_ph_extreme.py`, `tests/test_spectro.py`, `tests/test_masse_eval_ir.py`,
 `docs/evidence/masse-eval-2026-11/{ph,ir-abdeckung,ir-quellen}.md`. IR-Unterklassen und Desktop-Befunde bleiben offen.
