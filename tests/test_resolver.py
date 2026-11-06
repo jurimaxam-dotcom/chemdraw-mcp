@@ -1002,6 +1002,50 @@ def test_name_with_salt_word_keeps_the_salt(_opsin, name):
         assert resolve_name(name) == salz
 
 
+# --- Deutsche Salznamen (06.11.2026) ------------------------------------------
+# "Bendamustinhydrochlorid" fand keine Quelle (PubChem 404, NCI 500), weil die
+# englische Variante "Bendamustinhydro chloride" lautete. Mit dem ganzen
+# Gegenion trifft "Bendamustine hydrochloride" das Salz (CID 77082) — echte
+# PubChem-Antwort vom 06.11.2026. Der Umweg erscheint als found_as.
+_BENDAMUSTIN_HCL = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O.Cl"
+
+
+@pytest.mark.parametrize("name", ["Bendamustinhydrochlorid", "Bendamustin Hydrochlorid",
+                                  "Bendamustin-Hydrochlorid"])
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_german_salt_name_resolves_to_the_salt(_nci, _opsin, name):
+    lookup, calls = _only_for("Bendamustine hydrochloride", _BENDAMUSTIN_HCL)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route(name) == (_BENDAMUSTIN_HCL, "Bendamustine hydrochloride")
+    assert calls == [name, "Bendamustine hydrochloride"]
+
+
+# "Cefalotin-Natrium": PubChem kennt "Cefalotin sodium", nicht "Cefalotine
+# sodium" (echte Antworten 06.11.2026). Nach der englischen Variante fragt die
+# Kaskade deshalb einmal die Salzvariante (Stamm unverändert, Gegenion englisch).
+_CEFALOTIN_NA = "CC(=O)OCC1=C(N2[C@@H]([C@@H](C2=O)NC(=O)CC3=CC=CS3)SC1)C(=O)[O-].[Na+]"
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_salt_variant_comes_after_the_english_variant(_nci, _opsin):
+    lookup, calls = _only_for("Cefalotin sodium", _CEFALOTIN_NA)
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolver.resolve_name_route("Cefalotin-Natrium") == (_CEFALOTIN_NA, "Cefalotin sodium")
+    assert calls == ["Cefalotin-Natrium", "Cefalotine sodium", "Cefalotin sodium"]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+def test_name_without_counterion_asks_no_salt_variant(_nci, _opsin):
+    lookup, calls = _only_for("nothing")
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        with pytest.raises(NameResolutionError):
+            resolve_name("Dexamethason")
+    assert calls == ["Dexamethason", "Dexamethasone"]
+
+
 # --- „found as": der Umweg wird sichtbar (Folgepunkt Masse-Eval, 06.11.2026) --
 # Löst resolve_name einen Namen nicht wörtlich, sondern über eine andere
 # Schreibweise auf, nennt das Ergebnis diese Schreibweise — so lässt sich ein

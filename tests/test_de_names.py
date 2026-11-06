@@ -8,7 +8,7 @@ die in der Messung gegen PubChem getroffen haben (scratchpad-Messung 05.11.:
 
 import pytest
 
-from chemdraw_tool.de_names import english_variant
+from chemdraw_tool.de_names import english_variant, salt_variant
 
 
 @pytest.mark.parametrize(
@@ -39,6 +39,18 @@ from chemdraw_tool.de_names import english_variant
         ("Atracurium-Besilat", "Atracurium besilate"),
         ("Vecuronium-Bromid", "Vecuronium bromide"),
         ("Fludarabin-Phosphat", "Fludarabine phosphate"),
+        # Salznamen (06.11.2026): zusammengesetzte Gegenionen vor ihrem Kurzwort —
+        # sonst bleibt "hydro" am Stamm ("Bendamustinhydro chloride", not_found)
+        ("Bendamustinhydrochlorid", "Bendamustine hydrochloride"),
+        ("Bendamustin Hydrochlorid", "Bendamustine hydrochloride"),
+        ("Bendamustin-Hydrochlorid", "Bendamustine hydrochloride"),
+        ("Histamindihydrochlorid", "Histamine dihydrochloride"),
+        ("Dextromethorphanhydrobromid", "Dextromethorphane hydrobromide"),
+        ("Metoprololtartrat", "Metoprolol tartrate"),
+        ("Enalaprilmaleat", "Enalapril maleate"),
+        ("Bisoprololfumarat", "Bisoprolol fumarate"),
+        ("Doxazosinmesilat", "Doxazosine mesilate"),
+        ("Sumatriptansuccinat", "Sumatriptane succinate"),
         # Halogen-Präfix ohne Bindevokal
         ("5-Fluorcytosin", "5-Fluorocytosine"),
         # Racemat-Präfix: PubChem führt das Racemat unter dem nackten Namen
@@ -74,3 +86,38 @@ def test_english_names_do_not_grow_twice():
     assert english_variant("amiloride") is None
     assert english_variant("dexamethasone") is None
     assert english_variant("maleic acid") is None
+
+
+# Salznamen-Messung (06.11.2026, docs/evidence/masse-eval-2026-11/salznamen_mess.json):
+# PubChem kennt manche Salze nur mit dem INN ohne Endungs-e ("Cefalotin sodium",
+# "Anamorelin hydrochloride"). salt_variant übersetzt nur das Gegenion und lässt
+# den Stamm stehen; None, wenn kein Gegenion am Ende steht oder die Variante
+# dieselbe ist wie english_variant (dann kein zweiter Netzaufruf).
+@pytest.mark.parametrize(
+    ("german", "english"),
+    [
+        ("Cefalotin-Natrium", "Cefalotin sodium"),
+        ("Benazolin-Kalium", "Benazolin potassium"),
+        ("Anamorelinhydrochlorid", "Anamorelin hydrochloride"),
+        ("Camostatmesilat", "Camostat mesilate"),
+        ("Dibekacinsulfat", "Dibekacin sulfate"),
+        ("Metformin Hydrochlorid", "Metformin hydrochloride"),
+    ],
+)
+def test_salt_variant_keeps_the_stem(german, english):
+    assert salt_variant(german) == english
+
+
+@pytest.mark.parametrize("name", ["Metoprololtartrat", "Dexamethason", "Buspiron", "Natrium", "caffeine", ""])
+def test_no_salt_variant_without_counterion_or_when_english_variant_is_the_same(name):
+    assert salt_variant(name) is None
+
+
+@pytest.mark.parametrize(
+    ("german", "english"),
+    [("Cefalotin-Natrium", "Cefalotine sodium"), ("Metamizolnatrium", "Metamizol sodium"),
+     ("Natriumchlorid", "sodium chloride"), ("Kaliumcitrat", "potassium citrate")],
+)
+def test_sodium_and_potassium_also_stand_behind_the_stem(german, english):
+    """-Natrium/-Kalium hinten ist das Gegenion wie -chlorid; vorn bleibt es Kation."""
+    assert english_variant(german) == english

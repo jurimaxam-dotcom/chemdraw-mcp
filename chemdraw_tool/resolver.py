@@ -17,7 +17,7 @@ from urllib.parse import quote
 import requests
 from rdkit import Chem, RDLogger
 
-from chemdraw_tool.de_names import english_variant
+from chemdraw_tool.de_names import english_variant, salt_variant
 
 logger = logging.getLogger(__name__)
 
@@ -1032,6 +1032,8 @@ def resolve_name_route(name: str) -> Resolution:
     3. PubChem with umlaut transliteration (ä→ae etc.)
     4. NCI CIR with transliteration
     5. NCI CIR with the original name
+    6. PubChem with the English spelling (de_names.english_variant)
+    7. PubChem with only the counter-ion in English (de_names.salt_variant)
 
     Cached via lru_cache: identische Namen gehen nur einmal ins Netz.
     Wichtig — lru_cache speichert KEINE Ausnahmen: ein Fehlschlag (offline!)
@@ -1071,6 +1073,14 @@ def resolve_name_route(name: str) -> Resolution:
         logger.info("Retrying with English spelling: %r → %r", name, english)
         if smiles := _pubchem_lookup(english, report):
             return Resolution(smiles, _found_as(name, english))
+
+    # Salzname, dessen INN PubChem nur ohne Endungs-e kennt ("Cefalotin sodium",
+    # nicht "Cefalotine sodium"; Salznamen-Messung 06.11.2026). Nur Namen mit
+    # Gegenion am Ende, und nur wenn die Schreibweise neu ist.
+    if salt := salt_variant(name):
+        logger.info("Retrying with English counter-ion: %r → %r", name, salt)
+        if smiles := _pubchem_lookup(salt, report):
+            return Resolution(smiles, _found_as(name, salt))
 
     logger.info(
         "Resolution failed for %r: %s",

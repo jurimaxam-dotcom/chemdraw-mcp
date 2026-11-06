@@ -2,15 +2,15 @@
 
 Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (414 Stoffe): 669 grün · 1 gelb · 41 rot.**
+**711 Eingaben (413 Stoffe): 674 grün · 1 gelb · 36 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 14 min · Median 0.6 s · 90 % ≤ 4.4 s · langsamste 12.2 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 13 min · Median 0.6 s · 90 % ≤ 4.0 s · langsamste 18.6 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
 | Art | Zahl | Bedeutung |
 |---|---:|---|
-| stereo | 23 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
+| stereo | 18 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | nicht aufgelöst | 9 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
 | skelett | 8 | anderes Gerüst — falscher Stoff |
 | salz | 1 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
@@ -26,7 +26,6 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 | L-scopolamine | en | `STECJAGHUSJQJN-FWXGHANASA-N` | `STECJAGHUSJQJN-USLFZFAMSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | L-Scopolamin | de | `STECJAGHUSJQJN-FWXGHANASA-N` | `STECJAGHUSJQJN-USLFZFAMSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Benzylpenicillin-Benzathin | de | `BVGLIYRKPOITBQ-ANPZCEIESA-N` | `BVGLIYRKPOITBQ-UHFFFAOYSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| clindamycin | en | `KDLRVYVGXIQJDK-NOWPCOIGSA-N` | `KDLRVYVGXIQJDK-AWPVFWJPSA-N` | clindamycin | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | clomifene | en | `GKIRPKYJQBWNGO-UHFFFAOYSA-N` | `GKIRPKYJQBWNGO-QPLCGJKRSA-N` | zuclomiphene | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Isosorbiddinitrat | de | `MOYKHGMNXAOIAT-JGWLITMVSA-N` | `MOYKHGMNXAOIAT-OMMKOOBNSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Mefloquin | de | `XEEQGYMUWCZPDN-UHFFFAOYSA-N` | `XEEQGYMUWCZPDN-DOMZBBRYSA-N` | (s,r)-mefloquine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
@@ -40,11 +39,7 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 | vinblastine | en | `JXLYSJRDGCGARV-XQKSVPLYSA-N` | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | vinblastine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Vinblastin | de | `JXLYSJRDGCGARV-XQKSVPLYSA-N` | `JXLYSJRDGCGARV-CFWMRBGOSA-N` | vinblastine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Vinorelbin | de | `GBABOYUKABKIAF-IELIFDKJSA-N` | `GBABOYUKABKIAF-GHYRFKGUSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| cocaine | en | `ZPUCINDJVBIVPJ-PFSRBDOWSA-N` | `ZPUCINDJVBIVPJ-LJISPDSOSA-N` | cocaine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Adrenalin | de | `UCTWMZQNUQWSLP-VIFPVBQESA-N` | `UCTWMZQNUQWSLP-UHFFFAOYSA-N` | racepinephrine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| pantothenic acid | en | `GHOKWGTUZJEAQD-UHFFFAOYSA-N` | `GHOKWGTUZJEAQD-ZETCQYMHSA-N` | pantothenic acid | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| Pantothensäure | de | `GHOKWGTUZJEAQD-UHFFFAOYSA-N` | `GHOKWGTUZJEAQD-ZETCQYMHSA-N` | pantothenic acid | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| trehalose | en | `HDTRYLNUVZCQOY-MFAKQEFJSA-N` | `HDTRYLNUVZCQOY-LIZSDCNHSA-N` | trehalose | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Xylit | de | `HEBKCHPVOIAQTA-SCDXWVJYSA-N` | `HEBKCHPVOIAQTA-NGQZWQHPSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 
 ### nicht aufgelöst
@@ -90,13 +85,13 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 2
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| Amidotrizoesäure | 12.2 | gruen |
-| Acrylsäure | 9.4 | gruen |
-| γ-Aminobuttersäure | 9.3 | gruen |
-| Malonsäure | 9.1 | gruen |
-| 4-Aminosalicylsäure | 9.1 | gruen |
-| Zoledronsäure | 8.9 | gruen |
-| Nicotinsäure | 8.8 | gruen |
-| Pantothensäure | 8.6 | rot |
-| Maleinsäure | 8.5 | gruen |
-| meso-Dimercaptobernsteinsäure | 8.3 | gruen |
+| N-Methylglucaminantimonat | 18.6 | rot |
+| γ-Aminobuttersäure | 9.1 | gruen |
+| Malonsäure | 8.9 | gruen |
+| Maleinsäure | 8.6 | gruen |
+| Phthalsäure | 8.4 | gruen |
+| Acrylsäure | 8.4 | gruen |
+| Ethylendiamintetraessigsäure | 8.4 | rot |
+| Glycolsäure | 8.4 | gruen |
+| 4-Aminosalicylsäure | 8.4 | gruen |
+| Zoledronsäure | 8.3 | gruen |

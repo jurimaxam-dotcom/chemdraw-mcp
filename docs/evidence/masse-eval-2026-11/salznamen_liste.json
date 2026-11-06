@@ -1,0 +1,1610 @@
+[
+ {
+  "name": "Acetyldihydrocodeinhydrochlorid",
+  "erwartet": "XTOJZLLCLXRDDW-RIMCYNRYSA-N",
+  "wikidata": "Q27279901",
+  "teil": "holdout"
+ },
+ {
+  "name": "Acifluorfen-Natrium",
+  "erwartet": "RVULBHWZFCBODE-UHFFFAOYSA-M",
+  "wikidata": "Q27264899",
+  "teil": "holdout"
+ },
+ {
+  "name": "Aclidiniumbromid",
+  "erwartet": "XLAKJQPTOJHYDR-QTQXQZBYSA-M",
+  "wikidata": "Q27888207",
+  "teil": "holdout"
+ },
+ {
+  "name": "Alcuroniumchlorid",
+  "erwartet": "CPYGBGOXCJJJGC-GKLGUMFISA-L",
+  "wikidata": "Q411049",
+  "teil": "holdout"
+ },
+ {
+  "name": "Alectinibhydrochlorid",
+  "erwartet": "GYABBVHSRIHYJR-UHFFFAOYSA-N",
+  "wikidata": "Q27104897",
+  "teil": "holdout"
+ },
+ {
+  "name": "Alizapridhydrochlorid",
+  "erwartet": "BRECEDGYMYXGNF-UHFFFAOYSA-N",
+  "wikidata": "Q27258431",
+  "teil": "holdout"
+ },
+ {
+  "name": "Alloxydim-Natrium",
+  "erwartet": "DVQHRBFGRZHMSR-UHFFFAOYSA-N",
+  "wikidata": "Q27268060",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Ameziniummetilsulfat",
+  "erwartet": "ZEASXVYVFFXULL-UHFFFAOYSA-N",
+  "wikidata": "Q470449",
+  "teil": "holdout"
+ },
+ {
+  "name": "Amineptin-Hydrochlorid",
+  "erwartet": "VDPUXONTAVMIKZ-UHFFFAOYSA-N",
+  "wikidata": "Q419643",
+  "teil": "holdout"
+ },
+ {
+  "name": "Amineptin-Natrium",
+  "erwartet": "RXWWSYJKVIBAAU-UHFFFAOYSA-M",
+  "wikidata": "Q27264462",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Amlodipinbesilat",
+  "erwartet": "ZPBWCRDSRKPIDG-UHFFFAOYSA-N",
+  "wikidata": "Q27105760",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Ammoniumlaurylsulfat",
+  "erwartet": "BTBJBAZGXNKLQC-UHFFFAOYSA-N",
+  "wikidata": "Q2783951",
+  "teil": "holdout"
+ },
+ {
+  "name": "Anamorelinhydrochlorid",
+  "erwartet": "VFYAEUWJFGTGGO-GHTUPXNNSA-N",
+  "wikidata": "Q27261306",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Anisotropinmethylbromid",
+  "erwartet": "QSFKGMJOKUZAJM-CNKDKAJDSA-M",
+  "wikidata": "Q7076760",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Asulam-Natrium",
+  "erwartet": "PEXLHWBDBQUUOG-UHFFFAOYSA-M",
+  "wikidata": "Q27282254",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Atomoxetin-Hydrochlorid",
+  "erwartet": "LUCXVPAZUDVVBT-UNTBIKODSA-N",
+  "wikidata": "Q27225729",
+  "teil": "holdout"
+ },
+ {
+  "name": "Atracurium-Besilat",
+  "erwartet": "XXZSQOVSEBAPGS-UHFFFAOYSA-L",
+  "wikidata": "Q165660",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Azatadinmaleat",
+  "erwartet": "SGHXFFAHXTZRQM-SPIKMXEPSA-N",
+  "wikidata": "Q27105896",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Bambuterol-Hydrochlorid",
+  "erwartet": "LBARATORRVNNQM-UHFFFAOYSA-N",
+  "wikidata": "Q27126505",
+  "teil": "holdout"
+ },
+ {
+  "name": "Bedaquilinfumarat",
+  "erwartet": "ZLVSPMRFRHMMOY-WWCCMVHESA-N",
+  "wikidata": "Q27139886",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Benazolin-Kalium",
+  "erwartet": "BVAQOPQXUNGRCM-UHFFFAOYSA-M",
+  "wikidata": "Q27273352",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Benserazid-Hydrochlorid",
+  "erwartet": "ULFCBIUXQQYDEI-UHFFFAOYSA-N",
+  "wikidata": "Q27114249",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzatropinmesilat",
+  "erwartet": "CPFJLLXFNPCTDW-BWSPSPBFSA-N",
+  "wikidata": "Q27105931",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzethoniumchlorid",
+  "erwartet": "UREZNYTWGJKWBI-UHFFFAOYSA-M",
+  "wikidata": "Q425119",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzidinacetat",
+  "erwartet": "AAECWZSULYTBQR-UHFFFAOYSA-N",
+  "wikidata": "Q83062094",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Benzoctamin-Hydrochlorid",
+  "erwartet": "NZPJYSIIKYJREH-UHFFFAOYSA-N",
+  "wikidata": "Q27252217",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzododeciniumchlorid",
+  "erwartet": "JBIROUFYLSSYDX-UHFFFAOYSA-M",
+  "wikidata": "Q408727",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzoxoniumchlorid",
+  "erwartet": "UUSQFLGKGQEVCM-UHFFFAOYSA-M",
+  "wikidata": "Q716544",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Benzphetaminhydrochlorid",
+  "erwartet": "ANFSNXAXVLRZCG-RSAXXLAASA-N",
+  "wikidata": "Q27126507",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzyldimethyltetradecylammoniumchlorid",
+  "erwartet": "OCBHHZMJRVXXQK-UHFFFAOYSA-M",
+  "wikidata": "Q27231176",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Benzyltriethylammoniumchlorid",
+  "erwartet": "HTZCNXWZYVXIMZ-UHFFFAOYSA-M",
+  "wikidata": "Q27258963",
+  "teil": "holdout"
+ },
+ {
+  "name": "Benzyltrimethylammoniumchlorid",
+  "erwartet": "KXHPPCXNWTUNSB-UHFFFAOYSA-M",
+  "wikidata": "Q22829137",
+  "teil": "holdout"
+ },
+ {
+  "name": "Berberrubinchlorid",
+  "erwartet": "GYFSYEVKFOOLFZ-UHFFFAOYSA-N",
+  "wikidata": "Q72443285",
+  "teil": "holdout"
+ },
+ {
+  "name": "Bispyribac-Natrium",
+  "erwartet": "FUHMZYWBSHTEDZ-UHFFFAOYSA-M",
+  "wikidata": "Q17122484",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Bleomycinhydrochlorid",
+  "erwartet": "BODDZCXQPQPRES-OYALTWQYSA-O",
+  "wikidata": "Q72447689",
+  "teil": "holdout"
+ },
+ {
+  "name": "Bunitrolol-Hydrochlorid",
+  "erwartet": "RJPWESHPIMRNNM-UHFFFAOYSA-N",
+  "wikidata": "Q27273598",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Butabarbital-Natrium",
+  "erwartet": "QORQZMBCPRBCAB-UHFFFAOYSA-M",
+  "wikidata": "Q27273326",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Butyltriethylammoniumbromid",
+  "erwartet": "ZNFYPPCUDSCDPR-UHFFFAOYSA-M",
+  "wikidata": "Q72514640",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cabotegravir-Natrium",
+  "erwartet": "AEZBWGMXBKPGFP-KIUAEZIZSA-M",
+  "wikidata": "Q27257476",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cafedrinhydrochlorid",
+  "erwartet": "UTTZHZDGHMJDPM-NXCSSKFKSA-N",
+  "wikidata": "Q27282554",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Camostatmesilat",
+  "erwartet": "FSEKIHNIDBATFG-UHFFFAOYSA-N",
+  "wikidata": "Q23731028",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cariprazin Hydrochlorid",
+  "erwartet": "GPPJWWMREQHLQT-BHQIMSFRSA-N",
+  "wikidata": "Q27162922",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cefalotin-Natrium",
+  "erwartet": "VUFGUVLLDPOSBC-XRZFDKQNSA-M",
+  "wikidata": "Q27106126",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cefapirin-Natrium",
+  "erwartet": "VGEOUKPOQQEQSX-OALZAMAHSA-M",
+  "wikidata": "Q27106128",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cefotiam-Dihydrochlorid",
+  "erwartet": "BWRRTAXZCKVRON-DGPOFWGLSA-N",
+  "wikidata": "Q27114289",
+  "teil": "holdout"
+ },
+ {
+  "name": "Cefoxitin-Natrium",
+  "erwartet": "GNWUOVJNSFPWDD-XMZRARIVSA-M",
+  "wikidata": "Q27106110",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cefpodoxim-Natrium",
+  "erwartet": "JNMXSNGAMPXCDR-XYNKDNFRSA-M",
+  "wikidata": "Q27258045",
+  "teil": "holdout"
+ },
+ {
+  "name": "Ceftobiprolmedocaril-Natrium",
+  "erwartet": "MFAWUGGPPMTWPU-LCJFHXTKSA-M",
+  "wikidata": "Q27284724",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cetrimoniumchlorid",
+  "erwartet": "WOWHHFRSBJGXCM-UHFFFAOYSA-M",
+  "wikidata": "Q1061007",
+  "teil": "holdout"
+ },
+ {
+  "name": "Cetylalkoniumchlorid",
+  "erwartet": "SXPWTBGAZSPLHA-UHFFFAOYSA-M",
+  "wikidata": "Q18345315",
+  "teil": "holdout"
+ },
+ {
+  "name": "Cetylpyridiniumchlorid",
+  "erwartet": "YMKDRGPMQRFJGP-UHFFFAOYSA-M",
+  "wikidata": "Q418318",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Cetyltrimethylammoniumbromid",
+  "erwartet": "LZZYPRNAOMGNLH-UHFFFAOYSA-M",
+  "wikidata": "Q416077",
+  "teil": "holdout"
+ },
+ {
+  "name": "Chininhydrochlorid",
+  "erwartet": "LBSFSRMTJJPTCW-DSXUQNDKSA-N",
+  "wikidata": "Q27268091",
+  "teil": "holdout"
+ },
+ {
+  "name": "Chininsulfat",
+  "erwartet": "RONWGALEIBILOG-VMJVVOMYSA-N",
+  "wikidata": "Q27123328",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Chinolinhydrobromid",
+  "erwartet": "YHQSXWOXIHDVHQ-UHFFFAOYSA-N",
+  "wikidata": "Q136418539",
+  "teil": "holdout"
+ },
+ {
+  "name": "Chlorcyclizindihydrochlorid",
+  "erwartet": "FLEBQACKYGHXTR-UHFFFAOYSA-N",
+  "wikidata": "Q27263399",
+  "teil": "holdout"
+ },
+ {
+  "name": "Chlorcyclizinhydrochlorid",
+  "erwartet": "MSIJLVMSKDXAQN-UHFFFAOYSA-N",
+  "wikidata": "Q27284988",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Chlordimeformhydrochlorid",
+  "erwartet": "WZFNZVJGDCKNME-UHFFFAOYSA-N",
+  "wikidata": "Q1989088",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Chlorprothixen-Citrat",
+  "erwartet": "VLSAIYYYWWMOOQ-KIUKIJHYSA-N",
+  "wikidata": "Q27269202",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Chlorprothixen-Hydrochlorid",
+  "erwartet": "YWKRLOSRDGPEJR-KIUKIJHYSA-N",
+  "wikidata": "Q27254072",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Chrysoidin-Hydrochlorid",
+  "erwartet": "MCTQNEBFZMBRSQ-UHFFFAOYSA-N",
+  "wikidata": "Q17522036",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Citalopram Hydrobromid",
+  "erwartet": "WIHMBLDNRMIGDW-UHFFFAOYSA-N",
+  "wikidata": "Q27280253",
+  "teil": "holdout"
+ },
+ {
+  "name": "Clemizol-Hydrochlorid",
+  "erwartet": "DNFMJYXRIMLMBZ-UHFFFAOYSA-N",
+  "wikidata": "Q27269676",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Clomifencitrat",
+  "erwartet": "PYTMYKVIJXPNBD-UHFFFAOYSA-N",
+  "wikidata": "Q72461111",
+  "teil": "holdout"
+ },
+ {
+  "name": "Clonidin-Hydrochlorid",
+  "erwartet": "ZNIFSRGNXRYGHF-UHFFFAOYSA-N",
+  "wikidata": "Q27292429",
+  "teil": "holdout"
+ },
+ {
+  "name": "Clophedron-Hydrochlorid",
+  "erwartet": "QXEPSICDXPPHTO-UHFFFAOYSA-N",
+  "wikidata": "Q134114196",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Codeinphosphat",
+  "erwartet": "WUXLCJZUUHIXFY-FFHNEAJVSA-N",
+  "wikidata": "Q3748961",
+  "teil": "holdout"
+ },
+ {
+  "name": "Daridorexanthydrochlorid",
+  "erwartet": "HJVGDXBEMFHGKI-BQAIUKQQSA-N",
+  "wikidata": "Q120176291",
+  "teil": "holdout"
+ },
+ {
+  "name": "Demeclocyclinhydrochlorid",
+  "erwartet": "GVSJQNRGSCOSNJ-KBHRXELFSA-N",
+  "wikidata": "Q27887536",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Demexiptilin-Hydrochlorid",
+  "erwartet": "MZTHMUGFMPRTIK-UHFFFAOYSA-N",
+  "wikidata": "Q27291141",
+  "teil": "holdout"
+ },
+ {
+  "name": "Deprenyl-Hydrochlorid",
+  "erwartet": "IYETZZCWLLUHIJ-UHFFFAOYSA-N",
+  "wikidata": "Q27263610",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Diallyldimethylammoniumchlorid",
+  "erwartet": "GQOKIYDTHHZSCJ-UHFFFAOYSA-M",
+  "wikidata": "Q27270755",
+  "teil": "holdout"
+ },
+ {
+  "name": "Diazonaphthalinsulfat",
+  "erwartet": "IUZDOCVMHQPATC-UHFFFAOYSA-L",
+  "wikidata": "Q133934222",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dibekacinsulfat",
+  "erwartet": "GXKUKBCVZHBTJW-USXQJGOZSA-N",
+  "wikidata": "Q27273462",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dichlorprop-Kalium",
+  "erwartet": "SIVJKMBJGCUUNS-UHFFFAOYSA-M",
+  "wikidata": "Q27286765",
+  "teil": "holdout"
+ },
+ {
+  "name": "Dichlorprop-Natrium",
+  "erwartet": "XWAFIZUTHLRWBE-UHFFFAOYSA-N",
+  "wikidata": "Q27236975",
+  "teil": "holdout"
+ },
+ {
+  "name": "Didecyldimethylammoniumchlorid",
+  "erwartet": "RUPBZQFQVRMKDG-UHFFFAOYSA-M",
+  "wikidata": "Q418930",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Difenzoquatmethylsulfat",
+  "erwartet": "XQEMNBNCQVQXMO-UHFFFAOYSA-M",
+  "wikidata": "Q1224329",
+  "teil": "holdout"
+ },
+ {
+  "name": "Dihydrocodein Hydrogentartrat",
+  "erwartet": "ZGSZBVAEVPSPFM-HYTSPMEMSA-N",
+  "wikidata": "Q27270730",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dihydroergotamin-Mesilat",
+  "erwartet": "ADYPXRFPBQGGAH-UMYZUSPBSA-N",
+  "wikidata": "Q27126884",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dihydroergotamin-Tartrat",
+  "erwartet": "AYYQJUDESMECLY-QCMZQTNXSA-N",
+  "wikidata": "Q27126885",
+  "teil": "holdout"
+ },
+ {
+  "name": "Diltiazemhydrochlorid",
+  "erwartet": "HDRXZJPWHTXQRI-BHDTVMLSSA-N",
+  "wikidata": "Q27105183",
+  "teil": "holdout"
+ },
+ {
+  "name": "Dimethyldioctadecylammoniumchlorid",
+  "erwartet": "REZZEXDLIUJMMS-UHFFFAOYSA-M",
+  "wikidata": "Q5277336",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dimethyltryptaminhydrochlorid",
+  "erwartet": "FXCHKLOHTIIVJW-UHFFFAOYSA-N",
+  "wikidata": "Q82903128",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dimetindenmaleat",
+  "erwartet": "SWECWXGUJQLXJF-BTJKTKAUSA-N",
+  "wikidata": "Q27265113",
+  "teil": "holdout"
+ },
+ {
+  "name": "Dimidiumbromid",
+  "erwartet": "MQOKYEROIFEEBH-UHFFFAOYSA-N",
+  "wikidata": "Q1225774",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dinatriumlauroamphodiacetat",
+  "erwartet": "QKQCPXJIOJLHAL-UHFFFAOYSA-L",
+  "wikidata": "Q27287787",
+  "teil": "holdout"
+ },
+ {
+  "name": "Diphenoxylathydrochlorid",
+  "erwartet": "SHTAFWKOISOCBI-UHFFFAOYSA-N",
+  "wikidata": "Q27126896",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Diquatdibromid",
+  "erwartet": "ODPOAESBSUKMHD-UHFFFAOYSA-L",
+  "wikidata": "Q910903",
+  "teil": "holdout"
+ },
+ {
+  "name": "Diquatdichlorid",
+  "erwartet": "SKYNPRKUXHXZFJ-UHFFFAOYSA-L",
+  "wikidata": "Q23057985",
+  "teil": "holdout"
+ },
+ {
+  "name": "Dithiazaniniodid",
+  "erwartet": "MNQDKWZEUULFPX-UHFFFAOYSA-M",
+  "wikidata": "Q5283660",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Dodecyltrimethylammoniumchlorid",
+  "erwartet": "DDXLVDQZPFLQMZ-UHFFFAOYSA-M",
+  "wikidata": "Q27273748",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Doxorubicin-Hydrochlorid",
+  "erwartet": "MWWSFMDVAYGXBV-RUELKSSGSA-N",
+  "wikidata": "Q27032359",
+  "teil": "holdout"
+ },
+ {
+  "name": "Drofenin-Hydrochlorid",
+  "erwartet": "WIELVDXKOYPANK-UHFFFAOYSA-N",
+  "wikidata": "Q27284253",
+  "teil": "holdout"
+ },
+ {
+  "name": "Drotaverin-Hydrochlorid",
+  "erwartet": "JBFLYOLJRKJYNV-MASIZSFYSA-N",
+  "wikidata": "Q27253893",
+  "teil": "holdout"
+ },
+ {
+  "name": "Edivoxetin-Hydrochlorid",
+  "erwartet": "WJDKGRLMNSHPON-CJRXIRLBSA-N",
+  "wikidata": "Q27275595",
+  "teil": "holdout"
+ },
+ {
+  "name": "Edrophoniumchlorid",
+  "erwartet": "BXKDSDJJOVIHMX-UHFFFAOYSA-N",
+  "wikidata": "Q27068168",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Elacestrantdihydrochlorid",
+  "erwartet": "XGFHYCAZOCBCRQ-FBHGDYMESA-N",
+  "wikidata": "Q27270799",
+  "teil": "holdout"
+ },
+ {
+  "name": "Elliptinium-Acetat",
+  "erwartet": "BOMZMNZEXMAQQW-UHFFFAOYSA-N",
+  "wikidata": "Q27279800",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Emetindihydrochlorid",
+  "erwartet": "JROGBPMEKVAPEH-GXGBFOEMSA-N",
+  "wikidata": "Q27290698",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Ergotamintartrat",
+  "erwartet": "CJMJLDQKTOJACI-BGQAIRJTSA-N",
+  "wikidata": "Q27284199",
+  "teil": "holdout"
+ },
+ {
+  "name": "Eribulinmesilat",
+  "erwartet": "QAMYWGZHLCQOOJ-WRNBYXCMSA-N",
+  "wikidata": "Q27882076",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Esketamin-Hydrochlorid",
+  "erwartet": "VCMGMSHEPQENPE-ZOWNYOTGSA-N",
+  "wikidata": "Q27128597",
+  "teil": "holdout"
+ },
+ {
+  "name": "Esomeprazol-Natrium",
+  "erwartet": "RYXPMWYHEBGTRV-JIDHJSLPSA-N",
+  "wikidata": "Q27282619",
+  "teil": "holdout"
+ },
+ {
+  "name": "Ethacridinlactat",
+  "erwartet": "IYLLULUTZPKQBW-UHFFFAOYSA-N",
+  "wikidata": "Q426220",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Ethidiumbromid",
+  "erwartet": "ZMMJGEGLRURXTF-UHFFFAOYSA-N",
+  "wikidata": "Q408634",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Etymemazin-Hydrochlorid",
+  "erwartet": "ZVSKDFRXWJPINY-UHFFFAOYSA-N",
+  "wikidata": "Q27273706",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Fenetyllin-Hydrochlorid",
+  "erwartet": "MVXGSLGVWBVZCA-UHFFFAOYSA-N",
+  "wikidata": "Q415476",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Fenoldopammesilat",
+  "erwartet": "CVKUMNRCIJMVAR-UHFFFAOYSA-N",
+  "wikidata": "Q27279818",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Fingolimod Hydrochlorid",
+  "erwartet": "SWZTYAVBMYWFGS-UHFFFAOYSA-N",
+  "wikidata": "Q27132395",
+  "teil": "holdout"
+ },
+ {
+  "name": "Flupentixoldihydrochlorid",
+  "erwartet": "IOVDQEIIMOZNNA-UHFFFAOYSA-N",
+  "wikidata": "Q72479594",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Fondaparinux-Natrium",
+  "erwartet": "XEKSTYNIJLDDAZ-JASSWCPGSA-D",
+  "wikidata": "Q421218",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Gallopamil-Hydrochlorid",
+  "erwartet": "OKCRIUNHEQSXFD-UHFFFAOYSA-N",
+  "wikidata": "Q27095539",
+  "teil": "holdout"
+ },
+ {
+  "name": "Ganciclovir-Natrium",
+  "erwartet": "JJICLMJFIKGAAU-UHFFFAOYSA-M",
+  "wikidata": "Q27231533",
+  "teil": "holdout"
+ },
+ {
+  "name": "Gefapixantcitrat",
+  "erwartet": "AIJVJYUOMCRFOE-UHFFFAOYSA-N",
+  "wikidata": "Q110776732",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Givinostathydrochlorid",
+  "erwartet": "QKSGNWJOQMSBEP-UHFFFAOYSA-N",
+  "wikidata": "Q27294820",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Glatirameracetat",
+  "erwartet": "FHEAIOHRHQGZPC-KIWGSFCNSA-N",
+  "wikidata": "Q418274",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Glycopyrroniumbromid",
+  "erwartet": "VPNYRYCIDCJBOM-UHFFFAOYSA-M",
+  "wikidata": "Q27162963",
+  "teil": "holdout"
+ },
+ {
+  "name": "Goserelinacetat",
+  "erwartet": "IKDXDQDKCZPQSZ-JHYYTBFNSA-N",
+  "wikidata": "Q27265738",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Guanethidinmonosulfat",
+  "erwartet": "YUFWAVFNITUSHI-UHFFFAOYSA-N",
+  "wikidata": "Q27122277",
+  "teil": "holdout"
+ },
+ {
+  "name": "Guanethidinsulfat",
+  "erwartet": "NBJGGHFXCGHTNJ-UHFFFAOYSA-N",
+  "wikidata": "Q27122278",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Histrelinacetat",
+  "erwartet": "BKEMVGVBBDMHKL-VYFXDUNUSA-N",
+  "wikidata": "Q27895770",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Homatropinhydrobromid",
+  "erwartet": "DWSGTFTVBLXELC-UHFFFAOYSA-N",
+  "wikidata": "Q4142891",
+  "teil": "holdout"
+ },
+ {
+  "name": "Homatropinmethylbromid",
+  "erwartet": "FUFVKLQESJNNAN-UHFFFAOYSA-M",
+  "wikidata": "Q2605497",
+  "teil": "holdout"
+ },
+ {
+  "name": "Hydroxychloroquinsulfat",
+  "erwartet": "JCBIVZZPXRZKTI-UHFFFAOYSA-N",
+  "wikidata": "Q27270879",
+  "teil": "holdout"
+ },
+ {
+  "name": "Imazalil-Nitrat",
+  "erwartet": "KJTYJTCKKSDSQF-UHFFFAOYSA-N",
+  "wikidata": "Q27106921",
+  "teil": "holdout"
+ },
+ {
+  "name": "Imazalilsulfat",
+  "erwartet": "XVTXMTOYQVRHSK-UHFFFAOYSA-N",
+  "wikidata": "Q27278652",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Indaminthiosulfonsäure-Hydrochlorid",
+  "erwartet": "QELQFKKISVHKSL-UHFFFAOYSA-N",
+  "wikidata": "Q136487137",
+  "teil": "holdout"
+ },
+ {
+  "name": "Infigratinibphosphat",
+  "erwartet": "GUQNHCGYHLSITB-UHFFFAOYSA-N",
+  "wikidata": "Q27261584",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Iodnitrotetrazoliumchlorid",
+  "erwartet": "JORABGDXCIBAFL-UHFFFAOYSA-M",
+  "wikidata": "Q15411024",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Kaliumantimonyltartrat",
+  "erwartet": "WBTCZEPSIIFINA-UHFFFAOYSA-J",
+  "wikidata": "Q423129",
+  "teil": "holdout"
+ },
+ {
+  "name": "Kanamycindisulfat",
+  "erwartet": "OGTKIXVMLDAMNU-KNQICTBBSA-N",
+  "wikidata": "Q72515067",
+  "teil": "holdout"
+ },
+ {
+  "name": "Lanthandodecylsulfat",
+  "erwartet": "FZWLNHAJODWAOR-UHFFFAOYSA-N",
+  "wikidata": "Q133895629",
+  "teil": "holdout"
+ },
+ {
+  "name": "Lasmiditanhemisuccinat",
+  "erwartet": "MSOIHUHNGPOCTH-UHFFFAOYSA-N",
+  "wikidata": "Q27292373",
+  "teil": "holdout"
+ },
+ {
+  "name": "Levamisol-Hydrochlorid",
+  "erwartet": "LAZPBGZRMVRFKY-HNCPQSOCSA-N",
+  "wikidata": "Q27107205",
+  "teil": "holdout"
+ },
+ {
+  "name": "Levamisol-Phosphat",
+  "erwartet": "QEMMFDPTLWDHKP-HNCPQSOCSA-N",
+  "wikidata": "Q27278002",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Levofuraltadonhydrochlorid",
+  "erwartet": "PPSVFZXMDMUIGB-GSFIMPMYSA-N",
+  "wikidata": "Q27295567",
+  "teil": "holdout"
+ },
+ {
+  "name": "Liothyronin-Natrium",
+  "erwartet": "SBXXSUDPJJJJLC-YDALLXLXSA-M",
+  "wikidata": "Q930170",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Loperamidhydrochlorid",
+  "erwartet": "PGYPOBZJRVSMDS-UHFFFAOYSA-N",
+  "wikidata": "Q27107231",
+  "teil": "holdout"
+ },
+ {
+  "name": "Luteolinidin-Chlorid",
+  "erwartet": "MMAGHFOHXGFQRZ-UHFFFAOYSA-N",
+  "wikidata": "Q27117217",
+  "teil": "holdout"
+ },
+ {
+  "name": "Malachitgrün-Chlorid",
+  "erwartet": "FDZZZRQASAIRJF-UHFFFAOYSA-M",
+  "wikidata": "Q408815",
+  "teil": "holdout"
+ },
+ {
+  "name": "Malvidinchlorid",
+  "erwartet": "KQIKOUUKQBTQBE-UHFFFAOYSA-N",
+  "wikidata": "Q59610918",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mecetroniumetilsulfat",
+  "erwartet": "UUHBNESUDPIHCI-UHFFFAOYSA-M",
+  "wikidata": "Q15632826",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mecoprop-Kalium",
+  "erwartet": "OFCQYQOZASISIU-UHFFFAOYSA-M",
+  "wikidata": "Q27269880",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mecoprop-Natrium",
+  "erwartet": "DHJHUXNTNSRSEX-UHFFFAOYSA-M",
+  "wikidata": "Q27294485",
+  "teil": "holdout"
+ },
+ {
+  "name": "Mepivacain Hydrochlorid",
+  "erwartet": "RETIMRUQNCDCQB-UHFFFAOYSA-N",
+  "wikidata": "Q27107324",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mepyraminhydrochlorid",
+  "erwartet": "JZNHNILSWLPPKO-UHFFFAOYSA-N",
+  "wikidata": "Q27262828",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mepyraminmaleat",
+  "erwartet": "JXYWFNAQESKDNC-BTJKTKAUSA-N",
+  "wikidata": "Q27287732",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Mesitylmagnesiumbromid",
+  "erwartet": "JOWQNXIISCPKBK-UHFFFAOYSA-M",
+  "wikidata": "Q82213729",
+  "teil": "holdout"
+ },
+ {
+  "name": "Metaclazepam-Hydrochlorid",
+  "erwartet": "IDCVMXYQJUFZJD-UHFFFAOYSA-N",
+  "wikidata": "Q27286022",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Metamizol-Natrium",
+  "erwartet": "DJGAAPFSPWAYTJ-UHFFFAOYSA-M",
+  "wikidata": "Q422761",
+  "teil": "holdout"
+ },
+ {
+  "name": "Methacyclinhydrochlorid",
+  "erwartet": "VZQARNDJLLWXGL-CCHMMTNSSA-N",
+  "wikidata": "Q27107336",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Methadon Hydrochlorid",
+  "erwartet": "FJQXCDYVZAHXNS-UHFFFAOYSA-N",
+  "wikidata": "Q26840915",
+  "teil": "holdout"
+ },
+ {
+  "name": "Methamphetamin Hydrochlorid",
+  "erwartet": "TWXDDNPPQUTEOV-UHFFFAOYSA-N",
+  "wikidata": "Q27253854",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Methantheliniumbromid",
+  "erwartet": "PQMWYJDJHJQZDE-UHFFFAOYSA-M",
+  "wikidata": "Q27236434",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Methapyrilen-Hydrochlorid",
+  "erwartet": "BONORRGKLJBGRV-UHFFFAOYSA-N",
+  "wikidata": "Q6665655",
+  "teil": "holdout"
+ },
+ {
+  "name": "Methoxamin-Hydrochlorid",
+  "erwartet": "YGRFXPCHZBRUKP-UHFFFAOYSA-N",
+  "wikidata": "Q26840987",
+  "teil": "holdout"
+ },
+ {
+  "name": "Methylenedioxyethamphetamin Hydrochlorid",
+  "erwartet": "IBDIPBWIXJRJQM-UHFFFAOYSA-N",
+  "wikidata": "Q27277667",
+  "teil": "holdout"
+ },
+ {
+  "name": "Methyltrioctylammoniumchlorid",
+  "erwartet": "XKBGEWXEAPTVCK-UHFFFAOYSA-M",
+  "wikidata": "Q4726852",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Methyltriphenylphosphoniumiodid",
+  "erwartet": "JNMIXMFEVJHFNY-UHFFFAOYSA-M",
+  "wikidata": "Q72492248",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Metocuriniodid",
+  "erwartet": "DIGFQJFCDPKEPF-OIUSMDOTSA-L",
+  "wikidata": "Q20817012",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Miconazolnitrat",
+  "erwartet": "MCCACAIVAXEFAL-UHFFFAOYSA-N",
+  "wikidata": "Q27292045",
+  "teil": "holdout"
+ },
+ {
+  "name": "Midazolam Hydrochlorid",
+  "erwartet": "PLYSCVSCYOQVRP-UHFFFAOYSA-N",
+  "wikidata": "Q27292444",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Midazolam Maleat",
+  "erwartet": "XYGVIBXOJOOCFR-BTJKTKAUSA-N",
+  "wikidata": "Q27266551",
+  "teil": "holdout"
+ },
+ {
+  "name": "Molidustat-Natrium",
+  "erwartet": "UIFNJDDKXYFTJS-UHFFFAOYSA-M",
+  "wikidata": "Q27275473",
+  "teil": "holdout"
+ },
+ {
+  "name": "Nadoxolol-Hydrochlorid",
+  "erwartet": "QMIHLTWUCXXBQQ-UHFFFAOYSA-N",
+  "wikidata": "Q27890459",
+  "teil": "holdout"
+ },
+ {
+  "name": "Nafarelinacetat",
+  "erwartet": "GUJYDLHACHDKAJ-CFWZQLQRSA-N",
+  "wikidata": "Q27289963",
+  "teil": "holdout"
+ },
+ {
+  "name": "Natriumlaurylsulfat",
+  "erwartet": "DBMJMQXJHONAFJ-UHFFFAOYSA-M",
+  "wikidata": "Q422241",
+  "teil": "holdout"
+ },
+ {
+  "name": "Natriumpicosulfat",
+  "erwartet": "GOZDTZWAMGHLDY-UHFFFAOYSA-L",
+  "wikidata": "Q410265",
+  "teil": "holdout"
+ },
+ {
+  "name": "Neostigmin Bromid",
+  "erwartet": "LULNWZDBKTWDGK-UHFFFAOYSA-M",
+  "wikidata": "Q27105147",
+  "teil": "holdout"
+ },
+ {
+  "name": "Nicotinsulfat",
+  "erwartet": "YHRJAJWWHFGBMV-UHFFFAOYSA-N",
+  "wikidata": "Q2105937",
+  "teil": "holdout"
+ },
+ {
+  "name": "Nicotintartrat",
+  "erwartet": "RFEJUZJILGIRHQ-WBPXWQEISA-N",
+  "wikidata": "Q2106898",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Nitroblautetrazoliumchlorid",
+  "erwartet": "FSVCQIDHPKZJSO-UHFFFAOYSA-L",
+  "wikidata": "Q906440",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Norephedrin-Hydrochlorid",
+  "erwartet": "DYWNLSQWJMTVGJ-UHFFFAOYSA-N",
+  "wikidata": "Q97908349",
+  "teil": "holdout"
+ },
+ {
+  "name": "Obidoximchlorid",
+  "erwartet": "ZIFJVJZWVSPZLE-UHFFFAOYSA-N",
+  "wikidata": "Q416595",
+  "teil": "holdout"
+ },
+ {
+  "name": "Octenidin-Dihydrochlorid",
+  "erwartet": "SMGTYJPMKXNQFY-UHFFFAOYSA-N",
+  "wikidata": "Q1409243",
+  "teil": "holdout"
+ },
+ {
+  "name": "Olsalazin-Natrium",
+  "erwartet": "ZJEFYLVGGFISGT-UHFFFAOYSA-L",
+  "wikidata": "Q27104909",
+  "teil": "holdout"
+ },
+ {
+  "name": "Opaganibhydrochlorid",
+  "erwartet": "BXGLNXNRKRUYTH-UHFFFAOYSA-N",
+  "wikidata": "Q27288095",
+  "teil": "holdout"
+ },
+ {
+  "name": "Opipramol-Hydrochlorid",
+  "erwartet": "DLTOEESOSYKJBK-UHFFFAOYSA-N",
+  "wikidata": "Q27274351",
+  "teil": "holdout"
+ },
+ {
+  "name": "Orciprenalin-Sulfat",
+  "erwartet": "MKFFGUZYVNDHIH-UHFFFAOYSA-N",
+  "wikidata": "Q27279120",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Orphenadrin-Citrat",
+  "erwartet": "MMMNTDFSPSQXJP-UHFFFAOYSA-N",
+  "wikidata": "Q27107584",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Orphenadrin-Hydrochlorid",
+  "erwartet": "UQZKYYIKWZOKKD-UHFFFAOYSA-N",
+  "wikidata": "Q27129640",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Oseltamivir-Phosphat",
+  "erwartet": "PGZUMBJQJWIWGJ-ONAKXNSWSA-N",
+  "wikidata": "Q27107588",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Oxiconazol-Nitrat",
+  "erwartet": "WVNOAGNOIPTWPT-NDUABGMUSA-N",
+  "wikidata": "Q27107595",
+  "teil": "holdout"
+ },
+ {
+  "name": "Oxprenololhydrochlorid",
+  "erwartet": "COAJXCLTPGGDAJ-UHFFFAOYSA-N",
+  "wikidata": "Q27277643",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pancuroniumbromid",
+  "erwartet": "NPIJXCQZLFKBMV-YTGGZNJNSA-L",
+  "wikidata": "Q27107612",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Parafuchsin-Hydrochlorid",
+  "erwartet": "JUQPZRLQQYSMEQ-UHFFFAOYSA-N",
+  "wikidata": "Q27890208",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Paraquatdichlorid",
+  "erwartet": "FIKAKWIAUPDISJ-UHFFFAOYSA-L",
+  "wikidata": "Q409669",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pentobarbital-Natrium",
+  "erwartet": "QGMRQYFBGABWDR-UHFFFAOYSA-M",
+  "wikidata": "Q27107638",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Phenazopyridinhydrochlorid",
+  "erwartet": "QQBPIHBUCMDKFG-UHFFFAOYSA-N",
+  "wikidata": "Q27139594",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Phentermin-Hydrochlorid",
+  "erwartet": "NCAIGTHBQTXTLR-UHFFFAOYSA-N",
+  "wikidata": "Q19885635",
+  "teil": "holdout"
+ },
+ {
+  "name": "Phenyltrimethylammoniumtribromid",
+  "erwartet": "COWLJVGUJFXIFR-UHFFFAOYSA-M",
+  "wikidata": "Q72499167",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pilocarpinhydrochlorid",
+  "erwartet": "RNAICSBVACLLGM-GNAZCLTHSA-N",
+  "wikidata": "Q23059847",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pinacyanolchlorid",
+  "erwartet": "FVMNARAKYNRZID-UHFFFAOYSA-M",
+  "wikidata": "Q113089560",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Pinacyanoliodid",
+  "erwartet": "QWYZFXLSWMXLDM-UHFFFAOYSA-M",
+  "wikidata": "Q27271424",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Pipenzolatbromid",
+  "erwartet": "XEDCWWFPZMHXCM-UHFFFAOYSA-M",
+  "wikidata": "Q27281629",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pitolisant-Hydrochlorid",
+  "erwartet": "XLFKECRRMPOAQS-UHFFFAOYSA-N",
+  "wikidata": "Q27895485",
+  "teil": "holdout"
+ },
+ {
+  "name": "Prednisolonsuccinat-Natrium",
+  "erwartet": "FKKAEMQFOIDZNY-CODXZCKSSA-M",
+  "wikidata": "Q27269293",
+  "teil": "holdout"
+ },
+ {
+  "name": "Prednisolonsulfobenzoat-Natrium",
+  "erwartet": "RWFZSORKWFPGNE-VDYYWZOJSA-M",
+  "wikidata": "Q27276033",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pridinolmesilat",
+  "erwartet": "VNJHUUNVDMYCRH-UHFFFAOYSA-N",
+  "wikidata": "Q27274059",
+  "teil": "holdout"
+ },
+ {
+  "name": "Prifiniumbromid",
+  "erwartet": "UCGJZJXOPSNTGZ-UHFFFAOYSA-M",
+  "wikidata": "Q2109656",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Profenamin-Hydrochlorid",
+  "erwartet": "VXPCQISYVPFYRK-UHFFFAOYSA-N",
+  "wikidata": "Q27114444",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Propicillin-Kalium",
+  "erwartet": "ULBKMFLWMIGVOJ-CFXUUZMDSA-M",
+  "wikidata": "Q27114769",
+  "teil": "holdout"
+ },
+ {
+  "name": "Propidiumiodid",
+  "erwartet": "XJMOSONTPMZWPB-UHFFFAOYSA-M",
+  "wikidata": "Q424169",
+  "teil": "holdout"
+ },
+ {
+  "name": "Propoxycarbazon-Natrium",
+  "erwartet": "JRQGDDUXDKCWRF-UHFFFAOYSA-M",
+  "wikidata": "Q27274480",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Propranolol-Hydrochlorid",
+  "erwartet": "ZMRUPTIKESYGQW-UHFFFAOYSA-N",
+  "wikidata": "Q27108095",
+  "teil": "holdout"
+ },
+ {
+  "name": "Pyridoxinhydrochlorid",
+  "erwartet": "ZUFQODAHGAHPFQ-UHFFFAOYSA-N",
+  "wikidata": "Q26841284",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Radafaxin-Hydrochlorid",
+  "erwartet": "ORXTVTDGPVINDN-BTJVGWIPSA-N",
+  "wikidata": "Q27289464",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Ramosetron-Hydrochlorid",
+  "erwartet": "XIXYTCLDXQRHJO-RFVHGSKJSA-N",
+  "wikidata": "Q27271742",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Remimazolambesilat",
+  "erwartet": "QMTKNJZIWGTNTE-LMOVPXPDSA-N",
+  "wikidata": "Q27254247",
+  "teil": "holdout"
+ },
+ {
+  "name": "Rocuroniumbromid",
+  "erwartet": "OYTJKRAYGYRUJK-FMCCZJBLSA-M",
+  "wikidata": "Q27108171",
+  "teil": "holdout"
+ },
+ {
+  "name": "Serdexmethylphenidatchlorid",
+  "erwartet": "GONQEUJYYMYNMN-HWAJWLCKSA-N",
+  "wikidata": "Q101892469",
+  "teil": "holdout"
+ },
+ {
+  "name": "Sermorelinacetat",
+  "erwartet": "XBGBWJRSBOVKEW-MKPHYVNUSA-N",
+  "wikidata": "Q72507408",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Sinigrin-Kalium",
+  "erwartet": "QKFAFSGJTMHRRY-FVDOMRANSA-M",
+  "wikidata": "Q423248",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Solifenacin-Succinat",
+  "erwartet": "RXZMMZZRUPYENV-VROPFNGYSA-N",
+  "wikidata": "Q374826",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Solriamfetolhydrochlorid",
+  "erwartet": "KAOVAAHCFNYXNJ-SBSPUUFOSA-N",
+  "wikidata": "Q137398618",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Streptomycinsulfat",
+  "erwartet": "QTENRWWVYAAPBI-YCRXJPFRSA-N",
+  "wikidata": "Q27275850",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Sugammadex-Natrium",
+  "erwartet": "KMGKABOMYQLLDJ-VKHHSAQNSA-F",
+  "wikidata": "Q420857",
+  "teil": "holdout"
+ },
+ {
+  "name": "Suosan-Natrium",
+  "erwartet": "HWQUPWFLAWYYBO-UHFFFAOYSA-M",
+  "wikidata": "Q307423",
+  "teil": "holdout"
+ },
+ {
+  "name": "Suxamethoniumdichlorid",
+  "erwartet": "YOEWQQVKRJEPAE-UHFFFAOYSA-L",
+  "wikidata": "Q12455154",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tegaserod-Maleat",
+  "erwartet": "CPDDZSSEAVLMRY-FEQFWAPWSA-N",
+  "wikidata": "Q27888319",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tenamfetamin Hydrochlorid",
+  "erwartet": "XLAOKZDOZHZWBK-UHFFFAOYSA-N",
+  "wikidata": "Q27269984",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tenofoviralafenamidfumarat",
+  "erwartet": "MEJAFWXKUKMUIR-FHPNUNMMSA-N",
+  "wikidata": "Q90688469",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tenofoviralafenamidhemifumarat",
+  "erwartet": "SVUJNSGGPUCLQZ-FQQAACOVSA-N",
+  "wikidata": "Q27162911",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tenofovirdisoproxilfumarat",
+  "erwartet": "VCMJCVGFSROFHV-WZGZYPNHSA-N",
+  "wikidata": "Q27132754",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetrabutylammoniumbromid",
+  "erwartet": "JRMUNVKIHCOMHV-UHFFFAOYSA-M",
+  "wikidata": "Q6296780",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetrabutylammoniumchlorid",
+  "erwartet": "NHGXDBSUJJNIRV-UHFFFAOYSA-M",
+  "wikidata": "Q27123074",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetrabutylammoniumhexafluorophosphat",
+  "erwartet": "BKBKEFQIOUYLBC-UHFFFAOYSA-N",
+  "wikidata": "Q15634208",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetrabutylammoniumhydrogensulfat",
+  "erwartet": "SHFJWMWCIHQNCP-UHFFFAOYSA-M",
+  "wikidata": "Q72504665",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetrabutylammoniumiodid",
+  "erwartet": "DPKBAXPHAYBPRL-UHFFFAOYSA-M",
+  "wikidata": "Q72504669",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetrabutylammoniumnitrat",
+  "erwartet": "QHOKENWFMZXSEU-UHFFFAOYSA-N",
+  "wikidata": "Q72504672",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetrabutylphosphoniumbromid",
+  "erwartet": "RKHXQBLJXBGEKF-UHFFFAOYSA-M",
+  "wikidata": "Q27254381",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetraethylammoniumbromid",
+  "erwartet": "HWCKGOZZJDHMNC-UHFFFAOYSA-M",
+  "wikidata": "Q5961420",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetraethylammoniumchlorid",
+  "erwartet": "YMBCJWGVCUEGHA-UHFFFAOYSA-M",
+  "wikidata": "Q7706336",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tetraethylammoniumiodid",
+  "erwartet": "UQFSVBXCNGCBBW-UHFFFAOYSA-M",
+  "wikidata": "Q7706337",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetraethylammoniumnitrat",
+  "erwartet": "JTJKNAJRGLQKDZ-UHFFFAOYSA-N",
+  "wikidata": "Q72504985",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetranatriumiminodisuccinat",
+  "erwartet": "SGCNRYGGTNQJOV-ZRCOPKFRSA-J",
+  "wikidata": "Q2406759",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetraphenylarsoniumchlorid",
+  "erwartet": "NRZGVGVFPHPXEO-UHFFFAOYSA-M",
+  "wikidata": "Q3680971",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tetraphenylphosphoniumchlorid",
+  "erwartet": "WAGFXJQAIZNSEQ-UHFFFAOYSA-M",
+  "wikidata": "Q7706653",
+  "teil": "holdout"
+ },
+ {
+  "name": "Theodrenalinhydrochlorid",
+  "erwartet": "CSKCJAUXLOQTMM-UHFFFAOYSA-N",
+  "wikidata": "Q27266527",
+  "teil": "holdout"
+ },
+ {
+  "name": "Thialbarbital-Natrium",
+  "erwartet": "GDJWAYOMFZFOTG-UHFFFAOYSA-M",
+  "wikidata": "Q27288123",
+  "teil": "holdout"
+ },
+ {
+  "name": "Thiamin-Chlorid",
+  "erwartet": "MYVIATVLJGTBFV-UHFFFAOYSA-M",
+  "wikidata": "Q27115611",
+  "teil": "holdout"
+ },
+ {
+  "name": "Thioninacetat",
+  "erwartet": "OWXBIRAFHWASMS-UHFFFAOYSA-M",
+  "wikidata": "Q27123356",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Thioninchlorid",
+  "erwartet": "ANRHNWWPFJCPAZ-UHFFFAOYSA-M",
+  "wikidata": "Q4353986",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tianeptin-Natrium",
+  "erwartet": "ZLBSUOGMZDXYKE-UHFFFAOYSA-M",
+  "wikidata": "Q60312243",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tilidin-Hydrochlorid",
+  "erwartet": "MUWDJVKYGSDUSH-KALLACGZSA-N",
+  "wikidata": "Q27260672",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tobramycinsulfat",
+  "erwartet": "NZKFUBQRAWPZJP-BXKLGIMVSA-N",
+  "wikidata": "Q27279959",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tofacitinib-Citrat",
+  "erwartet": "SYIKUFDOYJFGBQ-YLAFAASESA-N",
+  "wikidata": "Q27139435",
+  "teil": "holdout"
+ },
+ {
+  "name": "Topotecan-Hydrochlorid",
+  "erwartet": "DGHHQBMTXTWTJV-BQAIUKQQSA-N",
+  "wikidata": "Q27271753",
+  "teil": "holdout"
+ },
+ {
+  "name": "Toremifencitrat",
+  "erwartet": "IWEQQRMGNVVKQW-OQKDUQJOSA-N",
+  "wikidata": "Q27253831",
+  "teil": "holdout"
+ },
+ {
+  "name": "Tributylmethylammoniummethylsulfat",
+  "erwartet": "FIMHASWLGDDANN-UHFFFAOYSA-M",
+  "wikidata": "Q15632892",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Trifloxysulfuron-Natrium",
+  "erwartet": "UFEIWEXHHOXPGP-UHFFFAOYSA-M",
+  "wikidata": "Q27294606",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Trifluperidol-Hydrochlorid",
+  "erwartet": "VYGQXRZAHIZHQV-UHFFFAOYSA-N",
+  "wikidata": "Q27291094",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Trilaciclibdihydrochlorid",
+  "erwartet": "BRCYOXKEDFAUSA-UHFFFAOYSA-N",
+  "wikidata": "Q106267548",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Trimedoximbromid",
+  "erwartet": "JHZHWVQTOXIXIV-UHFFFAOYSA-N",
+  "wikidata": "Q4463080",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Triphenyltetrazoliumchlorid",
+  "erwartet": "PKDBCJSWQUOKDO-UHFFFAOYSA-M",
+  "wikidata": "Q415248",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Trospiumchlorid",
+  "erwartet": "RVCSYOQWLPPAOA-QKYUOBHYSA-M",
+  "wikidata": "Q27252312",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Tylosintartrat",
+  "erwartet": "ICVKYYINQHWDLM-KBEWXLTPSA-N",
+  "wikidata": "Q27262673",
+  "teil": "holdout"
+ },
+ {
+  "name": "Umeclidiniumbromid",
+  "erwartet": "PEJHHXHHNGORMP-UHFFFAOYSA-M",
+  "wikidata": "Q15624035",
+  "teil": "holdout"
+ },
+ {
+  "name": "Uranylzinkacetat",
+  "erwartet": "HZVNDPGVHKSPMJ-UHFFFAOYSA-J",
+  "wikidata": "Q6184691",
+  "teil": "holdout"
+ },
+ {
+  "name": "Valacyclovir Hydrochlorid",
+  "erwartet": "ZCDDBUOENGJMLV-QRPNPIFTSA-N",
+  "wikidata": "Q27888031",
+  "teil": "holdout"
+ },
+ {
+  "name": "Valethamatbromid",
+  "erwartet": "CEJGGHKJHDHLAZ-UHFFFAOYSA-M",
+  "wikidata": "Q4007939",
+  "teil": "holdout"
+ },
+ {
+  "name": "Valnemulinhydrochlorid",
+  "erwartet": "MFBPRQKHDIVLOJ-AFFLPQGKSA-N",
+  "wikidata": "Q27292189",
+  "teil": "holdout"
+ },
+ {
+  "name": "Vecuronium-Bromid",
+  "erwartet": "VEPSYABRBFXYIB-PWXDFCLTSA-M",
+  "wikidata": "Q27108523",
+  "teil": "holdout"
+ },
+ {
+  "name": "Venlafaxinhydrochlorid",
+  "erwartet": "QYRYFNHXARDNFZ-UHFFFAOYSA-N",
+  "wikidata": "Q27108525",
+  "teil": "holdout"
+ },
+ {
+  "name": "Vortioxetin Hydrobromid",
+  "erwartet": "VNGRUFUIHGGOOM-UHFFFAOYSA-N",
+  "wikidata": "Q27145682",
+  "teil": "einstellen"
+ },
+ {
+  "name": "Vortioxetinlactat",
+  "erwartet": "KJXWEKCEAVJWHZ-UHFFFAOYSA-N",
+  "wikidata": "Q27291485",
+  "teil": "holdout"
+ },
+ {
+  "name": "Xylopropamin-Sulfat",
+  "erwartet": "JUEMAIYCXHJGDQ-UHFFFAOYSA-N",
+  "wikidata": "Q27274338",
+  "teil": "einstellen"
+ }
+]

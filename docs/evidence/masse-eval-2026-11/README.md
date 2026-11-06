@@ -312,6 +312,93 @@ Form und bleibt falsch (Tautomer). Einzelfälle in `holdout_pubchem_check.json`.
 **Offen:** Tetracyclin-Tautomere (Doxycyclin + 4 Holdout), Hydroxy-/Hydroxocobalamin, Docusat
 (Referenz ist das Natriumsalz) — je eigene Klasse, nicht Salzform.
 
+## Lauf 8 → Fix → Lauf 9 (deutsche Salznamen, 06.11.2026)
+
+**Befund.** „Bendamustinhydrochlorid" → `not_found` (PubChem 404, NCI 500), „Bendamustine hydrochloride" →
+das Salz (ZHSKUOZO…). Ursache: `english_variant` kannte `hydrochlorid` nicht, `chlorid` griff zuerst und ließ
+„hydro" am Stamm → „Bendamustinhydro chloride". Dieselbe Lücke für hydrobromid, dihydrochlorid, tartrat,
+maleat, fumarat, mesilat, succinat; „-Natrium"/„-Kalium" hinter dem Stamm wurden gar nicht übersetzt.
+
+**Fixture und Holdout sehen diese Klasse nicht.** Von 711 Eingaben tragen 35 ein Salzwort (`_SALT_WORD`),
+33 grün, 2 rot (Cefixim Anhydrat `not_found`, Isosorbiddinitrat Stereo) — keiner ein zusammengesetzter
+deutscher Salzname; Wikidata führt dort die freie Base. `holdout_pubchem_check.json`: 18 Salzwort-Namen,
+16 richtig, 2 beide falsch (Eisengluconat, Natriumperborat). Deshalb eine eigene Messliste:
+
+**Messliste** (`salznamen_liste.py` → `salznamen_liste.json`, Wikidata): deutsches Label = Wort +
+Gegenion am Ende (auch mit Leerzeichen/Bindestrich), genau ein InChIKey, laut Wikidata-SMILES (P233)
+mehrere Komponenten, die größte mit ≥ 8 C (schließt Ester wie Retinylacetat und Säurechloride aus).
+**268 Namen**, fest geteilt nach Q-Nummer: 127 Einstellen (gerade), 141 Holdout (ungerade).
+
+**Messung** (`salznamen_mess.py vorher` am Worktree `bfbae23`, → `salznamen_mess.json`, Feld `proben`):
+PubChem-InChIKey je Umschreibung, Einstellhälfte (127):
+
+| Umschreibung | Beispiel | richtig | Stamm | falsch | nicht gefunden |
+|---|---|---|---|---|---|
+| heute (Kaskade) | — | 39 | 2 | 6 | 80 |
+| deutsch getrennt | „Metformin hydrochlorid" | 2 | 0 | 0 | 125 |
+| englisch, INN mit -e | „Metformine hydrochloride" | 82 | 5 | 5 | 35 |
+| englisches Gegenion, Stamm bleibt | „Metformin hydrochloride" | 66 | 2 | 4 | 55 |
+| erst -e, dann Stamm | | **97** | 5 | 6 | 19 |
+
+Die Wortgrenze allein trifft nichts — PubChem braucht das englische Gegenion. Die beiden englischen Formen
+ergänzen sich: 8 Namen trifft nur die ohne -e (Cefalotin/Cefapirin/Cefoxitin sodium, Anamorelin
+hydrochloride, Camostat mesilate, Dibekacin sulfate …).
+
+**Regel** (aus der Einstellhälfte, kein Stoffname verdrahtet):
+1. `de_names._ANIONS` + hydrochlorid/dihydrochlorid/hydrobromid/tartrat/maleat/fumarat/mesilat/succinat,
+   zusammengesetzte vor ihrem Kurzwort; natrium/kalium als Gegenion hinter dem Stamm (vorn bleibt
+   `_CATIONS`: „Natriumchlorid" → „sodium chloride"). Damit wird `english_variant` richtig.
+2. Neuer letzter Kaskadenschritt `de_names.salt_variant`: nur das Gegenion englisch, Stamm unverändert —
+   gefragt nur, wenn alles andere scheiterte, ein Gegenion am Ende steht und die Schreibweise nicht schon
+   `english_variant` war. Der Umweg erscheint als `found_as` („found as Cefalotin sodium").
+
+**Tests:** `tests/test_de_names.py` (10 Salznamen-Fälle + `salt_variant` + Natrium/Kalium hinten) und
+`tests/test_resolver.py` (`test_german_salt_name_resolves_to_the_salt` für zusammen/Leerzeichen/Bindestrich,
+`test_salt_variant_comes_after_the_english_variant`, `test_name_without_counterion_asks_no_salt_variant`),
+alle zuerst rot. Mutationen: M1 ohne hydro-Anionen → 10 rot; M2 `chlorid` vor `hydrochlorid` → 8 rot;
+M3 Salzvariante aus der Kaskade → 1 rot; M4 ohne natrium/kalium hinten → 8 rot; M5 Salzvariante ohne
+Doppelaufruf-Sperre → 1 rot. Gegenregression grün: Befund-1/2/3, Salzform, Salzwort-Wortgrenzen
+(Buspiron, Spironolacton, Ameisensäure), Edetat/Goldthiomalat.
+
+**Salzliste nachher** (`salznamen_mess.py nachher`, echte Kaskade):
+
+| | richtig | Stamm | falsch | nicht gefunden | gekippt |
+|---|---|---|---|---|---|
+| Einstellen 127, vorher | 39 | 2 | 6 | 80 | |
+| Einstellen 127, nachher | **95** | 5 | 9 | 18 | **0** |
+| Holdout 141, vorher | 43 | 1 | 4 | 93 | |
+| Holdout 141, nachher | **100** | 4 | 5 | 32 | **0** |
+
+Kein richtiger Name wechselt den Schlüssel. Zwei Fälle wechseln zum Richtigen über den Variantenvergleich
+aus Befund 3: Eribulinmesilat (Stamm → richtig) und Pilocarpinhydrochlorid (Holdout, falscher PubChem-
+Direkttreffer → richtig, weil die Variante jetzt „Pilocarpine hydrochloride" lautet). Die 5 neu
+„falschen" (vorher nicht gefunden) haben alle dieselbe Summenformel wie die Referenz, verglichen ohne
+Gegenion und Ladung: Demeclocyclin, Methacyclin (Tetracyclin-Tautomere, bekannte offene Klasse),
+Molidustat (Enolat-/N-Anion-Tautomer), Trifloxysulfuron-Natrium (PubChem-Record mit Hydratwasser),
+Nafarelinacetat (Wikidata-SMILES ohne Stereo). Echt anderer Stoff ist nur Streptomycinsulfat
+(PubChem „Streptomycine sulfate" = zyklischer Sulfatester, C₂₁H₃₆N₆O₁₆S) — schon vor dem Fix so.
+
+**Lauf 9** (Fixture `stoffe-masse.json` in der Fassung von `b67ceb7`, inkl. Codex' Stereo-Referenzen):
+
+| | Lauf 8 | Lauf 9 |
+|---|---|---|
+| Ergebnis | 669 grün · 1 gelb · 41 rot | **674 grün · 1 gelb · 36 rot** |
+| Übergänge | — | 669 grün→grün, 5 rot→grün, 36 rot→rot, 1 gelb→gelb |
+| Ergebnis-Schlüssel | | **alle 711 identisch** |
+| Laufzeit | 14 min, Median 0,63 s | 13 min, Median 0,56 s |
+| Dateien | `identitaet-lauf-8-vor-salznamen.{json,md}` | `identitaet-lauf.json`, `identitaet.md` |
+
+Die 5 rot→grün (clindamycin, cocaine, pantothenic acid, Pantothensäure, trehalose) sind Codex'
+Stereo-Referenzen aus `b67ceb7`: Erwartung geändert, Ergebnis gleich — deckt sich mit der Nachbewertung
+oben (674/1/36). Der Fix bewegt in der Fixture nichts, wie erwartet: sie enthält die Klasse nicht.
+
+**Holdout** (`holdout_pubchem_check.py`, 553 im Geltungsbereich): alle 553 Ergebnisse identisch mit vorher
+(540 richtig, 13 weiter falsch), **0 gekippt** — die geänderte `english_variant` verschiebt keinen
+Variantenvergleich aus Befund 3. Einzelfälle in `holdout_pubchem_check.json`, Salzliste in `salznamen_mess.json`.
+
+**Offen:** 18 + 32 Salznamen bleiben `not_found` (PubChem kennt keine der Schreibweisen); Streptomycinsulfat
+(PubChem-Synonymfehler ohne Gegenprobe, weil die Variante dieselbe ist).
+
 ## Woher die Erwartung kommt
 
 - **Stoffliste** `tests/identity/stoffe-masse.json` — 711 Eingaben für 414 Stoffe. Auswahl:

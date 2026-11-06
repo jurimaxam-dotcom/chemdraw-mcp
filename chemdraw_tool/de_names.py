@@ -31,10 +31,20 @@ _CATIONS = {
     "lithium": "lithium",
 }
 
-# Anion hinten, zusammengeschrieben oder mit Bindestrich.
-# Längere zuerst: "dipropionat" vor "propionat"-ähnlichen Kürzeln.
+# Anion hinten, zusammengeschrieben, mit Bindestrich oder Leerzeichen.
+# Längere zuerst: "dihydrochlorid" vor "hydrochlorid" vor "chlorid" — sonst
+# bleibt "hydro" am Stamm ("Bendamustinhydro chloride" kennt keine Quelle;
+# Salznamen-Messung 06.11.2026, docs/evidence/masse-eval-2026-11/README.md).
 _ANIONS = {
+    "dihydrochlorid": "dihydrochloride",
+    "hydrochlorid": "hydrochloride",
+    "hydrobromid": "hydrobromide",
     "dipropionat": "dipropionate",
+    "tartrat": "tartrate",
+    "maleat": "maleate",
+    "fumarat": "fumarate",
+    "mesilat": "mesilate",
+    "succinat": "succinate",
     "gluconat": "gluconate",
     "phosphat": "phosphate",
     "besilat": "besilate",
@@ -47,6 +57,10 @@ _ANIONS = {
     "lactat": "lactate",
     "citrat": "citrate",
     "furoat": "furoate",
+    # Kation hinter dem Stamm ("Cefalotin-Natrium", "Metamizolnatrium") ist das
+    # Gegenion; vorn ("Natriumchlorid") greift _CATIONS zuerst.
+    "natrium": "sodium",
+    "kalium": "potassium",
 }
 
 # Deutsche Säurestämme, die sich nicht nur in der Endung unterscheiden.
@@ -124,3 +138,24 @@ def english_variant(name: str) -> str | None:
             parts[i] = " "
     variant = "".join(p if p in (" ", "-") else _word(p) for p in parts)
     return variant if variant != name else None
+
+
+_SALT_SUFFIX = re.compile(
+    r"(?i)^(?P<stem>.{4,}?)[ \-]?(?P<ion>" + "|".join(_ANIONS) + r")$"
+)
+
+
+def salt_variant(name: str) -> str | None:
+    """Salzname mit englischem Gegenion, Stamm unverändert — oder None.
+
+    Salznamen-Messung 06.11.2026: PubChem führt manche Salze nur unter dem INN
+    ohne Endungs-e ("Cefalotin sodium", "Anamorelin hydrochloride"), die
+    english_variant ("Cefalotine sodium") verfehlt. None, wenn kein Gegenion am
+    Ende steht oder die Schreibweise mit english_variant zusammenfällt — dann
+    kostet sie keinen zweiten Netzaufruf.
+    """
+    match = _SALT_SUFFIX.match(_RACEMATE_PREFIX.sub("", name or ""))
+    if not match:
+        return None
+    variant = f"{match['stem']} {_ANIONS[match['ion'].lower()]}"
+    return variant if variant not in (name, english_variant(name)) else None
