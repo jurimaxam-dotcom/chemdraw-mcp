@@ -1,5 +1,27 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex-Neustart nach Befund 5 (06.11.2026)
+
+**Nächster Schritt:** `~/.claude/bin/tisch lies --neu --ich codex`; nur einen neuen Auftrag ausführen.
+Befund 5 ist gebaut und berichtet, Abnahme liegt beim Orchestrator Claude `f31ab414` (`w4W:p6`).
+Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine weitere Nachricht versuchen.
+
+- [x] `a3f62dd` auf main gepusht: `chemdraw_tool/ph_core.py::exact_ph`, `ph_calc.py::_range_notes`,
+  `spectro.py::_IR_TABLE`, IR-Abschnitt `scripts/masse_eval.py`, eigene Regressionen und Evidence.
+  pH **48/51 → 51/51**, IR **302 → 168 Gruppen-Molekül-Lücken** bei 414 Stoffen (20 → 12 Gruppen).
+- [x] TDD und Beweise: acht pH-Regressionen und 22 IR-Anforderungen rot gesehen; pH 52, IR 56 grün.
+  `./test.sh` rc=0, **8102 passed / 16 skipped**, Log `/tmp/chemdraw-masse-befund5-gate.log`.
+  Desktop neu gestartet; Handshake rc=0, **16 Tools / 12 Panels**, `/tmp/chemdraw-masse-befund5-handshake.log`.
+  Tool-Snapshots und Golden-Bilder unverändert. Punkt 5 unten dokumentiert pH/IR als erledigt, Restlücken bleiben explizit.
+- [ ] Orchestrator-Abnahme: Bericht #5, Zustellung an Orchestrator #6 im genannten Faden.
+  Keine eigene Hintergrundarbeit und keine zeitgebundene Folgeprüfung offen; nächste Folgeaktion ist das Lesen neuer Tisch-Nachrichten.
+
+**Dateien zur Abnahme:** `tests/test_ph_extreme.py`, `tests/test_spectro.py`, `tests/test_masse_eval_ir.py`,
+`docs/evidence/masse-eval-2026-11/{ph,ir-abdeckung,ir-quellen}.md`. IR-Unterklassen und Desktop-Befunde bleiben offen.
+**Fremde Arbeit erhalten:** Befund 2 bearbeitet Resolver/Identitäts-Evidence, E2 Mechanismen; Änderungen im geteilten Arbeitsbaum
+(einschließlich erneut geändertem `ir-abdeckung.md`) stammen nach unserem Commit aus parallelen Sessions und sind nicht mitzustagen.
+**Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
+
 ## Doku-Aktualität bei jedem Release (Jay 06.11.2026, Tisch-Faden 20261106-102729-jay-06-11-readme)
 
 - [x] Inventur: mechanisch prüfbar = Toolnamen, Options-Parameter, `lookup`-Topics, Render-Stile, Panelzahlen je Profil,
@@ -16,8 +38,9 @@
 ## Orchestrierung (Jay 06.11.2026: „alles autonom, Sessions spawnen, bei zu hohem Kontext schließen, Codex nutzen“)
 
 Orchestrator = Claude-Hauptsession `f31ab414` (herdr `w4W:p6`). Berichte sind Behauptungen → Diff + Tests selbst nachprüfen, dann Faden schließen, Pane schließen.
-**Läuft:** Befund 2 OPSIN (Claude `3d35f9c4`, Faden `20261106-102746-masse-eval-befund-2`) · Befund 5 pH-Klemme + IR (Codex, Faden
-`20261106-103348-masse-eval-befund-5`) · E2 Lehrbuch-Feinschliff (Claude `76129dfa`, Faden `20261106-103546-etappe-e2`).
+**Läuft:** Befund 2 OPSIN (Claude `3d35f9c4`, Faden `20261106-102746-masse-eval-befund-2`) ·
+E2 Lehrbuch-Feinschliff (Claude `76129dfa`, Faden `20261106-103546-etappe-e2`).
+**Zur Abnahme berichtet:** Befund 5 pH-Klemme + IR (Codex, `a3f62dd`, Faden `20261106-103348-masse-eval-befund-5`, #5/#6).
 **Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` (28 Tests grün, `release_check.py` rc=1 solange [Unreleased] gefüllt — gewollt).
 **Warteschlange (nach Befund 2, weil resolver.py bzw. stoffe-masse.json):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) ·
 Befund 4 Referenzliste (fumaric acid → Q139857, tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
