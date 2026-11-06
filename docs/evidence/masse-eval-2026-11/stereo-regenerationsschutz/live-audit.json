@@ -1478,12 +1478,13 @@
         "records": 1,
         "error": null
       },
-      "assessment": "Unverändert: ChEMBL CHEMBL1433, PubChem bevorzugter Doxycycline-Record und PDBe DXT führen den gespeicherten Key. Die PUG-Namenssuche liefert CID 54671203 mit einem anderen ersten Key-Block (6-Epi-Record), also keinen Gegenbeleg zum bevorzugten Arzneistoffrecord.",
+      "assessment": "Unverändert; PubChem-PUG-Namenssuche doxycycline/Doxycyclin löst CID 54671203 auf. Dessen Title nennt die Imidsäure-Tautomerie, IUPACName carboxamide; gleicher Stereo-Block wie ChEMBL1433 und gleicher RDKit-kanonischer Tautomer-Key. Kein 6-Epimer; der gespeicherte Key bleibt. Reproduzierbare Queries und RDKit-Beleg: korrekturen-kreuzabnahme.json.",
       "confidence": "hoch",
       "supporting_sources": [
         "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
         "https://www.ebi.ac.uk/pdbe-srv/pdbechem/chemicalCompound/show/DXT"
-      ]
+      ],
+      "pubchem_tautomer_recheck": "korrekturen-kreuzabnahme.json#queries.doxycycline"
     },
     {
       "eingabe": "Doxycyclin",
@@ -1592,12 +1593,13 @@
         "records": 1,
         "error": null
       },
-      "assessment": "Unverändert: wie doxycycline; ChEMBL, PubChem Preferred und PDBe DXT stimmen auf den gespeicherten Key. PUG-Alias-CID 54671203 ist ein anderer 6-Epi-Record.",
+      "assessment": "Unverändert; PubChem-PUG-Namenssuche doxycycline/Doxycyclin löst CID 54671203 auf. Dessen Title nennt die Imidsäure-Tautomerie, IUPACName carboxamide; gleicher Stereo-Block wie ChEMBL1433 und gleicher RDKit-kanonischer Tautomer-Key. Kein 6-Epimer; der gespeicherte Key bleibt. Reproduzierbare Queries und RDKit-Beleg: korrekturen-kreuzabnahme.json.",
       "confidence": "hoch",
       "supporting_sources": [
         "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
         "https://www.ebi.ac.uk/pdbe-srv/pdbechem/chemicalCompound/show/DXT"
-      ]
+      ],
+      "pubchem_tautomer_recheck": "korrekturen-kreuzabnahme.json#queries.doxycycline"
     },
     {
       "eingabe": "(−)-Ephedrin",
@@ -3203,12 +3205,66 @@
         "records": 1,
         "error": null
       },
-      "assessment": "Unverändert / Stereo bleibt unklar: ChEMBL CHEMBL22969 und ChEBI:27375 bestätigen den alten Key. PubChem CID 13342 ist vollständig für neun Zentren, ändert aber zugleich ein bereits gesetztes C-Zentrum relativ zur Referenz; beide Strukturen lassen das N-Zentrum offen. Eine Umstellung wäre nicht quellenbelegt.",
+      "assessment": "Unsicher / nicht aufgelöst. Der benannte ChEMBL-Hauptrecord CHEMBL159 (VINBLASTINE, max_phase 4) und PubChem CID 13342 stimmen auf JXLYSJRDGCGARV-CFWMRBGOSA-N; CHEMBL22969 ohne bevorzugten Namen und ChEBI:27375 stimmen auf den gespeicherten JXLYSJRDGCGARV-XQKSVPLYSA-N. PubChem CID 241903 (Velban) führt ebenfalls den gespeicherten Key. Die Referenz bleibt unverändert; siehe korrekturen-kreuzabnahme.json.",
       "confidence": "hoch",
       "supporting_sources": [
         "https://www.ebi.ac.uk/chebi/CHEBI:27375",
         "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
-      ]
+      ],
+      "chembl_named_main_record_live": {
+        "id": "CHEMBL159",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL159.json",
+        "http": 200,
+        "pref_name": "VINBLASTINE",
+        "max_phase": "4.0",
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C46H58N4O9",
+        "inchi_key": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+        "canonical_smiles": "CC[C@]1(O)C[C@@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            5,
+            "R"
+          ],
+          [
+            7,
+            "?"
+          ],
+          [
+            19,
+            "S"
+          ],
+          [
+            34,
+            "R"
+          ],
+          [
+            35,
+            "S"
+          ],
+          [
+            41,
+            "R"
+          ],
+          [
+            46,
+            "R"
+          ],
+          [
+            55,
+            "R"
+          ],
+          [
+            56,
+            "R"
+          ]
+        ]
+      }
     },
     {
       "eingabe": "Vinblastin",
@@ -3360,12 +3416,66 @@
         "records": 1,
         "error": null
       },
-      "assessment": "Unverändert / Stereo bleibt unklar: wie vinblastine. ChEMBL und ChEBI bestätigen den gespeicherten Key; PubChem CID 13342 widerspricht an einem bereits spezifizierten C-Zentrum. Kein sicherer Ersatz.",
+      "assessment": "Unsicher / nicht aufgelöst. Der benannte ChEMBL-Hauptrecord CHEMBL159 (VINBLASTINE, max_phase 4) und PubChem CID 13342 stimmen auf JXLYSJRDGCGARV-CFWMRBGOSA-N; CHEMBL22969 ohne bevorzugten Namen und ChEBI:27375 stimmen auf den gespeicherten JXLYSJRDGCGARV-XQKSVPLYSA-N. PubChem CID 241903 (Velban) führt ebenfalls den gespeicherten Key. Die Referenz bleibt unverändert; siehe korrekturen-kreuzabnahme.json.",
       "confidence": "hoch",
       "supporting_sources": [
         "https://www.ebi.ac.uk/chebi/CHEBI:27375",
         "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
-      ]
+      ],
+      "chembl_named_main_record_live": {
+        "id": "CHEMBL159",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL159.json",
+        "http": 200,
+        "pref_name": "VINBLASTINE",
+        "max_phase": "4.0",
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C46H58N4O9",
+        "inchi_key": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+        "canonical_smiles": "CC[C@]1(O)C[C@@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            5,
+            "R"
+          ],
+          [
+            7,
+            "?"
+          ],
+          [
+            19,
+            "S"
+          ],
+          [
+            34,
+            "R"
+          ],
+          [
+            35,
+            "S"
+          ],
+          [
+            41,
+            "R"
+          ],
+          [
+            46,
+            "R"
+          ],
+          [
+            55,
+            "R"
+          ],
+          [
+            56,
+            "R"
+          ]
+        ]
+      }
     },
     {
       "eingabe": "Vinorelbin",
@@ -4178,12 +4288,13 @@
         "records": 1,
         "error": null
       },
-      "assessment": "Unverändert, Datenquellenkonflikt dokumentiert: ChEMBL CHEMBL96783 und PubChem Preferred Reference Collection nennen den vollständigen Key HEBKCHPVOIAQTA-SCDXWVJYSA-N. Die PUG REST Abfrage für CID 6912 gibt stattdessen NGQZWQHPSA mit einem unbestimmten Zentrum zurück. Keine Änderung; PUG REST und PubChem Preferred sind inkonsistent.",
+      "assessment": "Unverändert; PubChem PUG ordnet die Namen xylitol, ribitol und adonitol derselben unbestimmten CID 6912 zu. Die PubChem-Preferred-Seiten trennen die voll definierten Keys (Xylitol SCDXWVJYSA; Ribitol ZXFHETKHSA), und ChEMBL96783 stützt den Xylitol-Key. CID 6912 ist daher ein geteilter, stereochemisch unvollständiger Record, kein eindeutiger Gegenbeleg.",
       "confidence": "hoch",
       "supporting_sources": [
         "https://pubchem.ncbi.nlm.nih.gov/compound/Xylitol",
         "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL96783.json"
-      ]
+      ],
+      "pubchem_alias_recheck": "korrekturen-kreuzabnahme.json#queries.xylitol"
     }
   ],
   "previously_corrected_clindamycin": {
@@ -4204,5 +4315,6 @@
     "chembl_key": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
     "chembl_name": "CLINDAMYCIN"
   },
-  "source_note": "PubChem and ChEMBL were queried live on 2026-11-06. PubChem Preferred summary pages and ChEBI source links are recorded in each relevant assessment; PUG REST name-search discrepancies are kept distinct from preferred summary records."
+  "source_note": "PubChem and ChEMBL were queried live on 2026-11-06. PubChem Preferred summary pages and ChEBI source links are recorded in each relevant assessment; PUG REST name-search discrepancies are kept distinct from preferred summary records.",
+  "cross_acceptance_20261106": "korrekturen-kreuzabnahme.json"
 }

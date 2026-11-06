@@ -1,0 +1,518 @@
+{
+  "date": "2026-11-06",
+  "purpose": "Nachbesserung der drei Audit-Evidence-Punkte aus Opus-Kreuzabnahme 20261106-155948, Hop 2. Keine Resolver- oder Fixture-Änderung.",
+  "queries": {
+    "vinblastine": {
+      "decision": "uncertain_keep_existing_reference",
+      "current_fixture_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+      "candidate_keys": {
+        "named_approved_record": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+        "legacy_unspecified_record": "JXLYSJRDGCGARV-XQKSVPLYSA-N"
+      },
+      "chembl_named_main_record": {
+        "id": "CHEMBL159",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL159.json",
+        "http": 200,
+        "pref_name": "VINBLASTINE",
+        "max_phase": "4.0",
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C46H58N4O9",
+        "inchi_key": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+        "canonical_smiles": "CC[C@]1(O)C[C@@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            5,
+            "R"
+          ],
+          [
+            7,
+            "?"
+          ],
+          [
+            19,
+            "S"
+          ],
+          [
+            34,
+            "R"
+          ],
+          [
+            35,
+            "S"
+          ],
+          [
+            41,
+            "R"
+          ],
+          [
+            46,
+            "R"
+          ],
+          [
+            55,
+            "R"
+          ],
+          [
+            56,
+            "R"
+          ]
+        ]
+      },
+      "chembl_legacy_record": {
+        "id": "CHEMBL22969",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL22969.json",
+        "http": 200,
+        "pref_name": null,
+        "max_phase": null,
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C46H58N4O9",
+        "inchi_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+        "canonical_smiles": "CC[C@]1(O)C[C@H]2CN(CCc3c([nH]c4ccccc34)[C@@](C(=O)OC)(c3cc4c(cc3OC)N(C)[C@H]3[C@@](O)(C(=O)OC)[C@H](OC(C)=O)[C@]5(CC)C=CCN6CC[C@]43[C@@H]65)C2)C1",
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            5,
+            "S"
+          ],
+          [
+            7,
+            "?"
+          ],
+          [
+            19,
+            "S"
+          ],
+          [
+            34,
+            "R"
+          ],
+          [
+            35,
+            "S"
+          ],
+          [
+            41,
+            "R"
+          ],
+          [
+            46,
+            "R"
+          ],
+          [
+            55,
+            "R"
+          ],
+          [
+            56,
+            "R"
+          ]
+        ]
+      },
+      "pubchem_named_vinblastine": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/13342/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+        "http": 200,
+        "properties": {
+          "CID": 13342,
+          "MolecularFormula": "C46H58N4O9",
+          "SMILES": "CC[C@@]1(C[C@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+          "ConnectivitySMILES": "CCC1(CC2CC(C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)C78CCN9C7C(C=CC9)(C(C(C8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+          "InChIKey": "JXLYSJRDGCGARV-CFWMRBGOSA-N",
+          "IUPACName": "methyl (1R,9R,10S,11R,12R,19R)-11-acetyloxy-12-ethyl-4-[(13S,15R,17S)-17-ethyl-17-hydroxy-13-methoxycarbonyl-1,11-diazatetracyclo[13.3.1.04,12.05,10]nonadeca-4(12),5,7,9-tetraen-13-yl]-10-hydroxy-5-methoxy-8-methyl-8,16-diazapentacyclo[10.6.1.01,9.02,7.016,19]nonadeca-2,4,6,13-tetraene-10-carboxylate",
+          "AtomStereoCount": 9,
+          "DefinedAtomStereoCount": 9,
+          "UndefinedAtomStereoCount": 0,
+          "Title": "Vinblastine"
+        },
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            4,
+            "R"
+          ],
+          [
+            6,
+            "S"
+          ],
+          [
+            11,
+            "?"
+          ],
+          [
+            27,
+            "R"
+          ],
+          [
+            31,
+            "R"
+          ],
+          [
+            32,
+            "R"
+          ],
+          [
+            36,
+            "R"
+          ],
+          [
+            37,
+            "S"
+          ],
+          [
+            38,
+            "R"
+          ]
+        ]
+      },
+      "pubchem_velban": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/241903/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+        "http": 200,
+        "properties": {
+          "CID": 241903,
+          "MolecularFormula": "C46H58N4O9",
+          "SMILES": "CC[C@@]1(C[C@@H]2C[C@@](C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)[C@]78CCN9[C@H]7[C@@](C=CC9)([C@H]([C@@]([C@@H]8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+          "ConnectivitySMILES": "CCC1(CC2CC(C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)C78CCN9C7C(C=CC9)(C(C(C8N6C)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O",
+          "InChIKey": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
+          "IUPACName": "methyl (1R,9R,10S,11R,12R,19R)-11-acetyloxy-12-ethyl-4-[(13S,15S,17S)-17-ethyl-17-hydroxy-13-methoxycarbonyl-1,11-diazatetracyclo[13.3.1.04,12.05,10]nonadeca-4(12),5,7,9-tetraen-13-yl]-10-hydroxy-5-methoxy-8-methyl-8,16-diazapentacyclo[10.6.1.01,9.02,7.016,19]nonadeca-2,4,6,13-tetraene-10-carboxylate",
+          "AtomStereoCount": 9,
+          "DefinedAtomStereoCount": 9,
+          "UndefinedAtomStereoCount": 0,
+          "Title": "Velban"
+        },
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "S"
+          ],
+          [
+            4,
+            "S"
+          ],
+          [
+            6,
+            "S"
+          ],
+          [
+            11,
+            "?"
+          ],
+          [
+            27,
+            "R"
+          ],
+          [
+            31,
+            "R"
+          ],
+          [
+            32,
+            "R"
+          ],
+          [
+            36,
+            "R"
+          ],
+          [
+            37,
+            "S"
+          ],
+          [
+            38,
+            "R"
+          ]
+        ]
+      },
+      "chebi": {
+        "url": "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:27375",
+        "name": "vincaleukoblastine",
+        "formula": "C46H58N4O9",
+        "inchi_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N"
+      },
+      "interpretation": "CHEMBL159 (pref_name VINBLASTINE, max_phase 4) and PubChem CID 13342 agree on CFWMRBGOSA; CHEMBL22969 (no preferred name, no max_phase) and ChEBI:27375 agree on XQKSVPLYSA; PubChem CID 241903 (Velban) also carries XQKSVPLYSA. The competing records differ at a specified carbon stereocenter; RDKit reports one possible unassigned nitrogen center in each ChEMBL SMILES. Keep the fixture key unchanged and mark the reference uncertain."
+    },
+    "doxycycline": {
+      "decision": "keep_reference_correct_tautomer_explanation",
+      "chembl_reference": {
+        "id": "CHEMBL1433",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL1433.json",
+        "http": 200,
+        "pref_name": "DOXYCYCLINE ANHYDROUS",
+        "max_phase": "4.0",
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C22H24N2O8",
+        "inchi_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+        "canonical_smiles": "C[C@H]1c2cccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@@H]21",
+        "rdkit_chiral_centers": [
+          [
+            1,
+            "R"
+          ],
+          [
+            14,
+            "S"
+          ],
+          [
+            24,
+            "S"
+          ],
+          [
+            28,
+            "R"
+          ],
+          [
+            29,
+            "S"
+          ],
+          [
+            31,
+            "R"
+          ]
+        ]
+      },
+      "pubchem_name_query": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/doxycycline/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+        "http": 200,
+        "resolved_cid": 54671203,
+        "name_query_result": {
+          "CID": 54671203,
+          "MolecularFormula": "C22H24N2O8",
+          "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+          "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+          "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+          "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
+          "AtomStereoCount": 6,
+          "DefinedAtomStereoCount": 6,
+          "UndefinedAtomStereoCount": 0,
+          "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+        }
+      },
+      "pubchem_cid_54671203": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/54671203/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+        "http": 200,
+        "properties": {
+          "CID": 54671203,
+          "MolecularFormula": "C22H24N2O8",
+          "SMILES": "C[C@@H]1[C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+          "ConnectivitySMILES": "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O",
+          "InChIKey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+          "IUPACName": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide",
+          "AtomStereoCount": 6,
+          "DefinedAtomStereoCount": 6,
+          "UndefinedAtomStereoCount": 0,
+          "Title": "4-(Dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-3,4,4a,5,5a,6,12,12a-octahydrotetracene-2-carboximidic acid"
+        },
+        "rdkit_chiral_centers": [
+          [
+            1,
+            "R"
+          ],
+          [
+            2,
+            "R"
+          ],
+          [
+            3,
+            "S"
+          ],
+          [
+            4,
+            "R"
+          ],
+          [
+            5,
+            "S"
+          ],
+          [
+            10,
+            "R"
+          ]
+        ]
+      },
+      "pubchem_page": "https://pubchem.ncbi.nlm.nih.gov/compound/54671203",
+      "rdkit_tautomer_check": {
+        "method": "TautomerEnumerator; SetMaxTautomers(5000); SetMaxTransforms(25000); canonicalize both stereo-aware source SMILES; compare resulting InChIKeys",
+        "input_keys": [
+          "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
+          "SGKRLCUYIXIAHR-AKNGSSGZSA-N"
+        ],
+        "input_stereo_centers": [
+          [
+            [
+              1,
+              "R"
+            ],
+            [
+              14,
+              "S"
+            ],
+            [
+              24,
+              "S"
+            ],
+            [
+              28,
+              "R"
+            ],
+            [
+              29,
+              "S"
+            ],
+            [
+              31,
+              "R"
+            ]
+          ],
+          [
+            [
+              1,
+              "R"
+            ],
+            [
+              2,
+              "R"
+            ],
+            [
+              3,
+              "S"
+            ],
+            [
+              4,
+              "R"
+            ],
+            [
+              5,
+              "S"
+            ],
+            [
+              10,
+              "R"
+            ]
+          ]
+        ],
+        "canonical_tautomer_smiles": [
+          "CC1c2cccc(O)c2C(=O)C2C(=O)[C@]3(O)C(=O)C(C(N)=O)C(=O)C(N(C)C)[C@@H]3[C@@H](O)[C@@H]21",
+          "CC1c2cccc(O)c2C(=O)C2C(=O)[C@]3(O)C(=O)C(C(N)=O)C(=O)C(N(C)C)[C@@H]3[C@@H](O)[C@@H]21"
+        ],
+        "canonical_tautomer_keys": [
+          "VXVNYCRICCVPTD-REFUAFEPSA-N",
+          "VXVNYCRICCVPTD-REFUAFEPSA-N"
+        ],
+        "same_canonical_tautomer": true,
+        "interpretation": "The input InChIKey first block differs (connectivity/tautomer layer), while the stereo block AKNGSSGZSA is identical; RDKit produces the same canonical tautomer and stereo key. This supports a tautomer, not a 6-epimer. PUG Title says carboximidic acid while IUPACName says carboxamide; both labels are preserved as returned."
+      },
+      "pubchem_preferred_page": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Doxiciclina",
+        "preferred_inchikey": "JBIWCJUYHHGXTC-AKNGSSGZSA-N"
+      },
+      "pubchem_cid_page": "https://pubchem.ncbi.nlm.nih.gov/compound/54671203"
+    },
+    "xylitol": {
+      "decision": "keep_reference_explain_shared_unspecified_pubchem_cid",
+      "current_fixture_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+      "pug_name_to_cid_queries": {
+        "xylitol": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/xylitol/cids/JSON",
+          "http": 200,
+          "cids": [
+            6912
+          ]
+        },
+        "ribitol": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/ribitol/cids/JSON",
+          "http": 200,
+          "cids": [
+            6912
+          ]
+        },
+        "adonitol": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/adonitol/cids/JSON",
+          "http": 200,
+          "cids": [
+            6912
+          ]
+        }
+      },
+      "pubchem_cid_6912": {
+        "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6912/property/Title,IUPACName,MolecularFormula,InChIKey,SMILES,ConnectivitySMILES,AtomStereoCount,DefinedAtomStereoCount,UndefinedAtomStereoCount/JSON",
+        "http": 200,
+        "properties": {
+          "CID": 6912,
+          "MolecularFormula": "C5H12O5",
+          "SMILES": "C([C@H](C([C@H](CO)O)O)O)O",
+          "ConnectivitySMILES": "C(C(C(C(CO)O)O)O)O",
+          "InChIKey": "HEBKCHPVOIAQTA-NGQZWQHPSA-N",
+          "IUPACName": "(2R,4S)-pentane-1,2,3,4,5-pentol",
+          "AtomStereoCount": 2,
+          "DefinedAtomStereoCount": 2,
+          "UndefinedAtomStereoCount": 0,
+          "Title": "(2S,4R)-Pentane-1,2,3,4,5-Pentol"
+        },
+        "rdkit_chiral_centers": [
+          [
+            1,
+            "R"
+          ],
+          [
+            2,
+            "?"
+          ],
+          [
+            3,
+            "S"
+          ]
+        ]
+      },
+      "preferred_records": {
+        "xylitol": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Xylitol",
+          "title": "Xylitol",
+          "preferred_inchikey": "HEBKCHPVOIAQTA-SCDXWVJYSA-N"
+        },
+        "ribitol": {
+          "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Ribitol",
+          "title": "Ribitol",
+          "preferred_inchikey": "HEBKCHPVOIAQTA-ZXFHETKHSA-N"
+        }
+      },
+      "chembl_xylitol": {
+        "id": "CHEMBL96783",
+        "url": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL96783.json",
+        "http": 200,
+        "pref_name": "XYLITOL",
+        "max_phase": "3.0",
+        "molecule_type": "Small molecule",
+        "parent_chembl_id": null,
+        "formula": "C5H12O5",
+        "inchi_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
+        "canonical_smiles": "OC[C@@H](O)[C@H](O)[C@@H](O)CO",
+        "rdkit_chiral_centers": [
+          [
+            2,
+            "R"
+          ],
+          [
+            4,
+            "r"
+          ],
+          [
+            6,
+            "S"
+          ]
+        ]
+      },
+      "interpretation": "PubChem PUG name lookup maps xylitol, ribitol and adonitol to the same CID 6912, whose record has an unspecified center and key NGQZWQHPSA. PubChem Preferred pages separately identify Xylitol with SCDXWVJYSA and Ribitol with ZXFHETKHSA; ChEMBL96783 agrees with the Xylitol key. Thus CID 6912 is a shared under-specified record, not a unique stereochemical identification. Retain the fully defined Xylitol reference."
+    }
+  }
+}

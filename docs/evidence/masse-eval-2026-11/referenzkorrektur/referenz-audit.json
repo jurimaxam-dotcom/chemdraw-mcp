@@ -145,10 +145,10 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Unverändert: ChEMBL CHEMBL1433, PubChem bevorzugter Doxycycline-Record und PDBe DXT führen den gespeicherten Key. Die PUG-Namenssuche liefert CID 54671203 mit einem anderen ersten Key-Block (6-Epi-Record), also keinen Gegenbeleg zum bevorzugten Arzneistoffrecord.",
+    "bewertung": "Unverändert: Der PubChem Preferred-Eintrag „Doxiciclina“ führt reproduzierbar den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N; ChEMBL CHEMBL1433 bestätigt ihn. Die getrennte PUG-Namensabfrage doxycycline löst CID 54671203 auf. Dessen Title nennt „carboximidic acid“, IUPACName „carboxamide“; die stereo-erhaltende RDKit-Tautomer-Kanonisierung bestätigt die Tautomerform, kein 6-Epimer. Kein Referenzwechsel. Query-URLs und Ausgabe: korrekturen-kreuzabnahme.json.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
-    "stereo_audit": "../stereo-regenerationsschutz/README.md"
+    "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.doxycycline"
   },
   {
     "eingabe": "Doxycyclin",
@@ -160,10 +160,10 @@
     "chembl_name": "DOXYCYCLINE ANHYDROUS",
     "chembl_key": "JBIWCJUYHHGXTC-AKNGSSGZSA-N",
     "chembl_formel": "C22H24N2O8",
-    "bewertung": "Unverändert: wie doxycycline; ChEMBL, PubChem Preferred und PDBe DXT stimmen auf den gespeicherten Key. PUG-Alias-CID 54671203 ist ein anderer 6-Epi-Record.",
+    "bewertung": "Unverändert: Der PubChem Preferred-Eintrag „Doxiciclina“ führt reproduzierbar den gespeicherten Key JBIWCJUYHHGXTC-AKNGSSGZSA-N; ChEMBL CHEMBL1433 bestätigt ihn. Die getrennte PUG-Namensabfrage doxycycline löst CID 54671203 auf. Dessen Title nennt „carboximidic acid“, IUPACName „carboxamide“; die stereo-erhaltende RDKit-Tautomer-Kanonisierung bestätigt die Tautomerform, kein 6-Epimer. Kein Referenzwechsel. Query-URLs und Ausgabe: korrekturen-kreuzabnahme.json.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
-    "stereo_audit": "../stereo-regenerationsschutz/README.md"
+    "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.doxycycline"
   },
   {
     "eingabe": "(−)-Ephedrin",
@@ -460,10 +460,12 @@
     "chembl_name": null,
     "chembl_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
     "chembl_formel": "C46H58N4O9",
-    "bewertung": "Unverändert / Stereo bleibt unklar: ChEMBL CHEMBL22969 und ChEBI:27375 bestätigen den alten Key. PubChem CID 13342 ist vollständig für neun Zentren, ändert aber zugleich ein bereits gesetztes C-Zentrum relativ zur Referenz; beide Strukturen lassen das N-Zentrum offen. Eine Umstellung wäre nicht quellenbelegt.",
+    "bewertung": "Unsicher / nicht aufgelöst: Der benannte ChEMBL-Hauptrecord CHEMBL159 (VINBLASTINE, max_phase 4) und PubChem CID 13342 führen JXLYSJRDGCGARV-CFWMRBGOSA-N. Der bisher verwendete Key JXLYSJRDGCGARV-XQKSVPLYSA-N wird durch den unbenannten ChEMBL-Record CHEMBL22969, ChEBI:27375 und PubChem CID 241903 (Velban) gestützt. Der Wechsel betrifft ein bereits gesetztes C-Zentrum; die Strukturen lassen zusätzlich ein mögliches N-Zentrum unbestimmt. Keinen Keytausch vornehmen; Quelle bleibt vorerst unverändert.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
-    "sicherheit": "hoch",
-    "stereo_audit": "../stereo-regenerationsschutz/README.md"
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.vinblastine",
+    "chembl_primary": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL159.json",
+    "pubchem_primary": "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
   },
   {
     "eingabe": "Vinblastin",
@@ -475,10 +477,12 @@
     "chembl_name": null,
     "chembl_key": "JXLYSJRDGCGARV-XQKSVPLYSA-N",
     "chembl_formel": "C46H58N4O9",
-    "bewertung": "Unverändert / Stereo bleibt unklar: wie vinblastine. ChEMBL und ChEBI bestätigen den gespeicherten Key; PubChem CID 13342 widerspricht an einem bereits spezifizierten C-Zentrum. Kein sicherer Ersatz.",
+    "bewertung": "Unsicher / nicht aufgelöst: Der benannte ChEMBL-Hauptrecord CHEMBL159 (VINBLASTINE, max_phase 4) und PubChem CID 13342 führen JXLYSJRDGCGARV-CFWMRBGOSA-N. Der bisher verwendete Key JXLYSJRDGCGARV-XQKSVPLYSA-N wird durch den unbenannten ChEMBL-Record CHEMBL22969, ChEBI:27375 und PubChem CID 241903 (Velban) gestützt. Der Wechsel betrifft ein bereits gesetztes C-Zentrum; die Strukturen lassen zusätzlich ein mögliches N-Zentrum unbestimmt. Keinen Keytausch vornehmen; Quelle bleibt vorerst unverändert.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
-    "sicherheit": "hoch",
-    "stereo_audit": "../stereo-regenerationsschutz/README.md"
+    "sicherheit": "mittel",
+    "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.vinblastine",
+    "chembl_primary": "https://www.ebi.ac.uk/chembl/api/data/molecule/CHEMBL159.json",
+    "pubchem_primary": "https://pubchem.ncbi.nlm.nih.gov/compound/13342"
   },
   {
     "eingabe": "Vinorelbin",
@@ -646,9 +650,9 @@
     "chembl_name": "XYLITOL",
     "chembl_key": "HEBKCHPVOIAQTA-SCDXWVJYSA-N",
     "chembl_formel": "C5H12O5",
-    "bewertung": "Unverändert, Datenquellenkonflikt dokumentiert: ChEMBL CHEMBL96783 und PubChem Preferred Reference Collection nennen den vollständigen Key HEBKCHPVOIAQTA-SCDXWVJYSA-N. Die PUG REST Abfrage für CID 6912 gibt stattdessen NGQZWQHPSA mit einem unbestimmten Zentrum zurück. Keine Änderung; PUG REST und PubChem Preferred sind inkonsistent.",
+    "bewertung": "Unverändert: PubChem PUG REST ordnet die Namensabfragen xylitol, ribitol und adonitol derselben unbestimmten CID 6912 (HEBKCHPVOIAQTA-NGQZWQHPSA-N) zu. Das erklärt den konfliktträchtigen API-Treffer: CID 6912 ist kein eindeutiger stereochemischer Gegenbeleg. Die PubChem Preferred-Seiten führen getrennte vollständige Keys für Xylitol (HEBKCHPVOIAQTA-SCDXWVJYSA-N) und Ribitol (HEBKCHPVOIAQTA-ZXFHETKHSA-N); ChEMBL CHEMBL96783 stimmt für Xylitol auf den gespeicherten Key. Details/Query: korrekturen-kreuzabnahme.json.",
     "bewertung_alt": "Referenz bestätigt (ChEMBL-Key); Abweichung bleibt offen",
     "sicherheit": "hoch",
-    "stereo_audit": "../stereo-regenerationsschutz/README.md"
+    "stereo_audit": "../stereo-regenerationsschutz/korrekturen-kreuzabnahme.json#queries.xylitol"
   }
 ]
