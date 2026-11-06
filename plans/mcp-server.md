@@ -91,6 +91,12 @@ tenofovir disoproxil) · Kann „gefunden als <englisch>“ im Ergebnis.
   `identitaet-lauf-3-vor-opsin-check.*`), 6 rot→grün, kein grüner Fall gekippt; Median der OPSIN-Eingaben 0,0 → 0,5 s.
   Holdout `holdout_opsin_check.py` (131 OPSIN-Treffer aus 1119 ATC-Stoffen außerhalb der Listen): 10 behoben · **1 gekippt
   (calcium silicate, anorganische Stöchiometrie)** · 116 gleich. Bericht: `docs/evidence/masse-eval-2026-11/README.md` § Lauf 3 → Fix → Lauf 4.
+- [x] **Befund 2 Nachbesserung (Codex-Abnahme NACHBESSERN, Faden `20261106-105531-abnahme-befund-2`)** — `038ace4`: OPSIN-Treffer
+  ohne Kohlenstoff → keine PubChem-Gegenfrage (Messung 22 Fälle: jede Salz-Kippe C-frei, jeder Gewinn organisch). Ladungsregel
+  gemessen und verworfen (kippt diiodo-L-tyrosine). Lauf 5 = Lauf 4 je Eingabe (664/1/46, Lauf 4 eingefroren `identitaet-lauf-4-vor-salzregel.*`);
+  Holdout 117 gleich · 9 behoben · **0 gekippt**, Einzelfälle `holdout_opsin_check.json`; Gate rc=0 (8170). Offline-Latenz korrigiert:
+  Blackhole 3,0 s je organischem Trivialnamen. Bericht `236df52`, README § Lauf 4 → Fix → Lauf 5; Tisch-Bericht Faden `20261106-102746` #5.
+- [ ] Kann: gemerkter Offline-Zustand im Resolver (nach Verbindungsfehler ~60 s keine Gegenfrage) spart die 3 s im Blackhole-Fall.
 
 **Nächster Schritt:** Befund 3 (PubChem-Synonymfehler, Formel-Plausibilität) laut Warteschlange im Abschnitt Orchestrierung.
 **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
