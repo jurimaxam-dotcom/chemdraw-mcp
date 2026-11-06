@@ -15,7 +15,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Vorab-Pruefung (Jay 06.11.2026): Doku und CHANGELOG passen zum Code, bevor
+  # etwas auf PyPI landet. Rot hier = kein Build, kein Upload. Was sich nicht
+  # mechanisch pruefen laesst, steht als Checkliste in docs/registry-publish.md.
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      # Tag ueber env statt ${{ }} in der Shell-Zeile (Sicherheitsscan B5);
+      # bei workflow_dispatch leer, dann prueft das Skript den Tag nicht.
+      - run: uv run python scripts/release_check.py --tag "$TAG"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+      - run: uv run pytest -q tests/test_readme.py tests/test_docs_consistency.py tests/test_release_versions.py tests/test_release_check.py
+
   build:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -1,5 +1,18 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Doku-Aktualität bei jedem Release (Jay 06.11.2026, Tisch-Faden 20261106-102729-jay-06-11-readme)
+
+- [x] Inventur: mechanisch prüfbar = Toolnamen, Options-Parameter, `lookup`-Topics, Render-Stile, Panelzahlen je Profil,
+  `CHEMDRAW_*`-Variablen, `chemdraw-*`-Befehle, Repo-Pfade, Identitätszahl (README, docs/tools|installation|development.md,
+  CHANGELOG [Unreleased]); release-zeitig = Tag ↔ Version, datierter + gefüllter CHANGELOG-Abschnitt, leeres [Unreleased].
+  Nicht mechanisch = ob Beschreibungen/Limitations noch stimmen, freie Zahlen („About 8,000 Python tests“).
+- [x] `tests/test_docs_consistency.py` (Gate, 9 Tests): Identitätszahl rot gefunden (Doku 24, stoffe.json 25) → behoben;
+  übrige 8 je per Mutation rot gesehen. `docs/development.md` 7,500 → 8,000 Tests (mit Codex abgestimmt, Faden #3).
+- [x] `scripts/release_check.py` + `tests/test_release_check.py`; Job `check` in `publish.yml`, `build` hängt per `needs: check` daran.
+- [x] Checkliste 1a (Opus-Sichtung README+docs gegen `git diff <letzter Tag>..HEAD`) in `docs/registry-publish.md`
+  § Release-Reihenfolge, per Test verankert.
+- Hinweis: `release_check.py` ist heute rot (rc=1), weil [Unreleased] Einträge hat — beim nächsten Release erst verschieben.
+
 ## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
 
 - [x] **Befund 1 (deutsche Trivialnamen ohne PubChem-Synonym)** — `abee1a5`: `chemdraw_tool/de_names.py` (reine Funktion,

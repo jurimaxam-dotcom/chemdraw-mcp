@@ -16,7 +16,7 @@ Files go to `~/ChemDraw-Output/`.
 
 **Structures.** `generate_molecule` takes a name (English, IUPAC, many German
 trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI; a
-pinned identity test checks 24 inputs against their InChIKey, and family names
+pinned identity test checks 25 inputs against their InChIKey, and family names
 such as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
 buttons for the data sheet, PNG export and an Anki card. Fischer and Haworth
