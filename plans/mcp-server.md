@@ -169,7 +169,10 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   kein Produktcode. Nicotin bewusst unverändert. Faden geschlossen.
 **Danach:** deutsche zusammengesetzte Salznamen (`Bendamustinhydrochlorid` not_found, englisch `Bendamustine hydrochloride` geht) · Hydrat-Zweig der Salzregel (Tigecyclin) ohne Unit-Test · `referenz-audit.json`: ≥ 10 weitere Einträge „Referenz bestätigt (ChEMBL-Key)“ mit derselben zu weiten Begründung wie Clindamycin prüfen · Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
 Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
-**Nächster Chef-Schritt (Stand 06.11. ~15:45):** „gefunden als“ gebaut `849d2a9` (Opus-Bauer, Faden `…151146` Bericht #2 da). Chef: Resolver-Diff gelesen, Snapshots nur +foundAs-Schemafeld (keine description-Zeile geändert, Feld mit Default ""), Gate rc=0 8239. Entschieden: OPSIN-Treffer/Override = wörtlich, kein Hinweis (Glycin leer). Offen: Codex-Kreuzabnahme `20261106-152425-kreuzabnahme-gefunden-als` (inkl. Desktop-Handtest) — Codex macht erst `20261106-151201-referenz-audit-regenerationsschu` → danach Opus-Gutachter dafür. Danach Salznamen (`Bendamustinhydrochlorid`) an Opus-Bauer. Kann: „Found as Maleinsaeure“ bei Transliteration wenig informativ.
+- ✅ **„gefunden als“ abgenommen 06.11. ~16:05:** `849d2a9` (Opus-Bauer). Codex-Kreuzabnahme: Mutationen 7/3 rot, Snapshots nur Schema, Gate grün; sein NACHBESSERN verworfen — Ephedrin wörtlich bei PubChem (meine Erwartung falsch); **Desktop-Grenze:** das Modell übersetzt „Dexamethason“ selbst ins Englische, foundAs bleibt dann leer (Screenshots `/tmp/chemdraw-desktop-test/found-as/`). Chef: Diff, Gate rc=0 8239. Fäden `…151146`, `…152425` + Pane pH zu. Plan-Haken Z.~184 damit erledigt.
+- **Referenz-Audit** `bfbae23` (Codex): Opus-Gutachter (`20261106-155948`, Pane pJ offen) nimmt Code-Teil ab (Regenerationsschutz im echten `baue_liste`, 674/1/36), NACHBESSERN nur Evidence: Vinblastin CHEMBL159, Doxycyclin = Tautomer nicht 6-Epi, Xylit = CID 6912 Xylit+Ribitol → an Codex `…151201` #5 → danach Nachprüfung durch pJ.
+- **Salznamen deutsch** (`Bendamustinhydrochlorid`): Opus-Bauer, Faden `20261106-160852-salznamen-deutsch` (Session 339470d9) → Kreuzabnahme Codex.
+**Nächster Chef-Schritt (Stand 06.11. ~16:10):** Berichte der zwei offenen Fäden abwarten, je Kreuz-/Nachprüfung → Chef Diff + Gate + Nachzählung.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
@@ -181,7 +184,7 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
   **658 grün · 1 gelb · 52 rot** (Lauf 2: 591/1/119), 591 grün→grün, 67 rot→grün, nicht aufgelöst 80 → 9.
   Holdout gegen Überanpassung (`docs/evidence/masse-eval-2026-11/holdout_de_namen.py`, 177 nie benutzte deutsche Eingaben):
   121 gleich · 1 Stereo · **0 anderer Stoff**. Bericht: `docs/evidence/masse-eval-2026-11/README.md` § Lauf 2 → Fix → Lauf 3.
-- [ ] Kann: Ergebnis vermerkt „gefunden als *Dexamethasone*“ (Payload + Tool-Snapshot, eigener Schritt).
+- [x] Kann: Ergebnis vermerkt „gefunden als *Dexamethasone*“ — `849d2a9`, abgenommen 06.11. (Desktop-Grenze: Modell übersetzt selbst).
 
 - [x] **Befund 2 (OPSIN zerlegt Trivialnamen)** — `41da7c4`: `_opsin_checked` in `resolver.py` — Name mit Lokanten bleibt
   offline, sonst PubChem gegenfragen, anderes Gerüst → PubChem; Tiebreak englische Schreibweise (Glycin); offline → OPSIN.
