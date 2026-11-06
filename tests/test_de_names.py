@@ -68,8 +68,8 @@ def test_english_variant(german, english):
     [
         "caffeine",
         "ethanol",
-        "Metamizol (freie Säure)",  # Klammerzusatz: keine sichere Umschreibung
-        "Citral A+B",
+        "Metamizol (unbekannte Form)",  # beliebige Klammerzusätze bleiben gesperrt
+        "Citral A+C",
         "",
     ],
 )
@@ -171,3 +171,40 @@ def test_all_salt_word_anion_spellings_have_a_translation():
 )
 def test_long_and_new_counterions_are_not_split_at_short_suffixes(german, english):
     assert english_variant(german) == english
+
+
+@pytest.mark.parametrize(("name", "expected"), [
+    ("Cefixim Anhydrat", "Cefixime"),
+    ("Metamizol (freie Säure)", "Metamizol"),
+    ("Citral A+B", "Citral"),
+])
+def test_only_measured_form_suffixes_are_removed(name, expected):
+    assert english_variant(name) == expected
+
+
+@pytest.mark.parametrize("name", ["Cefixim Trihydrat", "Cefixim Natriumsalz", "Metamizol (Natrium)"])
+def test_other_form_suffixes_are_not_discarded(name):
+    variant = english_variant(name)
+    assert variant is None or variant != "Cefixime"
+    if "(" in name:
+        assert variant is None
+
+
+def test_edta_composite_stems_get_both_linking_vowels():
+    assert english_variant("Ethylendiamintetraessigsäure") == "ethylenediaminetetraacetic acid"
+    assert english_variant("ethylenediaminetetraacetic acid") is None
+
+
+def test_meglumine_antimoniate_is_an_exact_name_not_a_generic_glucamine_rule():
+    assert english_variant("N-Methylglucaminantimonat") == "meglumine antimoniate"
+    assert english_variant("n-methylglucaminantimonat") == "meglumine antimoniate"
+    assert english_variant("N-Methylglucaminchlorid") != "meglumine antimoniate"
+
+
+def test_dinitrate_is_not_split_into_stem_di_and_nitrate():
+    assert english_variant("Isosorbiddinitrat") == "Isosorbide dinitrate"
+
+
+def test_benzathine_is_separated_without_adding_e_to_penicillin():
+    assert english_variant("Benzylpenicillin-Benzathin") == "Benzylpenicillin benzathine"
+    assert english_variant("Benzylpenicillinbenzathin") == "Benzylpenicillin benzathine"

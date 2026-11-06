@@ -42,6 +42,7 @@ _ANIONS = {
     "hydroiodid": "hydroiodide",
     "hydrogentartrat": "hydrogen tartrate",
     "dipropionat": "dipropionate",
+    "dinitrat": "dinitrate",
     "tartrat": "tartrate",
     "maleat": "maleate",
     "fumarat": "fumarate",
@@ -70,6 +71,7 @@ _ANIONS = {
     # Gegenion; vorn ("Natriumchlorid") greift _CATIONS zuerst.
     "natrium": "sodium",
     "kalium": "potassium",
+    "benzathin": "benzathine",
 }
 
 # Deutsche Säurestämme, die sich nicht nur in der Endung unterscheiden.
@@ -98,8 +100,21 @@ _HALOGEN = re.compile(r"(?i)(fluor|chlor|brom)(?=[bcdfgklmnpqrstvz])")
 
 _SEPARATOR = re.compile(r"([ \-])")
 
+# Geschlossene Messliste: keine beliebigen Klammern, Hydrate oder Salzangaben.
+_FORM_SUFFIX = re.compile(r"(?i) (?:Anhydrat|\(freie Säure\)|A\+B)$")
+_EXACT_NAMES = {"n-methylglucaminantimonat": "meglumine antimoniate"}
+
+
+def form_variant(name: str) -> str | None:
+    """Strip a measured form suffix, preserving stereo and rotation prefixes exactly."""
+    base = _FORM_SUFFIX.sub("", name)
+    return base if base and base != name else None
+
 
 def _acid(stem: str) -> str:
+    # Verbindungs-e in EDTA-Komposita; englische Stämme wachsen nicht erneut.
+    stem = re.sub(r"(?i)ethylen(?=diamin)", "ethylene", stem)
+    stem = re.sub(r"(?i)diamin(?=tetra)", "diamine", stem)
     for german, english in _ACID_STEMS.items():
         if stem.lower().endswith(german):
             stem = stem[: len(stem) - len(german)] + english
@@ -123,6 +138,8 @@ def _word(word: str) -> str:
             return f"{_word(word[: -len(german)])} {english}"
     word = _HALOGEN.sub(r"\1o", word)
     lower = word.lower()
+    if lower.endswith("cillin"):
+        return word  # Penicillin-INN endet auch auf Englisch ohne zusätzliches e.
     for german, english in _ENDINGS:
         if lower.endswith(german):
             return word + english[len(german) :]
@@ -133,11 +150,17 @@ def english_variant(name: str) -> str | None:
     """Englische Schreibweise eines deutschen Trivialnamens, oder None.
 
     None heißt: nichts umzuschreiben — der Resolver fragt dann kein zweites Mal.
-    Klammerzusätze ("Metamizol (freie Säure)") werden nicht angefasst.
+    Nur die gemessenen Form-Zusätze werden entfernt; andere Klammern bleiben
+    gesperrt. Der Resolver probiert den Grundnamen zuerst durch die volle Kaskade.
     """
-    if not name or "(" in _RACEMATE_PREFIX.sub("", name) or "+" in name:
+    if not name:
         return None
-    text = _RACEMATE_PREFIX.sub("", name)
+    text = form_variant(name) or name
+    if "(" in _RACEMATE_PREFIX.sub("", text) or "+" in text:
+        return None
+    text = _RACEMATE_PREFIX.sub("", text)
+    if exact := _EXACT_NAMES.get(text.casefold()):
+        return exact
     for greek, latin in _GREEK.items():
         text = text.replace(greek, latin)
     parts = _SEPARATOR.split(text)

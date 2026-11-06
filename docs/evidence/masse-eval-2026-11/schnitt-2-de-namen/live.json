@@ -1,0 +1,65 @@
+[
+  {
+    "input": "Cefixim Anhydrat",
+    "variant": "Cefixime",
+    "form_base": "Cefixim",
+    "expected": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+    "key": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+    "found_as": "Cefixim",
+    "match": true
+  },
+  {
+    "input": "N-Methylglucaminantimonat",
+    "variant": "meglumine antimoniate",
+    "form_base": null,
+    "expected": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+    "key": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+    "found_as": "meglumine antimoniate",
+    "match": true
+  },
+  {
+    "input": "Metamizol (freie Säure)",
+    "variant": "Metamizol",
+    "form_base": "Metamizol",
+    "expected": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+    "key": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+    "found_as": "Metamizol",
+    "match": true
+  },
+  {
+    "input": "Ethylendiamintetraessigsäure",
+    "variant": "ethylenediaminetetraacetic acid",
+    "form_base": null,
+    "expected": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+    "key": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+    "found_as": "ethylenediaminetetraacetic acid",
+    "match": true
+  },
+  {
+    "input": "Citral A+B",
+    "variant": "Citral",
+    "form_base": "Citral",
+    "expected": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+    "key": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+    "found_as": "Citral",
+    "match": true
+  },
+  {
+    "input": "Isosorbiddinitrat",
+    "variant": "Isosorbide dinitrate",
+    "form_base": null,
+    "expected": "MOYKHGMNXAOIAT-JGWLITMVSA-N",
+    "key": "MOYKHGMNXAOIAT-OMMKOOBNSA-N",
+    "found_as": "",
+    "match": false
+  },
+  {
+    "input": "Benzylpenicillin-Benzathin",
+    "variant": "Benzylpenicillin benzathine",
+    "form_base": null,
+    "expected": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+    "key": "BVGLIYRKPOITBQ-UHFFFAOYSA-N",
+    "found_as": "",
+    "match": false
+  }
+]

@@ -1,0 +1,1073 @@
+{
+  "counts": {
+    "ohne Variante": 44,
+    "gleich": 121,
+    "Stereo/Form": 1,
+    "anderer Stoff": 0,
+    "nicht gefunden": 11
+  },
+  "cases": [
+    {
+      "name": "L-Asparagin",
+      "variant": "L-Asparagine",
+      "key": "DCXYFEDJOCDNAF-REOHCLBHSA-N",
+      "expected": "DCXYFEDJOCDNAF-REOHCLBHSA-N"
+    },
+    {
+      "name": "Alanin",
+      "variant": "Alanine",
+      "key": "QNAYBMKLOCPYGJ-REOHCLBHSA-N",
+      "expected": "QNAYBMKLOCPYGJ-REOHCLBHSA-N"
+    },
+    {
+      "name": "L-Glutamin",
+      "variant": "L-Glutamine",
+      "key": "ZDXPYRJPNDTMRX-VKHMYHEASA-N",
+      "expected": "ZDXPYRJPNDTMRX-VKHMYHEASA-N"
+    },
+    {
+      "name": "L-Isoleucin",
+      "variant": "L-Isoleucine",
+      "key": "AGPKZVBTJJNPAG-WHFBIAKZSA-N",
+      "expected": "AGPKZVBTJJNPAG-WHFBIAKZSA-N"
+    },
+    {
+      "name": "Leucin",
+      "variant": "Leucine",
+      "key": "ROHFNLRQFUQHCH-YFKPBYRVSA-N",
+      "expected": "ROHFNLRQFUQHCH-YFKPBYRVSA-N"
+    },
+    {
+      "name": "L-Serin",
+      "variant": "L-Serine",
+      "key": "MTCFGRXMJLQNBG-REOHCLBHSA-N",
+      "expected": "MTCFGRXMJLQNBG-REOHCLBHSA-N"
+    },
+    {
+      "name": "Threonin",
+      "variant": "Threonine",
+      "key": "AYFVYJQAPQTCCC-GBXIJSLDSA-N",
+      "expected": "AYFVYJQAPQTCCC-GBXIJSLDSA-N"
+    },
+    {
+      "name": "L-Tyrosin",
+      "variant": "L-Tyrosine",
+      "key": "OUYCCCASQSFEME-QMMMGPOBSA-N",
+      "expected": "OUYCCCASQSFEME-QMMMGPOBSA-N"
+    },
+    {
+      "name": "L-Valin",
+      "variant": "L-Valine",
+      "key": "KZSNJWFQEVHDMF-BYPYZUCNSA-N",
+      "expected": "KZSNJWFQEVHDMF-BYPYZUCNSA-N"
+    },
+    {
+      "name": "L-Arginin",
+      "variant": "L-Arginine",
+      "key": "ODKSFYDXXFIFQN-BYPYZUCNSA-N",
+      "expected": "ODKSFYDXXFIFQN-BYPYZUCNSA-N"
+    },
+    {
+      "name": "Asparaginsäure",
+      "variant": "Asparaginic acid",
+      "key": "CKLJMWTZIZZHCS-REOHCLBHSA-N",
+      "expected": "CKLJMWTZIZZHCS-REOHCLBHSA-N"
+    },
+    {
+      "name": "L-Glutaminsäure",
+      "variant": "L-Glutaminic acid",
+      "key": "WHUUTDBJXJRKMK-VKHMYHEASA-N",
+      "expected": "WHUUTDBJXJRKMK-VKHMYHEASA-N"
+    },
+    {
+      "name": "Glycin",
+      "variant": "Glycine",
+      "key": "DHMQDGOQFOQNFH-UHFFFAOYSA-N",
+      "expected": "DHMQDGOQFOQNFH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "L-Histidin",
+      "variant": "L-Histidine",
+      "key": "HNDVDQJCIGZPNO-YFKPBYRVSA-N",
+      "expected": "HNDVDQJCIGZPNO-YFKPBYRVSA-N"
+    },
+    {
+      "name": "L-Methionin",
+      "variant": "L-Methionine",
+      "key": "FFEARJCKVFRZRR-BYPYZUCNSA-N",
+      "expected": "FFEARJCKVFRZRR-BYPYZUCNSA-N"
+    },
+    {
+      "name": "Phenylalanin",
+      "variant": "Phenylalanine",
+      "key": "COLNVLDHVKWLRT-QMMMGPOBSA-N",
+      "expected": "COLNVLDHVKWLRT-QMMMGPOBSA-N"
+    },
+    {
+      "name": "L-Prolin",
+      "variant": "L-Proline",
+      "key": "ONIBWKKTOPOVIA-BYPYZUCNSA-N",
+      "expected": "ONIBWKKTOPOVIA-BYPYZUCNSA-N"
+    },
+    {
+      "name": "Phyllochinon",
+      "variant": "Phyllochinone",
+      "key": null,
+      "expected": "MBWXNTAXLNYFJB-NKFFZRIASA-N"
+    },
+    {
+      "name": "Mannit",
+      "variant": null,
+      "key": null,
+      "expected": "FBPFZTCFMRRESA-KVTDHHQDSA-N"
+    },
+    {
+      "name": "Acetylcystein",
+      "variant": "Acetylcysteine",
+      "key": "PWKSKIMOESPYIA-BYPYZUCNSA-N",
+      "expected": "PWKSKIMOESPYIA-BYPYZUCNSA-N"
+    },
+    {
+      "name": "Acetazolamid",
+      "variant": "Acetazolamide",
+      "key": "BZKPWHYZMXOIDC-UHFFFAOYSA-N",
+      "expected": "BZKPWHYZMXOIDC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Essigsäure",
+      "variant": "acetic acid",
+      "key": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+      "expected": "QTBSBXVTEAMEQO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Prostaglandin E1",
+      "variant": "Prostaglandine E1",
+      "key": null,
+      "expected": "GMVPRGQOIOIIMI-DWKJAMRDSA-N"
+    },
+    {
+      "name": "Amitriptylin",
+      "variant": "Amitriptyline",
+      "key": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+      "expected": "KRMDCWKBEZIMAB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Amodiaquin",
+      "variant": "Amodiaquine",
+      "key": "OVCDSSHSILBFBN-UHFFFAOYSA-N",
+      "expected": "OVCDSSHSILBFBN-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Anastrozol",
+      "variant": null,
+      "key": null,
+      "expected": "YBBLVLTVTVSKRW-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Azathioprin",
+      "variant": "Azathioprine",
+      "key": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+      "expected": "LMEKQMALGUDUQG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benznidazol",
+      "variant": null,
+      "key": null,
+      "expected": "CULUWZNBISUWAS-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Dibenzoylperoxid",
+      "variant": "Dibenzoylperoxide",
+      "key": "OMPJBNCRMGITSC-UHFFFAOYSA-N",
+      "expected": "OMPJBNCRMGITSC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzoesäurebenzylester",
+      "variant": null,
+      "key": null,
+      "expected": "SESFRYSPDFLNCH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Capecitabin",
+      "variant": "Capecitabine",
+      "key": "GAGWJHPBXLXJQN-UORFTKCHSA-N",
+      "expected": "GAGWJHPBXLXJQN-UORFTKCHSA-N"
+    },
+    {
+      "name": "Cefotaxim",
+      "variant": "Cefotaxime",
+      "key": "GPRBEKHLDVQUJE-QSWIMTSFSA-N",
+      "expected": "GPRBEKHLDVQUJE-QSWIMTSFSA-N"
+    },
+    {
+      "name": "Ceftriaxon",
+      "variant": "Ceftriaxone",
+      "key": "VAAUVRVFOQPIGI-SPQHTLEESA-N",
+      "expected": "VAAUVRVFOQPIGI-SPQHTLEESA-N"
+    },
+    {
+      "name": "Cefalexin",
+      "variant": "Cefalexine",
+      "key": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+      "expected": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N"
+    },
+    {
+      "name": "Chlorhexidin",
+      "variant": "Chlorhexidine",
+      "key": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N",
+      "expected": "GHXZTYHSJHQHIJ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Chloroquin",
+      "variant": "Chloroquine",
+      "key": "WHTVZRBIWZFKQO-UHFFFAOYSA-N",
+      "expected": "WHTVZRBIWZFKQO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Chlorxylenol",
+      "variant": null,
+      "key": null,
+      "expected": "OSDLLIBGSJNGJE-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Chlorpromazin",
+      "variant": "Chloropromazine",
+      "key": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+      "expected": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Clomifen",
+      "variant": null,
+      "key": null,
+      "expected": "GKIRPKYJQBWNGO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Clotrimazol",
+      "variant": null,
+      "key": null,
+      "expected": "VNFPBHJOKIVQEB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Clozapin",
+      "variant": "Clozapine",
+      "key": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+      "expected": "QZUDBNBUXVUHMW-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Codein",
+      "variant": "Codeine",
+      "key": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+      "expected": "OROGSEYTTFOCAN-DNJOTXNNSA-N"
+    },
+    {
+      "name": "Cycloserin",
+      "variant": "Cycloserine",
+      "key": "DYDCUQKUCUHJBH-UWTATZPHSA-N",
+      "expected": "DYDCUQKUCUHJBH-UWTATZPHSA-N"
+    },
+    {
+      "name": "Cytarabin",
+      "variant": "Cytarabine",
+      "key": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N",
+      "expected": "UHDGCWIWMRVCDJ-CCXZUQQUSA-N"
+    },
+    {
+      "name": "Actinomycin D",
+      "variant": "Actinomycine D",
+      "key": null,
+      "expected": "RJURFGZVJUQBHK-IIXSONLDSA-N"
+    },
+    {
+      "name": "Dapson",
+      "variant": "Dapsone",
+      "key": "MQJKPEGWNLWLTK-UHFFFAOYSA-N",
+      "expected": "MQJKPEGWNLWLTK-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Deferoxamin",
+      "variant": "Deferoxamine",
+      "key": "UBQYURCVBFRUQT-UHFFFAOYSA-N",
+      "expected": "UBQYURCVBFRUQT-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ergometrin",
+      "variant": "Ergometrine",
+      "key": "WVVSZNPYNCNODU-XTQGRXLLSA-N",
+      "expected": "WVVSZNPYNCNODU-XTQGRXLLSA-N"
+    },
+    {
+      "name": "Fluconazol",
+      "variant": null,
+      "key": null,
+      "expected": "RFHAOTPXVQNOHP-UHFFFAOYSA-N"
+    },
+    {
+      "name": "5-Fluoruracil",
+      "variant": null,
+      "key": null,
+      "expected": "GHASVSINZRGABV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Fluoxetin",
+      "variant": "Fluoxetine",
+      "key": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+      "expected": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Fluphenazin",
+      "variant": "Fluphenazine",
+      "key": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+      "expected": "PLDUPXSUYLZYBN-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Folsäure",
+      "variant": "Folic acid",
+      "key": "OVBPIULPVIDEAO-LBPRGKRZSA-N",
+      "expected": "OVBPIULPVIDEAO-LBPRGKRZSA-N"
+    },
+    {
+      "name": "Fomepizol",
+      "variant": null,
+      "key": null,
+      "expected": "RIKMMFOAQPJVMX-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Furosemid",
+      "variant": "Furosemide",
+      "key": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+      "expected": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Glutaraldehyd",
+      "variant": null,
+      "key": null,
+      "expected": "SXRSQZLOMIGNAQ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Halothan",
+      "variant": "Halothane",
+      "key": "BCQZXOMGPXTTIC-UHFFFAOYSA-N",
+      "expected": "BCQZXOMGPXTTIC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Hydralazin",
+      "variant": "Hydralazine",
+      "key": "RPTUSVTUFVMDQK-UHFFFAOYSA-N",
+      "expected": "RPTUSVTUFVMDQK-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Hydrochlorothiazid",
+      "variant": "Hydrochlorothiazide",
+      "key": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+      "expected": "JZUFKLXOESDKRF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Hydroxyharnstoff",
+      "variant": null,
+      "key": null,
+      "expected": "VSNHCAURESNICA-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ifosfamid",
+      "variant": "Ifosfamide",
+      "key": "HOMGKSMUEGBAAB-UHFFFAOYSA-N",
+      "expected": "HOMGKSMUEGBAAB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Iotroxinsäure",
+      "variant": "Iotroxinic acid",
+      "key": null,
+      "expected": "JXMIBUGMYLQZGO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Levamisol",
+      "variant": null,
+      "key": null,
+      "expected": "HLFSDGLLUJUHTE-SNVBAGLBSA-N"
+    },
+    {
+      "name": "Lidocain",
+      "variant": "Lidocaine",
+      "key": "NNJVILVZKWQKPM-UHFFFAOYSA-N",
+      "expected": "NNJVILVZKWQKPM-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Mebendazol",
+      "variant": null,
+      "key": null,
+      "expected": "OPXLLQIJSORQAM-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Mercaptopurin",
+      "variant": "Mercaptopurine",
+      "key": "GLVAUDGFNGKCSF-UHFFFAOYSA-N",
+      "expected": "GLVAUDGFNGKCSF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Methotrexat",
+      "variant": "Methotrexate",
+      "key": "FBOZXECLQNJBKD-ZDUSSCGKSA-N",
+      "expected": "FBOZXECLQNJBKD-ZDUSSCGKSA-N"
+    },
+    {
+      "name": "Methylprednisolon",
+      "variant": "Methylprednisolone",
+      "key": "VHRSUDSXCMQTMA-PJHHCJLFSA-N",
+      "expected": "VHRSUDSXCMQTMA-PJHHCJLFSA-N"
+    },
+    {
+      "name": "Methylenblau",
+      "variant": null,
+      "key": null,
+      "expected": "CXKWCBBOMKCUKX-UHFFFAOYSA-M"
+    },
+    {
+      "name": "Metronidazol",
+      "variant": null,
+      "key": null,
+      "expected": "VAOCPAMSLUNLGC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Mifepriston",
+      "variant": "Mifepristone",
+      "key": "VKHAHZOOUSRJNA-GCNJZUOMSA-N",
+      "expected": "VKHAHZOOUSRJNA-GCNJZUOMSA-N"
+    },
+    {
+      "name": "Miltefosin",
+      "variant": "Miltefosine",
+      "key": "PQLXHQMOHUQAKB-UHFFFAOYSA-N",
+      "expected": "PQLXHQMOHUQAKB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Morphin",
+      "variant": "Morphine",
+      "key": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+      "expected": "BQJCRHHNABKAKU-KBQPJGBKSA-N"
+    },
+    {
+      "name": "Neostigmin",
+      "variant": "Neostigmine",
+      "key": "ALWKGYPQUAPLQC-UHFFFAOYSA-N",
+      "expected": "ALWKGYPQUAPLQC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Nicotinamid",
+      "variant": "Nicotinamide",
+      "key": "DFPAKSUCGFBDDF-UHFFFAOYSA-N",
+      "expected": "DFPAKSUCGFBDDF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Omeprazol",
+      "variant": null,
+      "key": null,
+      "expected": "SUBDBMMJDZJVOS-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Oxycodon",
+      "variant": "Oxycodone",
+      "key": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+      "expected": "BRUQQQPBMZOVGD-XFKAJCMBSA-N"
+    },
+    {
+      "name": "Paritaprevir, (2R,6S,12Z,13aR,14aR,16aS)-",
+      "variant": null,
+      "key": null,
+      "expected": "UAUIUKWPKRJZJV-MDJGTQRPSA-N"
+    },
+    {
+      "name": "Pentamidin",
+      "variant": "Pentamidine",
+      "key": "XDRYMKDFEDOLFX-UHFFFAOYSA-N",
+      "expected": "XDRYMKDFEDOLFX-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pilocarpin",
+      "variant": "Pilocarpine",
+      "key": "QCHFTSOMWOSFHM-WPRPVWTQSA-N",
+      "expected": "QCHFTSOMWOSFHM-WPRPVWTQSA-N"
+    },
+    {
+      "name": "Kaliumchlorid",
+      "variant": "potassium chloride",
+      "key": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M",
+      "expected": "WCUXLLCKKVVCTQ-UHFFFAOYSA-M"
+    },
+    {
+      "name": "Prednisolon",
+      "variant": "Prednisolone",
+      "key": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+      "expected": "OIGNJSKKLXVSLS-VWUMJDOOSA-N"
+    },
+    {
+      "name": "Procarbazin",
+      "variant": "Procarbazine",
+      "key": "CPTBDICYNRMXFX-UHFFFAOYSA-N",
+      "expected": "CPTBDICYNRMXFX-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pyrazinamid",
+      "variant": "Pyrazinamide",
+      "key": "IPEHBUMCGVEMRF-UHFFFAOYSA-N",
+      "expected": "IPEHBUMCGVEMRF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pyridoxin",
+      "variant": "Pyridoxine",
+      "key": "LXNHXLLTXMVWPM-UHFFFAOYSA-N",
+      "expected": "LXNHXLLTXMVWPM-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pyrimethamin",
+      "variant": "Pyrimethamine",
+      "key": "WKSAUQYGYAYLPV-UHFFFAOYSA-N",
+      "expected": "WKSAUQYGYAYLPV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Chinin",
+      "variant": "Chinine",
+      "key": "LOUPRKONTZGTKE-WZBLMQSHSA-N",
+      "expected": "LOUPRKONTZGTKE-WZBLMQSHSA-N"
+    },
+    {
+      "name": "Rifapentin",
+      "variant": "Rifapentine",
+      "key": "WDZCUPBHRAEYDL-GZAUEHORSA-N",
+      "expected": "WDZCUPBHRAEYDL-GZAUEHORSA-N"
+    },
+    {
+      "name": "Calcium-dinatrium-ethylendiamintetraacetat",
+      "variant": "Calcium-dinatrium-ethylendiamintetra acetate",
+      "key": null,
+      "expected": "SHWNNYZBHZIQQV-UHFFFAOYSA-J"
+    },
+    {
+      "name": "Sulfadiazin",
+      "variant": "Sulfadiazine",
+      "key": "SEEPANYCNGTZFQ-UHFFFAOYSA-N",
+      "expected": "SEEPANYCNGTZFQ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Terbinafin",
+      "variant": "Terbinafine",
+      "key": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+      "expected": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N"
+    },
+    {
+      "name": "Tetracain",
+      "variant": "Tetracaine",
+      "key": "GKCBAIGFKIBETG-UHFFFAOYSA-N",
+      "expected": "GKCBAIGFKIBETG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Tetracyclin",
+      "variant": "Tetracycline",
+      "key": "NWXMGUDVXFXRIG-WESIUVDSSA-N",
+      "expected": "NWXMGUDVXFXRIG-WESIUVDSSA-N"
+    },
+    {
+      "name": "Thiamin",
+      "variant": "Thiamine",
+      "key": "JZRWCGZRTZMZEH-UHFFFAOYSA-N",
+      "expected": "JZRWCGZRTZMZEH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "6-Thioguanin",
+      "variant": "6-Thioguanine",
+      "key": "WYWHKKSPHMUBEB-UHFFFAOYSA-N",
+      "expected": "WYWHKKSPHMUBEB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Triclabendazol",
+      "variant": null,
+      "key": null,
+      "expected": "NQPDXQQQCQDHHW-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Valproinsäure",
+      "variant": "Valproinic acid",
+      "key": null,
+      "expected": "NIJJYAXOARWZEE-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Vincristin",
+      "variant": "Vincristine",
+      "key": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+      "expected": "OGWKCGZFUXNPDA-XQKSVPLYSA-N"
+    },
+    {
+      "name": "Voriconazol",
+      "variant": null,
+      "key": null,
+      "expected": "BCEHBSKCWLPMDN-MGPLVRAMSA-N"
+    },
+    {
+      "name": "Zidovudin",
+      "variant": "Zidovudine",
+      "key": "HBOMLICNUCNMMY-XLPZGREQSA-N",
+      "expected": "HBOMLICNUCNMMY-XLPZGREQSA-N"
+    },
+    {
+      "name": "Acetanilid",
+      "variant": "Acetanilide",
+      "key": "FZERHIULMFGESH-UHFFFAOYSA-N",
+      "expected": "FZERHIULMFGESH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzocain",
+      "variant": "Benzocaine",
+      "key": "BLFLLBZGZJTVJG-UHFFFAOYSA-N",
+      "expected": "BLFLLBZGZJTVJG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Cetirizin",
+      "variant": "Cetirizine",
+      "key": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+      "expected": "ZKLPARSLTMPFCP-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pantoprazol",
+      "variant": null,
+      "key": null,
+      "expected": "IQPSEEYGBUAQFF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Procain",
+      "variant": "Procaine",
+      "key": "MFDFERRIHVXMIY-UHFFFAOYSA-N",
+      "expected": "MFDFERRIHVXMIY-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Sulfamethoxazol",
+      "variant": null,
+      "key": null,
+      "expected": "JLKIGFTWXXRPMT-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Acetaldehyd",
+      "variant": null,
+      "key": null,
+      "expected": "IKHGUXGNUITLKF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Essigsäureanhydrid",
+      "variant": "Essigsäureanhydride",
+      "key": null,
+      "expected": "WFDIJRYMOXRFFG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Acetonitril",
+      "variant": null,
+      "key": null,
+      "expected": "WEVYAHXRMPXWCK-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Acetophenon",
+      "variant": "Acetophenone",
+      "key": "KWOLFJPFCHCOCG-UHFFFAOYSA-N",
+      "expected": "KWOLFJPFCHCOCG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Acetylchlorid",
+      "variant": "Acetyl chloride",
+      "key": "WETWJCDKMRHUPV-UHFFFAOYSA-N",
+      "expected": "WETWJCDKMRHUPV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ethin",
+      "variant": "Ethine",
+      "key": "HSFWRNGVRCDJHI-UHFFFAOYSA-N",
+      "expected": "HSFWRNGVRCDJHI-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Anilin",
+      "variant": "Aniline",
+      "key": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N",
+      "expected": "PAYRUJLWNCNPSJ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Anisol",
+      "variant": null,
+      "key": null,
+      "expected": "RDOXTESZEPMUJZ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Anthracen",
+      "variant": null,
+      "key": null,
+      "expected": "MWPLVEDNUUSJAV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzaldehyd",
+      "variant": null,
+      "key": null,
+      "expected": "HUMNYLRZRPPJDN-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzol",
+      "variant": null,
+      "key": null,
+      "expected": "UHOVQNZJYSORNB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzonitril",
+      "variant": null,
+      "key": null,
+      "expected": "JFDZBHWFFUWGJE-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Benzylalkohol",
+      "variant": null,
+      "key": null,
+      "expected": "WVDDGKGOMKODPV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Tetrachlormethan",
+      "variant": "Tetrachloromethane",
+      "key": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+      "expected": "VZGDMQKNWNREIO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Chlorbenzol",
+      "variant": "Chlorobenzol",
+      "key": "MVPPADPHJFYWMZ-UHFFFAOYSA-N",
+      "expected": "MVPPADPHJFYWMZ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Cyclohexan",
+      "variant": "Cyclohexane",
+      "key": "XDTMQSROBMDMFD-UHFFFAOYSA-N",
+      "expected": "XDTMQSROBMDMFD-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Cyclohexanon",
+      "variant": "Cyclohexanone",
+      "key": "JHIVVAPYMSGYDF-UHFFFAOYSA-N",
+      "expected": "JHIVVAPYMSGYDF-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Dichlormethan",
+      "variant": "Dichloromethane",
+      "key": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+      "expected": "YMWUJEATGCHHMB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Diethylether",
+      "variant": null,
+      "key": null,
+      "expected": "RTZKZFJDLAIYFH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Dimethylsulfoxid",
+      "variant": "Dimethylsulfoxide",
+      "key": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N",
+      "expected": "IAZDPXIOMUYVGZ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Essigsäureethylester",
+      "variant": null,
+      "key": null,
+      "expected": "XEKOWRVHYACXOJ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ethen",
+      "variant": null,
+      "key": null,
+      "expected": "VGGSQFUCUMXWEO-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ethylenglycol",
+      "variant": null,
+      "key": null,
+      "expected": "LYCAIKOWRPUZTN-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Formaldehyd",
+      "variant": null,
+      "key": null,
+      "expected": "WSFSSNUMVMOOMR-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Glycerin",
+      "variant": "Glycerine",
+      "key": "PEDCQBHIVMGVHV-UHFFFAOYSA-N",
+      "expected": "PEDCQBHIVMGVHV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Hexan",
+      "variant": "Hexane",
+      "key": "VLKZOEOYAKHREP-UHFFFAOYSA-N",
+      "expected": "VLKZOEOYAKHREP-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Isopren",
+      "variant": null,
+      "key": null,
+      "expected": "RRHGJUQNOFWUDK-UHFFFAOYSA-N"
+    },
+    {
+      "name": "2-Propanol",
+      "variant": null,
+      "key": null,
+      "expected": "KFZMGEQAYNKOFK-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Naphthalin",
+      "variant": "Naphthaline",
+      "key": "UFWIBTONFRDIAS-UHFFFAOYSA-N",
+      "expected": "UFWIBTONFRDIAS-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Nitrobenzol",
+      "variant": null,
+      "key": null,
+      "expected": "LQNUZADURLCDLV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "1-Propanol",
+      "variant": null,
+      "key": null,
+      "expected": "BDERNNFJNOPAEC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Pyridin",
+      "variant": "Pyridine",
+      "key": "JUJWROOIHBZHMG-UHFFFAOYSA-N",
+      "expected": "JUJWROOIHBZHMG-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Styrol",
+      "variant": null,
+      "key": null,
+      "expected": "PPBRXRYQALVLMV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Toluol",
+      "variant": null,
+      "key": null,
+      "expected": "YXFVVABEGXRONW-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Acetylcholin",
+      "variant": "Acetylcholine",
+      "key": "OIPILFWXSMYKGL-UHFFFAOYSA-N",
+      "expected": "OIPILFWXSMYKGL-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Adenin",
+      "variant": "Adenine",
+      "key": "GFFGJBXGBJISGV-UHFFFAOYSA-N",
+      "expected": "GFFGJBXGBJISGV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Adenosin",
+      "variant": "Adenosine",
+      "key": "OIRDTQYFTABQOQ-KQYNXXCUSA-N",
+      "expected": "OIRDTQYFTABQOQ-KQYNXXCUSA-N"
+    },
+    {
+      "name": "Cholesterin",
+      "variant": "Cholesterine",
+      "key": "HVYWMOMLDIMFJA-DPAQBDIFSA-N",
+      "expected": "HVYWMOMLDIMFJA-DPAQBDIFSA-N"
+    },
+    {
+      "name": "Kokain",
+      "variant": "Kokaine",
+      "key": null,
+      "expected": "ZPUCINDJVBIVPJ-LJISPDSOSA-N"
+    },
+    {
+      "name": "Cytosin",
+      "variant": "Cytosine",
+      "key": "OPTASPLRGRRNAP-UHFFFAOYSA-N",
+      "expected": "OPTASPLRGRRNAP-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Dopamin",
+      "variant": "Dopamine",
+      "key": "VYFYYTLLBUKUHU-UHFFFAOYSA-N",
+      "expected": "VYFYYTLLBUKUHU-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Guanin",
+      "variant": "Guanine",
+      "key": "UYTPUPDQBNUYGX-UHFFFAOYSA-N",
+      "expected": "UYTPUPDQBNUYGX-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Histamin",
+      "variant": "Histamine",
+      "key": "NTYJJOPFIAHURM-UHFFFAOYSA-N",
+      "expected": "NTYJJOPFIAHURM-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Nicotin",
+      "variant": "Nicotine",
+      "key": "SNICXCGAKADSCV-JTQLQIEISA-N",
+      "expected": "SNICXCGAKADSCV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Noradrenalin",
+      "variant": "Noradrenaline",
+      "key": "SFLSHLFXELFNJZ-QMMMGPOBSA-N",
+      "expected": "SFLSHLFXELFNJZ-QMMMGPOBSA-N"
+    },
+    {
+      "name": "Progesteron",
+      "variant": "Progesterone",
+      "key": "RJKFOVLPORLFTN-LEKSSAKUSA-N",
+      "expected": "RJKFOVLPORLFTN-LEKSSAKUSA-N"
+    },
+    {
+      "name": "Salicylaldehyd",
+      "variant": null,
+      "key": null,
+      "expected": "SMQUZDBALVYZAC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Testosteron",
+      "variant": "Testosterone",
+      "key": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N",
+      "expected": "MUMGGOZAMZWBJJ-DYKIIFRCSA-N"
+    },
+    {
+      "name": "Theobromin",
+      "variant": "Theobromine",
+      "key": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+      "expected": "YAPQBXQYLJRXSA-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Thymin",
+      "variant": "Thymine",
+      "key": "RWQNBRDOKXIBIV-UHFFFAOYSA-N",
+      "expected": "RWQNBRDOKXIBIV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "p-Aminobenzoesäure",
+      "variant": "p-Aminobenzoic acid",
+      "key": "ALYNCZNDIQEVRV-UHFFFAOYSA-N",
+      "expected": "ALYNCZNDIQEVRV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Buttersäure",
+      "variant": "butyric acid",
+      "key": "FERIUCNNQQJTOY-UHFFFAOYSA-N",
+      "expected": "FERIUCNNQQJTOY-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ameisensäure",
+      "variant": "formic acid",
+      "key": "BDAGIHXWWSANSR-UHFFFAOYSA-N",
+      "expected": "BDAGIHXWWSANSR-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Fumarsäure",
+      "variant": "Fumaric acid",
+      "key": "VZCYOOQTPOCHFL-OWOJBTEDSA-N",
+      "expected": "VZCYOOQTPOCHFL-OWOJBTEDSA-N"
+    },
+    {
+      "name": "Hydrochinon",
+      "variant": "Hydrochinone",
+      "key": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N",
+      "expected": "QIGBRXMKCJKVMJ-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Imidazol",
+      "variant": null,
+      "key": null,
+      "expected": "RAXXELZNTBOGNW-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Methylamin",
+      "variant": "Methylamine",
+      "key": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+      "expected": "BAVYZALUXZFZLV-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Morpholin",
+      "variant": "Morpholine",
+      "key": "YNAVUWVOSKDBBP-UHFFFAOYSA-N",
+      "expected": "YNAVUWVOSKDBBP-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Ölsäure",
+      "variant": "Ölic acid",
+      "key": null,
+      "expected": "ZQPPMHVWECSIRJ-KTKRTIGZSA-N"
+    },
+    {
+      "name": "Oxalsäure",
+      "variant": "Oxalic acid",
+      "key": "MUBZPKHOEPUJKR-UHFFFAOYSA-N",
+      "expected": "MUBZPKHOEPUJKR-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Palmitinsäure",
+      "variant": "Palmitinic acid",
+      "key": "IPCSVZSSVZVIGE-UHFFFAOYSA-N",
+      "expected": "IPCSVZSSVZVIGE-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Piperidin",
+      "variant": "Piperidine",
+      "key": "NQRYJNQNLNOLGT-UHFFFAOYSA-N",
+      "expected": "NQRYJNQNLNOLGT-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Propionsäure",
+      "variant": "Propionic acid",
+      "key": "XBDQKXXYIPTUBI-UHFFFAOYSA-N",
+      "expected": "XBDQKXXYIPTUBI-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Brenztraubensäure",
+      "variant": "Brenztraubenic acid",
+      "key": null,
+      "expected": "LCTONWCANYUPML-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Stearinsäure",
+      "variant": "Stearinic acid",
+      "key": null,
+      "expected": "QIQXTHQIDYTFRH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Bernsteinsäure",
+      "variant": "succinic acid",
+      "key": "KDYFGRWQOYBRFD-UHFFFAOYSA-N",
+      "expected": "KDYFGRWQOYBRFD-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Sulfanilamid",
+      "variant": "Sulfanilamide",
+      "key": "FDDDEECHVMSUSB-UHFFFAOYSA-N",
+      "expected": "FDDDEECHVMSUSB-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Triethylamin",
+      "variant": "Triethylamine",
+      "key": "ZMANZCXQSJIPKH-UHFFFAOYSA-N",
+      "expected": "ZMANZCXQSJIPKH-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Trifluoressigsäure",
+      "variant": "Trifluoracetic acid",
+      "key": "DTQVDTLACAAQTR-UHFFFAOYSA-N",
+      "expected": "DTQVDTLACAAQTR-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Menadion",
+      "variant": "Menadione",
+      "key": "MJVAVZPDRWSRRC-UHFFFAOYSA-N",
+      "expected": "MJVAVZPDRWSRRC-UHFFFAOYSA-N"
+    },
+    {
+      "name": "Saccharose",
+      "variant": null,
+      "key": null,
+      "expected": "CZMRCDWAGMRECN-UGDNZRGBSA-N"
+    }
+  ]
+}

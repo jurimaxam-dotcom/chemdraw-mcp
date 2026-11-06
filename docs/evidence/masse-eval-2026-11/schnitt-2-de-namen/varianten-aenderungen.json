@@ -1,0 +1,72 @@
+[
+  {
+    "input": "amoxicillin",
+    "before": "amoxicilline",
+    "after": null
+  },
+  {
+    "input": "ampicillin",
+    "before": "ampicilline",
+    "after": null
+  },
+  {
+    "input": "benzathine benzylpenicillin",
+    "before": "benzathine benzylpenicilline",
+    "after": null
+  },
+  {
+    "input": "Benzylpenicillin-Benzathin",
+    "before": "Benzylpenicilline-Benzathine",
+    "after": "Benzylpenicillin benzathine"
+  },
+  {
+    "input": "benzylpenicillin",
+    "before": "benzylpenicilline",
+    "after": null
+  },
+  {
+    "input": "Cefixim Anhydrat",
+    "before": "Cefixime Anhydrate",
+    "after": "Cefixime"
+  },
+  {
+    "input": "cloxacillin",
+    "before": "cloxacilline",
+    "after": null
+  },
+  {
+    "input": "Isosorbiddinitrat",
+    "before": "Isosorbiddi nitrate",
+    "after": "Isosorbide dinitrate"
+  },
+  {
+    "input": "N-Methylglucaminantimonat",
+    "before": "N-Methylglucaminantimonate",
+    "after": "meglumine antimoniate"
+  },
+  {
+    "input": "phenoxymethylpenicillin",
+    "before": "phenoxymethylpenicilline",
+    "after": null
+  },
+  {
+    "input": "penicillin v",
+    "before": "penicilline v",
+    "after": null
+  },
+  {
+    "input": "Metamizol (freie Säure)",
+    "before": null,
+    "after": "Metamizol"
+  },
+  {
+    "input": "Citral A+B",
+    "before": null,
+    "after": "Citral"
+  },
+  {
+    "input": "Ethylendiamintetraessigsäure",
+    "before": "Ethylendiamintetraacetic acid",
+    "after": "ethylenediaminetetraacetic acid"
+  }
+]

@@ -1198,3 +1198,66 @@ def test_r_descriptor_never_lands_on_the_s_record(_nci, _opsin):
             resolve_name("(R)-(+)-timolol")
     assert calls[-1] == "(R)-timolol"
     assert "timolol" not in calls
+
+
+# Form-Zusätze: nur die gemessene Whitelist, und erst nach erfolglosem Original.
+@pytest.mark.parametrize("name,base", [
+    ("Citral A+B", "Citral"),
+    ("Cefixim Anhydrat", "Cefixim"),
+    ("Metamizol (freie Säure)", "Metamizol"),
+])
+def test_form_suffix_retries_the_complete_cascade_and_marks_found_as(monkeypatch, name, base):
+    calls = []
+    def opsin(query):
+        calls.append(query)
+        return "CCO" if query == base else None
+    monkeypatch.setattr(resolver, "_opsin_lookup", opsin)
+    monkeypatch.setattr(resolver, "_pubchem_lookup", lambda *args: None)
+    monkeypatch.setattr(resolver, "_nci_cir_lookup", lambda *args: None)
+    assert resolver.resolve_name_route(name) == ("CCO", base)
+    assert calls == [name, base]
+
+
+def test_form_suffix_never_replaces_an_original_hit(monkeypatch):
+    opsin = Mock(return_value="CCO")
+    monkeypatch.setattr(resolver, "_opsin_lookup", opsin)
+    pubchem = Mock(side_effect=lambda query, report: "CCN" if query == "Citral" else None)
+    monkeypatch.setattr(resolver, "_pubchem_lookup", pubchem)
+    assert resolver.resolve_name_route("Citral A+B") == ("CCO", "")
+    opsin.assert_called_once_with("Citral A+B")
+    # Die vorhandene OPSIN-Gegenprobe darf den Originalnamen fragen, aber keine Kurzform.
+    pubchem.assert_called_once_with("Citral A+B", [])
+
+
+@pytest.mark.parametrize("name", ["Citral (Gemisch)", "Citral A+C", "Citral Trihydrat"])
+def test_unknown_form_suffix_does_not_retry_the_base(monkeypatch, name):
+    opsin = Mock(side_effect=lambda query: "CCO" if query == "Citral" else None)
+    monkeypatch.setattr(resolver, "_opsin_lookup", opsin)
+    monkeypatch.setattr(resolver, "_pubchem_lookup", lambda *args: None)
+    monkeypatch.setattr(resolver, "_nci_cir_lookup", lambda *args: None)
+    with pytest.raises(NameResolutionError):
+        resolver.resolve_name_route(name)
+    opsin.assert_called_once_with(name)
+
+
+def test_form_suffix_keeps_descriptor_and_rotation_in_the_base_name(monkeypatch):
+    original = "(R)-(+)-timolol Anhydrat"
+    base = "(R)-(+)-timolol"
+    calls = []
+    def opsin(query):
+        calls.append(query)
+        return "CC[C@H](O)C" if query == base else None
+    monkeypatch.setattr(resolver, "_opsin_lookup", opsin)
+    monkeypatch.setattr(resolver, "_pubchem_lookup", lambda *args: None)
+    monkeypatch.setattr(resolver, "_nci_cir_lookup", lambda *args: None)
+    assert resolver.resolve_name_route(original) == ("CC[C@H](O)C", base)
+    assert calls == [original, base]
+
+
+def test_form_suffix_is_not_shortened_to_vet_conflicting_original_hits(monkeypatch):
+    # Die bestehende Gegenprobe zwischen OPSIN und PubChem bleibt beim Original.
+    monkeypatch.setattr(resolver, "_opsin_lookup", lambda name: "CCO")
+    lookup = Mock(side_effect=lambda name, report: "CCN" if name == "Citral A+B" else "CCO")
+    monkeypatch.setattr(resolver, "_pubchem_lookup", lookup)
+    assert resolver.resolve_name_route("Citral A+B") == ("CCN", "")
+    lookup.assert_called_once_with("Citral A+B", [])

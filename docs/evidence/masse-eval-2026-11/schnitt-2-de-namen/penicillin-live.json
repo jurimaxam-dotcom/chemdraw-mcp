@@ -1,0 +1,51 @@
+[
+  {
+    "input": "amoxicillin",
+    "key": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N",
+    "expected": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "ampicillin",
+    "key": "AVKUERGKIZMTKX-NJBDSQKTSA-N",
+    "expected": "AVKUERGKIZMTKX-NJBDSQKTSA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "benzathine benzylpenicillin",
+    "key": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+    "expected": "BVGLIYRKPOITBQ-ANPZCEIESA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "benzylpenicillin",
+    "key": "JGSARLDLIJGVTE-MBNYWOFBSA-N",
+    "expected": "JGSARLDLIJGVTE-MBNYWOFBSA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "cloxacillin",
+    "key": "LQOLIRLGBULYKD-JKIFEVAISA-N",
+    "expected": "LQOLIRLGBULYKD-JKIFEVAISA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "phenoxymethylpenicillin",
+    "key": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+    "expected": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+    "found_as": "",
+    "match": true
+  },
+  {
+    "input": "penicillin v",
+    "key": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+    "expected": "BPLBGHOLXOTWMN-MBNYWOFBSA-N",
+    "found_as": "",
+    "match": true
+  }
+]

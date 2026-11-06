@@ -1,0 +1,23 @@
+{
+  "scope": "deutsche Eingaben, die in Lauf 2 grün waren",
+  "cases_before": 177,
+  "cases_after": 177,
+  "counts_before": {
+    "ohne Variante": 44,
+    "gleich": 121,
+    "Stereo/Form": 1,
+    "anderer Stoff": 0,
+    "nicht gefunden": 11
+  },
+  "counts_after": {
+    "ohne Variante": 44,
+    "gleich": 121,
+    "Stereo/Form": 1,
+    "anderer Stoff": 0,
+    "nicht gefunden": 11
+  },
+  "full_case_changes": [],
+  "previously_correct_to_different": [],
+  "before_sha256": "165b353f1b13cb785cb6f9936d9221c0115cbf22995ef63a1b77de0561928fd5",
+  "after_sha256": "165b353f1b13cb785cb6f9936d9221c0115cbf22995ef63a1b77de0561928fd5"
+}

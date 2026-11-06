@@ -17,7 +17,7 @@ from urllib.parse import quote
 import requests
 from rdkit import Chem, RDLogger
 
-from chemdraw_tool.de_names import english_variant, salt_variant
+from chemdraw_tool.de_names import english_variant, form_variant, salt_variant
 
 logger = logging.getLogger(__name__)
 
@@ -526,7 +526,7 @@ def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     opsin_key = _skeleton(opsin_smiles)
     if pubchem is None or _skeleton(pubchem) in (None, opsin_key):
         return opsin_smiles
-    english = english_variant(name)
+    english = None if form_variant(name) else english_variant(name)
     if english and english != name:
         if _skeleton(_pubchem_lookup(english, report)) == opsin_key:
             return opsin_smiles
@@ -541,6 +541,8 @@ _STEREO_PREFIX = re.compile(r"^(?:\((?:[+\-−±]|RS|rs|[RS](?:,\s?[RS])*|[EZ])\
 
 def _spelling_variant(name: str) -> str | None:
     """Derselbe Stoff anders geschrieben: englisch und ohne Stereopräfix, oder None."""
+    if form_variant(name):
+        return None  # Form erst kürzen, wenn alle Quellen das Original verwerfen.
     core = _STEREO_PREFIX.sub("", name)
     variant = english_variant(core) or core
     return variant if variant != name else None
@@ -1077,9 +1079,10 @@ def resolve_name_route(name: str) -> Resolution:
     3. PubChem with umlaut transliteration (ä→ae etc.)
     4. NCI CIR with transliteration
     5. NCI CIR with the original name
-    6. PubChem with the English spelling (de_names.english_variant)
-    7. PubChem with only the counter-ion in English (de_names.salt_variant)
-    8. PubChem without the rotation sign beside R/S ("(S)-(−)-x" → "(S)-x")
+    6. Full cascade for a measured form suffix (Anhydrat / freie Säure / A+B)
+    7. PubChem with the English spelling (de_names.english_variant)
+    8. PubChem with only the counter-ion in English (de_names.salt_variant)
+    9. PubChem without the rotation sign beside R/S ("(S)-(−)-x" → "(S)-x")
 
     Cached via lru_cache: identische Namen gehen nur einmal ins Netz.
     Wichtig — lru_cache speichert KEINE Ausnahmen: ein Fehlschlag (offline!)
@@ -1112,6 +1115,12 @@ def resolve_name_route(name: str) -> Resolution:
 
     if smiles := _nci_cir_lookup(name, report):
         return Resolution(smiles)
+
+    # Nur nach erfolglosem Original und vor der reinen PubChem-Übersetzung:
+    # Citral A+B braucht OPSIN ohne E/Z, PubChem allein liefert Geranial (E).
+    if base := form_variant(name):
+        normalized = resolve_name_route(base)
+        return Resolution(normalized.smiles, _found_as(name, normalized.found_as or base))
 
     # Ganz hinten, damit kein heute aufgelöster Name einen anderen Weg nimmt.
     # Aus dem Original gebaut — "Maleinsaeure" hat kein "-säure" mehr.
