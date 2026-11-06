@@ -137,3 +137,61 @@ def test_nitro_group_fires_on_rdkits_charge_separated_form():
         labels = " ".join(b["group"] for b in expected_ir_bands(smiles))
         assert "nitro, antisymmetric" in labels, smiles
         assert "nitro, symmetric" in labels, smiles
+
+
+@pytest.mark.parametrize(
+    "smiles,group,low,high",
+    [
+        ("CF", "C–F (fluoro compound)", 1000, 1400),
+        ("Fc1ccccc1", "C–F (fluoro compound)", 1000, 1400),
+        ("CCl", "C–Cl (chloro compound)", 550, 850),
+        ("Clc1ccccc1", "C–Cl (chloro compound)", 550, 850),
+        ("CBr", "C–Br (bromo compound)", 515, 690),
+        ("Brc1ccccc1", "C–Br (bromo compound)", 515, 690),
+        ("CI", "C–I (iodo compound)", 500, 600),
+        ("Ic1ccccc1", "C–I (iodo compound)", 500, 600),
+        ("CS(=O)(=O)N", "S=O (sulfonamide, antisymmetric)", 1335, 1370),
+        ("CS(=O)(=O)N", "S=O (sulfonamide, symmetric)", 1155, 1170),
+        ("CS(=O)(=O)C", "S=O (sulfone, antisymmetric)", 1300, 1350),
+        ("CS(=O)(=O)C", "S=O (sulfone, symmetric)", 1120, 1160),
+        ("CS(=O)C", "S=O (sulfoxide)", 1030, 1060),
+        ("CC(=S)N", "C=S (thiocarbonyl)", 1050, 1200),
+        ("CN=[N+]=[N-]", "N₃ (azide)", 2120, 2160),
+        ("CC=NC", "C=N (imine / oxime)", 1640, 1690),
+        ("CC=NO", "C=N (imine / oxime)", 1640, 1690),
+        ("COP(=O)(OC)OC", "P=O (phosphate)", 1100, 1200),
+        ("CP(=O)(OC)OC", "P=O (phosphonate)", 1230, 1260),
+        ("CNP(=O)(OC)OC", "P=O (phosphoramide)", 1200, 1275),
+        ("COP(=O)(OC)OC", "P–O (phosphorus ester)", 900, 1050),
+    ],
+)
+def test_sourced_ir_extensions_match_distinct_functional_groups(smiles, group, low, high):
+    bands = {b["group"]: b for b in expected_ir_bands(smiles)}
+    assert group in bands
+    assert (bands[group]["low"], bands[group]["high"]) == (low, high)
+
+
+@pytest.mark.parametrize(
+    "smiles,excluded",
+    [
+        ("[F-]", "C–F (fluoro compound)"),
+        ("[Cl-]", "C–Cl (chloro compound)"),
+        ("CS(=O)(=O)N", "S=O (sulfone, antisymmetric)"),
+        ("CS(=O)(=O)C", "S=O (sulfonamide, antisymmetric)"),
+        ("CS(=O)(=O)O", "S=O (sulfone, antisymmetric)"),
+        ("CS(=O)(=O)C", "S=O (sulfoxide)"),
+        ("NC(=N)N", "C=N (imine / oxime)"),
+        ("CC(=N)N", "C=N (imine / oxime)"),
+        ("n1ccccc1", "C=N (imine / oxime)"),
+        ("CC(=O)N", "C=N (imine / oxime)"),
+        ("CP(=O)(OC)OC", "P=O (phosphate)"),
+        ("COP(=O)(OC)OC", "P=O (phosphonate)"),
+    ],
+)
+def test_ir_extensions_do_not_confuse_ions_or_neighbouring_classes(smiles, excluded):
+    assert excluded not in {b["group"] for b in expected_ir_bands(smiles)}
+
+
+def test_enamine_nh_has_secondary_amine_band_without_claiming_amide_is_amine():
+    assert "N–H (secondary amine)" not in {b["group"] for b in expected_ir_bands("CC(=O)NC")}
+    assert "N–H (secondary amine)" in {b["group"] for b in expected_ir_bands("C=CNC")}

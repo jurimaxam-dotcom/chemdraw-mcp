@@ -285,7 +285,16 @@ Registry `./scripts/publish-registry.sh` (isLatest). Release-Klick bleibt Jays H
 3. PubChem-Synonymfehler ((−)-Ephedrin → CID 104213, Risperidon → CID 44402564): Formel-Plausibilität gegen Wikidata/ChEMBL.
 4. Referenzliste: `fumaric acid` auf Q139857 pinnen, `tenofovir disoproxil` (Q155954 trägt Tenofovir-Key) korrigieren,
    `_chembl_namen` im Bericht ist langsam (120 s Timeout je Batch) — Bericht braucht > 5 min.
-5. 12 IR-Gruppen ohne Regel (`ir-abdeckung.md`) · pH-Klemme [0,14] in `exact_ph` (3 Randfälle) · Desktop-Befunde aus
+5. [x] pH + IR (06.11.2026): `exact_ph` erweitert sein Suchintervall statt bei 0/14 zu klemmen;
+   Zahl und Kurve teilen weiterhin dieselbe Bilanz, Text erklärt Werte außerhalb 0–14 und das ideale Konzentrationsmodell.
+   `uv run python scripts/masse_eval.py ph`: **48/51 → 51/51 grün**; acht neue Regressionen rot gesehen,
+   danach 52 pH-Tests grün. IR: 16 quellenbelegte Tabellenzeilen plus Enamin-NH-Abdeckung;
+   `uv run python scripts/masse_eval.py ir`: **20 → 12 Gruppen mit Lücken, 302 → 168 Gruppen-Molekül-Lücken**
+   bei denselben 414 Stoffen. 22 neue IR-Anforderungen rot gesehen, danach 56 Spectro-/Berichtstests grün.
+   Quellen, Grenzen und begründet offene Unterklassen: `docs/evidence/masse-eval-2026-11/ir-quellen.md`;
+   beide Eval-Berichte neu erzeugt. Tool-Snapshots und Golden-Bilder unverändert.
+   Gesamt-Gate `./test.sh` rc=0, Log `/tmp/chemdraw-masse-befund5-gate.log`.
+   **Offen bleiben** die dokumentierten IR-Unterklassen sowie Desktop-Befunde aus
    `docs/desktop-abnahme-mechanismus-2026-11-05.md`.
 
 **Branch-Fragen beantwortet (Jay 05.11.):** mechanismus-substrate, mcp-2-migration-v2 gelöscht; mcp-2-migration als Tag

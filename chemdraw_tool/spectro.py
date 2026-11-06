@@ -73,7 +73,7 @@ _IR_TABLE: list[dict] = [
         "hint": "Two bands — symmetric and antisymmetric. One band means secondary.",
     },
     {
-        "smarts": "[NX3;H1]([CX4,c])[CX4,c]",
+        "smarts": "[NX3;H1;!$(N[CX3]=[O,S,N]);!$(NS(=O)=O)]([#6])[#6]",
         "group": "N–H (secondary amine)",
         "low": 3300,
         "high": 3500,
@@ -274,6 +274,44 @@ _IR_TABLE: list[dict] = [
         "hint": "Weak, but nothing else sits there.",
     },
 ]
+
+# Ergänzung 06.11.2026: nur mit abgerufener Lehrbuch-Bandentabelle.
+# Quellen und bewusst offene Klassen: docs/evidence/masse-eval-2026-11/ir-quellen.md.
+# LibreTexts/York: Halogene, Azid und Sulfonamid; NIU: Imin/Oxim;
+# Reusch (MSU/ACS): Sulfon, Sulfoxid, Thiocarbonyl und Phosphor-Funktionen.
+# Für jede dieser Zeilen ist die kompakte Darstellung dieselbe Tabelle wie oben.
+for _smarts, _group, _low, _high, _intensity, _hint in [
+    ("[#6]F", "C–F (fluoro compound)", 1000, 1400, "strong",
+     "Fingerprint-region assignment; substitution and coupling shift the band."),
+    ("[#6]Cl", "C–Cl (chloro compound)", 550, 850, "strong", ""),
+    ("[#6]Br", "C–Br (bromo compound)", 515, 690, "strong", ""),
+    ("[#6]I", "C–I (iodo compound)", 500, 600, "strong", ""),
+    ("[#6][SX4](=O)(=O)[NX3]", "S=O (sulfonamide, antisymmetric)",
+     1335, 1370, "strong", "Paired with the symmetric S=O stretch."),
+    ("[#6][SX4](=O)(=O)[NX3]", "S=O (sulfonamide, symmetric)",
+     1155, 1170, "strong", ""),
+    ("[#6][SX4](=O)(=O)[#6]", "S=O (sulfone, antisymmetric)",
+     1300, 1350, "strong", "Paired with the symmetric S=O stretch."),
+    ("[#6][SX4](=O)(=O)[#6]", "S=O (sulfone, symmetric)",
+     1120, 1160, "strong", ""),
+    ("[#6][SX3](=O)[#6]", "S=O (sulfoxide)", 1030, 1060, "strong", ""),
+    ("[CX3]=[SX1]", "C=S (thiocarbonyl)", 1050, 1200, "strong",
+     "Coupling, especially in thioamides, can shift and mix this vibration."),
+    ("[$(N=[N+]=[N-]),$(N=N#N)]", "N₃ (azide)", 2120, 2160, "strong", ""),
+    # Amidine/Guanidine sind mesomere Sonderfälle; keine Imin-Regel vortäuschen.
+    ("[CX3;!$([CX3]([NX3])=[NX2])]=[NX2;!a]", "C=N (imine / oxime)",
+     1640, 1690, "medium", "This rule excludes amidines and guanidines."),
+    # Die P=O-Lage unterscheidet sich nach Substituenten; daher getrennte Regeln
+    # statt einer unzutreffenden gemeinsamen Bande für alle P(V)-Verbindungen.
+    ("[PX4](=O)([OX2])([OX2])[OX2]", "P=O (phosphate)", 1100, 1200, "strong", ""),
+    ("[#6][PX4](=O)([OX2])[OX2]", "P=O (phosphonate)", 1230, 1260, "strong", ""),
+    ("[NX3][PX4](=O)([OX2])[OX2]", "P=O (phosphoramide)", 1200, 1275, "strong", ""),
+    ("[PX4](=O)[OX2][#6]", "P–O (phosphorus ester)", 900, 1050, "strong", ""),
+]:
+    _IR_TABLE.append({
+        "smarts": _smarts, "group": _group, "low": _low, "high": _high,
+        "intensity": _intensity, "shape": "sharp", "hint": _hint,
+    })
 
 
 def _parse(structure: str) -> Chem.Mol:

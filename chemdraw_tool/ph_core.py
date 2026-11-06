@@ -46,6 +46,12 @@ def exact_ph(pka_values: Sequence[float], c_acid: float, c_na: float) -> float:
         return c_na + h - oh - bound
 
     lo, hi = 0.0, 14.0
+    # Die Zeichenachse 0–14 ist keine physikalische pH-Grenze. Vor der
+    # Bisektion muss das Intervall den Vorzeichenwechsel wirklich umfassen.
+    while f(lo) < 0.0:
+        lo -= 1.0
+    while f(hi) > 0.0:
+        hi += 1.0
     for _ in range(60):
         mid = (lo + hi) / 2.0
         if f(mid) > 0.0:

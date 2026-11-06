@@ -1,34 +1,26 @@
 # IR-Regelabdeckung — Masse-Evaluation
 
-Stand 2026-11-05 · `uv run python scripts/masse_eval.py ir` · offline, < 10 s
+Stand 2026-11-06 · `uv run python scripts/masse_eval.py ir` · offline, < 10 s
 
 **414 Moleküle** (ein Eintrag je InChIKey aus `tests/identity/stoffe-masse.json`, SMILES aus Wikidata, nicht aus `resolve()` — der Bericht hängt also nicht vom Identitätslauf ab). Je Molekül: 43 eigene SMARTS-Gruppen (unabhängig von `_IR_TABLE` geschrieben, Liste `IR_GRUPPEN` im Skript) gegen die Gruppen, die `spectro.expected_ir_bands` (= `predict_spectrum`) meldet.
 
-**Lücke** = Gruppe mit diagnostischer Bande ist im Molekül, aber keine passende Regel der Tabelle feuert. Gruppen ohne diagnostische Bande (tertiäres Amin, Thioether, Azo, quartäres Ammonium) zählen nie als Lücke. Keine Änderung an `spectro.py` — nur Befund.
+**Lücke** = Gruppe mit diagnostischer Bande ist im Molekül, aber keine passende Regel der Tabelle feuert. Gruppen ohne diagnostische Bande (tertiäres Amin, Thioether, Azo, quartäres Ammonium) zählen nie als Lücke. Kuratierte Ergänzungen und begründet offene Klassen: [Quellen](ir-quellen.md).
 
 ## Lücken der Tabelle (nach Zahl betroffener Moleküle)
 
 | Gruppe | kommt vor in | ohne passende Bande | Anteil | Regel in `_IR_TABLE`? | erwartete Bande / Ursache | Beispiele |
 |---|---:|---:|---:|---|---|---|
 | Heteroaromat (Ring-N/O/S) | 134 | 58 | 43% | ja, feuert hier nicht | Ringschwingungen 1400–1600; ohne Benzolring im Molekül meldet die Tabelle keine | histidine, abacavir, acetazolamide, aciclovir |
-| Halogenaryl (C–F/Cl/Br/I) | 55 | 55 | 100% | nein | Ar–F 1100–1250 stark; Ar–Cl ~1090 | amiloride, amiodarone, amodiaquine, bedaquiline |
 | Heteroaromat-NH (Pyrrol/Indol/Imidazol) | 47 | 47 | 100% | nein | N–H 3400–3500 (scharf) | histidine, tryptophan, L-folinic acid, aciclovir |
-| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | 33 | 33 | 100% | nein | C=N 1640–1690 | arginine, amiloride, aztreonam, cefixime |
-| Sulfonamid | 16 | 16 | 100% | nein | S=O asym. 1330–1370, sym. 1140–1180 | acetazolamide, aztreonam, darunavir, dasabuvir |
-| Fluor (aliphatisch, C–F) | 16 | 16 | 100% | nein | C–F 1000–1400, sehr stark | betamethasone, bicalutamide, delamanid, dexamethasone |
 | Carbamat | 15 | 15 | 100% | nein | C=O 1690–1740; Tabelle meldet Amid UND Ester | albendazole, atazanavir, capecitabine, daclatasvir |
 | β-Lactam | 14 | 14 | 100% | nein | C=O 1760–1780 — deutlich über der Amid-I-Bande | amoxicillin, ampicillin, aztreonam, benzathine benzylpenicillin |
-| Alkylchlorid/-bromid/-iodid | 13 | 13 | 100% | nein | C–Cl 600–800, C–Br 500–600 | (RS)-cyclophosphamide, beclomethasone dipropionate, bendamustine, chlorambucil |
-| Phosphat/Phosphonat | 9 | 9 | 100% | nein | P=O 1250–1300, P–O 950–1050 | (RS)-cyclophosphamide, fludarabine phosphate, hydroxocobalamin, ifosfamide |
+| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | 33 | 12 | 36% | ja, feuert hier nicht | C=N 1640–1690 nur für einfache Imine/Oxime; Amidine/Guanidine bleiben offen | arginine, chlorhexidine, clozapine, desmopressin |
 | Sulfonsäure/Sulfat/Sulfonat | 6 | 6 | 100% | nein | S=O 1150–1250, 1030–1060 | atracurium besilate, aztreonam, docusate sodium, mesna |
+| Phosphat/Phosphonat | 9 | 5 | 56% | ja, feuert hier nicht | P=O je Unterklasse 1100–1200 / 1230–1260 / 1200–1275; ionisierte/andere Substitution offen | (RS)-cyclophosphamide, hydroxocobalamin, ifosfamide, miltefosine |
 | Carboxylat | 4 | 4 | 100% | nein | COO⁻ asym. 1550–1610, sym. ~1400 | calcium gluconate, ceftazidime, sodium calcium edetate, sodium lactate |
 | Imid | 4 | 4 | 100% | nein | zwei C=O, ~1700 und ~1770 | ethosuximide, nitrofurantoin, phenobarbital, phenytoin |
-| Sulfon | 3 | 3 | 100% | nein | S=O 1300–1350 und 1120–1160 | bicalutamide, dapsone, nifurtimox |
-| Sulfoxid | 3 | 3 | 100% | nein | S=O ~1050 | omeprazole, pantoprazole, dimethyl sulfoxide |
-| Amin sekundär | 27 | 2 | 7% | ja, feuert hier nicht | N–H 3300–3500; die Tabellenregel verlangt sp³- oder Aryl-Nachbarn, Enamin-NH (Dihydropyridin) fällt durch | nifedipine, rifabutin |
-| Thiocarbonyl (Thioamid/-harnstoff) | 1 | 1 | 100% | nein | C=S 1050–1250 | ethionamide |
+| Sulfonamid | 16 | 1 | 6% | ja, feuert hier nicht | S=O 1335–1370 / 1155–1170 nur R–SO₂–N; Sulfamat bleibt offen | aztreonam |
 | Nitratester | 1 | 1 | 100% | nein | 1620–1640 und 1270–1290 | isosorbide dinitrate |
-| Azid | 1 | 1 | 100% | nein | N₃ asym. ~2100, sehr stark | zidovudine |
 | Formaldehyd | 1 | 1 | 100% | nein | C=O ~1745 | formaldehyde |
 
 ## Was die Tabelle bei den Lücken stattdessen meldet
@@ -38,24 +30,16 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 | Gruppe | häufigste gemeldete Gruppen |
 |---|---|
 | Heteroaromat (Ring-N/O/S) | C–H (aromatic) (55), C–H (alkane, sp³) (43), N–H (primary amine) (25), O–H (alcohol) (19) |
-| Halogenaryl (C–F/Cl/Br/I) | C–H (aromatic) (52), C=C (aromatic ring) (49), C–H (alkane, sp³) (49), C=O (amide, band I) (17) |
 | Heteroaromat-NH (Pyrrol/Indol/Imidazol) | C–H (aromatic) (47), C–H (alkane, sp³) (37), C=C (aromatic ring) (23), N–H (primary amine) (15) |
-| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | C–H (alkane, sp³) (32), C–H (aromatic) (25), C=C (aromatic ring) (21), C=O (amide, band I) (16) |
-| Sulfonamid | C–H (aromatic) (15), C=C (aromatic ring) (14), C–H (alkane, sp³) (13), N–H (amide) (8) |
-| Fluor (aliphatisch, C–F) | C–H (alkane, sp³) (15), C–H (aromatic) (10), C=C (aromatic ring) (9), O–H (alcohol) (8) |
-| Carbamat | C–O (ester) (15), C=O (ester) (15), C–H (alkane, sp³) (15), C=O (amide, band I) (15) |
-| β-Lactam | O–H (carboxylic acid) (14), C=O (carboxylic acid) (14), C–H (alkane, sp³) (14), C=O (amide, band I) (14) |
-| Alkylchlorid/-bromid/-iodid | C–H (alkane, sp³) (12), C=C (aromatic ring) (4), C–H (aromatic) (4), O–H (alcohol) (3) |
-| Phosphat/Phosphonat | C–H (alkane, sp³) (9), C–H (aromatic) (6), O–H (alcohol) (5), C–O (ether) (5) |
-| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C–O (ester) (2) |
-| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), O–H (carboxylic acid) (1), N–H (amide) (1) |
-| Imid | N–H (amide) (4), C=O (amide, band I) (4), C–H (alkane, sp³) (3), C–H (aromatic) (3) |
-| Sulfon | C–H (aromatic) (3), C=C (aromatic ring) (2), C–H (alkane, sp³) (2), N–H (amide) (1) |
-| Sulfoxid | C–H (alkane, sp³) (3), C=C (aromatic ring) (2), C–H (aromatic) (2), C–O (ether) (2) |
-| Amin sekundär | C–O (ester) (2), C=O (ester) (2), C=C (aromatic ring) (2), C–H (alkane, sp³) (2) |
-| Thiocarbonyl (Thioamid/-harnstoff) | C–H (alkane, sp³) (1), C–H (aromatic) (1) |
+| Carbamat | C=O (ester) (15), C–H (aromatic) (15), C=O (amide, band I) (15), C–H (alkane, sp³) (15) |
+| β-Lactam | O–H (carboxylic acid) (14), C=O (carboxylic acid) (14), C=O (amide, band I) (14), C–H (alkane, sp³) (14) |
+| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | C–H (alkane, sp³) (12), C–H (aromatic) (9), C=C (aromatic ring) (8), C–Cl (chloro compound) (3) |
+| Sulfonsäure/Sulfat/Sulfonat | C–H (alkane, sp³) (6), C–H (aromatic) (4), C=C (aromatic ring) (3), C=O (ester) (2) |
+| Phosphat/Phosphonat | P–O (phosphorus ester) (5), C–H (alkane, sp³) (5), C–Cl (chloro compound) (2), C–H (aromatic) (2) |
+| Carboxylat | C–H (alkane, sp³) (4), O–H (alcohol) (2), N–H (primary amine) (1), C–H (aromatic) (1) |
+| Imid | C=O (amide, band I) (4), N–H (amide) (4), C–H (alkane, sp³) (3), C–H (aromatic) (3) |
+| Sulfonamid | N–H (primary amine) (1), C–H (aromatic) (1), O–H (carboxylic acid) (1), C=N (imine / oxime) (1) |
 | Nitratester | C–H (alkane, sp³) (1), C–O (ether) (1) |
-| Azid | C–H (alkane, sp³) (1), O–H (alcohol) (1), C–H (aromatic) (1), C–O (ether) (1) |
 | Formaldehyd |  |
 
 ## Alle Gruppen: Vorkommen und Abdeckung
@@ -78,36 +62,36 @@ Die häufigsten gemeldeten Gruppen in den betroffenen Molekülen — zeigt, ob e
 | Nitril | ja | 6 | 6 | C≡N (nitrile) |
 | Nitro | ja | 10 | 10 | N=O (nitro, antisymmetric) |
 | Nitratester | ja | 1 | 0 | — keine — |
-| Azid | ja | 1 | 0 | — keine — |
-| Sulfonamid | ja | 16 | 0 | — keine — |
-| Sulfon | ja | 3 | 0 | — keine — |
+| Azid | ja | 1 | 1 | N₃ (azide) |
+| Sulfonamid | ja | 16 | 15 | S=O (sulfonamide, antisymmetric), S=O (sulfonamide, symmetric) |
+| Sulfon | ja | 3 | 3 | S=O (sulfone, antisymmetric), S=O (sulfone, symmetric) |
 | Sulfonsäure/Sulfat/Sulfonat | ja | 6 | 0 | — keine — |
-| Sulfoxid | ja | 3 | 0 | — keine — |
-| Thiocarbonyl (Thioamid/-harnstoff) | ja | 1 | 0 | — keine — |
-| Phosphat/Phosphonat | ja | 9 | 0 | — keine — |
+| Sulfoxid | ja | 3 | 3 | S=O (sulfoxide) |
+| Thiocarbonyl (Thioamid/-harnstoff) | ja | 1 | 1 | C=S (thiocarbonyl) |
+| Phosphat/Phosphonat | ja | 9 | 4 | P=O (phosphate), P=O (phosphonate), P=O (phosphoramide) |
 | Thiol | ja | 6 | 6 | S–H (thiol) |
 | Thioether | nein | 25 | — | — keine — |
 | Alkohol | ja | 135 | 135 | O–H (alcohol) |
 | Phenol | ja | 37 | 37 | O–H (phenol) |
 | Ether (aliphatisch/aromatisch) | ja | 102 | 102 | C–O (ether) |
 | Amin primär | ja | 85 | 85 | N–H (primary amine) |
-| Amin sekundär | ja | 27 | 25 | N–H (secondary amine) |
+| Amin sekundär | ja | 27 | 27 | N–H (secondary amine) |
 | Arylamin sekundär | ja | 16 | 16 | N–H (secondary amine) |
 | Amin tertiär | nein | 78 | — | — keine — |
 | Ammonium quartär | nein | 7 | — | — keine — |
-| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | ja | 33 | 0 | — keine — |
+| Imin/Amidin/Guanidin (C=N, nicht aromatisch) | ja | 33 | 21 | C=N (imine / oxime) |
 | Azo | nein | 1 | — | — keine — |
 | Heteroaromat-NH (Pyrrol/Indol/Imidazol) | ja | 47 | 0 | — keine — |
 | Heteroaromat (Ring-N/O/S) | ja | 134 | 76 | C=C (aromatic ring) |
 | Benzolring | ja | 212 | 212 | C=C (aromatic ring) |
 | Alken (nicht aromatisch) | ja | 84 | 84 | C=C (alkene) |
 | Alkin | ja | 6 | 6 | C≡C (alkyne) |
-| Fluor (aliphatisch, C–F) | ja | 16 | 0 | — keine — |
-| Halogenaryl (C–F/Cl/Br/I) | ja | 55 | 0 | — keine — |
-| Alkylchlorid/-bromid/-iodid | ja | 13 | 0 | — keine — |
+| Fluor (aliphatisch, C–F) | ja | 16 | 16 | C–F (fluoro compound) |
+| Halogenaryl (C–F/Cl/Br/I) | ja | 55 | 55 | C–F (fluoro compound), C–Cl (chloro compound), C–Br (bromo compound), C–I (iodo compound) |
+| Alkylchlorid/-bromid/-iodid | ja | 13 | 13 | C–Cl (chloro compound), C–Br (bromo compound), C–I (iodo compound) |
 
 ## Tabellenregeln, die in keinem der Moleküle feuern
 
 keine
 
-Moleküle, für die außer sp³-C–H gar keine Bande gemeldet wird: 16 ((RS)-cyclophosphamide, calcium, halothane, ifosfamide, miltefosine, nitroprusside, potassium chloride, sodium calcium edetate, carbon tetrachloride, chloroform)
+Moleküle, für die außer sp³-C–H gar keine Bande gemeldet wird: 8 (calcium, nitroprusside, potassium chloride, sodium calcium edetate, cyclohexane, formaldehyde, hexane, triethylamine)

@@ -1,22 +1,12 @@
 # pH-Aufgaben — Masse-Evaluation
 
-Stand 2026-11-05 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
+Stand 2026-11-06 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
 
-**51 Aufgaben: 48 grün · 3 rot.** Referenz aus `tests/identity/ph-aufgaben.json` (sympy, Polynomwurzel der Ladungsbilanz — Herleitung je Aufgabe in der Datei). Geprüft werden der Rückgabewert von `ph_calc` (Toleranz in der Datei, pH ±0,005) UND die Überschrift, die `calculate_ph` dem Nutzer zeigt (auf 2 Stellen gerundet). Spalte *Näherung* = Lehrbuchnäherung bzw. Henderson-Hasselbalch bzw. −log c, nur zur Einordnung, nicht geprüft.
+**51 Aufgaben: 51 grün · 0 rot.** Referenz aus `tests/identity/ph-aufgaben.json` (sympy, Polynomwurzel der Ladungsbilanz — Herleitung je Aufgabe in der Datei). Geprüft werden der Rückgabewert von `ph_calc` (Toleranz in der Datei, pH ±0,005) UND die Überschrift, die `calculate_ph` dem Nutzer zeigt (auf 2 Stellen gerundet). Spalte *Näherung* = Lehrbuchnäherung bzw. Henderson-Hasselbalch bzw. −log c, nur zur Einordnung, nicht geprüft.
 
 ## Abweichungen
 
-| Aufgabe | Thema | Parameter | Referenz | ph_calc | Δ | Tool-Kopf | Näherung | Status | Quelle/Zweck |
-|---|---|---|---:|---:|---:|---:|---:|---|---|
-| stark-konz | weak_acid | concentration=5.0, pka=0.5 | -0.04502 | 6.072e-18 | +0.045 | 0.00 | -0.10 | rot | Randfall: exakter pH < 0 |
-| schwach-konz | weak_acid | concentration=10.0, pka=-1.0 | -0.791 | 6.072e-18 | +0.79 | 0.00 | -1.00 | rot | Randfall: pKs < 0, pH deutlich < 0 |
-| starkebase-konz | weak_base | concentration=5.0, pkb=0.5 | 14.05 | 14 | -0.045 | 14.00 | 14.10 | rot | Randfall: exakter pH > 14 |
-
-### Deutung
-
-- **stark-konz**: `ph_core.exact_ph` sucht per Bisektion nur in [0, 14] und klemmt am Rand: Ergebnis pH 0,00 statt −0,05. Die Näherung (−0,10) liegt hier näher an der Wahrheit als der 'exakte' Wert.
-- **schwach-konz**: wie stark-konz: Klemme bei pH 0 — 0,00 statt −0,79.
-- **starkebase-konz**: Spiegelbild: Klemme bei pH 14 — 14,00 statt 14,05.
+Keine.
 
 ## Alle Aufgaben
 
@@ -44,8 +34,8 @@ Stand 2026-11-05 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
 | phenol-0.01 | weak_acid | concentration=0.01, pka=10.0 | 5.998 | 5.998 | -2.9e-07 | 6.00 | 6.00 | grün | sehr schwache Säure, verdünnt — Wasser zählt |
 | mittelstark-0.01 | weak_acid | concentration=0.01, pka=1.0 | 2.038 | 2.038 | -3e-07 | 2.04 | 1.50 | grün | pKs 1: fast vollständig dissoziiert |
 | mittelstark-0.1 | weak_acid | concentration=0.1, pka=2.0 | 1.568 | 1.568 | +4.2e-08 | 1.57 | 1.50 | grün | pKs 2: Näherung weit daneben |
-| stark-konz | weak_acid | concentration=5.0, pka=0.5 | -0.04502 | 6.072e-18 | +0.045 | 0.00 | -0.10 | rot | Randfall: exakter pH < 0 |
-| schwach-konz | weak_acid | concentration=10.0, pka=-1.0 | -0.791 | 6.072e-18 | +0.79 | 0.00 | -1.00 | rot | Randfall: pKs < 0, pH deutlich < 0 |
+| stark-konz | weak_acid | concentration=5.0, pka=0.5 | -0.04502 | -0.04502 | -2.6e-07 | -0.05 | -0.10 | grün | Randfall: exakter pH < 0 |
+| schwach-konz | weak_acid | concentration=10.0, pka=-1.0 | -0.791 | -0.791 | -3.6e-07 | -0.79 | -1.00 | grün | Randfall: pKs < 0, pH deutlich < 0 |
 | h3po4-0.1 | weak_acid | concentration=0.1, pka_values=[2.12, 7.21, 12.67] | 1.62 | 1.62 | -2.4e-07 | 1.62 | 1.56 | grün | Phosphorsäure 0,1 M: pH ≈ 1,6 |
 | h3po4-0.001 | weak_acid | concentration=0.001, pka_values=[2.12, 7.21, 12.67] | 3.048 | 3.048 | -3.8e-08 | 3.05 | 2.56 | grün | verdünnte Phosphorsäure |
 | citronen-0.1 | weak_acid | concentration=0.1, pka_values=[3.13, 4.76, 6.4] | 2.083 | 2.083 | +1.7e-07 | 2.08 | 2.06 | grün | Citronensäure |
@@ -58,7 +48,7 @@ Stand 2026-11-05 · `uv run python scripts/masse_eval.py ph` · offline, < 5 s
 | acetat-0.1 | weak_base | concentration=0.1, pkb=9.24 | 8.88 | 8.88 | +2.6e-07 | 8.88 | 8.88 | grün | Natriumacetat 0,1 M: pH ≈ 8,9 |
 | pyridin-0.1 | weak_base | concentration=0.1, pka=5.25 | 9.125 | 9.125 | +2.6e-07 | 9.12 | 9.12 | grün | Pyridin über pKs der korresp. Säure |
 | methylamin-0.1 | weak_base | concentration=0.1, pkb=3.36 | 11.81 | 11.81 | -1.7e-07 | 11.81 | 11.82 | grün | Methylamin |
-| starkebase-konz | weak_base | concentration=5.0, pkb=0.5 | 14.05 | 14 | -0.045 | 14.00 | 14.10 | rot | Randfall: exakter pH > 14 |
+| starkebase-konz | weak_base | concentration=5.0, pkb=0.5 | 14.05 | 14.05 | +2.6e-07 | 14.05 | 14.10 | grün | Randfall: exakter pH > 14 |
 | acetatpuffer-1:1 | buffer | acid_concentration=0.1, base_concentration=0.1, pka=4.76 | 4.76 | 4.76 | -1.1e-07 | 4.76 | 4.76 | grün | Äquimolarer Puffer: pH = pKs |
 | acetatpuffer-1:10 | buffer | acid_concentration=0.1, base_concentration=0.01, pka=4.76 | 3.768 | 3.768 | -1.1e-07 | 3.77 | 3.76 | grün | HH: pKs − 1 |
 | acetatpuffer-10:1 | buffer | acid_concentration=0.01, base_concentration=0.1, pka=4.76 | 5.76 | 5.76 | -2.7e-07 | 5.76 | 5.76 | grün | HH: pKs + 1 |

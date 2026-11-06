@@ -38,6 +38,16 @@ def _require_positive(value: float, name: str) -> float:
     return value
 
 
+def _range_notes(ph: float) -> list[str]:
+    if 0.0 <= ph <= PKW:
+        return []
+    return [
+        "A pH outside 0–14 is possible; this interval is not a physical limit. "
+        "This is an ideal concentration-based result at 25 °C. In concentrated "
+        "solutions, activities rather than concentrations determine the measured pH."
+    ]
+
+
 def weak_acid_ph(
     concentration: float,
     pka: float | None = None,
@@ -58,7 +68,7 @@ def weak_acid_ph(
     ph_approx = 0.5 * (pkas[0] - math.log10(concentration))
     valid = abs(ph - ph_approx) <= APPROXIMATION_TOLERANCE
 
-    notes = []
+    notes = _range_notes(ph)
     if not valid:
         notes.append(
             f"The textbook approximation gives pH {ph_approx:.2f}, the exact "
@@ -113,7 +123,7 @@ def weak_base_ph(
     ph_approx = PKW - poh_approx
     valid = abs(ph - ph_approx) <= APPROXIMATION_TOLERANCE
 
-    notes = []
+    notes = _range_notes(ph)
     if not valid:
         notes.append(
             f"The approximation gives pH {ph_approx:.2f}, the exact balance "
@@ -156,7 +166,7 @@ def buffer_ph(
     alpha = base_concentration / total
     capacity = 2.303 * total * alpha * (1.0 - alpha)
 
-    notes = []
+    notes = _range_notes(ph)
     if abs(ph_hh - pka) > BUFFER_GOOD_RANGE:
         notes.append(
             f"The ratio base : acid is {ratio:.3g} : 1, which puts the pH "
@@ -270,7 +280,7 @@ def strong_acid_ph(concentration: float) -> dict:
     ph = -math.log10(h)
     ph_naive = -math.log10(concentration)
 
-    notes = []
+    notes = _range_notes(ph)
     if abs(ph - ph_naive) > 0.01:
         notes.append(
             f"Simply taking −log c would give pH {ph_naive:.2f}. At this "
@@ -297,7 +307,7 @@ def strong_base_ph(concentration: float) -> dict:
     ph = -math.log10(h)
     ph_naive = PKW + math.log10(concentration)
 
-    notes = []
+    notes = _range_notes(ph)
     if abs(ph - ph_naive) > 0.01:
         notes.append(
             f"Simply taking 14 + log c would give pH {ph_naive:.2f}. At this "
