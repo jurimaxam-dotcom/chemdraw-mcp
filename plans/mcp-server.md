@@ -164,11 +164,10 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   richtig, Befund-2-Proben gleich, Holdout 536/3/0/14, Blackhole: +3 s nur bei Abbruch nach Direkttreffer). Chef: Diff gelesen, Gate rc=0 8205,
   **Lauf 7 = 668/1/42** selbst nachgezählt (Befund 3 + 4). Fäden + Pane pF geschlossen.
 - **Salzform** (Bendamustin/Phenelzin/Carboplatin → HCl): frischer Opus-Bauer, Faden `20261106-140408-befund-salzform` → danach Codex-Kreuzabnahme.
-- **Stereo-Referenzen** (Clindamycin zuerst, Audit berichtigen): Codex `w4W:p8`, Faden `20261106-140408-stereo-referenzen` → danach Opus-Gutachter.
-  Codex-Kontingent 79 % (voll ~14:41, frei 15:30) — bei Abbruch nach 15:30 erneut wecken.
-  Codex-Status #3: 4 Referenzen/5 Eingaben korrigiert (Clindamycin, Cocaine, Pantothensäure de+en, α,α-Trehalose; PubChem + ChEMBL), Nicotin
-  unklar (PubChem S vs ChEBI Racemat) unverändert; Neuwertung 668/1/42 → 673/1/37; Bericht + Gate stehen aus.
-**Danach:** Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
+- ✅ **Stereo-Referenzen abgenommen 06.11.:** `b67ceb7` (Codex), Opus-Gutachter ABNEHMEN: genau 5 Fixture-Einträge (Clindamycin, Cocaine,
+  Pantothensäure de+en, Trehalose), Keys live PubChem+ChEMBL, Stereo fachlich richtig, Neuwertung **673/1/37** nachgezählt (genau 5 Zeilen),
+  kein Produktcode. Nicotin bewusst unverändert. Faden geschlossen.
+**Danach:** `referenz-audit.json`: ≥ 10 weitere Einträge „Referenz bestätigt (ChEMBL-Key)“ mit derselben zu weiten Begründung wie Clindamycin prüfen · Regenerationsschutz für die Stereo-Korrekturen in `masse_eval.py` (`REFERENZ_KORREKTUREN` aus Befund 4 erweitern, sonst holt ein
 Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <englisch>“ im Ergebnis (Payload + Tool-Snapshot) · rifabutin, (S)-(−)-timolol not_found.
 **Nächster Chef-Schritt:** Berichte Salzform/Stereo prüfen → Kreuzabnahme über Kreuz → Diff + Gate selbst → schließen.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
