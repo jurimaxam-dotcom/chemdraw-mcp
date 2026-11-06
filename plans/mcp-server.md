@@ -125,9 +125,12 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
   (Gegenionen bleiben, R2 hätte Edetat/Goldthiomalat gekippt). Codex #6 ABNEHMEN (Hydrate, Chloralhydrat, 301er-Messung reproduziert);
   Chef-Gate rc=0 8189 passed. Lauf 5 664/1/46, Holdout 117/9/0/5/0 gekippt. Fäden `…102746`, `…105531`, `…113525` geschlossen, Panes pD/pE zu.
 - **Befund 3** PubChem-Synonymfehler: frischer Opus-Bauer Pane `w4W:pF`, Faden `20261106-115126-befund-3-synonymfehler` → danach Codex-Kreuzabnahme.
-- **Befund 4** Referenzliste (fumaric acid → Q139857, tenofovir disoproxil, `_chembl_namen` schneller): Codex `w4W:p8`, Faden
-  `20261106-115136-befund-4-referenzliste` → **gebaut `530e9a9`** (Neuwertung 664/1/46 → 666/1/44, Audit aller 46 roten, ChEMBL-Cache), Opus-Gutachter (Unteragent) prüft. Datei-Grenze: Codex hält `stoffe-masse.json`/`masse_eval.py`, Bauer `resolver.py`.
-**Danach:** Kann „gefunden als <englisch>“ im Ergebnis.
+- ✅ **Befund 4 abgenommen 06.11. ~12:20:** `530e9a9` (Codex), Opus-Gutachter (Unteragent) ABNEHMEN: Fixture nur 2 Einträge, Keys live
+  Wikidata/PubChem/RDKit gleich, Neuwertung 666/1/44 nachgezählt (genau 2 Zeilen), Cache fail-safe + gitignored, 8 Tests grün, kein Produktcode.
+  Faden geschlossen. **Nebenbefund → Warteschlange:** Clindamycin-Referenz (Q422273, KDLRVYVGXIQJDK-NOWPCOIGSA) hat unbestimmte Seitenketten-
+  Stereo, Resolver (CID 446598, AWPVFWJPSA) ist richtig → falsches Rot; Audit nannte es „bestätigt“.
+**Danach:** Stereo-Referenzen auf fehlende Stereozentren prüfen (Clindamycin zuerst) · Kann „gefunden als <englisch>“ im Ergebnis.
+**Nächster Chef-Schritt:** Bericht Befund 3 (Faden `…115126`, Pane `w4W:pF`) prüfen → Codex-Kreuzabnahme (neuer Faden) → Diff + Gate selbst → Faden + Pane schließen.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Welle 3 eigenes Profil? · Abfragemodus auch für Reaktionen?
 
