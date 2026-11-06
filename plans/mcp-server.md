@@ -63,8 +63,10 @@ am Etappenende auf herrenlose Änderungen prüfen (zuletzt offen: `docs/anthropi
 **Erledigt + nachgeprüft:** Doku-Prüfung je Release `9b1d8db` · Befund 5 pH/IR `a3f62dd` (Codex) · IR-Bericht deterministisch `3b060db`.
 **Offen — Fäden mit ID:**
 - `20261106-102746-masse-eval-befund-2` (Opus-Bauer Pane `w4W:pD`, `41da7c4`/`e228047`, Lauf 4 664/1/46): Bericht #3 da.
-- `20261106-105531-abnahme-befund-2` (Codex-Kreuzabnahme): Verdikt laut Helfer-Live **nachbessern** (Auswahlregel übernimmt zu viel) —
-  **nächster Schritt:** Codex-Bericht lesen, Nachbesserung per Faden an Pane `w4W:pD` (oder frischen Opus-Bauer, falls pD-Kontext hoch), danach erneut Codex prüfen lassen.
+- `20261106-105531-abnahme-befund-2` (Codex-Kreuzabnahme, Bericht #2 gelesen 06.11. ~11:10): **NACHBESSERN** — `_opsin_checked` übernimmt
+  PubChem ohne Salz-/Ladungsprüfung (`sodium phosphate` → Ladung −2 statt Na3PO4; Silikate andere Stöchiometrie); README-Satz „offline so
+  schnell wie vorher“ falsch (Timeout 3/10 s). **Nachbesserung als Auftrag #4 an `w4W:pD`** (Faden `…102746`, 8 Kriterien, Lauf 5 + Holdout-Einzelliste).
+  **Nächster Schritt:** Bericht #5 abwarten → Codex prüft erneut in `…105531` (Hop 3, Prüfpunkte + „Offline-Latenz real gemessen?“) → Chef Diff + Gate selbst → beide Fäden schließen.
 - `20261106-103546-etappe-e2` (Opus-Bauer Pane `w4W:pE`, Commits c578c81/e38d28d/2367126/4af8627, Lint-Fix 6b83479): Bericht steht aus →
   dann Kreuzabnahme durch Codex.
 **Warteschlange (nach Abnahme Befund 2):** Befund 3 PubChem-Synonymfehler (Formel-Plausibilität) · Befund 4 Referenzliste (fumaric acid → Q139857,
