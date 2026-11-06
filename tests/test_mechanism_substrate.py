@@ -9,7 +9,7 @@ from rdkit import Chem
 from rdkit.Chem import rdCIPLabeler
 
 from chemdraw_tool.mechanism import CurvedArrow
-from chemdraw_tool.mechanism_substrate import NU, UnsupportedSubstrates, build_steps
+from chemdraw_tool.mechanism_substrate import C, NU, UnsupportedSubstrates, build_steps
 from tests.mechanism_matrix import MATRIX
 
 
@@ -394,3 +394,29 @@ def test_matrix_zeigt_kein_sn1_mit_cyanid():
     sn1 = [(cid, subs) for cid, rt, subs, _ in MATRIX if rt == "sn1"]
     assert not [cid for cid, subs in sn1 if any("C-]#N" in s for s in subs)]
     assert any("[N-]=[N+]=[N-]" in s for _, subs in sn1 for s in subs), "Azid-Abfang fehlt in der Matrix"
+
+
+def _winkel_am_kation(step) -> list[float]:
+    """Winkel (°) zwischen den Schweratom-Nachbarn des Kation-C im fertigen Layout, sortiert."""
+    import math
+
+    from chemdraw_tool.mechanism_coords import layout_anchored
+
+    mol = layout_anchored([step])[0][0]
+    conf = mol.GetConformer()
+    c = next(a for a in mol.GetAtoms() if a.GetAtomMapNum() == C)
+    p = conf.GetAtomPosition(c.GetIdx())
+    dirs = sorted(math.degrees(math.atan2(conf.GetAtomPosition(n.GetIdx()).y - p.y,
+                                          conf.GetAtomPosition(n.GetIdx()).x - p.x)) % 360
+                  for n in c.GetNeighbors())
+    return sorted(((dirs[(i + 1) % len(dirs)] - dirs[i]) % 360) for i in range(len(dirs)))
+
+
+@pytest.mark.parametrize("halogenid", ["CC(C)(C)Cl", "CC1(Br)CCCCC1", "ClC(c1ccccc1)(c1ccccc1)c1ccccc1"])
+def test_sn1_carbokation_ist_trigonal_planar(halogenid):
+    """sp²-Kation mit 120° zwischen den Substituenten, nicht T-förmig 90/90/180 (Gutachter GELB,
+    Etappe E) — im Kationschritt und beim Angriff des Nucleophils."""
+    steps = build_steps("sn1", [halogenid, "O"])
+    for label in ("Carbocation (intermediate)", "Nucleophilic attack"):
+        step = next(s for s in steps if s.label == label)
+        assert _winkel_am_kation(step) == pytest.approx([120, 120, 120], abs=3), label

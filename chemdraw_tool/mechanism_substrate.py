@@ -387,6 +387,12 @@ _SN1 = {1: [180], 2: [120, 240], 3: [90, 180, 270]}
 # Substituent nach oben, +x bleibt für Abgangsgruppe und Nucleophil frei.
 _SN2_TS_RING = {2: ([30, 150], [])}
 _SN1_RING = {3: ([150, 270], [90])}
+# Carbokation sp²: 120° zwischen den Substituenten, die Lücke rechts (zwischen 330° und 90°) bleibt
+# für den Angriff des Nucleophils frei. Das tetraedrische Zentrum oben (Edukt, Produkt) ist die
+# übliche Projektion mit X bzw. Nu auf +x; T-förmig 90/90/180 am Kation las der Gutachter als
+# falsche Geometrie (GELB, Etappe E). Zentrum im Ring: Ring nach unten, dritter Substituent oben.
+_SN1_PLANAR = {1: [180], 2: [120, 240], 3: [90, 210, 330]}
+_SN1_PLANAR_RING = {3: ([210, 330], [90])}
 
 
 def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
@@ -494,6 +500,7 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
         label += ", racemic"
     subs = _neighbours(sub_m, C, exclude=(X,))
     centre = {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN1, _SN1_RING)}
+    planar = {C: (0.0, 0.0), **_fan_centre(sub_m, subs, _SN1_PLANAR, _SN1_PLANAR_RING)}
     product_anchor = {**centre, **_tail(product, NU, (1.0, 0.0), 1.0, exclude=(C,))}
     if neutral:
         proton = Chem.MolFromSmiles(f"[H+:{H_LEAVING}]")
@@ -532,7 +539,7 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
         ),
         MechanismStep(
             label="Carbocation (intermediate)", molecules=[_smi(cation), _smi(halide)], arrows=[],
-            anchors=[centre, {X: (2.6, 0.0)}],
+            anchors=[planar, {X: (2.6, 0.0)}],
         ),
         MechanismStep(
             label="Nucleophilic attack",
@@ -540,7 +547,7 @@ def _sn1(frags: list[_Frag]) -> list[MechanismStep]:
             arrows=[CurvedArrow(source=(NU, "lone_pair"), target=(C, "atom"), style="full")],
             # Nachbar schräg nach unten: RDKit setzt die Ladung oben rechts an das angreifende Atom,
             # eine waagrechte Bindung nach rechts lief durch das „⁻“ von C⁻≡N (Kontaktbogen 05.11.)
-            anchors=[centre, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0)],
+            anchors=[planar, _tail(nuc_m, NU, (2.6, 0.0), 1.0, tilt=40.0)],
         ),
         *last,
     ]
