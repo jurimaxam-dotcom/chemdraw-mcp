@@ -395,6 +395,8 @@ oben (674/1/36). Der Fix bewegt in der Fixture nichts, wie erwartet: sie enthäl
 **Holdout** (`holdout_pubchem_check.py`, 553 im Geltungsbereich): alle 553 Ergebnisse identisch mit vorher
 (540 richtig, 13 weiter falsch), **0 gekippt** — die geänderte `english_variant` verschiebt keinen
 Variantenvergleich aus Befund 3. Einzelfälle in `holdout_pubchem_check.json`, Salzliste in `salznamen_mess.json`.
+`holdout_de_namen.py` (deutsche Eingaben, in Lauf 2 direkt grün): 177 Kandidaten, bei keinem ändert der Fix
+die Variante; 121 gleich, 1 Stereo/Form (Nicotin), **0 anderer Stoff**, 11 nicht gefunden, 44 ohne Variante.
 
 **Offen:** 18 + 32 Salznamen bleiben `not_found` (PubChem kennt keine der Schreibweisen); Streptomycinsulfat
 (PubChem-Synonymfehler ohne Gegenprobe, weil die Variante dieselbe ist).

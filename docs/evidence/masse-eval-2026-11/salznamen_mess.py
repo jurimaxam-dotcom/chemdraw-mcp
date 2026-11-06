@@ -11,7 +11,7 @@ Kandidaten-Umschreibung. Die Kandidaten sind Hypothesen, keine Regeln:
   trenn_de   Wortgrenze vor dem Gegenion, deutsch:   „Metformin hydrochlorid"
   trenn_en   dazu englische Endungen (INN + Gegenion): „Metformine hydrochloride"
   trenn_en0  englisches Gegenion, INN unverändert:    „Metformin hydrochloride"
-  variante   was `english_variant` heute baut
+  variante   was `english_variant` vor dem Fix baute (Messung am Worktree `bfbae23`)
 
 Urteil je Name: richtig = voller InChIKey gleich Wikidata; Stamm = erster Block gleich
 (andere Hydratstufe/Stereo); falsch = anderer Stoff; nicht gefunden.

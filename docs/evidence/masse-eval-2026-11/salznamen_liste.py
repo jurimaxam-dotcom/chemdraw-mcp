@@ -11,7 +11,10 @@ Ester ("Retinylacetat") und Säurechloride ("Benzoylchlorid") aus, die auch auf
 Aufteilung fest nach Item-ID (Q-Nummer gerade = Einstellen, ungerade = Holdout),
 damit die Regel nie an den Namen geprüft wird, an denen sie entstand.
 
-    uv run python docs/evidence/masse-eval-2026-11/salznamen_liste.py   # Netz, ~1 min
+    uv run python docs/evidence/masse-eval-2026-11/salznamen_liste.py   # Netz, 5–15 min
+
+Wikidata bricht Abfragen oft mit 502/504 ab; fertige Abfragen liegen in
+`.cache/salznamen_wikidata.json`, ein zweiter Start setzt dort fort.
 """
 
 import json
