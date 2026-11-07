@@ -10,7 +10,7 @@
 
 | Auftrag | Wer | Status | Abnahme durch Owner |
 |---|---|---|---|
-| A GIFs (3 Stück) + Design-Review | Codex, Tisch `20261107-104104-readme-gif-3d-chip` | beauftragt 10:58, Kontingent ab 11:45 | Dateien selbst ansehen (Frames, Größe), Protokoll-Screenshots |
+| A GIFs (3 Stück) + Design-Review | Codex, Tisch `20261107-104104-readme-gif-3d-chip` | Codex 11:04: übernommen, Desktop neu gestartet, Handshake 16/12; nimmt auf (Faden `20261107-110218-…` #2) | Dateien selbst ansehen (Frames, Größe), Protokoll-Screenshots |
 | B README-Text als Produktseite | Opus 5.5 (Agent, Worktree, Branch `readme-showcase`) | gestartet 10:58 | Diff lesen, `uv run pytest tests/test_readme.py`, Gate, dann Merge |
 | C Zusammenbau + Gate + Desktop-Blick | Claude (Owner) | wartet auf A und B | README auf GitHub rendern (gh-Vorschau), Bilder prüfen |
 | D Design-Kritik Panel-UI + 3D (Jay 11:02: „3D cleaner und eindrucksvoller, Panel mit allen Tools besser sortiert“) | Opus 5.5 (Agent, Worktree, nur Bericht) | gestartet 11:03 | Bericht lesen, Vorschläge zu einem Bild für die iPad-Runde verdichten (`~/.claude/docs/designrunden-ipad.md`); **kein Code vor Jays Zustimmung** |
