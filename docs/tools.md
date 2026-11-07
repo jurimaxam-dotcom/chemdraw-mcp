@@ -15,12 +15,17 @@ Files go to `~/ChemDraw-Output/`.
 ## Draw
 
 **Structures.** `generate_molecule` takes a name (English, IUPAC, many German
-trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI; a
-pinned identity test checks 25 inputs against their InChIKey, and family names
-such as "xylene" return an isomer picker instead of a silent guess. The panel
+trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI, with
+English, counter-ion, form and rotation-sign spellings as fallbacks, and a
+direct hit is cross-checked against the other source (free form over salt
+unless the name says salt, the more defined stereo form wins); a pinned
+identity test checks 25 inputs against their InChIKey, and family names such
+as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
-buttons for the data sheet, PNG export and an Anki card. Fischer and Haworth
-projections and all-H drawings are a `view` option.
+buttons for the data sheet, PNG export, an Anki card and a rotatable 3D
+model; when the name was found under another spelling, a "Found as" line
+says which. Fischer and Haworth projections and all-H drawings are a `view`
+option and panel buttons.
 
 <p align="center"><img src="../assets/caffeine.png" alt="Caffeine structure, rendered by generate_molecule" width="380"></p>
 
@@ -42,13 +47,18 @@ takes a methyl, primary or secondary alkyl halide with one anionic nucleophile
 (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻) and inverts a stereocentre; SN1 takes a
 tertiary or benzylic halide with water, an alcohol or one of those anions (an
 allylic halide is refused: its cation gives two products); Fischer takes one
-carboxylic acid and one primary or secondary alcohol. Anything outside these
-limits gets an error with the reason. Other mechanisms are not available.
+carboxylic acid and one primary or secondary alcohol; its steps are joined
+by ⇌ and a second solvent molecule carries the proton instead of a free H⁺.
+When elimination competes (a secondary halide with a strong or bulky base,
+an SN1 cation with a β-hydrogen) a note under the title says so; only the
+substitution is drawn. Anything outside these limits gets an error with the
+reason. Other mechanisms are not available.
 
 <p align="center"><img src="../assets/wave1-mechanisms.png" alt="Second step of SN1, SN2 and Fischer esterification, each with curved electron-flow arrows, drawn from the step SVGs that generate_mechanism returns" width="960"></p>
 
 **3D.** `generate_3d` embeds one conformer (ETKDGv3, then MMFF or UFF), opens a
-ball-and-stick panel you drag to rotate and writes an SDF file:
+ball-and-stick panel you drag to rotate and writes an SDF file; the same model
+is behind the `3D` button of every molecule panel:
 
 <p align="center"><img src="../assets/wave1-3d.png" alt="Ball-and-stick projection of the caffeine conformer that generate_3d embeds; the panel shows the same atoms and lets you rotate them" width="420"></p>
 
@@ -98,7 +108,9 @@ species across pH 0–14:
 <p align="center"><img src="../assets/lookup-datasheet.png" alt="Caffeine data sheet from lookup_molecule_data: structure on the left, PubChem properties (CID, IUPAC name, formula, molar mass, XLogP, TPSA, InChIKey) and the GHS signal word Warning with H302 on the right" width="760"></p>
 
 Lookups need an internet connection. A missing value is not evidence that a
-property or hazard is absent.
+property or hazard is absent. The CAS number comes from PubChem's CAS section
+(check digit verified, CAS Common Chemistry preferred, otherwise the majority
+of sources); when the sources disagree evenly, the field stays empty.
 
 ## Calculate
 
@@ -107,7 +119,9 @@ capacity), buffer recipes down to weighable masses, and the ionised fraction of
 a drug at a given pH. It solves the same exact charge balance that draws the
 titration curve and prints the textbook approximation beside it; where the two
 disagree, the answer says the approximation's assumptions no longer hold.
-10⁻⁸ M HCl comes out at pH 6.98, not 8. You supply the pKa values.
+10⁻⁸ M HCl comes out at pH 6.98, not 8, and 2 M HCl at −0.30 with a note that
+0–14 is no physical limit and that concentrated solutions follow activities,
+not concentrations. You supply the pKa values.
 
 <p align="center"><img src="../assets/calculate-ph.png" alt="Two calculate_ph answers: 0.1 M acetic acid at pH 2.88 with the exact value beside the textbook approximation, and 1e-8 M HCl at pH 6.98 with the note that −log c would wrongly give pH 8" width="760"></p>
 
@@ -181,7 +195,9 @@ when `CHEMDRAW_VAULT_PATH` is set.
 
 - **Without Java, names need the internet.** OPSIN is skipped and names are
   resolved online through PubChem and NCI, so only names those databases index
-  are found. SMILES input never touches the network.
+  are found. With Java, systematic names with locants are parsed offline;
+  a name without locants is cross-checked against PubChem when the network
+  is there. SMILES input never touches the network.
 - **Lab graphics are drawings of given numbers.** Spectra, TLC plates and pH
   curves show the values passed in. They measure nothing; values the model
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,

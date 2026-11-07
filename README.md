@@ -37,7 +37,8 @@ under [Installation](#installation).
 
 ## Tools
 
-The default profile registers 16 tools in five areas. Each description says
+The default profile registers 16 tools, 15 of them in five areas plus the
+panel's internal `save_png`. Each description says
 which neighbouring tool to use instead, so the model can tell a drawing from a
 lookup from a calculation. Files go to `~/ChemDraw-Output/`.
 

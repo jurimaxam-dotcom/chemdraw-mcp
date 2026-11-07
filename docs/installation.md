@@ -62,8 +62,9 @@ Put the absolute path that `which uvx` prints on your machine into `command`.
 
 - **A Java runtime** (e.g. `brew install openjdk`) lets
   [OPSIN](https://github.com/dan2097/opsin) parse systematic IUPAC names
-  offline, including names no database indexes. Without Java, names are
-  resolved online through PubChem and NCI.
+  offline, including names no database indexes (a trivial name without
+  locants is still cross-checked against PubChem when online). Without Java,
+  names are resolved online through PubChem and NCI.
 - **The AnkiConnect add-on** lets `export_anki_deck` add cards to a running
   Anki. Without it you import the `.apkg` file yourself.
 - **ChemDraw** is never required. Request `formats=["cdxml"]` to continue

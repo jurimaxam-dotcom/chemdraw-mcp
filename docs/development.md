@@ -8,7 +8,8 @@ How chemdraw-mcp is built and tested. Python 3.11+, package manager `uv`.
 name / SMILES
    │
    ▼
-resolver ──► OPSIN (systematic IUPAC names, offline) ──► PubChem / NCI (names)  ·  direct parse (SMILES)
+resolver ──► OPSIN (systematic IUPAC names, offline) ──► PubChem / NCI (names, plus English / salt / form spellings)  ·  direct parse (SMILES)
+   │         direct hits are cross-checked against the other source (de_names.py, resolver.py)
    │
    ▼
 RDKit 2D coordinates ──► validation (sanity, round-trip)
@@ -30,7 +31,7 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium  # fronten
 ./test.sh                    # the gate: lint, pytest, bundle freshness, JS unit and browser tests
 ```
 
-About 8,000 Python tests plus JavaScript unit and headless-Chromium tests,
+About 8,400 Python tests plus JavaScript unit and headless-Chromium tests,
 written test-first. Frozen renderings guard the drawing output, a pinned
 identity list guards name resolution, and snapshots of every tool description
 guard which tool the model picks.

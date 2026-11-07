@@ -16,30 +16,76 @@ this project uses [Semantic Versioning](https://semver.org/).
   ball-and-stick viewer (explicit hydrogens, SDF written as usual), a second
   click or any 2D chip returns to the drawing; the conformer is cached, so
   switching back and forth costs one call. Before, 3D was only reachable
-  through the chat.
+  through the chat. Export PNG is hidden while the 3D model is shown (it
+  would export the 2D drawing), the chip is there for every molecule, and a
+  failed load says so and can be retried.
+
+- **"Found as" in the panel.** When a name was found under a different
+  spelling (Dexamethason → Dexamethasone, a salt resolved to its free form),
+  `generate_molecule`, `batch_generate` and `lookup_molecule_data` return
+  `foundAs`, and the molecule and data panels show it under the title.
+
+- **17 more IR rules in `predict_spectrum`.** C–F/C–Cl/C–Br/C–I,
+  sulfonamide, sulfone and sulfoxide S=O, thiocarbonyl C=S, azide, imine/oxime
+  C=N and the P=O/P–O bands of phosphates and related groups. The secondary
+  amine rule no longer fires on amides and sulfonamides.
 
 ### Changed
+
+- **CAS numbers come from PubChem's CAS section, checked and by majority.**
+  Before, the first synonym that looked like a CAS number was taken, which
+  gave ibuprofen the deprecated 58560-75-1. Now the number comes from the
+  compound's CAS section, must pass the check digit, prefers the CAS Common
+  Chemistry entry and otherwise the number most sources agree on; when the
+  sources disagree evenly, the field stays empty instead of guessing.
+  Ibuprofen now reports 15687-27-1.
+
+- **pH values outside 0–14.** `calculate_ph` and the titration curve no
+  longer clamp to 0–14: 2 M HCl gives pH −0.30 and the answer carries a note
+  that the interval is not a physical limit and that activities, not
+  concentrations, set the measured pH of concentrated solutions.
 
 - **Mechanisms follow textbook conventions more closely.** SN2 draws the
   curved arrows on the reactants and the transition state without arrows; the
   SN1 carbocation is drawn trigonal planar; a second solvent molecule (water or
   the alcohol) takes the proton instead of a free H⁺, so SN1 with water ends in
   ROH + X⁻ + H₃O⁺; the Fischer esterification moves the proton in two steps via
-  the alcohol and now has 8 steps instead of 7 (`current_step` numbers after
-  step 3 shift by one); long alkyl chains are labelled C₁₇H₃₅ instead of drawn
-  out. The mechanism result carries `notes` (E1/E2 elimination competes, e.g.
-  isopropyl iodide + OH⁻) and `reversible` (Fischer), and the panel shows both:
-  the note under the title, ⇌ between the steps.
+  the alcohol and now has 8 steps instead of 7 (the old proton transfer,
+  step 4, is now steps 4 and 5, so later `current_step` numbers shift by
+  one); unbranched terminal alkyl chains of five carbons or more are
+  labelled (C₁₇H₃₅) instead of drawn out. The mechanism result carries
+  `notes` — E2 competes for a secondary halide with a strong base
+  (isopropyl iodide + OH⁻) or a bulky base such as tert-butoxide, E1 for an
+  SN1 cation with a β-hydrogen — and `reversible` (Fischer), and the panel
+  shows both: the note under the title, ⇌ between the steps.
 
 - **German trivial names resolve more often.** When no source knows a German
   name, the resolver now tries its English spelling as a last step: drug-name
   endings (Dexamethason → dexamethasone, Amilorid → amiloride, Lamivudin →
   lamivudine), acids (Maleinsäure → maleinic acid, Bernsteinsäure → succinic
   acid), salts (Natriumlactat → sodium lactate, Alcuroniumchlorid → alcuronium
-  chloride) and a racemate prefix ((RS)-Ketamin → ketamine). Names that
-  resolved before take exactly the same path as before. On the project's
-  711-name evaluation set (German trivial names, IUPAC, SMILES) this moves
-  the resolver from 591 to 681 correct identities (83 % → 96 %).
+  chloride) and a racemate prefix ((RS)-Ketamin → ketamine). Further
+  spellings are tried on the way: Greek letters, the halogen vowel
+  (Fluorcytosin → fluorocytosine), a form suffix (anhydrate, "(free acid)",
+  A+B), only the counter-ion in English (Cefalotin sodium) and the optical
+  rotation sign dropped next to R/S ((S)-(−)-timolol → (S)-timolol).
+
+- **Direct hits are cross-checked.** A PubChem hit is compared with the
+  English spelling and an OPSIN hit without locants with PubChem; when they
+  disagree, the resolver prefers the free form over a salt unless the name
+  carries a salt word (Bendamustin → the base, not the hydrochloride), the
+  more defined stereo form (Naloxon) and PubChem's skeleton over OPSIN's
+  guess, while a tautomer does not count as a different substance. As a
+  consequence "D-glucose" now resolves to PubChem's pyranose ring (Haworth
+  button) instead of the open chain; the open chain is "aldehydo-D-glucose".
+  On the project's 711-name evaluation (German trivial names, IUPAC names,
+  SMILES) all resolver changes together take the correct identities from
+  591 at 0.8.0 to 681–683 (83 % → 96 %; measured 2026-11-07 against the
+  revised reference list, before the last resolver commit).
+
+- **Pinned dependencies moved.** Playwright 1.60.0 → 1.64.1 on both the
+  Python and the JavaScript side; RDKit is capped below 2026.9 until its new
+  layout is blessed.
 
 ### Fixed
 
@@ -49,10 +95,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 - **Trivial names no longer get split like systematic names.** OPSIN read
   "tropicamide" as tropic acid amide, "methyldopa" as N-methyl-DOPA and
-  "chloroxylenol" as a non-aromatic ring. A name without locants (no digits,
-  brackets, N-/O-/o-/m-/p- prefixes) is now checked against PubChem; when the
-  skeletons differ, PubChem's record wins. Names with locants stay offline, and
-  without network OPSIN's answer is used as before.
+  "chloroxylenol" as a non-aromatic ring. A carbon-containing name without
+  locants (no digits, brackets or N-/N,N-/O-/S-/P-/o-/m-/p- prefixes) is now
+  checked against PubChem; when the skeletons differ, PubChem's record wins.
+  Names with locants stay offline, and without network OPSIN's answer is used
+  as before.
 
 ## [0.8.0] — 2026-11-05
 
