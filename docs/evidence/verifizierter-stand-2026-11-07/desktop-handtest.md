@@ -58,3 +58,14 @@ Zählung (09:19): **belegt** 1a–1f, 2, 3, 5, 6, 7 · **kein Werkzeug** 4, 8, 9
 5. **Spektrum (5):** Peak-Beschriftungen um 1750/1690 cm⁻¹ überlappen im Bild („C=O Ester/Säure“ unleserlich übereinander) — kosmetisch, im Screenshot sichtbar.
 6. **Erste Eingabe:** Return in der AX-Eingabe sendete nicht; ab Schritt 1 wurde über den Knopf „Send message“ gesendet. Keine Auswirkung auf Ergebnisse.
 7. **Fenster:** Claude Desktop lag zu Beginn auf einem anderen Space (Ghostty im Vollbild, `screencapture -l` scheiterte). Erst nach einer Idle-Pause von Jay (≥ 45 s, 08:35) wurde Claude aktiviert, damit keine Tastenanschläge zwischen Jays Terminal und Desktop vermischt werden. Fensterbreite blieb 600 pt (schmal).
+
+## Nachtrag 10:24–10:35 (Owner-Session, Fable): 3D-Chip im Molekülpanel (Welle 1, Punkt 6)
+
+Desktop um 10:24 neu gestartet (neuer Prozess PID 74560, Bundle mit 3D-Chip ab `0320a0c`), `./scripts/handshake.sh` grün (16/12, Eintrag `chemdraw-tool`). Jay 10:28: Zoom und Chrome liegen auf dem zweiten Bildschirm, der Mac-Bildschirm ist frei → Leerlauf-Schwelle für AX-Eingaben von 45 s auf 5 s gesenkt; Knöpfe per AX-Press, nur das Tippen braucht den Fokus.
+
+| # | Prompt / Klick | Ergebnis | Screenshot |
+|---|---|---|---|
+| 10a | Zeichne Ibuprofen (leere Session, Send per AX-Press 10:30:13) | **belegt.** Panel „Ibuprofen“ (CID 3672, C13H18O2, 206.28 g/mol, CAS 15687-27-1), Chip-Reihe mit **3D** neben All H | `22a-panel-vor-3d.png` (nur `/tmp`) |
+| 10b | Klick auf Chip „3D“ (10:34:46, `clickat 596 195`) | **belegt.** Nach ~7 s steht das Kugel-Stab-Modell (explizite H, rote O-Atome, drehbar) in der Strukturfläche, darunter „Drag to rotate · explicit hydrogens · SDF: ~/ChemDraw-Output/3d/ibuprofen.sdf“; Export PNG ist ausgeblendet, Anki-Knopf bleibt | `22-desktop-3d-knopf.jpg` |
+
+Abweichungen: (8) Der 3D-Chip (und die anderen Chips der Reihe) erscheint **nicht** im AX-Dump als `AXButton` — `press AXButton "^3D$"` findet nichts, obwohl es im DOM ein `<button class="chip-toggle">` ist; Klick per Bildschirmkoordinate aus dem Screenshot. (9) Jay 10:35 beim Zusehen: 3D ist der Hebel, aber zu klein — `.structure-canvas` 320 px, Molekül füllt etwa 60 % der Kuhle; Folgepunkt 10 im Plan.
