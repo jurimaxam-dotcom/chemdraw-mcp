@@ -123,12 +123,12 @@ Desktop-Blick und Welle-3-Haken 5 (Konnektor-Migration per `./install.sh`, Hands
 ## Auftrag C2 — Owner: README richtig clean (Jay 12:47, nach Release 0.9.0)
 
 Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
-1. [ ] A3 mergen: Hero `<picture>` hell/dunkel, gleiche Maße, Capsaicin-GIF unter Data; alte Dateinamen bleiben als Kopien.
-2. [ ] Alle HTML-TODO-Kommentare raus; Hero-Kommentar auf eine Zeile (Quelle: `readme:gifs`).
-3. [ ] Prompts/Tool-Tabelle: Tabelle bleibt vierspaltig (test-gedeckt, `| \`tool\` |`-Regex), Beispielprompts kürzen (max. ~60 Zeichen), keine Toolnamen in den drei Hero-Prompts.
-4. [ ] Texte: keine Gedankenstriche, keine Superlative, einheitliche Backticks für Knopfnamen (`3D`, `All H`, `Data`), Aspirin/Ibuprofen nur noch in Galerie/Tests.
-5. [ ] Playwright-Screenshots hell/dunkel bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
-6. [ ] Codex-Abgleich (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
+1. [x] A3 mergen (13:05; Neuaufnahme auf E3-Stand 13:25, `024d6c1`, Hero 600×880): Hero `<picture>` hell/dunkel, gleiche Maße, Capsaicin-GIF unter Data; alte Dateinamen bleiben als Kopien.
+2. [x] Alle HTML-TODO-Kommentare raus (13:10); Hero-Kommentar auf eine Zeile (Quelle: `readme:gifs`).
+3. [x] Prompts/Tool-Tabelle (13:12: vier Prompts gekürzt, drei Dubletten raus): Tabelle bleibt vierspaltig (test-gedeckt, `| \`tool\` |`-Regex), Beispielprompts kürzen (max. ~60 Zeichen), keine Toolnamen in den drei Hero-Prompts.
+4. [x] Texte (3D-Absatz auf Thalidomid; keine Gedankenstriche gefunden): keine Gedankenstriche, keine Superlative, einheitliche Backticks für Knopfnamen (`3D`, `All H`, `Data`), Aspirin/Ibuprofen nur noch in Galerie/Tests.
+5. [x] Playwright-Screenshots hell/dunkel auf github.com (13:42, Owner gesehen: beide Hero-GIFs gleich hoch, kein Überlauf, Theme greift; Belege `docs/evidence/…/readme/github-hero-{light,dark}.jpg`) bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
+6. [~] Codex-Abgleich (Signal mit `024d6c1` um 13:30 im Faden `20261107-114301-…`) (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
 7. [ ] Gate + CI grün, Push; README-Stand als Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
 
 ## Shorts aus den GIFs (Jay 13:05: „anschließend mit den GIFs die Shorts erstellen“)
