@@ -2,7 +2,7 @@
 
 ## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 15:20)
 
-- **Nächster Schritt:** Jays Shorts-Antwort einarbeiten (Sichtprüfung offen); CI auf main nach `c38819c` prüfen.
+- **Nächster Schritt:** Jays Shorts-Antwort einarbeiten (Sichtprüfung offen). CI auf main grün für `c38819c` und `16312c4` (Läufe 42380559876, 42380563945).
 
 - **Nächster Schritt — Jays Hand:** Sichtprüfung der drei Shorts (Abnahme = Jay; kein Upload, keine Außenkommunikation): `~/Documents/projects/chemdraw-vermarktung/out/shorts-2026-11-07/{s5-stereo,s3d-drehen,s1h-hover}.mp4` (20,0 / 21,4 / 21,7 s, 1080×1920, 30 fps, Kokoro-Stimme, Wort-Untertitel). Worauf achten (aus dem Bericht): S5 Keil am (S)-Thalidomid im Schlussbild auf dem Handy erkennbar? S3D Drehung flüssig? S1H Untertitel/Hover synchron? Panel-Unterkante (Export/Anki-Zeile) liegt im Bereich der Reels-Leiste — Alternative 85 % Verkleinerung. Fachlich: „One stereocenter. Two drugs.“ vor einem Post gegenlesen (Racemisierung in vivo).
 - **Erledigt und belegt 13:08–13:55 (Owner):** Hero-Abnahme **Jay ~13:41 „Passt so“** (AskUserQuestion) (zwei GIFs nebeneinander bleiben) · CI main grün bis `440e529` (Lauf 42371029859) · **Shorts gerendert** (Vermarktungs-Session, Tisch `20261107-130152-shorts-aus-den-panel`, Bericht 13:14; Owner geprüft: ffprobe-Dauern, Commits `2139cb7`/`0ecc7b8` in `chemdraw-vermarktung`, `npm test` 46/46 selbst gelaufen, Übersichts-PNGs und Schlussbild S5 selbst angesehen) · Plan-Uhrzeiten CEST→CET korrigiert (`e9941cb`).
