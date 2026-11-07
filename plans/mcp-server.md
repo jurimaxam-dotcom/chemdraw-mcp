@@ -1,5 +1,21 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — auf Jays Anweisung angehalten (07.11.2026)
+
+- **README-GIF halbfertig, uncommittet:** `scripts/demo-video.sh`,
+  `chemdraw_tool/ui/src/host/demo.record.mjs`, `demo-options.mjs` und
+  `ui/src/utils/demoRecordingOptions.test.mjs`; Morphin-Ablauf und vollständiger
+  Ladepausenschnitt vorbereitet, 5 Helper-Tests grün, **keine neue Aufnahme gestartet**,
+  `assets/demo-molecule.gif` unverändert; Vorher-Bild/Logs unter
+  `/tmp/chemdraw-readme-gif/2026-11-07/qa/`; Stereo-Klick erst nach W1 ergänzen.
+- **Opus Schnitt 3 gebaut:** `e559323`; Codex hat Diff gelesen, **Kreuzabnahme offen**,
+  noch keine eigenen Tests/Replays für diesen Commit; Nicotin-Regenerationsschutz
+  `1ea7d42` fertig (36 Tests grün).
+- **CI rot laut Chef:** `scripts/notebooklm/bundle.py`, Eigentümer unklar;
+  hier nicht behoben oder erneut geprüft.
+- **Fortsetzung nur auf neuen Auftrag:** zuerst Kreuzabnahme `e559323`, danach
+  GIF-Entwurf mit echter Aufnahme und drei Standbildern; vor Jays Sichtung nichts davon committen.
+
 ## Weiter bei — Opus baut Schnitt 3 A>=; Codex prüft über Kreuz (07.11.2026)
 
 - [x] **Chef-Entscheid Schnitt 3:** A>= bauen; B′ verworfen, weil `citral` und
