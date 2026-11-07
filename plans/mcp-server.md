@@ -1,6 +1,13 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 10:27)
+## Weiter bei — Owner-Session (07.11.2026, 10:52)
+
+- **Erledigt und belegt 10:24–10:50:** 3D-Chip im Desktop gesehen (`22-desktop-3d-knopf.jpg`) → Jay 10:35 „3D ist der Hebel — größer, README, clean“ → gebaut `e896e95`/`0b96d5a` (Kuhle volle Panelbreite, Molekül füllt die Kuhle; README-Abschnitt mit Desktop-Bild `assets/panel-3d-ibuprofen.png`; Gate rc=0, test:host rc=0, Desktop-Blick `23-desktop-3d-gross.jpg`). CHANGELOG unter `[Unreleased]`.
+- **Offen — Jays Entscheid Release:** (A, empfohlen) `v0.9.0` auf `e2e1137` wie vorbereitet (ohne „3D größer“), danach 0.10.0 mit 3D größer + Welle 3 nach Haken 5 · (B) Tag auf HEAD `0b96d5a` — bringt Welle 3 (Konnektor-Migration, Desktop-Haken 5 ungetestet) ungeprüft in das Release.
+- **Läuft/liegt:** Codex-Auftrag GIF 3D-Drehung, Tisch `20261107-104104-readme-gif-3d-chip` (Kontingent ab 11:45; README-Zeile für das GIF kommt nach dem Bericht). Live-Config noch `chemdraw-tool`; Migration + Haken 5 nach dem Release-Klick.
+- **AX-Erkenntnisse für die nächste Desktop-Runde:** Chips der Zeichenfläche sind keine AXButtons (Koordinate aus Screenshot); nach Desktop-Neustart `⌘N` statt `press "=New"`, wenn die Sidebar zu ist; Scrollen per `scrollat` (CGEvent, Quelle im Scratchpad dieser Session — bei Bedarf nach `chemdraw-vermarktung` neben `ax-claude.swift`); Leerlauf-Schwelle 5–10 s reicht, wenn Zoom/Chrome auf dem zweiten Bildschirm liegen (Jay 10:28).
+
+### Vorheriger Block (10:27, abgearbeitet)
 
 - **Nächster Schritt (Wartezeit mit Folgeaktion):** Claude Desktop ist um 10:24 **neu gestartet** (Jay: „du kannst Claude Desktop neu starten“, Zoom darf weiterlaufen), Handshake gegen den registrierten Befehl grün (16/12, Legacy-Eintrag `chemdraw-tool`). Der Monitor der alten Session ist weg — neu armieren: `ioreg -c IOHIDSystem` HIDIdleTime ≥ 45 s (Jay wurde gebeten, kurz die Hände wegzunehmen; Zoom ist egal), alle 5 s, Kappe 25 min. Dann per `scripts/ax-claude.sh`: `press AXButton "=New"` → `type "Zeichne Ibuprofen"` → `press AXButton "Send message"` → warten, bis das Panel steht (`dump` zeigt AXButton `3D`) → `click AXButton "^3D$"` → Screenshot `screencapture -x /tmp/chemdraw-desktop-test/2026-11-07/verifiziert/22-desktop-3d-knopf.png` (Ordner existiert) → **selbst ansehen** → als JPG nach `docs/evidence/verifizierter-stand-2026-11-07/screenshots/22-desktop-3d-knopf.jpg` → Haken Welle 1 „Desktop-Blick“ (Zeile „3D-Knopf im Molekülpanel“, Punkt 6 unter „Stand für Jay“) ohne Vorbehalt → Protokoll `desktop-handtest.md` ergänzen. Danach Jay die Release-Zeile geben; vor jedem Tastenschritt Idle erneut lesen.
 - **Release-Zeile für Jay (Klick ist seine Hand; SHA = `e2e1137`, CI grün, nicht HEAD — Welle 3 liegt in `[Unreleased]`):**
