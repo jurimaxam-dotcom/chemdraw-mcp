@@ -1,7 +1,7 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import { displayPath } from "./utils/displayPath";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
 
 // Rf ist ein Verhältnis — im Protokoll immer zweistellig notiert.
 const fmtRf = (rf) => (typeof rf === "number" ? rf.toFixed(2) : String(rf ?? ""));
@@ -90,33 +90,9 @@ export default function TlcView({ data }) {
           ))}
         </div>
       )}
-      {/* Exportknopf wie im Molekül-Panel (Desktop-Befund 30.10.2026) */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-          marginTop: 6,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--fg-muted)",
-            fontFamily: "ui-monospace, monospace",
-            wordBreak: "break-all",
-            minWidth: 0,
-          }}
-        >
-          {data.files?.png && (
-            <>
-              PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
-            </>
-          )}
-        </div>
+      <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "tlc"} size="sm" />
-      </div>
+      </PanelFooter>
     </div>
   );
 }

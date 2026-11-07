@@ -1,6 +1,6 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
-import { displayPath } from "./utils/displayPath";
+import PanelFooter from "./components/PanelFooter";
 
 const MAX_FRONTS = 10;
 
@@ -32,7 +32,7 @@ export default function AnkiDeckView({ data }) {
       />
       <ol
         style={{
-          margin: "0 0 12px",
+          margin: 0,
           paddingLeft: 22,
           fontSize: 12,
           color: "var(--fg)",
@@ -44,26 +44,12 @@ export default function AnkiDeckView({ data }) {
         ))}
       </ol>
       {hidden > 0 && (
-        <div style={{ fontSize: 11, color: "var(--fg-muted)", marginBottom: 12 }}>
+        <div style={{ fontSize: 11, color: "var(--fg-muted)", marginTop: 4 }}>
           … and {hidden} more card{hidden === 1 ? "" : "s"}
         </div>
       )}
-      {data.file && (
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--fg-muted)",
-            fontFamily: "ui-monospace, monospace",
-            wordBreak: "break-all",
-            background: "var(--bg-alt)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-md)",
-            padding: "8px 10px",
-          }}
-        >
-          <span title={data.file}>{displayPath(data.file)}</span>
-        </div>
-      )}
+      {/* Fußzeile (E3): die .apkg-Datei mit Präfix; eine Aktion gibt es hier nicht. */}
+      <PanelFooter files={data.file ? [{ label: "APKG", path: data.file }] : []} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
-export default function CopyButton({ text, size }) {
+export default function CopyButton({ text, size, label = "Copy value" }) {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef(null);
-  const dim = size === "sm" ? 32 : 36;
+  const dim = size === "xs" ? 22 : size === "sm" ? 32 : 36;
 
   // Clear any pending timer if the component unmounts before it fires.
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
@@ -34,7 +34,7 @@ export default function CopyButton({ text, size }) {
   return (
     <button
       type="button"
-      aria-label="Copy value"
+      aria-label={label}
       onClick={handleCopy}
       title="Copy"
       style={{

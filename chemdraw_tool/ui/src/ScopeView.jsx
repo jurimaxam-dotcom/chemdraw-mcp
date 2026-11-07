@@ -1,6 +1,7 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
-import { displayPath } from "./utils/displayPath";
+import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
 
 // Der Bezeichner ist die Angabe, nach der in einer Scope-Figur gesucht wird —
 // er steht deshalb auch in der Liste vorn und fett.
@@ -90,19 +91,9 @@ export default function ScopeView({ data }) {
           Not resolved, left out of the figure: {failed.join(", ")}
         </div>
       )}
-      {data.files?.png && (
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--fg-muted)",
-            marginTop: 6,
-            fontFamily: "ui-monospace, monospace",
-            wordBreak: "break-all",
-          }}
-        >
-          PNG: <span title={data.files.png}>{displayPath(data.files.png)}</span>
-        </div>
-      )}
+      <PanelFooter files={fileEntries(data.files)}>
+        <ExportPngButton svg={data.svg} filename={data.name || "scope"} size="sm" />
+      </PanelFooter>
     </div>
   );
 }

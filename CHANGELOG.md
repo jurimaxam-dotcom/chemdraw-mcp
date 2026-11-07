@@ -8,6 +8,14 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **One panel footer with files and actions.** Every panel that writes files
+  or offers an action now ends in the same footer: file paths on the left
+  (shortened, full path on hover, copy button), Export PNG and Add to Anki on
+  the right; reaction, mechanism and substrate-scope panels gain Export PNG.
+  After Export PNG the footer shows where the image went ("Saved:
+  ~/ChemDraw-Output/png/…" or "Copied to clipboard") or why it failed, and in
+  the 3D view the button exports the current rotation with its theme colours.
+
 - **Second connector `chemdraw-pharma`.** Claude Desktop now gets two
   connectors from one installation: `chemdraw` with the default profile
   (16 tools) and `chemdraw-pharma` with the full profile (23 tools: the

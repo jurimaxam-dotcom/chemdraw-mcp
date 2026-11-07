@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import Ball3DCanvas from "./components/Ball3DCanvas";
 import SectionHeader from "./components/SectionHeader";
-import { displayPath } from "./utils/displayPath";
+import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 
 // Chat-Einstieg für generate_3d: Kopfzeile + Viewer + SDF-Pfad. Der Viewer
 // selbst (Ball3DCanvas) ist derselbe wie hinter dem 3D-Knopf im Molekülpanel.
@@ -9,6 +11,7 @@ import { displayPath } from "./utils/displayPath";
 // das Modell skaliert proportional in die verfügbare Fläche.
 
 export default function Molecule3DView({ data }) {
+  const viewer = useRef(null);
   return (
     <div
       style={{
@@ -24,25 +27,15 @@ export default function Molecule3DView({ data }) {
         title={data.name}
         subtitle="3D conformer (ETKDG + force field) · drag to rotate"
       />
-      <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+      <div ref={viewer} style={{ flex: 1, minHeight: 0, display: "flex" }}>
         <Ball3DCanvas atoms={data.atoms || []} bonds={data.bonds || []} />
       </div>
-      {data.files?.sdf && (
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--fg-muted)",
-            marginTop: 8,
-            fontFamily: "ui-monospace, monospace",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            flexShrink: 0,
-          }}
-        >
-          SDF: <span title={data.files.sdf}>{displayPath(data.files.sdf)}</span>
-        </div>
-      )}
+      {/* Fußzeile (E3): SDF links, Export der aktuellen Drehlage rechts. */}
+      <PanelFooter files={fileEntries(data.files)}>
+        <ExportPngButton size="sm" filename={`${data.name || "molecule"}-3d`}
+          getSvg={() => serializeLiveSvg(viewer.current?.querySelector("svg"))}
+          background={() => panelBackground(viewer.current)} />
+      </PanelFooter>
     </div>
   );
 }
