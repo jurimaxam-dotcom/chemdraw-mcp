@@ -4,6 +4,9 @@ Nur gemessen, kein Resolver-Commit. Schalter sind Monkeypatches in `mess.py`.
 
 ## Ablauf
 
+Nachmessen: `git worktree add --detach .claude/worktrees/kipp2 112021f` (die Skripte zeigen auf diesen Pfad),
+danach `git worktree remove .claude/worktrees/kipp2`.
+
 1. `mess.py record` — ein Live-Lauf mit unverändertem Resolver im Worktree auf `112021f`
    (711 Masse-Eingaben + Holdout PubChem 553 + Holdout OPSIN 131). Jede Quellenantwort → `memo.json`.
 2. `mess.py replay` — offline aus dem Memo, je Variante `_pubchem_checked`/`_opsin_checked` ersetzt.
@@ -33,6 +36,9 @@ durch Schnitt 1/2, nichts verloren.
 | B′ | 4 | 3 | 0 | 0 |
 | A>=+B′ | 4 | 7 | 1 / 6 / 0 | 0 |
 
+„Definiertere Form“ ist als ≥ gemessen; strikt > würde Isosorbiddinitrat und Vinorelbin
+(gleich viele Elemente, Widerspruch) sperren. Benzylpenicillin-Benzathin und Isosorbiddinitrat sind neu gegenüber der
+Vortagsmessung, weil die Basis jetzt Schnitt 2 enthält, nicht wegen der Regel.
 A>= behält Benzylpenicillin-Benzathin, Isosorbiddinitrat, Naloxon, Vinorelbin; verliert gegenüber A nur
 Mefloquin (direkt definiert, Fixture flach — Spiegelfall zu Lincomycin/Prostacyclin, die die Zählregel
 schützt). Der eine Holdout-Kipp ist Vareniclin (s. u., Schreibweise, kein anderer Stoff).
