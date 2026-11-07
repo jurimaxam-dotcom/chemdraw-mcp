@@ -38,3 +38,6 @@ guard which tool the model picks.
 
 The README images in `assets/` come from `scripts/readme_bilder.py`, not from
 hand edits; `tests/test_readme.py` pins their hashes.
+The three panel GIFs (`demo-views`, `demo-3d`, `demo-molecule`) are recorded in the
+panel test host, dark theme at 600 px: `npm --prefix chemdraw_tool/ui run readme:gifs`
+(needs network; checks width, duration and size of each GIF).
