@@ -1,21 +1,16 @@
 # Identität — Masse-Evaluation
 
-Lauf 2026-11-06 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
+Lauf 2026-11-07 · `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: `uv run python scripts/masse_eval.py identitaet`
 
-**711 Eingaben (414 Wikidata-Stoffe, 413 unterschiedliche InChIKeys): 675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot.**
+**711 Eingaben (415 Wikidata-Stoffe, 414 unterschiedliche InChIKeys): 683 grün · 9 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 14 rot.**
 
-Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 16 min · Median 0.7 s · 90 % ≤ 4.4 s · langsamste 12.0 s je Eingabe (inkl. 0,3 s Pause).
+Erwartung: Wikidata-InChIKey, gegen ChEMBL geprüft (`tests/identity/stoffe-masse.json`). Laufzeit gesamt 16 min · Median 0.7 s · 90 % ≤ 4.6 s · langsamste 10.4 s je Eingabe (inkl. 0,3 s Pause).
 
 ## Rot nach Art
 
 | Art | Zahl | Bedeutung |
 |---|---:|---|
 | stereo | 14 | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
-| nicht aufgelöst | 8 | Kaskade findet nichts, obwohl die Quelle den Stoff führt |
-| skelett | 5 | anderes Gerüst — falscher Stoff |
-| salz | 1 | gleicher Wirkstoff, anderes Salz bzw. Gegenion (größtes Fragment gleich) |
-
-Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 
 ## Alle roten Fälle
 
@@ -38,40 +33,11 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 | Adrenalin | de | `UCTWMZQNUQWSLP-VIFPVBQESA-N` | `UCTWMZQNUQWSLP-UHFFFAOYSA-N` | racepinephrine | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 | Xylit | de | `HEBKCHPVOIAQTA-SCDXWVJYSA-N` | `HEBKCHPVOIAQTA-NGQZWQHPSA-N` |  | gleiches Gerüst, andere Stereochemie (Racemat/Enantiomer/Isomer) |
 
-### nicht aufgelöst
-
-| Eingabe | Sprache | erwartet | erhalten | ChEMBL-Name des Erhaltenen | Deutung |
-|---|---|---|---|---|---|
-| Cefixim Anhydrat | de | `OKBVVJOGVLARMR-QSWIMTSFSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| N-Methylglucaminantimonat | de | `XOGYVDXPYVPAAQ-SESJOKTNSA-M` | `—` |  | nicht aufloesbar (not_found) |
-| nitroprusside | en | `ASPOIVQEUUCDQT-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| Nitroprussid | de | `ASPOIVQEUUCDQT-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| Povidon-Iod | de | `CPKVUHPKYQGHMW-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| Metamizol (freie Säure) | de | `LVWZTYCIRDMTEY-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| Citral A+B | de | `WTEVQBCEXWBHNA-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-| Ethylendiamintetraessigsäure | de | `KCXVZYZYPLLWCC-UHFFFAOYSA-N` | `—` |  | nicht aufloesbar (not_found) |
-
-### skelett
-
-| Eingabe | Sprache | erwartet | erhalten | ChEMBL-Name des Erhaltenen | Deutung |
-|---|---|---|---|---|---|
-| Prussian blue | en | `DNMNDNSFJMUUFM-UHFFFAOYSA-N` | `DCYOBGZUOMKFPA-UHFFFAOYSA-N` |  | Eisen-Cyanid-Gerüst; Wikidata und PubChem modellieren den Komplex verschieden — kein Zeichenfall. |
-| Berliner Blau | de | `DNMNDNSFJMUUFM-UHFFFAOYSA-N` | `DCYOBGZUOMKFPA-UHFFFAOYSA-N` |  | wie Prussian blue. |
-| Hydroxycobalamin | de | `YOZNUFWCRFCGIH-WZHZPDAFSA-K` | `DQOCFCZRZOAIBN-WZHZPDAFSA-L` |  | Cobalt-Komplex, PubChem-Record als Hydrat mit anderer Ladungsschreibweise — wie cyanocobalamin. |
-| β-lactulose | en | `JCQLYHFGKNRPGE-FCVZTGTOSA-N` | `NBGXQZRRLOGAJF-FCVZTGTOSA-N` |  | Seit Lauf 3 über 'beta-lactulose' gefunden: gleiche Formel C12H22O11 und gleiche Stereo-Schicht, PubChem modelliert eine andere Ringform der Fructose-Einheit. Kein falscher Stoff. |
-| cyanocobalamin | en | `FDJOLVPMNUYSCM-UVKKECPRSA-L` | `RMRCNWBMXRMIRW-WZHZPDAFSA-L` |  | Gleiche Formel C63H88CoN14O14P; Cobalt-Komplex, von Wikidata und PubChem verschieden modelliert (wie Prussian blue). PubChems Titel des Erhaltenen: Cyanocobalamin. |
-
-### salz
-
-| Eingabe | Sprache | erwartet | erhalten | ChEMBL-Name des Erhaltenen | Deutung |
-|---|---|---|---|---|---|
-| Docusat | de | `APSBXTVYXVQYAB-UHFFFAOYSA-M` | `HNSDLXPSAYFUHK-UHFFFAOYSA-N` | docusate | Seit Lauf 3 über die englische Schreibweise 'Docusate' gefunden: PubChem liefert die freie Sulfonsäure (C20H38O7S), Wikidata erwartet das Natrium-Anion. Gleicher Wirkstoff, kein falscher Stoff. |
-
 ## Gelb nach Art
 
 | Art | Zahl |
 |---|---:|
-| Quelle/Referenz | 3 |
+| Quelle/Referenz | 9 |
 | Tautomer | 3 |
 | E/Z fehlt | 2 |
 
@@ -79,26 +45,32 @@ Nicht aufgelöst nach Sprache der Eingabe: de 7 · en 1
 
 | Eingabe | Grund |
 |---|---|
+| Docusat | Referenz unsicher, abweichend (salz): HNSDLXPSAYFUHK-UHFFFAOYSA-N statt APSBXTVYXVQYAB-UHFFFAOYSA-M |
 | doxycycline | Tautomer der Referenz: SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N |
 | Doxycyclin | Tautomer der Referenz: SGKRLCUYIXIAHR-AKNGSSGZSA-N statt JBIWCJUYHHGXTC-AKNGSSGZSA-N |
+| Hydroxycobalamin | Referenz unsicher, abweichend (skelett): DQOCFCZRZOAIBN-WZHZPDAFSA-L statt YOZNUFWCRFCGIH-WZHZPDAFSA-K |
+| nitroprusside | bekannte Luecke, weiterhin unauffindbar |
+| Nitroprussid | bekannte Luecke, weiterhin unauffindbar |
 | paritaprevir | Referenz unsicher, abweichend (stereo): UAUIUKWPKRJZJV-QPLHLKROSA-N statt UAUIUKWPKRJZJV-MDJGTQRPSA-N |
+| Povidon-Iod | bekannte Luecke, weiterhin unauffindbar |
 | rifabutin | Tautomer der Referenz: AZFBLLCNOQPJGJ-VXTBVIBXSA-N statt ATEBXHFBFRCZMA-VXTBVIBXSA-N |
 | sulfasalazine | E/Z der Referenz fehlt: NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N |
 | Sulfasalazin | E/Z der Referenz fehlt: NCEXYHBECQHGNR-UHFFFAOYSA-N statt NCEXYHBECQHGNR-QZQOTICOSA-N |
 | vinblastine | Referenz unsicher, abweichend (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N |
 | Vinblastin | Referenz unsicher, abweichend (stereo): JXLYSJRDGCGARV-CFWMRBGOSA-N statt JXLYSJRDGCGARV-XQKSVPLYSA-N |
+| cyanocobalamin | Referenz unsicher, abweichend (skelett): RMRCNWBMXRMIRW-WZHZPDAFSA-L statt FDJOLVPMNUYSCM-UVKKECPRSA-L |
 
 ## Langsamste Eingaben
 
 | Eingabe | Sekunden | Status |
 |---|---:|---|
-| 4-Aminosalicylsäure | 12.0 | gruen |
-| Pantothensäure | 11.0 | gruen |
-| Levofolinsäure | 9.6 | gruen |
-| Amidotrizoesäure | 9.5 | gruen |
-| Ethylendiamintetraessigsäure | 9.4 | rot |
-| meso-Dimercaptobernsteinsäure | 8.6 | gruen |
-| Zoledronsäure | 8.6 | gruen |
-| Glycolsäure | 8.6 | gruen |
-| γ-Aminobuttersäure | 8.5 | gruen |
-| Acrylsäure | 8.5 | gruen |
+| Ethylendiamintetraessigsäure | 10.4 | gruen |
+| meso-Dimercaptobernsteinsäure | 10.2 | gruen |
+| Malonsäure | 9.9 | gruen |
+| Pantothensäure | 9.5 | gruen |
+| Maleinsäure | 9.4 | gruen |
+| 4-Aminosalicylsäure | 9.3 | gruen |
+| Glycolsäure | 9.3 | gruen |
+| Metamizol (freie Säure) | 9.2 | gruen |
+| Acrylsäure | 9.2 | gruen |
+| Zoledronsäure | 9.1 | gruen |

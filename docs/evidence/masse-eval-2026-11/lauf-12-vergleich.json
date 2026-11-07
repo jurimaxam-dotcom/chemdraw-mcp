@@ -1,0 +1,3892 @@
+{
+  "lauf": 12,
+  "start_commit": "112021f9a74603ed7122e826e9688f3969439e70",
+  "befehl": "uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json",
+  "log": "/tmp/chemdraw-identitaet-lauf-12.log",
+  "exitcode": 1,
+  "exitcode_bedeutung": "vollständig abgeschlossen; rot vorhanden",
+  "fixture_sha256": "4b213a0c332bd8e0214cb491bb27dee428750c72bc9a8da80707d4436d1ee4c3",
+  "lauf_11_sha256": "095e0111a57f5086dec47de13ab6ee02ed374dfb601508bdfdcfeb1a4caced8c",
+  "lauf_12_sha256": "f1d068e9957bb8383afde3d4b0fb8c6de2b9e3cf38f56f86864430c34003707d",
+  "anzahl": 711,
+  "vorher": {
+    "gruen": 675,
+    "rot": 28,
+    "gelb": 8
+  },
+  "nachher": {
+    "gruen": 683,
+    "rot": 14,
+    "gelb": 14
+  },
+  "gelb_art": {
+    "salz": 1,
+    "tautomer": 3,
+    "skelett": 2,
+    "quelle_referenz": 3,
+    "stereo": 3,
+    "ez_fehlt": 2
+  },
+  "uebergaenge": {
+    "gruen→gruen": 675,
+    "rot→rot": 14,
+    "rot→gruen": 8,
+    "rot→gelb": 6,
+    "gelb→gelb": 8
+  },
+  "fehlende_eingaben": [],
+  "zusaetzliche_eingaben": [],
+  "gruen_zu_anders": [],
+  "semantische_aenderungen": [
+    {
+      "eingabe": "Prussian blue",
+      "felder": [
+        "art",
+        "erhalten",
+        "erwartet",
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "skelett",
+        "erhalten": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "text": "falscher Stoff (skelett): DCYOBGZUOMKFPA-UHFFFAOYSA-N statt DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+        "eingabe": "Prussian blue",
+        "erwartet": "DNMNDNSFJMUUFM-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "eingabe": "Prussian blue",
+        "erwartet": "DCYOBGZUOMKFPA-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Berliner Blau",
+      "felder": [
+        "art",
+        "erhalten",
+        "erwartet",
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "skelett",
+        "erhalten": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "text": "falscher Stoff (skelett): DCYOBGZUOMKFPA-UHFFFAOYSA-N statt DNMNDNSFJMUUFM-UHFFFAOYSA-N",
+        "eingabe": "Berliner Blau",
+        "erwartet": "DNMNDNSFJMUUFM-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "DCYOBGZUOMKFPA-UHFFFAOYSA-N",
+        "eingabe": "Berliner Blau",
+        "erwartet": "DCYOBGZUOMKFPA-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Cefixim Anhydrat",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Cefixim Anhydrat",
+        "erwartet": "OKBVVJOGVLARMR-QSWIMTSFSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "OKBVVJOGVLARMR-QSWIMTSFSA-N",
+        "eingabe": "Cefixim Anhydrat",
+        "erwartet": "OKBVVJOGVLARMR-QSWIMTSFSA-N"
+      }
+    },
+    {
+      "eingabe": "Docusat",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "salz",
+        "erhalten": "HNSDLXPSAYFUHK-UHFFFAOYSA-N",
+        "text": "falscher Stoff (salz): HNSDLXPSAYFUHK-UHFFFAOYSA-N statt APSBXTVYXVQYAB-UHFFFAOYSA-M",
+        "eingabe": "Docusat",
+        "erwartet": "APSBXTVYXVQYAB-UHFFFAOYSA-M"
+      },
+      "nachher": {
+        "status": "gelb",
+        "art": "salz",
+        "erhalten": "HNSDLXPSAYFUHK-UHFFFAOYSA-N",
+        "text": "Referenz unsicher, abweichend (salz): HNSDLXPSAYFUHK-UHFFFAOYSA-N statt APSBXTVYXVQYAB-UHFFFAOYSA-M",
+        "eingabe": "Docusat",
+        "erwartet": "APSBXTVYXVQYAB-UHFFFAOYSA-M"
+      }
+    },
+    {
+      "eingabe": "Hydroxycobalamin",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "skelett",
+        "erhalten": "DQOCFCZRZOAIBN-WZHZPDAFSA-L",
+        "text": "falscher Stoff (skelett): DQOCFCZRZOAIBN-WZHZPDAFSA-L statt YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+        "eingabe": "Hydroxycobalamin",
+        "erwartet": "YOZNUFWCRFCGIH-WZHZPDAFSA-K"
+      },
+      "nachher": {
+        "status": "gelb",
+        "art": "skelett",
+        "erhalten": "DQOCFCZRZOAIBN-WZHZPDAFSA-L",
+        "text": "Referenz unsicher, abweichend (skelett): DQOCFCZRZOAIBN-WZHZPDAFSA-L statt YOZNUFWCRFCGIH-WZHZPDAFSA-K",
+        "eingabe": "Hydroxycobalamin",
+        "erwartet": "YOZNUFWCRFCGIH-WZHZPDAFSA-K"
+      }
+    },
+    {
+      "eingabe": "β-lactulose",
+      "felder": [
+        "art",
+        "erhalten",
+        "erwartet",
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "skelett",
+        "erhalten": "NBGXQZRRLOGAJF-FCVZTGTOSA-N",
+        "text": "falscher Stoff (skelett): NBGXQZRRLOGAJF-FCVZTGTOSA-N statt JCQLYHFGKNRPGE-FCVZTGTOSA-N",
+        "eingabe": "β-lactulose",
+        "erwartet": "JCQLYHFGKNRPGE-FCVZTGTOSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "NBGXQZRRLOGAJF-FCVZTGTOSA-N",
+        "eingabe": "β-lactulose",
+        "erwartet": "NBGXQZRRLOGAJF-FCVZTGTOSA-N"
+      }
+    },
+    {
+      "eingabe": "N-Methylglucaminantimonat",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "N-Methylglucaminantimonat",
+        "erwartet": "XOGYVDXPYVPAAQ-SESJOKTNSA-M"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "XOGYVDXPYVPAAQ-SESJOKTNSA-M",
+        "eingabe": "N-Methylglucaminantimonat",
+        "erwartet": "XOGYVDXPYVPAAQ-SESJOKTNSA-M"
+      }
+    },
+    {
+      "eingabe": "nitroprusside",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "nitroprusside",
+        "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gelb",
+        "text": "bekannte Luecke, weiterhin unauffindbar",
+        "eingabe": "nitroprusside",
+        "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Nitroprussid",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Nitroprussid",
+        "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gelb",
+        "text": "bekannte Luecke, weiterhin unauffindbar",
+        "eingabe": "Nitroprussid",
+        "erwartet": "ASPOIVQEUUCDQT-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Povidon-Iod",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Povidon-Iod",
+        "erwartet": "CPKVUHPKYQGHMW-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gelb",
+        "text": "bekannte Luecke, weiterhin unauffindbar",
+        "eingabe": "Povidon-Iod",
+        "erwartet": "CPKVUHPKYQGHMW-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Metamizol (freie Säure)",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Metamizol (freie Säure)",
+        "erwartet": "LVWZTYCIRDMTEY-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "LVWZTYCIRDMTEY-UHFFFAOYSA-N",
+        "eingabe": "Metamizol (freie Säure)",
+        "erwartet": "LVWZTYCIRDMTEY-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Citral A+B",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Citral A+B",
+        "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+        "eingabe": "Citral A+B",
+        "erwartet": "WTEVQBCEXWBHNA-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "Ethylendiamintetraessigsäure",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "text": "nicht aufloesbar (not_found)",
+        "eingabe": "Ethylendiamintetraessigsäure",
+        "erwartet": "KCXVZYZYPLLWCC-UHFFFAOYSA-N"
+      },
+      "nachher": {
+        "status": "gruen",
+        "text": "KCXVZYZYPLLWCC-UHFFFAOYSA-N",
+        "eingabe": "Ethylendiamintetraessigsäure",
+        "erwartet": "KCXVZYZYPLLWCC-UHFFFAOYSA-N"
+      }
+    },
+    {
+      "eingabe": "cyanocobalamin",
+      "felder": [
+        "status",
+        "text"
+      ],
+      "vorher": {
+        "status": "rot",
+        "art": "skelett",
+        "erhalten": "RMRCNWBMXRMIRW-WZHZPDAFSA-L",
+        "text": "falscher Stoff (skelett): RMRCNWBMXRMIRW-WZHZPDAFSA-L statt FDJOLVPMNUYSCM-UVKKECPRSA-L",
+        "eingabe": "cyanocobalamin",
+        "erwartet": "FDJOLVPMNUYSCM-UVKKECPRSA-L"
+      },
+      "nachher": {
+        "status": "gelb",
+        "art": "skelett",
+        "erhalten": "RMRCNWBMXRMIRW-WZHZPDAFSA-L",
+        "text": "Referenz unsicher, abweichend (skelett): RMRCNWBMXRMIRW-WZHZPDAFSA-L statt FDJOLVPMNUYSCM-UVKKECPRSA-L",
+        "eingabe": "cyanocobalamin",
+        "erwartet": "FDJOLVPMNUYSCM-UVKKECPRSA-L"
+      }
+    }
+  ],
+  "laufzeiten_separat": [
+    {
+      "eingabe": "L-Asparagine",
+      "vorher": 1.03,
+      "nachher": 1.19
+    },
+    {
+      "eingabe": "L-Asparagin",
+      "vorher": 1.04,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "L-alanine",
+      "vorher": 0.61,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "Alanin",
+      "vorher": 0.57,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "L-glutamine",
+      "vorher": 1.31,
+      "nachher": 0.32
+    },
+    {
+      "eingabe": "L-Glutamin",
+      "vorher": 0.8,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "L-isoleucine",
+      "vorher": 0.83,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "L-Isoleucin",
+      "vorher": 1.44,
+      "nachher": 0.47
+    },
+    {
+      "eingabe": "L-leucine",
+      "vorher": 0.84,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Leucin",
+      "vorher": 1.08,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "L-lysine",
+      "vorher": 0.75,
+      "nachher": 0.85
+    },
+    {
+      "eingabe": "L-serine",
+      "vorher": 0.83,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "L-Serin",
+      "vorher": 0.65,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "L-threonine",
+      "vorher": 0.74,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Threonin",
+      "vorher": 0.83,
+      "nachher": 0.36
+    },
+    {
+      "eingabe": "L-tyrosine",
+      "vorher": 0.69,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "L-Tyrosin",
+      "vorher": 0.76,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "L-valine",
+      "vorher": 0.8,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "L-Valin",
+      "vorher": 0.88,
+      "nachher": 0.42
+    },
+    {
+      "eingabe": "arginine",
+      "vorher": 0.57,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "L-arginine",
+      "vorher": 0.69,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "L-Arginin",
+      "vorher": 0.71,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "aspartic acid",
+      "vorher": 1.02,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "L-aspartic acid",
+      "vorher": 0.45,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Asparaginsäure",
+      "vorher": 1.28,
+      "nachher": 1.35
+    },
+    {
+      "eingabe": "glutamic acid",
+      "vorher": 0.46,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "L-glutamic acid",
+      "vorher": 0.61,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "L-Glutaminsäure",
+      "vorher": 1.34,
+      "nachher": 1.22
+    },
+    {
+      "eingabe": "glycine",
+      "vorher": 0.73,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Glycin",
+      "vorher": 1.36,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "histidine",
+      "vorher": 0.63,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "L-histidine",
+      "vorher": 0.66,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "L-Histidin",
+      "vorher": 0.68,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "methionine",
+      "vorher": 0.73,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "L-methionine",
+      "vorher": 0.43,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "L-Methionin",
+      "vorher": 0.33,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "phenylalanine",
+      "vorher": 0.76,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "Phenylalanin",
+      "vorher": 0.77,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "proline",
+      "vorher": 0.68,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "L-proline",
+      "vorher": 1.0,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "L-Prolin",
+      "vorher": 0.6,
+      "nachher": 0.97
+    },
+    {
+      "eingabe": "tryptophan",
+      "vorher": 0.88,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "(E)-phytonadione",
+      "vorher": 1.41,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "Phyllochinon",
+      "vorher": 1.31,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "(RS)-cyclophosphamide",
+      "vorher": 1.17,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "(RS)-Cyclophosphamid",
+      "vorher": 5.23,
+      "nachher": 5.02
+    },
+    {
+      "eingabe": "(RS)-metoprolol",
+      "vorher": 1.36,
+      "nachher": 1.23
+    },
+    {
+      "eingabe": "4-aminosalicylic acid",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "4-Aminosalicylsäure",
+      "vorher": 12.03,
+      "nachher": 9.31
+    },
+    {
+      "eingabe": "D-(-)-mannitol",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "Mannit",
+      "vorher": 2.9,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "L-folinic acid",
+      "vorher": 0.62,
+      "nachher": 1.09
+    },
+    {
+      "eingabe": "Levofolinsäure",
+      "vorher": 9.57,
+      "nachher": 9.13
+    },
+    {
+      "eingabe": "L-scopolamine",
+      "vorher": 1.15,
+      "nachher": 0.77
+    },
+    {
+      "eingabe": "L-Scopolamin",
+      "vorher": 4.86,
+      "nachher": 5.28
+    },
+    {
+      "eingabe": "N-acetyl-L-cysteine",
+      "vorher": 0.01,
+      "nachher": 0.01
+    },
+    {
+      "eingabe": "Acetylcystein",
+      "vorher": 0.66,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Prussian blue",
+      "vorher": 1.56,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "Berliner Blau",
+      "vorher": 0.75,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "abacavir",
+      "vorher": 0.74,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "acetazolamide",
+      "vorher": 0.45,
+      "nachher": 1.25
+    },
+    {
+      "eingabe": "Acetazolamid",
+      "vorher": 1.56,
+      "nachher": 0.92
+    },
+    {
+      "eingabe": "acetic acid",
+      "vorher": 0.74,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "Essigsäure",
+      "vorher": 1.27,
+      "nachher": 0.91
+    },
+    {
+      "eingabe": "aciclovir",
+      "vorher": 0.55,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "albendazole",
+      "vorher": 0.61,
+      "nachher": 0.36
+    },
+    {
+      "eingabe": "albendazol",
+      "vorher": 0.66,
+      "nachher": 0.47
+    },
+    {
+      "eingabe": "alcuronium chloride",
+      "vorher": 0.72,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Alcuroniumchlorid",
+      "vorher": 4.92,
+      "nachher": 4.54
+    },
+    {
+      "eingabe": "allopurinol",
+      "vorher": 0.71,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "alprostadil",
+      "vorher": 0.74,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Prostaglandin E1",
+      "vorher": 1.06,
+      "nachher": 0.99
+    },
+    {
+      "eingabe": "amikacin",
+      "vorher": 0.96,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "amiloride",
+      "vorher": 0.77,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Amilorid",
+      "vorher": 4.88,
+      "nachher": 4.69
+    },
+    {
+      "eingabe": "amiodarone",
+      "vorher": 0.77,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Amiodaron",
+      "vorher": 5.95,
+      "nachher": 4.67
+    },
+    {
+      "eingabe": "amitriptyline",
+      "vorher": 0.61,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Amitriptylin",
+      "vorher": 1.22,
+      "nachher": 1.13
+    },
+    {
+      "eingabe": "amodiaquine",
+      "vorher": 0.6,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Amodiaquin",
+      "vorher": 1.26,
+      "nachher": 0.8
+    },
+    {
+      "eingabe": "amoxicillin",
+      "vorher": 1.26,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "amphotericin B",
+      "vorher": 1.27,
+      "nachher": 1.43
+    },
+    {
+      "eingabe": "ampicillin",
+      "vorher": 1.14,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "anastrozole",
+      "vorher": 0.68,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "Anastrozol",
+      "vorher": 0.9,
+      "nachher": 1.02
+    },
+    {
+      "eingabe": "artemether",
+      "vorher": 0.4,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "artesunate",
+      "vorher": 0.53,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "Artesunat",
+      "vorher": 6.11,
+      "nachher": 4.85
+    },
+    {
+      "eingabe": "atazanavir",
+      "vorher": 0.57,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "atracurium besilate",
+      "vorher": 0.72,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "atracurium besylate",
+      "vorher": 0.75,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "Atracurium-Besilat",
+      "vorher": 5.02,
+      "nachher": 4.77
+    },
+    {
+      "eingabe": "azathioprine",
+      "vorher": 1.83,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Azathioprin",
+      "vorher": 1.31,
+      "nachher": 1.05
+    },
+    {
+      "eingabe": "azithromycin",
+      "vorher": 1.59,
+      "nachher": 0.95
+    },
+    {
+      "eingabe": "aztreonam",
+      "vorher": 2.37,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "beclomethasone dipropionate",
+      "vorher": 1.22,
+      "nachher": 0.31
+    },
+    {
+      "eingabe": "Beclometasondipropionat",
+      "vorher": 4.95,
+      "nachher": 4.47
+    },
+    {
+      "eingabe": "bedaquiline",
+      "vorher": 0.81,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Bedaquilin",
+      "vorher": 5.9,
+      "nachher": 4.81
+    },
+    {
+      "eingabe": "bendamustine",
+      "vorher": 0.75,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Bendamustin",
+      "vorher": 1.28,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "benzathine benzylpenicillin",
+      "vorher": 1.26,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Benzylpenicillin-Benzathin",
+      "vorher": 1.57,
+      "nachher": 1.08
+    },
+    {
+      "eingabe": "benznidazole",
+      "vorher": 0.65,
+      "nachher": 0.31
+    },
+    {
+      "eingabe": "Benznidazol",
+      "vorher": 0.61,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "benzoyl peroxide",
+      "vorher": 0.85,
+      "nachher": 0.4
+    },
+    {
+      "eingabe": "Dibenzoylperoxid",
+      "vorher": 0.73,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "benzyl benzoate",
+      "vorher": 0.74,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "Benzoesäurebenzylester",
+      "vorher": 1.11,
+      "nachher": 1.21
+    },
+    {
+      "eingabe": "benzylpenicillin",
+      "vorher": 1.3,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "betamethasone",
+      "vorher": 1.06,
+      "nachher": 0.35
+    },
+    {
+      "eingabe": "Betamethason",
+      "vorher": 4.78,
+      "nachher": 4.64
+    },
+    {
+      "eingabe": "bicalutamide",
+      "vorher": 0.55,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Bicalutamid",
+      "vorher": 4.94,
+      "nachher": 4.57
+    },
+    {
+      "eingabe": "biperiden",
+      "vorher": 0.75,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "bisoprolol",
+      "vorher": 0.61,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "calcium",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "calcium gluconate",
+      "vorher": 0.67,
+      "nachher": 0.39
+    },
+    {
+      "eingabe": "Calciumgluconat",
+      "vorher": 5.94,
+      "nachher": 4.8
+    },
+    {
+      "eingabe": "capecitabine",
+      "vorher": 0.67,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Capecitabin",
+      "vorher": 0.76,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "carbamazepine",
+      "vorher": 0.56,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "carbamazepin",
+      "vorher": 0.92,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "cefazolin",
+      "vorher": 1.14,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "cefixime",
+      "vorher": 0.48,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Cefixim Anhydrat",
+      "vorher": 4.27,
+      "nachher": 5.74
+    },
+    {
+      "eingabe": "cefotaxime",
+      "vorher": 0.49,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Cefotaxim",
+      "vorher": 1.04,
+      "nachher": 0.96
+    },
+    {
+      "eingabe": "ceftazidime",
+      "vorher": 0.7,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "Ceftazidim",
+      "vorher": 4.94,
+      "nachher": 4.92
+    },
+    {
+      "eingabe": "ceftriaxone",
+      "vorher": 0.5,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Ceftriaxon",
+      "vorher": 1.26,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "cephalexin",
+      "vorher": 1.28,
+      "nachher": 1.05
+    },
+    {
+      "eingabe": "Cefalexin",
+      "vorher": 1.09,
+      "nachher": 1.06
+    },
+    {
+      "eingabe": "chlorambucil",
+      "vorher": 0.73,
+      "nachher": 0.41
+    },
+    {
+      "eingabe": "chloramphenicol",
+      "vorher": 0.69,
+      "nachher": 0.29
+    },
+    {
+      "eingabe": "chlorhexidine",
+      "vorher": 0.73,
+      "nachher": 0.46
+    },
+    {
+      "eingabe": "Chlorhexidin",
+      "vorher": 1.54,
+      "nachher": 1.2
+    },
+    {
+      "eingabe": "chloroquine",
+      "vorher": 0.55,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Chloroquin",
+      "vorher": 1.26,
+      "nachher": 1.04
+    },
+    {
+      "eingabe": "chloroxylenol",
+      "vorher": 0.55,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "Chlorxylenol",
+      "vorher": 0.6,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "chlorpromazine",
+      "vorher": 1.26,
+      "nachher": 1.12
+    },
+    {
+      "eingabe": "Chlorpromazin",
+      "vorher": 1.78,
+      "nachher": 1.03
+    },
+    {
+      "eingabe": "ciclosporin",
+      "vorher": 1.34,
+      "nachher": 1.15
+    },
+    {
+      "eingabe": "cyclosporine",
+      "vorher": 0.95,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "ciprofloxacin",
+      "vorher": 1.34,
+      "nachher": 0.83
+    },
+    {
+      "eingabe": "clarithromycin",
+      "vorher": 1.97,
+      "nachher": 1.0
+    },
+    {
+      "eingabe": "clindamycin",
+      "vorher": 1.35,
+      "nachher": 1.28
+    },
+    {
+      "eingabe": "clofazimine",
+      "vorher": 0.48,
+      "nachher": 0.3
+    },
+    {
+      "eingabe": "Clofazimin",
+      "vorher": 5.39,
+      "nachher": 5.27
+    },
+    {
+      "eingabe": "clomifene",
+      "vorher": 0.66,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "Clomifen",
+      "vorher": 0.68,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "clomipramine",
+      "vorher": 0.58,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Clomipramin",
+      "vorher": 6.59,
+      "nachher": 4.57
+    },
+    {
+      "eingabe": "clotrimazole",
+      "vorher": 0.69,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Clotrimazol",
+      "vorher": 0.56,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "cloxacillin",
+      "vorher": 1.26,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "clozapine",
+      "vorher": 0.73,
+      "nachher": 0.41
+    },
+    {
+      "eingabe": "Clozapin",
+      "vorher": 1.84,
+      "nachher": 1.08
+    },
+    {
+      "eingabe": "codeine",
+      "vorher": 0.43,
+      "nachher": 0.4
+    },
+    {
+      "eingabe": "Codein",
+      "vorher": 0.61,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "colecalciferol",
+      "vorher": 0.73,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "cholecalciferol",
+      "vorher": 0.73,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "cyclizine",
+      "vorher": 0.68,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Cyclizin",
+      "vorher": 4.94,
+      "nachher": 4.85
+    },
+    {
+      "eingabe": "cycloserine",
+      "vorher": 0.71,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "Cycloserin",
+      "vorher": 1.75,
+      "nachher": 1.0
+    },
+    {
+      "eingabe": "cytarabine",
+      "vorher": 0.74,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Cytarabin",
+      "vorher": 1.54,
+      "nachher": 1.06
+    },
+    {
+      "eingabe": "dacarbazine",
+      "vorher": 0.62,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Dacarbazin",
+      "vorher": 6.89,
+      "nachher": 4.79
+    },
+    {
+      "eingabe": "daclatasvir",
+      "vorher": 0.75,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "dactinomycin",
+      "vorher": 1.37,
+      "nachher": 0.87
+    },
+    {
+      "eingabe": "Actinomycin D",
+      "vorher": 1.74,
+      "nachher": 0.97
+    },
+    {
+      "eingabe": "dapsone",
+      "vorher": 1.1,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Dapson",
+      "vorher": 1.43,
+      "nachher": 0.99
+    },
+    {
+      "eingabe": "darunavir",
+      "vorher": 1.32,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "dasabuvir",
+      "vorher": 0.53,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "dasatinib",
+      "vorher": 0.59,
+      "nachher": 0.35
+    },
+    {
+      "eingabe": "daunorubicin",
+      "vorher": 1.26,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "deferoxamine",
+      "vorher": 0.69,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Deferoxamin",
+      "vorher": 1.1,
+      "nachher": 1.04
+    },
+    {
+      "eingabe": "delamanid",
+      "vorher": 1.1,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "desmopressin",
+      "vorher": 1.18,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "dexamethasone",
+      "vorher": 0.48,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "Dexamethason",
+      "vorher": 4.81,
+      "nachher": 5.13
+    },
+    {
+      "eingabe": "diatrizoic acid",
+      "vorher": 0.61,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Amidotrizoesäure",
+      "vorher": 9.52,
+      "nachher": 8.87
+    },
+    {
+      "eingabe": "diazepam",
+      "vorher": 0.88,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "didanosine",
+      "vorher": 0.75,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Didanosin",
+      "vorher": 6.92,
+      "nachher": 4.52
+    },
+    {
+      "eingabe": "diethylcarbamazine",
+      "vorher": 0.67,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Diethylcarbamazin",
+      "vorher": 5.23,
+      "nachher": 5.6
+    },
+    {
+      "eingabe": "digoxin",
+      "vorher": 1.49,
+      "nachher": 1.03
+    },
+    {
+      "eingabe": "diloxanide furoate",
+      "vorher": 0.71,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Diloxanidfuroat",
+      "vorher": 4.99,
+      "nachher": 4.61
+    },
+    {
+      "eingabe": "dimercaprol",
+      "vorher": 0.66,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "dinoprostone",
+      "vorher": 1.06,
+      "nachher": 0.4
+    },
+    {
+      "eingabe": "prostaglandin E2",
+      "vorher": 2.04,
+      "nachher": 1.18
+    },
+    {
+      "eingabe": "docetaxel",
+      "vorher": 0.73,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "docusate sodium",
+      "vorher": 0.71,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Docusat",
+      "vorher": 4.98,
+      "nachher": 4.56
+    },
+    {
+      "eingabe": "dolutegravir",
+      "vorher": 0.69,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "doxorubicin",
+      "vorher": 1.89,
+      "nachher": 0.98
+    },
+    {
+      "eingabe": "doxycycline",
+      "vorher": 0.98,
+      "nachher": 0.77
+    },
+    {
+      "eingabe": "Doxycyclin",
+      "vorher": 1.48,
+      "nachher": 1.04
+    },
+    {
+      "eingabe": "efavirenz",
+      "vorher": 0.71,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "emtricitabine",
+      "vorher": 0.75,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Emtricitabin",
+      "vorher": 5.1,
+      "nachher": 5.91
+    },
+    {
+      "eingabe": "enalapril",
+      "vorher": 1.08,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "entecavir",
+      "vorher": 0.73,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "ephedrine",
+      "vorher": 0.5,
+      "nachher": 0.37
+    },
+    {
+      "eingabe": "(−)-ephedrine",
+      "vorher": 1.18,
+      "nachher": 0.94
+    },
+    {
+      "eingabe": "(−)-Ephedrin",
+      "vorher": 1.71,
+      "nachher": 1.07
+    },
+    {
+      "eingabe": "ergocalciferol",
+      "vorher": 0.74,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "ergometrine",
+      "vorher": 1.23,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Ergometrin",
+      "vorher": 1.71,
+      "nachher": 0.85
+    },
+    {
+      "eingabe": "erythromycin",
+      "vorher": 1.32,
+      "nachher": 0.97
+    },
+    {
+      "eingabe": "ethambutol",
+      "vorher": 0.42,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "ethionamide",
+      "vorher": 0.62,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "Ethionamid",
+      "vorher": 5.21,
+      "nachher": 4.77
+    },
+    {
+      "eingabe": "ethosuximide",
+      "vorher": 0.74,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Ethosuximid",
+      "vorher": 5.22,
+      "nachher": 4.4
+    },
+    {
+      "eingabe": "etoposide",
+      "vorher": 0.7,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Etoposid",
+      "vorher": 5.33,
+      "nachher": 4.65
+    },
+    {
+      "eingabe": "fentanyl",
+      "vorher": 0.74,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "fluconazole",
+      "vorher": 0.74,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Fluconazol",
+      "vorher": 0.74,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "flucytosine",
+      "vorher": 1.17,
+      "nachher": 0.32
+    },
+    {
+      "eingabe": "5-fluorocytosine",
+      "vorher": 0.01,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "5-Fluorcytosin",
+      "vorher": 4.96,
+      "nachher": 4.89
+    },
+    {
+      "eingabe": "fludarabine phosphate",
+      "vorher": 0.65,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Fludarabin-Phosphat",
+      "vorher": 4.95,
+      "nachher": 4.9
+    },
+    {
+      "eingabe": "fludrocortisone",
+      "vorher": 0.78,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Fludrocortison",
+      "vorher": 4.74,
+      "nachher": 6.32
+    },
+    {
+      "eingabe": "fluorouracil",
+      "vorher": 1.06,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "5-Fluoruracil",
+      "vorher": 0.62,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "fluoxetine",
+      "vorher": 1.07,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "Fluoxetin",
+      "vorher": 1.35,
+      "nachher": 1.4
+    },
+    {
+      "eingabe": "fluphenazine",
+      "vorher": 0.48,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "Fluphenazin",
+      "vorher": 1.25,
+      "nachher": 1.33
+    },
+    {
+      "eingabe": "folic acid",
+      "vorher": 0.58,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Folsäure",
+      "vorher": 1.16,
+      "nachher": 1.16
+    },
+    {
+      "eingabe": "fomepizole",
+      "vorher": 0.73,
+      "nachher": 0.4
+    },
+    {
+      "eingabe": "Fomepizol",
+      "vorher": 0.46,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "furosemide",
+      "vorher": 0.51,
+      "nachher": 1.14
+    },
+    {
+      "eingabe": "Furosemid",
+      "vorher": 1.25,
+      "nachher": 1.44
+    },
+    {
+      "eingabe": "gemcitabine",
+      "vorher": 1.23,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Gemcitabin",
+      "vorher": 4.82,
+      "nachher": 5.16
+    },
+    {
+      "eingabe": "glibenclamide",
+      "vorher": 1.38,
+      "nachher": 0.68
+    },
+    {
+      "eingabe": "glyburide",
+      "vorher": 0.74,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Glibenclamid",
+      "vorher": 5.07,
+      "nachher": 4.95
+    },
+    {
+      "eingabe": "gliclazide",
+      "vorher": 1.03,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "gliclazid",
+      "vorher": 4.89,
+      "nachher": 4.93
+    },
+    {
+      "eingabe": "glutaral",
+      "vorher": 0.68,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Glutaraldehyd",
+      "vorher": 0.44,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "griseofulvin",
+      "vorher": 1.67,
+      "nachher": 1.35
+    },
+    {
+      "eingabe": "haloperidol",
+      "vorher": 0.61,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "halothane",
+      "vorher": 0.82,
+      "nachher": 1.25
+    },
+    {
+      "eingabe": "Halothan",
+      "vorher": 0.61,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "hydralazine",
+      "vorher": 0.5,
+      "nachher": 0.8
+    },
+    {
+      "eingabe": "Hydralazin",
+      "vorher": 0.93,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "hydrochlorothiazide",
+      "vorher": 0.36,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Hydrochlorothiazid",
+      "vorher": 1.05,
+      "nachher": 1.75
+    },
+    {
+      "eingabe": "hydrocortisone",
+      "vorher": 1.15,
+      "nachher": 0.77
+    },
+    {
+      "eingabe": "cortisol",
+      "vorher": 0.48,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "hydroxocobalamin",
+      "vorher": 1.3,
+      "nachher": 1.35
+    },
+    {
+      "eingabe": "Hydroxycobalamin",
+      "vorher": 2.71,
+      "nachher": 3.61
+    },
+    {
+      "eingabe": "hydroxycarbamide",
+      "vorher": 0.57,
+      "nachher": 1.48
+    },
+    {
+      "eingabe": "Hydroxyharnstoff",
+      "vorher": 1.02,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "hydroxychloroquine",
+      "vorher": 0.7,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "Hydroxychloroquin",
+      "vorher": 4.91,
+      "nachher": 4.96
+    },
+    {
+      "eingabe": "ifosfamide",
+      "vorher": 0.53,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "Ifosfamid",
+      "vorher": 1.39,
+      "nachher": 1.66
+    },
+    {
+      "eingabe": "imatinib",
+      "vorher": 0.93,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "indinavir",
+      "vorher": 0.67,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "iohexol",
+      "vorher": 0.61,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "iotroxic acid",
+      "vorher": 0.77,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "Iotroxinsäure",
+      "vorher": 1.42,
+      "nachher": 1.1
+    },
+    {
+      "eingabe": "irinotecan",
+      "vorher": 1.12,
+      "nachher": 1.19
+    },
+    {
+      "eingabe": "isoflurane",
+      "vorher": 0.6,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "Isofluran",
+      "vorher": 5.88,
+      "nachher": 5.14
+    },
+    {
+      "eingabe": "isosorbide dinitrate",
+      "vorher": 0.97,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Isosorbiddinitrat",
+      "vorher": 1.29,
+      "nachher": 1.28
+    },
+    {
+      "eingabe": "kanamycin A",
+      "vorher": 0.88,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "ketamine",
+      "vorher": 0.51,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "(RS)-ketamine",
+      "vorher": 4.08,
+      "nachher": 4.94
+    },
+    {
+      "eingabe": "(RS)-Ketamin",
+      "vorher": 4.23,
+      "nachher": 4.94
+    },
+    {
+      "eingabe": "lactulose",
+      "vorher": 0.57,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "β-lactulose",
+      "vorher": 4.55,
+      "nachher": 5.64
+    },
+    {
+      "eingabe": "lamivudine",
+      "vorher": 0.47,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Lamivudin",
+      "vorher": 0.55,
+      "nachher": 1.38
+    },
+    {
+      "eingabe": "lamotrigine",
+      "vorher": 0.55,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Lamotrigin",
+      "vorher": 4.41,
+      "nachher": 4.93
+    },
+    {
+      "eingabe": "latanoprost",
+      "vorher": 0.49,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "ledipasvir",
+      "vorher": 0.66,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "leuprorelin",
+      "vorher": 1.21,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "leuprolide",
+      "vorher": 0.26,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "levamisole",
+      "vorher": 0.57,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Levamisol",
+      "vorher": 0.47,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "levofloxacin",
+      "vorher": 0.89,
+      "nachher": 1.39
+    },
+    {
+      "eingabe": "levonorgestrel",
+      "vorher": 0.28,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "lidocaine",
+      "vorher": 0.27,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "Lidocain",
+      "vorher": 0.87,
+      "nachher": 1.69
+    },
+    {
+      "eingabe": "linezolid",
+      "vorher": 1.12,
+      "nachher": 1.88
+    },
+    {
+      "eingabe": "loperamide",
+      "vorher": 0.47,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Loperamid",
+      "vorher": 4.52,
+      "nachher": 5.77
+    },
+    {
+      "eingabe": "lopinavir",
+      "vorher": 0.53,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "loratadine",
+      "vorher": 0.58,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Loratadin",
+      "vorher": 4.32,
+      "nachher": 4.98
+    },
+    {
+      "eingabe": "lorazepam",
+      "vorher": 0.47,
+      "nachher": 0.91
+    },
+    {
+      "eingabe": "losartan",
+      "vorher": 0.9,
+      "nachher": 2.08
+    },
+    {
+      "eingabe": "mebendazole",
+      "vorher": 0.58,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "Mebendazol",
+      "vorher": 0.27,
+      "nachher": 0.82
+    },
+    {
+      "eingabe": "medroxyprogesterone acetate",
+      "vorher": 0.36,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Medroxyprogesteronacetat",
+      "vorher": 5.66,
+      "nachher": 5.42
+    },
+    {
+      "eingabe": "mefloquine",
+      "vorher": 0.5,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Mefloquin",
+      "vorher": 0.88,
+      "nachher": 1.37
+    },
+    {
+      "eingabe": "meglumine antimoniate",
+      "vorher": 0.6,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "N-Methylglucaminantimonat",
+      "vorher": 4.46,
+      "nachher": 6.04
+    },
+    {
+      "eingabe": "melarsoprol",
+      "vorher": 0.54,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "mercaptopurine",
+      "vorher": 0.41,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "Mercaptopurin",
+      "vorher": 0.55,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "meropenem",
+      "vorher": 0.46,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "mesna",
+      "vorher": 0.3,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "methadone",
+      "vorher": 0.45,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "(RS)-methadone",
+      "vorher": 7.64,
+      "nachher": 4.71
+    },
+    {
+      "eingabe": "(RS)-Methadon",
+      "vorher": 4.91,
+      "nachher": 6.18
+    },
+    {
+      "eingabe": "methotrexate",
+      "vorher": 0.45,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Methotrexat",
+      "vorher": 1.12,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "methyldopa",
+      "vorher": 0.55,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "methylprednisolone",
+      "vorher": 0.5,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Methylprednisolon",
+      "vorher": 1.54,
+      "nachher": 1.41
+    },
+    {
+      "eingabe": "methylthioninium chloride",
+      "vorher": 0.55,
+      "nachher": 1.02
+    },
+    {
+      "eingabe": "methylene blue",
+      "vorher": 0.37,
+      "nachher": 0.86
+    },
+    {
+      "eingabe": "Methylenblau",
+      "vorher": 0.64,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "metoclopramide",
+      "vorher": 0.39,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Metoclopramid",
+      "vorher": 5.66,
+      "nachher": 5.02
+    },
+    {
+      "eingabe": "metronidazole",
+      "vorher": 0.64,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Metronidazol",
+      "vorher": 0.59,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "midazolam",
+      "vorher": 0.43,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "mifepristone",
+      "vorher": 0.31,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Mifepriston",
+      "vorher": 1.2,
+      "nachher": 1.33
+    },
+    {
+      "eingabe": "miltefosine",
+      "vorher": 0.69,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "Miltefosin",
+      "vorher": 1.04,
+      "nachher": 1.14
+    },
+    {
+      "eingabe": "morphine",
+      "vorher": 0.46,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Morphin",
+      "vorher": 0.55,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "moxifloxacin",
+      "vorher": 1.1,
+      "nachher": 1.31
+    },
+    {
+      "eingabe": "mupirocin",
+      "vorher": 0.95,
+      "nachher": 1.25
+    },
+    {
+      "eingabe": "naloxone",
+      "vorher": 0.65,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Naloxon",
+      "vorher": 0.73,
+      "nachher": 1.28
+    },
+    {
+      "eingabe": "natamycin",
+      "vorher": 0.77,
+      "nachher": 1.43
+    },
+    {
+      "eingabe": "neostigmine",
+      "vorher": 0.56,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Neostigmin",
+      "vorher": 0.76,
+      "nachher": 1.23
+    },
+    {
+      "eingabe": "nevirapine",
+      "vorher": 0.38,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "Nevirapin",
+      "vorher": 4.23,
+      "nachher": 5.04
+    },
+    {
+      "eingabe": "nicotinamide",
+      "vorher": 0.46,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "niacinamide",
+      "vorher": 0.34,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "Nicotinamid",
+      "vorher": 0.53,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "nifedipine",
+      "vorher": 0.58,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Nifedipin",
+      "vorher": 4.57,
+      "nachher": 4.99
+    },
+    {
+      "eingabe": "nifurtimox",
+      "vorher": 0.61,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "nitrofurantoin",
+      "vorher": 0.91,
+      "nachher": 1.32
+    },
+    {
+      "eingabe": "nitroprusside",
+      "vorher": 3.95,
+      "nachher": 4.16
+    },
+    {
+      "eingabe": "Nitroprussid",
+      "vorher": 4.38,
+      "nachher": 5.86
+    },
+    {
+      "eingabe": "norethindrone enanthate",
+      "vorher": 0.66,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "omeprazole",
+      "vorher": 0.47,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Omeprazol",
+      "vorher": 0.28,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "oseltamivir",
+      "vorher": 0.55,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "oxamniquine",
+      "vorher": 0.63,
+      "nachher": 0.45
+    },
+    {
+      "eingabe": "Oxamniquin",
+      "vorher": 4.41,
+      "nachher": 5.13
+    },
+    {
+      "eingabe": "oxycodone",
+      "vorher": 0.37,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Oxycodon",
+      "vorher": 0.28,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "oxytocin",
+      "vorher": 0.73,
+      "nachher": 1.32
+    },
+    {
+      "eingabe": "paclitaxel",
+      "vorher": 0.29,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "paritaprevir",
+      "vorher": 0.47,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Paritaprevir, (2R,6S,12Z,13aR,14aR,16aS)-",
+      "vorher": 0.7,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "paromomycin",
+      "vorher": 0.76,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "penicillamine",
+      "vorher": 0.61,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "D-penicillamine",
+      "vorher": 0.33,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Penicillamin",
+      "vorher": 0.26,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "pentamidine",
+      "vorher": 1.87,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Pentamidin",
+      "vorher": 1.26,
+      "nachher": 1.48
+    },
+    {
+      "eingabe": "permethrin",
+      "vorher": 1.68,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "phenobarbital",
+      "vorher": 0.79,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "phenoxymethylpenicillin",
+      "vorher": 1.31,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "penicillin v",
+      "vorher": 1.7,
+      "nachher": 0.77
+    },
+    {
+      "eingabe": "phenytoin",
+      "vorher": 1.14,
+      "nachher": 1.32
+    },
+    {
+      "eingabe": "pilocarpine",
+      "vorher": 0.6,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "Pilocarpin",
+      "vorher": 0.8,
+      "nachher": 1.32
+    },
+    {
+      "eingabe": "podophyllin",
+      "vorher": 1.21,
+      "nachher": 1.16
+    },
+    {
+      "eingabe": "potassium chloride",
+      "vorher": 0.0,
+      "nachher": 0.01
+    },
+    {
+      "eingabe": "Kaliumchlorid",
+      "vorher": 0.0,
+      "nachher": 0.01
+    },
+    {
+      "eingabe": "povidone-iodine",
+      "vorher": 5.28,
+      "nachher": 4.21
+    },
+    {
+      "eingabe": "Povidon-Iod",
+      "vorher": 6.01,
+      "nachher": 4.95
+    },
+    {
+      "eingabe": "praziquantel",
+      "vorher": 1.14,
+      "nachher": 0.47
+    },
+    {
+      "eingabe": "prednisolone",
+      "vorher": 0.95,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "Prednisolon",
+      "vorher": 2.12,
+      "nachher": 1.14
+    },
+    {
+      "eingabe": "procarbazine",
+      "vorher": 0.72,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Procarbazin",
+      "vorher": 1.43,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "proguanil",
+      "vorher": 1.03,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "propofol",
+      "vorher": 0.53,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "propranolol",
+      "vorher": 0.65,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "pyrantel",
+      "vorher": 0.36,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "pyrazinamide",
+      "vorher": 0.65,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Pyrazinamid",
+      "vorher": 1.05,
+      "nachher": 0.77
+    },
+    {
+      "eingabe": "pyridostigmine",
+      "vorher": 1.08,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Pyridostigmin",
+      "vorher": 6.95,
+      "nachher": 4.96
+    },
+    {
+      "eingabe": "pyridoxine",
+      "vorher": 0.61,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "Pyridoxin",
+      "vorher": 0.41,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "pyrimethamine",
+      "vorher": 0.64,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Pyrimethamin",
+      "vorher": 1.26,
+      "nachher": 1.37
+    },
+    {
+      "eingabe": "quinine",
+      "vorher": 0.46,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Chinin",
+      "vorher": 1.11,
+      "nachher": 1.35
+    },
+    {
+      "eingabe": "raltegravir",
+      "vorher": 0.61,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "retinol",
+      "vorher": 0.66,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "ribavirin",
+      "vorher": 1.17,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "riboflavin",
+      "vorher": 1.32,
+      "nachher": 1.14
+    },
+    {
+      "eingabe": "rifabutin",
+      "vorher": 2.09,
+      "nachher": 2.31
+    },
+    {
+      "eingabe": "rifampicin",
+      "vorher": 0.96,
+      "nachher": 1.09
+    },
+    {
+      "eingabe": "rifapentine",
+      "vorher": 1.19,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "Rifapentin",
+      "vorher": 1.39,
+      "nachher": 1.24
+    },
+    {
+      "eingabe": "risperidone",
+      "vorher": 0.84,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Risperidon",
+      "vorher": 1.32,
+      "nachher": 1.33
+    },
+    {
+      "eingabe": "ritonavir",
+      "vorher": 1.18,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "salicylic acid",
+      "vorher": 0.38,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "saquinavir",
+      "vorher": 0.85,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "silver sulfadiazine",
+      "vorher": 0.74,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "Silbersulfadiazin",
+      "vorher": 4.94,
+      "nachher": 4.87
+    },
+    {
+      "eingabe": "simeprevir",
+      "vorher": 0.48,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "simvastatin",
+      "vorher": 1.02,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "sodium calcium edetate",
+      "vorher": 0.45,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "Calcium-dinatrium-ethylendiamintetraacetat",
+      "vorher": 0.52,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "sodium lactate",
+      "vorher": 0.7,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Natriumlactat",
+      "vorher": 5.12,
+      "nachher": 4.98
+    },
+    {
+      "eingabe": "sofosbuvir",
+      "vorher": 1.41,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "spectinomycin",
+      "vorher": 1.23,
+      "nachher": 1.38
+    },
+    {
+      "eingabe": "spironolactone",
+      "vorher": 0.84,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Spironolacton",
+      "vorher": 5.07,
+      "nachher": 5.47
+    },
+    {
+      "eingabe": "streptomycin",
+      "vorher": 1.33,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "succimer",
+      "vorher": 0.57,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "meso-Dimercaptobernsteinsäure",
+      "vorher": 8.61,
+      "nachher": 10.17
+    },
+    {
+      "eingabe": "sulfadiazine",
+      "vorher": 0.46,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Sulfadiazin",
+      "vorher": 0.83,
+      "nachher": 1.39
+    },
+    {
+      "eingabe": "sulfasalazine",
+      "vorher": 0.52,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Sulfasalazin",
+      "vorher": 0.94,
+      "nachher": 1.29
+    },
+    {
+      "eingabe": "suramin",
+      "vorher": 0.81,
+      "nachher": 1.25
+    },
+    {
+      "eingabe": "suxamethonium",
+      "vorher": 0.45,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "succinylcholine",
+      "vorher": 0.47,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "tenofovir",
+      "vorher": 0.31,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "tenofovir disoproxil",
+      "vorher": 0.5,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "terbinafine",
+      "vorher": 0.65,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Terbinafin",
+      "vorher": 0.82,
+      "nachher": 1.25
+    },
+    {
+      "eingabe": "tetracaine",
+      "vorher": 0.66,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Tetracain",
+      "vorher": 0.95,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "tetracycline",
+      "vorher": 0.63,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Tetracyclin",
+      "vorher": 1.19,
+      "nachher": 1.16
+    },
+    {
+      "eingabe": "thiamine(1+) ion",
+      "vorher": 0.75,
+      "nachher": 0.83
+    },
+    {
+      "eingabe": "Thiamin",
+      "vorher": 0.9,
+      "nachher": 1.43
+    },
+    {
+      "eingabe": "thiopental sodium",
+      "vorher": 0.54,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "sodium thiopental",
+      "vorher": 0.45,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Natriumthiopental",
+      "vorher": 4.61,
+      "nachher": 4.98
+    },
+    {
+      "eingabe": "timolol",
+      "vorher": 0.46,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "(S)-(−)-timolol",
+      "vorher": 4.78,
+      "nachher": 5.03
+    },
+    {
+      "eingabe": "tioguanine",
+      "vorher": 0.48,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "6-thioguanine",
+      "vorher": 0.0,
+      "nachher": 0.01
+    },
+    {
+      "eingabe": "6-Thioguanin",
+      "vorher": 0.01,
+      "nachher": 0.01
+    },
+    {
+      "eingabe": "tranexamic acid",
+      "vorher": 0.48,
+      "nachher": 0.81
+    },
+    {
+      "eingabe": "Tranexamsäure",
+      "vorher": 0.81,
+      "nachher": 1.16
+    },
+    {
+      "eingabe": "tretinoin",
+      "vorher": 0.59,
+      "nachher": 1.17
+    },
+    {
+      "eingabe": "triclabendazole",
+      "vorher": 0.58,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Triclabendazol",
+      "vorher": 0.47,
+      "nachher": 0.42
+    },
+    {
+      "eingabe": "trimethoprim",
+      "vorher": 0.98,
+      "nachher": 1.7
+    },
+    {
+      "eingabe": "tropicamide",
+      "vorher": 0.27,
+      "nachher": 1.06
+    },
+    {
+      "eingabe": "Tropicamid",
+      "vorher": 0.86,
+      "nachher": 1.03
+    },
+    {
+      "eingabe": "ulipristal",
+      "vorher": 0.47,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "ulipristal acetate",
+      "vorher": 0.56,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Ulipristalacetat",
+      "vorher": 6.42,
+      "nachher": 5.04
+    },
+    {
+      "eingabe": "valganciclovir",
+      "vorher": 0.47,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "valproic acid",
+      "vorher": 0.54,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Valproinsäure",
+      "vorher": 0.85,
+      "nachher": 1.29
+    },
+    {
+      "eingabe": "vancomycin",
+      "vorher": 0.78,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "vecuronium bromide",
+      "vorher": 0.53,
+      "nachher": 0.43
+    },
+    {
+      "eingabe": "Vecuronium-Bromid",
+      "vorher": 4.53,
+      "nachher": 4.73
+    },
+    {
+      "eingabe": "verapamil",
+      "vorher": 0.63,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "vinblastine",
+      "vorher": 0.28,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Vinblastin",
+      "vorher": 1.25,
+      "nachher": 1.38
+    },
+    {
+      "eingabe": "vincristine",
+      "vorher": 0.7,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Vincristin",
+      "vorher": 0.93,
+      "nachher": 1.13
+    },
+    {
+      "eingabe": "vinorelbine",
+      "vorher": 0.56,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Vinorelbin",
+      "vorher": 1.03,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "voriconazole",
+      "vorher": 0.29,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Voriconazol",
+      "vorher": 0.45,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "xylometazoline",
+      "vorher": 0.36,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Xylometazolin",
+      "vorher": 4.41,
+      "nachher": 6.03
+    },
+    {
+      "eingabe": "zidovudine",
+      "vorher": 0.96,
+      "nachher": 0.44
+    },
+    {
+      "eingabe": "Zidovudin",
+      "vorher": 1.0,
+      "nachher": 1.13
+    },
+    {
+      "eingabe": "zoledronic acid",
+      "vorher": 0.59,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "Zoledronsäure",
+      "vorher": 8.6,
+      "nachher": 9.14
+    },
+    {
+      "eingabe": "acetanilide",
+      "vorher": 0.52,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Acetanilid",
+      "vorher": 0.48,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "atorvastatin",
+      "vorher": 1.53,
+      "nachher": 1.38
+    },
+    {
+      "eingabe": "benzocaine",
+      "vorher": 0.49,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Benzocain",
+      "vorher": 0.97,
+      "nachher": 1.33
+    },
+    {
+      "eingabe": "candesartan",
+      "vorher": 0.6,
+      "nachher": 1.13
+    },
+    {
+      "eingabe": "captopril",
+      "vorher": 0.33,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "cetirizine",
+      "vorher": 0.49,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Cetirizin",
+      "vorher": 0.86,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "diphenhydramine",
+      "vorher": 0.63,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Diphenhydramin",
+      "vorher": 4.56,
+      "nachher": 5.02
+    },
+    {
+      "eingabe": "metamizole",
+      "vorher": 0.59,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Metamizol (freie Säure)",
+      "vorher": 8.08,
+      "nachher": 9.25
+    },
+    {
+      "eingabe": "naproxen",
+      "vorher": 0.63,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "pantoprazole",
+      "vorher": 0.48,
+      "nachher": 0.43
+    },
+    {
+      "eingabe": "Pantoprazol",
+      "vorher": 0.59,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "phenacetin",
+      "vorher": 0.8,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "procaine",
+      "vorher": 0.56,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Procain",
+      "vorher": 0.97,
+      "nachher": 1.99
+    },
+    {
+      "eingabe": "ramipril",
+      "vorher": 0.63,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "sildenafil",
+      "vorher": 0.5,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "sulfamethoxazole",
+      "vorher": 0.47,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Sulfamethoxazol",
+      "vorher": 0.61,
+      "nachher": 0.78
+    },
+    {
+      "eingabe": "torasemide",
+      "vorher": 0.47,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Torasemid",
+      "vorher": 4.3,
+      "nachher": 4.84
+    },
+    {
+      "eingabe": "tramadol",
+      "vorher": 0.59,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "acetaldehyde",
+      "vorher": 0.48,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Acetaldehyd",
+      "vorher": 0.64,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "acetic anhydride",
+      "vorher": 0.44,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Essigsäureanhydrid",
+      "vorher": 1.16,
+      "nachher": 1.36
+    },
+    {
+      "eingabe": "acetone",
+      "vorher": 0.34,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "acetonitrile",
+      "vorher": 0.28,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "Acetonitril",
+      "vorher": 0.28,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "acetophenone",
+      "vorher": 0.48,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Acetophenon",
+      "vorher": 0.33,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "acetyl chloride",
+      "vorher": 0.48,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Acetylchlorid",
+      "vorher": 0.56,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "acetylene",
+      "vorher": 0.54,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "Ethin",
+      "vorher": 1.12,
+      "nachher": 1.24
+    },
+    {
+      "eingabe": "aniline",
+      "vorher": 0.47,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Anilin",
+      "vorher": 0.28,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "anisole",
+      "vorher": 0.28,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Anisol",
+      "vorher": 0.6,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "anthracene",
+      "vorher": 0.58,
+      "nachher": 0.78
+    },
+    {
+      "eingabe": "Anthracen",
+      "vorher": 0.67,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "benzaldehyde",
+      "vorher": 0.58,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Benzaldehyd",
+      "vorher": 0.54,
+      "nachher": 0.78
+    },
+    {
+      "eingabe": "benzene",
+      "vorher": 0.63,
+      "nachher": 0.84
+    },
+    {
+      "eingabe": "Benzol",
+      "vorher": 0.54,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "benzonitrile",
+      "vorher": 0.46,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Benzonitril",
+      "vorher": 0.65,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "benzyl alcohol",
+      "vorher": 0.28,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Benzylalkohol",
+      "vorher": 0.54,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "carbon tetrachloride",
+      "vorher": 0.34,
+      "nachher": 0.68
+    },
+    {
+      "eingabe": "Tetrachlormethan",
+      "vorher": 1.15,
+      "nachher": 1.29
+    },
+    {
+      "eingabe": "chlorobenzene",
+      "vorher": 0.64,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Chlorbenzol",
+      "vorher": 0.98,
+      "nachher": 1.23
+    },
+    {
+      "eingabe": "chloroform",
+      "vorher": 0.39,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "cyclohexane",
+      "vorher": 0.53,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Cyclohexan",
+      "vorher": 0.28,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "cyclohexanone",
+      "vorher": 0.57,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Cyclohexanon",
+      "vorher": 0.4,
+      "nachher": 0.68
+    },
+    {
+      "eingabe": "dichloromethane",
+      "vorher": 0.66,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "Dichlormethan",
+      "vorher": 0.77,
+      "nachher": 1.42
+    },
+    {
+      "eingabe": "diethyl ether",
+      "vorher": 0.4,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Diethylether",
+      "vorher": 0.53,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "dimethyl sulfoxide",
+      "vorher": 0.3,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Dimethylsulfoxid",
+      "vorher": 0.54,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "ethyl acetate",
+      "vorher": 0.46,
+      "nachher": 0.8
+    },
+    {
+      "eingabe": "Essigsäureethylester",
+      "vorher": 1.14,
+      "nachher": 1.15
+    },
+    {
+      "eingabe": "ethylene",
+      "vorher": 0.47,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Ethen",
+      "vorher": 0.49,
+      "nachher": 0.45
+    },
+    {
+      "eingabe": "ethylene glycol",
+      "vorher": 0.45,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "Ethylenglycol",
+      "vorher": 0.57,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "formaldehyde",
+      "vorher": 0.56,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Formaldehyd",
+      "vorher": 0.63,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "glycerol",
+      "vorher": 0.55,
+      "nachher": 0.81
+    },
+    {
+      "eingabe": "Glycerin",
+      "vorher": 0.63,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "hexane",
+      "vorher": 0.47,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "Hexan",
+      "vorher": 0.31,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "isoprene",
+      "vorher": 0.54,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Isopren",
+      "vorher": 0.6,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "isopropyl alcohol",
+      "vorher": 0.51,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "2-Propanol",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "methanol",
+      "vorher": 0.71,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "naphthalene",
+      "vorher": 0.71,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Naphthalin",
+      "vorher": 0.57,
+      "nachher": 0.69
+    },
+    {
+      "eingabe": "nitrobenzene",
+      "vorher": 0.51,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "Nitrobenzol",
+      "vorher": 0.39,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "phenol",
+      "vorher": 0.46,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "propyl alcohol",
+      "vorher": 0.56,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "1-Propanol",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "pyridine",
+      "vorher": 0.4,
+      "nachher": 0.68
+    },
+    {
+      "eingabe": "Pyridin",
+      "vorher": 0.56,
+      "nachher": 1.02
+    },
+    {
+      "eingabe": "styrene",
+      "vorher": 0.56,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "Styrol",
+      "vorher": 0.32,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "tetrahydrofuran",
+      "vorher": 0.69,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "toluene",
+      "vorher": 0.57,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Toluol",
+      "vorher": 1.1,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "acetylcholine",
+      "vorher": 0.51,
+      "nachher": 0.47
+    },
+    {
+      "eingabe": "Acetylcholin",
+      "vorher": 0.46,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "adenine",
+      "vorher": 0.66,
+      "nachher": 0.68
+    },
+    {
+      "eingabe": "Adenin",
+      "vorher": 0.88,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "adenosine",
+      "vorher": 0.58,
+      "nachher": 0.8
+    },
+    {
+      "eingabe": "Adenosin",
+      "vorher": 0.63,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "atropine",
+      "vorher": 0.38,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "capsaicin",
+      "vorher": 1.05,
+      "nachher": 1.22
+    },
+    {
+      "eingabe": "cholesterol",
+      "vorher": 0.27,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "Cholesterin",
+      "vorher": 1.23,
+      "nachher": 1.46
+    },
+    {
+      "eingabe": "citral",
+      "vorher": 0.28,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Citral A+B",
+      "vorher": 4.35,
+      "nachher": 5.38
+    },
+    {
+      "eingabe": "cocaine",
+      "vorher": 0.49,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Kokain",
+      "vorher": 1.03,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "cytosine",
+      "vorher": 0.71,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Cytosin",
+      "vorher": 0.74,
+      "nachher": 0.76
+    },
+    {
+      "eingabe": "dopamine",
+      "vorher": 0.4,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Dopamin",
+      "vorher": 0.56,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "epinephrine",
+      "vorher": 0.47,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "Adrenalin",
+      "vorher": 0.56,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "eugenol",
+      "vorher": 0.55,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "guanine",
+      "vorher": 0.47,
+      "nachher": 0.7
+    },
+    {
+      "eingabe": "Guanin",
+      "vorher": 0.62,
+      "nachher": 0.5
+    },
+    {
+      "eingabe": "histamine",
+      "vorher": 0.44,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Histamin",
+      "vorher": 0.5,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "melatonin",
+      "vorher": 0.94,
+      "nachher": 1.43
+    },
+    {
+      "eingabe": "nicotine",
+      "vorher": 0.54,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Nicotin",
+      "vorher": 0.26,
+      "nachher": 1.06
+    },
+    {
+      "eingabe": "norepinephrine",
+      "vorher": 0.55,
+      "nachher": 0.53
+    },
+    {
+      "eingabe": "Noradrenalin",
+      "vorher": 0.87,
+      "nachher": 1.12
+    },
+    {
+      "eingabe": "progesterone",
+      "vorher": 0.58,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Progesteron",
+      "vorher": 0.92,
+      "nachher": 1.3
+    },
+    {
+      "eingabe": "salicylaldehyde",
+      "vorher": 0.62,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Salicylaldehyd",
+      "vorher": 0.54,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "serotonin",
+      "vorher": 0.8,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "testosterone",
+      "vorher": 0.47,
+      "nachher": 0.46
+    },
+    {
+      "eingabe": "Testosteron",
+      "vorher": 0.83,
+      "nachher": 2.89
+    },
+    {
+      "eingabe": "theobromine",
+      "vorher": 0.37,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "Theobromin",
+      "vorher": 0.51,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "theophylline",
+      "vorher": 0.64,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "thymine",
+      "vorher": 0.87,
+      "nachher": 0.46
+    },
+    {
+      "eingabe": "Thymin",
+      "vorher": 0.62,
+      "nachher": 0.52
+    },
+    {
+      "eingabe": "uracil",
+      "vorher": 0.48,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "vanillin",
+      "vorher": 0.56,
+      "nachher": 1.14
+    },
+    {
+      "eingabe": "γ-aminobutyric acid",
+      "vorher": 0.45,
+      "nachher": 0.86
+    },
+    {
+      "eingabe": "γ-Aminobuttersäure",
+      "vorher": 8.5,
+      "nachher": 9.12
+    },
+    {
+      "eingabe": "4-aminobenzoic acid",
+      "vorher": 0.0,
+      "nachher": 0.0
+    },
+    {
+      "eingabe": "p-Aminobenzoesäure",
+      "vorher": 0.9,
+      "nachher": 1.12
+    },
+    {
+      "eingabe": "acrylic acid",
+      "vorher": 0.65,
+      "nachher": 0.62
+    },
+    {
+      "eingabe": "Acrylsäure",
+      "vorher": 8.5,
+      "nachher": 9.16
+    },
+    {
+      "eingabe": "butyric acid",
+      "vorher": 0.85,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "Buttersäure",
+      "vorher": 1.31,
+      "nachher": 1.38
+    },
+    {
+      "eingabe": "edetic acid",
+      "vorher": 0.55,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Ethylendiamintetraessigsäure",
+      "vorher": 9.38,
+      "nachher": 10.45
+    },
+    {
+      "eingabe": "formic acid",
+      "vorher": 0.64,
+      "nachher": 0.46
+    },
+    {
+      "eingabe": "Ameisensäure",
+      "vorher": 0.92,
+      "nachher": 1.32
+    },
+    {
+      "eingabe": "fumaric acid",
+      "vorher": 0.56,
+      "nachher": 0.73
+    },
+    {
+      "eingabe": "Fumarsäure",
+      "vorher": 0.93,
+      "nachher": 1.98
+    },
+    {
+      "eingabe": "hydroquinone",
+      "vorher": 0.55,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "Hydrochinon",
+      "vorher": 0.92,
+      "nachher": 1.13
+    },
+    {
+      "eingabe": "hydroxyacetic acid",
+      "vorher": 0.56,
+      "nachher": 0.71
+    },
+    {
+      "eingabe": "Glycolsäure",
+      "vorher": 8.6,
+      "nachher": 9.29
+    },
+    {
+      "eingabe": "imidazole",
+      "vorher": 0.3,
+      "nachher": 1.51
+    },
+    {
+      "eingabe": "Imidazol",
+      "vorher": 0.65,
+      "nachher": 1.16
+    },
+    {
+      "eingabe": "maleic acid",
+      "vorher": 0.28,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Maleinsäure",
+      "vorher": 8.43,
+      "nachher": 9.41
+    },
+    {
+      "eingabe": "malonic acid",
+      "vorher": 0.48,
+      "nachher": 0.72
+    },
+    {
+      "eingabe": "Malonsäure",
+      "vorher": 8.15,
+      "nachher": 9.93
+    },
+    {
+      "eingabe": "methylamine",
+      "vorher": 0.7,
+      "nachher": 0.65
+    },
+    {
+      "eingabe": "Methylamin",
+      "vorher": 0.56,
+      "nachher": 0.51
+    },
+    {
+      "eingabe": "morpholine",
+      "vorher": 0.62,
+      "nachher": 0.47
+    },
+    {
+      "eingabe": "Morpholin",
+      "vorher": 0.55,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "oleic acid",
+      "vorher": 0.54,
+      "nachher": 0.67
+    },
+    {
+      "eingabe": "Ölsäure",
+      "vorher": 0.74,
+      "nachher": 0.94
+    },
+    {
+      "eingabe": "oxalic acid",
+      "vorher": 0.28,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "Oxalsäure",
+      "vorher": 1.2,
+      "nachher": 1.42
+    },
+    {
+      "eingabe": "palmitic acid",
+      "vorher": 0.81,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Palmitinsäure",
+      "vorher": 1.2,
+      "nachher": 1.26
+    },
+    {
+      "eingabe": "phthalic acid",
+      "vorher": 0.48,
+      "nachher": 0.48
+    },
+    {
+      "eingabe": "Phthalsäure",
+      "vorher": 8.44,
+      "nachher": 8.69
+    },
+    {
+      "eingabe": "piperidine",
+      "vorher": 0.4,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Piperidin",
+      "vorher": 0.26,
+      "nachher": 0.58
+    },
+    {
+      "eingabe": "propionic acid",
+      "vorher": 0.47,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Propionsäure",
+      "vorher": 1.1,
+      "nachher": 1.27
+    },
+    {
+      "eingabe": "pyruvic acid",
+      "vorher": 0.47,
+      "nachher": 0.74
+    },
+    {
+      "eingabe": "Brenztraubensäure",
+      "vorher": 0.6,
+      "nachher": 1.15
+    },
+    {
+      "eingabe": "resorcin",
+      "vorher": 0.27,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "stearic acid",
+      "vorher": 0.53,
+      "nachher": 0.61
+    },
+    {
+      "eingabe": "Stearinsäure",
+      "vorher": 0.9,
+      "nachher": 1.01
+    },
+    {
+      "eingabe": "succinic acid",
+      "vorher": 0.48,
+      "nachher": 0.54
+    },
+    {
+      "eingabe": "Bernsteinsäure",
+      "vorher": 1.06,
+      "nachher": 1.1
+    },
+    {
+      "eingabe": "sulfanilamide",
+      "vorher": 0.72,
+      "nachher": 0.63
+    },
+    {
+      "eingabe": "Sulfanilamid",
+      "vorher": 0.57,
+      "nachher": 0.49
+    },
+    {
+      "eingabe": "triethylamine",
+      "vorher": 0.47,
+      "nachher": 0.6
+    },
+    {
+      "eingabe": "Triethylamin",
+      "vorher": 0.7,
+      "nachher": 0.29
+    },
+    {
+      "eingabe": "trifluoroacetic acid",
+      "vorher": 0.63,
+      "nachher": 0.66
+    },
+    {
+      "eingabe": "Trifluoressigsäure",
+      "vorher": 0.75,
+      "nachher": 1.31
+    },
+    {
+      "eingabe": "biotin",
+      "vorher": 0.27,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "cyanocobalamin",
+      "vorher": 2.48,
+      "nachher": 2.84
+    },
+    {
+      "eingabe": "menadione",
+      "vorher": 0.56,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "Menadion",
+      "vorher": 0.95,
+      "nachher": 1.05
+    },
+    {
+      "eingabe": "nicotinic acid",
+      "vorher": 0.47,
+      "nachher": 0.75
+    },
+    {
+      "eingabe": "Nicotinsäure",
+      "vorher": 8.28,
+      "nachher": 8.72
+    },
+    {
+      "eingabe": "pantothenic acid",
+      "vorher": 0.28,
+      "nachher": 0.59
+    },
+    {
+      "eingabe": "Pantothensäure",
+      "vorher": 11.0,
+      "nachher": 9.49
+    },
+    {
+      "eingabe": "sucrose",
+      "vorher": 0.69,
+      "nachher": 0.57
+    },
+    {
+      "eingabe": "Saccharose",
+      "vorher": 0.64,
+      "nachher": 0.56
+    },
+    {
+      "eingabe": "trehalose",
+      "vorher": 0.59,
+      "nachher": 0.64
+    },
+    {
+      "eingabe": "xylitol",
+      "vorher": 0.55,
+      "nachher": 0.55
+    },
+    {
+      "eingabe": "Xylit",
+      "vorher": 0.66,
+      "nachher": 0.72
+    }
+  ]
+}

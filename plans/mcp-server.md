@@ -14,65 +14,50 @@
 - [ ] Chef: Entscheid Schnitt 3 (Empfehlung im Faden `…-schnitt-3-kippmessung`); offen ungeprüft: Fixture-Keys Nicotin/Citral,
   Wikidata-Keys Lincomycin/Prostacyclin.
 
-## Weiter bei — Codex: Lauf 12 nach Kontext-Neustart (06.11.2026 ~23:25)
+## Weiter bei — Codex: Lauf 12 abgeschlossen (07.11.2026)
 
-**Nächster Schritt:** Lauf-12-Auftrag aus Tisch-Faden
-`20261106-232415-schnitt-2-3ba3ff2-abgenommen` #1 ausführen; #2 bestätigt die
-Übernahme vor dem Kontext-Neustart. Rolle bleibt **Bauer Codex** (`w57:p5`),
-Chef Claude `w57:p3`; Rückfragen und Abschlussbericht in diesen Faden.
-Zuerst Tischpost lesen und betroffene Dateien selbst reservieren.
+**Nächster Schritt:** Chef prüft Lauf-12-Evidence und entscheidet Schnitt 3 anhand
+Opus' Kippmessung; Codex baut erst auf neuen Tisch-Auftrag. Schnitt 1 `0f174ea`
+und Schnitt 2 `3ba3ff2` vom Chef abgenommen. Schnitt 3 ist noch nicht umgesetzt;
+clomifene als gelb `gemisch` ist weiterhin keine freigegebene Umsetzung.
 
-- [x] **Schnitt 1 `0f174ea` + Schnitt 2 `3ba3ff2` vom Chef abgenommen**
-  (Faden oben #1): Resolver-Diff gelesen, Chef-Gate rc=0 auf gemeinsamem HEAD.
-  Alter Schnitt-2-Faden `20261106-231238-chemdraw-mcp-schnitt-2` geschlossen.
-- [x] Schnitt 2: fünf Zielfälle live richtiger voller Fixture-Key (Cefixim Anhydrat,
-  N-Methylglucaminantimonat, Metamizol freie Säure, EDTA, Citral A+B). Geschlossene
-  Form-Whitelist, volle Kaskade erst nach gescheitertem Original, R/S und Drehwert
-  bleiben; `found_as` gesetzt. 236 gezielte Tests grün; Gate **8328 passed / 16 skipped**,
-  rc=0, `/tmp/chemdraw-schnitt2-final-gate.log`. Deutscher Holdout 177 Fälle
-  vor/nach bytegleich, **0 richtig→anders**; sieben Penicillin-Namen zusätzlich live richtig.
-- [ ] **Lauf 12 auf HEAD (beide Schnitte):** Erst aktuellen Lauf 11 als
-  `docs/evidence/masse-eval-2026-11/identitaet-lauf-11-vor-schnitt-1-2.json` sichern
-  (vorhandene Sicherung nicht blind überschreiben). Start-Commit/Fixture-Hash belegen.
-  Dann `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json
-  --protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json` in frischem Prozess.
-  Prüfen: vollständige Eingabemenge und Statuszahlen, keine Teilantwort als Endstand.
-- [ ] **Vergleich je Eingabe gegen Lauf 11:** vollständige Liste aller semantischen
-  Änderungen (Status, Art, erwarteter/erhaltener voller Key, Text/Umweg; Laufzeiten
-  separat). Bei Grün steht der erhaltene Key im Feld `text`, sonst ggf. `erhalten`.
-  Prüfen: **0 grün→anders**, nicht nur gleicher erster Key-Block; fehlende/zusätzliche
-  Eingaben ausdrücklich ausweisen. Vergleich als Evidence im vorhandenen Ordner ablegen.
-- [ ] **Bericht erzeugen und committen:** `uv run python scripts/masse_eval.py identitaet`
-  → `docs/evidence/masse-eval-2026-11/identitaet.md`, alle gelben Klassen getrennt,
-  Rohzahlen selbst nachzählen. Rohdaten, Vergleich und Bericht committen/pushen.
-- [ ] **Chef-Stand nachtragen und berichten:** tatsächliche Lauf-12-Zahl oben und im
-  Chef-Abschnitt festhalten; Schnitt 1/2 abgenommen. Offen bleibt Opus-Kippmessung
-  Schnitt 3 (eigener Faden, Messbasis **ohne form_variant**), danach Chef-Entscheid
-  Schnitt 3; clomifene ggf. gelb `gemisch` ist noch keine freigegebene Umsetzung.
-  Plan committen, Kopfblock-Bericht `status/abnahme/dateien/offen` an Chef im Faden oben.
+- [x] Lauf 11 unverändert als `identitaet-lauf-11-vor-schnitt-1-2.json` gesichert
+  (SHA256 `095e0111a57f5086dec47de13ab6ee02ed374dfb601508bdfdcfeb1a4caced8c`).
+- [x] Lauf 12 in frischem Prozess auf Start-HEAD `112021f9a74603ed7122e826e9688f3969439e70`:
+  **711 Eingaben · 683 grün · 9 gelb Quelle/Referenz · 3 gelb Tautomer ·
+  2 gelb E/Z fehlt · 14 rot**. Exit 1 wegen der 14 roten Fälle, vollständiger Lauf.
+  Fixture-SHA256 `4b213a0c332bd8e0214cb491bb27dee428750c72bc9a8da80707d4436d1ee4c3`.
+- [x] Vollständiger Vergleich je Eingabe gegen Lauf 11: **675 grün→grün mit gleichem
+  vollständigem Key, 8 rot→grün, 6 rot→gelb, 8 gelb→gelb, 14 rot→rot**.
+  **0 grün→anders**, keine fehlenden/zusätzlichen Eingaben. Genau 14 semantisch
+  geänderte Zeilen; alle Felder außer Laufzeit verglichen, Zeiten separat dokumentiert.
+- [x] Bericht mit `uv run python scripts/masse_eval.py identitaet` erzeugt und
+  Rohzahlen unabhängig nachgezählt. Gelb: 3 bekannte Lücken, 6 unsichere Referenzen
+  (1 Salz, 2 Skelett, 3 Stereo), 3 Tautomere, 2 E/Z fehlt. Alle 14 roten Fälle Stereo.
+- [x] Jay-Entscheid 07.11. überall im Plan als beantwortet nachgetragen:
+  Abfragemodus zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
+  Andere offene Freigaben bleiben unverändert. Kein Produktcode/keine Fixture geändert.
 
-**Dateien/Zeilen und Beweise:** `scripts/identitaet.py:262` (Runner),
-`scripts/masse_eval.py` (`identitaet_bericht`), `tests/identity/stoffe-masse.json`,
-`docs/evidence/masse-eval-2026-11/identitaet-lauf.json` und `identitaet.md`;
-Schnitt 2 in `chemdraw_tool/de_names.py:108` / `:149`,
-`chemdraw_tool/resolver.py:1121`, `tests/test_resolver.py:1209`.
-Dauerhafte Belege: `docs/evidence/masse-eval-2026-11/schnitt-2-de-namen/`
-(README, Live-Keys, Holdout vor/nach/Vergleich, Varianten-Delta, Penicillin-Live).
+**Beweise:** `docs/evidence/masse-eval-2026-11/identitaet-lauf.json`,
+`identitaet-lauf-11-vor-schnitt-1-2.json`, `lauf-12-vergleich.json` (vollständige
+Änderungsliste, Hashes, Statusübergänge, Zeiten), `identitaet.md`;
+Prozesslog `/tmp/chemdraw-identitaet-lauf-12.log`.
+Befehl: `uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json
+--protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`.
+Prüfmethode: vollständige Eingabemenge, eigene Status-/Artzählung, voller Key/Text
+aller zuvor grünen Fälle; Bericht aus genau diesen Rohdaten. Keine erneute
+Gesamtgate-/Desktop-Abnahme für reine Evidence-/Planänderungen behauptet.
 
-**Wartezeiten/Folgeaktion:** beim Neustart kein eigener Hintergrundjob, keine rote
-Fix-Etappe, kein halbfertiger Edit; Lauf 12 ist **noch nicht gestartet**. Der Netzlauf
-braucht einen überwachten frischen Prozess (letzte volle Läufe ca. 18–20 min,
-kein zugesagter Endzeitpunkt). Bei Ende Exitcode/volle JSON prüfen, dann vergleichen;
-bei Quellen-Ausfällen gelbe Fälle belegen, keinen Teillauf als Abnahme zählen.
+**Offene Tisch-Fäden:** Lauf-12-Auftrag `20261106-232415-schnitt-2-3ba3ff2-abgenommen`
+(Bericht an Chef `w57:p3`); Zusatzentscheid `20261107-064504-nach-lauf-12-im`
+(Bericht im selben Plan-Commit). Schnitt-3-Messbasis von Opus ist **ohne form_variant**;
+Details/ungeprüfte Referenzen stehen im Opus-Abschnitt oben. Chef-Entscheid ausstehend.
+**Wartezeiten/Folgeaktion:** keine eigenen laufenden Jobs oder halbfertigen Edits;
+auf konkrete Chef-Abnahme/Folgeauftrag reagieren, keine eigene Wartefrist.
 
-**Zugesagte Prüfmethoden/Beweisformen:** Befehl + Datei-Log, vollständige Rohdaten,
-Nachzählung pro Status/gelber Art, kompletter Eingabe-Vergleich und voller Key für
-alle zuvor grünen Fälle; keine neue Resolver-/Fixture-Änderung ohne Bauauftrag.
-Opus' Schnitt-3-Messung enthält die neue Form-Fallback-Stufe noch nicht.
-
-**Frage an Jay (unbeantwortet — nicht bauen):** „Soll der Abfragemodus auch
-Reaktionen/Mechanismen abdecken (Edukte verdecken)?“
-Welle 3 ist bereits entschieden: zweiter Konnektor `chemdraw-pharma` mit `full`.
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle;
+Reaktionen/Mechanismen später als Phase 7. Welle 3: zweiter Konnektor
+`chemdraw-pharma` mit `full` bereits entschieden.
 
 **Vorstufen:** Tautomer-/Referenz-Folgepunkte `5a2ea90` / `7ae85ac` / `5081b6d` /
 `fc717cd` abgenommen; Lauf 11 **675 grün · 3 gelb Quelle/Referenz · 3 gelb Tautomer ·
@@ -104,7 +89,7 @@ Keine E/Z-/Atropisomerie-/Metallkoordinations-Vollprüfung oder neue Resolvermes
 **Bekannte Grenze:** `masse_eval.py liste` kann partielle Quellobjekte erneut wählen;
 Regenerationsschutz war außerhalb der erlaubten Datenpfade, als Code-Folgepunkt beim Chef gemeldet.
 Fremdes Salzform-WIP in Resolver/Tests und dessen eingefrorenem Lauf nicht übernehmen.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustart:** `HERDR_PANE_ID` fehlt bisher in dieser Laufzeit. Skript einmal aufrufen und tatsächlichen
 Fehler melden; keine fremde Pane wählen. Ältere Weiter-bei-Abschnitte unten sind historische Prüfstände.
@@ -134,7 +119,7 @@ Fremdes Befund-3-WIP (`resolver.py`, `tests/test_resolver.py`, Holdout und einge
 Prüfmethode bei Änderungen: erst passende Regression rot, gezielte Tests, dann `./test.sh > log`, rc und
 Output berichten; keine Golden-/Snapshot-Anpassungen zugesagt. Metadaten-Cache warm 0,000293 s,
 Resultat wie alte Funktion; ganzer Bericht 28,322 s. Kaltaufrufe und PubChem bleiben netzabhängig.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustart:** `HERDR_PANE_ID` fehlt hier weiterhin. Skript einmal aufrufen und Fehler melden;
 keine fremde Pane adressieren. Ältere Weiter-bei-Abschnitte unten sind historisch und kein neuer Bauauftrag.
@@ -165,7 +150,7 @@ Prüfmethode: `uv run pytest tests/test_resolver.py tests/test_ambiguous_names.p
 der Hydratvarianten (potassium citrate / tripotassium citrate / anhydrous / monohydrate),
 Formel + Ladung + InChIKey, bisherige sechs Trivialnamen-Gewinne und Diiodtyrosin/Edetat erhalten;
 kein Golden-/Test-Blessen. Keine komplette Gate-Wiederholung oder neue Desktop-Runde zugesagt.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 **Neustartgrenze:** `HERDR_PANE_ID` fehlt weiterhin in dieser Laufzeit. Skript einmal aufrufen,
 Fehler offen melden; keine fremde Pane wählen und nicht ohne neuen Anlass Neustartschleifen starten.
@@ -210,7 +195,7 @@ Der Faden `20261106-103348-masse-eval-befund-5` hat Hop 6/6 erreicht: dort keine
 `docs/evidence/masse-eval-2026-11/{ph,ir-abdeckung,ir-quellen}.md`. IR-Unterklassen und Desktop-Befunde bleiben offen.
 **Fremde Arbeit erhalten:** Befund 2 bearbeitet Resolver/Identitäts-Evidence, E2 Mechanismen; Änderungen im geteilten Arbeitsbaum
 (einschließlich erneut geändertem `ir-abdeckung.md`) stammen nach unserem Commit aus parallelen Sessions und sind nicht mitzustagen.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Doku-Aktualität bei jedem Release (Jay 06.11.2026, Tisch-Faden 20261106-102729-jay-06-11-readme)
@@ -253,10 +238,18 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 - ✅ **Tautomer/timolol abgenommen 06.11. ~22:27 — Opus `3476636` / Lauf `44edf11`:** rifabutin-Tautomere als eigene gelbe Klasse, Drehsinn neben erhaltenem R/S als letzter timolol-Kaskadenschritt. **Lauf 10 = 675 grün · 1 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 32 rot**, Chef selbst nachgezählt, Gate rc=0; Codex-Kreuzabnahme **Code-Teil ABNEHMEN**: `uv run pytest tests/test_resolver.py tests/test_identitaet_tautomer.py -q` → **159 passed**; eigene Formel-/Verknüpfungs-/Kanontautomer-Gegenproben bleiben rot, Gelb wird nie Grün. Drei eigene Live-Fälle: rifabutin → `AZFBLLCNOQPJGJ-VXTBVIBXSA-N`, gelb/tautomer; `(S)-(-)-timolol` → `BLJRIMJGRPQVNF-JTQLQIEISA-N`; `(R)-(+)-timolol` → `BLJRIMJGRPQVNF-SNVBAGLBSA-N` (jeweils PubChem bestätigt). Evidence `/tmp/chemdraw-opus-kreuz-live.json`, Faden `20261106-220250-zwei-teile-a-kreuzabnahme`.
 - ✅ **Referenzentscheid abgenommen, 06.11. ~23:02:** Opus `5a2ea90`, Lauf 11 `7ae85ac`: Vinblastin beide Schreibweisen `unsicher=true` mit Begründung, Key unverändert; Sulfasalazin beide Schreibweisen gelb/`ez_fehlt`. **675 grün · 3 gelb (Quelle/Referenz) · 3 gelb (Tautomer) · 2 gelb (E/Z fehlt) · 28 rot**, nur vier rot→gelb gegenüber Lauf 10, kein neuer grüner Fall. Der Quellenwiderspruch bei Vinblastin bleibt sichtbar. Codex-Berichtsauswertung und `REFERENZ_UNSICHER` sichern Zählung und Neubau separat ab.
 - ✅ **Tautomer-Folgepunkte Codex abgenommen 06.11. ~23:02 (`5081b6d` / `fc717cd`):** Berichtsteil `5081b6d` mit zwei Rot-Grün-Tests und Gate rc=0 (8288 passed / 16 skipped). Neuer Holdout: 2145 Labels / 553 Fälle, alle vollständigen Keys bytegleich zur gesicherten Vorversion, **0 richtig→anders**; Vergleich `docs/evidence/masse-eval-2026-11/holdout_pubchem_check-tautomer-vergleich.json`. E/Z-Zählung und Vinblastin-Regenerationsschutz nach Opus-Commit ergänzt (vier neue Rotprüfungen → 25 betroffene Tests grün); aktueller Bericht aus Lauf 11. **Gesamtgate rc=0: 8298 passed / 16 skipped**, Log `/tmp/chemdraw-tautomer-ez-rebuild-gate.log`. Chef-Abnahme: Diff `masse_eval.py` gelesen, 25 passed, eigenes Gate rc=0, Bericht = Lauf 11 (675/3/3/2/28). Alter Faden `20261106-222719-folgepunkte-aus-opus-3476636` geschlossen; Abnahme im Folgefaden `20261106-230209-abnahme-faden-20261106-222719`.
+- ✅ **Schnitt 1 `0f174ea` + Schnitt 2 `3ba3ff2` abgenommen; Lauf 12 gemessen 07.11.:**
+  **683 grün · 9 gelb Quelle/Referenz · 3 gelb Tautomer · 2 gelb E/Z fehlt · 14 rot**
+  aus 711 Eingaben. Gegen Lauf 11: 8 rot→grün, 6 rot→gelb, **0 grün→anders**,
+  keine fehlenden/zusätzlichen Eingaben, kompletter Key-Vergleich. Evidence:
+  `docs/evidence/masse-eval-2026-11/lauf-12-vergleich.json`, Rohdaten und Bericht daneben.
+  Offen: Chef-Entscheid Schnitt 3 nach Opus-Kippmessung (Messbasis ohne form_variant);
+  clomifene ggf. gelb `gemisch` bisher nicht freigegeben. Zusatzentscheid Abfragemodus
+  aus Faden `20261107-064504-nach-lauf-12-im` eingetragen (nur Moleküle, Phase 7 später).
 **Lauf 10 vs. 9 nachgezählt:** 674 grün→grün, 32 rot→rot, 1 gelb→gelb, 3 rot→gelb (doxycycline, Doxycyclin, rifabutin), 1 rot→grün (`(S)-(−)-timolol`). Die frühere Erwartung „nur rifabutin“ ist damit durch den abgenommenen vollständigen Lauf ersetzt.
-**Nächster Chef-Schritt (Stand 06.11. ~23:02):** Opus-Triage der **28 roten Fälle** im Faden `20261106-225717` entgegennehmen; danach entscheidet der Chef den Bau-Schnitt. Abfragemodus/Reaktionen bleibt als Jay-Frage offen.
+**Nächster Chef-Schritt (Stand 07.11., nach Lauf 12):** Lauf-12-Evidence abnehmen, dann Schnitt 3 anhand der Opus-Kippmessung entscheiden. Abfragemodus ist beantwortet (Jay 07.11.): zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
-**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Masse-Eval-Befund 1 erledigt: deutsche Trivialnamen (Claude, 05.11.2026 23:55)
@@ -284,7 +277,7 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 - [ ] Kann: gemerkter Offline-Zustand im Resolver (nach Verbindungsfehler ~60 s keine Gegenfrage) spart die 3 s im Blackhole-Fall.
 
 **Nächster Schritt:** Befund 3 (PubChem-Synonymfehler, Formel-Plausibilität) laut Warteschlange im Abschnitt Orchestrierung.
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Dependabot + rdkit 2026.9 + README-Politur erledigt (Session 8b06750a, 05.11.2026 23:00)
@@ -296,7 +289,7 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
 407→139 Zeilen, docs/), selbst nachgeprüft (34 Links 200, twine PASSED). Tisch-Fäden 20261105-163128, -222933, -222945, -223556 geschlossen.
 **Nächster Schritt:** Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten) als eigene Etappe · README-Änderungen gehen
 erst mit dem nächsten Release auf PyPI · Kann: Galeriebilder gleich hoch (nur per Beschnitt in `assets/`).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 
@@ -346,7 +339,7 @@ rdkit-Pin behalten (Empfehlung: ja — Default-Rendering darf sich nicht still �
 mit Sichtprüfung neu und Pin weg?
 **Nächster Schritt:** nach Jays Merges `git pull`, Gate einmal auf main · dann als eigene Etappe · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten)
 · ✓ E2 Lehrbuch-Feinschliff erledigt 06.11. (Abschnitt darunter).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Release-Klick 0.8.0 (Jays Hand), Etappe E abgenommen (Claude-Hauptsession, 05.11.2026 16:25)
@@ -378,7 +371,7 @@ tBuI + iPrOH) · Deprotonierung über Lösungsmittel statt freies H⁺ · Fische
 (Stearin, Octan) abkürzen (R = C₁₇H₃₅) · Oxonium-Label „OH⁺ + H“ einheitlicher. Fachlich korrekt, nur Konvention/Lesbarkeit.
 
 **Danach:** Etappe F Marketing-Repo (eigene Session) · Dependabot-Branches · Masse-Eval-Befunde (Abschnitt „Release-Klick 0.8.0“ unten).
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 ## Weiter bei — Etappe E Runde 3: Befunde der unabhängigen Sichtung (Claude-Hauptsession, 05.11.2026 15:40)
@@ -429,7 +422,8 @@ Tool-Nennung = Desktop-Routing; Schrittumschaltung Ringfall nicht bestätigt).
 `vermarktung/ax-claude.swift` für Handtests braucht · Dependabot-Branches als eigene Etappe · Befunde aus der Masse-Eval (Abschnitt
 „Release-Klick 0.8.0“ unten, Punkte 1–5).
 
-**Fragen an Jay (unbeantwortet — nicht bauen):** „passt“ zu den E-Kontaktbögen · Abfragemodus auch für Reaktionen?
+**Fragen an Jay (unbeantwortet — nicht bauen):** „passt“ zu den E-Kontaktbögen.
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 **Offene Tisch-Fäden:** `20261105-131815-etappe-e-mechanismen-vor` (E-Session `w4W:p4`, Hop 6/6 voll; Bericht der E-Session steht noch
@@ -463,8 +457,9 @@ halber Edit. Reservierungen nach dem Plan-Commit freigeben.
 
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
-**Offene Fragen an Jay:** „Abfragemodus auch für
-Reaktionen?“ — **unbeantwortet — nicht bauen**. Jays „passt“ zu den
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
+
+**Offene Fragen an Jay:** Jays „passt“ zu den
 E-Kontaktbögen: **unbeantwortet — nicht bauen**; keine Zustimmung unterstellen.
 
 **Zugesagte Prüfmethoden:** sichtbarer Desktop mit frischen Chats, tatsächlichen
@@ -582,7 +577,7 @@ CLAUDE.md), `tests/test_wheel_contents.py`, `demo-video.sh`, README-GIF-Aufnahme
 Danach Branch `worktree-agent-…` löschen (Tag bleibt). Videos selbst nie ins Repo. Erst nach E, weil Codex `ax-claude.swift`
 für den E-Handtest braucht.
 
-**Fragen an Jay (unbeantwortet — nicht bauen):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 Offene Tisch-Fäden: `20261105-001817-etappe-a-masse-eval` (Claude↔Codex, Reservierung; wird mit dem Bericht geschlossen).
@@ -620,8 +615,9 @@ Hintergrundjob, der nach dem Neustart ausgewertet werden muss.
 
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
-**Offene Entscheidungen:** „Abfragemodus auch für
-Reaktionen?“ — **unbeantwortet — nicht bauen**. Vier gesicherte Branch-Entscheidungen
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
+
+**Offene Entscheidungen:** Vier gesicherte Branch-Entscheidungen
 stehen mit Wortlaut im D-Befund; keine Branch-Löschung ohne Entscheidung.
 Release-Befunde: Manifest „six tools“ laut Release-Abschnitt bereits behoben
 (`dbd94e5`); offen bleiben Erststart-Timeout während Installation und
@@ -666,7 +662,8 @@ SN2-Produkt ohne (S)-Label im Panel (`docs/desktop-abnahme-mechanismus-2026-11-0
 
 **Fragen an Jay (unbeantwortet — nicht bauen):** vier Branch-Fragen in `docs/repo-aufraeumen-2026-11-04.md`
 (mcp-2-migration behalten/archivieren · origin/mcp-2-migration-v2 löschen · worktree-agent Demo-Commits übernehmen ·
-Dependabot-Update als eigene Etappe) · Abfragemodus auch für Reaktionen?
+Dependabot-Update als eigene Etappe).
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 Offene Tisch-Fäden: keine zu dieser Arbeit (`20261104-234915` erledigt 00:05).
@@ -785,7 +782,7 @@ Erst 10 Kernfälle (~3 $, Kosten je Fall messen), dann Freigabe für ~60 × 3 (~
 API-Schlüssel (`ANTHROPIC_API_KEY` oder `ant auth login`; heute weder Key noch `ant` noch SDK da). Grenze: sagt
 Desktop-Routing NICHT verlässlich voraus (CC mit Tool-Suche 18/18 vs. Desktop 0/9) — dafür bleibt Codex' Klicktest.
 
-**Fragen an Jay, geparkt (nicht in diesem Release):** Abfragemodus auch für Reaktionen?
+**Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
 
 - [x] (a) alte Erweiterung aus, Desktop neu gestartet (Claude, 23:05)
@@ -1208,10 +1205,13 @@ eine auf (noch ohne Antwortauswahl), „Alle zeigen“ setzt zurück.
 - [ ] Fehler → Anki-Deck mit den falsch beantworteten Strukturen
 - [ ] Optional: Zeitlimit
 
+#### Phase 7 — Abfragemodus für Reaktionen/Mechanismen (Jay 07.11.2026)
+- [ ] Nach dem Molekül-Abfragemodus: Reaktionen/Mechanismen ergänzen (Edukte verdecken). Keine Umsetzung in Phase 5.
+
 #### Offene Fragen an Jay
 - [x] **Jay:** Welche Fachrichtung für die Prüfungsfragen zuerst: **Pharmazeutische Chemie** (Strukturen, funktionelle Gruppen) oder **Pharmakologie** (Wirkstoffklassen)? Empfehlung: Pharmazeutische Chemie — die Daten dafür gibt es schon.
   - **Jay 26.10.2026: OC-Grundlagen zuerst** (funktionelle Gruppen, Isomerie, R/S, Reaktionstypen) — breiteste Zielgruppe (Chemie, Bio, Medizin, Pharmazie, Schule), passt zu „Grundlagen zuerst“. Pharmazeutische Chemie danach als Aufbau, Pharmakologie zuletzt.
-- [ ] **Jay:** Soll der Abfragemodus auch **Reaktionen/Mechanismen** abdecken (Edukte verdecken)? Empfehlung: erst Moleküle, Reaktionen als Phase 7.
+- [x] **Jay 07.11.2026, beantwortet:** Abfragemodus zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7 (Edukte verdecken).
 
 #### Grundlagen der Etappe (unverändert vom 03.10.)
 
