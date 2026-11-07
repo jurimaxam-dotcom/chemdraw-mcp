@@ -75,6 +75,9 @@ def test_rebuilding_list_keeps_stereo_reference_corrections(tmp_path, monkeypatc
         ("Q27109935", "trehalose", None,
          "HDTRYLNUVZCQOY-MFAKQEFJSA-N",
          "C([C@@H]1[C@H]([C@@H]([C@H](C(O1)OC2[C@@H]([C@H]([C@@H]([C@H](O2)CO)O)O)O)O)O)O)O"),
+        # Früherer Wikidata-Hauptrecord: gleiche Konstitution, Stereo fehlt.
+        ("Q12144", "nicotine", "Nicotin",
+         "SNICXCGAKADSCV-UHFFFAOYSA-N", "CN1CCCC1C2=CN=CC=C2"),
     ]
     lehr = {}
     for qid, en, de, key, smiles in records:
@@ -97,8 +100,11 @@ def test_rebuilding_list_keeps_stereo_reference_corrections(tmp_path, monkeypatc
 
     assert masse_eval.baue_liste(argparse.Namespace()) == 0
     result = {x["eingabe"]: x for x in json.loads(masse_eval.LISTE.read_text())["stoffe"]}
-    for name in ("clindamycin", "cocaine", "pantothenic acid", "Pantothensäure", "trehalose"):
+    for name in ("clindamycin", "cocaine", "pantothenic acid", "Pantothensäure", "trehalose", "nicotine", "Nicotin"):
         assert result[name]["inchikey"] == fixture_keys[name]
+        mol = Chem.MolFromSmiles(result[name]["smiles_referenz"])
+        assert Chem.MolToInchiKey(mol) == fixture_keys[name]
+        assert CalcMolFormula(mol) == result[name]["formel"]
 
 
 @pytest.fixture

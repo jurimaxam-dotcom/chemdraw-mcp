@@ -23,6 +23,10 @@
   statt 683 / 14 / 14; genau die zwei Nicotin-Zeilen grün→rot, noch kein neuer Live-Lauf.
   Prüfung: `36 passed` (Masse-/Identitätsauswertung), SMILES→Key und CIP=S geprüft;
   Neuwertungsbeleg `/tmp/chemdraw-schnitt3-abnahme/nicotin-neuwertung.log`.
+- [x] **Nicotin-Regenerationsschutz:** `scripts/masse_eval.py` setzt beim Neubau
+  für `nicotine` und `Nicotin` die bestätigte (S)-Referenz ein;
+  realer `baue_liste`-Test mit früherem flachem Wikidata-Record zuerst rot,
+  danach **36 passed**, ruff grün; Belege `/tmp/chemdraw-schnitt3-abnahme/regeneration-{rot,gruen}.log`.
 - [ ] **Opus:** A>= implementieren (läuft); Codex prüft den gemeldeten Commit über Kreuz.
   Prüfen: Commit-Diff, relevante Resolver-Tests und Kipp-/Holdout-Belege → erwartet:
   freigegebene A>=-Regel, 0 bisher richtige Fälle gekippt, keine B′-Regel.

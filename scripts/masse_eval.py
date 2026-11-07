@@ -117,6 +117,20 @@ REFERENZ_KORREKTUREN = {
     # InChIKey mit fehlenden Zentren. Diese benannten Hauptrecords sind durch
     # PubChem und ChEMBL, bei den Naturstoffen zusätzlich ChEBI, gegengeprüft.
     # Quellen und Begründung: docs/evidence/masse-eval-2026-11/stereo-referenzen/.
+    # Chef-Referenzentscheid 07.11.: beide Namen = (S)-Nicotin; vier Quellen
+    # und vollständige Stereo in kippmessung-stereo/fixture_check.json belegt.
+    "nicotine": {
+        "inchikey": "SNICXCGAKADSCV-JTQLQIEISA-N",
+        "formel": "C10H14N2",
+        "quelle": "pubchem:89594 + chembl:CHEMBL3 + kegg:D03365 + wikidata:Q28086552",
+        "smiles_referenz": "CN1CCC[C@H]1c1cccnc1",
+    },
+    "nicotin": {
+        "inchikey": "SNICXCGAKADSCV-JTQLQIEISA-N",
+        "formel": "C10H14N2",
+        "quelle": "pubchem:89594 + chembl:CHEMBL3 + kegg:D03365 + wikidata:Q28086552",
+        "smiles_referenz": "CN1CCC[C@H]1c1cccnc1",
+    },
     "clindamycin": {
         "inchikey": "KDLRVYVGXIQJDK-AWPVFWJPSA-N",
         "formel": "C18H33ClN2O5S",
