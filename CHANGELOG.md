@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-11-07
+
 ### Added
 
 - **One panel footer with files and actions.** Every panel that writes files
@@ -28,33 +30,6 @@ this project uses [Semantic Versioning](https://semver.org/).
   manifest), and `scripts/handshake.sh` checks every registered connector
   against the tool count of its profile.
 
-### Changed
-
-- **The 3D bowl follows the theme and the bonds show chemistry.** The light square and inner frame are gone, bowl, contact shadow, carbon and hydrogen take light or dark colours from the theme, each bond half carries its atom colour and thins with depth, double and triple bonds are drawn as parallel lines, aromatic bonds as solid plus dashed, and atoms are sized by covalent radius.
-- **One view axis right under the drawing.** `2D · All H · Fischer · Haworth · 3D` is now a single segment directly below the drawing or bowl, before the key facts; a loading button shows a spinner, and 3D mode hides the stereo line and functional groups, which describe the 2D drawing.
-- **The 3D model turns gently into place when it appears** (about 1.2 s, off with reduced motion, stops on touch); a cancelled drag no longer keeps rotating, and the cursor shows `grabbing` while dragging.
-- **The 3D model fills the panel.** The `3D` chip now gives the ball-and-stick
-  model the full panel width as a square (key facts move below it), and the
-  molecule is scaled by its bounding radius instead of its largest axis value,
-  so a flat molecule fills the bowl and a diagonal one no longer pokes out of
-  it when rotated.
-- **The single `chemdraw-tool` entry is migrated.** The installer replaces it
-  with the two connectors (the backup keeps the old entry); `chemdraw-doctor`
-  reports an old entry, a missing second connector and an unstartable
-  command separately.
-
-### Fixed
-
-- **Batch panels show what was not drawn.** Names that `batch_generate` could
-  not resolve now appear in a "Not drawn" list below the drawn structures
-  instead of silently disappearing.
-- **Substrate scope stays readable in dark mode.** The scope figure on its
-  white plate keeps its dark strokes instead of being recoloured light.
-
-## [0.9.0] — 2026-11-07
-
-### Added
-
 - **3D button in the molecule panel.** Next to All H / Fischer / Haworth the
   structure view now has a `3D` chip: the first click calls `generate_3d`
   for the molecule on screen and swaps the drawing for the rotatable
@@ -76,6 +51,19 @@ this project uses [Semantic Versioning](https://semver.org/).
   amine rule no longer fires on amides and sulfonamides.
 
 ### Changed
+
+- **The 3D bowl follows the theme and the bonds show chemistry.** The light square and inner frame are gone, bowl, contact shadow, carbon and hydrogen take light or dark colours from the theme, each bond half carries its atom colour and thins with depth, double and triple bonds are drawn as parallel lines, aromatic bonds as solid plus dashed, and atoms are sized by covalent radius.
+- **One view axis right under the drawing.** `2D · All H · Fischer · Haworth · 3D` is now a single segment directly below the drawing or bowl, before the key facts; a loading button shows a spinner, and 3D mode hides the stereo line and functional groups, which describe the 2D drawing.
+- **The 3D model turns gently into place when it appears** (about 1.2 s, off with reduced motion, stops on touch); a cancelled drag no longer keeps rotating, and the cursor shows `grabbing` while dragging.
+- **The 3D model fills the panel.** The `3D` chip now gives the ball-and-stick
+  model the full panel width as a square (key facts move below it), and the
+  molecule is scaled by its bounding radius instead of its largest axis value,
+  so a flat molecule fills the bowl and a diagonal one no longer pokes out of
+  it when rotated.
+- **The single `chemdraw-tool` entry is migrated.** The installer replaces it
+  with the two connectors (the backup keeps the old entry); `chemdraw-doctor`
+  reports an old entry, a missing second connector and an unstartable
+  command separately.
 
 - **CAS numbers come from PubChem's CAS section, checked and by majority.**
   Before, the first synonym that looked like a CAS number was taken, which
@@ -139,6 +127,12 @@ this project uses [Semantic Versioning](https://semver.org/).
   side.
 
 ### Fixed
+
+- **Batch panels show what was not drawn.** Names that `batch_generate` could
+  not resolve now appear in a "Not drawn" list below the drawn structures
+  instead of silently disappearing.
+- **Substrate scope stays readable in dark mode.** The scope figure on its
+  white plate keeps its dark strokes instead of being recoloured light.
 
 - **`generate_spectrum` accepts the spectrum type in any case.** The
   description lists "IR, NIR, Raman, UV/Vis", so the model sends `"IR"` —
