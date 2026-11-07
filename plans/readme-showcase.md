@@ -100,3 +100,21 @@ Playwright-Video auf und schneidet per ffmpeg (Palette, ≤ 800 px breit, ≤ 10
 `demo-views.gif` (Thalidomid: Skelett → All H → Skelett → Show variants → (S) → Data), `demo-3d.gif` (Morphin: 3D-Chip → Modell →
 Drehung per Pointer-Drag), `demo-molecule.gif` (Capsaicin: Hover über Gruppen → Data). Caption im README sagt dann
 „recorded in the panel test host“ statt „in Claude Desktop“. Endgültiger Lauf erst nach E2/E3-Merge (Chip-Reihe ändert sich). **12:58: A2 gemerged** (Opus `b0b9f88`; GIFs 209 KB / 1,3 MB / 215 KB, Owner hat Kontaktbögen von views und 3d gesehen; Hero zeigt die zwei GIFs, Capsaicin unter „Data“). Nach E3: `npm --prefix chemdraw_tool/ui run readme:gifs` neu, dann Codex-Abgleich (Faden `20261107-114301-…`).
+
+## Auftrag A3 — Hero-GIFs final (nach E3-Merge; Jay 13:10/13:14)
+
+- **Ein Molekül für beide Hero-GIFs:** Thalidomid (1 offenes Stereozentrum → Show variants; 3D zeigt die zwei Ringe
+  verdreht). Links: 2D → All H → Show variants → (S) → Data. Rechts: 3D-Chip → Modell → Drehung. Capsaicin bleibt
+  unter „Data“.
+- **Skalierung sauber:** beide GIFs exakt gleiche Maße (gleicher Panel-Ausschnitt, gleiche Höhe, z. B. 600×700),
+  Hero als zwei `<img width="49%">` (seit 13:12), kein Scrollbalken bei 700 px Spaltenbreite (Playwright-Check bei
+  Viewport 1100 und 1500).
+- **Hell/Dunkel je GitHub-Modus:** je GIF eine helle und eine dunkle Fassung (`demo-views-light.gif`/`-dark.gif`,
+  `demo-3d-light.gif`/`-dark.gif`), eingebunden per `<picture><source media="(prefers-color-scheme: dark)" srcset=…><img src=… light></picture>`;
+  `readme-gifs.mjs` bekommt `--theme light|dark` (Dark heute über `data-theme="dark"`).
+- Danach: Codex-Abgleich (Faden `20261107-114301-…`) mit Commit-SHA, Playwright-Screenshots hell/dunkel als Beleg.
+
+**Release-Entscheid (Hinweis 13:12):** das vorbereitete `v0.9.0` auf `e2e1137` liefert das alte Panel (kleine Kuhle,
+alte Chip-Reihe), das README zeigt das neue. Empfehlung: **ein** Release `0.9.0` vom aktuellen main nach E3-Merge,
+Desktop-Blick und Welle-3-Haken 5 (Konnektor-Migration per `./install.sh`, Handshake 2 Konnektoren); CHANGELOG
+`[Unreleased]` wandert in `[0.9.0]`. Klick bleibt Jays Hand.
