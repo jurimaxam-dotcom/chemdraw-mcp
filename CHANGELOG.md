@@ -32,6 +32,14 @@ this project uses [Semantic Versioning](https://semver.org/).
   reports an old entry, a missing second connector and an unstartable
   command separately.
 
+### Fixed
+
+- **Batch panels show what was not drawn.** Names that `batch_generate` could
+  not resolve now appear in a "Not drawn" list below the drawn structures
+  instead of silently disappearing.
+- **Substrate scope stays readable in dark mode.** The scope figure on its
+  white plate keeps its dark strokes instead of being recoloured light.
+
 ## [0.9.0] — 2026-11-07
 
 ### Added
