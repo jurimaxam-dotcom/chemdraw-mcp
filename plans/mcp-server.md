@@ -1,6 +1,16 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 15:20)
+## Weiter bei — Owner-Session, Kurswechsel Aufmerksamkeit (07.11.2026, 16:40)
+
+- **Jay 16:30:** Shorts „noch nicht angesehen“ (AskUserQuestion). Auf die Frage „Mechanismus-Panel oder Diagramme?“: „ich will jetzt erstmal Aufmerksamkeit — Chance auf Anthropics Aufmerksamkeit, oder irgendwo pitchen, wo viele Leute hinschauen?“ → **Panel-Bau pausiert**, Aufmerksamkeit zuerst. Advisor befragt (Jays Wunsch).
+- **Befund (Owner, 16:35):** Recherche und Texte liegen für ~10 Kanäle, **abgeschickt ist fast nichts**: Show HN (geplant 27.10.) ungehakt, der Juni-Post hat 1 Punkt/0 Kommentare (Algolia 11.06.); mcp.directory, „Submit your build“, Discord, PyCoder's, MCPSvr-PR, JCF (Frist 26.11.) alle „Jay klickt“, alle offen. Engpass = Senden, nicht Wissen. Zahlen: 29 ⭐, 494 Views / 142 Uniques in 14 Tagen (Snapshot 07.11.).
+- **Anthropic-Weg geprüft 16:38 (claude.com/docs/connectors/building/submission.md, ext-apps README/CONTRIBUTING):** Directory nimmt lokale Server nur als Plugin (ohne Panel) oder als Remote-HTTPS-Server mit Carousel-Screenshots (MCP App). Kein Showcase-Formular für MCP Apps; ext-apps-Galerie = Repo-Beispiele (zwei Python: qr, say), Feedback-Adresse mcp-apps@anthropic.com. Bleibt: „Submit your build“ (Text + 3 Screenshots liegen, `chemdraw-vermarktung/submit-your-build.md`) und Discord #scientific-computing-ig (`discord-scientific-computing.md`).
+- **Empfehlung an Jay (gereiht):** 1. „Submit your build“ (15 min) · 2. Show HN zweiter Versuch Di 10.11. 13–18 Uhr CET, Titel mit Funktion statt Name, GIF ohne Installationshürde (Text `docs/distribution/posts-2026-07.md` Post 3, Helfer macht ihn slot-fertig) · 3. mcp.directory (3 min) · 4. Discord-Post (20 min). Kein Senden durch Helfer (Außenkommunikation).
+- **Helfer ohne Jays Klick:** Show-HN-Text slot-fertig + Discord-`communication.md`-Wortlaut nachlesen → Vermarktungs-Session per `cc-oeffnen`, sobald Jay die Reihung bestätigt.
+- **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Shorts-Sichtprüfung (Pfade im Block darunter). (1b) Plugin-Bundle ins Anthropic-Directory (ohne Panel)? (2) D-Glucose offene Kette? (3) Anki-Import-Dialog. (4) Desktop-Rechte „Always allow“ je Konnektor. (5) Mechanismus-Panel vs. Diagramme — **zurückgestellt, Aufmerksamkeit zuerst.**
+- **Tisch:** keine offenen chemdraw-Fäden, keine Leases. Codex-Sitzung 01a1b575 fertig (15:17).
+
+### Vorheriger Block (15:20, abgearbeitet bis zur Shorts-Frage)
 
 - **Nächster Schritt:** Jays Shorts-Antwort einarbeiten (Sichtprüfung offen). CI auf main grün für `c38819c` und `16312c4` (Läufe 42380559876, 42380563945).
 
