@@ -25,12 +25,11 @@ under [Installation](#installation).
 
 <!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung.
      TODO Owner: linke Zelle auf demo-views.gif (Thalidomid) und rechte Zelle auf demo-3d.gif (Morphin) umstellen,
-     sobald die Aufnahmen in assets liegen; Captions dann: "Draw thalidomide", then All H, Show variants, (S) and Data ·
-     "Draw morphine", then the 3D chip and a drag to rotate. Only waiting times are shortened. -->
+     sobald die Aufnahmen in assets liegen. Beide Zellen sind GIFs, keine Bildunterschriften (Jay 12:30). -->
 <table>
   <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="440"><br><sub>"Draw aspirin", then hover the functional groups and click Data. Only the PubChem loading wait is shortened.</sub></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel" width="440"><br><sub>"Draw ibuprofen", then the <code>3D</code> chip. Cropped screenshot from Claude Desktop.</sub></td>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="440"></td>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel" width="440"></td>
   </tr>
 </table>
 
