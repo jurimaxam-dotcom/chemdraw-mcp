@@ -137,3 +137,8 @@ Nach README-Abnahme: derselbe Host-Aufbau (`readme-gifs.mjs`) rendert die drei S
 1080×1920 skaliert, Panel mittig, mp4 per ffmpeg statt GIF, 1080p, 12–20 s, ohne Mauszeiger-Kreis oder mit größerem).
 Schnitt, Text-Overlays, Musik und Veröffentlichung gehören nach `chemdraw-vermarktung` (dort liegt die Shorts-Planung);
 Auftrag an Codex per `tisch` mit den fertigen Clips als Rohmaterial. Erst nach C2 Punkt 7.
+
+**Grenze (Hinweis 13:55):** `<picture>` mit `prefers-color-scheme` folgt dem Browser-/System-Modus, nicht einem fest
+eingestellten GitHub-Theme (Profil → Appearance ohne „Sync with system“). Dann kann ein helles GIF auf dunkler Seite
+stehen. Das ist GitHubs Mechanik, keine Datei von uns; Ausweg nur mit neutralem Rand statt Panel-Hintergrund. Jay kann
+es prüfen: GitHub-Theme fest auf Dark, Mac hell, README laden.
