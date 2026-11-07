@@ -1,0 +1,3 @@
+-rw-r--r--@  1 tom  staff  44882 Sep 12 19:31 Methylphenidat.png
+-rw-r--r--   1 tom  staff  37174 Nov  7 08:39 R_-Ibuprofen-2.png
+-rw-r--r--   1 tom  staff  37174 Nov  7 08:39 R_-Ibuprofen.png

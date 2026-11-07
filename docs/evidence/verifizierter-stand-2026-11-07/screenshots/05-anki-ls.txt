@@ -1,0 +1,1 @@
+-rw-r--r--@ 1 tom  staff  77392 Nov  7 08:40 /Users/tom/ChemDraw-Output/anki/chemdraw.apkg

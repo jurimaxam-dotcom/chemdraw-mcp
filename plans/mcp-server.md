@@ -15,7 +15,7 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 4. [x] `test:host` grün gegen HEAD `feef949`: **rc=0, 167 Prüfungen** (vorher drei veraltete Erwartungen: SN1-Titel SMILES→Namen, Schritte SN1 6/Fischer 8, „D-glucose“ seit `41da7c4` Pyranosering→Haworth; Fischer-Fall jetzt `aldehydo-D-glucose`, `cce71b0`/`feef949`). **Nebenbefund für Jay:** soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern? Heute: Ring + Haworth.
 5. [x] `generate_spectrum` nimmt `"IR"` wie `"ir"` (`cce71b0`, Test `test_spectrum_type_is_case_insensitive` erst rot, dann grün).
 6. [ ] 3D-Knopf im Molekülpanel fehlt (W1-Rest); `generate_3d` geht nur über den Chat.
-7. [ ] Desktop-Handtests der W1/W2-Tools: **9 Haken** (Welle 1/2 unten, je „→ Strang B Schritt n“); läuft als Strang B mit Screenshots unter `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/`; bekannt: Spektrum/DC verliert die Toolwahl gegen Desktops eingebautes `visualize`.
+7. [ ] Desktop-Handtests der W1/W2-Tools (Strang B, 07.11., Screenshots in `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Owner hat 07/09/10/06 selbst gesehen): **4 von 9 belegt** (Ibuprofen-Kette, 3D, Spektrum — Desktop wählte diesmal `generate_spectrum`, nicht `visualize` —, DC) · **2 warten auf Jays Rechte-Klick** (Mechanismus, Titration: Werkzeug + Argumente stimmen, Dialog „Always allow“) · **3 nicht belegt, weil das Modell kein Werkzeug rief** (IR-Vorhersage, pH, Lookup → Routing-Fälle, keine Produktfehler). Nebenbefunde: Export PNG schreibt nach `~/ChemDraw-Output/png/` ohne sichtbare Rückmeldung; Spektrum-Labels 1750/1690 überlappen.
 8. [ ] Welle 3: zweiter Konnektor `chemdraw-pharma` (5 Haken, nicht begonnen).
 9. [ ] README hochwertig: 2 von 4 erledigt (`.mcpb` zuerst, Tool-Tabelle — `65800df`); offen: Profiles mit `chemdraw-pharma`, danach Shorts (`chemdraw-vermarktung`).
 
@@ -135,18 +135,18 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 
 - [x] generate_mechanism Serverseite: ehrliche Lehrbuch-Galerie SN1/SN2/Fischer, englische Fehler,
   DoD 1–5 (`142e581`; `test_server_mechanism.py::test_title_names_the_textbook_example_when_it_falls_back`)
-- [ ] generate_mechanism Desktop-Handtest → Strang B Schritt 2 (frühere Doku `998386d` liegt vor den
+- [ ] generate_mechanism Desktop-Handtest → Strang B Schritt 2 (frühere Doku `998386d` liegt vor den **Stand 07.11.: Werkzeug + Argumente richtig, Desktop zeigt Rechte-Dialog „Always allow“ — Klick ist Jays Hand (`screenshots/06-sn2-rechte-dialog.jpg`)**
   Server-Änderungen vom 07.11.)
 - [x] generate_3d Serverseite: Zäune ⇄ generate_molecule, 3 Routingfälle (`044e8d6`;
   `test_structure3d.py::test_methane_becomes_tetrahedral_with_hydrogens`,
   `test_server_profiles.py::test_mvp_neighbours_fence_towards_newly_enabled_tools`)
-- [ ] generate_3d Desktop-Handtest → Strang B Schritt 3
+- [x] generate_3d Desktop-Handtest — belegt 07.11. 08:45, `generate_3d` gewählt, drehbares Kugel-Stab-Panel (`screenshots/07-3d.jpg`, Owner gesehen) → Strang B Schritt 3
 - [ ] 3D-Knopf im Molekülpanel (lazy wie All H); heute nur Chat-Weg über `generate_3d`
   (fehlt: `chemdraw_tool/ui/src/MoleculeView.jsx:250-252` kennt nur Skelett/All H/Fischer/Haworth).
   Stereo-Klick ist **nicht** offen: „Show variants" seit 0.6.0 (`fd709cc`).
 - [x] lookup Serverseite: KEGG exakter Name, englische Ausgabe, keine leeren Zeilen (`ed2dee2`;
   `test_server_lookups.py::test_lookup_pathway_takes_the_exact_name_not_the_first_fuzzy_hit`)
-- [ ] lookup Desktop-Handtest → Strang B Schritt 9
+- [ ] lookup Desktop-Handtest → Strang B Schritt 9 **Stand 07.11.: Modell antwortete aus eigenem Wissen mit eigener Grafik, kein Werkzeug (`screenshots/13*`) → Routing-Fall**
   Notiert, nicht behoben: 6–10 s je Aufruf; ChEBI-Zeitüberschreitung erscheint als „No ChEBI entry
   found"; Familiennamen („xylene") → „not found" statt Isomerauswahl (lookup umgeht den Resolver).
 
@@ -155,28 +155,28 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 - [x] predict_spectrum Serverseite: nimmt Namen über `resolve()` (`3945648`;
   `test_server_spectro.py::test_a_compound_name_is_resolved_instead_of_rejected`).
   Notiert: Ausgabe doppelt („3 signal(s) for 8 hydrogens" in Kopf und Bullet).
-- [ ] predict_spectrum Desktop-Handtest → Strang B Schritt 4
+- [ ] predict_spectrum Desktop-Handtest → Strang B Schritt 4 **Stand 07.11.: Modell antwortete aus eigenem Wissen, rief kein Werkzeug (`screenshots/08*`) → Routing-Fall für `evals/tool-routing`**
 - [x] generate_spectrum Serverseite: Transmission multipliziert, Exportknopf, eigener Auswahltext,
   `"IR"` groß/klein egal (`c6c847c`, `6ba60ca`, `cce71b0`;
   `test_spectrum.py::test_overlapping_strong_ir_bands_never_clip_to_zero`,
   `test_server_spectrum.py::test_spectrum_type_is_case_insensitive`)
-- [ ] generate_spectrum Desktop-Toolwahl gegen eingebautes `visualize` (rot laut `0c36b4b`) → Strang B Schritt 5;
+- [x] generate_spectrum Desktop-Toolwahl — belegt 07.11. 08:47: Desktop wählte `generate_spectrum`, nicht `visualize` (`screenshots/09-spektrum.jpg`, Owner gesehen; Beschriftungen 1750/1690 überlappen) gegen eingebautes `visualize` (rot laut `0c36b4b`) → Strang B Schritt 5;
   nicht weiter an der Beschreibung drehen ohne Desktop-Messung. Notiert: 12–19 KB Modelltext.
 - [x] generate_tlc Serverseite: englische Fehler, erster Zaun, 3 Routingfälle, Exportknopf
   (`90cfd7b`, `d6098a9`, Host `2c9a71a`; `test_tlc.py::test_error_messages_are_english`)
-- [ ] generate_tlc Desktop-Toolwahl (rot laut `0c36b4b`) → Strang B Schritt 6.
+- [x] generate_tlc Desktop-Toolwahl — belegt 07.11. 08:47: `generate_tlc`, Rf 0,30/0,60 + Co-Spot (`screenshots/10-dc.jpg`, Owner gesehen) (rot laut `0c36b4b`) → Strang B Schritt 6.
   Notiert: Flecken 0,50/0,52 überdecken ihre Rf-Beschriftung; 8–16 KB Modelltext.
 - [x] generate_titration_curve + generate_species_distribution Serverseite: absteigende pKa → Fehler,
   Pufferpunkte auf der Kurve, englische Fehler (`6093b88`, `a08e3cb`, Host `5eb9c43`;
   `test_server_plots.py::test_descending_pka_values_are_rejected`,
   `test_ph_plots.py::test_pufferpunkte_liegen_auf_der_kurve`).
   Notiert: 17–24 KB Modelltext; `notes` leer — EP-Volumen/-pH nur im Bild.
-- [ ] Titration/Speziesverteilung Desktop-Handtest (zuletzt 0/4 laut `a6d6e86`) → Strang B Schritt 7
+- [ ] Titration/Speziesverteilung Desktop-Handtest (zuletzt 0/4 laut `a6d6e86`) → Strang B Schritt 7 **Stand 07.11.: Werkzeug + Parameter richtig, Rechte-Dialog offen — Jays Klick (`screenshots/11-titration-rechte-dialog.jpg`)**
 - [x] calculate_ph Serverseite (Jay 31.10.: Welle 2): Text-Tool, Zäune beidseitig, 16 Tools / 12 Panels
   (`71223ed`; `test_ph_calc.py::test_acetic_acid_matches_the_textbook_value`,
   `test_server_profiles.py::test_default_and_explicit_mvp_offer_exactly_the_mvp_tools`);
   README-Zeile und Bild (`README.md:60`, `assets/calculate-ph.png`)
-- [ ] calculate_ph Desktop-Handtest → Strang B Schritt 8
+- [ ] calculate_ph Desktop-Handtest → Strang B Schritt 8 **Stand 07.11.: Modell rechnete selbst (pH 2,88 richtig), rief kein Werkzeug (`screenshots/12*`) → Routing-Fall**
 - Randnotiz: generate_molecule-Auswahltext bei ~2010 B — der nächste Zaun dort braucht Kürzung.
 
 ### Welle 3 — Vertiefung: zweiter Konnektor (nach 0.7.0)
@@ -386,7 +386,7 @@ Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein
 - [~] Payload: `MoleculePayload` bekommt `svg_stereo` und `mol3d` — für Stereo überholt durch Lazy-Entscheid in `fd709cc` („Show variants" lädt nach); `mol3d` bleibt Teil des 3D-Knopfs (Welle 1)
 - [ ] Panel: Reiter **Struktur · Stereo · 3D · Daten**; 3D-Ansicht als wiederverwendbare Komponente (aus `Molecule3DView` herausgelöst, gleiche Drehung) (Rest: 3D, siehe Welle 1)
 - [ ] Tests: Host-Test klickt durch alle vier Reiter; Komponententest je Ansicht; Payload-Parität (Python ⇄ App.jsx) (teilweise: Host klickt Show variants `host.e2e.mjs:390`, Fischer/Haworth `:425`, Data `:344-349`; 3D fehlt)
-- [ ] 10-Sekunden-Test „Zeichne Ibuprofen" → Stereo (Show variants) → Data: geht an Strang B Schritt 1 (Codex-Screenshots), nicht an Jay; 3D-Schritt erst mit 3D-Knopf
+- [x] 10-Sekunden-Test — belegt 07.11. 08:38–08:40: Show variants → (R) → Data CAS 51146-57-7 → Export PNG → Anki-Import-Dialog (`screenshots/01…05`, `desktop-handtest.md`) „Zeichne Ibuprofen" → Stereo (Show variants) → Data: geht an Strang B Schritt 1 (Codex-Screenshots), nicht an Jay; 3D-Schritt erst mit 3D-Knopf
 
 #### Phase 2 — Seitenpanel und Layout (C) → 0.5.1
 - [ ] Gestaltungsgrundsätze in `styles.css` als Tokens (Abstände, Schriftgrößen, Kartenstil), nicht pro View (teilweise: `--radius*`, `--shadow-card` in `styles.css:12,190`; Abstände/Schriftgrößen fehlen)

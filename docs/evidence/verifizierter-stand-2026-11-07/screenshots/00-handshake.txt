@@ -1,0 +1,8 @@
+Startbefehl aus der Claude-Desktop-Config (/Users/tom/Library/Application Support/Claude/claude_desktop_config.json):
+  /opt/homebrew/bin/uv --directory /Users/tom/Documents/projects/chemdraw-mcp run chemdraw-tool-server
+
+Erwartet laut Python-Server: 16 Tools, davon 12 mit Panel.
+Handshake laeuft (initialize → tools/list, Inspector via npx) …
+Gemeldet vom laufenden Server: 16 Tools, davon 12 mit Panel.
+
+✅ Handshake gruen: 16 Tools, 12 mit Panel — der registrierte Befehl spricht MCP.
