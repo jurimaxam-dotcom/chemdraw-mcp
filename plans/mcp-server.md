@@ -4,7 +4,8 @@
 
 - **Geprüft 07.11. 09:04 (Owner):** Rechte-Dialoge **nicht geklickt** — Sidebar zeigt beide Chats „Awaiting input“, AX-Dump beider Chats: „Waiting for approval: chemdraw-tool: Generate mechanism/Generate titration curve“ mit Decline · Always allow (⇧⌘↩) · Allow once; `~/ChemDraw-Output/server.log` (DEBUG) seit 08:47:37 still, Desktop-Fenster war geschlossen (Prozess 18854 lebt, nicht neu gestartet). Screenshots `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/14-sn2-dialog-0905.png`, `15-titration-dialog-0905.png`. Beide Chats stehen jetzt offen vorn. `mcp-user-tool-toggles.json` (30.10.) ist **kein** Rechtestand (listet generate_3d/spectrum/tlc, die heute ohne Dialog liefen).
 - **Erledigt 07.11. 09:19:** Jay hat beide Dialoge geklickt; Strang B Schritte 2 und 7 belegt (Screenshots 16–20, Owner gesehen), Haken in Welle 1/2 gesetzt → Strang B 6/9. Protokoll `docs/evidence/verifizierter-stand-2026-11-07/desktop-handtest.md` nachgetragen.
-- **Nächster Schritt:** Punkt 6 „Stand für Jay“ (3D-Knopf im Molekülpanel) in dieser Session bauen → Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` grün → Release 0.9.0 vorbereiten (Version heben, CHANGELOG, `.mcpb`; `./scripts/publish-registry.sh` erst nach Jays Klick).
+- **Erledigt 07.11. 09:40:** 3D-Knopf `0320a0c`; Gate: ruff grün, pytest 8372 grün + 1 Netzflackern (`test_literal_hit_has_no_found_as`, NCI-Timeout, einzeln grün), Bundle frisch, `test:host` rc=0.
+- **Nächster Schritt:** Release 0.9.0 vorbereiten (Version heben, CHANGELOG-Datum, `.mcpb`, Handshake) — **Desktop-Neustart + 3D-Knopf-Blick erst nach Jays Zoom-Kurs** (läuft seit 09:30); Publish bleibt Jays Klick.
 - **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern (heute Pyranosering + Haworth, seit `41da7c4`)? (2) Release-Klick 0.9.0 bleibt Jays Hand. (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht offen (seine Sammlung).
 - **Erledigt und belegt (07.11.):** Punkte 1–5 unter „Stand für Jay“; Plan-Audit Strang A (`c21a7fc`); Desktop-Handtest Strang B 4/9 (`9047570`); Owner-Abnahme `docs/evidence/verifizierter-stand-2026-11-07/owner-abnahme.md`; Fahrplan-Artifact v3.
 - **Prüfmethoden, die gelten:** kein Desktop-Haken ohne selbst gesehenen Screenshot; fremde Plan-Zeilen sind Behauptungen (Commit/Test/Datei:Zeile zeigen); Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` vor jedem Release-Schritt.
@@ -25,7 +26,7 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 3. [x] README-GIF-Entwurf als WIP gesichert `449ed3d` (keine Aufnahme, Assets unverändert); Aufnahme folgt unter „Danach“.
 4. [x] `test:host` grün gegen HEAD `feef949`: **rc=0, 167 Prüfungen** (vorher drei veraltete Erwartungen: SN1-Titel SMILES→Namen, Schritte SN1 6/Fischer 8, „D-glucose“ seit `41da7c4` Pyranosering→Haworth; Fischer-Fall jetzt `aldehydo-D-glucose`, `cce71b0`/`feef949`). **Nebenbefund für Jay:** soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern? Heute: Ring + Haworth.
 5. [x] `generate_spectrum` nimmt `"IR"` wie `"ir"` (`cce71b0`, Test `test_spectrum_type_is_case_insensitive` erst rot, dann grün).
-6. [ ] 3D-Knopf im Molekülpanel fehlt (W1-Rest); `generate_3d` geht nur über den Chat.
+6. [x] 3D-Knopf im Molekülpanel — gebaut `0320a0c` (07.11. 09:40): Chip „3D“ neben All H, holt `generate_3d` per Bridge beim ersten Klick, Cache danach, Export PNG pausiert in 3D; DOM-Tests 98 grün (3 neue, erst rot), Host-E2E grün mit Abschnitt 3d2 (`screenshots/21-host-3d-knopf.jpg`, Owner gesehen). **Desktop-Blick steht aus** (braucht Desktop-Neustart für das neue Bundle — nach Jays Zoom-Kurs).
 7. [x] Desktop-Handtests der W1/W2-Tools (Strang B, 07.11., Screenshots in `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Owner gesehen): **6 von 9 belegt** (Ibuprofen-Kette, 3D, Spektrum, DC, seit 09:19 nach Jays Rechte-Klick auch SN2-Mechanismus Step 1/3→2/3 und Titrationskurve mit ÄP 25 mL) · **3 nicht belegt, weil das Modell kein Werkzeug rief** (IR-Vorhersage, pH, Lookup → Routing-Fälle, keine Produktfehler). Nebenbefunde: Export PNG schreibt nach `~/ChemDraw-Output/png/` ohne sichtbare Rückmeldung; Spektrum-Labels 1750/1690 überlappen.
 8. [ ] Welle 3: zweiter Konnektor `chemdraw-pharma` (5 Haken, nicht begonnen).
 9. [ ] README hochwertig: 2 von 4 erledigt (`.mcpb` zuerst, Tool-Tabelle — `65800df`); offen: Profiles mit `chemdraw-pharma`, danach Shorts (`chemdraw-vermarktung`).
@@ -152,7 +153,7 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
   `test_structure3d.py::test_methane_becomes_tetrahedral_with_hydrogens`,
   `test_server_profiles.py::test_mvp_neighbours_fence_towards_newly_enabled_tools`)
 - [x] generate_3d Desktop-Handtest — belegt 07.11. 08:45, `generate_3d` gewählt, drehbares Kugel-Stab-Panel (`screenshots/07-3d.jpg`, Owner gesehen) → Strang B Schritt 3
-- [ ] 3D-Knopf im Molekülpanel (lazy wie All H); heute nur Chat-Weg über `generate_3d`
+- [x] 3D-Knopf im Molekülpanel (lazy wie All H) — `0320a0c`, Host-Screenshot `screenshots/21-host-3d-knopf.jpg`; Desktop-Blick nach Neustart offen
   (fehlt: `chemdraw_tool/ui/src/MoleculeView.jsx:250-252` kennt nur Skelett/All H/Fischer/Haworth).
   Stereo-Klick ist **nicht** offen: „Show variants" seit 0.6.0 (`fd709cc`).
 - [x] lookup Serverseite: KEGG exakter Name, englische Ausgabe, keine leeren Zeilen (`ed2dee2`;
