@@ -95,6 +95,14 @@ export default function MoleculeView({ data }) {
   const shown = drawingCache[drawing] ? drawing : "skeletal";
   const { svg, atoms } = drawingCache[shown] || { svg: data.svg, atoms: data.atoms };
 
+  // „2D“: zurück zur Skelettformel — sie steckt im Payload, nichts zu laden.
+  function showSkeletal() {
+    wanted3d.current = false;
+    setShow3d(false);
+    wantedDrawing.current = "skeletal";
+    setDrawing("skeletal");
+  }
+
   async function toggleDrawing(next) {
     // Aus 3D heraus holt der Klick die Zeichnung zurück — auch wenn ihr Knopf
     // vor dem 3D-Klick schon gedrückt war; erst der nächste Klick geht zur Skelettformel.
@@ -206,6 +214,7 @@ export default function MoleculeView({ data }) {
     [app, query, sheet]
   );
 
+  const is3d = show3d && Boolean(conformer);
   const stereoCount = (data.stereoWarnings || []).length;
   const canShowVariants = Boolean(query) && stereoCount > 0 && stereoCount <= MAX_OPEN_STEREO;
 
@@ -262,38 +271,47 @@ export default function MoleculeView({ data }) {
       </header>
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
-          <div className="structure-layout" data-layout-3d={show3d && conformer ? "" : undefined}>
-            {show3d && conformer
-              ? <div className="structure-canvas structure-3d" data-view-3d="">
-                  <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
-                </div>
-              : <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />}
+          <div className="structure-layout" data-layout-3d={is3d ? "" : undefined}>
+            {/* Zeichenfläche und Ansicht-Achse als eine Spalte: die Achse sitzt direkt
+                unter Zeichnung oder Kuhle, vor den Kernwerten (Design-Kritik Rang 3). */}
+            <div className="structure-main">
+              {is3d
+                ? <div className="structure-canvas structure-3d" data-view-3d="">
+                    <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
+                  </div>
+                : <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />}
+              {(views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
+                <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
+                  title="Skeletal formula">2D</AxisButton>
+                {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
+                  <AxisButton key={t.key} pressed={!show3d && shown === t.key} busy={drawingBusy === t.key}
+                    onClick={() => toggleDrawing(t.key)}
+                    title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</AxisButton>)}
+                {query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
+                  title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</AxisButton>}
+              </div>}
+            </div>
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
               <Fact label="Molar mass" value={molarMass(props.mw)} />
               <Fact label="CAS" value={props.cas} copy={props.cas} />
             </dl>
           </div>
-          {(views.length > 0 || query) && <div className="structure-tools">
-            {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
-              <button key={t.key} type="button" className="chip-toggle" aria-pressed={!show3d && shown === t.key}
-                aria-busy={drawingBusy === t.key} onClick={() => toggleDrawing(t.key)}
-                title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</button>)}
-            {query && <button type="button" className="chip-toggle" aria-pressed={show3d} aria-busy={conformerBusy}
-              onClick={toggle3d} title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</button>}
-          </div>}
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
-          {show3d && conformer && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens{conformer.files?.sdf && <> · SDF: <span title={conformer.files.sdf}>{displayPath(conformer.files.sdf)}</span></>}</p>}
-          {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
-          <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
-            variantsBusy={variantsLoading} />
-          {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
-          {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
-            <h3 className="section-label">Functional groups</h3>
-            <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
-            <GroupNote groups={groups} hoveredGroup={hoveredGroup} />
-          </section>}
+          {is3d && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens{conformer.files?.sdf && <> · SDF: <span title={conformer.files.sdf}>{displayPath(conformer.files.sdf)}</span></>}</p>}
+          {/* Stereo, Gruppen und der Haworth-Satz beziehen sich auf die 2D-Zeichnung — in 3D aus. */}
+          {!is3d && <>
+            {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
+            <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
+              variantsBusy={variantsLoading} />
+            {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
+            {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
+              <h3 className="section-label">Functional groups</h3>
+              <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
+              <GroupNote groups={groups} hoveredGroup={hoveredGroup} />
+            </section>}
+          </>}
         </div>
       ) : (
         <div id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
@@ -309,6 +327,15 @@ const DRAWING_TOGGLES = [
   { key: "fischer", label: "Fischer", title: "Fischer projection" },
   { key: "haworth", label: "Haworth", title: "Haworth projection" },
 ];
+
+// Ein Knopf der Ansicht-Achse. Lädt er, dreht sich derselbe Spinner wie am
+// Daten-Reiter — aria-busy allein sähe aus wie ein toter Klick.
+function AxisButton({ pressed, busy = false, onClick, title, children }) {
+  return <button type="button" aria-pressed={pressed} aria-busy={busy}
+    onClick={onClick} title={title}>
+    {busy && <span className="seg-spinner" aria-hidden="true" />}{children}
+  </button>;
+}
 
 function Note({ children }) {
   return <div className="panel-note" role="status">{children}</div>;

@@ -23,6 +23,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - **The 3D bowl follows the theme and the bonds show chemistry.** The light square and inner frame are gone, bowl, contact shadow, carbon and hydrogen take light or dark colours from the theme, each bond half carries its atom colour and thins with depth, double and triple bonds are drawn as parallel lines, aromatic bonds as solid plus dashed, and atoms are sized by covalent radius.
+- **One view axis right under the drawing.** `2D · All H · Fischer · Haworth · 3D` is now a single segment directly below the drawing or bowl, before the key facts; a loading button shows a spinner, and 3D mode hides the stereo line and functional groups, which describe the 2D drawing.
+- **The 3D model turns gently into place when it appears** (about 1.2 s, off with reduced motion, stops on touch); a cancelled drag no longer keeps rotating, and the cursor shows `grabbing` while dragging.
 - **The 3D model fills the panel.** The `3D` chip now gives the ball-and-stick
   model the full panel width as a square (key facts move below it), and the
   molecule is scaled by its bounding radius instead of its largest axis value,

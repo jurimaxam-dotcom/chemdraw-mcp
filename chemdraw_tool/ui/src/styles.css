@@ -212,7 +212,8 @@ svg { display: block; max-width: 100%; max-height: 100%; }
   gap: 5px;
   white-space: nowrap;
 }
-.seg button[aria-selected="true"] {
+.seg button[aria-selected="true"],
+.seg button[aria-pressed="true"] {
   background: var(--bg);
   color: var(--fg);
   box-shadow: none;
@@ -335,7 +336,14 @@ button:active { filter: brightness(0.92); }
 
 /* Unbestimmte Stereoelemente: ruhige Hinweiszeile, Hover/Klick lässt die Atome leuchten. */
 .stereo-note { margin-top: 10px; font-size: 13px; color: var(--fg-muted); --stereo-color: #d6336c; }
-.structure-tools { display: flex; gap: 8px; padding-top: 8px; }
+/* Ansicht-Achse (2D · All H · Fischer · Haworth · 3D) direkt unter Zeichnung oder Kuhle:
+   dasselbe Segment wie Structure ⇄ Data, eine Reihe statt Chips unter den Kernwerten. */
+/* Grid statt Flex: StructureCanvas trägt inline flex: 1 1 70% und würde in einer Flex-Spalte in die Höhe wachsen. */
+.structure-main { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 8px; min-width: 0; }
+.view-axis { justify-self: start; }
+.structure-layout[data-layout-3d] .view-axis { justify-self: center; }
+/* Lädt ein Knopf, darf der Klick nicht tot aussehen: Spinner im Knopf (seg-spinner) und Wartecursor. */
+.seg button[aria-busy="true"] { cursor: progress; color: var(--fg); }
 /* 3D hinter dem Knopf: dieselbe Fläche wie die 2D-Zeichnung, der Viewer füllt sie. */
 /* Die Kuhle ist die einzige Form: kein Rahmen, kein Innenabstand um sie herum. */
 .structure-3d { display: flex; padding: 0; border: 0; }
@@ -344,6 +352,9 @@ button:active { filter: brightness(0.92); }
 .stereo-row > .stereo-note { margin-top: 0; }
 .chip-toggle { font: inherit; font-size: 12px; color: var(--fg-muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .chip-toggle[aria-pressed="true"] { color: var(--fg); background: var(--bg-alt); }
+.chip-toggle[aria-busy="true"] { cursor: progress; color: var(--fg); display: inline-flex; align-items: center; gap: 6px; }
+.chip-toggle[aria-busy="true"]::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--border); border-top-color: var(--fg-muted); animation: seg-spin 0.7s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .chip-toggle[aria-busy="true"]::before { animation-duration: 2.4s; } }
 .chip-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .stereo-note > span, .stereo-note-button { display: inline-flex; align-items: center; gap: 8px; }
 .stereo-note-button { font: inherit; color: inherit; background: none; border: 1px dashed var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }

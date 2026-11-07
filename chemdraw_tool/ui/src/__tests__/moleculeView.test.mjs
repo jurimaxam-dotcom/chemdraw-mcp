@@ -384,3 +384,82 @@ test("ruft das Modell view selbst, startet das Panel auf der Ansicht — mit Kn�
   assert.equal(calls.length, 0, "mitgelieferte Ansicht darf nicht nachgeladen werden");
   unmount();
 });
+
+// --- E2 (Design-Kritik 07.11., Rang 3): eine Ansicht-Achse direkt unter der Fläche ---
+
+const STEREO = { kind: "atom", atoms: [1], label: "Unspecified stereocenter" };
+
+test("eine Ansicht-Achse: 2D · All H · 3D direkt unter der Zeichenfläche, vor den Kernwerten", () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, unmount } = renderMolecule(data);
+  const axes = container.querySelectorAll("[data-view-axis]");
+  assert.equal(axes.length, 1, `genau eine Achse erwartet, ${axes.length} gefunden`);
+  assert.equal(container.querySelectorAll(".structure-tools").length, 0, "alte Chip-Reihe steht noch da");
+  const axis = axes[0];
+  assert.deepEqual([...axis.querySelectorAll("button")].map((b) => b.textContent.trim()), ["2D", "All H", "3D"]);
+  // Jeder Ansicht-Knopf genau einmal im Panel.
+  for (const label of ["2D", "All H", "3D"]) {
+    assert.equal([...container.querySelectorAll("button")].filter((b) => b.textContent.trim() === label).length, 1, label);
+  }
+  const canvas = container.querySelector(".structure-canvas");
+  const facts = container.querySelector(".key-facts");
+  const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.ok(follows(canvas, axis), "Achse steht nicht hinter der Zeichenfläche");
+  assert.ok(follows(axis, facts), "Achse steht nicht vor den Kernwerten");
+  assert.equal(buttonByText(container, "2D").getAttribute("aria-pressed"), "true", "2D nicht als aktiv markiert");
+  unmount();
+});
+
+test("„2D“ holt die Skelettformel aus All H und aus 3D zurück, ohne Server-Aufruf", async () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, calls, unmount } = renderMolecule(data, (req) =>
+    req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
+  await click(buttonByText(container, "All H"));
+  await click(buttonByText(container, "2D"));
+  assert.equal(Boolean(container.querySelector("[data-all-h]")), false, "2D zeigt noch All H");
+  assert.equal(buttonByText(container, "2D").getAttribute("aria-pressed"), "true");
+  await click(buttonByText(container, "3D"));
+  await click(buttonByText(container, "2D"));
+  assert.equal(Boolean(container.querySelector("[data-view-3d]")), false, "2D lässt 3D stehen");
+  assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "false");
+  assert.deepEqual(calls.map((c) => c.name), ["generate_molecule", "generate_3d"], "2D darf nichts laden");
+  unmount();
+});
+
+test("ein ladender Ansicht-Knopf zeigt einen Spinner, nicht nur aria-busy", async () => {
+  let release;
+  const pending = new Promise((resolve) => { release = resolve; });
+  const { container, unmount } = renderMolecule(MOLECULE, async () => { await pending; return lookupSuccess(CONFORMER); });
+  await click(buttonByText(container, "3D"));
+  const chip = buttonByText(container, "3D");
+  assert.equal(chip.getAttribute("aria-busy"), "true");
+  assert.ok(chip.querySelector(".seg-spinner"), "kein sichtbarer Spinner im 3D-Knopf");
+  await act(async () => { release(); await pending; });
+  assert.equal(Boolean(buttonByText(container, "3D").querySelector(".seg-spinner")), false, "Spinner bleibt nach dem Laden");
+  assert.ok(container.querySelector("[data-view-3d]"));
+  unmount();
+});
+
+test("styles.css gibt ladenden Chips einen sichtbaren Zustand", async () => {
+  const { readFileSync } = await import("node:fs");
+  const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.chip-toggle\[aria-busy="true"\][^{]*\{[^}]*\S[^}]*\}/, "keine Stilregel für .chip-toggle[aria-busy=\"true\"]");
+  assert.doesNotMatch(css, /\.structure-tools\s*\{/, "alte Chip-Reihe noch im Stylesheet");
+});
+
+test("im 3D-Modus fehlen Stereo-Zeile und Gruppen-Chips, der Bedienhinweis bleibt; zurück in 2D sind sie wieder da", async () => {
+  const data = { ...MOLECULE, stereoWarnings: [STEREO] };
+  assert.ok(data.functionalGroups?.length, "Fixture ohne Gruppen");
+  const { container, unmount } = renderMolecule(data, () => lookupSuccess(CONFORMER));
+  const has = (sel) => Boolean(container.querySelector(sel));
+  assert.ok(has("[data-testid='stereo-note']") && has(".group-section"), "Ausgangslage ohne Stereo/Gruppen");
+  await click(buttonByText(container, "3D"));
+  assert.ok(has("[data-view-3d]"));
+  assert.equal(has("[data-testid='stereo-note']"), false, "Stereo-Zeile in 3D");
+  assert.equal(Boolean(buttonByText(container, "Show variants")), false, "Show variants in 3D");
+  assert.equal(has(".group-section"), false, "Gruppen-Chips in 3D");
+  assert.match(textOf(container), /Drag to rotate/);
+  await click(buttonByText(container, "3D"));
+  assert.ok(has("[data-testid='stereo-note']") && has(".group-section"), "nach Rückkehr fehlen Stereo/Gruppen");
+  unmount();
+});

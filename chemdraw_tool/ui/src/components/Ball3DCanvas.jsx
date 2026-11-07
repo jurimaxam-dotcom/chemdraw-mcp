@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // Leichtgewichtiger Ball-and-Stick-Viewer: Rotationsmatrix + Painter's
 // Algorithm in purem SVG. Bewusst kein WebGL/3Dmol — die Single-File-App
@@ -85,9 +85,49 @@ function bondStrands(bond, side) {
   return [[0, 1, false]];
 }
 
+// Ruhelage der Kamera. Die Einblend-Drehung (Design-Kritik 3.9) startet etwa
+// 40° davor um die y-Achse und gleitet mit ease-out hierher — einmal, dann
+// Stillstand: zeigt ohne Text, dass sich das Modell drehen lässt.
+const REST = { x: -0.4, y: 0.6 };
+const INTRO_TURN = 0.7;      // rad um y
+const INTRO_MS = 1200;
+
+// Ohne matchMedia (jsdom, sehr alte Hosts) bleibt der Viewer ruhig — Bewegung
+// nur, wenn wir wissen, dass der Nutzer sie nicht abbestellt hat.
+function introWanted() {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
-  const [rot, setRot] = useState({ x: -0.4, y: 0.6 });
+  const [intro] = useState(introWanted);
+  const [rot, setRot] = useState(() => (intro ? { x: REST.x, y: REST.y - INTRO_TURN } : REST));
+  const [dragging, setDragging] = useState(false);
   const drag = useRef(null);
+  const introFrame = useRef(0);
+
+  // Einblend-Drehung: requestAnimationFrame, Abbruch beim Anfassen (stopIntro)
+  // und beim Aushängen. Kein setState im Effekt selbst — erst im ersten Frame.
+  useEffect(() => {
+    if (!intro) return undefined;
+    let t0 = null;
+    const step = (now) => {
+      if (t0 === null) t0 = now;
+      const t = Math.min(1, (now - t0) / INTRO_MS);
+      const eased = 1 - (1 - t) ** 3;
+      setRot({ x: REST.x, y: REST.y - INTRO_TURN * (1 - eased) });
+      introFrame.current = t < 1 ? requestAnimationFrame(step) : 0;
+    };
+    introFrame.current = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(introFrame.current);
+      introFrame.current = 0;
+    };
+  }, [intro]);
+  const stopIntro = () => {
+    if (introFrame.current) cancelAnimationFrame(introFrame.current);
+    introFrame.current = 0;
+  };
 
   // Bindungsradius (größter Abstand vom Ursprung): eine Drehung ändert den Betrag
   // nicht, also bleibt jedes Atom in jeder Lage innerhalb der Kuhle — und ein
@@ -221,8 +261,11 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
   };
 
   const onPointerDown = (e) => {
+    stopIntro();
     drag.current = { x: e.clientX, y: e.clientY, rot };
-    e.currentTarget.setPointerCapture(e.pointerId);
+    setDragging(true);
+    // jsdom und manche Hosts kennen keine Pointer-Capture.
+    if (e.pointerId != null) e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e) => {
     if (!drag.current) return;
@@ -233,8 +276,11 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
       y: drag.current.rot.y + dx * 0.01,
     });
   };
-  const onPointerUp = () => {
+  // Loslassen, Abbruch durch den Host (pointercancel) oder verlorene Capture:
+  // alle drei beenden das Ziehen — sonst dreht die nächste Mausbewegung ohne Taste.
+  const endDrag = () => {
     drag.current = null;
+    setDragging(false);
   };
 
   return (
@@ -247,13 +293,15 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
         flex: 1,
         width: "100%",
         height: "100%",
-        cursor: "grab",
+        cursor: dragging ? "grabbing" : "grab",
         touchAction: "none",
         ...style,
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onLostPointerCapture={endDrag}
     >
       <defs>
         {/* Konkave Mulde: Lichtpunkt unterhalb der Mitte, obere
