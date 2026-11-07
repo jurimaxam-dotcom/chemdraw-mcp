@@ -20,6 +20,17 @@ sign-up, no ChemDraw licence.
 2. Open a **new chat** and say *"Use the ChemDraw MCP: draw thalidomide"*.
 3. Try one of the [prompts below](#prompts-to-try) or the [tool table](#tools).
 
+**Other clients** (need [uv](https://docs.astral.sh/uv/)):
+
+- **Claude Code:** `claude plugin marketplace add jurimaxam-dotcom/chemdraw-mcp`,
+  then `claude plugin install chemdraw-mcp@chemdraw-mcp`.
+- **VS Code:** [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_chemdraw--mcp-0098FF)](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522chemdraw-mcp%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522chemdraw-mcp%2522%255D%257D)
+- **Cursor:** add `{"command":"uvx","args":["chemdraw-mcp"]}` as server
+  `chemdraw-mcp` in `mcp.json`, or open
+  `cursor://anysphere.cursor-deeplink/mcp/install?name=chemdraw-mcp&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJjaGVtZHJhdy1tY3AiXX0=`
+  in the browser.
+- **Codex:** `codex mcp add chemdraw -- uvx chemdraw-mcp`
+
 Other ways in (PyPI, cloning the repository, editing the config by hand) are
 under [Installation](#installation).
 

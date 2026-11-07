@@ -1,4 +1,4 @@
-"""Eine Version, vier Traeger — und die Registry lehnt ab, wenn sie auseinanderlaufen.
+"""Eine Version, fuenf Traeger — und die Registry lehnt ab, wenn sie auseinanderlaufen.
 
 server.json wird beim Registry-Publish gegen PyPI validiert, das Bundle pinnt die
 PyPI-Version beim Start. Ein vergessener Bump an einer der Stellen faellt erst
@@ -21,6 +21,12 @@ def test_server_json_carries_the_package_version():
     data = json.loads((ROOT / "server.json").read_text())
     assert data["version"] == _pyproject_version()
     assert data["packages"][0]["version"] == _pyproject_version()
+
+
+def test_claude_plugin_carries_the_package_version():
+    """Das Plugin pinnt seine Version: ohne Bump sehen Nutzer kein Update."""
+    data = json.loads((ROOT / "plugins" / "chemdraw-mcp" / ".claude-plugin" / "plugin.json").read_text())
+    assert data["version"] == _pyproject_version()
 
 
 def test_bundle_sources_take_the_version_from_pyproject():

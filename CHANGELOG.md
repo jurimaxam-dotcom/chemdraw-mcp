@@ -6,6 +6,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Claude Code plugin marketplace in the repo; install links for VS Code and Cursor in the README.
+
 ## [0.9.0] — 2026-11-07
 
 ### Added

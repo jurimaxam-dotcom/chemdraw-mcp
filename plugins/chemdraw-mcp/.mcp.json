@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "chemdraw": {
+      "command": "uvx",
+      "args": ["chemdraw-mcp"],
+      "env": {
+        "CHEMDRAW_PROFILE": "mvp"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "chemdraw-mcp",
+  "description": "chemdraw-mcp: chemical structures, reactions and lab graphics from Claude, rendered locally with RDKit.",
+  "owner": {
+    "name": "jurimaxam-dotcom"
+  },
+  "plugins": [
+    {
+      "name": "chemdraw-mcp",
+      "source": "./plugins/chemdraw-mcp",
+      "description": "Claude draws the chemistry it talks about: structures, reactions, mechanisms and lab graphics, right in the chat."
+    }
+  ]
+}
