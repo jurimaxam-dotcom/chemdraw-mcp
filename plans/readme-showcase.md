@@ -13,6 +13,7 @@
 | A GIFs (3 Stück) + Design-Review | Codex, Tisch `20261107-104104-readme-gif-3d-chip` | beauftragt 10:58, Kontingent ab 11:45 | Dateien selbst ansehen (Frames, Größe), Protokoll-Screenshots |
 | B README-Text als Produktseite | Opus 5.5 (Agent, Worktree, Branch `readme-showcase`) | gestartet 10:58 | Diff lesen, `uv run pytest tests/test_readme.py`, Gate, dann Merge |
 | C Zusammenbau + Gate + Desktop-Blick | Claude (Owner) | wartet auf A und B | README auf GitHub rendern (gh-Vorschau), Bilder prüfen |
+| D Design-Kritik Panel-UI + 3D (Jay 11:02: „3D cleaner und eindrucksvoller, Panel mit allen Tools besser sortiert“) | Opus 5.5 (Agent, Worktree, nur Bericht) | gestartet 11:03 | Bericht lesen, Vorschläge zu einem Bild für die iPad-Runde verdichten (`~/.claude/docs/designrunden-ipad.md`); **kein Code vor Jays Zustimmung** |
 
 ## Molekülwahl (Owner, geprüft 10:56 am Resolver: Stereozentren / Schweratome)
 
@@ -57,3 +58,19 @@ Dateinamen in README eintragen, HTML-Kommentare entfernen. 3. Codex-Design-Revie
 - Jedes Bild/GIF stammt aus einem echten Lauf in Claude Desktop (Caption nennt Prompt und Klicks).
 - Jede Zahl im README (Toolzahl, Panels, Profile) ist test-gedeckt (`tests/test_readme.py`, Taxonomie-Tests).
 - Kein Satz verspricht etwas, das der Code nicht tut (Owner liest jede Behauptung gegen `server.py`/UI).
+
+## Auftrag D — Opus: Design-Kritik Panel-UI und 3D (nur lesen, nur Bericht)
+
+Ergebnis: `docs/design/panel-kritik-2026-11-07.md` mit (1) Ist-Aufnahme der Panel-Oberfläche je View
+(MoleculeView, Molecule3DView, Database, Reaction, Mechanism, Spectrum, TLC, Titration, Species, Anki, Ambiguous,
+Batch/Compare) — welche Knöpfe/Chips/Abschnitte, in welcher Reihenfolge, was doppelt oder uneinheitlich ist;
+(2) Nielsen-Heuristiken 0–4 je View; (3) 3D: was die Kuhle eindrucksvoller und cleaner macht (Licht, Schatten,
+Hintergrund dunkel/hell je Theme, Atomgrößen, Bindungsdarstellung, Drehgefühl, Auto-Rotation beim ersten
+Einblenden, Vollbild-Umschalter), jeweils mit Aufwand S/M/L und Datei:Zeile; (4) ein Vorschlag für eine
+einheitliche Panel-Grammatik (Kopf · Haupt-Fläche · Chips · Kernwerte · Aktionen) als ASCII-Skizze pro Panel-Typ.
+Alle Befunde melden, nicht filtern. Kein Code ändern.
+
+## Codex-Session (Jay 10:58)
+
+Codex läuft nicht (Tisch: „kein herdr-Pane“). Start: `cc --codex chemdraw-mcp` (herdr-Workspace, rechte Pane)
+— Jays Hand oder Owner per `cc-oeffnen`, sobald das Kontingent frei ist (11:45). Der Tisch-Faden liegt bereit.
