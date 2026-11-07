@@ -6,6 +6,16 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **3D button in the molecule panel.** Next to All H / Fischer / Haworth the
+  structure view now has a `3D` chip: the first click calls `generate_3d`
+  for the molecule on screen and swaps the drawing for the rotatable
+  ball-and-stick viewer (explicit hydrogens, SDF written as usual), a second
+  click or any 2D chip returns to the drawing; the conformer is cached, so
+  switching back and forth costs one call. Before, 3D was only reachable
+  through the chat.
+
 ### Changed
 
 - **Mechanisms follow textbook conventions more closely.** SN2 draws the

@@ -417,6 +417,23 @@ try {
   prüfe(serverCalls.length === vorher + 1, "Zweiter All-H-Klick kommt aus dem Cache");
   await frame.getByRole("button", { name: "All H" }).click();
 
+  // 3d2. 3D-Knopf (Plan Punkt 6, 07.11.): generate_3d per Bridge, Viewer ersetzt die Zeichnung, Rückweg per Klick
+  const vor3d = serverCalls.length;
+  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
+  prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
+  prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
+    "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
+  prüfe(await frame.getByRole("button", { name: "Export as PNG" }).count() === 0, "Export PNG pausiert im 3D-Modus");
+  await page.screenshot({ path: join(tmpdir(), "panel-host-3d-button.png") });
+  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
+  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.locator("[data-view-3d]").waitFor({ timeout: 5000 });
+  prüfe(serverCalls.length === vor3d + 1, "Zweiter 3D-Klick kommt aus dem Cache");
+  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
+
   // 3e. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung per Klick
   prüfe(!(await frame.getByRole("button", { name: "Fischer" }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
     "Methylphenidate hat keinen Projektionsknopf");

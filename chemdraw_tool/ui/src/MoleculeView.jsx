@@ -7,9 +7,11 @@ import ExportPngButton from "./components/ExportPngButton";
 import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
 import StereoNote, { useStereoHighlight } from "./components/StereoNote";
+import Ball3DCanvas from "./components/Ball3DCanvas";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 import { useAppBridge } from "./AppContext";
+import { displayPath } from "./utils/displayPath";
 import { extractToolData } from "./utils/toolData";
 
 // Ein ruhiger Satz statt eines Stacktrace: der Klick muss sichtbar landen,
@@ -20,6 +22,8 @@ export const VIEW_LOAD_ERROR =
   "This drawing could not be loaded. Click the button again to retry.";
 export const VARIANTS_LOAD_ERROR =
   "The stereoisomers could not be loaded. Click Show variants again to retry.";
+export const CONFORMER_LOAD_ERROR =
+  "The 3D model could not be loaded. Click 3D again to retry.";
 
 // Spiegel der Server-Grenze (generator.MAX_OPEN_STEREO): mehr offene Elemente
 // waeren 16+ Bilder, der Server lehnt ab — dann gar kein Knopf.
@@ -44,6 +48,15 @@ export default function MoleculeView({ data }) {
   const [drawingFailed, setDrawingFailed] = useState(false);
   const drawingInFlight = useRef(false);
   const wantedDrawing = useRef(drawing);
+  // 3D-Knopf: dieselbe Achse wie All H, nur ein anderes Werkzeug dahinter
+  // (generate_3d, lazy, dann Cache). Zeigt er, weicht die 2D-Zeichnung —
+  // eine Zeichenfläche, nie zwei. Ein 2D-Knopf holt sie zurück.
+  const [conformer, setConformer] = useState(null);
+  const [show3d, setShow3d] = useState(false);
+  const [conformerBusy, setConformerBusy] = useState(false);
+  const [conformerFailed, setConformerFailed] = useState(false);
+  const conformerInFlight = useRef(false);
+  const wanted3d = useRef(false);
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
   const [sheet, setSheet] = useState(null);
@@ -83,7 +96,12 @@ export default function MoleculeView({ data }) {
   const { svg, atoms } = drawingCache[shown] || { svg: data.svg, atoms: data.atoms };
 
   async function toggleDrawing(next) {
-    if (shown === next) {
+    // Aus 3D heraus holt der Klick die Zeichnung zurück — auch wenn ihr Knopf
+    // vor dem 3D-Klick schon gedrückt war; erst der nächste Klick geht zur Skelettformel.
+    const was3d = show3d;
+    wanted3d.current = false;
+    setShow3d(false);
+    if (shown === next && !was3d) {
       wantedDrawing.current = "skeletal";
       setDrawing("skeletal");
       return;
@@ -113,6 +131,38 @@ export default function MoleculeView({ data }) {
     } finally {
       setDrawingBusy("");
       drawingInFlight.current = false;
+    }
+  }
+
+  async function toggle3d() {
+    if (show3d) {
+      wanted3d.current = false;
+      setShow3d(false);
+      return;
+    }
+    wanted3d.current = true;
+    if (conformer) {
+      setShow3d(true);
+      return;
+    }
+    if (conformerInFlight.current) return;
+    conformerInFlight.current = true;
+    setConformerBusy(true);
+    setConformerFailed(false);
+    try {
+      if (!app?.callServerTool) throw new Error("keine App-Bruecke");
+      const args = { name_or_smiles: query };
+      if (data.name && data.name !== smiles) args.label = data.name;
+      const result = await app.callServerTool({ name: "generate_3d", arguments: args });
+      const payload = extractToolData(result);
+      if (!payload?.atoms?.length) throw new Error("kein Konformer");
+      setConformer(payload);
+      if (wanted3d.current) setShow3d(true);
+    } catch {
+      setConformerFailed(true);
+    } finally {
+      setConformerBusy(false);
+      conformerInFlight.current = false;
     }
   }
 
@@ -206,27 +256,35 @@ export default function MoleculeView({ data }) {
         </div>
         <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
-          {svg && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
+          {svg && !show3d && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
           {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
         </div>
       </header>
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
           <div className="structure-layout">
-            <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />
+            {show3d && conformer
+              ? <div className="structure-canvas structure-3d" data-view-3d="">
+                  <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
+                </div>
+              : <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />}
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
               <Fact label="Molar mass" value={molarMass(props.mw)} />
               <Fact label="CAS" value={props.cas} copy={props.cas} />
             </dl>
           </div>
-          {views.length > 0 && <div className="structure-tools">
+          {(views.length > 0 || query) && <div className="structure-tools">
             {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
-              <button key={t.key} type="button" className="chip-toggle" aria-pressed={shown === t.key}
+              <button key={t.key} type="button" className="chip-toggle" aria-pressed={!show3d && shown === t.key}
                 aria-busy={drawingBusy === t.key} onClick={() => toggleDrawing(t.key)}
-                title={shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</button>)}
+                title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</button>)}
+            {query && <button type="button" className="chip-toggle" aria-pressed={show3d} aria-busy={conformerBusy}
+              onClick={toggle3d} title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</button>}
           </div>}
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
+          {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
+          {show3d && conformer && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens{conformer.files?.sdf && <> · SDF: <span title={conformer.files.sdf}>{displayPath(conformer.files.sdf)}</span></>}</p>}
           {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
           <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
             variantsBusy={variantsLoading} />

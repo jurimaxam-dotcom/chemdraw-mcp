@@ -240,6 +240,85 @@ test("„All H“ holt die Zeichnung beim ersten Klick, danach aus dem Cache", a
   unmount();
 });
 
+// 3D-Knopf: dieselbe Achse wie All H, nur holt er das Konformer per
+// generate_3d (lazy, dann Cache) und ersetzt die Zeichenfläche durch den
+// drehbaren Kugel-Stab-Viewer. Vorher ging 3D nur über den Chat.
+const CONFORMER = {
+  type: "molecule3d", name: "Aspirin",
+  atoms: [{ symbol: "C", x: 0, y: 0, z: 0 }, { symbol: "O", x: 1.2, y: 0, z: 0 }],
+  bonds: [{ a: 0, b: 1, order: 2 }],
+  files: { sdf: "/Users/x/ChemDraw-Output/3d/aspirin.sdf" },
+};
+
+test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus dem Cache", async () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, calls, unmount } = renderMolecule(data, (req) =>
+    req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
+  const viewer = () => container.querySelector("[data-view-3d]");
+  assert.equal(Boolean(viewer()), false, "3D-Viewer ohne Klick");
+
+  await click(buttonByText(container, "3D"));
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, "generate_3d");
+  assert.deepEqual(calls[0].arguments, { name_or_smiles: MOLECULE.properties.smiles, label: MOLECULE.name });
+  assert.ok(viewer(), "3D-Viewer nicht sichtbar");
+  assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
+  assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
+  assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
+
+  await click(buttonByText(container, "3D"));
+  assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");
+  assert.ok(container.querySelector(".structure-drawing"));
+  await click(buttonByText(container, "3D"));
+  assert.ok(viewer());
+  assert.equal(calls.length, 1, "zweiter Klick muss aus dem Cache kommen");
+
+  // All H verdrängt 3D — eine Zeichenfläche, nie zwei.
+  await click(buttonByText(container, "All H"));
+  assert.equal(Boolean(viewer()), false, "3D und All H zugleich");
+  assert.ok(container.querySelector("[data-all-h]"));
+  assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "false");
+  unmount();
+});
+
+test("All H → 3D → All H zeigt die gecachte H-Zeichnung, nicht die Skelettformel; Export PNG pausiert in 3D", async () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, calls, unmount } = renderMolecule(data, (req) =>
+    req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
+  // Boolean statt Element in assert.equal: schlägt der Vergleich fehl, versucht node:assert das
+  // jsdom-Element zu inspizieren und hängt (zirkulärer Baum) — der Test wird dann nie rot.
+  const hasExport = () => Boolean(container.querySelector('button[aria-label="Export as PNG"]'));
+  assert.equal(hasExport(), true, "Export-Knopf fehlt in 2D");
+
+  await click(buttonByText(container, "All H"));
+  await click(buttonByText(container, "3D"));
+  assert.equal(hasExport(), false, "Export PNG würde in 3D die 2D-Zeichnung exportieren");
+  await click(buttonByText(container, "All H"));
+  assert.ok(container.querySelector("[data-all-h]"), "All H nach 3D fällt auf die Skelettformel zurück");
+  assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "true");
+  assert.equal(Boolean(container.querySelector("[data-view-3d]")), false);
+  assert.equal(calls.length, 2, "All H aus dem Cache, 3D aus dem Cache");
+  assert.equal(hasExport(), true, "Export-Knopf kommt mit der Zeichnung zurück");
+  unmount();
+});
+
+test("„3D“ gibt es auch ohne Zusatzansichten, und ein Fehlschlag bleibt wiederholbar", async () => {
+  let fail = true;
+  const { container, calls, unmount } = renderMolecule(MOLECULE, () => {
+    if (fail) return lookupFailure();
+    return lookupSuccess(CONFORMER);
+  });
+  assert.ok(buttonByText(container, "3D"), "3D-Knopf fehlt ohne views");
+  await click(buttonByText(container, "3D"));
+  assert.equal(Boolean(container.querySelector("[data-view-3d]")), false);
+  assert.match(textOf(container), /3D model could not be loaded/);
+  fail = false;
+  await click(buttonByText(container, "3D"));
+  assert.ok(container.querySelector("[data-view-3d]"), "nach Fehlschlag nicht wiederholbar");
+  assert.equal(calls.length, 2);
+  unmount();
+});
+
 test("ohne Ansichten keine Knöpfe", () => {
   const { container, unmount } = renderMolecule(MOLECULE);
   for (const label of ["All H", "Fischer", "Haworth"]) assert.ok(!buttonByText(container, label), label);
