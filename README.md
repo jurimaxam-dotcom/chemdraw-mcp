@@ -9,23 +9,25 @@
 
 **Claude draws the chemistry it talks about: structures, reactions, mechanisms and lab graphics, right in the chat.**
 
-Without it, Claude describes a molecule in words or hands you a SMILES string
-to paste somewhere else. With chemdraw-mcp, the structure appears in the chat
-as an interactive panel and as PNG and SVG files, rendered on your machine
-with RDKit. Free and open source (Apache-2.0). No API key, no sign-up, no
-ChemDraw licence.
+Interactive molecule panels in the chat and PNG/SVG files on disk, rendered
+locally with RDKit. Free and open source (Apache-2.0). No API key, no
+sign-up, no ChemDraw licence.
+
+## Quick start
+
+1. **[Download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**
+   (`chemdraw-mcp-<version>.mcpb`), double-click it and confirm in Claude Desktop.
+2. Open a **new chat** and say *"Use the ChemDraw MCP: draw thalidomide"*.
+3. Try one of the [prompts below](#prompts-to-try) or the [tool table](#tools).
+
+Other ways in (PyPI, cloning the repository, editing the config by hand) are
+under [Installation](#installation).
 
 <!-- TODO Owner: Bild ersetzen durch demo-views.gif im Ordner assets (Thalidomid).
      alt: The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet
      Caption: "Draw thalidomide" in Claude Desktop, then All H, Show variants, (S) and Data. Only waiting times are shortened. -->
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="800"></p>
 <p align="center"><sub>"Draw aspirin" in Claude Desktop, then hover over the functional groups and click Data. Only the PubChem loading wait is shortened.</sub></p>
-
-<!-- TODO Owner: Bild ersetzen durch demo-3d.gif im Ordner assets (Morphin).
-     alt: The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model, rotated by dragging
-     Caption: "Draw morphine" in Claude Desktop, then the 3D chip and a drag to rotate. Only waiting times are shortened. -->
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel, the key facts sit below it" width="800"></p>
-<p align="center"><sub>"Draw ibuprofen", then the <code>3D</code> chip. Screenshot from Claude Desktop, no editing.</sub></p>
 
 <!-- TODO Owner: einkommentieren, sobald demo-molecule.gif den Capsaicin-Lauf zeigt und der erste Slot auf demo-views.gif steht.
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The capsaicin panel: amide, phenol and ether light up in the structure on hover, then the PubChem data sheet" width="800"></p>
@@ -58,6 +60,10 @@ flat on paper become a rigid cage you can turn.
 - Drag to rotate. A second click returns to the drawing.
 - The conformer is cached, and the SDF file lands in `~/ChemDraw-Output/3d/`.
 
+<!-- TODO Owner: sobald demo-3d.gif (Morphin) da ist, wird es der einzige Hero oben; dieses Bild bleibt hier als Ergebnisbild. -->
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel, the key facts sit below it" width="440"></p>
+<p align="center"><sub>"Draw ibuprofen", then the <code>3D</code> chip. Cropped screenshot from Claude Desktop.</sub></p>
+
 ### Data, flashcards and files
 
 - Hover a functional group of capsaicin (amide, phenol, ether) and its atoms
@@ -74,11 +80,18 @@ flat on paper become a rigid cage you can turn.
 
 ## Prompts to try
 
+- *"Draw thalidomide"*, then click **Show variants** and pick (S).
+- *"Show morphine as a rotatable 3D model"*, or draw it and click **3D**.
+- *"Draw capsaicin"*, then hover a functional group or click **Data**.
+
+<details>
+<summary>More prompts: reactions, mechanisms and lab graphics</summary>
+
 | Prompt | What you get |
 |---|---|
 | *"Draw thalidomide"* | the structure, then `Show variants` for (R) and (S) |
 | *"Show morphine as a rotatable 3D model"* | a ball-and-stick model (`generate_3d`) |
-| *"Why is capsaicin poorly soluble in water?"* | the structure beside the answer, groups to hover |
+| *"Draw capsaicin and explain why it is poorly soluble in water"* | the structure beside the answer, groups to hover |
 | *"Draw adrenaline with all hydrogen atoms"* | the structure opened in the All H view |
 | *"Give me a data sheet for lysergic acid diethylamide"* | PubChem properties and GHS hazards (`lookup_molecule_data`) |
 | *"What is the difference between testosterone and estradiol?"* | both structures side by side, differences highlighted (`compare_molecules`) |
@@ -93,22 +106,13 @@ Curved-arrow mechanisms cover SN1, SN2 and Fischer esterification. For any
 other reaction, Claude draws the net scheme and says that the arrow mechanism
 is not drawn.
 
-## Quick start
-
-1. **[Download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**
-   (`chemdraw-mcp-<version>.mcpb`), double-click it and confirm in Claude Desktop.
-2. Open a **new chat** and say *"Use the ChemDraw MCP: draw thalidomide"*.
-3. Try a prompt from the list above or from the [tool table](#tools).
-
-Other ways in (PyPI, cloning the repository, editing the config by hand) are
-under [Installation](#installation).
+</details>
 
 ## Tools
 
-The default profile registers 16 tools, 15 of them in five areas plus the
-panel's internal `save_png`. Each description names the neighbouring tool to
-use instead, so the model can tell a drawing from a lookup from a calculation.
-Files go to `~/ChemDraw-Output/`.
+The default profile registers 16 tools, 12 of them with an interactive panel.
+Files go to `~/ChemDraw-Output/`. How the model picks the right tool is
+explained under [Development](#development).
 
 | Area | Tool | Example prompt | Panel |
 |---|---|---|---|
@@ -140,6 +144,9 @@ What each tool does in detail, the options on the drawing tools (`formats`,
 Every picture below is the tool's own output, generated by
 `scripts/readme_bilder.py`.
 
+<details>
+<summary>Show the gallery</summary>
+
 <table>
   <tr>
     <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/aspirin-ir.png" alt="Schematic aspirin IR spectrum with separate ester and acid carbonyl bands" width="400"><br><sub><code>generate_spectrum</code></sub></td>
@@ -158,6 +165,9 @@ Every picture below is the tool's own output, generated by
     <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-3d.png" alt="Ball-and-stick projection of a caffeine conformer" width="400"><br><sub><code>generate_3d</code></sub></td>
   </tr>
 </table>
+
+</details>
+
 
 ## Installation
 
