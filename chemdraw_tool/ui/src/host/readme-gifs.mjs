@@ -5,9 +5,15 @@
 // Filmuhr nicht — Ladeframes kommen gar nicht erst ins Bild, statt nachträglich
 // herausgeschnitten zu werden. ffmpeg baut daraus GIFs mit eigener Palette.
 // usage: npm run readme:gifs [-- views 3d molecule] [--theme light|dark] [--molecule NAME]
+//        npm run panel:clips  (= --video: mp4-Rohmaterial für die Shorts, siehe unten)
 //        (Netz nötig: PubChem; ohne --theme entstehen beide Fassungen)
 // Ausgabe: assets/demo-<szene>-<theme>.gif (helle Fassung zusätzlich als demo-<szene>.gif) — die zwei Hero-Szenen (views, 3d) haben einen
 // festen Ausschnitt (HERO), damit sie im README nebeneinander auf gleicher Höhe enden.
+// --video: dieselben Szenen und Klickfolgen als mp4 (H.264, yuv420p, 30 fps, 1080 px breit) für die
+// Remotion-Montage in chemdraw-vermarktung — aufgenommen mit deviceScaleFactor 2 (600 → 1200 px, auf
+// 1080 skaliert, damit die Schrift im 1080×1920-Short scharf bleibt), längere Haltezeiten, keine
+// 10-s-Kappe. Je Clip <szene>-<theme>.mp4, .beats.json (Klickzeiten in Sekunden) und .png (Standbild bei
+// 40 %) nach ~/Documents/projects/chemdraw-vermarktung/out/panel-clips/ (dort nicht versioniert).
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -15,7 +21,7 @@ import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { tmpdir, homedir } from "node:os";
 import { execFileSync } from "node:child_process";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -33,6 +39,30 @@ const THEMES = {
 // mit Kuhle, Achse, Kennwerten, Drag-Hinweis und Fußzeile (seit E3) plus 12 px Rand unten wie oben.
 const HERO = { breite: BREITE, hoehe: Number(process.env.HERO_HOEHE || 880) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
+
+// Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert), --video
+const gewählt = [], optionen = {};
+for (let i = 2; i < process.argv.length; i++) {
+  const a = process.argv[i];
+  const m = a.match(/^--(theme|molecule)(?:=(.*))?$/);
+  if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
+  else if (a === "--video") optionen.video = true;
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video)`);
+  else gewählt.push(a);
+}
+
+// Aufnahmemodus: GIF fürs README oder mp4-Rohmaterial für die Shorts. `takt` sind die Haltezeiten
+// der Szenen (ms); die GIF-Werte sind genau die bisherigen, Video hält länger (Klick-Pause 1,2 s,
+// Schlussstand 3 s), damit Einblendungen der Montage Platz haben.
+const MODI = {
+  gif: { scale: 1, ausgabe: assets, bild: "png", screenshot: {},
+    takt: { vorKlick: 120, start: 800, startViews: 1000, nachAllH: 1000, nach2D: 800, nachS: 1500, hover: 800, vor3D: 1300, zwischenZügen: 0, schluss3d: 1500, schlussDaten: 2000 } },
+  video: { scale: 2, fps: 30, bild: "jpg", screenshot: { type: "jpeg", quality: 95 }, ausgabe: join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "panel-clips"),
+    breite: 1080, sekunden: [12, 25],
+    takt: { vorKlick: 1200, start: 1500, startViews: 1500, nachAllH: 1200, nach2D: 1200, nachS: 1500, hover: 1200, vor3D: 2000, zwischenZügen: 1200, schluss3d: 3000, schlussDaten: 3000 } },
+};
+const MODUS = optionen.video ? MODI.video : MODI.gif;
+const TAKT = MODUS.takt;
 
 const hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
 await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: "iife", outfile: hostJs, logLevel: "error" });
@@ -56,7 +86,8 @@ function filmuhr() {
   };
 }
 
-async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, molecule }) {
+async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule }) {
+  if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = { ...args, name_or_smiles: molecule };
   const farbe = THEMES[theme];
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
@@ -64,7 +95,7 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
   if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
   const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
 
-  const context = await browser.newContext({ viewport: { width: BREITE, height: hoehe }, colorScheme: theme });
+  const context = await browser.newContext({ viewport: { width: BREITE, height: hoehe }, deviceScaleFactor: MODUS.scale, colorScheme: theme });
   const page = await context.newPage();
   await page.exposeFunction("__callTool", async (p) => neutral(await client.callTool(p)));
   await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
@@ -93,11 +124,11 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
     while (aufnahme) {
       if (!uhr.läuft) { await page.waitForTimeout(10); continue; }
       const t = uhr.jetzt();
-      const file = join(dir, `f${String(bilder.length).padStart(4, "0")}.png`);
+      const file = join(dir, `f${String(bilder.length).padStart(4, "0")}.${MODUS.bild}`);
       // Bricht die Szene mit einem Fehler ab, schließt der Kontext, bevor die Schleife endet —
       // dann darf der Screenshot-Fehler den eigentlichen Szenenfehler nicht verdecken.
       try {
-        await page.screenshot({ path: file, clip: { x: 0, y: 0, width: BREITE, height: hoehe } });
+        await page.screenshot({ path: file, clip: { x: 0, y: 0, width: BREITE, height: hoehe }, ...MODUS.screenshot });
       } catch (e) {
         if (!aufnahme || page.isClosed()) break;
         throw e;
@@ -113,18 +144,23 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
   }, [x, y, mitÜbergang]);
   const mitte = async (locator) => { const b = await locator.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
   const halten = (ms) => page.waitForTimeout(ms);
-  const zeigeAuf = async (locator) => {
+  // Beats für die Remotion-Montage: Filmzeit (= Sekunde im Clip), weil Wartezeiten herausgeschnitten sind
+  const beats = [{ art: "panel", t: 0 }];
+  const marke = (art, ziel) => beats.push({ art, t: Math.round(uhr.jetzt()) / 1000, ...(ziel ? { ziel } : {}) });
+  const zeigeAuf = async (locator, ziel) => {
     const [x, y] = await mitte(locator);
     await zeiger(x, y);
     await page.mouse.move(x, y, { steps: 8 });
     await halten(220); // Zeiger-Übergang .22 s
+    if (ziel) marke("hover", ziel);
   };
   // Klick mit kurzer Pause davor; bis `fertig` sichtbar ist, steht die Filmuhr
-  const klick = async (locator, fertig) => {
+  const klick = async (locator, fertig, ziel) => {
     await zeigeAuf(locator);
-    await halten(120);
+    await halten(TAKT.vorKlick);
     await page.evaluate(() => { document.getElementById("cursor").style.transform = "scale(.7)"; });
     await halten(100);
+    marke("klick", ziel);
     uhr.halt();
     await locator.click();
     await page.evaluate(() => { document.getElementById("cursor").style.transform = ""; });
@@ -140,11 +176,14 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
     const b = await locator.boundingBox();
     if (!b || b.y < 0 || b.y + b.height > hoehe) throw new Error(`ROT ${name}-${theme}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${hoehe})`);
   };
-  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild });
+  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke });
   const ende = uhr.jetzt();
+  marke("ende");
   aufnahme = false;
   await schleife;
   await context.close();
+  const quellFps = Number((bilder.length / (ende / 1000)).toFixed(1));
+  if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }) };
   const werte = gifBauen(`${name}-${theme}`, bilder, ende, fps, dir);
   // Alte Namen ohne Theme bleiben als Kopie der hellen Fassung: PyPI und ältere
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
@@ -152,9 +191,9 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
   return { szene: name, theme, ...werte };
 }
 
-function gifBauen(name, bilder, endeMs, fps, dir) {
+// concat-Demuxer: jedes Bild steht bis zum nächsten Zeitstempel, das letzte bis zum Szenenende
+function concatListe(name, bilder, endeMs, dir) {
   if (bilder.length < 10) throw new Error(`${name}: nur ${bilder.length} Bilder aufgenommen`);
-  // concat-Demuxer: jedes Bild steht bis zum nächsten Zeitstempel, das letzte bis zum Szenenende
   const zeilen = ["ffconcat version 1.0"];
   bilder.forEach((b, i) => {
     const bis = i + 1 < bilder.length ? bilder[i + 1].t : endeMs;
@@ -163,6 +202,11 @@ function gifBauen(name, bilder, endeMs, fps, dir) {
   zeilen.push(`file '${bilder.at(-1).file}'`);
   const liste = join(dir, "liste.txt");
   writeFileSync(liste, zeilen.join("\n") + "\n");
+  return liste;
+}
+
+function gifBauen(name, bilder, endeMs, fps, dir) {
+  const liste = concatListe(name, bilder, endeMs, dir);
   const ziel = join(assets, `demo-${name}.gif`);
   const filter = `fps=${fps},scale='min(${GRENZEN.breite},iw)':-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`;
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", liste, "-vf", filter, "-loop", "0", ziel]);
@@ -186,12 +230,61 @@ function prüfen(ziel) {
   return werte;
 }
 
+// Shorts-Rohmaterial: mp4 + Beats-Sidecar + Vorschau-Standbild bei 40 %
+function videoBauen(name, bilder, endeMs, dir, hoehe, beats, quelle) {
+  const liste = concatListe(name, bilder, endeMs, dir);
+  const ziel = join(MODUS.ausgabe, `${name}.mp4`);
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", liste,
+    "-vf", `fps=${MODUS.fps},scale=${MODUS.breite}:-2:flags=lanczos:out_range=tv,format=yuv420p`,
+    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", String(MODUS.fps), "-movflags", "+faststart", ziel]);
+  const werte = prüfenVideo(ziel, Math.round((hoehe * MODUS.breite) / BREITE / 2) * 2);
+  const vorschau = ziel.replace(/\.mp4$/, ".png");
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-ss", (werte.sekunden * 0.4).toFixed(2), "-i", ziel,
+    "-frames:v", "1", "-vf", "scale=360:-2:flags=lanczos", vorschau]);
+  // Flach für Menschen, `beats` in der Form von vermarktung/video/src/lib/beats.ts (Beat[])
+  const flach = {};
+  for (const b of beats) {
+    const basis = b.art === "panel" || b.art === "ende" ? b.art : b.ziel ?? b.art;
+    let k = basis;
+    for (let n = 2; k in flach; n++) k = `${basis}#${n}`;
+    flach[k] = b.t;
+  }
+  const sidecar = ziel.replace(/\.mp4$/, ".beats.json");
+  writeFileSync(sidecar, JSON.stringify({
+    clip: `${name}.mp4`, tool: quelle.tool, args: quelle.args,
+    video: { breite: werte.breite, hoehe: werte.hoehe, fps: MODUS.fps, sekunden: werte.sekunden },
+    marken: flach, beats,
+  }, null, 2) + "\n");
+  return { ...werte, beats: flach };
+}
+
+function prüfenVideo(ziel, sollHoehe) {
+  const probe = JSON.parse(execFileSync(FFPROBE, ["-v", "error", "-select_streams", "v:0",
+    "-show_entries", "stream=codec_name,pix_fmt,width,height,r_frame_rate,avg_frame_rate:format=duration", "-of", "json", ziel]).toString());
+  const st = probe.streams[0];
+  const werte = { datei: ziel, bytes: statSync(ziel).size, breite: st.width, hoehe: st.height,
+    sekunden: Number(Number(probe.format.duration).toFixed(2)), codec: st.codec_name, pixfmt: st.pix_fmt, fps: st.r_frame_rate };
+  const fehler = [];
+  if (st.codec_name !== "h264") fehler.push(`Codec ${st.codec_name} statt h264`);
+  if (st.pix_fmt !== "yuv420p") fehler.push(`Pixelformat ${st.pix_fmt} statt yuv420p`);
+  if (st.r_frame_rate !== `${MODUS.fps}/1` || st.avg_frame_rate !== `${MODUS.fps}/1`) fehler.push(`Bildrate ${st.r_frame_rate}/${st.avg_frame_rate} statt ${MODUS.fps}/1`);
+  if (st.width !== MODUS.breite) fehler.push(`Breite ${st.width} statt ${MODUS.breite}`);
+  if (st.height !== sollHoehe) fehler.push(`Höhe ${st.height} statt ${sollHoehe}`);
+  if (st.height > 1920) fehler.push(`Höhe ${st.height} > 1920 (passt nicht in 9:16)`);
+  const [lo, hi] = MODUS.sekunden;
+  if (!(werte.sekunden >= lo && werte.sekunden <= hi)) fehler.push(`Dauer ${werte.sekunden} s außerhalb ${lo}–${hi}`);
+  if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
+  console.log(`✔ ${ziel}: ${(werte.bytes / 1048576).toFixed(2)} MB, ${werte.breite}×${werte.hoehe}, ${werte.sekunden} s, ${werte.fps}`);
+  return werte;
+}
+
 // Datenblatt: CAS steht oft unter der Falz — kurz oben zeigen, nötigenfalls weich bis zur CAS-Zeile scrollen,
 // dann zeigt der Zeiger auf die Nummer (sonst schwebt er nach dem Scrollen über einer fremden Zeile)
-async function datenblattMitCas({ frame, page, halten, zeiger }, gesamtMs) {
+async function datenblattMitCas({ frame, page, halten, zeiger, marke }, gesamtMs) {
   const cas = frame.getByText("CAS No.", { exact: true }).first();
   if (!(await cas.count())) throw new Error("Datenblatt ohne CAS-Zeile");
   await halten(600);
+  marke("schluss", "data sheet");
   // Erst nur so weit, dass der Panel-Titel oben anliegt (über ihm steht nach einer
   // Varianten-Auswahl die Rückweg-Leiste): reicht das für die CAS-Zeile, bleibt der Titel
   // ganz im Bild — bis zum Anschlag gescrollt hätte ihn der Hero-Ausschnitt halb angeschnitten
@@ -222,7 +315,7 @@ async function datenblattMitCas({ frame, page, halten, zeiger }, gesamtMs) {
 const SZENEN = {
   // Hero links, Thalidomid: 2D → All H → 2D → Show variants → (S) mit Keil → Datenblatt
   views: {
-    tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, fps: 15, hero: true,
+    tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, videoHoehe: 890, fps: 15, hero: true, // Video: Datenblatt mit Rückweg-Leiste endet bei ~876 px
     async ablauf(werkzeug) {
       const { frame, halten, klick, imBild } = werkzeug;
       const achse = frame.locator("[data-view-axis]");
@@ -231,35 +324,36 @@ const SZENEN = {
       await frame.locator(".structure-canvas svg").first().waitFor();
       await imBild(achse, "Ansicht-Achse");
       await imBild(frame.locator(".key-facts"), "Kennwerte");
-      await halten(1000);
-      await klick(achsenKnopf("All H"), () => gedrückt("All H").waitFor({ timeout: 30000 }));
-      await halten(1000);
-      await klick(achsenKnopf("2D"), () => gedrückt("2D").waitFor({ timeout: 5000 }));
-      await halten(800);
-      await klick(frame.getByRole("button", { name: "Show variants" }), () => frame.locator("button.candidate").first().waitFor({ timeout: 30000 }));
+      await halten(TAKT.startViews);
+      await klick(achsenKnopf("All H"), () => gedrückt("All H").waitFor({ timeout: 30000 }), "All H");
+      await halten(TAKT.nachAllH);
+      await klick(achsenKnopf("2D"), () => gedrückt("2D").waitFor({ timeout: 5000 }), "2D");
+      await halten(TAKT.nach2D);
+      await klick(frame.getByRole("button", { name: "Show variants" }), () => frame.locator("button.candidate").first().waitFor({ timeout: 30000 }), "Show variants");
       const s = frame.locator("button.candidate").filter({ has: frame.locator(".candidate-label", { hasText: /^\(S\)/ }) });
       if (await s.count() !== 1) throw new Error("views: kein eindeutiger (S)-Kandidat: " + (await frame.locator(".candidate-label").allInnerTexts()).join(" · "));
-      await klick(s, () => frame.getByRole("button", { name: "All candidates" }).waitFor({ timeout: 30000 }));
-      await halten(1500);
-      await klick(frame.getByRole("tab", { name: "Data", exact: true }), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }));
-      await datenblattMitCas(werkzeug, 2000);
+      await klick(s, () => frame.getByRole("button", { name: "All candidates" }).waitFor({ timeout: 30000 }), "(S)");
+      await halten(TAKT.nachS);
+      await klick(frame.getByRole("tab", { name: "Data", exact: true }), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }), "Data");
+      await datenblattMitCas(werkzeug, TAKT.schlussDaten);
     },
   },
   // Hero rechts, Thalidomid: 3D-Chip → Einblend-Drehung → zwei Drehzüge per Pointer-Drag → Ruhe
   "3d": {
     tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, fps: 12, hero: true,
-    async ablauf({ frame, page, halten, klick, zeiger, mitte, imBild }) {
+    async ablauf({ frame, page, halten, klick, zeiger, mitte, imBild, marke }) {
       await frame.locator(".structure-canvas svg").first().waitFor();
-      await halten(800);
-      await klick(frame.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }));
+      await halten(TAKT.start);
+      await klick(frame.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
       await imBild(frame.locator("[data-view-3d]"), "3D-Kuhle");
       await imBild(frame.locator("[data-view-axis]"), "Ansicht-Achse");
       await imBild(frame.locator(".key-facts"), "Kennwerte");
       await imBild(frame.locator(".molecule-panel"), "Panel samt Drag-Hinweis");
-      await halten(1300); // Einblend-Drehung (1200 ms) läuft zu Ende
+      await halten(TAKT.vor3D); // Einblend-Drehung (1200 ms) läuft zu Ende
       const [cx, cy] = await mitte(frame.locator("[data-view-3d]"));
-      const zug = async (von, nach, ms) => {
+      const zug = async (von, nach, ms, ziel) => {
         await zeiger(...von); await page.mouse.move(...von, { steps: 6 }); await halten(320);
+        marke("klick", ziel);
         await page.mouse.down();
         // Nach Uhrzeit statt Schrittzahl: jeder Schritt kostet zwei Protokollrunden
         const start = Date.now();
@@ -272,44 +366,37 @@ const SZENEN = {
         }
         await page.mouse.up();
       };
-      await zug([cx - 150, cy], [cx + 150, cy + 20], 1800); // waagerecht: um die senkrechte Achse
-      await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1600); // senkrecht: um die waagerechte Achse
-      await halten(1500);
+      await zug([cx - 150, cy], [cx + 150, cy + 20], 1800, "drag horizontal"); // waagerecht: um die senkrechte Achse
+      if (TAKT.zwischenZügen) await halten(TAKT.zwischenZügen);
+      await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1600, "drag vertical"); // senkrecht: um die waagerechte Achse
+      marke("schluss", "3D model");
+      await halten(TAKT.schluss3d);
     },
   },
   // Capsaicin: Maus nacheinander über die Gruppen-Chips (Gruppe leuchtet) → Datenblatt
   molecule: {
-    tool: "generate_molecule", args: { name_or_smiles: "capsaicin" }, hoehe: 720, fps: 15,
+    tool: "generate_molecule", args: { name_or_smiles: "capsaicin" }, hoehe: 720, videoHoehe: 830, fps: 15, // Video: 830 px = ganzes Datenblatt samt Fußzeile (Footer endet bei ~811 px)
     async ablauf(werkzeug) {
       const { frame, halten, zeigeAuf, klick } = werkzeug;
       const gruppen = frame.locator("button.functional-group");
       await gruppen.first().waitFor();
-      await halten(800);
+      await halten(TAKT.start);
       const n = Math.min(await gruppen.count(), 5);
       for (let i = 0; i < n; i++) {
-        await zeigeAuf(gruppen.nth(i));
-        await halten(800);
+        await zeigeAuf(gruppen.nth(i), (await gruppen.nth(i).innerText()).trim().split("\n")[0]);
+        await halten(TAKT.hover);
       }
-      await klick(frame.getByRole("tab", { name: "Data", exact: true }), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }));
-      await datenblattMitCas(werkzeug, 2000);
+      await klick(frame.getByRole("tab", { name: "Data", exact: true }), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }), "Data");
+      await datenblattMitCas(werkzeug, TAKT.schlussDaten);
     },
   },
 };
 
-// Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert)
-const gewählt = [], optionen = {};
-for (let i = 2; i < process.argv.length; i++) {
-  const a = process.argv[i];
-  const m = a.match(/^--(theme|molecule)(?:=(.*))?$/);
-  if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule)`);
-  else gewählt.push(a);
-}
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 const themes = optionen.theme ? [optionen.theme] : Object.keys(THEMES);
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN);
 for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (views, 3d, molecule)`);
-mkdirSync(assets, { recursive: true });
+mkdirSync(MODUS.ausgabe, { recursive: true });
 const browser = await chromium.launch();
 const ergebnisse = [];
 try {
@@ -323,10 +410,11 @@ try {
   await browser.close();
   await client.close();
 }
-console.table(ergebnisse.map(({ datei, ...w }) => ({ datei: datei.replace(repo + "/", ""), ...w })));
+console.table(ergebnisse.map(({ datei, beats, ...w }) => ({ datei: datei.replace(repo + "/", "").replace(MODUS.ausgabe + "/", ""), ...w })));
+if (optionen.video) for (const e of ergebnisse) console.log(`  ${e.szene}-${e.theme} Beats: ${JSON.stringify(e.beats)}`);
 // Hero-Paar: jede Hero-Fassung hat exakt den HERO-Ausschnitt — damit sind views und 3d
 // gleich groß, auch wenn sie in getrennten Läufen entstehen
-const falsch = ergebnisse.filter((e) => SZENEN[e.szene].hero && (e.breite !== HERO.breite || e.hoehe !== HERO.hoehe));
+const falsch = ergebnisse.filter((e) => !optionen.video && SZENEN[e.szene].hero && (e.breite !== HERO.breite || e.hoehe !== HERO.hoehe));
 if (falsch.length) {
   console.error(`ROT: Hero-GIFs nicht ${HERO.breite}×${HERO.hoehe}: ` + falsch.map((e) => `${e.szene}-${e.theme} ${e.breite}×${e.hoehe}`).join(", "));
   process.exit(1);
