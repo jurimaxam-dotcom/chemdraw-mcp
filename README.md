@@ -27,8 +27,8 @@ under [Installation](#installation).
      keine Bildunterschriften. Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, Dark Theme, 600 px). -->
 <table>
   <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="440"></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="440"></td>
+    <td align="center" valign="top" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="400"></td>
+    <td align="center" valign="top" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="400"></td>
   </tr>
 </table>
 
