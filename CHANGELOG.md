@@ -79,9 +79,11 @@ this project uses [Semantic Versioning](https://semver.org/).
   consequence "D-glucose" now resolves to PubChem's pyranose ring (Haworth
   button) instead of the open chain; the open chain is "aldehydo-D-glucose".
   On the project's 711-name evaluation (German trivial names, IUPAC names,
-  SMILES) all resolver changes together take the correct identities from
-  591 at 0.8.0 to 681–683 (83 % → 96 %; measured 2026-11-07 against the
-  revised reference list, before the last resolver commit).
+  SMILES; `docs/evidence/masse-eval-2026-11/`) all resolver changes together
+  take the correct identities from 591 (0.8.0, run of 2026-11-05) to 683
+  (run of 2026-11-07, 83 % → 96 %); a handful of reference entries were
+  corrected between the two runs, and the last resolver commit came after
+  the second.
 
 - **RDKit 2026.9.1; some drawings change orientation.** The lock moves from
   RDKit 2026.3.6 to 2026.9.1, whose 2D layout mirrors or rotates a few

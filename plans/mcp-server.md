@@ -6,8 +6,9 @@
 - **Erledigt 07.11. 09:19:** Jay hat beide Dialoge geklickt; Strang B Schritte 2 und 7 belegt (Screenshots 16–20, Owner gesehen), Haken in Welle 1/2 gesetzt → Strang B 6/9. Protokoll `docs/evidence/verifizierter-stand-2026-11-07/desktop-handtest.md` nachgetragen.
 - **Erledigt 07.11. 09:40:** 3D-Knopf `0320a0c`; Gate: ruff grün, pytest 8372 grün + 1 Netzflackern (`test_literal_hit_has_no_found_as`, NCI-Timeout, einzeln grün), Bundle frisch, `test:host` rc=0.
 - **Erledigt 07.11. 10:05 — Release 0.9.0 ist vorbereitet:** Version 0.9.0 in pyproject/server.json/uv.lock (`f93cf29`), CHANGELOG datiert und nach Doku-Sichtung (Opus, 27 Befunde, `docs/evidence/verifizierter-stand-2026-11-07/doku-sichtung-0.9.0.md`) vollständig; tools/development/installation/README nachgezogen; `release_check.py --tag v0.9.0` ok; Handshake 16/12 grün; `test:host` rc=0; CI auf main grün.
-- **Nächster Schritt — Jays Klick:** `gh release create v0.9.0 --title "chemdraw-mcp 0.9.0" --notes-from-tag` (oder Notes aus CHANGELOG § 0.9.0) → `publish.yml` baut PyPI, `.mcpb` und Registry; danach `isLatest` prüfen (`./scripts/publish-registry.sh` nur falls der Job es nicht tut).
-- **Offen danach:** Desktop-Neustart + Blick auf den 3D-Knopf in Claude Desktop (nach Jays Zoom-Kurs; Prozess 18854 läuft noch mit altem Bundle), README-GIF, Welle 3.
+- **Nächster Schritt — Jays Klick (erst nach dem Desktop-Blick auf den 3D-Knopf, siehe „Offen danach“):**
+  `gh release create v0.9.0 --target <HEAD-SHA> --title "0.9.0" --notes-file <(awk '/^## \[0.9.0\]/{f=1;next} /^## \[0.8.0\]/{exit} f' CHANGELOG.md)` — Muster von 0.8.0; `publish.yml` baut PyPI, `.mcpb` und Registry; danach `isLatest` prüfen (`./scripts/publish-registry.sh` nur falls der Job es nicht tut).
+- **Vor dem Klick (Claude, sobald Zoom zu ist — Monitor armiert 10:20):** Desktop neu starten, Handshake, „Zeichne Ibuprofen“ → 3D-Knopf per AX klicken, Screenshot nach `verifiziert/`, Owner sieht ihn an; dann Haken in Welle 1 ohne Vorbehalt. Danach: README-GIF, Welle 3.
 - **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern (heute Pyranosering + Haworth, seit `41da7c4`)? (2) Release-Klick 0.9.0 bleibt Jays Hand. (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht offen (seine Sammlung).
 - **Erledigt und belegt (07.11.):** Punkte 1–5 unter „Stand für Jay“; Plan-Audit Strang A (`c21a7fc`); Desktop-Handtest Strang B 4/9 (`9047570`); Owner-Abnahme `docs/evidence/verifizierter-stand-2026-11-07/owner-abnahme.md`; Fahrplan-Artifact v3.
 - **Prüfmethoden, die gelten:** kein Desktop-Haken ohne selbst gesehenen Screenshot; fremde Plan-Zeilen sind Behauptungen (Commit/Test/Datei:Zeile zeigen); Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` vor jedem Release-Schritt.
@@ -16,7 +17,7 @@
 
 ## Stand für Jay — 07.11.2026, 08:30 (Claude, selbst gemessen; Abschnitte darunter = Verlauf)
 
-**Läuft (Beweise heute):** Release 0.8.0 (05.11.) · Handshake mit dem Desktop-Befehl grün (16 Tools / 12 Panels) ·
+**Läuft (Beweise heute, Stand 10:20):** Release 0.9.0 vorbereitet (Version, CHANGELOG nach Doku-Sichtung, release_check ok, CI grün — Klick siehe „Weiter bei“) · 3D-Knopf im Panel (`0320a0c`) · Strang B 6/9 · Handshake mit dem Desktop-Befehl grün (16 Tools / 12 Panels) ·
 `pytest` 8369 passed / 16 skipped · 21 echte Aufrufe gegen alle 16 MVP-Tools: 19 OK, 1 korrekter Fehler
 (`not_found`), 1 Lücke (unten) · Bilder geprüft (Ibuprofen, Veresterung ⇌, Morphin/Codein-Vergleich) ·
 Panel kann: Skelett · All H · Fischer/Haworth · Stereo-Varianten mit Keil (R/S-Picker) · Data · Export PNG · Add to Anki ·
