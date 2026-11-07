@@ -208,6 +208,10 @@ button:active { filter: brightness(0.92); }
 .structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
 .structure-canvas { height: 320px; border: 1px solid var(--border); border-radius: 12px; }
 .structure-drawing { display: flex; align-items: center; justify-content: center; }
+/* 3D (Jay 07.11.): die Kuhle bekommt die volle Panelbreite als Quadrat, die Kernwerte rutschen als Reihe darunter. */
+.structure-layout[data-layout-3d] { grid-template-columns: minmax(0, 1fr); }
+.structure-layout[data-layout-3d] .structure-canvas { display: flex; height: auto; aspect-ratio: 1 / 1; width: min(100%, 720px); margin-inline: auto; }
+.structure-layout[data-layout-3d] .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
 .structure-drawing > svg { width: 100%; height: 100%; }
 .molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
 .section-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 8px; }

@@ -262,7 +262,7 @@ export default function MoleculeView({ data }) {
       </header>
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
-          <div className="structure-layout">
+          <div className="structure-layout" data-layout-3d={show3d && conformer ? "" : undefined}>
             {show3d && conformer
               ? <div className="structure-canvas structure-3d" data-view-3d="">
                   <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />

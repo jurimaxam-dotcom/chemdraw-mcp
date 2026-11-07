@@ -22,6 +22,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **The 3D model fills the panel.** The `3D` chip now gives the ball-and-stick
+  model the full panel width as a square (key facts move below it), and the
+  molecule is scaled by its bounding radius instead of its largest axis value,
+  so a flat molecule fills the bowl and a diagonal one no longer pokes out of
+  it when rotated.
 - **The single `chemdraw-tool` entry is migrated.** The installer replaces it
   with the two connectors (the backup keeps the old entry); `chemdraw-doctor`
   reports an old entry, a missing second connector and an unstartable

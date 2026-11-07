@@ -419,8 +419,13 @@ try {
 
   // 3d2. 3D-Knopf (Plan Punkt 6, 07.11.): generate_3d per Bridge, Viewer ersetzt die Zeichnung, Rückweg per Klick
   const vor3d = serverCalls.length;
+  const breite2d = (await frame.locator(".structure-canvas").boundingBox())?.width ?? 0;
   await frame.getByRole("button", { name: "3D" }).click();
   await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
+  // Jay 07.11.: 3D größer — die Kuhle nimmt die volle Panelbreite, die Kernwerte rutschen darunter
+  const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
+  prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 1 && box3d.width >= breite2d && box3d.height > 320 * 1.3,
+    `3D-Kuhle nutzt die Panelbreite als Quadrat (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px)`);
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
     "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
@@ -428,6 +433,7 @@ try {
   await page.screenshot({ path: join(tmpdir(), "panel-host-3d-button.png") });
   await frame.getByRole("button", { name: "3D" }).click();
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
+  prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 0, "Zurück in 2D: Kernwerte wieder neben der Zeichnung");
   await frame.getByRole("button", { name: "3D" }).click();
   await frame.locator("[data-view-3d]").waitFor({ timeout: 5000 });
   prüfe(serverCalls.length === vor3d + 1, "Zweiter 3D-Klick kommt aus dem Cache");

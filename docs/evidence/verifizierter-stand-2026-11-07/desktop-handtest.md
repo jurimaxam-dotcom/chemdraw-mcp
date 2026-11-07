@@ -69,3 +69,13 @@ Desktop um 10:24 neu gestartet (neuer Prozess PID 74560, Bundle mit 3D-Chip ab `
 | 10b | Klick auf Chip „3D“ (10:34:46, `clickat 596 195`) | **belegt.** Nach ~7 s steht das Kugel-Stab-Modell (explizite H, rote O-Atome, drehbar) in der Strukturfläche, darunter „Drag to rotate · explicit hydrogens · SDF: ~/ChemDraw-Output/3d/ibuprofen.sdf“; Export PNG ist ausgeblendet, Anki-Knopf bleibt | `22-desktop-3d-knopf.jpg` |
 
 Abweichungen: (8) Der 3D-Chip (und die anderen Chips der Reihe) erscheint **nicht** im AX-Dump als `AXButton` — `press AXButton "^3D$"` findet nichts, obwohl es im DOM ein `<button class="chip-toggle">` ist; Klick per Bildschirmkoordinate aus dem Screenshot. (9) Jay 10:35 beim Zusehen: 3D ist der Hebel, aber zu klein — `.structure-canvas` 320 px, Molekül füllt etwa 60 % der Kuhle; Folgepunkt 10 im Plan.
+
+## Nachtrag 10:43–10:48 (Owner-Session, Fable): 3D größer (Plan Punkt 10a)
+
+Bundle mit `data-layout-3d` gebaut, Desktop 10:44 neu gestartet (Handshake 16/12 grün), neuer Chat „Zeichne Ibuprofen“ per AX (Send 10:45:40, Panel nach 9 s), 3D-Chip per Koordinate (734, 350) um 10:47:19.
+
+| # | Klick | Ergebnis | Screenshot |
+|---|---|---|---|
+| 10c | Chip „3D“ nach dem Umbau | **belegt.** Kuhle nimmt die volle Panelbreite (≈ 460 pt statt 320 pt im 600-pt-Fenster), Ibuprofen füllt die Kuhle bis an den Rand; Formel / Molmasse / CAS stehen als Reihe darunter, dann die Chip-Reihe All H · **3D** (gedrückt) und „Drag to rotate · explicit hydrogens · SDF: ~/ChemDraw-Output/3d/ibuprofen.sdf“ | `23-desktop-3d-gross.jpg`; README-Ausschnitt `assets/panel-3d-ibuprofen.png` (reiner Zuschnitt, keine Bearbeitung) |
+
+Nebenbefund: Desktops „Scroll to bottom“-Knopf legt sich über das Panel, sobald der Chat nicht ganz unten steht — im README-Ausschnitt deshalb ohne Chip-Reihe geschnitten.

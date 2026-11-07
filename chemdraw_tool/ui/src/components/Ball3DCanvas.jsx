@@ -20,6 +20,7 @@ const ELEMENT_COLORS = {
 };
 
 const ATOM_RADIUS = { H: 0.34, default: 0.58 };
+const ATOM_DRAW_FACTOR = 0.55;  // gezeichneter Radius = Kovalenzradius × Faktor
 
 function shade(hex, factor) {
   const n = parseInt(hex.slice(1), 16);
@@ -43,13 +44,20 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
   const [rot, setRot] = useState({ x: -0.4, y: 0.6 });
   const drag = useRef(null);
 
+  // Bindungsradius (größter Abstand vom Ursprung): eine Drehung ändert den Betrag
+  // nicht, also bleibt jedes Atom in jeder Lage innerhalb der Kuhle — und ein
+  // flaches Molekül darf sie ganz ausfüllen, statt am größten Achsenwert zu hängen.
   const maxExtent = useMemo(() => {
-    let m = 1;
+    let m = 0.5;
     for (const a of atoms) {
-      m = Math.max(m, Math.abs(a.x), Math.abs(a.y), Math.abs(a.z));
+      m = Math.max(m, Math.hypot(a.x, a.y, a.z));
     }
     return m;
   }, [atoms]);
+  const atomReach = useMemo(
+    () => Math.max(0, ...atoms.map((a) => ATOM_RADIUS[a.symbol] ?? ATOM_RADIUS.default)) * ATOM_DRAW_FACTOR,
+    [atoms]
+  );
 
   const elements = useMemo(
     () => [...new Set(atoms.map((a) => a.symbol))],
@@ -65,7 +73,9 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
   }
 
   const size = 480;
-  const scale = (size / 2 - 60) / maxExtent;  // Margin, damit das Molekül in der Kuhle sitzt
+  const bowlRadius = size / 2 - 12;
+  // Atommittelpunkt + gezeichneter Radius bleiben innerhalb der Kuhle (4 px Luft)
+  const scale = (bowlRadius - 4) / (maxExtent + atomReach);
   const sin = { x: Math.sin(rot.x), y: Math.sin(rot.y) };
   const cos = { x: Math.cos(rot.x), y: Math.cos(rot.y) };
 
@@ -156,7 +166,7 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
       <circle
         cx={size / 2}
         cy={size / 2}
-        r={size / 2 - 12}
+        r={bowlRadius}
         fill="url(#bowl)"
         stroke="rgba(20,25,40,0.08)"
         strokeWidth="1.5"
@@ -187,7 +197,7 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
         const r =
           (ATOM_RADIUS[item.p.symbol] ?? ATOM_RADIUS.default) *
           scale *
-          0.55;
+          ATOM_DRAW_FACTOR;
         const depth = (item.p.z / maxExtent + 1) / 2; // 0 hinten … 1 vorn
         return (
           <circle

@@ -18,6 +18,17 @@ sign-up and no ChemDraw licence.
 <p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="800"></p>
 <p align="center"><sub>"Draw aspirin" in Claude Desktop. Demo edited to shorten the PubChem loading wait.</sub></p>
 
+### One click from the drawing to a 3D model
+
+Every structure panel has a `3D` chip next to *All H*. The first click asks
+the server for a conformer (RDKit ETKDG plus a force-field relaxation) and
+swaps the drawing for a ball-and-stick model you can rotate by dragging; a
+second click returns to the drawing. The model fills the width of the panel,
+the SDF file lands in `~/ChemDraw-Output/3d/`, and nothing leaves your machine.
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel, the key facts sit below it" width="800"></p>
+<p align="center"><sub>"Draw ibuprofen", then the <code>3D</code> chip. Screenshot from Claude Desktop, no editing.</sub></p>
+
 | Without | With chemdraw-mcp |
 |---|---|
 | Claude describes a structure in words or writes SMILES you paste elsewhere | the structure appears in the chat, as files ready for a report |

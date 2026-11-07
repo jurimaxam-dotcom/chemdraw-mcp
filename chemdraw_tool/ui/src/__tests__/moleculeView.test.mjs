@@ -265,6 +265,8 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
   assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
+  // Jay 07.11.: 3D ist der Hebel — die Kuhle bekommt die volle Panelbreite, die Kernwerte rutschen darunter.
+  assert.ok(container.querySelector(".structure-layout[data-layout-3d]"), "3D-Layout: Kuhle nicht über die volle Breite");
 
   await click(buttonByText(container, "3D"));
   assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");
@@ -276,6 +278,7 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   // All H verdrängt 3D — eine Zeichenfläche, nie zwei.
   await click(buttonByText(container, "All H"));
   assert.equal(Boolean(viewer()), false, "3D und All H zugleich");
+  assert.equal(container.querySelector(".structure-layout[data-layout-3d]"), null, "3D-Layout bleibt nach All H kleben");
   assert.ok(container.querySelector("[data-all-h]"));
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "false");
   unmount();
