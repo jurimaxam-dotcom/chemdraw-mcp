@@ -99,4 +99,4 @@ Skript `chemdraw_tool/ui/src/host/readme-gifs.mjs` (npm-Script `readme:gifs`), b
 Playwright-Video auf und schneidet per ffmpeg (Palette, ≤ 800 px breit, ≤ 10 s, ≤ 3 MB) drei GIFs:
 `demo-views.gif` (Thalidomid: Skelett → All H → Skelett → Show variants → (S) → Data), `demo-3d.gif` (Morphin: 3D-Chip → Modell →
 Drehung per Pointer-Drag), `demo-molecule.gif` (Capsaicin: Hover über Gruppen → Data). Caption im README sagt dann
-„recorded in the panel test host“ statt „in Claude Desktop“. Endgültiger Lauf erst nach E2/E3-Merge (Chip-Reihe ändert sich).
+„recorded in the panel test host“ statt „in Claude Desktop“. Endgültiger Lauf erst nach E2/E3-Merge (Chip-Reihe ändert sich). **12:58: A2 gemerged** (Opus `b0b9f88`; GIFs 209 KB / 1,3 MB / 215 KB, Owner hat Kontaktbögen von views und 3d gesehen; Hero zeigt die zwei GIFs, Capsaicin unter „Data“). Nach E3: `npm --prefix chemdraw_tool/ui run readme:gifs` neu, dann Codex-Abgleich (Faden `20261107-114301-…`).

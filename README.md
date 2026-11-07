@@ -23,13 +23,12 @@ sign-up, no ChemDraw licence.
 Other ways in (PyPI, cloning the repository, editing the config by hand) are
 under [Installation](#installation).
 
-<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung.
-     TODO Owner: linke Zelle auf demo-views.gif (Thalidomid) und rechte Zelle auf demo-3d.gif (Morphin) umstellen,
-     sobald die Aufnahmen in assets liegen. Beide Zellen sind GIFs, keine Bildunterschriften (Jay 12:30). -->
+<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung. Beide Zellen GIFs,
+     keine Bildunterschriften. Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, Dark Theme, 600 px). -->
 <table>
   <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="440"></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel" width="440"></td>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="440"></td>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="440"></td>
   </tr>
 </table>
 
@@ -73,6 +72,8 @@ flat on paper become a rigid cage you can turn.
   deck file if Anki cannot take it.
 - Every drawing tool also writes PNG and SVG files to `~/ChemDraw-Output/`.
   ChemDraw CDXML on request.
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The capsaicin panel: ether, amide, amine, phenol and aromatic ring light up in the structure on hover, then the PubChem data sheet" width="600"></p>
 
 ## Prompts to try
 
