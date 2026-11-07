@@ -23,16 +23,16 @@ sign-up, no ChemDraw licence.
 Other ways in (PyPI, cloning the repository, editing the config by hand) are
 under [Installation](#installation).
 
-<!-- TODO Owner: Bild ersetzen durch demo-views.gif im Ordner assets (Thalidomid).
-     alt: The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet
-     Caption: "Draw thalidomide" in Claude Desktop, then All H, Show variants, (S) and Data. Only waiting times are shortened. -->
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="800"></p>
-<p align="center"><sub>"Draw aspirin" in Claude Desktop, then hover over the functional groups and click Data. Only the PubChem loading wait is shortened.</sub></p>
-
-<!-- TODO Owner: einkommentieren, sobald demo-molecule.gif den Capsaicin-Lauf zeigt und der erste Slot auf demo-views.gif steht.
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The capsaicin panel: amide, phenol and ether light up in the structure on hover, then the PubChem data sheet" width="800"></p>
-<p align="center"><sub>"Draw capsaicin" in Claude Desktop, then hover over the functional groups and click Data. Only waiting times are shortened.</sub></p>
--->
+<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung.
+     TODO Owner: linke Zelle auf demo-views.gif (Thalidomid) und rechte Zelle auf demo-3d.gif (Morphin) umstellen,
+     sobald die Aufnahmen in assets liegen; Captions dann: "Draw thalidomide", then All H, Show variants, (S) and Data ·
+     "Draw morphine", then the 3D chip and a drag to rotate. Only waiting times are shortened. -->
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The chemdraw-mcp panel: aspirin with its functional groups highlighted on hover, then the PubChem data sheet" width="440"><br><sub>"Draw aspirin", then hover the functional groups and click Data. Only the PubChem loading wait is shortened.</sub></td>
+    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel" width="440"><br><sub>"Draw ibuprofen", then the <code>3D</code> chip. Cropped screenshot from Claude Desktop.</sub></td>
+  </tr>
+</table>
 
 ## What you get
 
@@ -60,9 +60,6 @@ flat on paper become a rigid cage you can turn.
 - Drag to rotate. A second click returns to the drawing.
 - The conformer is cached, and the SDF file lands in `~/ChemDraw-Output/3d/`.
 
-<!-- TODO Owner: sobald demo-3d.gif (Morphin) da ist, wird es der einzige Hero oben; dieses Bild bleibt hier als Ergebnisbild. -->
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/panel-3d-ibuprofen.png" alt="The ibuprofen panel in Claude Desktop after clicking 3D: a rotatable ball-and-stick model with explicit hydrogens fills the panel, the key facts sit below it" width="440"></p>
-<p align="center"><sub>"Draw ibuprofen", then the <code>3D</code> chip. Cropped screenshot from Claude Desktop.</sub></p>
 
 ### Data, flashcards and files
 
@@ -71,8 +68,8 @@ flat on paper become a rigid cage you can turn.
 - `Data` turns the panel into the PubChem data sheet with properties and GHS
   hazards. It loads on the first click and then stays cached. This part
   needs the internet.
-- `Export PNG` copies the drawing to the clipboard, or saves it as a file
-  where the clipboard is not available.
+- `Export PNG` saves the drawing to `~/ChemDraw-Output/png/`; where the host
+  allows it, the image also goes to the clipboard.
 - `Add to Anki` adds a structure card to the deck "ChemDraw", or saves the
   deck file if Anki cannot take it.
 - Every drawing tool also writes PNG and SVG files to `~/ChemDraw-Output/`.

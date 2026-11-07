@@ -86,6 +86,17 @@ mit Screenshot nach `docs/evidence/…/screenshots/` sobald der Desktop frei ist
 | E1 | 3D-Look: Kuhle als eine Form je Theme ohne helles Quadrat, Farben/Schatten je Theme (1) · Bindungen in Atomfarben mit Tiefe, Doppel-/Dreifach-/Aromatenbindungen, Atomgrößen nach Element (2) | `components/Ball3DCanvas.jsx`, `styles.css`, Tests | **gemerged 12:06** (Opus `ec8bdee`, 12 Tests erst rot, DOM 116 grün nach Merge; Bundle neu gebaut; Gate rc=0 + test:host rc=0 auf main 12:12; Host-Bild `screenshots/24-host-3d-e1-kuhle.jpg` Owner gesehen und an Jay geschickt; Desktop-Blick zusammen mit E2) |
 | E4 | Stille Fehler: Batch zeigt `failed` an, Scope im Dark Mode lesbar (5) | `App.jsx`, `styles.css` (38 Regeln), Tests | **gemerged 11:55** (Opus `361e1a4`, 2 Tests erst rot, DOM 104 grün; Hinweis: Spektrum/DC hängen nur am matplotlib-Leerzeichen `stroke: #000000`, Klassen `.spectrum-svg`/`.tlc-svg` als Ausnahme wären robuster — später) |
 | E2 | Ansicht-Achse „2D · All H · Fischer · Haworth · 3D“ unter der Fläche, Spinner bei `aria-busy`, Stereo-Zeile/Gruppen in 3D ausgeblendet, sanfte Anfangsdrehung mit Stopp beim Anfassen, `onPointerCancel` (3) | `MoleculeView.jsx`, `Ball3DCanvas.jsx`, Tests, Host-E2E | gestartet 12:08 |
-| E3 | `PanelFooter`: Pfad links, Aktionen rechts, in allen Panels; Export PNG in 3D exportiert die Drehlage (Host-Prüfung Z. 432 bewusst umdrehen) (4) | alle `*View.jsx`, neue Komponente, Host-E2E | nach E2 |
+| E3 | `PanelFooter`: Pfad links, Aktionen rechts, in allen Panels; Export PNG in 3D exportiert die Drehlage (Host-Prüfung Z. 432 bewusst umdrehen) (4); **dazu sichtbare Rückmeldung nach Export PNG** (Desktop-Handtest 08:39: Datei landet still in `~/ChemDraw-Output/png/`, keine Zwischenablage im Panel-iframe; README-Satz 12:22 umgedreht) | alle `*View.jsx`, neue Komponente, Host-E2E | nach E2 |
 
 **Codex Design-Review README (11:14, Faden `20261107-111238-…`, eingearbeitet 11:58):** Quick start nach oben, ein Hero, 3D-Bild 440 px mit „Cropped screenshot“, drei Prompts + `<details>`, Galerie `<details>`, kürzere Einleitung. Offen: Tool-Tabelle zweispaltig (#8), für neue Aufnahmen gleiche Panelbreite/Theme/eng ums Panel (#5/#6). Codex konnte GitHub nicht live rendern (kein Browser) — Owner-Blick auf github.com steht aus.
+
+**Jay 12:20 — Hero als Zweier-Split:** links Ansichten/Varianten durchklicken (`demo-views.gif`), rechts 3D-Drehung (`demo-3d.gif`) als Flaggschiffe; im README seit 12:22 als Tabelle mit den alten Bildern als Platzhalter.
+
+## Auftrag A2 — Opus: GIF-Aufnahme im Playwright-Host (ersetzt die Desktop-Aufnahme, Jay „lass“ 11:20)
+
+Skript `chemdraw_tool/ui/src/host/readme-gifs.mjs` (npm-Script `readme:gifs`), baut auf dem Host-Aufbau von
+`host.e2e.mjs` auf (srcdoc-iframe, AppBridge, echter Server), Dark Theme, feste Panelbreite 600 px, nimmt mit
+Playwright-Video auf und schneidet per ffmpeg (Palette, ≤ 800 px breit, ≤ 10 s, ≤ 3 MB) drei GIFs:
+`demo-views.gif` (Thalidomid: Skelett → All H → Skelett → Show variants → (S) → Data), `demo-3d.gif` (Morphin: 3D-Chip → Modell →
+Drehung per Pointer-Drag), `demo-molecule.gif` (Capsaicin: Hover über Gruppen → Data). Caption im README sagt dann
+„recorded in the panel test host“ statt „in Claude Desktop“. Endgültiger Lauf erst nach E2/E3-Merge (Chip-Reihe ändert sich).
