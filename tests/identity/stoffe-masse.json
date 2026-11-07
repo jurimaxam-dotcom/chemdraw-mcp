@@ -5789,20 +5789,22 @@
   {
    "eingabe": "nicotine",
    "sprache": "en (wikidata-Label)",
-   "inchikey": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+   "inchikey": "SNICXCGAKADSCV-JTQLQIEISA-N",
    "formel": "C10H14N2",
    "gruppe": "Naturstoff/Botenstoff",
-   "quelle": "wikidata:Q12144 + chembl:CHEMBL440464",
-   "smiles_referenz": "CN1CCCC1C2=CN=CC=C2"
+   "quelle": "pubchem:89594 + chembl:CHEMBL3 + kegg:D03365 + wikidata:Q28086552",
+   "smiles_referenz": "CN1CCC[C@H]1c1cccnc1",
+   "notiz": "Referenzentscheid 07.11.2026: unqualifiziertes Nicotin bezeichnet hier (S)-Nicotin; vier Quellen bestätigen den vollständigen Key. Beleg: docs/evidence/masse-eval-2026-11/kippmessung-stereo/fixture_check.json."
   },
   {
    "eingabe": "Nicotin",
    "sprache": "de (wikidata-Label = de.wikipedia)",
-   "inchikey": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+   "inchikey": "SNICXCGAKADSCV-JTQLQIEISA-N",
    "formel": "C10H14N2",
    "gruppe": "Naturstoff/Botenstoff",
-   "quelle": "wikidata:Q12144 + chembl:CHEMBL440464",
-   "smiles_referenz": "CN1CCCC1C2=CN=CC=C2"
+   "quelle": "pubchem:89594 + chembl:CHEMBL3 + kegg:D03365 + wikidata:Q28086552",
+   "smiles_referenz": "CN1CCC[C@H]1c1cccnc1",
+   "notiz": "Referenzentscheid 07.11.2026: unqualifiziertes Nicotin bezeichnet hier (S)-Nicotin; vier Quellen bestätigen den vollständigen Key. Beleg: docs/evidence/masse-eval-2026-11/kippmessung-stereo/fixture_check.json."
   },
   {
    "eingabe": "norepinephrine",
