@@ -137,6 +137,7 @@ Nach README-Abnahme: derselbe Host-Aufbau (`readme-gifs.mjs`) rendert die drei S
 1080×1920 skaliert, Panel mittig, mp4 per ffmpeg statt GIF, 1080p, 12–20 s, ohne Mauszeiger-Kreis oder mit größerem).
 Schnitt, Text-Overlays, Musik und Veröffentlichung gehören nach `chemdraw-vermarktung` (dort liegt die Shorts-Planung);
 Auftrag an Codex per `tisch` mit den fertigen Clips als Rohmaterial. Erst nach C2 Punkt 7.
+**14:05: Clips fertig** (`panel:clips`, Opus `c91c493` gemerged `b9d2c7e`; sechs mp4 1080×1494–1602, 30 fps, 13,8–16,9 s, Beat-JSON, Vorschau-PNG unter `chemdraw-vermarktung/out/panel-clips/`, Owner hat 3d-dark gesehen). **Shorts-Montage als Claude-Session in `chemdraw-vermarktung` gestartet** (`cc-oeffnen --auftrag`, Faden siehe Tisch); Jays Sichtprüfung der drei mp4 ist die Abnahme.
 
 **Grenze (Hinweis 13:55):** `<picture>` mit `prefers-color-scheme` folgt dem Browser-/System-Modus, nicht einem fest
 eingestellten GitHub-Theme (Profil → Appearance ohne „Sync with system“). Dann kann ein helles GIF auf dunkler Seite
