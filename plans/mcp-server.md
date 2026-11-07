@@ -3,7 +3,8 @@
 ## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 09:15)
 
 - **Geprüft 07.11. 09:04 (Owner):** Rechte-Dialoge **nicht geklickt** — Sidebar zeigt beide Chats „Awaiting input“, AX-Dump beider Chats: „Waiting for approval: chemdraw-tool: Generate mechanism/Generate titration curve“ mit Decline · Always allow (⇧⌘↩) · Allow once; `~/ChemDraw-Output/server.log` (DEBUG) seit 08:47:37 still, Desktop-Fenster war geschlossen (Prozess 18854 lebt, nicht neu gestartet). Screenshots `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/14-sn2-dialog-0905.png`, `15-titration-dialog-0905.png`. Beide Chats stehen jetzt offen vorn. `mcp-user-tool-toggles.json` (30.10.) ist **kein** Rechtestand (listet generate_3d/spectrum/tlc, die heute ohne Dialog liefen).
-- **Nächster Schritt:** sobald Jay in Claude Desktop die zwei Rechte-Dialoge („Generate mechanism“, „Generate titration curve“ → Always allow) geklickt hat, Strang B Schritte 2 und 7 wiederholen (Claude-Agent per `scripts/ax-claude.sh`, Screenshots nach `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/`, Owner sieht sie an, dann Haken in Welle 1/2). Danach Release 0.9.0 vorbereiten (Version heben, CHANGELOG, `.mcpb`, `./scripts/publish-registry.sh` erst nach Jays Klick).
+- **Erledigt 07.11. 09:19:** Jay hat beide Dialoge geklickt; Strang B Schritte 2 und 7 belegt (Screenshots 16–20, Owner gesehen), Haken in Welle 1/2 gesetzt → Strang B 6/9. Protokoll `docs/evidence/verifizierter-stand-2026-11-07/desktop-handtest.md` nachgetragen.
+- **Nächster Schritt:** Punkt 6 „Stand für Jay“ (3D-Knopf im Molekülpanel) in dieser Session bauen → Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` grün → Release 0.9.0 vorbereiten (Version heben, CHANGELOG, `.mcpb`; `./scripts/publish-registry.sh` erst nach Jays Klick).
 - **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern (heute Pyranosering + Haworth, seit `41da7c4`)? (2) Release-Klick 0.9.0 bleibt Jays Hand. (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht offen (seine Sammlung).
 - **Erledigt und belegt (07.11.):** Punkte 1–5 unter „Stand für Jay“; Plan-Audit Strang A (`c21a7fc`); Desktop-Handtest Strang B 4/9 (`9047570`); Owner-Abnahme `docs/evidence/verifizierter-stand-2026-11-07/owner-abnahme.md`; Fahrplan-Artifact v3.
 - **Prüfmethoden, die gelten:** kein Desktop-Haken ohne selbst gesehenen Screenshot; fremde Plan-Zeilen sind Behauptungen (Commit/Test/Datei:Zeile zeigen); Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` vor jedem Release-Schritt.
@@ -25,7 +26,7 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 4. [x] `test:host` grün gegen HEAD `feef949`: **rc=0, 167 Prüfungen** (vorher drei veraltete Erwartungen: SN1-Titel SMILES→Namen, Schritte SN1 6/Fischer 8, „D-glucose“ seit `41da7c4` Pyranosering→Haworth; Fischer-Fall jetzt `aldehydo-D-glucose`, `cce71b0`/`feef949`). **Nebenbefund für Jay:** soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern? Heute: Ring + Haworth.
 5. [x] `generate_spectrum` nimmt `"IR"` wie `"ir"` (`cce71b0`, Test `test_spectrum_type_is_case_insensitive` erst rot, dann grün).
 6. [ ] 3D-Knopf im Molekülpanel fehlt (W1-Rest); `generate_3d` geht nur über den Chat.
-7. [ ] Desktop-Handtests der W1/W2-Tools (Strang B, 07.11., Screenshots in `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Owner hat 07/09/10/06 selbst gesehen): **4 von 9 belegt** (Ibuprofen-Kette, 3D, Spektrum — Desktop wählte diesmal `generate_spectrum`, nicht `visualize` —, DC) · **2 warten auf Jays Rechte-Klick** (Mechanismus, Titration: Werkzeug + Argumente stimmen, Dialog „Always allow“) · **3 nicht belegt, weil das Modell kein Werkzeug rief** (IR-Vorhersage, pH, Lookup → Routing-Fälle, keine Produktfehler). Nebenbefunde: Export PNG schreibt nach `~/ChemDraw-Output/png/` ohne sichtbare Rückmeldung; Spektrum-Labels 1750/1690 überlappen.
+7. [x] Desktop-Handtests der W1/W2-Tools (Strang B, 07.11., Screenshots in `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Owner gesehen): **6 von 9 belegt** (Ibuprofen-Kette, 3D, Spektrum, DC, seit 09:19 nach Jays Rechte-Klick auch SN2-Mechanismus Step 1/3→2/3 und Titrationskurve mit ÄP 25 mL) · **3 nicht belegt, weil das Modell kein Werkzeug rief** (IR-Vorhersage, pH, Lookup → Routing-Fälle, keine Produktfehler). Nebenbefunde: Export PNG schreibt nach `~/ChemDraw-Output/png/` ohne sichtbare Rückmeldung; Spektrum-Labels 1750/1690 überlappen.
 8. [ ] Welle 3: zweiter Konnektor `chemdraw-pharma` (5 Haken, nicht begonnen).
 9. [ ] README hochwertig: 2 von 4 erledigt (`.mcpb` zuerst, Tool-Tabelle — `65800df`); offen: Profiles mit `chemdraw-pharma`, danach Shorts (`chemdraw-vermarktung`).
 
@@ -145,7 +146,7 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
 
 - [x] generate_mechanism Serverseite: ehrliche Lehrbuch-Galerie SN1/SN2/Fischer, englische Fehler,
   DoD 1–5 (`142e581`; `test_server_mechanism.py::test_title_names_the_textbook_example_when_it_falls_back`)
-- [ ] generate_mechanism Desktop-Handtest → Strang B Schritt 2 (frühere Doku `998386d` liegt vor den **Stand 07.11.: Werkzeug + Argumente richtig, Desktop zeigt Rechte-Dialog „Always allow“ — Klick ist Jays Hand (`screenshots/06-sn2-rechte-dialog.jpg`)**
+- [x] generate_mechanism Desktop-Handtest — belegt 07.11. 09:19 nach Jays „Always allow“: Panel „Nucleophilic Substitution (SN2) — 2-bromobutane + cyanide“, Step by step 1/3 → 2/3 (Übergangszustand), Owner gesehen (`screenshots/17-sn2-panel.jpg`, `18-sn2-step1.jpg`, `19-sn2-step2.jpg`) → Strang B Schritt 2
   Server-Änderungen vom 07.11.)
 - [x] generate_3d Serverseite: Zäune ⇄ generate_molecule, 3 Routingfälle (`044e8d6`;
   `test_structure3d.py::test_methane_becomes_tetrahedral_with_hydrogens`,
@@ -181,7 +182,7 @@ Echte Aufrufe 30.10. (DoD 1, vor jedem Fix):
   `test_server_plots.py::test_descending_pka_values_are_rejected`,
   `test_ph_plots.py::test_pufferpunkte_liegen_auf_der_kurve`).
   Notiert: 17–24 KB Modelltext; `notes` leer — EP-Volumen/-pH nur im Bild.
-- [ ] Titration/Speziesverteilung Desktop-Handtest (zuletzt 0/4 laut `a6d6e86`) → Strang B Schritt 7 **Stand 07.11.: Werkzeug + Parameter richtig, Rechte-Dialog offen — Jays Klick (`screenshots/11-titration-rechte-dialog.jpg`)**
+- [x] Titration Desktop-Handtest — belegt 07.11. 09:19 nach Jays „Always allow“: Panel „Essigsäure mit NaOH“, Kurve mit Pufferpunkt pH = pKa 4,76 bei 12,5 mL, ÄP bei 25 mL (pH ≈ 8,7), Phenolphthalein-Band, PNG/SVG `~/ChemDraw-Output/diagramme/titration-essigsäure-mit-naoh.*` 09:11, Owner gesehen (`screenshots/16-titration-panel.jpg`, `20-titration-panel-oben.jpg`) → Strang B Schritt 7. Speziesverteilung in Desktop weiter ungeprüft (nur Werkzeug-Probe-Log).
 - [x] calculate_ph Serverseite (Jay 31.10.: Welle 2): Text-Tool, Zäune beidseitig, 16 Tools / 12 Panels
   (`71223ed`; `test_ph_calc.py::test_acetic_acid_matches_the_textbook_value`,
   `test_server_profiles.py::test_default_and_explicit_mvp_offer_exactly_the_mvp_tools`);

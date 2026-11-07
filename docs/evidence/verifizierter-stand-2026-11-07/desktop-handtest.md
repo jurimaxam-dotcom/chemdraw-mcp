@@ -31,7 +31,18 @@ dann `./scripts/handshake.sh` → `00-handshake.txt`:
 | 8 | Was ist der pH von 0,1 M Essigsäure, pKs 4,76? | `calculate_ph`, pH = 2.88 | **kein Werkzeug.** Denkblock „Weighing whether a tool call is worth it“ | **Abweichung.** Zahl stimmt (pH ≈ 2,88, Näherung ½(pKs − lg c₀)), aber `calculate_ph` nicht aufgerufen | `12-ph.png`, `12b-ph-denkblock.png` |
 | 9 | Schlag Ibuprofen nach | `lookup`, PubChem-Tabelle CID 3672 | **kein chemdraw-Werkzeug.** Denkblock „Ibuprofen-Informationen nachschlagen / Prüfe, ob ein passendes Projekt existiert / Wirkstoffprofil … zusammenstellen“ | **Abweichung.** Pharmakologie-Steckbrief aus Modellwissen plus ein Wirkmechanismus-Diagramm (Desktop-eigene Grafik, kein chemdraw-Panel); im sichtbaren Teil keine PubChem-Tabelle, keine CID (Antwort nicht bis zum Ende gescrollt); AX-Dump ohne chemdraw-Eintrag | `13-lookup.png`, `13b-lookup-denkblock.png` |
 
-Zählung: **belegt** 1a–1f, 3, 5, 6 · **nicht belegt wegen Rechte-Dialog** 2, 7 · **falsches/kein Werkzeug** 4, 8, 9.
+Zählung (08:50): **belegt** 1a–1f, 3, 5, 6 · **nicht belegt wegen Rechte-Dialog** 2, 7 · **falsches/kein Werkzeug** 4, 8, 9.
+
+## Nachtrag 09:04–09:19 (Owner-Session, Fable): Schritte 2 und 7 nach Jays Klick
+
+09:04: beide Chats in der Sidebar „Awaiting input“, Dialoge offen (`14-sn2-dialog-0905.jpg`, `15-titration-dialog-0905.jpg`), Server-Log seit 08:47:37 still, Desktop-Fenster war geschlossen (Prozess 18854 lebt, kein Neustart). Jay klickte „Always allow“ in beiden Chats (Titration ~09:11, SN2 ~09:13 — Log: Cyanid-Auflösung 09:13:53, `diagramme/titration-essigsäure-mit-naoh.{png,svg}` 09:11).
+
+| # | Ergebnis | Screenshot |
+|---|---|---|
+| 2 | **belegt.** Panel „Nucleophilic Substitution (SN2) — 2-bromobutane + cyanide“, Untertitel sn2, Overview mit Rückseitenangriff → Übergangszustand; „Step by step“ zeigt Step 1/3 „Reactants: backside attack“, „Next →“ führt zu Step 2/3 „[Transition state]‡“ mit ← Back/Next →. Titel ohne „(R)“ — der Prompt nannte 2-Brombutan ohne Konfiguration, Erwartung im Auftrag war ungenau | `17-sn2-panel.jpg`, `18-sn2-step1.jpg`, `19-sn2-step2.jpg` |
+| 7 | **belegt.** Panel „Essigsäure mit NaOH — Titration curve“: Start pH ≈ 2,9, Pufferpunkt „pH = pKa = 4.76“ bei 12,5 mL, ÄP-Linie bei 25 mL mit Sprung auf pH ≈ 8,7, Phenolphthalein-Band 8,2–10, PNG-Pfad im Panel, Export-PNG-Knopf. Chat-Antwort nennt 2,88 / 4,76 / 8,73 / 11,96 passend | `16-titration-panel.jpg` (Antworttext), `20-titration-panel-oben.jpg` (Kurve) |
+
+Zählung (09:19): **belegt** 1a–1f, 2, 3, 5, 6, 7 · **kein Werkzeug** 4, 8, 9 → **6 von 9**. Nebenbefund: die ÄP-Markierung in der Kurve trägt nur „EP“ am unteren Rand, keinen pH-Wert.
 
 ## Abweichungen
 
