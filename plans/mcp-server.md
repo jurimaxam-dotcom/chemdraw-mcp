@@ -33,6 +33,11 @@
   Ibuprofen → Data: **15687-27-1**, finales Bild
   `/tmp/chemdraw-desktop-test/2026-11-07/07-ibuprofen-data-nach-fix.png`.
   Quellen/Replay: `tests/__fixtures__/pubchem-cas/README.md` und `identity-cas.json`.
+- [ ] **Host-Test SN1-Titel (offen, nicht behoben):** `test:host` erwartet wörtliche
+  SMILES (`CC(C)(C)Cl + O`), während `_substrate_label`/`_smiles_title` inzwischen
+  Stoffnamen liefern; vorbestehend auf `f58eb5b` reproduziert (je rc=1 in
+  `/tmp/chemdraw-desktop-test/2026-11-07/cas-audit/host.log` und `host-baseline.log`);
+  prüfen nach eigener Behebung: `npm --prefix chemdraw_tool/ui run test:host` → erwartet rc=0.
 - [x] **Tisch-Fäden geschlossen:** `20261107-065505-chef-entscheid-zur-kippmessung`
   und `20261107-072830-desktop-handtest-claude-md`; Umsetzung/Kreuzabnahme im aktuellen Auftrag.
 - [ ] **3D-Knopf bleibt W1:** im Molekülpanel noch nicht implementiert; das vorhandene
