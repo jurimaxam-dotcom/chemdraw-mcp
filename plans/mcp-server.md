@@ -15,6 +15,10 @@
   hier nicht behoben oder erneut geprüft.
 - **Fortsetzung nur auf neuen Auftrag:** zuerst Kreuzabnahme `e559323`, danach
   GIF-Entwurf mit echter Aufnahme und drei Standbildern; vor Jays Sichtung nichts davon committen.
+- **Neustart-Handoff:** keine unbeantwortete Frage an Jay, keine terminierten Wartezeiten
+  oder ausstehenden Hintergrundresultate; nicht selbsttätig fortsetzen, bis ein neuer Auftrag kommt.
+  Zugesagte Beweise bei Fortsetzung: Diff + eigene Resolver-Tests/Replay für `e559323`,
+  danach echtes Host-/Server-GIF ohne Ladeframes und drei visuell geprüfte Standbilder.
 
 ## Weiter bei — Opus baut Schnitt 3 A>=; Codex prüft über Kreuz (07.11.2026)
 
