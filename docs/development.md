@@ -39,5 +39,11 @@ guard which tool the model picks.
 The README images in `assets/` come from `scripts/readme_bilder.py`, not from
 hand edits; `tests/test_readme.py` pins their hashes.
 The three panel GIFs (`demo-views`, `demo-3d`, `demo-molecule`) are recorded in the
-panel test host, dark theme at 600 px: `npm --prefix chemdraw_tool/ui run readme:gifs`
-(needs network; checks width, duration and size of each GIF).
+panel test host at 600 px, each in a light and a dark version (`assets/demo-<scene>-light.gif`,
+`-dark.gif`; the README picks one via `<picture>`/`prefers-color-scheme`):
+`npm --prefix chemdraw_tool/ui run readme:gifs` records all scenes in both themes;
+`-- views 3d --theme dark` limits scenes and theme, `--molecule NAME` swaps the molecule.
+The two hero scenes share one fixed 600×812 crop. The script needs network and turns red
+on width, duration, size, frame rate, a cut-off panel part or unequal hero sizes. The old
+names `demo-views.gif`, `demo-3d.gif` and `demo-molecule.gif` stay as copies of the light
+versions because PyPI and older release notes link them.

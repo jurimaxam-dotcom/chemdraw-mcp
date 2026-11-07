@@ -1,18 +1,20 @@
 // README-GIFs aus dem echten Panel: derselbe Host-Aufbau wie host.e2e.mjs (sandboxed
-// srcdoc-iframe, echte AppBridge, echter MCP-Server im MVP-Profil), Dark Theme, 600 px
-// Panelbreite wie in Claude Desktop. Aufgenommen wird eine Screenshot-Serie mit
+// srcdoc-iframe, echte AppBridge, echter MCP-Server im MVP-Profil), helles und dunkles
+// Theme, 600 px Panelbreite wie in Claude Desktop. Aufgenommen wird eine Screenshot-Serie mit
 // Zeitstempeln; während das Panel auf den Server wartet (PubChem, 3D-Konformer), läuft die
 // Filmuhr nicht — Ladeframes kommen gar nicht erst ins Bild, statt nachträglich
 // herausgeschnitten zu werden. ffmpeg baut daraus GIFs mit eigener Palette.
-// usage: npm run readme:gifs [-- views 3d molecule]   (Netz nötig: PubChem)
-// Ausgabe: assets/demo-views.gif, assets/demo-3d.gif, assets/demo-molecule.gif
+// usage: npm run readme:gifs [-- views 3d molecule] [--theme light|dark] [--molecule NAME]
+//        (Netz nötig: PubChem; ohne --theme entstehen beide Fassungen)
+// Ausgabe: assets/demo-<szene>-<theme>.gif (helle Fassung zusätzlich als demo-<szene>.gif) — die zwei Hero-Szenen (views, 3d) haben einen
+// festen Ausschnitt (HERO), damit sie im README nebeneinander auf gleicher Höhe enden.
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 
@@ -22,7 +24,15 @@ const assets = join(repo, "assets");
 const FFMPEG = existsSync("/opt/homebrew/bin/ffmpeg") ? "/opt/homebrew/bin/ffmpeg" : "ffmpeg";
 const FFPROBE = existsSync("/opt/homebrew/bin/ffprobe") ? "/opt/homebrew/bin/ffprobe" : "ffprobe";
 const BREITE = 600; // Panelbreite in Claude Desktop
-const DUNKEL = "#202724"; // Panel-Hintergrund im Dark Theme (host.e2e prüft rgb(32, 39, 36))
+// Seitenhintergrund = Panel-Hintergrund des Themes (styles.css --bg; host.e2e prüft rgb(32, 39, 36))
+const THEMES = {
+  light: { hintergrund: "#fafbf9", zeiger: "background:rgba(30,36,33,.28);border:2px solid #1e2421;box-shadow:0 1px 4px rgba(0,0,0,.25)" },
+  dark: { hintergrund: "#202724", zeiger: "background:rgba(240,240,240,.45);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.6)" },
+};
+// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 812 px =
+// das ganze 3D-Panel bei 600 px (Titel, Kuhle 1:1, Achse, Kennwerte, Drag-Hinweis bis 798 px)
+// plus 12 px Körperrand unten wie oben — gemessen 07.11., imBild bricht ab, wenn es nicht passt
+const HERO = { breite: BREITE, hoehe: Number(process.env.HERO_HOEHE || 812) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
 const hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
@@ -47,33 +57,36 @@ function filmuhr() {
   };
 }
 
-async function szene(browser, { name, tool, args, hoehe, fps, ablauf }) {
+async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, molecule }) {
+  if (molecule) args = { ...args, name_or_smiles: molecule };
+  const farbe = THEMES[theme];
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
   const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
   if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
   const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
 
-  const context = await browser.newContext({ viewport: { width: BREITE, height: hoehe }, colorScheme: "dark" });
+  const context = await browser.newContext({ viewport: { width: BREITE, height: hoehe }, colorScheme: theme });
   const page = await context.newPage();
   await page.exposeFunction("__callTool", async (p) => neutral(await client.callTool(p)));
-  await page.setContent(`<body style="margin:0;background:${DUNKEL}"></body>`);
+  await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
   await page.addScriptTag({ path: hostJs });
   await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult });
   await page.locator("iframe").evaluate((el, [w, h]) => { el.style.width = `${w}px`; el.style.height = `${h}px`; el.style.display = "block"; }, [BREITE, hoehe]);
   const frame = page.frames().find((f) => f !== page.mainFrame());
-  // Desktop setzt das Theme als Host-Vorgabe; das Panel liest data-theme
+  // Desktop setzt das Theme als Host-Vorgabe; das Panel liest data-theme (auch "light"
+  // ausdrücklich setzen: styles.css schaltet sonst per prefers-color-scheme)
   await frame.locator(".molecule-panel").waitFor({ timeout: 30000 });
-  await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await frame.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
   // Playwright-Screenshots zeigen keinen Mauszeiger: Kreis im Elternfenster über dem iframe
-  await page.evaluate(() => {
+  await page.evaluate((stil) => {
     const c = document.createElement("div");
     c.id = "cursor";
-    c.style.cssText = "position:fixed;left:-40px;top:-40px;width:18px;height:18px;border-radius:50%;background:rgba(240,240,240,.45);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.6);pointer-events:none;z-index:9;transition:left .22s ease,top .22s ease,transform .12s";
+    c.style.cssText = `position:fixed;left:-40px;top:-40px;width:18px;height:18px;border-radius:50%;${stil};pointer-events:none;z-index:9;transition:left .22s ease,top .22s ease,transform .12s`;
     document.body.appendChild(c);
-  });
+  }, farbe.zeiger);
   await page.waitForTimeout(500); // Schriften und Theme-Übergang setzen sich, bevor die Uhr läuft
 
-  const dir = mkdtempSync(join(tmpdir(), `readme-${name}-`));
+  const dir = mkdtempSync(join(tmpdir(), `readme-${name}-${theme}-`));
   const uhr = filmuhr();
   const bilder = [];
   let aufnahme = true;
@@ -116,12 +129,21 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf }) {
     uhr.weiter();
   };
 
-  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte });
+  // Hero-Ausschnitt: was im Bild sein soll, darf nicht unten oder oben angeschnitten sein
+  const imBild = async (locator, was) => {
+    const b = await locator.boundingBox();
+    if (!b || b.y < 0 || b.y + b.height > hoehe) throw new Error(`ROT ${name}-${theme}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${hoehe})`);
+  };
+  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild });
   const ende = uhr.jetzt();
   aufnahme = false;
   await schleife;
   await context.close();
-  return gifBauen(name, bilder, ende, fps, dir);
+  const werte = gifBauen(`${name}-${theme}`, bilder, ende, fps, dir);
+  // Alte Namen ohne Theme bleiben als Kopie der hellen Fassung: PyPI und ältere
+  // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
+  if (theme === "light" && !molecule) copyFileSync(werte.datei, join(assets, `demo-${name}.gif`));
+  return { szene: name, theme, ...werte };
 }
 
 function gifBauen(name, bilder, endeMs, fps, dir) {
@@ -151,56 +173,84 @@ function prüfen(ziel) {
   if (werte.breite > GRENZEN.breite) fehler.push(`Breite ${werte.breite} px > ${GRENZEN.breite}`);
   if (!(werte.sekunden <= GRENZEN.sekunden)) fehler.push(`Dauer ${werte.sekunden} s > ${GRENZEN.sekunden}`);
   if (werte.bytes > GRENZEN.bytes) fehler.push(`Größe ${(werte.bytes / 1048576).toFixed(2)} MB > 3 MB`);
+  const fps = werte.frames / werte.sekunden;
+  if (fps < 11.5 || fps > 15.5) fehler.push(`${fps.toFixed(1)} fps außerhalb 12–15`);
   if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
   console.log(`✔ ${ziel}: ${(werte.bytes / 1024).toFixed(0)} KB, ${werte.breite}×${werte.hoehe}, ${werte.sekunden.toFixed(2)} s, ${werte.frames} Frames`);
   return werte;
 }
 
-// Datenblatt: CAS steht unter der Falz — kurz oben zeigen, weich bis zur CAS-Zeile scrollen,
+// Datenblatt: CAS steht oft unter der Falz — kurz oben zeigen, nötigenfalls weich bis zur CAS-Zeile scrollen,
 // dann zeigt der Zeiger auf die Nummer (sonst schwebt er nach dem Scrollen über einer fremden Zeile)
 async function datenblattMitCas({ frame, page, halten, zeiger }, gesamtMs) {
   const cas = frame.getByText("CAS No.", { exact: true }).first();
   if (!(await cas.count())) throw new Error("Datenblatt ohne CAS-Zeile");
   await halten(600);
-  await cas.evaluate((el) => el.scrollIntoView({ behavior: "smooth", block: "center" }));
-  await halten(450);
-  const b = await cas.boundingBox();
+  // Erst nur so weit, dass der Panel-Titel oben anliegt (über ihm steht nach einer
+  // Varianten-Auswahl die Rückweg-Leiste): reicht das für die CAS-Zeile, bleibt der Titel
+  // ganz im Bild — bis zum Anschlag gescrollt hätte ihn der Hero-Ausschnitt halb angeschnitten
+  const höhe = page.viewportSize().height;
+  const vorab = await cas.boundingBox();
+  const panelOben = (await frame.locator(".molecule-panel").boundingBox()).y - 8;
+  if (vorab.y + vorab.height + 24 > höhe) {
+    if (panelOben > 0 && vorab.y + vorab.height + 24 - panelOben <= höhe) {
+      await frame.evaluate((dy) => window.scrollBy({ top: dy, behavior: "smooth" }), panelOben);
+    } else {
+      await cas.evaluate((el) => el.scrollIntoView({ behavior: "smooth", block: "center" }));
+    }
+  }
+  // Bis das weiche Scrollen steht: sonst zielt der Zeiger auf die Zeile, die beim Messen
+  // gerade vorbeizog (A2-GIFs zeigten auf TPSA statt CAS)
+  let b = await cas.boundingBox(), vorher = null, gewartet = 0;
+  while (gewartet < 450 || !vorher || Math.abs(vorher.y - b.y) > 0.5) {
+    await halten(50); gewartet += 50;
+    vorher = b; b = await cas.boundingBox();
+    if (gewartet > 2000) break;
+  }
   const x = b.x + b.width + 190, y = b.y + b.height / 2;
   await zeiger(x, y);
   await page.mouse.move(x, y, { steps: 4 });
-  await halten(gesamtMs - 1050);
+  await halten(Math.max(800, gesamtMs - 600 - gewartet));
 }
 
 const SZENEN = {
-  // Thalidomid: Skelett → All H → Skelett → Show variants → (S) mit Keil → Datenblatt
+  // Hero links, Thalidomid: 2D → All H → 2D → Show variants → (S) mit Keil → Datenblatt
   views: {
-    tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: 640, fps: 15,
+    tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, fps: 15, hero: true,
     async ablauf(werkzeug) {
-      const { frame, halten, klick } = werkzeug;
-      const allH = frame.getByRole("button", { name: "All H", exact: true });
+      const { frame, halten, klick, imBild } = werkzeug;
+      const achse = frame.locator("[data-view-axis]");
+      const achsenKnopf = (text) => achse.getByRole("button", { name: text, exact: true });
+      const gedrückt = (text) => achse.locator('button[aria-pressed="true"][aria-busy="false"]', { hasText: text });
       await frame.locator(".structure-canvas svg").first().waitFor();
+      await imBild(achse, "Ansicht-Achse");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
       await halten(1000);
-      await klick(allH, () => frame.locator('button.chip-toggle[aria-pressed="true"][aria-busy="false"]', { hasText: "All H" }).waitFor({ timeout: 30000 }));
+      await klick(achsenKnopf("All H"), () => gedrückt("All H").waitFor({ timeout: 30000 }));
       await halten(1000);
-      await klick(allH, () => frame.locator('button.chip-toggle[aria-pressed="false"]', { hasText: "All H" }).waitFor({ timeout: 5000 }));
+      await klick(achsenKnopf("2D"), () => gedrückt("2D").waitFor({ timeout: 5000 }));
       await halten(800);
       await klick(frame.getByRole("button", { name: "Show variants" }), () => frame.locator("button.candidate").first().waitFor({ timeout: 30000 }));
       const s = frame.locator("button.candidate").filter({ has: frame.locator(".candidate-label", { hasText: /^\(S\)/ }) });
       if (await s.count() !== 1) throw new Error("views: kein eindeutiger (S)-Kandidat: " + (await frame.locator(".candidate-label").allInnerTexts()).join(" · "));
       await klick(s, () => frame.getByRole("button", { name: "All candidates" }).waitFor({ timeout: 30000 }));
-      await halten(1200);
+      await halten(1500);
       await klick(frame.getByRole("tab", { name: "Data", exact: true }), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }));
       await datenblattMitCas(werkzeug, 2000);
     },
   },
-  // Morphin: 3D-Chip → Modell steht → zwei Drehzüge per Pointer-Drag → Endstand
+  // Hero rechts, Thalidomid: 3D-Chip → Einblend-Drehung → zwei Drehzüge per Pointer-Drag → Ruhe
   "3d": {
-    tool: "generate_molecule", args: { name_or_smiles: "morphine" }, hoehe: 795, fps: 12,
-    async ablauf({ frame, page, halten, klick, zeiger, mitte }) {
+    tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, fps: 12, hero: true,
+    async ablauf({ frame, page, halten, klick, zeiger, mitte, imBild }) {
       await frame.locator(".structure-canvas svg").first().waitFor();
       await halten(800);
       await klick(frame.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }));
-      await halten(1000);
+      await imBild(frame.locator("[data-view-3d]"), "3D-Kuhle");
+      await imBild(frame.locator("[data-view-axis]"), "Ansicht-Achse");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await imBild(frame.locator(".molecule-panel"), "Panel samt Drag-Hinweis");
+      await halten(1300); // Einblend-Drehung (1200 ms) läuft zu Ende
       const [cx, cy] = await mitte(frame.locator("[data-view-3d]"));
       const zug = async (von, nach, ms) => {
         await zeiger(...von); await page.mouse.move(...von, { steps: 6 }); await halten(320);
@@ -216,8 +266,8 @@ const SZENEN = {
         }
         await page.mouse.up();
       };
-      await zug([cx - 150, cy], [cx + 150, cy + 20], 1700); // waagerecht: um die senkrechte Achse
-      await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1500); // senkrecht: um die waagerechte Achse
+      await zug([cx - 150, cy], [cx + 150, cy + 20], 1800); // waagerecht: um die senkrechte Achse
+      await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1600); // senkrecht: um die waagerechte Achse
       await halten(1500);
     },
   },
@@ -240,18 +290,38 @@ const SZENEN = {
   },
 };
 
-const gewählt = process.argv.slice(2);
+// Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert)
+const gewählt = [], optionen = {};
+for (let i = 2; i < process.argv.length; i++) {
+  const a = process.argv[i];
+  const m = a.match(/^--(theme|molecule)(?:=(.*))?$/);
+  if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule)`);
+  else gewählt.push(a);
+}
+if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
+const themes = optionen.theme ? [optionen.theme] : Object.keys(THEMES);
+const szenen = gewählt.length ? gewählt : Object.keys(SZENEN);
+for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (views, 3d, molecule)`);
 mkdirSync(assets, { recursive: true });
 const browser = await chromium.launch();
 const ergebnisse = [];
 try {
-  for (const name of gewählt.length ? gewählt : Object.keys(SZENEN)) {
-    if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (views, 3d, molecule)`);
-    console.log(`▶ ${name}`);
-    ergebnisse.push(await szene(browser, { name, ...SZENEN[name] }));
+  for (const theme of themes) {
+    for (const name of szenen) {
+      console.log(`▶ ${name} (${theme})`);
+      ergebnisse.push(await szene(browser, { name, theme, molecule: optionen.molecule, ...SZENEN[name] }));
+    }
   }
 } finally {
   await browser.close();
   await client.close();
 }
 console.table(ergebnisse.map(({ datei, ...w }) => ({ datei: datei.replace(repo + "/", ""), ...w })));
+// Hero-Paar: jede Hero-Fassung hat exakt den HERO-Ausschnitt — damit sind views und 3d
+// gleich groß, auch wenn sie in getrennten Läufen entstehen
+const falsch = ergebnisse.filter((e) => SZENEN[e.szene].hero && (e.breite !== HERO.breite || e.hoehe !== HERO.hoehe));
+if (falsch.length) {
+  console.error(`ROT: Hero-GIFs nicht ${HERO.breite}×${HERO.hoehe}: ` + falsch.map((e) => `${e.szene}-${e.theme} ${e.breite}×${e.hoehe}`).join(", "));
+  process.exit(1);
+}
