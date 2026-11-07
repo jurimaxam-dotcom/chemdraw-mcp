@@ -1,0 +1,54 @@
+Retrying with transliterated name: 'Essigsäure' → 'Essigsaeure'
+Resolution failed for 'Blubberwasser': PubChem=not_found(name unknown (HTTP 404)); NCI CIR=not_found(name unknown (HTTP 500))
+Resolution failed for 'Quatschstoff': PubChem=not_found(name unknown (HTTP 404)); NCI CIR=not_found(name unknown (HTTP 500))
+Could not resolve 'Quatschstoff' (not_found), skipping
+[07:57:10] WARNING: not removing hydrogen atom without neighbors
+[07:57:10] reactant 1 has no mapped atoms.
+[07:57:12] WARNING: not removing hydrogen atom without neighbors
+[07:57:12] reactant 1 has no mapped atoms.
+Retrying with English spelling: 'Methylphenidat' → 'Methylphenidate'
+MVP-Tools: 16 ['batch_generate', 'calculate_ph', 'compare_molecules', 'export_anki_deck', 'generate_3d', 'generate_mechanism', 'generate_molecule', 'generate_reaction', 'generate_species_distribution', 'generate_spectrum', 'generate_titration_curve', 'generate_tlc', 'lookup', 'lookup_molecule_data', 'predict_spectrum', 'save_png']
+==== generate_molecule Name → OK (3.3s)
+{"type": "molecule", "svg": "str[7180]", "atoms": "list[15]", "views": "list[1]", "viewRequest": "dict[2]", "initialView": "", "viewSvg": "", "viewAtoms": "list[0]", "projectionNote": "", "name": "Ibuprofen", "subtitle": "", "properties": "dict[10]", "functionalGroups": "list[2]", "stereoWarnings": "list[1]", "stereoNote": "str[74]", "foundAs": "", "lipinski": "dict[6]", "files": "dict[2]", "cdxml
+==== generate_molecule deutsch → OK (3.1s)
+{"type": "molecule", "svg": "str[3237]", "atoms": "list[4]", "views": "list[1]", "viewRequest": "dict[1]", "initialView": "", "viewSvg": "", "viewAtoms": "list[0]", "projectionNote": "", "name": "Essigsäure", "subtitle": "", "properties": "dict[10]", "functionalGroups": "list[1]", "stereoWarnings": "list[0]", "stereoNote": "", "foundAs": "Essigsaeure", "lipinski": "dict[6]", "files": "dict[2]", "c
+==== generate_molecule SMILES → OK (2.0s)
+{"type": "molecule", "svg": "str[8788]", "atoms": "list[13]", "views": "list[1]", "viewRequest": "dict[1]", "initialView": "", "viewSvg": "", "viewAtoms": "list[0]", "projectionNote": "", "name": "CC(=O)Oc1ccccc1C(=O)O", "subtitle": "", "properties": "dict[10]", "functionalGroups": "list[3]", "stereoWarnings": "list[0]", "stereoNote": "", "foundAs": "", "lipinski": "dict[6]", "files": "dict[2]", "
+==== generate_molecule IUPAC → OK (2.1s)
+{"type": "molecule", "svg": "str[8779]", "atoms": "list[13]", "views": "list[1]", "viewRequest": "dict[1]", "initialView": "", "viewSvg": "", "viewAtoms": "list[0]", "projectionNote": "", "name": "2-acetoxybenzoic acid", "subtitle": "", "properties": "dict[10]", "functionalGroups": "list[3]", "stereoWarnings": "list[0]", "stereoNote": "", "foundAs": "", "lipinski": "dict[6]", "files": "dict[2]", "
+==== generate_molecule ambiguous → OK (0.0s)
+{"type": "ambiguous", "svg": "", "atoms": "list[0]", "views": "list[0]", "viewRequest": "dict[0]", "initialView": "", "viewSvg": "", "viewAtoms": "list[0]", "projectionNote": "", "name": "Glucose", "subtitle": "", "properties": "dict[0]", "functionalGroups": "list[0]", "stereoWarnings": "list[0]", "stereoNote": "", "foundAs": "", "lipinski": "NoneType", "files": "dict[0]", "cdxml_path": "", "messa
+==== generate_molecule Müll → FEHLER NameResolutionError (4.4s)
+Could not resolve 'Blubberwasser' to a structure. Every source answered and none knows this name (PubChem: name unknown (HTTP 404); NCI CIR: name unknown (HTTP 500)). Use the English or IUPAC name (brand names and German trivial names are often not indexed), a systematic IUPAC name — OPSIN parses th
+==== batch_generate → OK (9.6s)
+{"type": "batch", "molecules": "list[2]", "cdxml_paths": "list[0]", "failed": "list[1]"}
+==== compare_molecules → OK (1.3s)
+{"type": "plot", "name": "Morphin vs. Codein", "subtitle": "str[71]", "svg": "str[35984]", "files": "dict[2]", "notes": "list[0]"}
+==== generate_reaction → OK (1.8s)
+{"type": "reaction", "name": "", "conditions": "H₂SO₄", "conditions_below": "", "arrow": "equilibrium", "reactants": "list[2]", "products": "list[2]", "files": "dict[2]", "cdxml_path": "", "balance": "dict[8]", "coefficients": "list[0]", "request": "dict[8]"}
+==== generate_mechanism sn2 → OK (0.5s)
+{"type": "mechanism", "name": "Nucleophilic Substitution (SN2) — ethyl bromide + hydroxide", "reaction_type": "sn2", "steps": "list[3]", "current_step": 0, "substrates_drawn": true, "fallback_reason": "", "notes": "list[0]", "reversible": false}
+==== generate_mechanism fischer → OK (1.1s)
+{"type": "mechanism", "name": "Fischer esterification — acetic acid + ethanol", "reaction_type": "fischer_ester", "steps": "list[8]", "current_step": 0, "substrates_drawn": true, "fallback_reason": "", "notes": "list[0]", "reversible": true}
+==== generate_3d → OK (0.0s)
+{"type": "molecule3d", "name": "Koffein", "atoms": "list[24]", "bonds": "list[25]", "files": "dict[1]"}
+==== lookup properties → OK (1.9s)
+## Ibuprofen — PubChem data |  | | Property | Value | | |------------|------| | | **CID** | 3672 | | | **IUPAC name** | 2-[4-(2-methylpropyl)phenyl]propanoic acid | | | **Molecular formula** | C13H18O2 | | | **Molecular weight** | 206.28 g/mol | | | **Exact mass** | 206.130679813 | | | **XLogP** | 3.5 | | | **Polar sur
+==== lookup_molecule_data → OK (7.4s)
+{"type": "database", "molecule_svg": "str[9101]", "sources": "list[2]", "atoms": "list[17]", "functionalGroups": "list[3]", "stereoWarnings": "list[2]", "stereoNote": "str[78]", "foundAs": "Methylphenidate", "name": "Methylphenidat", "smiles": "COC(=O)C(C1CCCCN1)C2=CC=CC=C2"}
+==== predict_spectrum IR → OK (0.0s)
+# Expected IR bands for `CC(=O)Oc1ccccc1C(=O)O` |  | | Wavenumber [cm⁻¹] | Group | Intensity | Shape | | |---|---|---|---| | | 3300–2500 | O–H (carboxylic acid) | medium | very broad | | | 3100–3000 | C–H (aromatic) | medium | sharp | | | 3000–2850 | C–H (alkane, sp³) | strong | sharp | | | 1750–1735 | C=O (ester
+==== generate_spectrum → FEHLER ValueError (0.0s)
+Unknown spectrum type 'IR' — allowed: ['cd', 'fluorescence', 'ir', 'ms', 'nir', 'nmr_13c', 'nmr_1h', 'ord', 'raman', 'uv_vis']
+==== generate_tlc → OK (0.1s)
+{"type": "tlc", "name": "", "solvent": "EE/Hexan", "detection": "", "lanes": "list[2]", "svg": "str[12209]", "files": "dict[2]"}
+==== generate_titration_curve → OK (0.1s)
+{"type": "plot", "name": "Essigsäure", "subtitle": "str[62]", "svg": "str[15375]", "files": "dict[2]", "notes": "list[0]"}
+==== generate_species_distribution → OK (0.1s)
+{"type": "plot", "name": "Phosphorsäure", "subtitle": "Species distribution over pH", "svg": "str[22951]", "files": "dict[2]", "notes": "list[0]"}
+==== calculate_ph weak_acid → OK (0.0s)
+# pH of 0.1 mol/L weak acid |  | **pH = 2.88** |  | - Exact (charge balance): **pH = 2.88** | - Textbook approximation: pH = 2.88 |   - Formula: `pH = ½ · (pKa − log c)` |   - Substituted: `pH = ½ · (4.76 − log 0.1)` | - pOH = 11.12 | - pKa used: 4.76
+==== export_anki_deck → OK (0.0s)
+{"type": "anki_deck", "delivery": "apkg", "name": "Probe", "cards": 1, "media": 1, "fronts": "list[1]", "file": "str[138]"}
+
+Dateien: ['anki_dir/probe.apkg', 'output_dir/2-acetoxybenzoic-acid.png', 'output_dir/2-acetoxybenzoic-acid.svg', 'output_dir/ccooc1ccccc1coo-56de9fefcf16.png', 'output_dir/ccooc1ccccc1coo-56de9fefcf16.svg', 'output_dir/essigsäure.png', 'output_dir/essigsäure.svg', 'output_dir/ibuprofen.png', 'output_dir/ibuprofen.svg', 'output_dir/koffein.png', 'output_dir/koffein.svg', 'output_dir/paracetamol.png', 'output_dir/paracetamol.svg', 'plot_dir/compare-morphin-vs-codein.png', 'plot_dir/compare-morphin-vs-codein.svg', 'plot_dir/species-phosphorsäure.png', 'plot_dir/species-phosphorsäure.svg', 'plot_dir/titration-essigsäure.png', 'plot_dir/titration-essigsäure.svg', 'reaction_dir/reaktion-935c3b/reaktion-935c3b.png', 'reaction_dir/reaktion-935c3b/reaktion-935c3b.svg', 'threed_dir/koffein.sdf', 'tlc_dir/tlc-plate-929a18.png', 'tlc_dir/tlc-plate-929a18.svg']
