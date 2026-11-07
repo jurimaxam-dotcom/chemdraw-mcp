@@ -1,0 +1,268 @@
+{
+ "Nicotin": {
+  "fixture": "SNICXCGAKADSCV-UHFFFAOYSA-N",
+  "suchname": "nicotine",
+  "pubchem": [
+   [
+    89594,
+    "SNICXCGAKADSCV-JTQLQIEISA-N",
+    "3-[(2S)-1-methylpyrrolidin-2-yl]pyridine"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL3",
+    "SNICXCGAKADSCV-JTQLQIEISA-N",
+    "4.0"
+   ]
+  ],
+  "kegg": [
+   [
+    "D03365",
+    "Nicotine (USP); Habitrol (TN)",
+    "SNICXCGAKADSCV-JTQLQIEISA-N"
+   ],
+   [
+    "D05156",
+    "Nicotine bitartrate (USAN); Nicotine bitartrate dihydrate",
+    "LDMPZNTVIGIREC-ZGPNLCEMSA-N"
+   ],
+   [
+    "D05157",
+    "Nicotine polacrilex (USP); Nicorette (TN)",
+    null
+   ],
+   [
+    "D08274",
+    "Ethyl nicotinate; Nicotine acid ethyl ester; Mucotherm (TN)",
+    "XBLVHTDFJBKJLG-UHFFFAOYSA-N"
+   ]
+  ],
+  "wikidata_fixture_item": {
+   "Q12144": {
+    "label": "nicotine",
+    "P235": [
+     "SNICXCGAKADSCV-UHFFFAOYSA-N"
+    ]
+   }
+  },
+  "wikidata_fixture_key": [
+   [
+    "Q12144",
+    "nicotine"
+   ]
+  ],
+  "wikidata_pubchem_keys": {
+   "SNICXCGAKADSCV-JTQLQIEISA-N": [
+    [
+     "Q28086552",
+     "(−)-nicotine"
+    ]
+   ]
+  }
+ },
+ "Citral": {
+  "fixture": "WTEVQBCEXWBHNA-UHFFFAOYSA-N",
+  "suchname": "citral",
+  "pubchem": [
+   [
+    638011,
+    "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+    "(2E)-3,7-dimethylocta-2,6-dienal"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL1080997",
+    "WTEVQBCEXWBHNA-JXMROGBWSA-N",
+    null
+   ]
+  ],
+  "kegg": null,
+  "wikidata_fixture_item": {
+   "Q60176530": {
+    "label": "citral",
+    "P235": [
+     "WTEVQBCEXWBHNA-UHFFFAOYSA-N"
+    ]
+   }
+  },
+  "wikidata_fixture_key": [
+   [
+    "Q60176530",
+    "citral"
+   ]
+  ],
+  "wikidata_pubchem_keys": {
+   "WTEVQBCEXWBHNA-JXMROGBWSA-N": [
+    [
+     "Q410888",
+     "geranial"
+    ]
+   ]
+  }
+ },
+ "Lincomycin": {
+  "fixture": "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+  "suchname": "lincomycin",
+  "pubchem": [
+   [
+    3000540,
+    "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+    "(2S,4R)-N-[(1R,2R)-2-hydroxy-1-[(2R,3R,4S,5R,6R)-3,4,5-trihydroxy-6-methylsulfanyloxan-2-yl]propyl]-1-methyl-4-propylpyrrolidine-2-carboxamide"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL1447",
+    "OJMMVQQUTAEWLP-KIDUDLJLSA-N",
+    "4.0"
+   ]
+  ],
+  "kegg": [
+   [
+    "D00223",
+    "Lincomycin (USAN/INN); LCM",
+    "OJMMVQQUTAEWLP-KIDUDLJLSA-N"
+   ],
+   [
+    "D02346",
+    "Lincomycin hydrochloride hydrate (JP19/USP); LCM; Lincocin (TN)",
+    "LFZGYTBWUHCAKF-DCNJEFSFSA-N"
+   ]
+  ],
+  "wikidata_fixture_key": [
+   [
+    "Q423428",
+    "lincomycin"
+   ]
+  ],
+  "wikidata_pubchem_keys": {}
+ },
+ "Prostacyclin": {
+  "fixture": "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+  "suchname": "epoprostenol",
+  "pubchem": [
+   [
+    5282411,
+    "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+    "(5Z)-5-[(3aR,4R,5R,6aS)-5-hydroxy-4-[(E,3S)-3-hydroxyoct-1-enyl]-3,3a,4,5,6,6a-hexahydrocyclopenta[b]furan-2-ylidene]pentanoic acid"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL1139",
+    "KAQKFAOMNZTLHT-OZUDYXHBSA-N",
+    "4.0"
+   ]
+  ],
+  "kegg": [
+   [
+    "D00106",
+    "Epoprostenol (USAN/INN); Prostaglandin I2; Prostacyclin",
+    "KAQKFAOMNZTLHT-OZUDYXHBSA-N"
+   ],
+   [
+    "D01337",
+    "Epoprostenol sodium (JAN/USAN); Flolan (TN); Veletri (TN)",
+    "LMHIPJMTZHDKEW-XQYLJSSYSA-M"
+   ]
+  ],
+  "wikidata_fixture_key": [
+   [
+    "Q412050",
+    "prostacyclin"
+   ]
+  ],
+  "wikidata_pubchem_keys": {}
+ },
+ "Vareniclin": {
+  "fixture": "JQSHBVHOMNKWFT-UHFFFAOYSA-N",
+  "suchname": "varenicline",
+  "pubchem": [
+   [
+    5310966,
+    "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+    "(1S,12R)-5,8,14-triazatetracyclo[10.3.1.02,11.04,9]hexadeca-2,4,6,8,10-pentaene"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL1076903",
+    "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+    "4.0"
+   ]
+  ],
+  "kegg": [
+   [
+    "D06282",
+    "Varenicline tartrate (JAN/USAN); Chantix (TN); Champix (TN); Tyrvaya (TN)",
+    "TWYFGYXQSYOKLK-LREBCSMRSA-N"
+   ],
+   [
+    "D08669",
+    "Varenicline (INN)",
+    "JQSHBVHOMNKWFT-UHFFFAOYSA-N"
+   ]
+  ],
+  "wikidata_fixture_key": [
+   [
+    "Q411330",
+    "varenicline"
+   ]
+  ],
+  "wikidata_pubchem_keys": {
+   "JQSHBVHOMNKWFT-DTORHVGOSA-N": [
+    [
+     "Q114826146",
+     "varenicline"
+    ]
+   ]
+  }
+ },
+ "Mefloquin": {
+  "fixture": "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+  "suchname": "mefloquine",
+  "pubchem": [
+   [
+    4046,
+    "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+    "[2,8-bis(trifluoromethyl)quinolin-4-yl]-piperidin-2-ylmethanol"
+   ]
+  ],
+  "chembl": [
+   [
+    "CHEMBL416956",
+    "XEEQGYMUWCZPDN-UHFFFAOYSA-N",
+    "4.0"
+   ]
+  ],
+  "kegg": [
+   [
+    "D00831",
+    "Mefloquine hydrochloride (JP19/USP); Lariam (TN)",
+    "WESWYMRNZNDGBX-YLCXCWDSSA-N"
+   ],
+   [
+    "D04895",
+    "Mefloquine (USAN/INN)",
+    "XEEQGYMUWCZPDN-DOMZBBRYSA-N"
+   ]
+  ],
+  "wikidata_fixture_item": {
+   "Q736270": {
+    "label": "mefloquine",
+    "P235": [
+     "XEEQGYMUWCZPDN-UHFFFAOYSA-N"
+    ]
+   }
+  },
+  "wikidata_fixture_key": [
+   [
+    "Q736270",
+    "mefloquine"
+   ]
+  ],
+  "wikidata_pubchem_keys": {}
+ }
+}

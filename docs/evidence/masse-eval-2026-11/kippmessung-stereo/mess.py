@@ -22,14 +22,14 @@ import sys
 import time
 from pathlib import Path
 
-REPO = Path("/Users/tom/Documents/projects/chemdraw-mcp/.claude/worktrees/agent-aad3721130258edcb")
+REPO = Path("/Users/tom/Documents/projects/chemdraw-mcp/.claude/worktrees/kipp2")
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "scripts"))
 
+import identitaet as I  # noqa: E402
 from rdkit import Chem, RDLogger  # noqa: E402
 from rdkit.Chem import inchi  # noqa: E402
 
-import identitaet as I  # noqa: E402
 from chemdraw_tool import resolver as R  # noqa: E402
 
 RDLogger.DisableLog("rdApp.*")
@@ -48,17 +48,24 @@ ORIG = {
 
 # ---------------------------------------------------------------- Messmengen
 
+
 def stoffe():
     return json.loads((REPO / "tests/identity/stoffe-masse.json").read_text())["stoffe"]
 
 
 def holdout_pubchem():
     # feste Namensliste aus dem gespeicherten Holdout-Lauf (kein neues Wikidata-Query)
-    return [(f["name"], f["erwartet"]) for f in json.loads((EVID / "holdout_pubchem_check.json").read_text())]
+    return [
+        (f["name"], f["erwartet"])
+        for f in json.loads((EVID / "holdout_pubchem_check.json").read_text())
+    ]
 
 
 def holdout_opsin():
-    return [(f["name"], f["erwartet"]) for f in json.loads((EVID / "holdout_opsin_check.json").read_text())]
+    return [
+        (f["name"], f["erwartet"])
+        for f in json.loads((EVID / "holdout_opsin_check.json").read_text())
+    ]
 
 
 # ---------------------------------------------------------------- Memo
@@ -124,8 +131,11 @@ def _parent_key25(smiles):
     mol = Chem.MolFromSmiles(smiles) if smiles else None
     if mol is None:
         return None
-    organic = [f for f in Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
-               if any(a.GetAtomicNum() == 6 for a in f.GetAtoms())]
+    organic = [
+        f
+        for f in Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
+        if any(a.GetAtomicNum() == 6 for a in f.GetAtoms())
+    ]
     if not organic:
         return _water_free_key25(smiles)
     parent = max(organic, key=lambda f: f.GetNumHeavyAtoms())
@@ -150,13 +160,87 @@ def n_defined(smiles):
     mol = Chem.MolFromSmiles(smiles) if smiles else None
     if mol is None:
         return 0
-    centres = Chem.FindMolChiralCenters(mol, includeUnassigned=False, useLegacyImplementation=False)
-    bonds = sum(b.GetStereo() not in (Chem.BondStereo.STEREONONE, Chem.BondStereo.STEREOANY)
-                for b in mol.GetBonds())
+    centres = Chem.FindMolChiralCenters(
+        mol, includeUnassigned=False, useLegacyImplementation=False
+    )
+    bonds = sum(
+        b.GetStereo() not in (Chem.BondStereo.STEREONONE, Chem.BondStereo.STEREOANY)
+        for b in mol.GetBonds()
+    )
     return len(centres) + bonds
 
 
-def make_pubchem_checked(rule_a: bool):
+def _layers(smiles):
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    if mol is None:
+        return None
+    parts = inchi.MolToInchi(mol).split("/")[2:]
+    lay = {p[0]: p[1:] for p in parts if p[:1] in "btms"}
+    tetra, dbl = {}, {}
+    for ci, comp in enumerate(lay.get("t", "").split(";")):
+        for tok in filter(None, comp.split(",")):
+            tetra[(ci, tok[:-1])] = tok[-1]
+    for ci, comp in enumerate(lay.get("b", "").split(";")):
+        for tok in filter(None, comp.split(",")):
+            dbl[(ci, tok[:-1])] = tok[-1]
+    ms = lay.get("m", "")
+    return tetra, dbl, ms, lay.get("s", "")
+
+
+def stereo_art(sm_vor, sm_nach):
+    kv, kn = (
+        inchi.MolToInchiKey(Chem.MolFromSmiles(s))
+        if s and Chem.MolFromSmiles(s)
+        else None
+        for s in (sm_vor, sm_nach)
+    )
+    if not kv or not kn:
+        return "unklar (kein Ergebnis)"
+    if kv[:14] != kn[:14]:
+        return "skelett"
+    if kv[:25] == kn[:25]:
+        return "ladung/protonierung"
+    lv, ln = _layers(sm_vor), _layers(sm_nach)
+    tv, bv, mv, sv = lv
+    tn, bn, mn, sn = ln
+    dv = {
+        k: v
+        for k, v in {
+            **{("t",) + k: v for k, v in tv.items()},
+            **{("b",) + k: v for k, v in bv.items()},
+        }.items()
+        if v != "?"
+    }
+    dn = {
+        k: v
+        for k, v in {
+            **{("t",) + k: v for k, v in tn.items()},
+            **{("b",) + k: v for k, v in bn.items()},
+        }.items()
+        if v != "?"
+    }
+    if not dv and dn:
+        return "flach→definiert"
+    if dv and not dn:
+        return "definiert→flach"
+    flip = {"+": "-", "-": "+"}
+    if (
+        mv and mn and mv != mn
+    ):  # /m-Inversion: Vorzeichen der t-Schicht einer Seite drehen
+        dn = {k: (flip.get(v, v) if k[0] == "t" else v) for k, v in dn.items()}
+    gemeinsam = set(dv) & set(dn)
+    if any(dv[k] != dn[k] for k in gemeinsam):
+        return "anderes Isomer (Widerspruch)"
+    if set(dn) < set(dv):
+        return "weniger definiert (Teilmenge)"
+    if set(dn) > set(dv):
+        return "mehr definiert (Obermenge)"
+    if sv != sn:
+        return f"gleiche Zentren, /s{sv}→/s{sn} (absolut/relativ/racemisch)"
+    return "gleiche Zentren, nur /m (Enantiomer)" if mv != mn else "unklar"
+
+
+def make_pubchem_checked(rule_a: str | None):  # None | A | A>= | A⊇
     def checked(name, smiles, report):
         variant = R._spelling_variant(name)
         if variant is None:
@@ -172,15 +256,37 @@ def make_pubchem_checked(rule_a: bool):
         if same_parent and _parent_key25(other) != _parent_key25(smiles):
             guarded = bool(R._STEREO_PREFIX.match(name) or DL_PREFIX.match(name))
             comp_ok = R._components(other) <= R._components(smiles)
-            fires = rule_a and not guarded and comp_ok
-            LOG.append({"regel": "A", "name": name, "variante": variant,
-                        "direkt": Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)),
-                        "variante_key": Chem.MolToInchiKey(Chem.MolFromSmiles(other)),
-                        "gesperrt_praefix": guarded, "gesperrt_salz": not comp_ok,
-                        "greift": fires})
+            nd_d, nd_v = n_defined(smiles), n_defined(other)
+            art = stereo_art(smiles, other)
+            if rule_a == "A>=":  # Chef 07.11.: definiertere Form gewinnt (Zahl)
+                stereo_ok = nd_v >= nd_d
+            elif (
+                rule_a == "A⊇"
+            ):  # Zusatzspalte: Variante verliert und widerspricht nichts
+                stereo_ok = art in ("flach→definiert", "mehr definiert (Obermenge)")
+            else:
+                stereo_ok = True
+            fires = bool(rule_a) and not guarded and comp_ok and stereo_ok
+            LOG.append(
+                {
+                    "regel": "A",
+                    "name": name,
+                    "variante": variant,
+                    "def_direkt": nd_d,
+                    "def_variante": nd_v,
+                    "art": art,
+                    "direkt": Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)),
+                    "variante_key": Chem.MolToInchiKey(Chem.MolFromSmiles(other)),
+                    "gesperrt_praefix": guarded,
+                    "gesperrt_salz": not comp_ok,
+                    "greift": fires,
+                }
+            )
             if fires:
                 return other, variant
-        if R._components(other) == 1 < R._components(smiles) and not R._SALT_WORD.search(name):
+        if R._components(other) == 1 < R._components(
+            smiles
+        ) and not R._SALT_WORD.search(name):
             return other, variant
         return smiles, name
 
@@ -192,7 +298,9 @@ def make_opsin_checked(rule_b: str | None):  # None | "B" | "B'"
         if R._SYSTEMATIC_MARK.search(name):
             return opsin_smiles
         opsin_mol = Chem.MolFromSmiles(opsin_smiles)
-        if opsin_mol is None or not any(a.GetAtomicNum() == 6 for a in opsin_mol.GetAtoms()):
+        if opsin_mol is None or not any(
+            a.GetAtomicNum() == 6 for a in opsin_mol.GetAtoms()
+        ):
             return opsin_smiles
         pubchem = R._pubchem_lookup(name, report)
         opsin_key = R._skeleton(opsin_smiles)
@@ -204,14 +312,21 @@ def make_opsin_checked(rule_b: str | None):  # None | "B" | "B'"
             if _water_free_key25(pubchem) != _water_free_key25(opsin_smiles):
                 nd_p, nd_o = n_defined(pubchem), n_defined(opsin_smiles)
                 fires = rule_b == "B" or (rule_b == "B'" and nd_p >= nd_o)
-                LOG.append({"regel": rule_b or "B-aus", "name": name,
-                            "opsin_key": Chem.MolToInchiKey(opsin_mol),
-                            "pubchem_key": Chem.MolToInchiKey(Chem.MolFromSmiles(pubchem)),
-                            "def_opsin": nd_o, "def_pubchem": nd_p, "greift": fires})
+                LOG.append(
+                    {
+                        "regel": rule_b or "B-aus",
+                        "name": name,
+                        "opsin_key": Chem.MolToInchiKey(opsin_mol),
+                        "pubchem_key": Chem.MolToInchiKey(Chem.MolFromSmiles(pubchem)),
+                        "def_opsin": nd_o,
+                        "def_pubchem": nd_p,
+                        "greift": fires,
+                    }
+                )
                 if fires:
                     return pubchem
             return opsin_smiles
-        english = R.english_variant(name)
+        english = None if R.form_variant(name) else R.english_variant(name)
         if english and english != name:
             if R._skeleton(R._pubchem_lookup(english, report)) == opsin_key:
                 return opsin_smiles
@@ -221,12 +336,15 @@ def make_opsin_checked(rule_b: str | None):  # None | "B" | "B'"
 
 
 VARIANTEN = {
-    "basis": (False, None),
-    "A": (True, None),
-    "B": (False, "B"),
-    "B'": (False, "B'"),
-    "A+B": (True, "B"),
-    "A+B'": (True, "B'"),
+    "basis": (None, None),
+    "A": ("A", None),
+    "A>=": ("A>=", None),
+    "A⊇": ("A⊇", None),
+    "B": (None, "B"),
+    "B'": (None, "B'"),
+    "A>=+B'": ("A>=", "B'"),
+    "A⊇+B'": ("A⊇", "B'"),
+    "A+B'": ("A", "B'"),
 }
 
 
@@ -238,6 +356,7 @@ def set_variant(name):
 
 
 # ---------------------------------------------------------------- Läufe
+
 
 def key_of(smiles):
     mol = Chem.MolFromSmiles(smiles) if smiles else None
@@ -256,16 +375,28 @@ def run_all(pause: float):
         smiles = None
         if MODE == "replay":
             try:
-                smiles = R.resolve(e["eingabe"])[0]  # lru-Cache/SMILES-Weg: keine neuen Lookups
+                smiles = R.resolve(e["eingabe"])[
+                    0
+                ]  # lru-Cache/SMILES-Weg: keine neuen Lookups
             except Exception:
                 smiles = None
-        res["stoffe"].append({"eingabe": e["eingabe"], "erwartet": e.get("inchikey"), "smiles": smiles, **ergebnis})
+        res["stoffe"].append(
+            {
+                "eingabe": e["eingabe"],
+                "erwartet": e.get("inchikey"),
+                "smiles": smiles,
+                **ergebnis,
+            }
+        )
         if MODE == "record":
             print(f"{i:>3} {ergebnis['status']:5} {e['eingabe']}", flush=True)
             time.sleep(pause)
             if i % 50 == 0:
                 save_memo()
-    for teil, liste in (("holdout_pubchem", holdout_pubchem()), ("holdout_opsin", holdout_opsin())):
+    for teil, liste in (
+        ("holdout_pubchem", holdout_pubchem()),
+        ("holdout_opsin", holdout_opsin()),
+    ):
         for i, (name, erwartet) in enumerate(liste, 1):
             R.resolve_name.cache_clear()
             smiles = None
@@ -274,14 +405,20 @@ def run_all(pause: float):
                 k = key_of(smiles)
             except Exception as ex:
                 k = None
-                if MODE == "record" and getattr(ex, "kind", "") in ("offline", "sources_down", "partial"):
+                if MODE == "record" and getattr(ex, "kind", "") in (
+                    "offline",
+                    "sources_down",
+                    "partial",
+                ):
                     time.sleep(I.BACKOFF)
                     R.resolve_name.cache_clear()
                     try:
                         k = key_of(R.resolve_name(name))
                     except Exception:
                         k = None
-            res[teil].append({"name": name, "erwartet": erwartet, "key": k, "smiles": smiles})
+            res[teil].append(
+                {"name": name, "erwartet": erwartet, "key": k, "smiles": smiles}
+            )
             if MODE == "record":
                 print(f"{teil} {i:>3} {name} {k}", flush=True)
                 time.sleep(pause)
@@ -317,7 +454,10 @@ def replay():
         n_miss = len(MISSES)
         alle[v] = run_all(0)
         logs[v] = LOG
-        print(f"{v}: replay fertig, neue Memo-Fehlgriffe {len(MISSES) - n_miss}", flush=True)
+        print(
+            f"{v}: replay fertig, neue Memo-Fehlgriffe {len(MISSES) - n_miss}",
+            flush=True,
+        )
     (OUT / "replay.json").write_text(json.dumps(alle, ensure_ascii=False, indent=1))
     (OUT / "replay_log.json").write_text(json.dumps(logs, ensure_ascii=False, indent=1))
     (OUT / "misses.json").write_text(json.dumps(MISSES, ensure_ascii=False, indent=1))
