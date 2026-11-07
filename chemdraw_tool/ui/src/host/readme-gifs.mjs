@@ -29,10 +29,9 @@ const THEMES = {
   light: { hintergrund: "#fafbf9", zeiger: "background:rgba(30,36,33,.28);border:2px solid #1e2421;box-shadow:0 1px 4px rgba(0,0,0,.25)" },
   dark: { hintergrund: "#202724", zeiger: "background:rgba(240,240,240,.45);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.6)" },
 };
-// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 812 px =
-// das ganze 3D-Panel bei 600 px (Titel, Kuhle 1:1, Achse, Kennwerte, Drag-Hinweis bis 798 px)
-// plus 12 px Körperrand unten wie oben — gemessen 07.11., imBild bricht ab, wenn es nicht passt
-const HERO = { breite: BREITE, hoehe: Number(process.env.HERO_HOEHE || 812) };
+// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 880 px = 3D-Panel
+// mit Kuhle, Achse, Kennwerten, Drag-Hinweis und Fußzeile (seit E3) plus 12 px Rand unten wie oben.
+const HERO = { breite: BREITE, hoehe: Number(process.env.HERO_HOEHE || 880) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
 const hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
@@ -95,7 +94,14 @@ async function szene(browser, { name, tool, args, hoehe, fps, ablauf, theme, mol
       if (!uhr.läuft) { await page.waitForTimeout(10); continue; }
       const t = uhr.jetzt();
       const file = join(dir, `f${String(bilder.length).padStart(4, "0")}.png`);
-      await page.screenshot({ path: file, clip: { x: 0, y: 0, width: BREITE, height: hoehe } });
+      // Bricht die Szene mit einem Fehler ab, schließt der Kontext, bevor die Schleife endet —
+      // dann darf der Screenshot-Fehler den eigentlichen Szenenfehler nicht verdecken.
+      try {
+        await page.screenshot({ path: file, clip: { x: 0, y: 0, width: BREITE, height: hoehe } });
+      } catch (e) {
+        if (!aufnahme || page.isClosed()) break;
+        throw e;
+      }
       if (uhr.läuft) bilder.push({ file, t });
     }
   })();

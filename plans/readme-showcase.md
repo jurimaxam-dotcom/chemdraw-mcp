@@ -130,3 +130,10 @@ Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
 5. [ ] Playwright-Screenshots hell/dunkel bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
 6. [ ] Codex-Abgleich (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
 7. [ ] Gate + CI grün, Push; README-Stand als Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
+
+## Shorts aus den GIFs (Jay 13:05: „anschließend mit den GIFs die Shorts erstellen“)
+
+Nach README-Abnahme: derselbe Host-Aufbau (`readme-gifs.mjs`) rendert die drei Szenen als 9:16-Clips (Viewport
+1080×1920 skaliert, Panel mittig, mp4 per ffmpeg statt GIF, 1080p, 12–20 s, ohne Mauszeiger-Kreis oder mit größerem).
+Schnitt, Text-Overlays, Musik und Veröffentlichung gehören nach `chemdraw-vermarktung` (dort liegt die Shorts-Planung);
+Auftrag an Codex per `tisch` mit den fertigen Clips als Rohmaterial. Erst nach C2 Punkt 7.

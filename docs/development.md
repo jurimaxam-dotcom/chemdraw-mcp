@@ -43,7 +43,7 @@ panel test host at 600 px, each in a light and a dark version (`assets/demo-<sce
 `-dark.gif`; the README picks one via `<picture>`/`prefers-color-scheme`):
 `npm --prefix chemdraw_tool/ui run readme:gifs` records all scenes in both themes;
 `-- views 3d --theme dark` limits scenes and theme, `--molecule NAME` swaps the molecule.
-The two hero scenes share one fixed 600×812 crop. The script needs network and turns red
+The two hero scenes share one fixed 600×880 crop. The script needs network and turns red
 on width, duration, size, frame rate, a cut-off panel part or unequal hero sizes. The old
 names `demo-views.gif`, `demo-3d.gif` and `demo-molecule.gif` stay as copies of the light
 versions because PyPI and older release notes link them.
