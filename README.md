@@ -23,9 +23,7 @@ sign-up, no ChemDraw licence.
 Other ways in (PyPI, cloning the repository, editing the config by hand) are
 under [Installation](#installation).
 
-<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung. Beide GIFs, keine
-     Bildunterschriften, 49 % Breite je Bild (skaliert mit der GitHub-Spalte; eine Tabelle mit Pixelbreiten lief über).
-     Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, 600 px). Hell/Dunkel je Modus: siehe Plan A3. -->
+<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D chip swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
@@ -94,7 +92,7 @@ flat on paper become a rigid cage you can turn.
 | *"Draw the nitration of benzene with nitric and sulfuric acid as a reaction scheme"* | reactants, products and conditions on the arrow (`generate_reaction`) |
 | *"Show the SN1 mechanism of tert-butyl bromide with water step by step"* | each step with curved electron-flow arrows (`generate_mechanism`) |
 | *"Draw a schematic IR spectrum of capsaicin"* | a spectrum from typical literature bands (`generate_spectrum`) |
-| *"TLC of my esterification: educt at Rf 0.3, product at 0.65, co-spot shows both"* | a TLC plate sketch (`generate_tlc`) |
+| *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | a TLC plate sketch (`generate_tlc`) |
 | *"Titrate 0.1 M acetic acid with 0.1 M NaOH and show the curve with phenolphthalein"* | equivalence point, buffer point and indicator band (`generate_titration_curve`) |
 | *"What is the pH of a buffer of 0.1 M acetic acid and 0.05 M sodium acetate?"* | the exact pH with the textbook approximation beside it (`calculate_ph`) |
 
@@ -115,13 +113,13 @@ explained under [Development](#development).
 | **Draw** | `generate_molecule` | *"Draw caffeine"* | yes |
 | | `batch_generate` | *"Draw adrenaline, noradrenaline and dopamine, each as its own file"* | yes |
 | | `compare_molecules` | *"What is the difference between morphine and codeine?"* | yes |
-| | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol as a reaction equation"* | yes |
+| | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol"* | yes |
 | | `generate_mechanism` | *"Show me the SN2 mechanism step by step"* | yes |
 | | `generate_3d` | *"Show methane as a rotatable 3D model"* | yes |
 | **Lab graphics** | `generate_spectrum` | *"Draw the IR spectrum of aspirin"* | yes |
-| | `generate_tlc` | *"TLC of my esterification: educt at Rf 0.3, product at 0.65, co-spot shows both"* | yes |
-| | `generate_titration_curve` | *"Which indicator fits the titration of phosphoric acid with NaOH? Show me the curve."* | yes |
-| | `generate_species_distribution` | *"Draw the species distribution of phosphoric acid over the whole pH range"* | yes |
+| | `generate_tlc` | *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | yes |
+| | `generate_titration_curve` | *"Titrate phosphoric acid with NaOH and show the curve"* | yes |
+| | `generate_species_distribution` | *"Species distribution of phosphoric acid over pH"* | yes |
 | **Look up** | `lookup` | *"What is the CAS number of paracetamol?"* | text |
 | | `lookup_molecule_data` | *"Give me a data sheet for capsaicin"* | yes |
 | | `predict_spectrum` | *"Which IR bands should capsaicin show?"* | text |
