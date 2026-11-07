@@ -83,9 +83,13 @@ this project uses [Semantic Versioning](https://semver.org/).
   591 at 0.8.0 to 681–683 (83 % → 96 %; measured 2026-11-07 against the
   revised reference list, before the last resolver commit).
 
-- **Pinned dependencies moved.** Playwright 1.60.0 → 1.64.1 on both the
-  Python and the JavaScript side; RDKit is capped below 2026.9 until its new
-  layout is blessed.
+- **RDKit 2026.9.1; some drawings change orientation.** The lock moves from
+  RDKit 2026.3.6 to 2026.9.1, whose 2D layout mirrors or rotates a few
+  molecules compared with 0.8.0 (aspirin and glucose mirrored horizontally,
+  ring atoms of ibuprofen and benzene one position on). The structures are
+  chemically identical and the new layout is the checked reference now.
+  Playwright moves 1.60.0 → 1.64.1 on both the Python and the JavaScript
+  side.
 
 ### Fixed
 
