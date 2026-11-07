@@ -79,3 +79,15 @@ Bundle mit `data-layout-3d` gebaut, Desktop 10:44 neu gestartet (Handshake 16/12
 | 10c | Chip „3D“ nach dem Umbau | **belegt.** Kuhle nimmt die volle Panelbreite (≈ 460 pt statt 320 pt im 600-pt-Fenster), Ibuprofen füllt die Kuhle bis an den Rand; Formel / Molmasse / CAS stehen als Reihe darunter, dann die Chip-Reihe All H · **3D** (gedrückt) und „Drag to rotate · explicit hydrogens · SDF: ~/ChemDraw-Output/3d/ibuprofen.sdf“ | `23-desktop-3d-gross.jpg`; README-Ausschnitt `assets/panel-3d-ibuprofen.png` (reiner Zuschnitt, keine Bearbeitung) |
 
 Nebenbefund: Desktops „Scroll to bottom“-Knopf legt sich über das Panel, sobald der Chat nicht ganz unten steht — im README-Ausschnitt deshalb ohne Chip-Reihe geschnitten.
+
+## Nachtrag 12:15–12:20 (Owner-Session, Fable): Panel-Umbau E1–E3 im Desktop
+
+Desktop neu gestartet (Bundle mit E1–E4), Handshake 16/12 grün, neuer Chat „Zeichne Thalidomid“ (Send 12:17:50, Panel nach 12 s), helles Theme.
+
+| # | Klick | Ergebnis | Screenshot |
+|---|---|---|---|
+| 11a | Panel 2D | **belegt E2 + E3.** Achse „2D · All H · 3D“ direkt unter der Zeichnung; Fußzeile unten mit PNG- und SVG-Pfad (Kopierknöpfe) links, Export PNG und Add to Anki rechts; im Kopf nur noch Structure/Data | `26-desktop-e3-2d.jpg` |
+| 11b | Chip 3D (Koordinate) | **belegt E1.** Kuhle über die volle Breite, heller Verlauf im hellen Theme, Bindungen zweifarbig, Aromat gestrichelt, Achse zentriert unter der Kuhle, Kernwerte als Reihe; Panel zeigt (S)-Thalidomid (CID 92142) mit „Back to the structure / All candidates“ | `27-desktop-e1-3d.jpg` |
+| 11c | Export PNG (AX-Press) | **belegt E3.** Fußzeile zeigt grün „Saved: ~/ChemDraw-Output/png/S_-Thalidomid-3d.png“, Knopf wechselt auf „Saved“; Datei 1,5 MB um 12:19 vorhanden, Export der 3D-Drehlage | `28-desktop-e3-export.jpg` |
+
+Nebenbefund: nach dem 3D-Klick stand das Panel auf (S)-Thalidomid statt auf dem Racemat — Ursache nicht geklärt (Koordinaten-Klick traf vermutlich „Show variants“ und das Modell wählte (S), oder der Klick landete im Varianten-Picker); für den Beleg unerheblich, für die GIF-Aufnahme per Playwright ohne Belang.
