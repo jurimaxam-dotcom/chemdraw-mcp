@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-11-07
+
 ### Added
 
 - **3D button in the molecule panel.** Next to All H / Fischer / Haworth the
@@ -35,7 +37,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   lamivudine), acids (Maleinsäure → maleinic acid, Bernsteinsäure → succinic
   acid), salts (Natriumlactat → sodium lactate, Alcuroniumchlorid → alcuronium
   chloride) and a racemate prefix ((RS)-Ketamin → ketamine). Names that
-  resolved before take exactly the same path as before.
+  resolved before take exactly the same path as before. On the project's
+  711-name evaluation set (German trivial names, IUPAC, SMILES) this moves
+  the resolver from 591 to 681 correct identities (83 % → 96 %).
 
 ### Fixed
 
