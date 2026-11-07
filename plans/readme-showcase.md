@@ -84,6 +84,8 @@ mit Screenshot nach `docs/evidence/…/screenshots/` sobald der Desktop frei ist
 | Etappe | Inhalt (Rang im Bericht) | Dateien | Status |
 |---|---|---|---|
 | E1 | 3D-Look: Kuhle als eine Form je Theme ohne helles Quadrat, Farben/Schatten je Theme (1) · Bindungen in Atomfarben mit Tiefe, Doppel-/Dreifach-/Aromatenbindungen, Atomgrößen nach Element (2) | `components/Ball3DCanvas.jsx`, `styles.css`, Tests | gestartet 11:42 |
-| E4 | Stille Fehler: Batch zeigt `failed` an, Scope im Dark Mode lesbar (5) | `App.jsx`, `styles.css` (eine Zeile), Tests | gestartet 11:42 (parallel, andere Dateien) |
+| E4 | Stille Fehler: Batch zeigt `failed` an, Scope im Dark Mode lesbar (5) | `App.jsx`, `styles.css` (38 Regeln), Tests | **gemerged 11:55** (Opus `361e1a4`, 2 Tests erst rot, DOM 104 grün; Hinweis: Spektrum/DC hängen nur am matplotlib-Leerzeichen `stroke: #000000`, Klassen `.spectrum-svg`/`.tlc-svg` als Ausnahme wären robuster — später) |
 | E2 | Ansicht-Achse „2D · All H · Fischer · Haworth · 3D“ unter der Fläche, Spinner bei `aria-busy`, Stereo-Zeile/Gruppen in 3D ausgeblendet, sanfte Anfangsdrehung mit Stopp beim Anfassen, `onPointerCancel` (3) | `MoleculeView.jsx`, `Ball3DCanvas.jsx`, Tests, Host-E2E | nach E1 |
 | E3 | `PanelFooter`: Pfad links, Aktionen rechts, in allen Panels; Export PNG in 3D exportiert die Drehlage (Host-Prüfung Z. 432 bewusst umdrehen) (4) | alle `*View.jsx`, neue Komponente, Host-E2E | nach E2 |
+
+**Codex Design-Review README (11:14, Faden `20261107-111238-…`, eingearbeitet 11:58):** Quick start nach oben, ein Hero, 3D-Bild 440 px mit „Cropped screenshot“, drei Prompts + `<details>`, Galerie `<details>`, kürzere Einleitung. Offen: Tool-Tabelle zweispaltig (#8), für neue Aufnahmen gleiche Panelbreite/Theme/eng ums Panel (#5/#6). Codex konnte GitHub nicht live rendern (kein Browser) — Owner-Blick auf github.com steht aus.
