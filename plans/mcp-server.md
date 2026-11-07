@@ -2,6 +2,7 @@
 
 ## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 10:25)
 
+- **Zwischenstand 07.11. 10:30 (Owner, nach Kontext-Neustart):** Monitor neu armiert (Zoom lief weiter, Jay aktiv). Jay 10:05: „so lange du Zoom nicht anfasst, kannst du im Hintergrund weiterarbeiten“ → Welle 3 Haken 1–4 gebaut (siehe Abschnitt Welle 3), Gate läuft. **Live-Config nicht angefasst** (noch `chemdraw-tool`): der 3D-Blick belegt 0.9.0 mit dem Eintrag, den Nutzer heute haben; danach `./install.sh`-Migration + zweiter Desktop-Neustart bei Leerlauf, dann Haken 5 als Codex-Auftrag. **Release-Zeile trägt `e2e1137`** (CI grün), nicht HEAD — Welle 3 geht nach `[Unreleased]`.
 - **Nächster Schritt (Wartezeit mit Folgeaktion):** Jay sitzt im Zoom-Kurs (seit 09:30, `pgrep zoom.us`). Monitor der alten Session ist mit dem Neustart weg — neu prüfen: `pgrep -q zoom.us` weg **und** HIDIdleTime ≥ 60 s (`ioreg -c IOHIDSystem`), sonst alle 20 s nachsehen (Monitor-Werkzeug, Kappe 30 min, bei Zoom-resident ab 15 min Leerlauf trotzdem los). Dann: Desktop neu starten (`osascript -e 'quit app "Claude"' && sleep 2 && open -a Claude`), `./scripts/handshake.sh`, neuer Chat „Zeichne Ibuprofen“ per `scripts/ax-claude.sh` (press AXButton "=New", type, press "Send message"), Chip `3D` klicken, Screenshot nach `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/22-desktop-3d-knopf.png`, selbst ansehen, als JPG nach `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Haken Welle 1 „Desktop-Blick“ ohne Vorbehalt. Danach Jay die Release-Zeile (unten) in einer Nachricht geben — der Klick ist seine Hand.
 - **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) „D-Glucose“ im Panel wieder offene Kette mit Fischer-Knopf (heute Pyranosering + Haworth, seit `41da7c4`)? (2) Release-Klick 0.9.0 = Jays Hand. (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht offen (seine Sammlung).
 - **Erledigt und belegt (07.11., 09:00–10:25):** Rechte-Dialoge geklickt → Strang B 2+7 belegt (`c772d03`, 6/9) · 3D-Knopf im Molekülpanel (`0320a0c`, Host-Screenshot `screenshots/21-host-3d-knopf.jpg`) · Release 0.9.0 vorbereitet (`f93cf29`), Doku-Sichtung durch Opus eingearbeitet (`e849fdb`, `18e37ac`, `186076f`), release_check ok, Handshake 16/12, test:host rc=0, CI grün bis `186076f`.
@@ -39,8 +40,10 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 5. [x] `generate_spectrum` nimmt `"IR"` wie `"ir"` (`cce71b0`, Test `test_spectrum_type_is_case_insensitive` erst rot, dann grün).
 6. [x] 3D-Knopf im Molekülpanel — gebaut `0320a0c` (07.11. 09:40): Chip „3D“ neben All H, holt `generate_3d` per Bridge beim ersten Klick, Cache danach, Export PNG pausiert in 3D; DOM-Tests 98 grün (3 neue, erst rot), Host-E2E grün mit Abschnitt 3d2 (`screenshots/21-host-3d-knopf.jpg`, Owner gesehen). **Desktop-Blick steht aus** (braucht Desktop-Neustart für das neue Bundle — nach Jays Zoom-Kurs).
 7. [x] Desktop-Handtests der W1/W2-Tools (Strang B, 07.11., Screenshots in `docs/evidence/verifizierter-stand-2026-11-07/screenshots/`, Owner gesehen): **6 von 9 belegt** (Ibuprofen-Kette, 3D, Spektrum, DC, seit 09:19 nach Jays Rechte-Klick auch SN2-Mechanismus Step 1/3→2/3 und Titrationskurve mit ÄP 25 mL) · **3 nicht belegt, weil das Modell kein Werkzeug rief** (IR-Vorhersage, pH, Lookup → Routing-Fälle, keine Produktfehler). Nebenbefunde: Export PNG schreibt nach `~/ChemDraw-Output/png/` ohne sichtbare Rückmeldung; Spektrum-Labels 1750/1690 überlappen.
-8. [ ] Welle 3: zweiter Konnektor `chemdraw-pharma` (5 Haken, nicht begonnen).
-9. [ ] README hochwertig: 2 von 4 erledigt (`.mcpb` zuerst, Tool-Tabelle — `65800df`); offen: Profiles mit `chemdraw-pharma`, danach Shorts (`chemdraw-vermarktung`).
+8. [~] Welle 3: zweiter Konnektor `chemdraw-pharma` — 07.11. Haken 1, 3, 4 gebaut und belegt, Haken 2 Code
+   fertig (Desktop-Installation erst mit nächstem Release), Haken 5 (Desktop-Wechsel, Codex-Handtest) offen;
+   Live-Config noch `chemdraw-tool`, Migration nach dem 3D-Blick.
+9. [ ] README hochwertig: 3 von 4 erledigt (`.mcpb` zuerst, Tool-Tabelle — `65800df`; Profiles mit `chemdraw-pharma` — 07.11.); offen: Shorts (`chemdraw-vermarktung`).
 
 **Arbeitsmodus (Jay 07.11.):** Dreier aufgelöst — eine Owner-Session (Claude) baut selbst und vergibt abgegrenzte Aufträge an Codex/Opus; keine Kreuzabnahme, Plan je Etappe.
 
@@ -223,26 +226,36 @@ Paket-Nebenversionen separat gemeldet, keine Abhängigkeit hier verändert.
 
 **Konnektoren einrichten und abnehmen (noch nicht gebaut):**
 
-- [ ] `chemdraw_tool/desktop_config.py` + `install.sh`: zwei Einträge `chemdraw`
+- [x] `chemdraw_tool/desktop_config.py` + `install.sh`: zwei Einträge `chemdraw`
   (`env.CHEMDRAW_PROFILE=mvp`) und `chemdraw-pharma` (`full`) idempotent registrieren;
   absolute Startbefehle, Backup und fremde Server erhalten. Bestehendes `chemdraw-tool`
   kontrolliert migrieren, damit kein dritter ChemDraw-Eintrag bleibt.
-  Prüfen: `uv run pytest tests/test_install_config.py tests/test_desktop_config_shipped.py`
-  nach neuen Rot-Grün-Fällen für zweimalige Installation/Migration → zwei passende
-  Einträge, fremde Einstellungen unverändert, grüner Lauf. (offen: `grep -rn chemdraw-pharma chemdraw_tool/ install.sh` leer; `desktop_config.py:33` nur `chemdraw-tool`)
-- [ ] `.mcpb`-Weg: beide Konnektoren mit eindeutigen Extension-IDs und festem
+  **Gebaut 07.11. (Claude, Owner):** `CONNECTORS`/`LEGACY_SERVER_NAMES`, `merge_connectors`,
+  `install_entries`; 8 neue Fälle in `tests/test_install_config.py` erst rot (14 rot gesamt), dann
+  grün; Doctor prüft beide Konnektoren (`tests/test_doctor.py`, Fehler vor Lücke vor Legacy).
+  Handtest: `uv run chemdraw-doctor` auf Jays Live-Config → LIMITED „still has the earlier
+  'chemdraw-tool' entry“. **Live-Config bewusst nicht migriert** — erst nach dem 3D-Desktop-Blick
+  (zweiter Desktop-Neustart bei Leerlauf).
+- [~] `.mcpb`-Weg: beide Konnektoren mit eindeutigen Extension-IDs und festem
   Profil installierbar machen; derselbe Server/Launcher, keine konkurrierende
-  automatische Registrierung. Prüfen: `uv run pytest tests/test_mcpb_start.py`
-  mit neuen Fällen für beide Profile → grün; echte Desktop-Installation → beide
-  Konnektoren mit 16 bzw. 23 Tools, erster Start samt Launcher abgenommen. (offen: `mcpb/manifest.json` kennt ein Profil)
-- [ ] `scripts/handshake.sh`: beide registrierten Konnektoren getrennt prüfen,
+  automatische Registrierung. **Code gebaut 07.11.:** `mcpb/manifest.json` pinnt `env.CHEMDRAW_PROFILE=mvp`,
+  `scripts/mcpb_manifest.py full` erzeugt `chemdraw-mcp-pharma` (eigene ID, env full, 23 tools im Text),
+  `scripts/build-mcpb.sh` baut beide Bundles, `publish.yml` lädt `dist/*.mcpb` ohnehin hoch;
+  5 neue Fälle in `tests/test_mcpb_start.py` (4 erst rot; run.sh-Durchreichtest war sofort grün = Regressionswache);
+  `npx mcpb validate` beide Varianten „passes“. **Offen:** echte Desktop-Installation beider Bundles
+  (erst mit dem nächsten Release, das die Pharma-Datei enthält).
+- [x] `scripts/handshake.sh`: beide registrierten Konnektoren getrennt prüfen,
   erwartete Kataloge aus dem jeweiligen Profil ableiten, GUI-PATH beibehalten.
-  Prüfen: `./scripts/handshake.sh` → zwei echte stdio-Handshakes, `chemdraw`
-  16 Tools / 12 Panels und `chemdraw-pharma` 23 Tools / 16 Panels, Exit 0. (offen: kein zweiter Konnektor in `scripts/handshake.sh`)
-- [ ] README-Abschnitt „Profiles“: beide Installationswege, zwei Konnektornamen,
-  Profilwerte und Wechsel im Chat beschreiben. Prüfen:
-  `rg -n 'chemdraw-pharma|CHEMDRAW_PROFILE|Profiles' README.md` → beide Konnektoren und
-  Profilwerte erklärt; Schritte stimmen mit Desktop-Abnahme überein. (offen: `grep chemdraw-pharma README.md` leer)
+  **Gebaut 07.11.:** Schleife über `CONNECTORS` + Legacy `chemdraw-tool` (mit Migrationswarnung),
+  Soll je Profil aus `create_server(<profil>)`, Profil per Inspector `-e` (Befund: exportierte Umgebung
+  reicht der Inspector NICHT durch — full lieferte 16 statt 23). Beleg: Temp-HOME mit beiden Einträgen →
+  `chemdraw` 16/12 ✅, `chemdraw-pharma` 23/16 ✅, „2 Konnektor(en) geprueft“, rc=0; Live-Config (Legacy) → 16/12 ✅.
+- [x] README-Abschnitt „Profiles“: beide Installationswege, zwei Konnektornamen,
+  Profilwerte und Wechsel im Chat beschreiben. **Gebaut 07.11.:** `README.md` „### Profiles“ (Tabelle
+  Konnektor · Profil · Tools · Adds, zwei Bundles, einer je Chat, kein Neustart), `docs/installation.md`
+  (Handeintrag mit beiden `env`-Blöcken), `docs/tools.md#profiles`, `install.sh`-Ausgabe, CHANGELOG
+  `[Unreleased]`; Test `test_readme_erklaert_beide_konnektoren`. **Vorbehalt:** „Schritte stimmen mit
+  Desktop-Abnahme überein“ erst nach Haken 5.
 - [ ] Desktop-Wechsel abnehmen: frischer Chat, `chemdraw` auswählen und
   Struktur zeichnen; im Menü zu `chemdraw-pharma` wechseln und `calculate_content`
   aufrufen; zurück zu `chemdraw`, Struktur zeichnen. Prüfen: Codex-Handtest mit
@@ -265,8 +278,8 @@ Paket-Nebenversionen separat gemeldet, keine Abhängigkeit hier verändert.
 - [x] Je Bereich (Zeichnen · Laborgrafik · Nachschlagen · Rechnen · Anki) ein echtes Bild aus einem
   echten Aufruf; Referenzteile nach `docs/` (`1f4cb10`; `README.md:69-95`, `scripts/readme_bilder.py`,
   `test_readme.py::test_skriptbilder_tragen_den_gesegneten_hash`)
-- [ ] „Profiles" auf die zwei Konnektoren `chemdraw`/`chemdraw-pharma` aktualisieren — hängt an Welle 3
-  (offen: `grep chemdraw-pharma README.md` leer; Profile heute nur `docs/tools.md:140`)
+- [x] „Profiles" auf die zwei Konnektoren `chemdraw`/`chemdraw-pharma` aktualisieren — 07.11. mit Welle 3
+  Haken 4 (`README.md` „### Profiles“, `test_readme_erklaert_beide_konnektoren`)
 - [x] Installationsweg Desktop-Extension (`.mcpb`) zuerst, PyPI danach (`65800df`; `README.md:28-31`, `:99` vor `:103`)
 - [x] Werkzeugtabelle: Bereich · Tool · Beispiel-Prompt · Panel (`65800df`; `README.md:44-60`,
   `test_readme.py::test_tooltabelle_nennt_genau_die_mvp_tools`)

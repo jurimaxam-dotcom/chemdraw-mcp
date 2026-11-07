@@ -272,35 +272,73 @@ def check_desktop_config(*, config_path: Path | None = None) -> CheckResult:
         )
 
     servers = data.get("mcpServers") if isinstance(data, dict) else None
-    entry = servers.get(_server_name()) if isinstance(servers, dict) else None
-    if not isinstance(entry, dict):
+    servers = servers if isinstance(servers, dict) else {}
+    helpers = _installer_helpers()
+    connectors: dict[str, str] = helpers.CONNECTORS
+
+    legacy = [
+        name
+        for name in helpers.LEGACY_SERVER_NAMES
+        if isinstance(servers.get(name), dict)
+    ]
+    missing = [name for name in connectors if not isinstance(servers.get(name), dict)]
+
+    for connector in connectors:
+        if connector in missing:
+            continue
+        command = servers[connector].get("command") or ""
+        if not (os.path.isabs(command) and _runnable(command)):
+            return CheckResult(
+                name=name,
+                status=ERROR,
+                detail=(
+                    f"The '{connector}' entry starts {command!r}, which is not an executable "
+                    "file at an absolute path. Claude Desktop launches MCP servers with the "
+                    "minimal GUI PATH and will fail to start it without any message."
+                ),
+                fix="chemdraw-install   (rewrites the entry with the absolute launcher path)",
+            )
+
+    if missing:
+        if legacy:
+            detail = (
+                f"{_short(path)} still has the earlier '{legacy[0]}' entry and no "
+                f"'{missing[0]}' connector. The old entry starts, but only one connector "
+                "shows up in Claude Desktop; the installer replaces it with "
+                f"{' and '.join(connectors)}."
+            )
+        elif len(missing) == len(connectors):
+            detail = (
+                f"{_short(path)} exists but has no '{_server_name()}' entry, so Claude Desktop does "
+                "not know this server. Not a problem if you use another client."
+            )
+        else:
+            detail = (
+                f"{_short(path)} has '{[n for n in connectors if n not in missing][0]}' but no "
+                f"'{missing[0]}' connector ({connectors[missing[0]]} profile), so the second "
+                "connector is missing from Claude Desktop's menu."
+            )
         return CheckResult(
             name=name,
             status=LIMITED,
-            detail=(
-                f"{_short(path)} exists but has no '{_server_name()}' entry, so Claude Desktop does "
-                "not know this server. Not a problem if you use another client."
-            ),
+            detail=detail,
             fix="./install.sh   (idempotent; leaves your other MCP servers untouched)",
         )
 
-    command = entry.get("command") or ""
-    if not (os.path.isabs(command) and _runnable(command)):
-        return CheckResult(
-            name=name,
-            status=ERROR,
-            detail=(
-                f"The '{_server_name()}' entry starts {command!r}, which is not an executable "
-                "file at an absolute path. Claude Desktop launches MCP servers with the "
-                "minimal GUI PATH and will fail to start it without any message."
-            ),
-            fix="chemdraw-install   (rewrites the entry with the absolute launcher path)",
-        )
-    args = " ".join(str(a) for a in entry.get("args", []))
+    main_entry = servers[_server_name()]
+    command = main_entry.get("command") or ""
+    args = " ".join(str(a) for a in main_entry.get("args", []))
+    profiles = ", ".join(
+        f"{connector} = {(servers[connector].get('env') or {}).get('CHEMDRAW_PROFILE', 'mvp')}"
+        for connector in connectors
+    )
     return CheckResult(
         name=name,
         status=OK,
-        detail=f"Registered in {_short(path)} and startable: {_short(command)} {args}".rstrip(),
+        detail=(
+            f"Registered in {_short(path)} and startable: {_short(command)} {args}".rstrip()
+            + f" — connectors: {profiles}"
+        ),
     )
 
 
@@ -491,9 +529,7 @@ def _environment_header() -> str:
     except Exception:  # noqa: BLE001 — im Bericht ist das die Fehlermeldung
         rdkit_version = "RDKit unavailable"
     python_version = ".".join(str(p) for p in sys.version_info[:3])
-    return (
-        f"chemdraw-mcp doctor — {own} | Python {python_version} | {rdkit_version} | {sys.platform}"
-    )
+    return f"chemdraw-mcp doctor — {own} | Python {python_version} | {rdkit_version} | {sys.platform}"
 
 
 def format_report(results: Sequence[CheckResult], *, header: str | None = None) -> str:

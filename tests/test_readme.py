@@ -166,3 +166,14 @@ def test_anker_und_registry_kennung_bleiben():
     # die mcp-name-Zeile braucht die MCP-Registry für die PyPI-Zuordnung.
     assert "\n## Tools\n" in README and "\n## Installation\n" in README
     assert "<!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->" in README
+
+
+def test_readme_erklaert_beide_konnektoren():
+    """Welle 3 (Jay 06.11.2026): zwei Konnektoren aus einer Installation, einer je Chat."""
+    profile = _section("### Profiles", "\n## ", README)
+    for name in ("`chemdraw`", "`chemdraw-pharma`", "`mvp`", "`full`"):
+        assert name in profile, name
+    assert "chemdraw-mcp-pharma-<version>.mcpb" in profile
+    assert "no restart" in profile
+    for doc in (README, TOOLS_DOC):
+        assert "chemdraw-pharma" in doc

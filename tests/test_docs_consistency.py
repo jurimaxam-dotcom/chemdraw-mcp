@@ -145,9 +145,14 @@ def test_umgebungsvariablen_der_doku_gibt_es_im_code():
 
 
 def test_konsolenbefehle_der_doku_gibt_es():
+    # Konnektornamen (`chemdraw`, `chemdraw-pharma`, das alte `chemdraw-tool`) sehen
+    # aus wie Befehle, sind aber Einträge in claude_desktop_config.json (Welle 3).
+    from chemdraw_tool.desktop_config import CONNECTORS, LEGACY_SERVER_NAMES
+
     scripts = set(tomllib.loads(_read("pyproject.toml"))["project"]["scripts"])
+    konnektoren = set(CONNECTORS) | set(LEGACY_SERVER_NAMES)
     genannt = {b for text in _docs().values() for b in re.findall(r"`(chemdraw-[a-z-]+)`", text)}
-    fehlt = sorted(genannt - scripts)
+    fehlt = sorted(genannt - scripts - konnektoren)
     assert not fehlt, f"Doku nennt Befehle, die pyproject nicht installiert: {fehlt}"
 
 

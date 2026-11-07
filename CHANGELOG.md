@@ -6,6 +6,27 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Second connector `chemdraw-pharma`.** Claude Desktop now gets two
+  connectors from one installation: `chemdraw` with the default profile
+  (16 tools) and `chemdraw-pharma` with the full profile (23 tools: the
+  substrate-scope figure, calibration curve, pharmacology curves and the
+  pharmacy calculators). Pick one per chat in the connector menu; switching
+  needs no restart. `chemdraw-install` and `install.sh` write both entries
+  with the profile pinned in `env`, the release ships a second bundle
+  `chemdraw-mcp-pharma-<version>.mcpb` with its own extension ID and the
+  same launcher (`scripts/mcpb_manifest.py` derives it from the base
+  manifest), and `scripts/handshake.sh` checks every registered connector
+  against the tool count of its profile.
+
+### Changed
+
+- **The single `chemdraw-tool` entry is migrated.** The installer replaces it
+  with the two connectors (the backup keeps the old entry); `chemdraw-doctor`
+  reports an old entry, a missing second connector and an unstartable
+  command separately.
+
 ## [0.9.0] — 2026-11-07
 
 ### Added

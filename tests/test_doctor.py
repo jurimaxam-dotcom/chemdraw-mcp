@@ -161,7 +161,7 @@ def test_desktop_config_without_our_entry_is_a_limitation(tmp_path):
 def test_desktop_entry_with_missing_command_is_an_error(tmp_path):
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw-tool": {"command": "uv", "args": ["run"]}}},
+        {"mcpServers": {"chemdraw": {"command": "uv", "args": ["run"]}}},
     )
     result = check_desktop_config(config_path=path)
     assert result.status == ERROR
@@ -175,7 +175,7 @@ def test_desktop_entry_with_non_executable_command_is_an_error(tmp_path):
     binary.chmod(stat.S_IRUSR)
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw-tool": {"command": str(binary)}}},
+        {"mcpServers": {"chemdraw": {"command": str(binary)}}},
     )
     assert check_desktop_config(config_path=path).status == ERROR
 
@@ -184,11 +184,50 @@ def test_working_desktop_entry_is_ok(tmp_path):
     uv = _executable(tmp_path / "bin" / "uv")
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw-tool": {"command": str(uv), "args": ["run"]}}},
+        {
+            "mcpServers": {
+                "chemdraw": {
+                    "command": str(uv),
+                    "args": ["run"],
+                    "env": {"CHEMDRAW_PROFILE": "mvp"},
+                },
+                "chemdraw-pharma": {
+                    "command": str(uv),
+                    "args": ["run"],
+                    "env": {"CHEMDRAW_PROFILE": "full"},
+                },
+            }
+        },
     )
     result = check_desktop_config(config_path=path)
     assert result.status == OK
     assert str(uv) in result.detail
+    assert "chemdraw-pharma" in result.detail
+
+
+def test_desktop_config_with_only_the_old_entry_asks_to_rerun_the_installer(tmp_path):
+    """Vor Welle 3 hieß der Eintrag `chemdraw-tool`; er startet noch, zeigt aber nur
+    einen Konnektor. Der Doctor nennt die Migration, nicht einen Fehler."""
+    uv = _executable(tmp_path / "bin" / "uv")
+    path = _write_config(
+        tmp_path / "config.json",
+        {"mcpServers": {"chemdraw-tool": {"command": str(uv), "args": ["run"]}}},
+    )
+    result = check_desktop_config(config_path=path)
+    assert result.status == LIMITED
+    assert "chemdraw-tool" in result.detail
+    assert "install.sh" in result.fix
+
+
+def test_desktop_config_missing_the_pharma_connector_is_a_limitation(tmp_path):
+    uv = _executable(tmp_path / "bin" / "uv")
+    path = _write_config(
+        tmp_path / "config.json",
+        {"mcpServers": {"chemdraw": {"command": str(uv), "args": ["run"]}}},
+    )
+    result = check_desktop_config(config_path=path)
+    assert result.status == LIMITED
+    assert "chemdraw-pharma" in result.detail
 
 
 # --- Netz ---------------------------------------------------------------------
@@ -377,8 +416,12 @@ def test_report_marks_the_three_levels_distinguishably_without_colour():
             CheckResult("D", ERROR, "broken", fix="uv sync"),
         ]
     )
-    assert "\x1b[" not in report, "Keine ANSI-Farben — die Ausgabe kann in eine Datei laufen"
-    markers = {line.strip().split()[0] for line in report.splitlines() if line.startswith("[")}
+    assert "\x1b[" not in report, (
+        "Keine ANSI-Farben — die Ausgabe kann in eine Datei laufen"
+    )
+    markers = {
+        line.strip().split()[0] for line in report.splitlines() if line.startswith("[")
+    }
     assert len(markers) == 4, report
 
 
@@ -414,7 +457,9 @@ def test_a_crashing_check_becomes_an_error_instead_of_a_traceback():
 
 
 def test_main_prints_report_and_returns_exit_code(capsys):
-    code = main(argv=[], checks=[lambda: CheckResult("A", ERROR, "broken", fix="uv sync")])
+    code = main(
+        argv=[], checks=[lambda: CheckResult("A", ERROR, "broken", fix="uv sync")]
+    )
     out = capsys.readouterr().out
     assert code != 0
     assert "uv sync" in out

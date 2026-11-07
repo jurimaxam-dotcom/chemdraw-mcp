@@ -1,15 +1,22 @@
 # Installation
 
-Pick **one** route — installing twice registers the server twice and the model
-sees every tool doubled. Afterwards restart Claude Desktop and ask
-*"draw caffeine"*. The short version is in the
-[README](../README.md#installation).
+Pick **one** route — the extension and `chemdraw-install` register the same
+connectors, and installing both makes the model see every tool twice.
+Afterwards restart Claude Desktop and ask *"draw caffeine"*. The short version
+is in the [README](../README.md#installation).
+
+Every route registers two connectors from one installation: `chemdraw`
+(profile `mvp`, the default) and `chemdraw-pharma` (profile `full`). Enable one
+per chat; switching needs no restart. See [tools.md#profiles](tools.md#profiles).
 
 ## 1. Claude Desktop extension (macOS, Linux)
 
 Download `chemdraw-mcp-<version>.mcpb` from the
 [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
 double-click it and confirm in Claude Desktop, then restart Claude Desktop once.
+`chemdraw-mcp-pharma-<version>.mcpb` from the same release is the second
+connector (full profile); install it the same way — both bundles share one
+installation on disk, so the second costs no download.
 The first start fetches the package from PyPI via [uv](https://docs.astral.sh/uv/),
 every file checked against hashes pinned at release time (a missing uv is
 downloaded at a fixed version and its SHA-256 verified). That is about 40 MB
@@ -27,9 +34,10 @@ uv tool install chemdraw-mcp
 chemdraw-install
 ```
 
-`chemdraw-install` adds the Claude Desktop entry with the absolute path of the
-installed launcher, backs up the config first, leaves other MCP servers
-untouched and prints what it registered.
+`chemdraw-install` adds both Claude Desktop entries (`chemdraw` and
+`chemdraw-pharma`) with the absolute path of the installed launcher, backs up
+the config first, replaces the single `chemdraw-tool` entry of versions before
+0.10, leaves other MCP servers untouched and prints what it registered.
 
 ## 3. From a clone (to read or change the code)
 
@@ -48,11 +56,20 @@ Add this to `claude_desktop_config.json` under `mcpServers` (macOS:
 `~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
-"chemdraw-tool": {
+"chemdraw": {
   "command": "/opt/homebrew/bin/uvx",
-  "args": ["chemdraw-mcp"]
+  "args": ["chemdraw-mcp"],
+  "env": {"CHEMDRAW_PROFILE": "mvp"}
+},
+"chemdraw-pharma": {
+  "command": "/opt/homebrew/bin/uvx",
+  "args": ["chemdraw-mcp"],
+  "env": {"CHEMDRAW_PROFILE": "full"}
 }
 ```
+
+One entry is enough if you only want one profile; `CHEMDRAW_PROFILE` defaults
+to `mvp`.
 
 Claude Desktop starts MCP servers with a minimal PATH, not your login shell.
 A bare `"uvx"` cannot be found there and the server fails without a message.

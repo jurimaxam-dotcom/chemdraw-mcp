@@ -11,7 +11,13 @@
 # Dateien, die auf PyPI liegen. run.sh installiert nur mit --require-hashes.
 # Deshalb muss die Version schon auf PyPI sein (Release-Job: nach `publish`).
 #
+# Zwei Bundles aus derselben Vorlage (Welle 3, scripts/mcpb_manifest.py):
+#   chemdraw-mcp         Standardprofil (mvp)
+#   chemdraw-mcp-pharma  Vollprofil (full)
+# Eigene Extension-IDs, derselbe Starter, dieselbe Installation auf der Platte.
+#
 # Voraussetzung: npx (Node 20+), uv. Ergebnis: dist/chemdraw-mcp-<version>.mcpb
+# und dist/chemdraw-mcp-pharma-<version>.mcpb
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -20,8 +26,9 @@ STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
 
 cp -R mcpb/. "$STAGE/"
-sed -i.bak "s/@@VERSION@@/$VERSION/g" "$STAGE/manifest.json" "$STAGE/server/run.sh"
-rm -f "$STAGE"/manifest.json.bak "$STAGE"/server/run.sh.bak
+rm -f "$STAGE/manifest.json"
+sed -i.bak "s/@@VERSION@@/$VERSION/g" "$STAGE/server/run.sh"
+rm -f "$STAGE"/server/run.sh.bak
 chmod +x "$STAGE/server/run.sh"
 
 REQS="$STAGE/server/requirements.lock"
@@ -47,6 +54,10 @@ fi
 printf 'chemdraw-mcp==%s %s\n' "$VERSION" "$HASHES" >> "$REQS"
 
 mkdir -p dist
-OUT="$PWD/dist/chemdraw-mcp-$VERSION.mcpb"
-(cd "$STAGE" && npx -y @anthropic-ai/mcpb@2.1.2 validate manifest.json && npx -y @anthropic-ai/mcpb@2.1.2 pack . "$OUT")
-echo "Bundle: $OUT ($(du -h "$OUT" | cut -f1))"
+for PROFILE in mvp full; do
+  uv run python scripts/mcpb_manifest.py "$PROFILE" | sed "s/@@VERSION@@/$VERSION/g" > "$STAGE/manifest.json"
+  NAME=$(python3 -c "import json;print(json.load(open('$STAGE/manifest.json'))['name'])")
+  OUT="$PWD/dist/$NAME-$VERSION.mcpb"
+  (cd "$STAGE" && npx -y @anthropic-ai/mcpb@2.1.2 validate manifest.json && npx -y @anthropic-ai/mcpb@2.1.2 pack . "$OUT")
+  echo "Bundle: $OUT ($(du -h "$OUT" | cut -f1))"
+done

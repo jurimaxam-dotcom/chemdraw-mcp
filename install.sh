@@ -5,7 +5,8 @@
 #
 #   1. stellt sicher, dass uv da ist (sonst feste Version, SHA-256 geprüft)
 #   2. uv sync  (lädt Python + RDKit & Co. plattformkorrekt)
-#   3. trägt den Server idempotent in claude_desktop_config.json ein (mit Backup)
+#   3. trägt beide Konnektoren (chemdraw = mvp, chemdraw-pharma = full) idempotent
+#      in claude_desktop_config.json ein (mit Backup; ersetzt das alte chemdraw-tool)
 #   4. Smoke-Test (Import) + Hinweis zum Neustart
 #
 # Re-Run ist gefahrlos: alles idempotent, bestehende MCP-Server bleiben erhalten.
@@ -47,7 +48,7 @@ echo "✓ Dependencies bereit."
 
 # --- 3. Claude-Desktop-Config ------------------------------------------------
 echo ""
-echo "→ Server in Claude Desktop registrieren …"
+echo "→ Beide Konnektoren in Claude Desktop registrieren …"
 uv run python scripts/install_claude_config.py \
   --project-dir "$PROJECT_DIR" --uv-command "$UV_BIN"
 
@@ -62,4 +63,4 @@ else
 fi
 
 echo ""
-echo "✅ Fertig. Claude Desktop neu starten, dann im Chat z.B.: \"Zeichne Aspirin\"."
+echo "✅ Fertig. Claude Desktop neu starten, im Chat den Konnektor chemdraw (oder chemdraw-pharma) wählen, dann z.B.: \"Zeichne Aspirin\"."

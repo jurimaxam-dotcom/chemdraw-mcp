@@ -14,13 +14,14 @@
 #                    Code-Aenderung mischen sich alte Module mit neuen Dateien
 #                    (die kryptischen RDKit-/Boost-Signaturfehler).
 #
-# Dieses Skript spricht deshalb echtes stdio-MCP mit dem Befehl, der wirklich
-# in der Claude-Desktop-Config steht, und zaehlt am Ergebnis nach:
+# Dieses Skript spricht deshalb echtes stdio-MCP mit jedem Befehl, der wirklich
+# in der Claude-Desktop-Config steht (beide Konnektoren, je mit ihrem Profil),
+# und zaehlt am Ergebnis nach:
 #   * wie viele Tools der Client sieht
 #   * wie viele davon ein App-Panel mitbringen (meta.ui.resourceUri)
 #
-# Die Sollzahlen stehen NICHT hier drin, sondern werden aus dem Python-Server
-# abgeleitet — sonst luegt das Skript ab dem naechsten neuen Tool.
+# Die Sollzahlen stehen NICHT hier drin, sondern werden je Profil aus dem
+# Python-Server abgeleitet — sonst luegt das Skript ab dem naechsten neuen Tool.
 #
 # Nicht im Auto-Gate (./test.sh), weil der erste npx-Lauf den Inspector aus dem
 # Netz holt. Von Hand fahren nach: Aenderungen an server.py, neuem/entferntem
@@ -54,37 +55,49 @@ fi
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-# --- 1. Startbefehl aus der Claude-Desktop-Config lesen ------------------------
+# --- 1. Registrierte Konnektoren aus der Claude-Desktop-Config lesen ----------
 # Ueber die Logik des Installers, nicht ueber einen zweiten hartkodierten Pfad:
-# desktop_config.py kennt Servernamen und plattformabhaengigen Config-Pfad.
-# Ausgabe: erste Zeile = Herkunft (config|fallback|<Meldung>), danach je ein
-# argv-Element pro Zeile (zeilenweise, damit Leerzeichen in Pfaden halten).
+# desktop_config.py kennt Konnektornamen, Profile und den plattformabhaengigen
+# Config-Pfad. Seit Welle 3 gibt es zwei Konnektoren (chemdraw = mvp,
+# chemdraw-pharma = full); eine Installation von davor heisst chemdraw-tool und
+# wird mit Warnung ebenfalls geprueft — der Desktop startet sie ja genauso.
+# Ausgabe: erste Zeile = Herkunft (config|fallback|broken <TAB> Detail), danach
+# je Konnektor eine Zeile "name <TAB> profil <TAB> argv-Elemente mit TAB getrennt".
 uv run python - >"$TMP/cmd.txt" <<'PY'
 import json
 import sys
 
-from chemdraw_tool.desktop_config import SERVER_NAME, claude_config_path
+from chemdraw_tool.desktop_config import (
+    CONNECTORS,
+    LEGACY_SERVER_NAMES,
+    claude_config_path,
+)
 
 path = claude_config_path()
-entry = None
+servers = {}
 if path.is_file():
     try:
         config = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         print(f"broken\t{path}: {exc}")
         sys.exit(0)
-    entry = (config.get("mcpServers") or {}).get(SERVER_NAME)
+    servers = config.get("mcpServers") or {}
 
-if entry and entry.get("command"):
+found = []
+for name in (*CONNECTORS, *LEGACY_SERVER_NAMES):
+    entry = servers.get(name)
+    if isinstance(entry, dict) and entry.get("command"):
+        profile = (entry.get("env") or {}).get("CHEMDRAW_PROFILE", "mvp")
+        argv = [entry["command"], *(entry.get("args") or [])]
+        found.append((name, profile, argv))
+
+if found:
     print(f"config\t{path}")
-    print(entry["command"])
-    for arg in entry.get("args") or []:
-        print(arg)
+    for name, profile, argv in found:
+        print("\t".join([name, profile, *argv]))
 else:
     print(f"fallback\t{path}")
-    print("uv")
-    print("run")
-    print("chemdraw-tool-server")
+    print("\t".join(["chemdraw", "mvp", "uv", "run", "chemdraw-tool-server"]))
 PY
 
 origin="$(head -1 "$TMP/cmd.txt" | cut -f1)"
@@ -96,75 +109,87 @@ if [ "$origin" = "broken" ]; then
   exit 1
 fi
 
-# Bash 3.2 (macOS-Default) kennt kein mapfile — deshalb die Leseschleife.
-CMD=()
-while IFS= read -r line; do
-  CMD+=("$line")
-done < <(tail -n +2 "$TMP/cmd.txt")
-
 if [ "$origin" = "config" ]; then
-  echo "Startbefehl aus der Claude-Desktop-Config ($origin_detail):"
+  echo "Registrierte Konnektoren in der Claude-Desktop-Config ($origin_detail):"
 else
   echo "⚠ Kein Eintrag in $origin_detail — Fallback auf 'uv run chemdraw-tool-server'."
   echo "  Getestet wird damit NICHT der Weg, den Claude Desktop geht."
   echo "  Eintragen mit:  ./install.sh   (oder: uv run chemdraw-install)"
-  echo "Startbefehl (Fallback):"
 fi
-printf '  %s\n' "${CMD[*]}"
-echo ""
 
-# --- 2. Sollzahlen aus dem Server ableiten ------------------------------------
+# --- 2. Je Konnektor: Soll aus dem Profil ableiten, Handshake, nachzaehlen ---
 # Panel-Kriterium ist meta.ui.resourceUri — dasselbe, was Claude Desktop
 # auswertet und was der Inspector mit --app-info als hasApp meldet.
-# "tail -1", weil Bibliotheken beim ersten Start gern etwas dazwischenrufen
-# (matplotlib baut z.B. seinen Font-Cache) — die Zahlen stehen zuletzt.
-expected="$(uv run python -c '
+# Die Sollzahlen stehen NICHT hier drin, sondern kommen aus create_server(<profil>)
+# — sonst luegt das Skript ab dem naechsten neuen Tool.
+failed=0
+checked=0
+while IFS=$'\t' read -r name profile rest; do
+  [ -n "$name" ] || continue
+  # Bash 3.2 (macOS-Default) kennt kein mapfile — deshalb die Leseschleife.
+  CMD=()
+  while IFS= read -r -d $'\t' element; do CMD+=("$element"); done <<<"${rest}"$'\t'
+  echo ""
+  echo "== $name (Profil $profile) =="
+  if [ "$name" = "chemdraw-tool" ]; then
+    echo "⚠ Eintrag aus der Zeit vor Welle 3 — ./install.sh ersetzt ihn durch chemdraw + chemdraw-pharma."
+  fi
+  printf '  Startbefehl: %s\n' "${CMD[*]}"
+
+  # "tail -1", weil Bibliotheken beim ersten Start gern etwas dazwischenrufen
+  # (matplotlib baut z.B. seinen Font-Cache) — die Zahlen stehen zuletzt.
+  expected="$(uv run python -c '
 import asyncio
+import sys
 
-from chemdraw_tool.server import mcp
+from chemdraw_tool.server import create_server
 
-tools = asyncio.run(mcp.list_tools())
+tools = asyncio.run(create_server(sys.argv[1]).list_tools())
 panels = sum(1 for t in tools if ((t.meta or {}).get("ui") or {}).get("resourceUri"))
 print(len(tools), panels)
-' | tail -1)"
-expected_total="$(echo "$expected" | cut -d" " -f1)"
-expected_panels="$(echo "$expected" | cut -d" " -f2)"
-echo "Erwartet laut Python-Server: $expected_total Tools, davon $expected_panels mit Panel."
+' "$profile" | tail -1)"
+  expected_total="$(echo "$expected" | cut -d" " -f1)"
+  expected_panels="$(echo "$expected" | cut -d" " -f2)"
+  echo "  Erwartet laut Python-Server: $expected_total Tools, davon $expected_panels mit Panel."
 
-# --- 3. Echter stdio-Handshake ------------------------------------------------
-# Argumentreihenfolge ist NICHT die aus der Inspector-Doku gewohnte:
-# inspector-cli trennt an "--" und liest VOR dem Trenner das Zielkommando,
-# DAHINTER die eigenen Optionen. Ohne diese Form frisst der Zielbefehl
-# "--method"/"--app-info" bzw. uv verschluckt sein eigenes "--directory".
-# --app-info liefert mit --method tools/list eine NDJSON-Zeile je Tool
-# (hasApp true/false) — Gesamtzahl und Panel-Zahl in EINEM Lauf.
-echo "Handshake laeuft (initialize → tools/list, Inspector via npx) …"
-set +e
-npx -y "$INSPECTOR" --cli "${CMD[@]}" -- --method tools/list --app-info \
-  >"$TMP/out.ndjson" 2>"$TMP/err.log"
-rc=$?
-set -e
+  # --- Echter stdio-Handshake ------------------------------------------------
+  # Argumentreihenfolge ist NICHT die aus der Inspector-Doku gewohnte:
+  # inspector-cli trennt an "--" und liest VOR dem Trenner das Zielkommando,
+  # DAHINTER die eigenen Optionen. Ohne diese Form frisst der Zielbefehl
+  # "--method"/"--app-info" bzw. uv verschluckt sein eigenes "--directory".
+  # --app-info liefert mit --method tools/list eine NDJSON-Zeile je Tool
+  # (hasApp true/false) — Gesamtzahl und Panel-Zahl in EINEM Lauf.
+  # Das Profil geht wie beim Desktop (env im Config-Eintrag) an den Kindprozess —
+  # beim Inspector nur per -e: eine exportierte Variable reicht er NICHT durch
+  # (gemessen 07.11.2026: full-Eintrag lieferte 16 statt 23 Tools).
+  echo "  Handshake laeuft (initialize → tools/list, Inspector via npx) …"
+  set +e
+  npx -y "$INSPECTOR" --cli "${CMD[@]}" -- -e "CHEMDRAW_PROFILE=$profile" --method tools/list --app-info \
+    >"$TMP/out-$name.ndjson" 2>"$TMP/err-$name.log"
+  rc=$?
+  set -e
 
-if [ "$rc" -ne 0 ] || [ ! -s "$TMP/out.ndjson" ]; then
-  echo ""
-  echo "❌ Handshake fehlgeschlagen (Exit $rc, $(wc -l <"$TMP/out.ndjson" | tr -d ' ') Zeilen Ausgabe)."
-  echo "   Genau dieser Fall bleibt In-Process-Tests verborgen: der registrierte"
-  echo "   Befehl startet keinen sprechfaehigen Server."
-  # Die eigentliche Fehlerzeile des Inspectors zuerst — npm-Hinweise ("new
-  # version available") stehen sonst dahinter und verdecken sie.
-  if grep -q '{"error"' "$TMP/err.log"; then
-    echo "   Meldung des Inspectors:"
-    grep '{"error"' "$TMP/err.log" | head -3 | sed 's/^/   | /'
+  if [ "$rc" -ne 0 ] || [ ! -s "$TMP/out-$name.ndjson" ]; then
+    echo ""
+    echo "❌ Handshake fehlgeschlagen (Exit $rc, $(wc -l <"$TMP/out-$name.ndjson" | tr -d ' ') Zeilen Ausgabe)."
+    echo "   Genau dieser Fall bleibt In-Process-Tests verborgen: der registrierte"
+    echo "   Befehl startet keinen sprechfaehigen Server."
+    # Die eigentliche Fehlerzeile des Inspectors zuerst — npm-Hinweise ("new
+    # version available") stehen sonst dahinter und verdecken sie.
+    if grep -q '{"error"' "$TMP/err-$name.log"; then
+      echo "   Meldung des Inspectors:"
+      grep '{"error"' "$TMP/err-$name.log" | head -3 | sed 's/^/   | /'
+    fi
+    echo "   Letzte Ausgabe des Servers:"
+    tail -20 "$TMP/err-$name.log" | sed 's/^/   | /'
+    failed=1
+    continue
   fi
-  echo "   Letzte Ausgabe des Servers:"
-  tail -20 "$TMP/err.log" | sed 's/^/   | /'
-  exit 1
-fi
 
-# --- 4. Nachzaehlen -----------------------------------------------------------
-# Auswertung in Python statt grep -c: grep liefert bei null Treffern Exit 1 und
-# wuerde das Skript ueber set -e wortlos beenden.
-actual="$(uv run python - "$TMP/out.ndjson" <<'PY'
+  # --- Nachzaehlen -----------------------------------------------------------
+  # Auswertung in Python statt grep -c: grep liefert bei null Treffern Exit 1 und
+  # wuerde das Skript ueber set -e wortlos beenden.
+  actual="$(uv run python - "$TMP/out-$name.ndjson" <<'PY'
 import json
 import sys
 
@@ -180,24 +205,31 @@ for line in open(sys.argv[1], encoding="utf-8"):
 print(total, panels)
 PY
 )"
-actual="$(echo "$actual" | tail -1)"
-actual_total="$(echo "$actual" | cut -d" " -f1)"
-actual_panels="$(echo "$actual" | cut -d" " -f2)"
+  actual="$(echo "$actual" | tail -1)"
+  actual_total="$(echo "$actual" | cut -d" " -f1)"
+  actual_panels="$(echo "$actual" | cut -d" " -f2)"
+  echo "  Gemeldet vom laufenden Server: $actual_total Tools, davon $actual_panels mit Panel."
 
-echo "Gemeldet vom laufenden Server: $actual_total Tools, davon $actual_panels mit Panel."
+  if [ "$actual_total" != "$expected_total" ] || [ "$actual_panels" != "$expected_panels" ]; then
+    echo "❌ $name: Abweichung zwischen Quellcode und laufendem Server:"
+    echo "   Tools mit Panel : erwartet $expected_panels, gemeldet $actual_panels"
+    echo "   Tools gesamt    : erwartet $expected_total, gemeldet $actual_total"
+    echo ""
+    echo "   Wahrscheinlichste Ursachen:"
+    echo "   * der Startbefehl zeigt auf ein anderes Verzeichnis/eine andere"
+    echo "     Installation als dieses Repo (Befehl oben pruefen)"
+    echo "   * ein Panel-Tool ohne meta=_UI_META (Panel bleibt zu)"
+    echo "   * veralteter Prozess/Cache — Claude Desktop neu starten"
+    failed=1
+    continue
+  fi
+  echo "✅ $name: $actual_total Tools, $actual_panels mit Panel — der registrierte Befehl spricht MCP."
+  checked=$((checked + 1))
+done < <(tail -n +2 "$TMP/cmd.txt")
+
 echo ""
-
-if [ "$actual_total" != "$expected_total" ] || [ "$actual_panels" != "$expected_panels" ]; then
-  echo "❌ Abweichung zwischen Quellcode und laufendem Server:"
-  echo "   Tools mit Panel : erwartet $expected_panels, gemeldet $actual_panels"
-  echo "   Tools gesamt    : erwartet $expected_total, gemeldet $actual_total"
-  echo ""
-  echo "   Wahrscheinlichste Ursachen:"
-  echo "   * der Startbefehl zeigt auf ein anderes Verzeichnis/eine andere"
-  echo "     Installation als dieses Repo (Befehl oben pruefen)"
-  echo "   * ein Panel-Tool ohne meta=_UI_META (Panel bleibt zu)"
-  echo "   * veralteter Prozess/Cache — Claude Desktop neu starten"
+if [ "$failed" -ne 0 ]; then
+  echo "❌ Handshake rot (siehe oben)."
   exit 1
 fi
-
-echo "✅ Handshake gruen: $actual_total Tools, $actual_panels mit Panel — der registrierte Befehl spricht MCP."
+echo "✅ Handshake gruen: $checked Konnektor(en) geprueft."

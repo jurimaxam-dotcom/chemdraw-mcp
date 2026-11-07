@@ -20,7 +20,8 @@
     "entry_point": "server/run.sh",
     "mcp_config": {
       "command": "/bin/sh",
-      "args": ["${__dirname}/server/run.sh"]
+      "args": ["${__dirname}/server/run.sh"],
+      "env": {"CHEMDRAW_PROFILE": "mvp"}
     }
   },
   "compatibility": {

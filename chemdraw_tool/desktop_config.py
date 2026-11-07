@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
-"""Registriert den chemdraw-tool MCP-Server in der Claude-Desktop-Config.
+"""Registriert die zwei ChemDraw-Konnektoren in der Claude-Desktop-Config.
 
-Idempotenter Merge: fügt den Server-Eintrag hinzu bzw. aktualisiert ihn,
-OHNE andere bereits konfigurierte MCP-Server oder Top-Level-Einstellungen
-anzufassen. Schreibt vor dem Überschreiben ein .bak-Backup.
+Zwei Einträge aus demselben Paket (Jay-Entscheid 06.11.2026, Welle 3):
+    chemdraw         CHEMDRAW_PROFILE=mvp   (Standardprofil, 16 Tools)
+    chemdraw-pharma  CHEMDRAW_PROFILE=full  (Vollprofil, 23 Tools)
+Der Nutzer wechselt im Konnektor-Menü des Chats, ohne Desktop-Neustart. Das
+Profil steht fest im Eintrag (env), damit nie beide dasselbe liefern.
+
+Idempotenter Merge: fügt die Einträge hinzu bzw. aktualisiert sie und räumt
+den Eintrag der Vor-Welle-3-Installation (`chemdraw-tool`) weg, OHNE andere
+bereits konfigurierte MCP-Server oder Top-Level-Einstellungen anzufassen.
+Schreibt vor dem Überschreiben ein .bak-Backup.
 
 Liegt bewusst im Paket, nicht in scripts/: das Wheel enthält nur
 `chemdraw_tool`, und ausgerechnet die Nutzer, die über PyPI/die MCP-Registry
@@ -30,7 +37,15 @@ import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
-SERVER_NAME = "chemdraw-tool"
+# Konnektorname → Serverprofil (`create_server` in server.py kennt genau diese
+# zwei). Reihenfolge = Reihenfolge in der Config und im Konnektor-Menü.
+CONNECTORS: dict[str, str] = {"chemdraw": "mvp", "chemdraw-pharma": "full"}
+# Hauptkonnektor: was Doctor und Handshake meinen, wenn sie von "dem" Eintrag
+# sprechen; der zweite hängt in CONNECTORS daran.
+SERVER_NAME = "chemdraw"
+# Name der einzigen Registrierung vor Welle 3 — wird beim Installieren
+# kontrolliert entfernt, sonst stünden drei ChemDraw-Einträge im Menü.
+LEGACY_SERVER_NAMES: tuple[str, ...] = ("chemdraw-tool",)
 
 # Claude Desktop startet MCP-Server nicht in einer Login-Shell, sondern mit dem
 # minimalen GUI-/launchd-PATH. Ein blankes "uv" als command ist dort nicht
@@ -99,13 +114,26 @@ def resolve_uv_command(
     return "uv"
 
 
-def build_server_entry(project_dir: str, uv_command: str | None = None) -> dict:
+def _profile_env(profile: str) -> dict[str, str]:
+    """Das feste Profil eines Eintrags — nur die zwei, die der Server kennt."""
+    if profile not in CONNECTORS.values():
+        raise ValueError(
+            f"profile muss 'mvp' oder 'full' sein, war: {profile!r} "
+            f"(Konnektoren: {', '.join(f'{n}={p}' for n, p in CONNECTORS.items())})"
+        )
+    return {"CHEMDRAW_PROFILE": profile}
+
+
+def build_server_entry(
+    project_dir: str, uv_command: str | None = None, profile: str = "mvp"
+) -> dict:
     """Baut den mcpServers-Eintrag, der den Server via uv startet."""
     if not Path(project_dir).is_absolute():
         raise ValueError(f"project_dir muss absolut sein, war: {project_dir!r}")
     return {
         "command": resolve_uv_command(uv_command),
         "args": ["--directory", project_dir, "run", "chemdraw-tool-server"],
+        "env": _profile_env(profile),
     }
 
 
@@ -114,7 +142,7 @@ def running_from_repo() -> bool:
     return (Path(__file__).resolve().parent.parent / "pyproject.toml").is_file()
 
 
-def build_installed_entry(launcher: str | None = None) -> dict:
+def build_installed_entry(launcher: str | None = None, profile: str = "mvp") -> dict:
     """Baut den Eintrag für eine Paket-Installation (PyPI/uvx).
 
     Hier gibt es kein Projektverzeichnis — `uv --directory <site-packages>`
@@ -136,7 +164,12 @@ def build_installed_entry(launcher: str | None = None) -> dict:
             "Kein chemdraw-mcp-Startskript gefunden. Ist das Paket wirklich "
             "installiert? (pip install chemdraw-mcp / uv tool install chemdraw-mcp)"
         )
-    return {"command": launcher, "args": []}
+    return {"command": launcher, "args": [], "env": _profile_env(profile)}
+
+
+def connector_entries(build: Callable[[str], dict]) -> dict[str, dict]:
+    """Ein Eintrag je Konnektor; `build(profile)` liefert den Eintrag fürs Profil."""
+    return {name: build(profile) for name, profile in CONNECTORS.items()}
 
 
 def verify_entry(entry: dict) -> str:
@@ -168,8 +201,22 @@ def merge_server_config(existing: dict, name: str, entry: dict) -> dict:
     return result
 
 
-def install_entry(entry: dict, config_path: Path | None = None) -> Path:
-    """Schreibt einen fertigen mcpServers-Eintrag in die Desktop-Config.
+def merge_connectors(existing: dict, entries: dict[str, dict]) -> dict:
+    """Trägt alle Konnektoren ein und entfernt die Vor-Welle-3-Registrierung.
+
+    Fremde Server und Top-Level-Keys bleiben; `existing` wird nicht mutiert.
+    """
+    result = copy.deepcopy(existing)
+    servers = result.setdefault("mcpServers", {})
+    for legacy in LEGACY_SERVER_NAMES:
+        servers.pop(legacy, None)
+    for name, entry in entries.items():
+        servers[name] = entry
+    return result
+
+
+def install_entries(entries: dict[str, dict], config_path: Path | None = None) -> Path:
+    """Schreibt fertige mcpServers-Einträge (Name → Eintrag) in die Desktop-Config.
 
     Returns den geschriebenen Pfad. Legt ein <pfad>.bak-Backup an, wenn die
     Datei schon existierte. Fremde Server und Top-Level-Keys bleiben unberührt.
@@ -189,7 +236,7 @@ def install_entry(entry: dict, config_path: Path | None = None) -> Path:
             json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8"
         )
 
-    merged = merge_server_config(existing, SERVER_NAME, entry)
+    merged = merge_connectors(existing, entries)
 
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -201,9 +248,14 @@ def install_entry(entry: dict, config_path: Path | None = None) -> Path:
 def install(
     project_dir: str, config_path: Path | None = None, uv_command: str | None = None
 ) -> Path:
-    """Trägt einen Repo-Clone ein (uv --directory …)."""
-    return install_entry(
-        build_server_entry(project_dir, uv_command=uv_command), config_path
+    """Trägt einen Repo-Clone als beide Konnektoren ein (uv --directory …)."""
+    return install_entries(
+        connector_entries(
+            lambda profile: build_server_entry(
+                project_dir, uv_command=uv_command, profile=profile
+            )
+        ),
+        config_path,
     )
 
 
@@ -231,20 +283,27 @@ def main() -> int:
 
     if project_dir:
         project_dir = str(Path(project_dir).resolve())
-        entry = build_server_entry(project_dir, uv_command=args.uv_command)
+        entries = connector_entries(
+            lambda profile: build_server_entry(
+                project_dir, uv_command=args.uv_command, profile=profile
+            )
+        )
     else:
         # Aus dem Wheel installiert: kein Projektverzeichnis, das Console-Script
         # startet den Server direkt.
         try:
-            entry = build_installed_entry()
+            entries = connector_entries(
+                lambda profile: build_installed_entry(profile=profile)
+            )
         except RuntimeError as exc:
             print(f"✗ {exc}", file=sys.stderr)
             return 1
 
-    path = install_entry(entry)
-    print(f"✓ chemdraw-tool in {path} registriert.")
-    print(verify_entry(entry))
-    print("→ Claude Desktop neu starten, damit der Server geladen wird.")
+    path = install_entries(entries)
+    names = " + ".join(f"{name} ({profile})" for name, profile in CONNECTORS.items())
+    print(f"✓ {names} in {path} registriert.")
+    print(verify_entry(entries[SERVER_NAME]))
+    print("→ Claude Desktop neu starten, damit beide Konnektoren geladen werden.")
     return 0
 
 

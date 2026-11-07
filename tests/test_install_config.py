@@ -177,7 +177,7 @@ def test_install_creates_config_when_absent(tmp_path):
     cfg = tmp_path / "Claude" / "claude_desktop_config.json"
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     data = json.loads(cfg.read_text())
-    assert data["mcpServers"]["chemdraw-tool"]["command"] == str(uv)
+    assert data["mcpServers"]["chemdraw"]["command"] == str(uv)
     assert not cfg.with_suffix(".json.bak").exists(), "kein Backup ohne Vorgänger"
 
 
@@ -190,7 +190,7 @@ def test_install_preserves_other_server_and_writes_backup(tmp_path):
     install("/Users/x/proj", config_path=cfg)
     data = json.loads(cfg.read_text())
     assert "concepts" in data["mcpServers"]
-    assert "chemdraw-tool" in data["mcpServers"]
+    assert "chemdraw" in data["mcpServers"]
     backup = json.loads(cfg.with_suffix(".json.bak").read_text())
     assert backup == {"mcpServers": {"concepts": {"command": "python"}}}
 
@@ -212,3 +212,110 @@ def test_install_refuses_corrupt_config_without_touching_it(tmp_path):
         install("/Users/x/proj", config_path=cfg)
     assert cfg.read_text() == '{"mcpServers": {broken', "Original unangetastet"
     assert not cfg.with_suffix(".json.bak").exists()
+
+
+# --- Zwei Konnektoren (Welle 3, Jay-Entscheid 06.11.2026) ------------------
+# Claude Desktop bekommt zwei Einträge aus demselben Paket: `chemdraw` mit dem
+# Standardprofil (16 Tools) und `chemdraw-pharma` mit dem Vollprofil (23 Tools).
+# Der Nutzer wechselt im Konnektor-Menü des Chats, ohne Neustart. Das Profil
+# steht fest im Eintrag (env), damit nie beide dasselbe liefern.
+
+
+def test_exactly_two_connectors_with_fixed_profiles():
+    from chemdraw_tool.desktop_config import CONNECTORS
+
+    assert CONNECTORS == {"chemdraw": "mvp", "chemdraw-pharma": "full"}
+
+
+def test_build_server_entry_pins_the_profile_in_env(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    entry = build_server_entry("/Users/x/proj", uv_command=str(uv), profile="full")
+    assert entry["env"] == {"CHEMDRAW_PROFILE": "full"}
+    assert entry["args"] == [
+        "--directory",
+        "/Users/x/proj",
+        "run",
+        "chemdraw-tool-server",
+    ]
+
+
+def test_build_server_entry_defaults_to_the_mvp_profile(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    assert build_server_entry("/Users/x/proj", uv_command=str(uv))["env"] == {
+        "CHEMDRAW_PROFILE": "mvp"
+    }
+
+
+def test_build_server_entry_rejects_unknown_profile(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    with pytest.raises(ValueError, match="mvp"):
+        build_server_entry("/Users/x/proj", uv_command=str(uv), profile="pharma")
+
+
+def test_build_installed_entry_pins_the_profile(tmp_path):
+    from chemdraw_tool.desktop_config import build_installed_entry
+
+    launcher = _fake_uv(tmp_path / "bin")
+    entry = build_installed_entry(launcher=str(launcher), profile="full")
+    assert entry["command"] == str(launcher)
+    assert entry["env"] == {"CHEMDRAW_PROFILE": "full"}
+
+
+def test_install_writes_both_connectors(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    servers = json.loads(cfg.read_text())["mcpServers"]
+    assert set(servers) == {"chemdraw", "chemdraw-pharma"}
+    assert servers["chemdraw"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
+    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "full"}
+    for entry in servers.values():
+        assert entry["command"] == str(uv)
+        assert entry["args"] == [
+            "--directory",
+            "/Users/x/proj",
+            "run",
+            "chemdraw-tool-server",
+        ]
+
+
+def test_install_migrates_the_old_chemdraw_tool_entry(tmp_path):
+    """Vor Welle 3 hieß der einzige Eintrag `chemdraw-tool`. Der Installer ersetzt
+    ihn kontrolliert — sonst stünden drei ChemDraw-Konnektoren im Menü."""
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    cfg.write_text(
+        json.dumps(
+            {
+                "mcpServers": {
+                    "chemdraw-tool": {
+                        "command": "uv",
+                        "args": ["run", "chemdraw-tool-server"],
+                    },
+                    "concepts": {"command": "python", "args": ["s.py"]},
+                },
+                "preferences": {"x": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    data = json.loads(cfg.read_text())
+    assert set(data["mcpServers"]) == {"chemdraw", "chemdraw-pharma", "concepts"}
+    assert data["mcpServers"]["concepts"] == {"command": "python", "args": ["s.py"]}
+    assert data["preferences"] == {"x": 1}
+    backup = json.loads(cfg.with_suffix(".json.bak").read_text())
+    assert "chemdraw-tool" in backup["mcpServers"], "Backup hält den alten Eintrag"
+
+
+def test_install_twice_migration_stays_stable(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    cfg.write_text(
+        json.dumps({"mcpServers": {"chemdraw-tool": {"command": "uv"}}}),
+        encoding="utf-8",
+    )
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    first = cfg.read_text()
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    assert cfg.read_text() == first

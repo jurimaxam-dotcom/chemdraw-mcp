@@ -185,9 +185,12 @@ uv run chemdraw-tool-server                         # mvp, the default
 CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 23 tools
 ```
 
-For Claude Desktop, add `"env": {"CHEMDRAW_PROFILE": "full"}` to the server
-entry in `claude_desktop_config.json` and restart Claude Desktop. An invalid
-profile name stops startup with an error. Two optional vault tools
+In Claude Desktop the two profiles are two connectors from one installation:
+`chemdraw` (`mvp`) and `chemdraw-pharma` (`full`), registered by both the
+extension bundles and `chemdraw-install`. Enable one per chat in the connector
+menu — switching needs no restart; with both on, the model sees the default
+tools twice. By hand, the entry's `"env": {"CHEMDRAW_PROFILE": "full"}` picks
+the profile. An invalid profile name stops startup with an error. Two optional vault tools
 (`search_vault`, `read_vault_entry`) appear only in the full profile and only
 when `CHEMDRAW_VAULT_PATH` is set.
 
