@@ -47,14 +47,13 @@ belong to.
 
 ### 3D in one click
 
-Every structure has a `3D` chip. For morphine, the five fused rings that lie
-flat on paper become a rigid cage you can turn.
+Every structure has a `3D` chip. For thalidomide, the two rings that lie
+flat on paper turn out to sit twisted against each other.
 
 - The server computes a conformer (RDKit ETKDG plus a force field) and swaps
   the drawing for a ball-and-stick model with explicit hydrogens.
 - Drag to rotate. A second click returns to the drawing.
 - The conformer is cached, and the SDF file lands in `~/ChemDraw-Output/3d/`.
-
 
 ### Data, flashcards and files
 
@@ -83,9 +82,6 @@ flat on paper become a rigid cage you can turn.
 
 | Prompt | What you get |
 |---|---|
-| *"Draw thalidomide"* | the structure, then `Show variants` for (R) and (S) |
-| *"Show morphine as a rotatable 3D model"* | a ball-and-stick model (`generate_3d`) |
-| *"Draw capsaicin and explain why it is poorly soluble in water"* | the structure beside the answer, groups to hover |
 | *"Draw adrenaline with all hydrogen atoms"* | the structure opened in the All H view |
 | *"Give me a data sheet for lysergic acid diethylamide"* | PubChem properties and GHS hazards (`lookup_molecule_data`) |
 | *"What is the difference between testosterone and estradiol?"* | both structures side by side, differences highlighted (`compare_molecules`) |
