@@ -130,6 +130,7 @@ Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
 5. [x] Playwright-Screenshots hell/dunkel auf github.com (13:42, Owner gesehen: beide Hero-GIFs gleich hoch, kein Überlauf, Theme greift; Belege `docs/evidence/…/readme/github-hero-{light,dark}.jpg`) bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
 6. [x] Codex-Abgleich (Bericht 13:45, Faden `20261107-114301-…`): GIF-Inhalte beider Themes bestätigt, Maße/Dauer/Größe gemessen; Befund 4 übernommen („two ring systems“), Befund 1 = bewusste Moleküländerung (Jay), Befund 2 (Capsaicin-Datenblatt ohne Fußzeile im 720-px-Ausschnitt) und 3 (Schlussstand 0,8–1,6 s statt 2 s wegen 10-s-Kappe) als akzeptierte Abweichungen notiert (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
 7. [x] Gate rc=0 (13:55), Push; README-Stand als Beleg `docs/evidence/verifizierter-stand-2026-11-07/readme-2026-11-07.md` (CI auf `d2f37f4` läuft) — Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
+8. [x] **Hero-Abnahme Jay 07.11. (AskUserQuestion, Owner-Session nach Kontext-Neustart): „Passt so“** — zwei GIFs nebeneinander (Thalidomid Ansichten → Datenblatt, 3D-Chip), hell/dunkel per `<picture>`. Keine Neuaufnahme. Shorts aus den Panel-Clips: `chemdraw-vermarktung/out/shorts-2026-11-07/`, Sichtprüfung offen.
 
 ## Shorts aus den GIFs (Jay 13:05: „anschließend mit den GIFs die Shorts erstellen“)
 

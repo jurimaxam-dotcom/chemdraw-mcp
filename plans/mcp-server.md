@@ -1,6 +1,15 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 13:06; Uhrzeiten dieses Blocks waren CEST, korrigiert auf CET per git log)
+## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 13:40)
+
+- **Nächster Schritt — Jays Hand:** Sichtprüfung der drei Shorts (Abnahme = Jay; kein Upload, keine Außenkommunikation): `~/Documents/projects/chemdraw-vermarktung/out/shorts-2026-11-07/{s5-stereo,s3d-drehen,s1h-hover}.mp4` (20,0 / 21,4 / 21,7 s, 1080×1920, 30 fps, Kokoro-Stimme, Wort-Untertitel). Worauf achten (aus dem Bericht): S5 Keil am (S)-Thalidomid im Schlussbild auf dem Handy erkennbar? S3D Drehung flüssig? S1H Untertitel/Hover synchron? Panel-Unterkante (Export/Anki-Zeile) liegt im Bereich der Reels-Leiste — Alternative 85 % Verkleinerung. Fachlich: „One stereocenter. Two drugs.“ vor einem Post gegenlesen (Racemisierung in vivo).
+- **Erledigt und belegt 13:08–13:40 (Owner):** Hero-Abnahme **Jay 13:3x „Passt so“** (zwei GIFs nebeneinander bleiben) · CI main grün bis `440e529` (Lauf 42371029859) · **Shorts gerendert** (Vermarktungs-Session, Tisch `20261107-130152-shorts-aus-den-panel`, Bericht 13:14; Owner geprüft: ffprobe-Dauern, Commits `2139cb7`/`0ecc7b8` in `chemdraw-vermarktung`, `npm test` 46/46 selbst gelaufen, Übersichts-PNGs und Schlussbild S5 selbst angesehen) · Plan-Uhrzeiten CEST→CET korrigiert (`e9941cb`).
+- **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Shorts-Sichtprüfung (oben). (2) „D-Glucose“ im Panel wieder offene Kette mit Fischer-Knopf (heute Pyranosering + Haworth, seit `41da7c4`)? (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht ggf. noch offen (seine Sammlung). (4) Desktop-Rechte: nach der Konnektor-Migration (`chemdraw` + `chemdraw-pharma`) „Always allow“ je Konnektor beim ersten Aufruf — nicht geprüft. (5) Nach E3 als Nächstes Mechanismus-Panel oder Diagramme (`docs/design/panel-kritik-2026-11-07.md` Abschnitt 5)?
+- **Prüfmethoden, die gelten:** Helfer-Berichte am Code/Bild/Dateisystem prüfen; kein Desktop-Haken ohne eigenen Screenshot; Gate `./test.sh` + `test:host` vor jedem Merge auf main; Desktop-Tasten nur bei Leerlauf ≥ 5 s.
+- **Tisch:** `20261107-130152-shorts-aus-den-panel` erledigt 13:40; keine offenen Fäden, keine Leases.
+- **Plan-Dateien:** dieser Plan · `plans/readme-showcase.md` (Hero abgenommen 07.11.) · `chemdraw-vermarktung/plans/vermarktung.md` (Shorts, wartet auf Sichtprüfung) · Panel-Folgearbeit in `docs/design/panel-kritik-2026-11-07.md` Abschnitt 5.
+
+### Vorheriger Block (13:06, abgearbeitet)
 
 - **Nächster Schritt:** Bericht der Shorts-Session abwarten (Tisch-Faden `20261107-130152-shorts-aus-den-panel`, Claude-Session `6fc4f607…` im Workspace `chemdraw-vermarktung`; Auftrag: drei Shorts nach Schema aus `out/panel-clips/`, Test-Short S5 zuerst). Trifft der Bericht ein: Standbilder selbst ansehen, dann Jay die drei mp4-Pfade für seine Sichtprüfung geben (Abnahme = Jay; kein Upload, keine Außenkommunikation).
 - **Wartezeiten mit Folgeaktion:** (a) Jays Antwort auf „passt der Hero mit den zwei GIFs?“ — bei Änderungswunsch `npm --prefix chemdraw_tool/ui run readme:gifs` (Skript, Themes, 600×880) und README-Hero in `README.md` Z. 26–31. (b) [x] CI auf main grün bis `440e529` (Lauf 42371029859, 13:10).
