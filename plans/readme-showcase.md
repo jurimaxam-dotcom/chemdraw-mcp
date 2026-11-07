@@ -12,7 +12,7 @@
 |---|---|---|---|
 | A GIFs (3 Stück) + Design-Review | Codex, Tisch `20261107-104104-readme-gif-3d-chip` | **pausiert 11:20 (Jay: „lass“)** — Codex brach nach 3 unterbrochenen Blöcken ab: Space-Wechsel während Jays Bedienung, AX findet dann nichts (Belege `/tmp/chemdraw-desktop-test/2026-11-07/readme/`, Thalidomid (S)-Keil + CAS 841-67-8 bestätigt). Design-Review wartet auf Opus-Branch. Alternative bei Jays Ja: Aufnahme im Playwright-Host (`test:host`-Aufbau, echtes Panel, echter Server, kein Desktop-Rahmen) | Dateien selbst ansehen (Frames, Größe), Protokoll-Screenshots |
 | B README-Text als Produktseite | Opus 5.5 (Agent, Worktree, Branch `readme-showcase`) | **gemerged 11:32** (Opus `56707ab`, Gates grün; Owner: Diff gelesen, Stichproben Export/Anki/MAX_OPEN_STEREO/Mechanismen am Code bestätigt; drei HTML-Slots für die GIFs offen) | erledigt |
-| C Zusammenbau + Gate + Desktop-Blick | Claude (Owner) | wartet auf A und B | README auf GitHub rendern (gh-Vorschau), Bilder prüfen |
+| C Zusammenbau + Gate + Desktop-Blick | Claude (Owner) | **erledigt 13:58** (C2-Checkliste unten) | README auf GitHub rendern (gh-Vorschau), Bilder prüfen |
 | D Design-Kritik Panel-UI + 3D (Jay 11:02: „3D cleaner und eindrucksvoller, Panel mit allen Tools besser sortiert“) | Opus 5.5 (Agent, Worktree, nur Bericht) | **Bericht gemerged 11:36** (`docs/design/panel-kritik-2026-11-07.md`, Opus `3eb1a05`; Owner: Stichproben am Code) | Top 5 an Jay; bei Ja: Bild für die iPad-Runde, dann Bau in Etappen mit DOM-/Host-Tests; **kein Code vor Jays Zustimmung** |
 
 ## Molekülwahl (Owner, geprüft 10:56 am Resolver: Stereozentren / Schweratome)
@@ -129,7 +129,7 @@ Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
 4. [x] Texte (3D-Absatz auf Thalidomid; keine Gedankenstriche gefunden): keine Gedankenstriche, keine Superlative, einheitliche Backticks für Knopfnamen (`3D`, `All H`, `Data`), Aspirin/Ibuprofen nur noch in Galerie/Tests.
 5. [x] Playwright-Screenshots hell/dunkel auf github.com (13:42, Owner gesehen: beide Hero-GIFs gleich hoch, kein Überlauf, Theme greift; Belege `docs/evidence/…/readme/github-hero-{light,dark}.jpg`) bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
 6. [x] Codex-Abgleich (Bericht 13:45, Faden `20261107-114301-…`): GIF-Inhalte beider Themes bestätigt, Maße/Dauer/Größe gemessen; Befund 4 übernommen („two ring systems“), Befund 1 = bewusste Moleküländerung (Jay), Befund 2 (Capsaicin-Datenblatt ohne Fußzeile im 720-px-Ausschnitt) und 3 (Schlussstand 0,8–1,6 s statt 2 s wegen 10-s-Kappe) als akzeptierte Abweichungen notiert (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
-7. [ ] Gate + CI grün, Push; README-Stand als Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
+7. [x] Gate rc=0 (13:55), Push; README-Stand als Beleg `docs/evidence/verifizierter-stand-2026-11-07/readme-2026-11-07.md` (CI auf `d2f37f4` läuft) — Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
 
 ## Shorts aus den GIFs (Jay 13:05: „anschließend mit den GIFs die Shorts erstellen“)
 
