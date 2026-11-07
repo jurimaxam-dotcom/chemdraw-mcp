@@ -27,8 +27,8 @@ under [Installation](#installation).
      Bildunterschriften, 49 % Breite je Bild (skaliert mit der GitHub-Spalte; eine Tabelle mit Pixelbreiten lief über).
      Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, 600 px). Hell/Dunkel je Modus: siehe Plan A3. -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%">
-  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="49%">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D chip swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
 </p>
 
 ## What you get
@@ -72,7 +72,7 @@ flat on paper become a rigid cage you can turn.
 - Every drawing tool also writes PNG and SVG files to `~/ChemDraw-Output/`.
   ChemDraw CDXML on request.
 
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule.gif" alt="The capsaicin panel: ether, amide, amine, phenol and aromatic ring light up in the structure on hover, then the PubChem data sheet" width="600"></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule-light.gif" alt="The capsaicin panel: ether, amide, amine, phenol and aromatic ring light up in the structure on hover, then the PubChem data sheet" width="600"></picture></p>
 
 ## Prompts to try
 
