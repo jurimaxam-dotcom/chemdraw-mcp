@@ -4,6 +4,7 @@ import CopyButton from "./components/CopyButton";
 import FoundAs from "./components/FoundAs";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
 import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
 import StereoNote, { useStereoHighlight } from "./components/StereoNote";
@@ -11,7 +12,7 @@ import Ball3DCanvas from "./components/Ball3DCanvas";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 import { useAppBridge } from "./AppContext";
-import { displayPath } from "./utils/displayPath";
+import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 import { extractToolData } from "./utils/toolData";
 
 // Ein ruhiger Satz statt eines Stacktrace: der Klick muss sichtbar landen,
@@ -57,6 +58,7 @@ export default function MoleculeView({ data }) {
   const [conformerFailed, setConformerFailed] = useState(false);
   const conformerInFlight = useRef(false);
   const wanted3d = useRef(false);
+  const viewer3d = useRef(null); // Fläche der Kuhle: Export PNG liest dort das aktuelle SVG
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
   const [sheet, setSheet] = useState(null);
@@ -215,6 +217,8 @@ export default function MoleculeView({ data }) {
   );
 
   const is3d = show3d && Boolean(conformer);
+  // Die Datenseite zeigt keine Kuhle — dort exportiert die Fußzeile die 2D-Zeichnung.
+  const footer3d = is3d && view === "structure";
   const stereoCount = (data.stereoWarnings || []).length;
   const canShowVariants = Boolean(query) && stereoCount > 0 && stereoCount <= MAX_OPEN_STEREO;
 
@@ -263,11 +267,9 @@ export default function MoleculeView({ data }) {
           {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
           <FoundAs value={data.foundAs} />
         </div>
-        <div className="panel-actions">
-          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
-          {svg && !show3d && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
-          {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
-        </div>
+        {query && <div className="panel-actions">
+          <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />
+        </div>}
       </header>
       {view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
@@ -276,7 +278,7 @@ export default function MoleculeView({ data }) {
                 unter Zeichnung oder Kuhle, vor den Kernwerten (Design-Kritik Rang 3). */}
             <div className="structure-main">
               {is3d
-                ? <div className="structure-canvas structure-3d" data-view-3d="">
+                ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
                     <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
                   </div>
                 : <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />}
@@ -299,7 +301,7 @@ export default function MoleculeView({ data }) {
           </div>
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
-          {is3d && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens{conformer.files?.sdf && <> · SDF: <span title={conformer.files.sdf}>{displayPath(conformer.files.sdf)}</span></>}</p>}
+          {is3d && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens</p>}
           {/* Stereo, Gruppen und der Haworth-Satz beziehen sich auf die 2D-Zeichnung — in 3D aus. */}
           {!is3d && <>
             {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
@@ -318,6 +320,16 @@ export default function MoleculeView({ data }) {
           {sheet ? <SourceList sources={sheet.sources} moleculeSvg={sheet.molecule_svg || data.svg} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
         </div>
       )}
+      {/* Fußzeile (E3): Dateien links, Aktionen rechts. In 3D die SDF-Datei des
+          Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG. */}
+      <PanelFooter files={footer3d ? fileEntries(conformer.files) : fileEntries(data.files)}>
+        {footer3d
+          ? <ExportPngButton size="sm" filename={`${data.name || "molecule"}-3d`}
+              getSvg={() => serializeLiveSvg(viewer3d.current?.querySelector("svg"))}
+              background={() => panelBackground(viewer3d.current)} />
+          : svg && <ExportPngButton size="sm" svg={svg} filename={data.name || "molecule"} />}
+        {smiles && <AddToAnkiButton size="sm" smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
+      </PanelFooter>
     </article>
   );
 }

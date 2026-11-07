@@ -1,5 +1,8 @@
 import React, { useRef, useState, useLayoutEffect, useCallback } from "react";
 import SectionHeader from "./components/SectionHeader";
+import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { composeSvg } from "./utils/composeSvg";
 import { useAppBridge } from "./AppContext";
 import { extractToolData } from "./utils/toolData";
 
@@ -284,6 +287,22 @@ function BalanceBadge({ balance, onApply, applying, failed }) {
   );
 }
 
+// Export PNG braucht ein SVG; das Panel zeichnet die Gleichung aber aus
+// Einzel-SVGs und HTML. Dieselbe Zeile als ein Dokument: Strukturen mit Namen,
+// „+“, Koeffizienten, Pfeil mit Bedingungen oben und unten.
+export function reactionSvg(data) {
+  const parts = [];
+  const side = (molecules) => molecules.forEach((m, i) => {
+    if (i > 0) parts.push({ kind: "text", text: "+" });
+    if (m.coefficient && m.coefficient !== 1) parts.push({ kind: "text", text: String(m.coefficient) });
+    parts.push(m.svg ? { kind: "svg", svg: m.svg, caption: m.name } : { kind: "text", text: m.name || "?", size: 14 });
+  });
+  side(data.reactants || []);
+  parts.push({ kind: "arrow", arrow: data.arrow, above: data.conditions, below: data.conditions_below });
+  side(data.products || []);
+  return composeSvg(parts);
+}
+
 export default function ReactionView({ data: initial }) {
   const app = useAppBridge();
   // Nach „Apply coefficients“ zeigt das Panel die neu gezeichnete Gleichung.
@@ -338,6 +357,11 @@ export default function ReactionView({ data: initial }) {
       </div>
       <BalanceBadge balance={data.balance} onApply={data.request ? handleApply : null}
         applying={applying} failed={failed} />
+      {/* Fußzeile (E3): Dateien und Export folgen der gezeigten Gleichung (nach Apply die neue). */}
+      <PanelFooter files={fileEntries(data.files)}>
+        {(reactants.length > 0 || products.length > 0) &&
+          <ExportPngButton size="sm" getSvg={() => reactionSvg(data)} filename={name || "reaction"} />}
+      </PanelFooter>
     </div>
   );
 }

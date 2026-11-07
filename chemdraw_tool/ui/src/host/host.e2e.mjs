@@ -426,7 +426,7 @@ try {
   // 3d2. 3D-Knopf (Plan Punkt 6, 07.11.): generate_3d per Bridge, Viewer ersetzt die Zeichnung, Rückweg per Klick
   const vor3d = serverCalls.length;
   const breite2d = (await frame.locator(".structure-canvas").boundingBox())?.width ?? 0;
-  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
   // Jay 07.11.: 3D größer — die Kuhle nimmt die volle Panelbreite, die Kernwerte rutschen darunter
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
@@ -435,7 +435,39 @@ try {
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
     "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
-  prüfe(await frame.getByRole("button", { name: "Export as PNG" }).count() === 0, "Export PNG pausiert im 3D-Modus");
+  // E3 (Design-Kritik 3.14), bewusst umgedreht: hier stand „Export PNG pausiert im 3D-Modus“ —
+  // der Knopf hätte die 2D-Zeichnung exportiert. Jetzt rastert er das Kuhlen-SVG in der aktuellen
+  // Drehlage. Nur dieser Lauf kann zeigen, dass die Theme-Variablen (var(--bowl-*)) im Export
+  // aufgelöst sind: jsdom rechnet kein var(). Ungelöst wäre die Kuhle schwarz.
+  prüfe(await frame.getByRole("button", { name: "Export as PNG" }).count() === 1, "Export PNG bleibt im 3D-Modus");
+  prüfe(await frame.locator("[data-testid='panel-footer'] .panel-footer-path").first().getAttribute("title").then((t) => t?.endsWith(".sdf")),
+    "3D-Fußzeile zeigt den SDF-Pfad des Konformers");
+  await page.emulateMedia({ colorScheme: "light" });
+  const vorExport3d = serverCalls.length;
+  await frame.getByRole("button", { name: "Export as PNG" }).click();
+  await frame.getByRole("button", { name: /Saved:/ }).waitFor({ timeout: 15000 });
+  prüfe(serverCalls.slice(vorExport3d).join() === "save_png", "3D-Export ruft save_png genau einmal über die Bridge");
+  const pfad3d = (await frame.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
+  const png3d = readFileSync(pfad3d);
+  prüfe(pfad3d.startsWith(join(wegwerfHome, "ChemDraw-Output", "png") + "/") && png3d.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+    `3D-Export schreibt eine echte PNG-Datei nach png/ (${pfad3d})`);
+  const rückmeldung3d = await frame.locator("[data-testid='panel-footer'] .export-feedback").innerText();
+  prüfe(rückmeldung3d.startsWith("Saved: ") && rückmeldung3d.includes("ChemDraw-Output/png/"), `Fußzeile meldet sichtbar: ${rückmeldung3d}`);
+  // Pixel am linken Kuhlenrand (x = 20/480, y = Mitte): heller Verlauf, nicht Schwarz.
+  const randLum = await page.evaluate(async (b64) => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${b64}`;
+    await img.decode();
+    const c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const [r, g, b] = ctx.getImageData(Math.round(img.width * 20 / 480), Math.round(img.height / 2), 1, 1).data;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  }, png3d.toString("base64"));
+  prüfe(randLum > 0.6, `3D-Export: Kuhle mit aufgelösten Theme-Farben (Rand-Luminanz ${randLum.toFixed(2)})`);
+  await page.screenshot({ path: join(tmpdir(), "panel-host-3d-export.png") });
+  await page.emulateMedia({ colorScheme: "dark" }); // Folgebilder wie bisher im dunklen Schema
   // E2 (Design-Kritik Rang 3): eine Ansicht-Achse direkt unter der Kuhle, Stereo und Gruppen in 3D aus
   const achse = (await frame.locator("[data-view-axis]").boundingBox()) ?? { y: Infinity };
   const kuhle = (await frame.locator("[data-view-3d]").boundingBox()) ?? { y: 0, height: 0 };
@@ -448,15 +480,15 @@ try {
     "3D blendet Stereo-Zeile und Gruppen-Chips aus");
   await page.waitForTimeout(1300); // Einblend-Drehung abgeschlossen, Bild zeigt die Ruhelage
   await page.screenshot({ path: join(tmpdir(), "panel-host-3d-button.png") });
-  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
   prüfe(await frame.locator("[data-testid='stereo-note']").count() === 1 && await frame.locator(".group-section").count() === 1,
     "Zurück in 2D: Stereo-Zeile und Gruppen-Chips wieder da");
   prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 0, "Zurück in 2D: Kernwerte wieder neben der Zeichnung");
-  await frame.getByRole("button", { name: "3D" }).click();
+  await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d]").waitFor({ timeout: 5000 });
-  prüfe(serverCalls.length === vor3d + 1, "Zweiter 3D-Klick kommt aus dem Cache");
-  await frame.getByRole("button", { name: "3D" }).click();
+  prüfe(serverCalls.slice(vor3d).filter((n) => n === "generate_3d").length === 1, "Zweiter 3D-Klick kommt aus dem Cache (save_png des 3D-Exports zählt nicht)");
+  await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
 
   // 3e. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung per Klick
@@ -564,6 +596,16 @@ try {
   check(await rxn.locator(".reaction-panel svg").count() >= 5, "Reaktion: vier Strukturen und ein Pfeil gezeichnet");
   check(await rxn.locator('[data-testid="balance-badge"]').getAttribute("data-state") === "balanced", "Reaktion: Bilanz ausgeglichen");
   check((await rxn.locator("body").innerText()).includes("H2SO4") || (await rxn.locator("body").innerText()).includes("H₂SO₄"), "Reaktion: Bedingung am Pfeil");
+  // E3: Reaktion hat jetzt Pfad und Export in der Fußzeile; exportiert wird die zusammengesetzte Gleichung.
+  const rxnPfad = await rxn.locator("[data-testid='panel-footer'] .panel-footer-path").first().getAttribute("title");
+  check(rxnPfad?.endsWith(".png") && existsSync(rxnPfad), "Reaktion: Fußzeile zeigt die echte PNG-Datei");
+  await rxnPage.screenshot({ path: join(tmpdir(), "panel-host-reaction-footer.png") });
+  await rxn.getByRole("button", { name: "Export as PNG" }).click();
+  await rxn.getByRole("button", { name: /Saved:/ }).waitFor({ timeout: 15000 });
+  const rxnExport = (await rxn.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
+  check(readFileSync(rxnExport).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])), "Reaktion: Export schreibt eine echte PNG-Datei");
+  check((await rxn.locator("[data-testid='panel-footer'] .export-feedback").innerText()).startsWith("Saved: "), "Reaktion: sichtbare Rückmeldung nach Export");
+  await rxnPage.screenshot({ path: join(tmpdir(), "panel-host-reaction-export.png") });
   await rxnPage.close();
 
   const batchPage = await browser.newPage({ viewport: { width: 720, height: 900 } });

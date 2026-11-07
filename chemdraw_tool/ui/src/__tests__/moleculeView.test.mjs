@@ -284,7 +284,7 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   unmount();
 });
 
-test("All H → 3D → All H zeigt die gecachte H-Zeichnung, nicht die Skelettformel; Export PNG pausiert in 3D", async () => {
+test("All H → 3D → All H zeigt die gecachte H-Zeichnung, nicht die Skelettformel; Export PNG bleibt in 3D", async () => {
   const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
   const { container, calls, unmount } = renderMolecule(data, (req) =>
     req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
@@ -295,7 +295,9 @@ test("All H → 3D → All H zeigt die gecachte H-Zeichnung, nicht die Skelettfo
 
   await click(buttonByText(container, "All H"));
   await click(buttonByText(container, "3D"));
-  assert.equal(hasExport(), false, "Export PNG würde in 3D die 2D-Zeichnung exportieren");
+  // E3 (Design-Kritik 3.14): früher pausierte der Knopf in 3D, weil er die 2D-Zeichnung exportiert hätte.
+  // Jetzt rastert er das Kuhlen-SVG in der aktuellen Drehlage (panelFooter.test.mjs prüft den Inhalt).
+  assert.equal(hasExport(), true, "Export PNG fehlt in 3D");
   await click(buttonByText(container, "All H"));
   assert.ok(container.querySelector("[data-all-h]"), "All H nach 3D fällt auf die Skelettformel zurück");
   assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "true");

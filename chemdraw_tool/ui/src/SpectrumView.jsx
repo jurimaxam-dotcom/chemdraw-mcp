@@ -1,7 +1,7 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import { displayPath } from "./utils/displayPath";
+import PanelFooter, { fileEntries } from "./components/PanelFooter";
 
 const TYPE_LABELS = {
   ir: "IR",
@@ -61,33 +61,9 @@ export default function SpectrumView({ data }) {
       />
       {/* matplotlib emits fixed pt dimensions — scale to the panel width */}
       <style>{`.spectrum-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
-      {/* Exportknopf wie im Molekül-Panel (Desktop-Befund 30.10.2026) */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-          marginTop: 8,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--fg-muted)",
-            fontFamily: "ui-monospace, monospace",
-            wordBreak: "break-all",
-            minWidth: 0,
-          }}
-        >
-          {pngPath && (
-            <>
-              PNG: <span title={pngPath}>{displayPath(pngPath)}</span>
-            </>
-          )}
-        </div>
+      <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "spectrum"} size="sm" />
-      </div>
+      </PanelFooter>
     </div>
   );
 }

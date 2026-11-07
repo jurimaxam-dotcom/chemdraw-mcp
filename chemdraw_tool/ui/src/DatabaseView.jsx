@@ -1,6 +1,7 @@
 import React, { useId, useState } from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter from "./components/PanelFooter";
 import FunctionalGroupList from "./components/FunctionalGroupList";
 import SourceList from "./components/SourceList";
 import StereoNote, { useStereoHighlight } from "./components/StereoNote";
@@ -29,14 +30,11 @@ export default function DatabaseView({ data }) {
           ) : (
             <div />
           )}
-          <div className="panel-actions">
-            {hasStructure && (
+          {hasStructure && (
+            <div className="panel-actions">
               <ViewToggle view={view} onChange={setView} idPrefix={uid} />
-            )}
-            {data.molecule_svg && (
-              <ExportPngButton svg={data.molecule_svg} filename={data.name || "molekuel"} />
-            )}
-          </div>
+            </div>
+          )}
         </header>
       )}
 
@@ -82,6 +80,10 @@ export default function DatabaseView({ data }) {
           <SourceList sources={data.sources} moleculeSvg={data.molecule_svg} />
         </div>
       )}
+      {/* Keine Dateien: lookup_molecule_data schreibt nichts auf die Platte. */}
+      <PanelFooter>
+        {data.molecule_svg && <ExportPngButton size="sm" svg={data.molecule_svg} filename={data.name || "molekuel"} />}
+      </PanelFooter>
     </article>
   );
 }

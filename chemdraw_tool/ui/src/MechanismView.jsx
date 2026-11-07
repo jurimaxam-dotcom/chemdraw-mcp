@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import SectionHeader from "./components/SectionHeader";
+import ExportPngButton from "./components/ExportPngButton";
+import PanelFooter from "./components/PanelFooter";
+import { composeSvg } from "./utils/composeSvg";
 import { naturalWidth } from "./utils/svgSize";
 
 // Pixel je viewBox-Einheit in der Overview: gleiche Atomgröße in allen Kacheln.
@@ -213,6 +216,17 @@ function StepMode({ steps, currentStep, setCurrentStep }) {
   );
 }
 
+// Export folgt der Ansicht: im Schrittmodus der gezeigte Schritt, in der
+// Übersicht alle Schritte untereinander mit Pfeilen — wie im Panel.
+function overviewSvg(steps, reversible) {
+  const parts = [];
+  steps.forEach((step, i) => {
+    if (i > 0) parts.push({ kind: "arrow", reversible });
+    parts.push({ kind: "svg", svg: step.svg, caption: step.is_transition_state ? `[${step.label}]‡` : step.label });
+  });
+  return composeSvg(parts, { direction: "column", gap: 6 });
+}
+
 export default function MechanismView({ data }) {
   const steps = data.steps || [];
   const [mode, setMode] = useState(data.current_step === 0 ? "overview" : "step");
@@ -319,6 +333,11 @@ export default function MechanismView({ data }) {
           />
         )}
       </div>
+      {/* Fußzeile (E3): der Server schreibt für Mechanismen keine Datei — nur die Aktion. */}
+      <PanelFooter>
+        <ExportPngButton size="sm" filename={data.name || "mechanism"}
+          getSvg={() => (mode === "step" ? steps[currentStep]?.svg : overviewSvg(steps, !!data.reversible))} />
+      </PanelFooter>
     </div>
   );
 }

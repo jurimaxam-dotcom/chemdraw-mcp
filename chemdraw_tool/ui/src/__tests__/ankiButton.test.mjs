@@ -35,7 +35,8 @@ test("das Molekül-Panel trägt einen Add-to-Anki-Knopf neben dem PNG-Export", (
   const { container, button, calls, unmount } = setup();
   assert.ok(button(), "kein Anki-Knopf im Panel");
   assert.equal(button().textContent.trim(), "Add to Anki");
-  assert.ok(container.querySelector(".panel-actions button.add-to-anki"), "Knopf nicht in den Panel-Aktionen");
+  // E3: Aktionen stehen in der gemeinsamen Fußzeile, rechts neben Export PNG.
+  assert.ok(container.querySelector('[data-testid="panel-footer"] .panel-footer-actions button.add-to-anki'), "Knopf nicht in den Aktionen der Fußzeile");
   assert.equal(calls.length, 0, "Toolaufruf ohne Klick");
   unmount();
 });
