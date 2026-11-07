@@ -1,4 +1,7 @@
-import subprocess, sys, os, re
+import os
+import subprocess
+import sys
+
 repo, out = sys.argv[1], sys.argv[2]
 head = subprocess.check_output(["git","-C",repo,"log","-1","--format=%h %cd"],text=True).strip()
 files = subprocess.check_output(["git","-C",repo,"ls-tree","-r","--name-only","HEAD"],text=True).split()
@@ -12,16 +15,23 @@ skipped=[]
 for f in files:
     ext = os.path.splitext(f)[1].lower()
     if (ext in SKIP_EXT and os.path.basename(f) not in keep_json) or f.startswith(SKIP_PATH) or f=="uv.lock" or f in SKIP_FILES:
-        skipped.append(f); continue
-    try: txt = subprocess.check_output(["git","-C",repo,"show",f"HEAD:{f}"]).decode("utf-8")
-    except Exception: skipped.append(f); continue
+        skipped.append(f)
+        continue
+    try:
+        txt = subprocess.check_output(["git","-C",repo,"show",f"HEAD:{f}"]).decode("utf-8")
+    except Exception:
+        skipped.append(f)
+        continue
     g = ("1-server-code" if f.startswith("chemdraw_tool/") else "2-tests" if f.startswith("tests/")
          else "3-skripte-evals-build")
     groups[g].append((f,txt))
 os.makedirs(out,exist_ok=True)
 for g,items in groups.items():
     body = [f"# chemdraw-mcp — nur Code, keine Doku/README/Pläne ({g}), Stand Commit {head}\n# Jede Datei steht unverändert im Codeblock unter ihrer Überschrift „DATEI: Pfad“\n\nInhaltsverzeichnis:\n" + "\n".join(f"- {f}" for f,_ in items) + "\n"]
-    for f,t in items: body.append(f"\n## DATEI: {f}\n\n````````{os.path.splitext(f)[1].lstrip('.') or 'text'}\n{t}\n````````\n\nENDE: {f}\n")
-    s="".join(body); open(f"{out}/{g}.md","w").write(s)
+    for f,t in items:
+        body.append(f"\n## DATEI: {f}\n\n````````{os.path.splitext(f)[1].lstrip('.') or 'text'}\n{t}\n````````\n\nENDE: {f}\n")
+    s="".join(body)
+    open(f"{out}/{g}.md","w").write(s)
     print(g, len(items), "Dateien", len(s), "Zeichen", len(s.split()), "Wörter")
-open(f"{out}/ausgelassen.txt","w").write("\n".join(skipped)); print("ausgelassen", len(skipped))
+open(f"{out}/ausgelassen.txt","w").write("\n".join(skipped))
+print("ausgelassen", len(skipped))
