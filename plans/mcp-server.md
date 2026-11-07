@@ -10,6 +10,7 @@
 ### Vorheriger Block (10:27, abgearbeitet)
 
 - **Nächster Schritt (Wartezeit mit Folgeaktion):** Claude Desktop ist um 10:24 **neu gestartet** (Jay: „du kannst Claude Desktop neu starten“, Zoom darf weiterlaufen), Handshake gegen den registrierten Befehl grün (16/12, Legacy-Eintrag `chemdraw-tool`). Der Monitor der alten Session ist weg — neu armieren: `ioreg -c IOHIDSystem` HIDIdleTime ≥ 45 s (Jay wurde gebeten, kurz die Hände wegzunehmen; Zoom ist egal), alle 5 s, Kappe 25 min. Dann per `scripts/ax-claude.sh`: `press AXButton "=New"` → `type "Zeichne Ibuprofen"` → `press AXButton "Send message"` → warten, bis das Panel steht (`dump` zeigt AXButton `3D`) → `click AXButton "^3D$"` → Screenshot `screencapture -x /tmp/chemdraw-desktop-test/2026-11-07/verifiziert/22-desktop-3d-knopf.png` (Ordner existiert) → **selbst ansehen** → als JPG nach `docs/evidence/verifizierter-stand-2026-11-07/screenshots/22-desktop-3d-knopf.jpg` → Haken Welle 1 „Desktop-Blick“ (Zeile „3D-Knopf im Molekülpanel“, Punkt 6 unter „Stand für Jay“) ohne Vorbehalt → Protokoll `desktop-handtest.md` ergänzen. Danach Jay die Release-Zeile geben; vor jedem Tastenschritt Idle erneut lesen.
+- **Release v0.9.0 veröffentlicht 14:08:** Publish-Lauf grün (Umgebung `pypi` wartete auf Freigabe; Jay 14:00 „mach du, gib frei“), Assets `chemdraw-mcp-0.9.0.mcpb` + `chemdraw-mcp-pharma-0.9.0.mcpb`, PyPI 0.9.0, Registry 0.9.0 `isLatest=true`.
 - **Release v0.9.0 erstellt 12:44 (Jay: „Erstelle du den Release, du hast meine Erlaubnis“):** Tag auf `c87962e`, https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.9.0, `publish.yml` Lauf 42368272683 läuft (PyPI, zwei `.mcpb`, Registry); danach Assets, PyPI-Version und `isLatest` prüfen.
 - **Release-Zeile (ausgeführt; SHA = `c87962e`, CI grün; enthält Panel-Umbau E1–E4 und zweiten Konnektor, CHANGELOG `[0.9.0]` zusammengefaltet; die alte Zeile auf `e2e1137` ist hinfällig):**
   `gh release create v0.9.0 --target c87962e179159c438665749b255da07c80acfd0f --title "0.9.0" --notes-file <(awk '/^## \[0.9.0\]/{f=1;next} /^## \[0.8.0\]/{exit} f' CHANGELOG.md)`
@@ -48,7 +49,7 @@
 
 ## Stand für Jay — 07.11.2026, 08:30 (Claude, selbst gemessen; Abschnitte darunter = Verlauf)
 
-**Läuft (Beweise heute, Stand 10:20):** Release 0.9.0 vorbereitet (Version, CHANGELOG nach Doku-Sichtung, release_check ok, CI grün — Klick siehe „Weiter bei“) · 3D-Knopf im Panel (`0320a0c`) · Strang B 6/9 · Handshake mit dem Desktop-Befehl grün (16 Tools / 12 Panels) ·
+**Läuft (Beweise heute, Stand 14:08):** **Release 0.9.0 live** (PyPI, zwei `.mcpb`, Registry isLatest; Panel-Umbau E1–E4 + zweiter Konnektor) · README als Produktseite mit Hero-GIFs hell/dunkel (`plans/readme-showcase.md`) · Shorts-Montage läuft in `chemdraw-vermarktung` · 3D-Knopf im Panel (`0320a0c`) · Strang B 6/9 · Handshake mit dem Desktop-Befehl grün (16 Tools / 12 Panels) ·
 `pytest` 8369 passed / 16 skipped · 21 echte Aufrufe gegen alle 16 MVP-Tools: 19 OK, 1 korrekter Fehler
 (`not_found`), 1 Lücke (unten) · Bilder geprüft (Ibuprofen, Veresterung ⇌, Morphin/Codein-Vergleich) ·
 Panel kann: Skelett · All H · Fischer/Haworth · Stereo-Varianten mit Keil (R/S-Picker) · Data · Export PNG · Add to Anki ·
