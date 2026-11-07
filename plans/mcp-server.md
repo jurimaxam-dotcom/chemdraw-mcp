@@ -9,10 +9,9 @@ Panel kann: Skelett · All H · Fischer/Haworth · Stereo-Varianten mit Keil (R/
 Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 
 **Offen — rot oder unfertig (Reihenfolge = Abarbeitung):**
-1. [ ] CI/Gate rot: Lint in `scripts/notebooklm/bundle.py` (committet, 10 Fehler) — 2 Minuten.
-2. [ ] Opus-Commit `e559323` (Schnitt 3 A>=) nur gebaut, nicht gegengeprüft: Tests + Replay selbst laufen lassen.
-3. [ ] README-GIF-Entwurf (Morphin) liegt uncommittet: `scripts/demo-video.sh`, `demo.record.mjs`, `demo-options.mjs`,
-   `demoRecordingOptions.test.mjs` — als WIP sichern, dann Aufnahme.
+1. [x] CI/Gate rot: Lint in `scripts/notebooklm/bundle.py` — behoben `b708dd3` (ruff grün, Skript läuft).
+2. [x] Opus-Commit `e559323` geprüft (Claude 07.11.): Diff gelesen, seine 56 Testzeilen ohne den Fix rot (2 failed), mit Fix `171 passed` in test_resolver.
+3. [x] README-GIF-Entwurf als WIP gesichert `449ed3d` (keine Aufnahme, Assets unverändert); Aufnahme folgt unter „Danach“.
 4. [ ] `test:host` rot: SN1-Titel erwartet rohe SMILES, Server liefert Stoffnamen (`host.e2e.mjs`).
 5. [ ] `generate_spectrum` lehnt `"IR"` ab (nur `"ir"`), Beschreibung schreibt groß → `.lower()`.
 6. [ ] 3D-Knopf im Molekülpanel fehlt (W1-Rest); `generate_3d` geht nur über den Chat.
@@ -21,7 +20,9 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 8. [ ] Welle 3: zweiter Konnektor `chemdraw-pharma` (5 Haken, nicht begonnen).
 9. [ ] README hochwertig (4 Haken) → danach Shorts (`chemdraw-vermarktung`).
 
-**Nächste Schritte:** (1) Punkte 1–5 in einer Session → Gate + CI grün → **Release 0.9.0** (Resolver 83 → 96 %, Jays Klick) ·
+**Arbeitsmodus (Jay 07.11.):** Dreier aufgelöst — eine Owner-Session (Claude) baut selbst und vergibt abgegrenzte Aufträge an Codex/Opus; keine Kreuzabnahme, Plan je Etappe.
+
+**Nächste Schritte:** (1) Punkte 4–5 in dieser Session → Gate + CI grün → **Release 0.9.0** (Resolver 83 → 96 %, Jays Klick) ·
 (2) GIF + README-Bilder · (3) 3D-Knopf · (4) Welle 3. **Gestoppt:** Masse-Eval-Langschwanz (14 rot von 711) —
 06.11. 14:00 → 07.11. brachten ~90 Commits und ~300 Tisch-Nachrichten nur noch +13 grün.
 

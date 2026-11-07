@@ -978,6 +978,9 @@ def generate_spectrum(
             "Spectra are available as png/svg only — CDXML is a structure format."
         )
 
+    # Die Beschreibung nennt die Typen groß („IR, NIR, Raman, UV/Vis"), das Modell
+    # tippt sie so — die Tabelle kennt nur Kleinschreibung (Befund 07.11.2026).
+    spectrum_type = spectrum_type.strip().lower()
     cfg = SPECTRUM_TYPES.get(spectrum_type)
     if cfg is None:
         raise ValueError(

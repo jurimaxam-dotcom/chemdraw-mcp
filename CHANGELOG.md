@@ -29,6 +29,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **`generate_spectrum` accepts the spectrum type in any case.** The
+  description lists "IR, NIR, Raman, UV/Vis", so the model sends `"IR"` —
+  which the lookup table rejected. The type is now trimmed and lower-cased.
+
 - **Trivial names no longer get split like systematic names.** OPSIN read
   "tropicamide" as tropic acid amide, "methyldopa" as N-methyl-DOPA and
   "chloroxylenol" as a non-aromatic ring. A name without locants (no digits,

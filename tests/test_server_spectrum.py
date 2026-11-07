@@ -54,6 +54,14 @@ def test_cdxml_not_available_for_spectra():
     assert "Spektren" not in str(error.value)
 
 
+@pytest.mark.parametrize("spelling", ["IR", " Ir ", "UV_VIS", "NMR_1H"])
+def test_spectrum_type_is_case_insensitive(spelling, tmp_path):
+    """Die Beschreibung schreibt „IR, NIR, Raman, UV/Vis" — das Modell schickt es so.
+    Befund 07.11.2026: 'IR' wurde als unbekannter Typ abgewiesen."""
+    payload = generate_spectrum(spelling, [{"position": 1750}], title=f"t {spelling.strip()}")
+    assert payload.spectrum_type == spelling.strip().lower()
+
+
 def test_unknown_spectrum_type_raises():
     # Hielt früher den deutschen Text „Spektrentyp" fest (Befund 30.10.2026).
     with pytest.raises(ValueError, match="spectrum type"):
