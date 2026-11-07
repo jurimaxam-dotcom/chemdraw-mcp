@@ -6,7 +6,12 @@ statt Exception"-Garantie und (2) die reine Parse-Logik (CAS-Regex,
 _walk_sections, KEGG-Textfelder), die ohne Tests am ehesten still bricht.
 """
 
+import json
+from pathlib import Path
 from unittest.mock import Mock, patch
+
+import pytest
+import requests
 
 from chemdraw_tool import databases
 
@@ -349,3 +354,174 @@ def test_kegg_and_uniprot_pass_split_timeout():
     ) as mock_get:
         databases.uniprot_search("EGFR")
     assert mock_get.call_args.kwargs["timeout"] == (3, 10)
+
+
+@pytest.mark.parametrize("route", ["name", "inchikey", "smiles"])
+def test_ibuprofen_cas_uses_sourced_identifier_not_first_synonym(route):
+    # Live aufgezeichnet am 07.11.2026: CID 3672, PUG synonyms und
+    # PUG View ?heading=CAS. Beide Nummern haben eine gültige Prüfziffer.
+    fixture = Path(__file__).parent / "__fixtures__" / "pubchem-cas"
+    synonyms = json.loads((fixture / "ibuprofen-synonyms.json").read_text())
+    cas_section = json.loads((fixture / "ibuprofen-cas.json").read_text())
+
+    def get(url, **kwargs):
+        return _resp(cas_section if "pug_view" in url else synonyms)
+
+    with (
+        patch("chemdraw_tool.databases.requests.get", side_effect=get),
+        patch("chemdraw_tool.databases.requests.post", return_value=_resp(synonyms)),
+    ):
+        if route == "name":
+            cas, others = databases.pubchem_synonyms("ibuprofen")
+        elif route == "inchikey":
+            cas, others = databases.pubchem_synonyms_by_inchikey(
+                "HEFNNWSXXWATRW-UHFFFAOYSA-N"
+            )
+        else:
+            cas, others = databases.pubchem_synonyms_by_smiles(
+                "CC(C)Cc1ccc(C(C)C(=O)O)cc1"
+            )
+    assert cas == "15687-27-1"
+    assert "58560-75-1" not in others
+
+
+def _cas_view(values, preferred=(), cid=3672):
+    return {
+        "Record": {
+            "RecordNumber": cid,
+            "Reference": [{"ReferenceNumber": 8, "SourceName": "CAS Common Chemistry"}],
+            "Section": [
+                {
+                    "TOCHeading": "Names and Identifiers",
+                    "Section": [
+                        {
+                            "TOCHeading": "CAS",
+                            "Information": [
+                                {
+                                    "ReferenceNumber": ref,
+                                    "Value": {"StringWithMarkup": [{"String": value}]},
+                                }
+                                for ref, value in [(1, v) for v in values]
+                                + [(8, v) for v in preferred]
+                            ],
+                        },
+                        {
+                            "TOCHeading": "Deprecated CAS",
+                            "Information": [
+                                {
+                                    "Value": {
+                                        "StringWithMarkup": [{"String": "58560-75-1"}]
+                                    }
+                                }
+                            ],
+                        },
+                    ],
+                }
+            ],
+        }
+    }
+
+
+@pytest.mark.parametrize(
+    "values,preferred,expected",
+    [
+        (["58560-75-1", "15687-27-1"], ["15687-27-1"], "15687-27-1"),
+        (["15687-27-1", "15687-27-1"], [], "15687-27-1"),
+        (["58560-75-1", "15687-27-1"], [], None),
+        ([], ["58560-75-1", "15687-27-1"], None),
+        (["15687-27-2"], [], None),
+        ([], [], None),
+    ],
+)
+def test_cas_source_preference_requires_unique_valid_identifier(
+    values, preferred, expected
+):
+    synonyms = {
+        "InformationList": {
+            "Information": [
+                {"CID": 3672, "Synonym": ["58560-75-1", "ibuprofen", "15687-27-1"]}
+            ]
+        }
+    }
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        side_effect=[_resp(synonyms), _resp(_cas_view(values, preferred))],
+    ):
+        assert databases.pubchem_synonyms("ibuprofen")[0] == expected
+
+
+@pytest.mark.parametrize(
+    "synonyms,expected",
+    [
+        (["aspirin", "50-78-2", "50-78-2"], "50-78-2"),
+        (["58560-75-1", "ibuprofen", "15687-27-1"], None),
+        (["aspirin", "50-78-3"], None),
+    ],
+)
+def test_cas_network_fallback_never_guesses_among_synonyms(synonyms, expected):
+    payload = {"InformationList": {"Information": [{"CID": 3672, "Synonym": synonyms}]}}
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        side_effect=[_resp(payload), requests.exceptions.Timeout("offline")],
+    ):
+        cas, others = databases.pubchem_synonyms("probe")
+    assert cas == expected
+    assert "aspirin" in others or "ibuprofen" in others
+
+
+def test_cas_section_for_different_cid_is_not_used():
+    payload = {
+        "InformationList": {
+            "Information": [{"CID": 3672, "Synonym": ["58560-75-1", "15687-27-1"]}]
+        }
+    }
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        side_effect=[_resp(payload), _resp(_cas_view(["50-78-2"], cid=2244))],
+    ):
+        assert databases.pubchem_synonyms("ibuprofen")[0] is None
+
+
+@pytest.mark.parametrize("preferred", [[], ["58560-75-1", "15687-27-1"]])
+def test_cas_ties_use_distinct_sources_not_repeated_entries(preferred):
+    data = _cas_view([], preferred)
+    record = data["Record"]
+    record["Reference"] += [
+        {"ReferenceNumber": 1, "SourceName": "Agency A"},
+        {"ReferenceNumber": 2, "SourceName": "Agency B"},
+        {"ReferenceNumber": 3, "SourceName": "Agency C"},
+        {"ReferenceNumber": 4, "SourceName": "Agency C"},
+    ]
+    record["Section"][0]["Section"][0]["Information"] += [
+        {"ReferenceNumber": ref, "Value": {"StringWithMarkup": [{"String": value}]}}
+        for ref, value in [(1, "15687-27-1"), (2, "15687-27-1")]
+        + [(3, "58560-75-1")] * 5
+        + [(4, "58560-75-1")]
+    ]
+    payload = {"InformationList": {"Information": [{"CID": 3672, "Synonym": []}]}}
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        side_effect=[_resp(payload), _resp(data)],
+    ):
+        assert databases.pubchem_synonyms("ibuprofen")[0] == "15687-27-1"
+
+
+_CAS_CORPUS = json.loads(
+    (
+        Path(__file__).parent / "__fixtures__" / "pubchem-cas" / "identity-cas.json"
+    ).read_text()
+)["cases"]
+
+
+@pytest.mark.parametrize("case", _CAS_CORPUS, ids=lambda case: case["inputs"][0])
+def test_cas_identity_corpus_replay(case):
+    # 25 konkrete Eingaben, nach InChIKey auf 19 Stoffe dedupliziert.
+    # Dieselben aufgezeichneten Antworten für Vorher/Nachher, kein Netz.
+    synonyms = case["synonyms"]["InformationList"]["Information"][0]["Synonym"]
+    old = [s for s in synonyms[:30] if databases._CAS_PATTERN.fullmatch(s)]
+    assert (old[0] if old else None) == case["before"]
+    with patch(
+        "chemdraw_tool.databases.requests.get",
+        side_effect=[_resp(case["synonyms"]), _resp(case["cas_view"])],
+    ):
+        assert databases.pubchem_synonyms_by_inchikey(case["key"])[0] == case["after"]

@@ -133,6 +133,85 @@ def pubchem_title_by_inchikey(key: str) -> str | None:
         return None
 
 
+_CAS_PATTERN = re.compile(r"[0-9]{2,7}-[0-9]{2}-[0-9]")
+
+
+def _valid_cas(value: str) -> bool:
+    # CAS-Prüfziffer: Ziffern von rechts mit 1, 2, … gewichten, modulo 10.
+    # https://www.cas.org/ja/training/documentation/chemical-substances/checkdig
+    if not _CAS_PATTERN.fullmatch(value):
+        return False
+    digits = value.replace("-", "")
+    return sum(i * int(d) for i, d in enumerate(reversed(digits[:-1]), 1)) % 10 == int(
+        digits[-1]
+    )
+
+
+def _cas_from_view(data: dict, cid: int) -> str | None:
+    record = data.get("Record", {})
+    if record.get("RecordNumber") != cid:
+        return None
+    sources = {
+        ref["ReferenceNumber"]: ref["SourceName"]
+        for ref in record.get("Reference", [])
+        if ref.get("SourceName") and "ReferenceNumber" in ref
+    }
+    preferred_refs = {
+        ref["ReferenceNumber"]
+        for ref in record.get("Reference", [])
+        if ref.get("SourceName") == "CAS Common Chemistry" and "ReferenceNumber" in ref
+    }
+    candidates, preferred = set(), set()
+    votes: dict[str, set[str]] = {}
+
+    def walk(sections):
+        for section in sections:
+            # Nur aktueller CAS-Abschnitt, niemals z. B. „Deprecated CAS“.
+            if section.get("TOCHeading") == "CAS":
+                for info in section.get("Information", []):
+                    for item in info.get("Value", {}).get("StringWithMarkup", []):
+                        value = item.get("String", "")
+                        if _valid_cas(value):
+                            candidates.add(value)
+                            source = sources.get(info.get("ReferenceNumber"))
+                            if source:
+                                votes.setdefault(value, set()).add(source)
+                            if info.get("ReferenceNumber") in preferred_refs:
+                                preferred.add(value)
+            walk(section.get("Section", []))
+
+    walk(record.get("Section", []))
+    # CAS selbst hat Vorrang. Falls auch CAS mehrere Werte führt, gewinnt
+    # darunter der mit den meisten verschiedenen Quellen; ohne CAS-Quelle
+    # gilt dieselbe Regel für alle Kandidaten. Wiederholte Einträge und
+    # mehrere Referenzen derselben Quelle zählen nur einmal. Gleichstand: leer.
+    choices = preferred or candidates
+    if not choices:
+        return None
+    best = max(len(votes.get(value, set())) for value in choices)
+    winners = [value for value in choices if len(votes.get(value, set())) == best]
+    return winners[0] if len(winners) == 1 else None
+
+
+def _synonyms_and_cas(info: dict) -> tuple[str | None, list[str]]:
+    syns = info.get("Synonym", [])
+    others = [s for s in syns[:10] if not _CAS_PATTERN.fullmatch(s)]
+    cid = info.get("CID")
+    if isinstance(cid, int) and cid > 0:
+        try:
+            resp = requests.get(
+                _PUBCHEM_VIEW_URL.format(cid=cid, heading="CAS"), timeout=_TIMEOUT
+            )
+            resp.raise_for_status()
+            return _cas_from_view(resp.json(), cid), others
+        except Exception:
+            logger.warning("PubChem CAS section failed for CID %s", cid, exc_info=True)
+    # Netz-Ausfall oder alte Antwort ohne CID: nur eine eindeutige gültige
+    # Nummer zulassen. Die Synonymreihenfolge ist keine Quellenpriorität.
+    candidates = {s for s in syns if _valid_cas(s)}
+    return (next(iter(candidates)) if len(candidates) == 1 else None), others
+
+
 def pubchem_synonyms_by_inchikey(key: str) -> tuple[str | None, list[str]]:
     try:
         resp = requests.get(
@@ -140,11 +219,7 @@ def pubchem_synonyms_by_inchikey(key: str) -> tuple[str | None, list[str]]:
             timeout=_TIMEOUT,
         )
         resp.raise_for_status()
-        syns = resp.json()["InformationList"]["Information"][0].get("Synonym", [])
-        cas_list = [s for s in syns[:30] if re.match(r"^\d{2,7}-\d{2}-\d$", s)]
-        cas = cas_list[0] if cas_list else None
-        others = [s for s in syns[:10] if s not in cas_list]
-        return cas, others
+        return _synonyms_and_cas(resp.json()["InformationList"]["Information"][0])
     except Exception:
         logger.warning("PubChem InChIKey synonyms failed for %r", key, exc_info=True)
         return None, []
@@ -156,11 +231,7 @@ def pubchem_synonyms(name: str) -> tuple[str | None, list[str]]:
             _PUBCHEM_SYNONYMS_URL.format(name=quote(name, safe="")), timeout=_TIMEOUT
         )
         resp.raise_for_status()
-        syns = resp.json()["InformationList"]["Information"][0].get("Synonym", [])
-        cas_list = [s for s in syns[:30] if re.match(r"^\d{2,7}-\d{2}-\d$", s)]
-        cas = cas_list[0] if cas_list else None
-        others = [s for s in syns[:10] if s not in cas_list]
-        return cas, others
+        return _synonyms_and_cas(resp.json()["InformationList"]["Information"][0])
     except Exception:
         logger.warning("PubChem synonyms failed for %r", name, exc_info=True)
         return None, []
@@ -174,11 +245,7 @@ def pubchem_synonyms_by_smiles(smiles: str) -> tuple[str | None, list[str]]:
             timeout=_TIMEOUT,
         )
         resp.raise_for_status()
-        syns = resp.json()["InformationList"]["Information"][0].get("Synonym", [])
-        cas_list = [s for s in syns[:30] if re.match(r"^\d{2,7}-\d{2}-\d$", s)]
-        cas = cas_list[0] if cas_list else None
-        others = [s for s in syns[:10] if s not in cas_list]
-        return cas, others
+        return _synonyms_and_cas(resp.json()["InformationList"]["Information"][0])
     except Exception:
         logger.warning("PubChem SMILES synonyms failed for %r", smiles, exc_info=True)
         return None, []

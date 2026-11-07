@@ -1,0 +1,347 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 3672,
+    "RecordTitle": "Ibuprofen, (+-)-",
+    "Section": [
+      {
+        "TOCHeading": "Names and Identifiers",
+        "Description": "Chemical names, synonyms, identifiers, and descriptors.",
+        "Section": [
+          {
+            "TOCHeading": "Other Identifiers",
+            "Description": "Other identifiers assigned to this chemical.",
+            "Section": [
+              {
+                "TOCHeading": "CAS",
+                "Description": "A CAS Registry Number (also called CAS RN or CAS Number) is a proprietary registry number assigned by the Chemical Abstracts Service (CAS) division of the American Chemical Society (ACS).  It is a numeric identifier that can contain up to 10 digits, divided by hyphens into three parts.",
+                "URL": "https://www.cas.org/cas-data/cas-registry",
+                "DisplayControls": {
+                  "ShowAtMost": 2
+                },
+                "Information": [
+                  {
+                    "ReferenceNumber": 1,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 8,
+                    "URL": "https://commonchemistry.cas.org/detail?cas_rn=15687-27-1",
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 13,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 19,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 23,
+                    "Name": "CAS",
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 24,
+                    "Name": "CAS",
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 26,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 27,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 28,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 33,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 76,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 83,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 84,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 150,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 151,
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "15687-27-1"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 1,
+        "SourceName": "Australian Industrial Chemicals Introduction Scheme (AICIS)",
+        "SourceID": "inv_14251",
+        "Name": "Benzeneacetic acid, .alpha.-methyl-4-(2-methylpropyl)-",
+        "Description": "The Australian Industrial Chemicals Introduction Scheme (AICIS) helps protect the environment by finding out the risks of industrial chemicals and recommending ways to promote their safer use. They regulate chemicals (including polymers) that are manufactured or imported into Australia for an industrial use, such as in inks, paints, adhesives, solvents, cosmetics and personal care products, cleaning products, as well as in manufacturing, construction and mining applications.",
+        "URL": "https://services.industrialchemicals.gov.au/search-inventory/",
+        "LicenseURL": "https://www.industrialchemicals.gov.au/copyright",
+        "ANID": 39381710
+      },
+      {
+        "ReferenceNumber": 8,
+        "SourceName": "CAS Common Chemistry",
+        "SourceID": "15687-27-1",
+        "Name": "Ibuprofen",
+        "Description": "CAS Common Chemistry is an open community resource for accessing chemical information. Nearly 500,000 chemical substances from CAS REGISTRY cover areas of community interest, including common and frequently regulated chemicals, and those relevant to high school and undergraduate chemistry classes. This chemical information, curated by our expert scientists, is provided in alignment with our mission as a division of the American Chemical Society.",
+        "URL": "https://commonchemistry.cas.org/detail?cas_rn=15687-27-1",
+        "LicenseNote": "The data from CAS Common Chemistry is provided under a CC-BY-NC 4.0 license, unless otherwise stated.",
+        "LicenseURL": "https://creativecommons.org/licenses/by-nc/4.0/",
+        "ANID": 12867772
+      },
+      {
+        "ReferenceNumber": 13,
+        "SourceName": "ChemIDplus",
+        "SourceID": "0015687271",
+        "Name": "Ibuprofen [USAN:USP:INN:BAN:JAN]",
+        "Description": "ChemIDplus is a free, web search system that provides access to the structure and nomenclature authority files used for the identification of chemical substances cited in National Library of Medicine (NLM) databases, including the TOXNET system.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/substance/?source=chemidplus&sourceid=0015687271",
+        "LicenseURL": "https://www.nlm.nih.gov/copyright.html",
+        "IsToxnet": true,
+        "ANID": 843846
+      },
+      {
+        "ReferenceNumber": 19,
+        "SourceName": "DrugBank",
+        "SourceID": "DB01050",
+        "Name": "Ibuprofen",
+        "Description": "The DrugBank database is a unique bioinformatics and cheminformatics resource that combines detailed drug (i.e. chemical, pharmacological and pharmaceutical) data with comprehensive drug target (i.e. sequence, structure, and pathway) information.",
+        "URL": "https://go.drugbank.com/drugs/DB01050",
+        "LicenseNote": "Creative Common's Attribution-NonCommercial 4.0 International License (http://creativecommons.org/licenses/by-nc/4.0/legalcode)",
+        "LicenseURL": "https://www.drugbank.ca/legal/terms_of_use",
+        "ANID": 3608010
+      },
+      {
+        "ReferenceNumber": 23,
+        "SourceName": "DTP/NCI",
+        "SourceID": "NSC 757073",
+        "Name": "ibuprofen",
+        "Description": "The NCI Development Therapeutics Program (DTP) provides services and resources to the academic and private-sector research communities worldwide to facilitate the discovery and development of new cancer therapeutic agents.",
+        "URL": "https://dtp.cancer.gov/dtpstandard/servlet/dwindex?searchtype=NSC&outputformat=html&searchlist=757073",
+        "LicenseNote": "Unless otherwise indicated, all text within NCI products is free of copyright and may be reused without our permission. Credit the National Cancer Institute as the source.",
+        "LicenseURL": "https://www.cancer.gov/policies/copyright-reuse",
+        "ANID": 6608696
+      },
+      {
+        "ReferenceNumber": 24,
+        "SourceName": "DTP/NCI",
+        "SourceID": "NSC 256857",
+        "Name": "ibuprofen",
+        "Description": "The NCI Development Therapeutics Program (DTP) provides services and resources to the academic and private-sector research communities worldwide to facilitate the discovery and development of new cancer therapeutic agents.",
+        "URL": "https://dtp.cancer.gov/dtpstandard/servlet/dwindex?searchtype=NSC&outputformat=html&searchlist=256857",
+        "LicenseNote": "Unless otherwise indicated, all text within NCI products is free of copyright and may be reused without our permission. Credit the National Cancer Institute as the source.",
+        "LicenseURL": "https://www.cancer.gov/policies/copyright-reuse",
+        "ANID": 6807985
+      },
+      {
+        "ReferenceNumber": 26,
+        "SourceName": "EPA Chemical Data Reporting (CDR)",
+        "SourceID": "fb59676ad74c1976e0822feb98e0fd0a",
+        "Name": "Benzeneacetic acid, .alpha.-methyl-4-(2-methylpropyl)-",
+        "Description": "The non-confidential content of the EPA Chemical Data Reporting.",
+        "URL": "https://www.epa.gov/chemical-data-reporting",
+        "LicenseNote": "The U.S. Government retains a nonexclusive, royalty-free license to publish or reproduce these documents, or allow others to do so, for U.S. Government purposes. These documents may be freely distributed and used for non-commercial, scientific and educational purposes.",
+        "LicenseURL": "https://www.epa.gov/web-policies-and-procedures/epa-disclaimers#copyright",
+        "ANID": 56721101
+      },
+      {
+        "ReferenceNumber": 27,
+        "SourceName": "EPA Chemicals under the TSCA",
+        "SourceID": "fa4250d707347938f30419060376928d",
+        "Name": "Benzeneacetic acid, .alpha.-methyl-4-(2-methylpropyl)-",
+        "Description": "EPA Chemicals under the Toxic Substances Control Act (TSCA) collection contains information on chemicals and their regulations under TSCA.",
+        "URL": "https://www.epa.gov/chemicals-under-tsca",
+        "LicenseURL": "https://www.epa.gov/privacy/privacy-act-laws-policies-and-resources",
+        "ANID": 38406771
+      },
+      {
+        "ReferenceNumber": 28,
+        "SourceName": "EPA DSSTox",
+        "SourceID": "DTXSID5020732",
+        "Name": "Ibuprofen",
+        "Description": "DSSTox provides a high quality public chemistry resource for supporting improved predictive toxicology.",
+        "URL": "https://comptox.epa.gov/dashboard/DTXSID5020732",
+        "LicenseURL": "https://www.epa.gov/privacy/privacy-act-laws-policies-and-resources",
+        "ANID": 1149183
+      },
+      {
+        "ReferenceNumber": 33,
+        "SourceName": "European Chemicals Agency (ECHA)",
+        "SourceID": "239-784-6",
+        "Name": "Ibuprofen",
+        "Description": "The European Chemicals Agency (ECHA) is an agency of the European Union which is the driving force among regulatory authorities in implementing the EU's groundbreaking chemicals legislation for the benefit of human health and the environment as well as for innovation and competitiveness.",
+        "URL": "https://chem.echa.europa.eu/100.036.152",
+        "LicenseNote": "Use of the information, documents and data from the ECHA website is subject to the terms and conditions of this Legal Notice, and subject to other binding limitations provided for under applicable law, the information, documents and data made available on the ECHA website may be reproduced, distributed and/or used, totally or in part, for non-commercial purposes provided that ECHA is acknowledged as the source: \"Source: European Chemicals Agency, http://echa.europa.eu/\". Such acknowledgement must be included in each copy of the material. ECHA permits and encourages organisations and individuals to create links to the ECHA website under the following cumulative conditions: Links can only be made to webpages that provide a link to the Legal Notice page.",
+        "LicenseURL": "https://echa.europa.eu/web/guest/legal-notice",
+        "ANID": 1982051
+      },
+      {
+        "ReferenceNumber": 76,
+        "SourceName": "FDA Global Substance Registration System (GSRS)",
+        "SourceID": "WK2XYI10QM",
+        "Name": "Ibuprofen",
+        "Description": "The FDA Global Substance Registration System (GSRS) enables the efficient and accurate exchange of information on what substances are in regulated products. Instead of relying on names, which vary across regulatory domains, countries, and regions, the GSRS knowledge base makes it possible for substances to be defined by standardized, scientific descriptions.",
+        "URL": "https://gsrs.ncats.nih.gov/ginas/app/beta/substances/WK2XYI10QM",
+        "LicenseNote": "Unless otherwise noted, the contents of the FDA website (www.fda.gov), both text and graphics, are not copyrighted. They are in the public domain and may be republished, reprinted and otherwise used freely by anyone without the need to obtain permission from FDA. Credit to the U.S. Food and Drug Administration as the source is appreciated but not required.",
+        "LicenseURL": "https://www.fda.gov/about-fda/about-website/website-policies#linking",
+        "ANID": 5858581
+      },
+      {
+        "ReferenceNumber": 83,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "3099",
+        "Name": "IBUPROFEN",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/3099",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 2271
+      },
+      {
+        "ReferenceNumber": 84,
+        "SourceName": "Human Metabolome Database (HMDB)",
+        "SourceID": "HMDB0001925",
+        "Name": "Ibuprofen",
+        "Description": "The Human Metabolome Database (HMDB) is a freely available electronic database containing detailed information about small molecule metabolites found in the human body.",
+        "URL": "http://www.hmdb.ca/metabolites/HMDB0001925",
+        "LicenseNote": "HMDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (HMDB) and the original publication (see the HMDB citing page). We ask that users who download significant portions of the database cite the HMDB paper in any resulting publications.",
+        "LicenseURL": "https://www.hmdb.ca/citing",
+        "ANID": 2143446
+      },
+      {
+        "ReferenceNumber": 150,
+        "SourceName": "New Zealand Environmental Protection Authority (EPA)",
+        "SourceID": "95fa2c0b0c11a86d54e71dec512f1e76",
+        "Name": "Ibuprofen",
+        "Description": "The New Zealand Environmental Protection Authority is a government agency for regulating activities that affect Aotearoa New Zealand's environment.",
+        "URL": "https://www.epa.govt.nz/industry-areas/hazardous-substances/guidance-for-importers-and-manufacturers/hazardous-substances-databases/",
+        "LicenseNote": "This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International licence.",
+        "LicenseURL": "https://www.epa.govt.nz/about-this-site/general-copyright-statement/",
+        "ANID": 37144979
+      },
+      {
+        "ReferenceNumber": 151,
+        "SourceName": "NIAID ChemDB",
+        "SourceID": "aids_025464",
+        "Name": "2-(4-isobutylphenyl)propanoic acid",
+        "Description": "The NIAID ChemDB, or the National Institute of Allergy and Infectious Diseases ChemDB HIV, Opportunistic Infection and Tuberculosis Therapeutics Database, is a compendium of small molecules that have been tested for preclinical activity against HIV and opportunistic pathogens.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/substance/?source=niaid&sourceid=025464",
+        "LicenseNote": "The NIAID ChemDB information received cannot be sold and is only to be used for research purposes.",
+        "ANID": 49770499
+      }
+    ]
+  }
+}

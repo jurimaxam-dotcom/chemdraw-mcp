@@ -136,6 +136,11 @@ PUBCHEM_PROPS_ASPIRIN = {
 }
 
 # PubChem PUG: /compound/name/aspirin/synonyms/JSON
+# Aufgezeichneter CAS-Abschnitt für den seit 07.11.2026 zusätzlichen Abruf.
+PUBCHEM_CAS_ASPIRIN = json.loads(
+    (Path(__file__).parent / "__fixtures__" / "pubchem-cas" / "identity-cas.json").read_text()
+)["cases"][0]["cas_view"]
+
 PUBCHEM_SYNONYMS_ASPIRIN = {
     "InformationList": {
         "Information": [
@@ -365,6 +370,7 @@ def test_lookup_compound_formats_full_pubchem_table():
         {
             "/property/": _Resp(json_data=PUBCHEM_PROPS_ASPIRIN),
             "/synonyms/": _Resp(json_data=PUBCHEM_SYNONYMS_ASPIRIN),
+            "/compound/2244/JSON?heading=CAS": _Resp(json_data=PUBCHEM_CAS_ASPIRIN),
         }
     ):
         out = lookup_compound("Aspirin")
@@ -391,6 +397,7 @@ def test_lookup_compound_synonyms_exclude_query_name_and_cap_at_five():
         {
             "/property/": _Resp(json_data=PUBCHEM_PROPS_ASPIRIN),
             "/synonyms/": _Resp(json_data=PUBCHEM_SYNONYMS_ASPIRIN),
+            "/compound/2244/JSON?heading=CAS": _Resp(json_data=PUBCHEM_CAS_ASPIRIN),
         }
     ):
         out = lookup_compound("Aspirin")
@@ -519,6 +526,7 @@ def test_lookup_compound_keeps_markdown_valid_on_partial_outage():
         {
             "/property/": _Resp(status=500),
             "/synonyms/": _Resp(json_data=PUBCHEM_SYNONYMS_ASPIRIN),
+            "/compound/2244/JSON?heading=CAS": _Resp(json_data=PUBCHEM_CAS_ASPIRIN),
         }
     ):
         out = lookup_compound("Aspirin")

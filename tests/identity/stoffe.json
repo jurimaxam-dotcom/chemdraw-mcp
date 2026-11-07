@@ -16,7 +16,7 @@
     {"eingabe": "Paracetamol", "inchikey": "RZVAJINKPMORJF-UHFFFAOYSA-N", "formel": "C8H9NO2",
      "notiz": "PubChem fuehrt ihn als 'Acetaminophen' — Kopfzeile im Panel zeigt das"},
     {"eingabe": "Ibuprofen", "inchikey": "HEFNNWSXXWATRW-UHFFFAOYSA-N", "formel": "C13H18O2",
-     "notiz": "CAS-Heuristik liefert 58560-75-1 (Racemat), nicht die gelaeufige 15687-27-1"},
+     "notiz": "Seit 07.11.2026: CAS aus dem quellenbelegten PUG-View-Abschnitt = 15687-27-1 (CAS Common Chemistry); vorher erstes Synonym 58560-75-1"},
     {"eingabe": "Coffein", "inchikey": "RYYVLZVUVIJVGH-UHFFFAOYSA-N", "formel": "C8H10N4O2"},
     {"eingabe": "Caffeine", "inchikey": "RYYVLZVUVIJVGH-UHFFFAOYSA-N", "formel": "C8H10N4O2"},
     {"eingabe": "Ascorbinsäure", "inchikey": "CIWBSHSKHKDKBQ-JLAZNSOCSA-N", "formel": "C6H8O6",
