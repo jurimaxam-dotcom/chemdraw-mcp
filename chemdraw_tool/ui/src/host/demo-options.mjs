@@ -19,3 +19,12 @@ export function recordingOptions(args) {
     szenen: szenen.length ? szenen : ["molecule"],
   };
 }
+
+// README: nur fertige Ansichten, keine Connecting-/Waiting-/Loading-Frames.
+// Die Rohaufnahme behält die echten Wartezeiten; der Schnitt entfernt sie.
+export function demoSceneFilter(startMs, endMs, pauses = []) {
+  const seconds = (ms) => (ms / 1000).toFixed(3);
+  const visible = [`between(t,${seconds(startMs)},${seconds(endMs)})`,
+    ...pauses.map(([start, end]) => `not(between(t,${seconds(start)},${seconds(end)}))`)];
+  return `select='${visible.join("*")}',setpts=N/FRAME_RATE/TB`;
+}

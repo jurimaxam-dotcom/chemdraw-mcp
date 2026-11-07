@@ -11,6 +11,9 @@ cd "$(dirname "$0")/.."
 OUT="${1:-$(mktemp -d)/chemdraw-demo}"
 SZENEN=(molecule compare reaction 3d mechanism)
 GIF_ONLY=false
+# Entwürfe lassen das README-Asset bis zur Freigabe unangetastet.
+GIF_OUT="${CHEMDRAW_DEMO_ASSETS:-assets}"
+mkdir -p "$GIF_OUT"
 if [[ "${2:-}" == "--gif-only" ]]; then
   GIF_ONLY=true
   if (( $# > 2 )); then SZENEN=("${@:3}"); fi
@@ -41,11 +44,14 @@ for s in "${SZENEN[@]}"; do
   esac
   # Beim Einhängen des Iframes erscheint kurz das unskalierte Panel samt
   # Pfadzeile. Die ersten 600 ms gehören nicht in die README-Aufnahme.
+  vorlauf='trim=start=0.6,setpts=PTS-STARTPTS'
+  # molecule hat einen gemessenen Vorlauf-/Busy-Schnitt in der Timeline.
+  if [[ "$s" == "molecule" && -f "$OUT/$s.timeline.json" ]]; then vorlauf=null; fi
   ffmpeg -loglevel error -y -i "$OUT/$s.webm" \
-    -vf "$schnitt,trim=start=0.6,setpts=PTS-STARTPTS,fps=15,scale=$breite:-1:flags=lanczos,$ausschnitt,split[a][b];[a]palettegen=max_colors=$farben:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
-    "assets/demo-$s.gif"
+    -vf "$schnitt,$vorlauf,fps=15,scale=$breite:-1:flags=lanczos,$ausschnitt,split[a][b];[a]palettegen=max_colors=$farben:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
+    "$GIF_OUT/demo-$s.gif"
   if $GIF_ONLY; then
-    echo "✔ $s: assets/demo-$s.gif"
+    echo "✔ $s: $GIF_OUT/demo-$s.gif"
     continue
   fi
   # Hochformat: Panel auf 1080 Breite, oben/unten Rand in der Panel-Hintergrundfarbe
@@ -55,5 +61,5 @@ for s in "${SZENEN[@]}"; do
   ffmpeg -loglevel error -y -i "$OUT/$s.webm" \
     -vf "$schnitt,scale=1080:-2:flags=lanczos,pad=1080:1080:(ow-iw)/2:(oh-ih)/2:color=0xfafbf9,format=yuv420p" \
     -c:v libx264 -crf 20 -movflags +faststart "$OUT/$s-1x1.mp4"
-  echo "✔ $s: assets/demo-$s.gif · $OUT/$s-9x16.mp4 · $OUT/$s-1x1.mp4"
+  echo "✔ $s: $GIF_OUT/demo-$s.gif · $OUT/$s-9x16.mp4 · $OUT/$s-1x1.mp4"
 done

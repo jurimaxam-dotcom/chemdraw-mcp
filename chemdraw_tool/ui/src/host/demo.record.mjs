@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { mkdtempSync, mkdirSync, existsSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { recordingOptions, demoEditFilter } from "./demo-options.mjs";
+import { recordingOptions, demoSceneFilter } from "./demo-options.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "..", "..", "..", "..");
@@ -28,7 +28,7 @@ const { mitKlicks, szenen, zoom: ZOOM, width: W, height: H } = recordingOptions(
 mkdirSync(outDir, { recursive: true });
 
 const SZENEN = {
-  molecule: { tool: "generate_molecule", args: { name_or_smiles: "aspirin" }, ablauf: "struktur-gruppen-daten" },
+  molecule: { tool: "generate_molecule", args: { name_or_smiles: "morphine", label: "Morphine", annotate_stereo: true }, ablauf: "struktur-gruppen-daten" },
   compare: { tool: "compare_molecules", args: { structures: ["ibuprofen", "naproxen", "ketoprofen"] }, ablauf: "ansehen" },
   reaction: { tool: "generate_reaction", args: { reactants: ["acetic acid", "ethanol"], products: ["ethyl acetate", "water"], conditions: "H2SO4 (cat.)", conditions_below: "reflux", arrow: "equilibrium" }, ablauf: "ansehen" },
   "3d": { tool: "generate_3d", args: { name_or_smiles: "caffeine", label: "Caffeine" }, ablauf: "drehen" },
@@ -124,31 +124,46 @@ try {
     if (s.ablauf === "struktur-gruppen-daten") {
       const gruppen = frame.locator("button.functional-group");
       await gruppen.first().waitFor();
-      trimBeforeMs = jetzt() - 600;
-      const n = Math.min(await gruppen.count(), 3);
+      await frame.locator(".structure-canvas svg").waitFor();
+      const pauses = [];
+      trimBeforeMs = jetzt();
+      const still = async (suffix) => page.screenshot({ path: join(outDir, `${name}-${suffix}.png`) });
+      // Ab hier ist das echte Panel vollständig da; der Vorlauf wird geschnitten.
+      await page.waitForTimeout(650);
+      await still("01-skeletal");
+
+      const allH = frame.getByRole("button", { name: "All H", exact: true });
+      await klick(allH, "all H");
+      const hydrogenClick = klicks.at(-1).tDownMs;
+      await frame.locator('button.chip-toggle[aria-pressed="true"][aria-busy="false"]')
+        .filter({ hasText: "All H" }).waitFor({ timeout: 30000 });
+      await page.waitForTimeout(200);
+      pauses.push([hydrogenClick - 100, jetzt()]);
+      await page.waitForTimeout(650);
+
+      const n = Math.min(await gruppen.count(), 2);
       const strukturUndGruppen = mitKlicks ? await vereint(frame.locator(".structure-canvas"), gruppen.first(), gruppen.nth(n - 1)) : undefined;
-      for (let i = 0; i < n; i++) { await zeigeAuf(gruppen.nth(i), `group ${i + 1}`, strukturUndGruppen); await page.waitForTimeout(900); }
-      await klick(frame.getByText("Data", { exact: true }), "data");
-      const datenKlick = klicks.at(-1);
-      const iupac = frame.getByText("IUPAC name").first();
-      await iupac.waitFor({ timeout: 30000 });
-      const dataReadyMs = jetzt();
-      editFilter = demoEditFilter(datenKlick.tDownMs, dataReadyMs);
-      console.log(`Data-Klick → Datenblatt: ${dataReadyMs - datenKlick.tDownMs} ms (Medienschnitt: maximal 500 ms Ladepause)`);
-      // Datenblatt als Beat, damit die Kamera das Ergebnis rahmt statt den Knopf
-      if (mitKlicks) {
-        // Beschriftungen + Werte (ohne Kopier-Knöpfe), damit die Kamera lesbar nah rangeht
-        const zeilen = frame.locator(".source-row");
-        const blatt = await vereint(zeilen.first().locator("dt"), zeilen.last().locator("dt"), zeilen.filter({ hasText: "InChIKey" }).locator("dd > span"));
-        // tDepartMs: Kamera verlässt den Knopf 0,7 s nach dem Druck (upstream ACTION_WATCH_S)
-        // und fährt über „Loading…" raus, statt erst zu starten, wenn das Blatt schon steht
-        klicks.push({ label: "data sheet", tDepartMs: datenKlick.tDownMs + 700, tMs: jetzt(), x: blatt.x + blatt.w / 2, y: blatt.y + blatt.h / 2, rect: blatt, content: blatt });
+      for (let i = 0; i < n; i++) {
+        await zeigeAuf(gruppen.nth(i), `group ${i + 1}`, strukturUndGruppen);
+        await page.waitForTimeout(700);
+        if (i === 0) await still("02-all-h-group");
       }
-      // Shorts: die Kamera braucht ~1,2 s zum Rausfahren, danach soll das Blatt lesbar stehen
-      await page.waitForTimeout(mitKlicks ? 3800 : 2600);
+      await klick(frame.getByRole("tab", { name: "Data", exact: true }), "data");
+      const datenKlick = klicks.at(-1);
+      await frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 });
+      await frame.locator('[role="tab"][aria-selected="true"]').filter({ hasText: "Data" }).waitFor();
+      await page.waitForTimeout(200);
+      const dataReadyMs = jetzt();
+      pauses.push([datenKlick.tDownMs - 100, dataReadyMs]);
+      console.log(`Data-Klick → fertiges Datenblatt: ${dataReadyMs - datenKlick.tDownMs} ms (im GIF vollständig entfernt)`);
+      await still("03-data");
+      await page.waitForTimeout(1400);
       endeMs = jetzt();
-      await klick(frame.getByText("Structure", { exact: true }), "structure");
-      await page.waitForTimeout(1500);
+      editFilter = demoSceneFilter(trimBeforeMs, endeMs, pauses);
+      writeFileSync(join(outDir, `${name}.timeline.json`), JSON.stringify({
+        molecule: s.args, startMs: trimBeforeMs, endMs: endeMs, pauses, clicks: klicks,
+        note: "Real AppBridge/server recording; only startup and busy intervals removed.",
+      }, null, 2));
     } else if (s.ablauf === "drehen") {
       // Ziehen dreht das Modell; Strich neu ansetzen, die Drehung bleibt erhalten
       for (let zug = 0; zug < 3; zug++) {

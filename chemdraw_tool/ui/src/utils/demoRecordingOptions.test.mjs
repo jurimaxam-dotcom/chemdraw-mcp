@@ -27,3 +27,10 @@ test("--clicks behält die höhere Shorts-Aufnahme; --hires skaliert nicht doppe
   assert.deepEqual(recordingOptions(["--clicks"]), erwartet);
   assert.deepEqual(recordingOptions(["--clicks", "--hires"]), erwartet);
 });
+
+test("README-Schnitt entfernt Vorlauf und alle Ladeintervalle vollständig", async () => {
+  const { demoSceneFilter } = await import("../host/demo-options.mjs");
+  assert.equal(typeof demoSceneFilter, "function");
+  assert.equal(demoSceneFilter(1800, 12000, [[4000, 6000], [8500, 10000]]),
+    "select='between(t,1.800,12.000)*not(between(t,4.000,6.000))*not(between(t,8.500,10.000))',setpts=N/FRAME_RATE/TB");
+});
