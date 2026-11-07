@@ -626,6 +626,49 @@ def _same_tautomer(a: str, b: str) -> bool:
     return keys[0] == keys[1]
 
 
+# "D-", "L-", "DL-" am Namensanfang: Form steht im Namen (Groß/klein egal).
+_DL_PREFIX = re.compile(r"(?i)^(?:DL|D|L)-")
+
+
+def _parent_key25(smiles: str | None) -> str | None:
+    """Block 1+2 des InChIKeys (Gerüst + Stereo) der Komponente aus _parent_skeleton."""
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    if mol is None:
+        return None
+    organic = [
+        f for f in Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
+        if any(a.GetAtomicNum() == 6 for a in f.GetAtoms())
+    ]
+    if not organic:
+        return _water_free_key25(mol)
+    parent = max(organic, key=lambda f: f.GetNumHeavyAtoms())
+    return Chem.MolToInchiKey(parent)[:25]
+
+
+def _water_free_key25(mol) -> str:
+    """Block 1+2 desselben Moleküls, das _skeleton verwendet (ohne Kristallwasser)."""
+    frags = Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=False)
+    parts = [f for f in frags if Chem.MolToSmiles(f) != "O"]
+    if parts and len(parts) < len(frags):
+        mol = parts[0]
+        for frag in parts[1:]:
+            mol = Chem.CombineMols(mol, frag)
+    return Chem.MolToInchiKey(mol)[:25]
+
+
+def _n_defined_stereo(smiles: str | None) -> int:
+    """Zahl der definierten Stereozentren plus Doppelbindungen (E/Z) im ganzen SMILES."""
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    if mol is None:
+        return 0
+    centres = Chem.FindMolChiralCenters(mol, includeUnassigned=False, useLegacyImplementation=False)
+    bonds = sum(
+        b.GetStereo() not in (Chem.BondStereo.STEREONONE, Chem.BondStereo.STEREOANY)
+        for b in mol.GetBonds()
+    )
+    return len(centres) + bonds
+
+
 def _components(smiles: str) -> int:
     mol = Chem.MolFromSmiles(smiles) if smiles else None
     return len(Chem.GetMolFrags(mol)) if mol is not None else 0
@@ -652,6 +695,15 @@ def _pubchem_checked(name: str, smiles: str, report: list) -> tuple[str, str]:
     Umgekehrt (Centrophenoxin: direkt frei, Variante HCl) bleibt der
     Direkttreffer — die Regel wählt nur die Form ohne Gegenion.
 
+    Stereoform-Befund (Schnitt 3, 07.11.2026): Gleiches Stammmolekül, aber
+    Block 1+2 des InChIKeys weichen ab ("Naloxon" ohne C14, "Vareniclin"
+    flach) → die Variante, wenn sie mindestens so viele definierte
+    Stereoelemente trägt. Nie bei Stereo-/D-/L-Präfix im Namen (die Form steht
+    dort im Namen), nie zu mehr Komponenten. Kippmessung über Masse 711 +
+    Holdout 684: 0 gekippt, 4 + 6 behoben; ≥ statt > hält Isosorbiddinitrat
+    und Vinorelbin, die Zählung schützt Lincomycin/Prostacyclin (direkt
+    definiert, Variante flach). Preis: Mefloquin bleibt definiert.
+
     Rückgabe: (SMILES, Suchname, der es geliefert hat) — für „found as".
     """
     variant = _spelling_variant(name)
@@ -661,8 +713,19 @@ def _pubchem_checked(name: str, smiles: str, report: list) -> tuple[str, str]:
     other_parent = _parent_skeleton(other)
     if other_parent is None:
         return smiles, name
-    if other_parent != _parent_skeleton(smiles) and not _same_tautomer(other, smiles):
+    same_parent = other_parent == _parent_skeleton(smiles)
+    if not same_parent and not _same_tautomer(other, smiles):
         logger.info("PubChem reads %r and %r as different compounds — using %r", name, variant, variant)
+        return other, variant
+    if (
+        same_parent
+        and _parent_key25(other) != _parent_key25(smiles)
+        and not (_STEREO_PREFIX.match(name) or _DL_PREFIX.match(name))
+        and _components(other) <= _components(smiles)
+        and _n_defined_stereo(other) >= _n_defined_stereo(smiles)
+    ):
+        logger.info("PubChem gives %r with at least as much defined stereo as %r — using %r",
+                    variant, name, variant)
         return other, variant
     if _components(other) == 1 < _components(smiles) and not _SALT_WORD.search(name):
         logger.info("PubChem gives %r as a salt, %r as the free form — using the free form", name, variant)

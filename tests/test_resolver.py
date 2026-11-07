@@ -974,6 +974,62 @@ def test_name_without_salt_word_gets_the_free_form(_opsin, name):
     assert calls == [name, variante]
 
 
+# Schnitt 3 = Variante A>= (Chef-Entscheid 07.11.2026, Kippmessung
+# docs/evidence/masse-eval-2026-11/kippmessung-stereo/): Gleiches Stammmolekül,
+# aber Block 1+2 des InChIKeys weicht ab — einer der beiden PubChem-Records
+# trägt die Stereochemie unvollständig oder falsch. Die Variante gewinnt nur,
+# wenn sie mindestens so viele definierte Stereoelemente hat (≥ gezählt).
+# Werte = aufgezeichnete PubChem-Antworten (memo.json, 07.11.2026).
+_STEREO_FORM = {
+    # Eingabe: (Variante, PubChem für Eingabe, PubChem für Variante)
+    "Naloxon": (  # 3 → 4 Elemente: C14 fehlt im deutschen Record
+        "Naloxone",
+        "C=CCN1CC[C@]23[C@@H]4C(=O)CC[C@]2(C1CC5=C3C(=C(C=C5)O)O4)O",
+        "C=CCN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O)O4)O",
+    ),
+    "Vareniclin": (  # flach → definiert; die Zentren sind ohnehin erzwungen
+        "Varenicline",
+        "C1C2CNCC1C3=CC4=NC=CN=C4C=C23",
+        "C1[C@@H]2CNC[C@H]1C3=CC4=NC=CN=C4C=C23",
+    ),
+}
+
+_LINCOMYCIN = (  # 9 → 0 Elemente: die Variante ist der flache Record
+    "Lincomycine",
+    "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@@H](C)O",
+    "CCCC1CC(N(C1)C)C(=O)NC(C2C(C(C(C(O2)SC)O)O)O)C(C)O",
+)
+
+
+@pytest.mark.parametrize("name", sorted(_STEREO_FORM))
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_spelling_variant_with_more_defined_stereo_wins(_opsin, name):
+    """Gleiches Gerüst, Variante mit ≥ definierten Stereoelementen → Variante."""
+    variante, direkt, definiert = _STEREO_FORM[name]
+    lookup, calls = _pubchem_table({name: direkt, variante: definiert})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name(name) == definiert
+    assert calls == [name, variante]
+
+
+@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+def test_spelling_variant_never_drops_defined_stereo(_opsin):
+    """Lincomycin: direkt 9 Elemente, Variante flach → der definierte Direkttreffer bleibt."""
+    variante, definiert, flach = _LINCOMYCIN
+    lookup, _ = _pubchem_table({"Lincomycin": definiert, variante: flach})
+    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+        assert resolve_name("Lincomycin") == definiert
+
+
+@pytest.mark.parametrize("name", ["L-Naloxon", "D-Naloxon", "DL-Naloxon", "l-Naloxon"])
+def test_stereo_form_rule_skips_d_l_prefixed_names(name):
+    """Ein D-/L-Präfix legt die Form im Namen fest — dort tauscht die Regel nicht."""
+    _, direkt, definiert = _STEREO_FORM["Naloxon"]
+    with patch("chemdraw_tool.resolver._spelling_variant", return_value="Naloxone"), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=definiert):
+        assert resolver._pubchem_checked(name, direkt, []) == (direkt, name)
+
+
 @pytest.mark.parametrize("name", ["Buspiron", "Spironolacton", "Tandospiron", "Bendamustin",
                                   "Phenelzin", "Salbutamol", "Ameisensäure"])
 def test_salt_word_needs_a_whole_word_for_iron_zinc_salt(name):

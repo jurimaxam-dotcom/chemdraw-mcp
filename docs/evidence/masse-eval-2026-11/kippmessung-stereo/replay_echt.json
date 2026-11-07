@@ -1,0 +1,39 @@
+{
+ "memo_fehlgriffe": [],
+ "echt_vs_monkeypatch_A>=": [],
+ "zaehlung_echt": {
+  "gekippt": [],
+  "rot_zu_gruen": [
+   "Benzylpenicillin-Benzathin",
+   "Isosorbiddinitrat",
+   "Naloxon",
+   "Vinorelbin"
+  ],
+  "holdout_pubchem": {
+   "gekippt": [
+    "Vareniclin"
+   ],
+   "behoben": [
+    "Cyproteron",
+    "Galantamin",
+    "Methyltestosteron",
+    "Repaglinid",
+    "Rivastigmin",
+    "Tolterodin"
+   ],
+   "beide_falsch": []
+  },
+  "holdout_opsin": {
+   "gekippt": [],
+   "behoben": [],
+   "beide_falsch": []
+  }
+ },
+ "gruen_basis": 683,
+ "gruen_echt": 687,
+ "mengen": {
+  "stoffe": 711,
+  "holdout_pubchem": 553,
+  "holdout_opsin": 131
+ }
+}

@@ -73,3 +73,11 @@ Bauen: **A>=** — 0 Kippen in allen drei Mengen (mit Vareniclin als Schreibweis
 Getrennt davon: Nicotin-Fixture auf (S) korrigieren (Referenzentscheid) — ehrlicher Preis: Basis grün
 683 → 681, weil der Resolver heute flaches Nicotin liefert; nur B′ holt es zurück. B′ nicht bauen, solange der
 Citral-Synonymfehler nicht abgefangen ist.
+
+## Gebaut (07.11.2026): A>= im Resolver
+
+`_pubchem_checked` trägt die Regel A>= jetzt selbst (Chef-Entscheid; B′ nicht gebaut). Abnahme:
+`replay_echt.py` spielt das Memo mit dem echten Repo-Code ab (Monkeypatch nur für die Basis und zum
+Gegenvergleich) → `replay_echt.json`: 0 Memo-Fehlgriffe, echter Code ≠ Monkeypatch A>= in **0** von
+711 + 553 + 131 Einträgen; Masse 0 gekippt, 4 rot→grün; Holdout PubChem 1 „gekippt“ (Vareniclin,
+gleichwertige Schreibweise) / 6 behoben; Holdout OPSIN unverändert. Braucht den Worktree `kipp2` (s. o.).
