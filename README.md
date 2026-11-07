@@ -23,14 +23,13 @@ sign-up, no ChemDraw licence.
 Other ways in (PyPI, cloning the repository, editing the config by hand) are
 under [Installation](#installation).
 
-<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung. Beide Zellen GIFs,
-     keine Bildunterschriften. Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, Dark Theme, 600 px). -->
-<table>
-  <tr>
-    <td align="center" valign="top" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="400"></td>
-    <td align="center" valign="top" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="400"></td>
-  </tr>
-</table>
+<!-- Hero (Jay 07.11.): links Ansichten und Stereo-Varianten durchklicken, rechts die 3D-Drehung. Beide GIFs, keine
+     Bildunterschriften, 49 % Breite je Bild (skaliert mit der GitHub-Spalte; eine Tabelle mit Pixelbreiten lief über).
+     Aufnahme: npm --prefix chemdraw_tool/ui run readme:gifs (Playwright-Host, 600 px). Hell/Dunkel je Modus: siehe Plan A3. -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%">
+  <img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d.gif" alt="The morphine panel: the 3D chip swaps the drawing for a ball-and-stick model in a dark bowl, rotated by dragging" width="49%">
+</p>
 
 ## What you get
 
