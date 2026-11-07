@@ -1,5 +1,14 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Owner-Session nach Kontext-Neustart (07.11.2026, 09:15)
+
+- **Nächster Schritt:** sobald Jay in Claude Desktop die zwei Rechte-Dialoge („Generate mechanism“, „Generate titration curve“ → Always allow) geklickt hat, Strang B Schritte 2 und 7 wiederholen (Claude-Agent per `scripts/ax-claude.sh`, Screenshots nach `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/`, Owner sieht sie an, dann Haken in Welle 1/2). Danach Release 0.9.0 vorbereiten (Version heben, CHANGELOG, `.mcpb`, `./scripts/publish-registry.sh` erst nach Jays Klick).
+- **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf liefern (heute Pyranosering + Haworth, seit `41da7c4`)? (2) Release-Klick 0.9.0 bleibt Jays Hand. (3) Anki-Import-Dialog für `~/ChemDraw-Output/anki/chemdraw.apkg` steht offen (seine Sammlung).
+- **Erledigt und belegt (07.11.):** Punkte 1–5 unter „Stand für Jay“; Plan-Audit Strang A (`c21a7fc`); Desktop-Handtest Strang B 4/9 (`9047570`); Owner-Abnahme `docs/evidence/verifizierter-stand-2026-11-07/owner-abnahme.md`; Fahrplan-Artifact v3.
+- **Prüfmethoden, die gelten:** kein Desktop-Haken ohne selbst gesehenen Screenshot; fremde Plan-Zeilen sind Behauptungen (Commit/Test/Datei:Zeile zeigen); Gate `./test.sh` + `test:host` + `./scripts/handshake.sh` vor jedem Release-Schritt.
+- **Routing-Fälle (später, nicht jetzt):** „Welche IR-Banden erwarte ich für Aspirin?“, „pH von 0,1 M Essigsäure“, „Schlag Ibuprofen nach“ → Modell antwortete ohne Werkzeug; Fälle in `evals/tool-routing/cases.yaml` prüfen/ergänzen, erst messen, dann an Beschreibungen drehen.
+- **Tisch:** keine offenen Fäden (72 geschlossen), keine Leases. Codex-Kontingent frei ab 11:45. Arbeitsmodus Owner-Session (Memory `feedback-owner-session-statt-dreier`).
+
 ## Stand für Jay — 07.11.2026, 08:30 (Claude, selbst gemessen; Abschnitte darunter = Verlauf)
 
 **Läuft (Beweise heute):** Release 0.8.0 (05.11.) · Handshake mit dem Desktop-Befehl grün (16 Tools / 12 Panels) ·
