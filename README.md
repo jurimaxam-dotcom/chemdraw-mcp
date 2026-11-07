@@ -47,8 +47,8 @@ belong to.
 
 ### 3D in one click
 
-Every structure has a `3D` chip. For thalidomide, the two rings that lie
-flat on paper turn out to sit twisted against each other.
+Every structure has a `3D` chip. For thalidomide, the two ring systems that
+lie flat on paper turn out to sit twisted against each other.
 
 - The server computes a conformer (RDKit ETKDG plus a force field) and swaps
   the drawing for a ball-and-stick model with explicit hydrogens.

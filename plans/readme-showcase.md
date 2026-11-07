@@ -128,7 +128,7 @@ Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
 3. [x] Prompts/Tool-Tabelle (13:12: vier Prompts gekürzt, drei Dubletten raus): Tabelle bleibt vierspaltig (test-gedeckt, `| \`tool\` |`-Regex), Beispielprompts kürzen (max. ~60 Zeichen), keine Toolnamen in den drei Hero-Prompts.
 4. [x] Texte (3D-Absatz auf Thalidomid; keine Gedankenstriche gefunden): keine Gedankenstriche, keine Superlative, einheitliche Backticks für Knopfnamen (`3D`, `All H`, `Data`), Aspirin/Ibuprofen nur noch in Galerie/Tests.
 5. [x] Playwright-Screenshots hell/dunkel auf github.com (13:42, Owner gesehen: beide Hero-GIFs gleich hoch, kein Überlauf, Theme greift; Belege `docs/evidence/…/readme/github-hero-{light,dark}.jpg`) bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
-6. [~] Codex-Abgleich (Signal mit `024d6c1` um 13:30 im Faden `20261107-114301-…`) (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
+6. [x] Codex-Abgleich (Bericht 13:45, Faden `20261107-114301-…`): GIF-Inhalte beider Themes bestätigt, Maße/Dauer/Größe gemessen; Befund 4 übernommen („two ring systems“), Befund 1 = bewusste Moleküländerung (Jay), Befund 2 (Capsaicin-Datenblatt ohne Fußzeile im 720-px-Ausschnitt) und 3 (Schlussstand 0,8–1,6 s statt 2 s wegen 10-s-Kappe) als akzeptierte Abweichungen notiert (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
 7. [ ] Gate + CI grün, Push; README-Stand als Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
 
 ## Shorts aus den GIFs (Jay 13:05: „anschließend mit den GIFs die Shorts erstellen“)
