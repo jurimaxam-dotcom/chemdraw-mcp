@@ -12,7 +12,7 @@ Namensauflösung **681/711 = 96 %** (05.11. Lauf 2: 591 = 83 %).
 1. [x] CI/Gate rot: Lint in `scripts/notebooklm/bundle.py` — behoben `b708dd3` (ruff grün, Skript läuft).
 2. [x] Opus-Commit `e559323` geprüft (Claude 07.11.): Diff gelesen, seine 56 Testzeilen ohne den Fix rot (2 failed), mit Fix `171 passed` in test_resolver.
 3. [x] README-GIF-Entwurf als WIP gesichert `449ed3d` (keine Aufnahme, Assets unverändert); Aufnahme folgt unter „Danach“.
-4. [ ] `test:host` rot: SN1-Titel erwartet rohe SMILES, Server liefert Stoffnamen (`host.e2e.mjs`).
+4. [ ] `test:host` rot: drei veraltete Erwartungen (SN1-Titel rohe SMILES → Namen; Schrittzahlen SN1 6/Fischer 8; „D-glucose“ liefert seit `41da7c4` den PubChem-Pyranosering → Haworth, Fischer nur noch über `aldehydo-D-glucose`). **Nebenbefund für Jay:** soll „D-Glucose“ im Panel wieder die offene Kette mit Fischer-Knopf bekommen? Heute: Ring + Haworth.
 5. [ ] `generate_spectrum` lehnt `"IR"` ab (nur `"ir"`), Beschreibung schreibt groß → `.lower()`.
 6. [ ] 3D-Knopf im Molekülpanel fehlt (W1-Rest); `generate_3d` geht nur über den Chat.
 7. [ ] Desktop-Handtests der W1/W2-Tools (6 Haken „offen: Desktop-Handtest"); bekannt: Spektrum/DC verliert

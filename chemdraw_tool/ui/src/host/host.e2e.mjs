@@ -420,7 +420,9 @@ try {
   // 3e. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung per Klick
   prüfe(!(await frame.getByRole("button", { name: "Fischer" }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
     "Methylphenidate hat keinen Projektionsknopf");
-  for (const [stoff, knopf, fehlt, soll] of [["D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", "Fischer", "CH2OH"]]) {
+  // Seit 41da7c4 (OPSIN-Treffer gegen PubChem geprüft) liefert "D-glucose" den PubChem-Record,
+  // also den Pyranosering → Haworth; die offene Kette (Fischer) heißt jetzt "aldehydo-D-glucose".
+  for (const [stoff, knopf, fehlt, soll] of [["aldehydo-D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", "Fischer", "CH2OH"]]) {
     const input = { name_or_smiles: stoff };
     const result = await client.callTool({ name: "generate_molecule", arguments: input });
     if (result.isError) throw new Error(`generate_molecule ${stoff}: ` + JSON.stringify(result.content).slice(0, 300));
