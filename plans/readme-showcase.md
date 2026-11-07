@@ -74,3 +74,16 @@ Alle Befunde melden, nicht filtern. Kein Code ändern.
 
 Codex läuft nicht (Tisch: „kein herdr-Pane“). Start: `cc --codex chemdraw-mcp` (herdr-Workspace, rechte Pane)
 — Jays Hand oder Owner per `cc-oeffnen`, sobald das Kontingent frei ist (11:45). Der Tisch-Faden liegt bereit.
+
+## Panel-Umbau in Etappen (Jay 11:40: „Alle fünf bauen, 3D zuerst“)
+
+Quelle je Etappe: `docs/design/panel-kritik-2026-11-07.md` (Top 5). Je Etappe ein frischer Opus-Arbeiter im
+Worktree, TDD (DOM-Test erst rot), Gate `./test.sh` + `test:host` grün, Owner liest den Diff, merged, Desktop-Blick
+mit Screenshot nach `docs/evidence/…/screenshots/` sobald der Desktop frei ist. Kein Push vom Arbeiter.
+
+| Etappe | Inhalt (Rang im Bericht) | Dateien | Status |
+|---|---|---|---|
+| E1 | 3D-Look: Kuhle als eine Form je Theme ohne helles Quadrat, Farben/Schatten je Theme (1) · Bindungen in Atomfarben mit Tiefe, Doppel-/Dreifach-/Aromatenbindungen, Atomgrößen nach Element (2) | `components/Ball3DCanvas.jsx`, `styles.css`, Tests | gestartet 11:42 |
+| E4 | Stille Fehler: Batch zeigt `failed` an, Scope im Dark Mode lesbar (5) | `App.jsx`, `styles.css` (eine Zeile), Tests | gestartet 11:42 (parallel, andere Dateien) |
+| E2 | Ansicht-Achse „2D · All H · Fischer · Haworth · 3D“ unter der Fläche, Spinner bei `aria-busy`, Stereo-Zeile/Gruppen in 3D ausgeblendet, sanfte Anfangsdrehung mit Stopp beim Anfassen, `onPointerCancel` (3) | `MoleculeView.jsx`, `Ball3DCanvas.jsx`, Tests, Host-E2E | nach E1 |
+| E3 | `PanelFooter`: Pfad links, Aktionen rechts, in allen Panels; Export PNG in 3D exportiert die Drehlage (Host-Prüfung Z. 432 bewusst umdrehen) (4) | alle `*View.jsx`, neue Komponente, Host-E2E | nach E2 |
