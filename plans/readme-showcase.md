@@ -119,3 +119,14 @@ Drehung per Pointer-Drag), `demo-molecule.gif` (Capsaicin: Hover über Gruppen �
 alte Chip-Reihe), das README zeigt das neue. Empfehlung: **ein** Release `0.9.0` vom aktuellen main nach E3-Merge,
 Desktop-Blick und Welle-3-Haken 5 (Konnektor-Migration per `./install.sh`, Handshake 2 Konnektoren); CHANGELOG
 `[Unreleased]` wandert in `[0.9.0]`. Klick bleibt Jays Hand.
+
+## Auftrag C2 — Owner: README richtig clean (Jay 12:47, nach Release 0.9.0)
+
+Reihenfolge (eine Hand in der Datei; erst nach A3-Merge):
+1. [ ] A3 mergen: Hero `<picture>` hell/dunkel, gleiche Maße, Capsaicin-GIF unter Data; alte Dateinamen bleiben als Kopien.
+2. [ ] Alle HTML-TODO-Kommentare raus; Hero-Kommentar auf eine Zeile (Quelle: `readme:gifs`).
+3. [ ] Prompts/Tool-Tabelle: Tabelle bleibt vierspaltig (test-gedeckt, `| \`tool\` |`-Regex), Beispielprompts kürzen (max. ~60 Zeichen), keine Toolnamen in den drei Hero-Prompts.
+4. [ ] Texte: keine Gedankenstriche, keine Superlative, einheitliche Backticks für Knopfnamen (`3D`, `All H`, `Data`), Aspirin/Ibuprofen nur noch in Galerie/Tests.
+5. [ ] Playwright-Screenshots hell/dunkel bei 700 px, 900 px und 1400 px Spaltenbreite (lokale HTML-Vorschau über `gh api /markdown`), ansehen: Hero gleich hoch, kein Überlauf, Galerie ausklappbar.
+6. [ ] Codex-Abgleich (Faden `20261107-114301-…`) mit Commit-SHA, Befunde einarbeiten.
+7. [ ] Gate + CI grün, Push; README-Stand als Beleg in `docs/evidence/…/readme-2026-11-07.md` (Screenshots).
