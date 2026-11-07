@@ -1,24 +1,50 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Opus-Bauer: Kippmessung Schnitt 3 gemessen (06.11.2026 ~23:55)
+## Weiter bei — Opus baut Schnitt 3 A>=; Codex prüft über Kreuz (07.11.2026)
 
-- [x] **Triage Lauf 11** (Faden `20261106-225717-chemdraw-mcp-triage-der`, zu): 28 rot = 14 Resolver-Fehlgriff · 5 Referenz
-  falsch · 5 Stereo in Quelle verloren · 3 andere Kodierung · 1 Polymer. Schnitt 1 `0f174ea` abgenommen.
-- [x] **Kippmessung Schnitt 3** (nur gemessen, kein Resolver-Commit): Belege `docs/evidence/masse-eval-2026-11/kippmessung-stereo/`
-  (`ergebnis.md`, Regeln wörtlich). Record-Replay über 711 + Holdout PubChem 553 + Holdout OPSIN 131, 0 Cache-Fehlgriffe.
-  A (`_pubchem_checked` Block 1+2, nur ohne Stereo-/D-/L-Präfix): **0 grün gekippt**, 3 rot→grün (Mefloquin, Naloxon,
-  Vinorelbin), Holdout PubChem 5 gekippt (Lincomycin ×2, Prostacyclin ×2, Vareniclin) / 6 behoben / 2 beide falsch.
-  B (`_opsin_checked` Block 1+2): **6 grün gekippt** (Alanin, Phenylalanin, xylitol, citral, nicotine, Nicotin), 3 rot→grün.
-  B′ (B nur wenn PubChem ≥ so viele Stereoelemente): **3 gekippt** (citral, nicotine, Nicotin), 3 rot→grün.
-  Messbasis = HEAD 327216f, **ohne** Codex' Schnitt 2 (Form-Zusätze) — Citral-Fälle neu bewerten.
-- [ ] Chef: Entscheid Schnitt 3 (Empfehlung im Faden `…-schnitt-3-kippmessung`); offen ungeprüft: Fixture-Keys Nicotin/Citral,
-  Wikidata-Keys Lincomycin/Prostacyclin.
+- [x] **Chef-Entscheid Schnitt 3:** A>= bauen; B′ verworfen, weil `citral` und
+  `Citral A+B` nach korrigierter Referenzwertung tatsächlich grün→rot kippen.
+  Vareniclin flach und definiert gelten in dieser Kippmessung als gleichwertig.
+  Der entfallende Mefloquin-Gewinn gegenüber A ist der akzeptierte Preis für
+  den Stereo-Erhalt (Lincomycin/Prostacyclin); kein zusätzlicher Resolverzweig dafür.
+  Beleg: `docs/evidence/masse-eval-2026-11/kippmessung-stereo/ergebnis.md`,
+  `fixture_check.json`, Messcommit `6259e38`; Chef-Auftrag
+  `20261107-074353-cas-9662b76-abgenommen-ci` #1.
+- [x] **Messung auf Basis 112021f neu ausgewertet:** 711 Eingaben, Record↔Basis
+  ohne Abweichung, 0 Memo-Fehlgriffe; Holdouts PubChem 553 / OPSIN 131.
+  A>= mit beschlossener Referenzwertung: **0 grün gekippt, 4 behoben**
+  (Benzylpenicillin-Benzathin, Isosorbiddinitrat, Naloxon, Vinorelbin);
+  Holdout PubChem **0 gekippt / 6 behoben**, OPSIN **0 / 0**.
+- [x] **Nicotin-Referenz korrigiert** (`668d05b`): `nicotine` und `Nicotin` in
+  `tests/identity/stoffe-masse.json` auf (S)-Nicotin, vollständiger Key
+  `SNICXCGAKADSCV-JTQLQIEISA-N`; PubChem 89594, ChEMBL3, KEGG D03365,
+  Wikidata Q28086552. Die kleine `stoffe.json` enthält diese Eingaben nicht.
+  Eingefrorene Lauf-12-Antworten gegen neue Fixture: **681 grün / 14 gelb / 16 rot**
+  statt 683 / 14 / 14; genau die zwei Nicotin-Zeilen grün→rot, noch kein neuer Live-Lauf.
+  Prüfung: `36 passed` (Masse-/Identitätsauswertung), SMILES→Key und CIP=S geprüft;
+  Neuwertungsbeleg `/tmp/chemdraw-schnitt3-abnahme/nicotin-neuwertung.log`.
+- [ ] **Opus:** A>= implementieren (läuft); Codex prüft den gemeldeten Commit über Kreuz.
+  Prüfen: Commit-Diff, relevante Resolver-Tests und Kipp-/Holdout-Belege → erwartet:
+  freigegebene A>=-Regel, 0 bisher richtige Fälle gekippt, keine B′-Regel.
+- [x] **CAS-Fix `9662b76` abgenommen:** CAS aus dem quellenbelegten PUG-View-Abschnitt,
+  CAS Common Chemistry bevorzugt, Quellenmehrheit statt Synonymreihenfolge;
+  Offline-Stichprobe **25 Eingaben / 19 Stoffe / genau 1 Änderung** (Ibuprofen).
+  Gate rc=0 (**8362 passed / 16 skipped**), CI grün laut Chef; nach Desktop-Neustart
+  Ibuprofen → Data: **15687-27-1**, finales Bild
+  `/tmp/chemdraw-desktop-test/2026-11-07/07-ibuprofen-data-nach-fix.png`.
+  Quellen/Replay: `tests/__fixtures__/pubchem-cas/README.md` und `identity-cas.json`.
+- [x] **Tisch-Fäden geschlossen:** `20261107-065505-chef-entscheid-zur-kippmessung`
+  und `20261107-072830-desktop-handtest-claude-md`; Umsetzung/Kreuzabnahme im aktuellen Auftrag.
+- [ ] **3D-Knopf bleibt W1:** im Molekülpanel noch nicht implementiert; das vorhandene
+  `generate_3d`-Tool ist der Chat-Weg. Prüfen nach W1: Ibuprofen im Desktop → 3D →
+  erwartetes drehbares Modell; der aktuelle Handtest nimmt diesen fehlenden Knopf nicht ab.
 
 ## Weiter bei — Codex: Lauf 12 abgeschlossen (07.11.2026)
 
-**Nächster Schritt:** Chef prüft Lauf-12-Evidence und entscheidet Schnitt 3 anhand
-Opus' Kippmessung; Codex baut erst auf neuen Tisch-Auftrag. Schnitt 1 `0f174ea`
-und Schnitt 2 `3ba3ff2` vom Chef abgenommen. Schnitt 3 ist noch nicht umgesetzt;
+**Nächster Schritt:** Opus setzt den beschlossenen Schnitt 3 A>= um; Codex prüft
+seinen gemeldeten Commit über Kreuz (aktueller Tisch-Auftrag, siehe oben).
+Schnitt 1 `0f174ea` und Schnitt 2 `3ba3ff2` sind vom Chef abgenommen.
+Die folgenden Lauf-12-Zahlen dokumentieren die damalige Fixture vor `668d05b`;
 clomifene als gelb `gemisch` ist weiterhin keine freigegebene Umsetzung.
 
 - [x] Lauf 11 unverändert als `identitaet-lauf-11-vor-schnitt-1-2.json` gesichert
@@ -50,8 +76,9 @@ Gesamtgate-/Desktop-Abnahme für reine Evidence-/Planänderungen behauptet.
 
 **Offene Tisch-Fäden:** Lauf-12-Auftrag `20261106-232415-schnitt-2-3ba3ff2-abgenommen`
 (Bericht an Chef `w57:p3`); Zusatzentscheid `20261107-064504-nach-lauf-12-im`
-(Bericht im selben Plan-Commit). Schnitt-3-Messbasis von Opus ist **ohne form_variant**;
-Details/ungeprüfte Referenzen stehen im Opus-Abschnitt oben. Chef-Entscheid ausstehend.
+(Bericht im selben Plan-Commit). Die erneuerte Schnitt-3-Messung auf `112021f`
+und der Chef-Entscheid A>= stehen im aktuellen Opus-Abschnitt oben;
+Nicotin wurde mit `668d05b` korrigiert. Der frühere Stand ohne form_variant ist historisch.
 **Wartezeiten/Folgeaktion:** keine eigenen laufenden Jobs oder halbfertigen Edits;
 auf konkrete Chef-Abnahme/Folgeauftrag reagieren, keine eigene Wartefrist.
 
@@ -67,7 +94,7 @@ Reaktionen/Mechanismen später als Phase 7. Welle 3: zweiter Konnektor
 - [x] `b67ceb7` gepusht: 711 Referenz-SMILES / 414 ursprüngliche Keys geprüft,
   411 PubChem-Recordantworten und 3 dokumentierte 404. Vier Referenzen / fünf Eingaben
   mit unabhängig bestätigter vollständiger Stereo korrigiert: Clindamycin, Cocaine,
-  Vitamin-B5-Pantothensäure (beide Sprachen), alpha,alpha-Trehalose. Nicotin bleibt unklar.
+  Vitamin-B5-Pantothensäure (beide Sprachen), alpha,alpha-Trehalose. Nicotin blieb damals unklar; seit Chef-Entscheid 07.11. und `668d05b` auf (S) korrigiert.
 - [x] Alter Clindamycin-Auditsatz berichtigt: Existenz eines partiellen ChEMBL-Keys
   bestätigte keine vollständige Stereo. Alle Quellen/Entscheidungen im eigenen Evidence-Ordner.
 - [x] Reine Neuwertung eingefrorener Lauf-7-Antworten (`9b3cbbd`): **668/1/42 → 673/1/37**,
@@ -243,11 +270,12 @@ Neubau der Liste die unvollständigen Records zurück) · Kann „gefunden als <
   aus 711 Eingaben. Gegen Lauf 11: 8 rot→grün, 6 rot→gelb, **0 grün→anders**,
   keine fehlenden/zusätzlichen Eingaben, kompletter Key-Vergleich. Evidence:
   `docs/evidence/masse-eval-2026-11/lauf-12-vergleich.json`, Rohdaten und Bericht daneben.
-  Offen: Chef-Entscheid Schnitt 3 nach Opus-Kippmessung (Messbasis ohne form_variant);
+  Folgeentscheid 07.11.: A>= wird gebaut, B′ verworfen (siehe aktueller Abschnitt oben);
+  Lauf-12-Zahlen bleiben historische Messung vor Nicotin-Korrektur `668d05b`.
   clomifene ggf. gelb `gemisch` bisher nicht freigegeben. Zusatzentscheid Abfragemodus
   aus Faden `20261107-064504-nach-lauf-12-im` eingetragen (nur Moleküle, Phase 7 später).
 **Lauf 10 vs. 9 nachgezählt:** 674 grün→grün, 32 rot→rot, 1 gelb→gelb, 3 rot→gelb (doxycycline, Doxycyclin, rifabutin), 1 rot→grün (`(S)-(−)-timolol`). Die frühere Erwartung „nur rifabutin“ ist damit durch den abgenommenen vollständigen Lauf ersetzt.
-**Nächster Chef-Schritt (Stand 07.11., nach Lauf 12):** Lauf-12-Evidence abnehmen, dann Schnitt 3 anhand der Opus-Kippmessung entscheiden. Abfragemodus ist beantwortet (Jay 07.11.): zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
+**Nächster Chef-Schritt (Stand 07.11., nach Entscheid A>=):** Opus-Commit nach Codex-Kreuzabnahme prüfen und abnehmen. Abfragemodus ist beantwortet (Jay 07.11.): zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Setup-Befund (nicht dieses Projekt):** Codex-Neustartskript scheitert ohne `HERDR_PANE_ID` → Codex startete mehrfach ohne Arbeit neu.
 **Bremsen bleiben:** Release-Klick, PR-Merges, Außenkommunikation. **Abfragemodus-Entscheid (Jay 07.11., beantwortet):** zunächst nur Moleküle; Reaktionen/Mechanismen später als Phase 7.
 **Welle-3-Entscheid (Jay 06.11., beantwortet):** zweiter Konnektor `chemdraw-pharma` mit `CHEMDRAW_PROFILE=full`; Details unter Welle 3.
@@ -773,7 +801,8 @@ Output (heutiger Lauf + Desktop-Screenshot), Toolwahl nach Name/Auftrag/Frage (C
 Generator `scripts/werkzeugbilanz.py <lauf> <ziel.html> --welle3-log …`, Lauf `scripts/werkzeugbilanz_lauf.py <ordner>`; Quellen fest im Repo
 (`docs/evidence/routing-2026-11-03/`, Snapshots, Tests, Abnahme-Doku). Befund 04.11.: Auftrag 122/128, Frage 72/88 (mit Tool-Suche 31/44);
 generate_mechanism = feste Vorlage (Substrate nur geprüft), predict_spectrum = 31 SMARTS-Regeln, alles andere gerechnet/live.
-Nebenbefund: Ibuprofen kommt mit CAS 58560-75-1 (Racemat) statt 15687-27-1 (PubChem-Synonymreihenfolge).
+Historischer Nebenbefund (behoben und Desktop-abgenommen mit `9662b76` am 07.11.):
+Ibuprofen kam wegen der PubChem-Synonymreihenfolge mit CAS 58560-75-1 statt 15687-27-1.
 
 **Nach 0.7.0 — API-Eval (Jay 03.11.: „erst 0.7.0, dann"):** Runner über Anthropic-API (Opus 5.5) gegen den ECHTEN Server
 (MCP-stdio-Client, Tools mit `defer_loading` + `tool_search_tool_bm25_20251119` wie Desktops Nachladen), je Fall eine
