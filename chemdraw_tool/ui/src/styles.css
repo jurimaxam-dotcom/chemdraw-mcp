@@ -13,6 +13,21 @@
   --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px var(--border);
   --copy-success: #16a34a;
   --copy-success-bg: rgba(22,163,74,0.08);
+  /* 3D-Kuhle und Kugelfarben (Design-Kritik 07.11.): hell wie bisher, H etwas dunkler, damit es auf heller Kuhle sichtbar bleibt. */
+  --bowl-0: #ffffff;
+  --bowl-1: #eef1f5;
+  --bowl-2: #d9dee7;
+  --bowl-3: #c3cad6;
+  --bowl-rim: rgba(20,25,40,0.08);
+  --bowl-shadow: rgba(30,35,50,0.25);
+  --bowl-shadow-mid: rgba(30,35,50,0.10);
+  --bowl-shadow-end: rgba(30,35,50,0);
+  --atom3d-c: #4a4a4a;
+  --atom3d-c-hi: #7a7a7a;
+  --atom3d-c-lo: #292929;
+  --atom3d-h: #c4c8cc;
+  --atom3d-h-hi: #f4f6f8;
+  --atom3d-h-lo: #8a8f95;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +40,21 @@
     --shadow: none;
     --copy-success: #4ade80;
     --copy-success-bg: rgba(74,222,128,0.1);
+    /* 3D-Kuhle dunkel: Lichtfleck bis Rand in Panelnähe, Randschimmer statt Kante; C heller. */
+    --bowl-0: #2c3430;
+    --bowl-1: #242b28;
+    --bowl-2: #1c2220;
+    --bowl-3: #151a18;
+    --bowl-rim: rgba(255,255,255,0.06);
+    --bowl-shadow: rgba(0,0,0,0.45);
+    --bowl-shadow-mid: rgba(0,0,0,0.18);
+    --bowl-shadow-end: rgba(0,0,0,0);
+    --atom3d-c: #9aa19d;
+    --atom3d-c-hi: #d3d9d5;
+    --atom3d-c-lo: #565c58;
+    --atom3d-h: #dfe3e6;
+    --atom3d-h-hi: #ffffff;
+    --atom3d-h-lo: #8f9497;
   }
 
   /* RDKit-SVGs nativ umfärben statt CSS-invert-Filter: der alte
@@ -75,6 +105,21 @@
     --shadow: none;
     --copy-success: #4ade80;
     --copy-success-bg: rgba(74,222,128,0.1);
+    /* 3D-Kuhle dunkel: Lichtfleck bis Rand in Panelnähe, Randschimmer statt Kante; C heller. */
+    --bowl-0: #2c3430;
+    --bowl-1: #242b28;
+    --bowl-2: #1c2220;
+    --bowl-3: #151a18;
+    --bowl-rim: rgba(255,255,255,0.06);
+    --bowl-shadow: rgba(0,0,0,0.45);
+    --bowl-shadow-mid: rgba(0,0,0,0.18);
+    --bowl-shadow-end: rgba(0,0,0,0);
+    --atom3d-c: #9aa19d;
+    --atom3d-c-hi: #d3d9d5;
+    --atom3d-c-lo: #565c58;
+    --atom3d-h: #dfe3e6;
+    --atom3d-h-hi: #ffffff;
+    --atom3d-h-lo: #8f9497;
   }
 
   /* RDKit-SVGs nativ umfärben statt CSS-invert-Filter: der alte
@@ -292,8 +337,8 @@ button:active { filter: brightness(0.92); }
 .stereo-note { margin-top: 10px; font-size: 13px; color: var(--fg-muted); --stereo-color: #d6336c; }
 .structure-tools { display: flex; gap: 8px; padding-top: 8px; }
 /* 3D hinter dem Knopf: dieselbe Fläche wie die 2D-Zeichnung, der Viewer füllt sie. */
-.structure-3d { display: flex; padding: 6px; }
-.structure-3d > svg { border: 0; border-radius: 8px; }
+/* Die Kuhle ist die einzige Form: kein Rahmen, kein Innenabstand um sie herum. */
+.structure-3d { display: flex; padding: 0; border: 0; }
 .panel-note-quiet { font-size: 12px; color: var(--fg-muted); margin: 6px 0 0; }
 .stereo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
 .stereo-row > .stereo-note { margin-top: 0; }
