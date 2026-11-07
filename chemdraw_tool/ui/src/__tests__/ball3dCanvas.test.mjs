@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import React from "react";
+import React, { act } from "react";
 
 import Ball3DCanvas from "../components/Ball3DCanvas";
 import { render } from "./harness.mjs";
@@ -217,5 +217,72 @@ test("Kontaktschatten sitzt unter dem tiefsten Atom und bleibt in der Kuhle", ()
   const lowest = Math.max(...circles(container).map((c) => c.cy));
   assert.ok(shCy > lowest, `Schatten (${shCy.toFixed(0)}) liegt über dem tiefsten Atom (${lowest.toFixed(0)})`);
   assert.ok(shCy + shRy <= cy + R, "Schatten ragt aus der Kuhle");
+  unmount();
+});
+
+// --- E2 (Design-Kritik 3.9, 3.10): Einblend-Drehung, Abbruch beim Anfassen, pointercancel ---
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const wait = (ms) => act(async () => { await sleep(ms); });
+const geometry = (container) => JSON.stringify(circles(container));
+const pointer = (el, type, x = 0, y = 0) => act(async () => {
+  el.dispatchEvent(new window.MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y }));
+});
+
+// jsdom kennt kein matchMedia — der Viewer bleibt dann ruhig. Die Tests der
+// Drehung stellen es deshalb selbst bereit (mit und ohne reduced motion).
+function withMotion(reduced, fn) {
+  return async () => {
+    window.matchMedia = (q) => ({ matches: reduced && /reduce/.test(q), media: q, addEventListener() {}, removeEventListener() {} });
+    try { await fn(); } finally { delete window.matchMedia; }
+  };
+}
+
+test("beim Einblenden dreht sich das Molekül sanft und kommt zur Ruhe", withMotion(false, async () => {
+  const { container, unmount } = draw(DIAGONAL);
+  const start = geometry(container);
+  await wait(150);
+  assert.notEqual(geometry(container), start, "keine Einblend-Drehung");
+  await wait(1700);
+  const end = geometry(container);
+  await wait(150);
+  assert.equal(geometry(container), end, "dreht nach dem Einblenden weiter (Dauerrotation)");
+  unmount();
+}));
+
+test("Anfassen stoppt die Einblend-Drehung sofort", withMotion(false, async () => {
+  const { container, unmount } = draw(DIAGONAL);
+  await wait(100);
+  const svg = container.querySelector("svg");
+  await pointer(svg, "pointerdown", 10, 10);
+  const held = geometry(container);
+  await wait(200);
+  assert.equal(geometry(container), held, "Drehung läuft unter dem Finger weiter");
+  await pointer(svg, "pointerup", 10, 10);
+  unmount();
+}));
+
+test("bei prefers-reduced-motion keine Einblend-Drehung", withMotion(true, async () => {
+  const { container, unmount } = draw(DIAGONAL);
+  const start = geometry(container);
+  await wait(200);
+  assert.equal(geometry(container), start, "dreht trotz reduced motion");
+  unmount();
+}));
+
+test("pointercancel beendet das Ziehen; Cursor grabbing nur während des Ziehens", async () => {
+  const { container, unmount } = draw(DIAGONAL);
+  const svg = container.querySelector("svg");
+  assert.equal(svg.style.cursor, "grab");
+  await pointer(svg, "pointerdown", 100, 100);
+  assert.equal(container.querySelector("svg").style.cursor, "grabbing", "kein grabbing-Cursor beim Ziehen");
+  const before = geometry(container);
+  await pointer(svg, "pointermove", 140, 120);
+  assert.notEqual(geometry(container), before, "Ziehen dreht nicht");
+  await pointer(svg, "pointercancel", 140, 120);
+  assert.equal(container.querySelector("svg").style.cursor, "grab", "Cursor bleibt nach Abbruch auf grabbing");
+  const after = geometry(container);
+  await pointer(svg, "pointermove", 220, 200);
+  assert.equal(geometry(container), after, "nach pointercancel dreht eine Mausbewegung ohne Taste weiter");
   unmount();
 });

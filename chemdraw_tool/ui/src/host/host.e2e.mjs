@@ -83,6 +83,12 @@ try {
     "3D: sichtbare SVG-Zeichenfläche enthält Caffeins 24 Atome und Bindungen");
   check((await spatialFrame.locator("body").innerText()).includes("drag to rotate"), "3D: Bedienhinweis sichtbar");
   const geometry = () => canvas.locator('circle[fill^="url(#atom-"]').evaluateAll((atoms) => atoms.map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));
+  // E2: Einblend-Drehung — die Lage ändert sich ohne Zutun und kommt dann zur Ruhe.
+  const ersteLage = JSON.stringify(await geometry());
+  await spatial.waitForTimeout(1600);
+  const ruhe = JSON.stringify(await geometry());
+  await spatial.waitForTimeout(200);
+  check(ruhe !== ersteLage && JSON.stringify(await geometry()) === ruhe, "3D: Einblend-Drehung läuft an und kommt zur Ruhe");
   await spatial.screenshot({ path: join(tmpdir(), "panel-host-wave1-3d.png") });
   const before = JSON.stringify(await geometry());
   const box = await canvas.boundingBox();
@@ -430,9 +436,22 @@ try {
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
     "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
   prüfe(await frame.getByRole("button", { name: "Export as PNG" }).count() === 0, "Export PNG pausiert im 3D-Modus");
+  // E2 (Design-Kritik Rang 3): eine Ansicht-Achse direkt unter der Kuhle, Stereo und Gruppen in 3D aus
+  const achse = (await frame.locator("[data-view-axis]").boundingBox()) ?? { y: Infinity };
+  const kuhle = (await frame.locator("[data-view-3d]").boundingBox()) ?? { y: 0, height: 0 };
+  const fakten = (await frame.locator(".key-facts").boundingBox()) ?? { y: 0 };
+  const abstand = achse.y - (kuhle.y + kuhle.height);
+  prüfe(await frame.locator("[data-view-axis]").count() === 1 && await frame.locator(".structure-tools").count() === 0
+    && abstand >= 0 && abstand <= 24 && achse.y < fakten.y,
+    `Ansicht-Achse sitzt ${Math.round(abstand)} px unter der Kuhle, vor den Kernwerten — genau eine Reihe`);
+  prüfe(await frame.locator("[data-testid='stereo-note']").count() === 0 && await frame.locator(".group-section").count() === 0,
+    "3D blendet Stereo-Zeile und Gruppen-Chips aus");
+  await page.waitForTimeout(1300); // Einblend-Drehung abgeschlossen, Bild zeigt die Ruhelage
   await page.screenshot({ path: join(tmpdir(), "panel-host-3d-button.png") });
   await frame.getByRole("button", { name: "3D" }).click();
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
+  prüfe(await frame.locator("[data-testid='stereo-note']").count() === 1 && await frame.locator(".group-section").count() === 1,
+    "Zurück in 2D: Stereo-Zeile und Gruppen-Chips wieder da");
   prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 0, "Zurück in 2D: Kernwerte wieder neben der Zeichnung");
   await frame.getByRole("button", { name: "3D" }).click();
   await frame.locator("[data-view-3d]").waitFor({ timeout: 5000 });
