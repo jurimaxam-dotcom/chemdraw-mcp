@@ -200,7 +200,13 @@ when `CHEMDRAW_VAULT_PATH` is set.
   resolved online through PubChem and NCI, so only names those databases index
   are found. With Java, systematic names with locants are parsed offline;
   a name without locants is cross-checked against PubChem when the network
-  is there. SMILES input never touches the network.
+  is there.
+- **SMILES input is drawn locally, but looked up online.** Parsing and drawing
+  need no network. When the network is there, `generate_molecule` and
+  `batch_generate` ask PubChem for the name, CAS number and properties of the
+  structure: first by InChIKey, and if PubChem does not know that key, the
+  SMILES string itself is sent. Without a network the drawing still works and
+  those fields stay empty.
 - **Lab graphics are drawings of given numbers.** Spectra, TLC plates and pH
   curves show the values passed in. They measure nothing; values the model
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,

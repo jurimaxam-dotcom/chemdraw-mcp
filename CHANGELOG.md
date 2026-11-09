@@ -10,6 +10,12 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 - Claude Code plugin marketplace in the repo; install links for VS Code and Cursor in the README.
 
+### Fixed
+
+- Docs: `docs/tools.md` no longer says that SMILES input never touches the network. Drawing is local, but
+  `generate_molecule` and `batch_generate` look the structure up in PubChem (InChIKey first, the SMILES itself
+  when PubChem does not know the key).
+
 ## [0.9.0] — 2026-11-07
 
 ### Added
