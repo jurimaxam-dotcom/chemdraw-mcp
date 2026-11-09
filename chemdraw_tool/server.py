@@ -297,7 +297,8 @@ interactive panel, and compute the numbers behind them.
 - SN1, SN2 or Fischer esterification step by step with curved arrows:
   generate_mechanism (draws the user's substrates within each family's limit;
   other mechanisms are not drawn).
-- Shape in space (geometry, conformation, a rotatable model): generate_3d.
+- Shape in space (geometry, conformation, a rotatable model): generate_3d;
+  a chair drawing: generate_molecule, view "chair".
 - One named value as text (CAS number, melting point, GHS hazards, biological
   role, pathways): lookup.
 - Which IR bands or how many ¹H NMR signals a structure should give, or which
@@ -308,8 +309,8 @@ interactive panel, and compute the numbers behind them.
 - A TLC plate sketch from Rf values: generate_tlc.
 - pH against added titrant volume: generate_titration_curve. Fractions of
   each protonation species across pH 0–14: generate_species_distribution.
-- A compound's data sheet: lookup_molecule_data. The molecule panel's Data
-  button also retrieves it on demand; database access needs the internet.
+- A compound's data sheet: lookup_molecule_data. The panel's Data
+  button also fetches it on demand.
 - The user has to learn or revise something → offer export_anki_deck and
   write the cards yourself. The molecule panel's Add to Anki button adds
   a single structure card.
@@ -328,8 +329,9 @@ Writes PNG/SVG files and an interactive panel (properties, functional
 groups). A bare compound name ("caffeine") also
 means this tool, and so does a question about why one compound behaves as it
 does (acidity, solubility) — the answer is in its structure.
-A Fischer or Haworth projection of a sugar or amino acid, or a drawing with
-all H atoms, is this tool too: set view to "fischer", "haworth" or "all_h".
+A Fischer or Haworth projection of a sugar or amino acid, a chair
+conformation of a cyclohexane or pyranose ring, or a drawing with all H
+atoms, is this tool too: set view to "fischer", "haworth", "chair" or "all_h".
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
@@ -843,17 +845,16 @@ def generate_molecule(
             "peptide:AGS" (lowercase = D).
         label: Display name shown below the structure (may be localized).
         formats: "png", "svg", "cdxml" (default: png + svg); "cdxml" only
-            when the structure is to be edited in ChemDraw.
-        annotate_stereo: True prints CIP descriptors (R/S, E/Z) at each
-            stereocenter.
+            for editing in ChemDraw.
+        annotate_stereo: True prints CIP descriptors (R/S, E/Z).
         abbreviate_groups: True draws substituents as short labels (Ph,
             OAc, Boc, …); chemistry unchanged, no panel tooltips.
         render_style: "" standard · "compact" thin bonds for small print ·
             "presentation" thick bonds for slides · "grayscale" b/w palette.
         stereo_variants: True returns every stereoisomer of the open centers
             (max 3) as a pick list instead of a drawing; only on request.
-        view: "fischer"/"haworth"/"all_h" opens on that drawing, only if
-            the user names it.
+        view: "fischer"/"haworth"/"chair"/"all_h" opens on that drawing,
+            only if the user names it.
     """
     from chemdraw_tool.svg_renderer import (
         extract_atom_data,
@@ -1854,8 +1855,8 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
     Use this when the user asks about 3D structure, molecular geometry
     (tetrahedral, planar...), conformation or spatial arrangement.
 
-    Not this tool for: a flat 2D structure drawing or a Fischer/Haworth
-    projection — use generate_molecule.
+    Not this tool for: a flat 2D structure drawing, a Fischer/Haworth
+    projection or a chair drawing — use generate_molecule.
 
     IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
     localized display name.

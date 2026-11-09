@@ -221,7 +221,7 @@ def test_required_args_are_parameters_of_the_expected_tool(case):
 
 def test_named_projections_are_covered():
     views = {c.get("required_args", {}).get("view") for c in _cases()}
-    assert {"haworth", "fischer"} <= views, (
+    assert {"haworth", "fischer", "chair"} <= views, (
         "Kein Fall prueft, dass eine genannte Projektion `view` setzt"
     )
 

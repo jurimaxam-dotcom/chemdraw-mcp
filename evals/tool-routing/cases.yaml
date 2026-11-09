@@ -129,6 +129,16 @@ cases:
       Zweite, englische Formulierung derselben Grenze: eine genannte
       Fischer-Projektion ist ein Panel-View, kein eigenes Bild des Modells.
 
+  - id: chair-conformation-named
+    prompt: "Draw the chair conformation of β-D-glucopyranose"
+    expect: generate_molecule
+    forbidden: [generate_3d, batch_generate]
+    required_args: {view: chair}
+    why: >
+      E5 (09.11.2026): „conformation" steht auch in generate_3d. Ein genannter
+      Sessel ist eine Zeichnung im Molekül-Panel (view=chair), kein drehbares
+      3D-Modell — der Zaun steht in beiden Beschreibungen.
+
   - id: draw-racemate-as-typed
     prompt: "Zeichne Ibuprofen"
     expect: generate_molecule
