@@ -277,6 +277,17 @@ try {
     check(await alert.count() === 1 && shown.includes(kern),
       `Tool-Fehler steht lesbar im Panel („${kern}…“), Panel zeigte: „${shown.slice(0, 80)}“`);
     await errorPage.screenshot({ path: join(tmpdir(), "panel-host-tool-error.png") });
+    // Fehler nach einem Erfolg ersetzt das alte Bild; Erfolg nach dem Fehler räumt die Meldung weg.
+    const ok = await client.callTool({ name: "generate_molecule", arguments: { name_or_smiles: "CCO" } });
+    check(!ok.isError, "generate_molecule CCO liefert eine echte Erfolgsantwort");
+    await errorPage.evaluate((r) => window.__sendToolResult(r), ok);
+    await ef.locator(".panel-title").first().waitFor({ timeout: 5000 }).catch(() => {});
+    check(await ef.getByRole("alert").count() === 0 && await ef.locator(".panel-title").count() > 0,
+      "Erfolg nach Tool-Fehler: Meldung weg, Struktur da");
+    await errorPage.evaluate((r) => window.__sendToolResult(r), result);
+    await ef.getByRole("alert").waitFor({ timeout: 5000 }).catch(() => {});
+    check(await ef.getByRole("alert").count() === 1 && await ef.locator(".panel-title").count() === 0,
+      "Tool-Fehler nach Erfolg: Meldung ersetzt das alte Ergebnis");
     await errorPage.close();
   }
 

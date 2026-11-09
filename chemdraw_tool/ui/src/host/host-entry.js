@@ -17,6 +17,9 @@ window.__startHost = async ({ html, toolInput, toolResult }) => {
     { serverTools: {}, updateModelContext: { text: {} }, message: { text: {} } },
   );
   bridge.oncalltool = async (params) => window.__callTool(params);
+  // Folge-Ergebnisse im selben Panel (Chat ruft das Tool erneut): Fund b prüft so,
+  // dass ein Fehler das alte Ergebnis ersetzt und ein Erfolg den Fehler.
+  window.__sendToolResult = (result) => bridge.sendToolResult(result);
   const ready = new Promise((resolve) => {
     bridge.oninitialized = async () => {
       await bridge.sendToolInput({ arguments: toolInput });
