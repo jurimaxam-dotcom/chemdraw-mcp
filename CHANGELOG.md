@@ -6,14 +6,6 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Fixed
-
-- Names of the seven diatomic elements resolve to the molecule, not a single atom: "oxygen" is
-  O₂ (was atomic O, so "hydrogen + oxygen → water" drew an oxygen atom), likewise nitrogen,
-  fluorine, chlorine, bromine and iodine. The German names follow the same rule; "Stickstoff"
-  (was NH) and "Iod" (was iodide) are fixed too. SMILES input is unchanged: `[O]` stays the atom,
-  `O` stays water.
-
 ## [0.9.1] — 2026-11-10
 
 ### Added
@@ -22,6 +14,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Names of the seven diatomic elements resolve to the molecule, not a single atom: "oxygen" is
+  O₂ (was atomic O, so "hydrogen + oxygen → water" drew an oxygen atom), likewise nitrogen,
+  fluorine, chlorine, bromine and iodine. The German names follow the same rule; "Stickstoff"
+  (was NH) and "Iod" (was iodide) are fixed too. SMILES input is unchanged: `[O]` stays the atom,
+  `O` stays water.
 - Extension bundles: installing a new version no longer deletes the environment of the other
   bundle. The base and pharma bundles share one directory; updating only one made each delete the
   other's installation on every start. Other versions are now removed only after 30 days without a start.
