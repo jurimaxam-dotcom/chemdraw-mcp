@@ -47,7 +47,10 @@ export default function MoleculeView({ data }) {
     ? { [data.initialView]: { svg: data.viewSvg, atoms: data.viewAtoms || [] } } : {}));
   const [drawingBusy, setDrawingBusy] = useState("");
   const [drawingFailed, setDrawingFailed] = useState(false);
-  const drawingInFlight = useRef(false);
+  // Je Ansicht ein eigener Flug: ein zweiter Klick auf eine andere Ansicht,
+  // während die erste lädt, holt seine Zeichnung selbst — der zuletzt gewählte
+  // Zustand gewinnt (Fund d, 09.11.). Nur derselbe Knopf doppelt wird geblockt.
+  const drawingInFlight = useRef(new Set());
   const wantedDrawing = useRef(drawing);
   // 3D-Knopf: dieselbe Achse wie All H, nur ein anderes Werkzeug dahinter
   // (generate_3d, lazy, dann Cache). Zeigt er, weicht die 2D-Zeichnung —
@@ -125,8 +128,8 @@ export default function MoleculeView({ data }) {
       setDrawingFailed(false);
       return;
     }
-    if (drawingInFlight.current) return;
-    drawingInFlight.current = true;
+    if (drawingInFlight.current.has(next)) return;
+    drawingInFlight.current.add(next);
     setDrawingBusy(next);
     setDrawingFailed(false);
     try {
@@ -141,10 +144,12 @@ export default function MoleculeView({ data }) {
       // Wer inzwischen anderswohin geklickt hat, behält seine Ansicht.
       if (wantedDrawing.current === next) setDrawing(next);
     } catch {
-      setDrawingFailed(true);
+      // Der Hinweis gilt nur der Ansicht, die der Nutzer noch will.
+      if (wantedDrawing.current === next) setDrawingFailed(true);
     } finally {
-      setDrawingBusy("");
-      drawingInFlight.current = false;
+      drawingInFlight.current.delete(next);
+      const still = wantedDrawing.current;
+      setDrawingBusy(drawingInFlight.current.has(still) ? still : "");
     }
   }
 

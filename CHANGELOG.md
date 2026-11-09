@@ -6,6 +6,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Panel: a second click on a drawing button (All H, Fischer, Haworth) while the first drawing is
+  still loading is no longer lost — the last chosen view wins.
+
 ## [0.9.1] — 2026-11-10
 
 ### Added

@@ -465,3 +465,33 @@ test("im 3D-Modus fehlen Stereo-Zeile und Gruppen-Chips, der Bedienhinweis bleib
   assert.ok(has("[data-testid='stereo-note']") && has(".group-section"), "nach Rückkehr fehlen Stereo/Gruppen");
   unmount();
 });
+
+// Fund (d), Durchsicht 09.11.: der zweite Ansicht-Klick während der ersten
+// Anfrage ging verloren — der Guard brach ab, die erste Antwort durfte nicht
+// mehr zeigen, und die gewünschte Zeichnung wurde nie geholt.
+test("ein zweiter Ansicht-Klick während des Ladens gewinnt", async () => {
+  const data = { ...MOLECULE, views: ["all_h", "fischer"], viewRequest: REQUEST };
+  const gates = {};
+  const { container, calls, unmount } = renderMolecule(data, async (req) => {
+    const v = req.arguments.view;
+    await new Promise((resolve) => { gates[v] = resolve; });
+    return lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: v, viewSvg: VIEW_SVG[v], viewAtoms: [] });
+  });
+  const drawing = () => container.querySelector(".structure-drawing");
+
+  await click(buttonByText(container, "Fischer")); // erste Anfrage hängt
+  await click(buttonByText(container, "All H"));   // Nutzer entscheidet um
+  await act(async () => { gates.fischer?.(); });
+  await act(async () => { gates.all_h?.(); });
+
+  assert.deepEqual(calls.map((c) => c.arguments.view), ["fischer", "all_h"], "All H wurde nie angefragt");
+  assert.ok(drawing().querySelector("[data-all-h]"), "zuletzt gewählte Ansicht nicht sichtbar");
+  assert.equal(buttonByText(container, "All H").getAttribute("aria-pressed"), "true");
+  assert.equal(buttonByText(container, "Fischer").getAttribute("aria-pressed"), "false");
+
+  // Die Fischer-Antwort ist trotzdem im Cache: ihr Klick lädt nicht neu.
+  await click(buttonByText(container, "Fischer"));
+  assert.ok(drawing().querySelector("[data-fischer]"));
+  assert.equal(calls.length, 2);
+  unmount();
+});
