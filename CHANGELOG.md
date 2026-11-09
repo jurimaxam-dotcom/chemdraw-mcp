@@ -45,8 +45,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 - Names with a slash such as `(+/-)-ibuprofen` reach PubChem; empty input is refused instead of
   returning an empty data sheet; input a source rejects (HTTP 400/414) is reported as not found
   instead of as an outage; a trailing line break no longer breaks the lookup.
-- CDXML keeps isotopes and radicals. Before, ChemDraw read deuterium as hydrogen and filled a radical
-  with hydrogens (`[O]` opened as water).
+- CDXML keeps isotopes and radicals. Before, the file lost them: read back, deuterated methanol was
+  plain methanol and `[O]` was water (measured with the round-trip check).
 - A `$` pair in a title or label that is not valid mathtext no longer crashes spectra, TLC plates,
   pH, calibration and pharmacokinetics figures; the text is set literally.
 - `compare_molecules` searches the common scaffold once instead of once per output format (up to
@@ -66,7 +66,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   `calculate_content`, an unknown `deliver` in `export_anki_deck`, `bioavailability` outside 0–1 and
   `tau_h` ≤ 0 in the pharmacokinetics tools.
 - `~/ChemDraw-Output/server.log` no longer grows without bound: it rotates at 1 MB (two older files
-  kept) and logs at INFO instead of DEBUG, so lookup URLs are no longer written by default.
+  kept) and logs at INFO instead of DEBUG, so lookup URLs are no longer written by default (a name
+  still appears when its lookup needed a second attempt or failed).
   `CHEMDRAW_LOG_LEVEL=DEBUG` restores the full trace.
 - Docs: `docs/tools.md` no longer says that SMILES input never touches the network. Drawing is local, but
   `generate_molecule` and `batch_generate` look the structure up in PubChem (InChIKey first, the SMILES itself

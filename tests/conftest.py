@@ -20,7 +20,7 @@ REAL_OUTPUT = Path.home() / "ChemDraw-Output"
 
 # Der Server schreibt hier im Normalbetrieb hin; ein laufender Desktop-Server
 # darf die Suite nicht rot machen. Log-Dateien sind kein Testergebnis.
-IGNORED = {"server.log"}
+IGNORED = {"server.log"}  # samt Rotation: server.log.1, server.log.2
 
 
 def _snapshot() -> set[Path]:
@@ -29,7 +29,7 @@ def _snapshot() -> set[Path]:
     return {
         p
         for p in REAL_OUTPUT.rglob("*")
-        if p.is_file() and p.name not in IGNORED
+        if p.is_file() and p.name.split(".log")[0] + ".log" not in IGNORED
     }
 
 

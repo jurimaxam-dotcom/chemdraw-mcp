@@ -212,6 +212,10 @@ def _nci_get(url: str) -> requests.Response:
         with requests.Session() as session:
             session.mount("https://", _IPv4Adapter())
             return session.get(url, timeout=_TIMEOUT)
+    except requests.exceptions.Timeout:
+        # IPv4 war wählbar, NCI antwortet nur nicht: ein zweiter Versuch würde
+        # dasselbe Timeout (und davor das der toten IPv6-Adresse) noch einmal abwarten.
+        raise
     except requests.exceptions.ConnectionError:
         return requests.get(url, timeout=_TIMEOUT)
 
@@ -1176,6 +1180,9 @@ def resolve_name(name: str) -> str:
 
 _ROUTE_CACHE_MAX = 512
 _ROUTE_CACHE: dict[str, Resolution] = {}
+# Sync-Tools laufen in Worker-Threads (anyio.to_thread): Einfügen und Verdrängen
+# müssen zusammen passieren, lru_cache brachte diese Sperre selbst mit.
+_ROUTE_CACHE_LOCK = threading.Lock()
 
 
 def resolve_name_route(name: str) -> Resolution:
@@ -1188,14 +1195,16 @@ def resolve_name_route(name: str) -> Resolution:
     zurück ist (Befund 09.11.2026; lru_cache hielt ihn bis zum Prozessende).
     Ausnahmen werden wie zuvor nie gecacht.
     """
-    if name in _ROUTE_CACHE:
-        return _ROUTE_CACHE[name]
+    cached = _ROUTE_CACHE.get(name)
+    if cached is not None:
+        return cached
     report: list[_Attempt] = []
     result = _resolve_name_route(name, report)
     if not any(a.status in (_UNREACHABLE, _SOURCE_ERROR) for a in report):
-        if len(_ROUTE_CACHE) >= _ROUTE_CACHE_MAX:
-            _ROUTE_CACHE.pop(next(iter(_ROUTE_CACHE)))  # ältester Eintrag
-        _ROUTE_CACHE[name] = result
+        with _ROUTE_CACHE_LOCK:
+            while len(_ROUTE_CACHE) >= _ROUTE_CACHE_MAX:
+                _ROUTE_CACHE.pop(next(iter(_ROUTE_CACHE)), None)  # ältester Eintrag
+            _ROUTE_CACHE[name] = result
     return result
 
 

@@ -146,3 +146,35 @@ def test_vault_survives_a_non_utf8_note_and_an_empty_name(tmp_path, monkeypatch)
     monkeypatch.setattr(vault, "is_enabled", lambda: True)
     assert {r["name"] for r in vault.search("ok")} == {"Coffein", "Alt"}
     assert vault.read_entry("   ") == (None, None)
+
+
+@pytest.mark.echtes_nci_get
+def test_nci_timeout_is_not_paid_twice():
+    """Antwortet NCI über IPv4 nicht, ist NCI weg — der zweite Versuch würde nur
+    noch einmal dasselbe Timeout abwarten (und davor das der toten IPv6-Adresse)."""
+    with patch.object(requests.Session, "get",
+                      side_effect=requests.exceptions.ConnectTimeout("langsam")):
+        with patch("chemdraw_tool.resolver.requests.get") as get:
+            with pytest.raises(requests.exceptions.Timeout):
+                resolver._nci_get("https://cactus.nci.nih.gov/x")
+    assert get.call_count == 0
+
+
+def test_route_cache_survives_concurrent_writers():
+    import threading
+
+    errors = []
+
+    def work(k):
+        try:
+            with patch.object(resolver, "_opsin_lookup", return_value="CCO"):
+                for i in range(400):
+                    resolve_name(f"1-ethanol-{k}-{i}")
+        except Exception as exc:  # noqa: BLE001
+            errors.append(exc)
+
+    threads = [threading.Thread(target=work, args=(k,)) for k in range(6)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    assert not errors
+    assert len(resolver._ROUTE_CACHE) <= resolver._ROUTE_CACHE_MAX

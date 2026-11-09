@@ -466,8 +466,9 @@ def _mcs_diff_highlights(
     # SVG und PNG eines Vergleichs fragen direkt nacheinander dasselbe: die
     # Suche (Timeout 10 s) nur einmal bezahlen. Ein Eintrag reicht dafür.
     key = tuple(m.ToBinary() for m in mols)
-    if _MCS_LAST and _MCS_LAST[0] == key:
-        return _MCS_LAST[1]
+    last = tuple(_MCS_LAST)  # einmal lesen: Tools laufen in Worker-Threads
+    if len(last) == 2 and last[0] == key:
+        return last[1]
 
     mcs = rdFMCS.FindMCS(mols, timeout=10)
     query = Chem.MolFromSmarts(mcs.smartsString) if mcs.smartsString else None

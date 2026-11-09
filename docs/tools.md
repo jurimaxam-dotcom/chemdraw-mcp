@@ -195,9 +195,10 @@ the profile. An invalid profile name stops startup with an error. Two optional v
 when `CHEMDRAW_VAULT_PATH` is set.
 
 The server keeps a small log at `~/ChemDraw-Output/server.log` (rotated at 1 MB,
-two older files kept). It records start-up, tool calls and errors; set
-`CHEMDRAW_LOG_LEVEL=DEBUG` for the full trace, which includes the lookup URLs
-and therefore the names you asked for.
+two older files kept). It records start-up, requests and errors, and a name
+when its lookup needed a second attempt or failed. Set
+`CHEMDRAW_LOG_LEVEL=DEBUG` for the full trace, which includes every lookup URL
+and therefore every name you asked for.
 
 ## Limitations
 
