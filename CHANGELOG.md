@@ -12,6 +12,16 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Long input no longer ends in a bare "Error executing tool": file names from a long SMILES, a long
+  title or a four-way comparison are shortened and keep a fingerprint, so two long titles stay two files.
+- `calculate_ph`: `ionisation` and `buffer_recipe` refuse a missing `pka` or `target_ph` instead of
+  calculating with 0. pH 0 and pKa 0 remain valid values (the two parameters now default to "not given").
+- `generate_3d` and `compare_molecules` no longer overwrite each other's files for SMILES that differ
+  only in case or stereo marks (benzene/cyclohexane, E/Z-2-butene).
+- Clear messages instead of crashes for: a wrong number of `labels` in `compare_molecules`, an empty
+  side in `generate_reaction`, a titration `indicator` without `ph_range`, `ec50` ≤ 0, empty lists in
+  `calculate_content`, an unknown `deliver` in `export_anki_deck`, `bioavailability` outside 0–1 and
+  `tau_h` ≤ 0 in the pharmacokinetics tools.
 - `~/ChemDraw-Output/server.log` no longer grows without bound: it rotates at 1 MB (two older files
   kept) and logs at INFO instead of DEBUG, so lookup URLs are no longer written by default.
   `CHEMDRAW_LOG_LEVEL=DEBUG` restores the full trace.

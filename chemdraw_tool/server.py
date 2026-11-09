@@ -628,10 +628,22 @@ def _default_slug(base: str, *inputs: object) -> str:
     return f"{_slugify(base)}-{tag}"
 
 
+# Dateinamen dürfen 255 Bytes haben; Präfix ("compare-"), Hash-Anhang und Endung
+# brauchen Platz. Ein langes SMILES oder ein langer Titel endete sonst in
+# OSError "File name too long" — beim Client nur als Pauschalfehler sichtbar.
+_SLUG_MAX_BYTES = 120
+
+
 def _slugify(text: str) -> str:
     text = text.lower().strip()
     text = re.sub(r"[^\w\s-]", "", text)
     text = re.sub(r"[\s_]+", "-", text)
+    if len(text.encode()) > _SLUG_MAX_BYTES:
+        # Fingerabdruck des ganzen Textes: zwei lange Titel, die sich erst
+        # hinten unterscheiden, bleiben zwei Dateien.
+        tag = hashlib.sha256(text.encode()).hexdigest()[:8]
+        head = text.encode()[:_SLUG_MAX_BYTES].decode("utf-8", "ignore").rstrip("-")
+        text = f"{head}-{tag}"
     return text or "molecule"
 
 
@@ -1304,6 +1316,10 @@ def export_anki_deck(
         if not deck_name:
             raise ValueError("Das Deck braucht einen Namen.")
         card_models = [AnkiCard.model_validate(c) for c in cards]
+    if deliver not in ("apkg", "open", "ankiconnect"):
+        raise ValueError(
+            f"Unknown deliver '{deliver}' — use apkg, open or ankiconnect."
+        )
     out_path = ANKI_DIR / f"{_slugify(deck_name)}.apkg"
 
     import chemdraw_tool.anki_export as _anki
@@ -1376,6 +1392,18 @@ def generate_titration_curve(
     _check_pka_values(pka_values)
     if min(c_acid, v_acid_ml, c_titrant) <= 0:
         raise ValueError("Concentrations and volume must be positive.")
+
+    if indicator:
+        bereich = indicator.get("ph_range")
+        if (
+            not isinstance(bereich, (list, tuple))
+            or len(bereich) != 2
+            or not all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in bereich)
+        ):
+            raise ValueError(
+                'indicator needs ph_range as two numbers, e.g. '
+                '{"name": "Phenolphthalein", "ph_range": [8.2, 10.0]}.'
+            )
 
     kwargs = dict(
         pka_values=pka_values,
@@ -1550,6 +1578,15 @@ def generate_species_distribution(
     )
 
 
+def _check_bioavailability(f: float) -> None:
+    """F ist ein Anteil. F = 2 rechnete klaglos die doppelte Dosis durch."""
+    if not 0 < f <= 1:
+        raise ValueError(
+            f"bioavailability is a fraction between 0 (exclusive) and 1, got {f:g}. "
+            "Give 0.8 for 80 %."
+        )
+
+
 @_tool(structured_output=True, meta=_UI_META)
 def generate_pk_curve(
     dose_mg: float,
@@ -1596,6 +1633,11 @@ def generate_pk_curve(
     from chemdraw_tool import pk
     from chemdraw_tool.pk_plots import pk_plan, render_pk_png, render_pk_svg
 
+    _check_bioavailability(bioavailability)
+    if tau_h is not None and not tau_h > 0:
+        raise ValueError(
+            f"tau_h must be greater than zero, got {tau_h:g}. Leave it out for a single dose."
+        )
     r = pk.resolve(vd=vd_l, ke=ke_per_h, t_half=half_life_h, cl=clearance_l_per_h)
     ke, vd, cl, t_half = r["ke"], r["vd"], r["cl"], r["t_half"]
     kwargs = dict(
@@ -1684,6 +1726,8 @@ def generate_dose_response(
             "Für den Antagonisten werden antagonist_concentration UND antagonist_kb gebraucht — "
             "es wurde nur eines von beiden angegeben."
         )
+    if ec50 <= 0:
+        raise ValueError(f"ec50 must be greater than zero, got {ec50:g}.")
     kwargs = dict(
         ec50=ec50, unit=unit, emax=emax, hill=hill,
         antagonist=antagonist_concentration, kb=antagonist_kb, drug=drug,
@@ -1753,16 +1797,29 @@ def compare_molecules(
     if not 2 <= len(structures) <= 4:
         raise ValueError("compare_molecules braucht 2 bis 4 Strukturen.")
 
+    if labels and len(labels) != len(structures):
+        raise ValueError(
+            f"labels needs one entry per structure: {len(structures)} structure(s), "
+            f"got {len(labels)} label(s)."
+        )
+
     mols = []
+    resolved_smiles = []
     for s in structures:
-        _, mol = resolve(s)
+        smiles, mol = resolve(s)
+        resolved_smiles.append(smiles)
         mols.append(generate_2d(mol))
 
     display = title or " vs. ".join(labels or structures)
     panel_labels = labels or structures
+    # Ohne Titel je Struktur der Molekül-Slug: ein rohes SMILES behält so seinen
+    # Fingerabdruck (Benzol/Cyclohexan, E/Z), Namen bleiben lesbar wie bisher.
+    slug = _slugify(title) if title else _slugify(
+        "-vs-".join(_molecule_slug(lbl, smi) for lbl, smi in zip(panel_labels, resolved_smiles))
+    )
     svg = render_comparison_svg(mols, panel_labels)
     files = write_files(
-        PLOT_DIR / f"compare-{_slugify(display)}",
+        PLOT_DIR / f"compare-{slug}",
         {"png": render_comparison_png(mols, panel_labels), "svg": svg},
     )
     return PlotPayload(
@@ -1796,13 +1853,13 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
     """
     from chemdraw_tool.structure3d import atoms_and_bonds, embed_3d
 
-    _, mol = resolve(name_or_smiles)
+    smiles, mol = resolve(name_or_smiles)
     mol3d = embed_3d(mol)
     atoms, bonds = atoms_and_bonds(mol3d)
 
     display_name = label or name_or_smiles
     THREED_DIR.mkdir(parents=True, exist_ok=True)
-    sdf_path = THREED_DIR / f"{_slugify(display_name)}.sdf"
+    sdf_path = THREED_DIR / f"{_molecule_slug(display_name, smiles)}.sdf"
     from rdkit import Chem as _Chem
 
     sdf_path.write_text(_Chem.MolToMolBlock(mol3d), encoding="utf-8")
@@ -2158,6 +2215,8 @@ def calculate_content(
             f"({len(measurements)} values) must have the same length — every "
             "weighed portion belongs to exactly one reading."
         )
+    if not weights_mg:
+        raise ValueError("weights_mg and measurements must not be empty.")
 
     sections: list[str] = []
     used_titer = titer
@@ -2314,12 +2373,12 @@ def calculate_content(
 def calculate_ph(
     topic: PhTopic,
     concentration: float = 0.0,
-    pka: float = 0.0,
+    pka: float | None = None,
     pkb: float = 0.0,
     pka_values: list[float] | None = None,
     acid_concentration: float = 0.0,
     base_concentration: float = 0.0,
-    target_ph: float = 0.0,
+    target_ph: float | None = None,
     total_concentration: float = 0.0,
     volume_ml: float = 0.0,
     acid_molar_mass: float = 0.0,
@@ -2455,6 +2514,15 @@ def calculate_ph(
         ]
         return block("Buffer pH", f"pH = {r['ph']:.2f}", rows, r["notes"])
 
+    if topic in ("ionisation", "buffer_recipe"):
+        # pH 0 und pKa 0 sind gültige Angaben — "fehlt" ist hier None, nicht 0.
+        for wert, param in ((pka, "pka"), (target_ph, "target_ph")):
+            if wert is None:
+                raise ValueError(
+                    f"topic='{topic}' needs {param}. Nothing was given, and calculating "
+                    "with zero would produce a confident wrong answer."
+                )
+
     if topic == "ionisation":
         r = ph_calc.ionisation(pka=pka, ph=target_ph, kind=drug_type)
         rows = [
@@ -2478,7 +2546,7 @@ def calculate_ph(
     if topic == "buffer_recipe":
         r = ph_calc.buffer_recipe(
             target_ph=target_ph,
-            pka=pka or None,
+            pka=pka,
             total_concentration=total_concentration or 0,
             volume_ml=volume_ml or 0,
             acid_molar_mass=acid_molar_mass or None,
@@ -2584,6 +2652,7 @@ def calculate_pharmacokinetics(
 
     r = pk.resolve(vd=vd_l, ke=ke_per_h, t_half=half_life_h, cl=clearance_l_per_h)
     vd, ke, cl, t_half = r["vd"], r["ke"], r["cl"], r["t_half"]
+    _check_bioavailability(bioavailability)
     f = bioavailability
 
     lines = [
@@ -3329,6 +3398,11 @@ def generate_reaction(
 
     fmts = _normalize_formats(formats)
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
+    if not reactants or not products:
+        raise ValueError(
+            "A reaction needs at least one reactant and at least one product; "
+            f"got {len(reactants)} reactant(s) and {len(products)} product(s)."
+        )
     if coefficients is not None:
         if len(coefficients) != len(reactants) + len(products):
             raise ValueError(

@@ -37,9 +37,16 @@
         "type": "string"
       },
       "pka": {
-        "default": 0.0,
-        "title": "Pka",
-        "type": "number"
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Pka"
       },
       "pka_values": {
         "anyOf": [
@@ -62,9 +69,16 @@
         "type": "number"
       },
       "target_ph": {
-        "default": 0.0,
-        "title": "Target Ph",
-        "type": "number"
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Target Ph"
       },
       "topic": {
         "enum": [
