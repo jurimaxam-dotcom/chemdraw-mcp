@@ -8,6 +8,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **Chair conformation.** `generate_molecule(view="chair")` and a Chair button in the molecule
+  panel draw a single saturated six-membered ring (cyclohexanes, pyranoses) as a textbook chair:
+  axial bonds vertical, equatorial bonds parallel to the next-but-one ring bond, substituents
+  labelled as in the Haworth view. Aldohexopyranoses use 4C1 for D and 1C4 for L sugars; every
+  other ring takes the chair with the smaller sum of A-values over its axial groups. Unsuitable
+  structures (no six-membered ring, a ring double bond, fused or spiro rings, more than one ring,
+  ring heteroatoms other than one oxygen, unknown substituents) are refused with the reason.
 - Peptides from their sequence, offline: three-letter code as the name (`Ala-Trp-Lys-Ser-Gly`, `D-Ala`, `Ac-…-NH2`, `cyclo(…)`), one-letter code with the prefix `peptide:` (`peptide:AGS`, lowercase = D). Sequences no database knows (before: not found) now draw; linear peptides from five residues get a stretched backbone layout.
 - "X zwitterion" keeps the stereo of X ("alanine zwitterion" was racemic, "Alanin Zwitterion" was not found, "Ala zwitterion" was Ala-Leu-Ala).
 

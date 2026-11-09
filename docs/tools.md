@@ -24,8 +24,9 @@ as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
 buttons for the data sheet, PNG export, an Anki card and a rotatable 3D
 model; when the name was found under another spelling, a "Found as" line
-says which. Fischer and Haworth projections and all-H drawings are a `view`
-option and panel buttons.
+says which. Fischer and Haworth projections, the chair conformation of a
+cyclohexane or pyranose ring and all-H drawings are a `view` option and
+panel buttons.
 
 **Peptides.** A three-letter sequence is built offline, even when no database
 knows it: `Ala-Trp-Lys-Ser-Gly`, `ala-gly`, `D-Ala-Gly`, `Ac-Ala-Gly-NH2`,
