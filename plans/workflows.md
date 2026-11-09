@@ -44,3 +44,5 @@ Panel → Knopf **Copy for Word** → in Word einfügen, Bild in Druckqualität.
 Auswahlknöpfe im Panel: andere Darstellungen (Stereo R/S, 3D, funktionelle Gruppen, Daten).
 - [ ] Designrunde am iPad: welche Knöpfe, wo (Ablauf `~/.claude/docs/designrunden-ipad.md`)
 - [ ] Bauen nach dem Entwurf
+
+- [ ] **Jay:** pypi.org → Projekt → Publishing → Trusted Publisher: Environment `pypi` eintragen (übergeben aus der Sicherheitsrunde Oktober, 09.11.2026; Release-Lauf 0.9.0 lief grün, die Bindung auf PyPI-Seite ist von hier nicht prüfbar).
