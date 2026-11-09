@@ -25,6 +25,8 @@ export default function AnkiDeckView({ data }) {
         subtitle={`${data.cards} card${data.cards === 1 ? "" : "s"} · ${data.media} image${data.media === 1 ? "" : "s"} · ${
           data.delivery === "ankiconnect"
             ? "imported into Anki via AnkiConnect"
+            : data.delivery === "open"
+            ? "opened in Anki"
             : data.delivery?.startsWith("ankiconnect-")
             ? "AnkiConnect unreachable — import the .apkg manually"
             : "import the .apkg into Anki"

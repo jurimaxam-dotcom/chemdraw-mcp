@@ -12,6 +12,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Panel: a second result in the same panel no longer meets state of the previous one — a mechanism
+  with fewer steps crashed the panel, a new reaction kept showing the old equation after "Apply
+  coefficients", and a requested view (Haworth) of the same compound was ignored.
+- Panel: the copy buttons fall back to the older copy path when the clipboard API refuses instead
+  of doing nothing; a failed-drawing hint disappears when switching back to a drawing that works;
+  an Anki deck delivered with `open` reads "opened in Anki"; mechanism step dots and tiles are
+  named and reachable by keyboard.
 - `chemdraw-doctor`: recognises an installed Claude Desktop extension instead of advising a second
   registration (which shows every tool twice); reports an entry whose clone was moved or deleted as
   a failure instead of OK; names the installer the user actually has (`chemdraw-install` outside a

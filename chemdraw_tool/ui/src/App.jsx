@@ -58,11 +58,19 @@ function BatchFailedList({ failed }) {
 export default function App({ data }) {
   switch (data.type) {
     case "molecule":
-      return <MoleculeView key={data.smiles || data.properties?.smiles || data.name} data={data} />;
+      // Schlüssel = Stoff + angeforderte Ansicht: ein zweites Ergebnis im selben
+      // Panel darf nicht auf den Zustand des vorigen treffen (Cache, Ansicht).
+      return (
+        <MoleculeView
+          key={`${data.smiles || data.properties?.smiles || data.name}|${data.initialView || ""}|${JSON.stringify(data.viewRequest || {})}`}
+          data={data}
+        />
+      );
     case "ambiguous":
       return <AmbiguousView key={data.name} data={data} />;
     case "reaction":
-      return <ReactionView data={data} />;
+      // Ohne Schlüssel blieb nach „Apply coefficients“ die alte Gleichung stehen.
+      return <ReactionView key={`${data.name}|${JSON.stringify(data.request || {})}`} data={data} />;
     case "database":
       return <DatabaseView key={data.smiles || data.name} data={data} />;
     case "batch":
@@ -77,7 +85,7 @@ export default function App({ data }) {
         </div>
       );
     case "mechanism":
-      return <MechanismView data={data} />;
+      return <MechanismView key={`${data.name}|${data.reaction_type}|${(data.steps || []).length}`} data={data} />;
     case "spectrum":
       return <SpectrumView data={data} />;
     case "tlc":

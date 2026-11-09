@@ -103,6 +103,9 @@ export default function MoleculeView({ data }) {
     setShow3d(false);
     wantedDrawing.current = "skeletal";
     setDrawing("skeletal");
+    // Der Hinweis galt dem fehlgeschlagenen Laden, nicht der Skelettformel.
+    setDrawingFailed(false);
+    setConformerFailed(false);
   }
 
   async function toggleDrawing(next) {
@@ -119,6 +122,7 @@ export default function MoleculeView({ data }) {
     wantedDrawing.current = next;
     if (drawingCache[next]) {
       setDrawing(next);
+      setDrawingFailed(false);
       return;
     }
     if (drawingInFlight.current) return;

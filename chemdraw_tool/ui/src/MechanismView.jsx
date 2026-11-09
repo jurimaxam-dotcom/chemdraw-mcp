@@ -22,6 +22,9 @@ function StepIndicator({ current, total, onStepClick }) {
       {Array.from({ length: total }, (_, i) => (
         <button
           key={i}
+          type="button"
+          aria-label={`Step ${i + 1}`}
+          aria-current={current === i ? "step" : undefined}
           onClick={() => onStepClick(i)}
           style={{
             width: current === i ? 10 : 6,
@@ -82,7 +85,16 @@ function OverviewMode({ steps, reversible, onStepClick }) {
         <React.Fragment key={i}>
           {i > 0 && <StepArrow reversible={reversible} />}
           <div
+            role="button"
+            tabIndex={0}
+            aria-label={`Open step ${i + 1}: ${step.label}`}
             onClick={() => onStepClick(i)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onStepClick(i);
+              }
+            }}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -124,7 +136,9 @@ function OverviewMode({ steps, reversible, onStepClick }) {
   );
 }
 
-function StepMode({ steps, currentStep, setCurrentStep }) {
+function StepMode({ steps, currentStep: wantedStep, setCurrentStep }) {
+  // Begrenzen: ein Index jenseits der Liste ließ das ganze Panel weiß werden.
+  const currentStep = Math.min(Math.max(0, wantedStep), steps.length - 1);
   const step = steps[currentStep];
   const total = steps.length;
 

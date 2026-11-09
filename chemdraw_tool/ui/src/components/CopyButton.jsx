@@ -14,20 +14,33 @@ export default function CopyButton({ text, size, label = "Copy value" }) {
     timeoutRef.current = setTimeout(() => setCopied(false), 1500);
   }
 
+  // Älterer Weg über ein verstecktes Textfeld. Meldet Erfolg nur, wenn der
+  // Browser ihn bestätigt — sonst bliebe der Haken eine Behauptung.
+  function copyViaTextarea() {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy") !== false;
+    } catch {
+      ok = false;
+    }
+    document.body.removeChild(ta);
+    if (ok) flashCopied();
+  }
+
   function handleCopy() {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(flashCopied);
+      // Im sandboxed iframe kann die Zwischenablage-API ablehnen; ohne
+      // Rückfall passierte dann sichtbar nichts.
+      navigator.clipboard.writeText(text).then(flashCopied, copyViaTextarea);
     } else {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      flashCopied();
+      copyViaTextarea();
     }
   }
 
