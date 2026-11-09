@@ -21,6 +21,7 @@ from chemdraw_tool.ph_plots import (  # noqa: E402
     FIGSIZE,
     _fig_png,
     _fig_svg,
+    safe_text,
 )
 
 ORAL = "#1f77b4"
@@ -57,6 +58,7 @@ def build_pk_figure(
     mtc: float | None = None,
     drug: str = "",
 ) -> Figure:
+    drug = safe_text(drug)
     n, dauer = pk_plan(ke, tau, ka)
     zeiten = [dauer * i / (CURVE_POINTS - 1) for i in range(CURVE_POINTS)]
     farbe = ORAL if ka else IV
@@ -108,6 +110,7 @@ def build_dose_response_figure(
     kb: float | None = None,
     drug: str = "",
 ) -> Figure:
+    drug, unit = safe_text(drug), safe_text(unit)
     r = pk.dose_ratio(antagonist, kb) if antagonist is not None and kb is not None else 1.0
     lo = math.log10(ec50) - 3
     hi = math.log10(ec50 * max(r, 1.0)) + 3

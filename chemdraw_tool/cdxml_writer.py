@@ -75,6 +75,9 @@ def _create_fragment(
     center_x: float,
     center_y: float,
 ) -> tuple[etree.Element, int, tuple[float, float, float, float]]:
+    # Kopie: Kekulize/WedgeMolBonds unten dürfen das Molekül des Aufrufers nicht
+    # verändern — es wird danach noch gezeichnet und analysiert.
+    mol = Chem.Mol(mol)
     conf = mol.GetConformer()
     fragment = etree.Element("fragment", id=str(fragment_id))
 
@@ -110,9 +113,16 @@ def _create_fragment(
         if element != 6:
             attrs["Element"] = str(element)
 
+        # Ohne diese Angaben liest ChemDraw D als H und füllt ein Radikal mit H
+        # auf ([O] → Wasser, C[CH2] → Ethan): ein anderer Stoff.
+        radicals = atom.GetNumRadicalElectrons()
         num_hs = atom.GetTotalNumHs()
-        if num_hs > 0 and element != 6:
+        if (num_hs > 0 and element != 6) or radicals:
             attrs["NumHydrogens"] = str(num_hs)
+        if atom.GetIsotope():
+            attrs["Isotope"] = str(atom.GetIsotope())
+        if radicals:
+            attrs["Radical"] = "Doublet" if radicals == 1 else "Triplet"
 
         charge = atom.GetFormalCharge()
         if charge != 0:

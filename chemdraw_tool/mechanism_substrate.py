@@ -401,6 +401,12 @@ def _sn2(frags: list[_Frag]) -> list[MechanismStep]:
     if n_c >= 3:
         raise UnsupportedSubstrates(
             "tertiary halide — SN2 needs a methyl, primary or secondary alkyl halide; use sn1")
+    # _carbon_class zählt nur C-Nachbarn; der Fächer unten kennt höchstens zwei
+    # Substituenten gleich welchen Elements (CC(F)(F)Br endete in KeyError 3).
+    if substrate.mol.GetAtomWithIdx(c_idx).GetDegree() - 1 > 2:
+        raise UnsupportedSubstrates(
+            "the reacting carbon carries three substituents besides the leaving group; "
+            "SN2 is drawn for methyl, primary and secondary alkyl halides")
     nuc_m, sub_m = _assign_maps([(nuc.mol, {nu_idx: NU}), (substrate.mol, {c_idx: C, x_idx: X})])
 
     # Übergangszustand: Nucleophil und Abgangsgruppe neutral gezeichnet, je δ⁻ als Notiz

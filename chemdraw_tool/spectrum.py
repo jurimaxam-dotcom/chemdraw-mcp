@@ -26,6 +26,8 @@ matplotlib.use("Agg")
 from matplotlib import rc_context  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 
+from chemdraw_tool.ph_plots import safe_text  # noqa: E402
+
 
 @dataclass(frozen=True)
 class SpectrumConfig:
@@ -269,7 +271,7 @@ def _build_figure(
 
     ax.set_xlabel(cfg.x_label)
     ax.set_ylabel(cfg.y_label)
-    ax.set_title(f"{cfg.title}: {title}" if title else cfg.title)
+    ax.set_title(f"{cfg.title}: {safe_text(title)}" if title else cfg.title)
     ax.spines[["top", "right"]].set_visible(False)
     # Layout VOR den Labels fixieren — der Floor-Clamp unten rechnet über
     # transData in Pixel, und tight_layout würde die Achsen-Box verschieben.
@@ -306,7 +308,7 @@ def _build_figure(
             min_offset = (floor_px - anchor_px) / px_per_pt
             offset = max(offset, min_offset)
         ax.annotate(
-            p.label,
+            safe_text(p.label),
             xy=(lx, ly),
             xytext=(0, offset),
             textcoords="offset points",

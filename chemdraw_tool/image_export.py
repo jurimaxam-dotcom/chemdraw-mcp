@@ -450,6 +450,7 @@ def write_files(base: Path, artifacts: dict[str, bytes | str]) -> dict[str, str]
 # ---------------------------------------------------------------------------
 
 CMP_PANEL = (500, 450)
+_MCS_LAST: list = []  # [Schlüssel, Ergebnis] des letzten Vergleichs
 
 
 def _mcs_diff_highlights(
@@ -461,6 +462,12 @@ def _mcs_diff_highlights(
     Vergleichen das Lernziel. Ohne jedes gemeinsame Gerüst ist alles Differenz.
     """
     from rdkit.Chem import rdFMCS
+
+    # SVG und PNG eines Vergleichs fragen direkt nacheinander dasselbe: die
+    # Suche (Timeout 10 s) nur einmal bezahlen. Ein Eintrag reicht dafür.
+    key = tuple(m.ToBinary() for m in mols)
+    if _MCS_LAST and _MCS_LAST[0] == key:
+        return _MCS_LAST[1]
 
     mcs = rdFMCS.FindMCS(mols, timeout=10)
     query = Chem.MolFromSmarts(mcs.smartsString) if mcs.smartsString else None
@@ -479,6 +486,7 @@ def _mcs_diff_highlights(
                 if b.GetBeginAtomIdx() not in match or b.GetEndAtomIdx() not in match
             ]
         )
+    _MCS_LAST[:] = [key, (atom_highlights, bond_highlights)]
     return atom_highlights, bond_highlights
 
 

@@ -43,6 +43,25 @@ class TitrationCurve:
     eq_volumes_ml: list[float]
 
 
+def safe_text(text: str) -> str:
+    """Nutzertext für matplotlib: unparsbarer Mathtext wird wörtlich gesetzt.
+
+    matplotlib liest alles zwischen zwei `$` als Mathtext; `A $#$ B` wirft
+    dann mitten im Rendern ValueError. Gültiger Mathtext (`CH$_3$`) und Text
+    ohne `$`-Paar bleiben unverändert — die Ausgabe ändert sich nur dort, wo
+    vorher ein Absturz stand.
+    """
+    if text.count("$") < 2:
+        return text
+    from matplotlib.mathtext import MathTextParser
+
+    try:
+        MathTextParser("path").parse(text)
+    except ValueError:
+        return text.replace("$", r"\$")
+    return text
+
+
 def titration_curve(
     pka_values: Sequence[float],
     c_acid: float,
@@ -76,6 +95,7 @@ def build_titration_figure(
     title: str = "",
     indicator: Mapping | None = None,
 ) -> Figure:
+    title = safe_text(title)
     curve = titration_curve(pka_values, c_acid, v_acid_ml, c_titrant)
 
     fig = Figure(figsize=FIGSIZE, dpi=100)
@@ -126,7 +146,7 @@ def build_titration_figure(
         lo, hi = indicator["ph_range"]
         ax.axhspan(lo, hi, color=INDICATOR_COLOR, alpha=0.12)
         ax.annotate(
-            str(indicator.get("name", "Indicator")),
+            safe_text(str(indicator.get("name", "Indicator"))),
             xy=(0.99, (lo + hi) / 2),
             xycoords=("axes fraction", "data"),
             ha="right",
@@ -168,7 +188,8 @@ def build_species_figure(
     title: str = "",
 ) -> Figure:
     n = len(pka_values)
-    labels = list(labels) if labels else _default_species_labels(n)
+    labels = [safe_text(str(x)) for x in labels] if labels else _default_species_labels(n)
+    title = safe_text(title)
     if len(labels) != n + 1:
         raise ValueError(
             f"{n} pKa value(s) give {n + 1} species — {len(labels)} label(s) were passed."

@@ -12,6 +12,16 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- CDXML keeps isotopes and radicals. Before, ChemDraw read deuterium as hydrogen and filled a radical
+  with hydrogens (`[O]` opened as water).
+- A `$` pair in a title or label that is not valid mathtext no longer crashes spectra, TLC plates,
+  pH, calibration and pharmacokinetics figures; the text is set literally.
+- `compare_molecules` searches the common scaffold once instead of once per output format (up to
+  10 s saved on large molecules).
+- `generate_3d` optimises molecules without MMFF94 parameters (boron, metals) with UFF; the fallback
+  was never reached before.
+- `generate_mechanism` (SN2) gives a reason instead of an internal error when the reacting carbon
+  carries three substituents (`CC(F)(F)Br`).
 - Long input no longer ends in a bare "Error executing tool": file names from a long SMILES, a long
   title or a four-way comparison are shortened and keep a fingerprint, so two long titles stay two files.
 - `calculate_ph`: `ionisation` and `buffer_recipe` refuse a missing `pka` or `target_ph` instead of

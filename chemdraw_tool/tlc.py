@@ -30,6 +30,8 @@ from matplotlib import rc_context  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.patches import Ellipse, Rectangle  # noqa: E402
 
+from chemdraw_tool.ph_plots import safe_text  # noqa: E402
+
 # Plattenkoordinaten: x = Bahnindex (1, 2, 3 …), y = Rf.
 START_Y = 0.0
 FRONT_Y = 1.0
@@ -275,7 +277,7 @@ def build_figure(
         if spot.label:
             edge = SPOT_HEIGHT / 2 if spot.label_above else -SPOT_HEIGHT / 2
             ax.annotate(
-                spot.label,
+                safe_text(spot.label),
                 xy=(spot.x, spot.y + edge),
                 xytext=(0, 5 if spot.label_above else -5),
                 textcoords="offset points",
@@ -288,14 +290,14 @@ def build_figure(
     ax.set_xlim(left - 0.15, right + 0.15)
     ax.set_ylim(PLATE_BOTTOM - 0.07, PLATE_TOP + 0.07)
     ax.set_xticks(geo.lane_x)
-    ax.set_xticklabels(geo.lanes, fontsize=9)
+    ax.set_xticklabels([safe_text(name) for name in geo.lanes], fontsize=9)
     ax.tick_params(axis="x", length=0, pad=6)
     ax.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
     # Die Rf-Skala gilt nur zwischen Start und Front — die Achse endet dort.
     ax.spines["left"].set_bounds(START_Y, FRONT_Y)
     ax.set_ylabel("Rf value")
-    ax.set_xlabel(_caption(solvent, detection), fontsize=9, color="#444444", labelpad=10)
-    ax.set_title(_plate_title(title))
+    ax.set_xlabel(safe_text(_caption(solvent, detection)), fontsize=9, color="#444444", labelpad=10)
+    ax.set_title(safe_text(_plate_title(title)))
     ax.spines[["top", "right", "bottom"]].set_visible(False)
     fig.tight_layout()
     return fig

@@ -11,7 +11,7 @@ from collections.abc import Sequence
 
 from matplotlib.figure import Figure
 
-from chemdraw_tool.ph_plots import DPI, FIGSIZE, _fig_png, _fig_svg  # noqa: F401
+from chemdraw_tool.ph_plots import DPI, FIGSIZE, _fig_png, _fig_svg, safe_text  # noqa: F401
 
 POINT_COLOR = "#1f77b4"
 LINE_COLOR = "#1a1a1a"
@@ -25,6 +25,7 @@ def build_figure(
     x_label: str = "Concentration",
     y_label: str = "Signal",
 ) -> Figure:
+    title, x_label, y_label = safe_text(title), safe_text(x_label), safe_text(y_label)
     fig = Figure(figsize=FIGSIZE, dpi=100)
     ax = fig.add_subplot()
 

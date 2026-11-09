@@ -20,10 +20,15 @@ def embed_3d(mol: Chem.Mol) -> Chem.Mol:
     params.randomSeed = 0xC0FFEE  # deterministisch — gleiche Eingabe, gleiches Bild
     if AllChem.EmbedMolecule(mol3d, params) != 0:
         raise ValueError("3D-Embedding fehlgeschlagen — Struktur zu exotisch?")
-    try:
+    # MMFF meldet fehlende Parameter (Bor, Metalle) per Rückgabewert −1, nicht
+    # per Exception — der frühere try/except erreichte UFF nie.
+    if AllChem.MMFFHasAllMoleculeParams(mol3d):
         AllChem.MMFFOptimizeMolecule(mol3d)
-    except Exception:
-        AllChem.UFFOptimizeMolecule(mol3d)
+    else:
+        try:
+            AllChem.UFFOptimizeMolecule(mol3d)
+        except (RuntimeError, ValueError):
+            pass  # auch UFF kennt das Element nicht: rohe ETKDG-Geometrie zeigen
     return mol3d
 
 
