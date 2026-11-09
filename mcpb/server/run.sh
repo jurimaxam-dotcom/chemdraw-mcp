@@ -54,8 +54,15 @@ STEMPEL="$UMGEBUNG/.chemdraw-mcp-installiert"
 
 installiert() { [ -x "$SERVER" ] && [ "$(cat "$STEMPEL" 2>/dev/null)" = "$VERSION" ]; }
 
-if installiert; then
+# Jeder Start frischt den Zeitstempel auf: das Aufräumen unten erkennt daran,
+# welche Umgebung noch benutzt wird (gestartet, nicht bloß installiert).
+starte() {
+  touch "$STEMPEL" 2>/dev/null || true
   exec "$SERVER"
+}
+
+if installiert; then
+  starte
 fi
 
 # Sperre: Desktop startet zwei Instanzen gleichzeitig (Chat + Cowork/Code). Ohne
@@ -120,7 +127,7 @@ fi
 
 if installiert; then  # ein paralleler Start war schneller
   gib_frei
-  exec "$SERVER"
+  starte
 fi
 
 if [ ! -f "$REQS" ]; then
@@ -171,13 +178,21 @@ installiere >&2 &
 KIND=$!
 if wait "$KIND" && installiert; then
   KIND=""
-  # Ältere Versionen und die frühere `uv tool`-Ablage (bis 0.6.0) aufräumen.
+  # Andere Versionen nur wegräumen, wenn sie seit 30 Tagen nicht gestartet
+  # wurden (oder nie fertig wurden: kein Stempel). Basis- und Pharma-Bundle
+  # teilen dieses Verzeichnis; aktualisiert der Nutzer nur eines, löschte das
+  # bedingungslose Aufräumen die Umgebung des anderen, und das löschte beim
+  # nächsten Start zurück (09.11.2026). Dazu die frühere `uv tool`-Ablage (bis 0.6.0).
   for alt in "$BASE"/env-*; do
-    [ "$alt" = "$UMGEBUNG" ] || rm -rf "$alt"
+    [ "$alt" = "$UMGEBUNG" ] && continue
+    stempel="$alt/.chemdraw-mcp-installiert"
+    if [ ! -e "$stempel" ] || [ -n "$(find "$stempel" -mtime +30 2>/dev/null)" ]; then
+      rm -rf "$alt"
+    fi
   done
   rm -rf "$BASE/tools" "$BASE/bin"
   gib_frei
-  exec "$SERVER"
+  starte
 fi
 KIND=""
 rm -rf "$UMGEBUNG"

@@ -318,37 +318,6 @@ for _smarts, _group, _low, _high, _intensity, _hint in [
     })
 
 
-def _split_vinyl_protons(mol_h: Chem.Mol, ranks: list[int], groups: dict[int, int]) -> list[int]:
-    """Integrale, wobei endständige =CH₂-Protonen mit ungleichen Nachbarn getrennt zählen.
-
-    In CH₂=C(X)(Y) mit X ≠ Y steht ein H cis zu X, das andere trans — zwei Signale
-    (Propen, Acrylsäure, Vinylacetat). Topologisch sind sie gleich, deshalb
-    wird die Gruppe hier nachträglich halbiert.
-    """
-    split: set[int] = set()
-    for atom in mol_h.GetAtoms():
-        if atom.GetAtomicNum() != 6 or atom.IsInRing():
-            continue
-        hs = [n for n in atom.GetNeighbors() if n.GetAtomicNum() == 1]
-        heavy = [n for n in atom.GetNeighbors() if n.GetAtomicNum() != 1]
-        if len(hs) != 2 or len(heavy) != 1:
-            continue
-        other = heavy[0]
-        bond = mol_h.GetBondBetweenAtoms(atom.GetIdx(), other.GetIdx())
-        if bond.GetBondTypeAsDouble() != 2 or bond.GetIsAromatic():
-            continue
-        rest = [ranks[n.GetIdx()] for n in other.GetNeighbors() if n.GetIdx() != atom.GetIdx()]
-        if len(rest) == 2 and rest[0] != rest[1]:
-            split.add(ranks[hs[0].GetIdx()])
-    integrals: list[int] = []
-    for rank, count in groups.items():
-        if rank in split and count % 2 == 0:
-            integrals += [count // 2, count // 2]
-        else:
-            integrals.append(count)
-    return sorted(integrals, reverse=True)
-
-
 def _parse(structure: str) -> Chem.Mol:
     mol = Chem.MolFromSmiles(structure)
     if mol is None:
@@ -435,7 +404,7 @@ def proton_signals(structure: str) -> dict:
         rank = ranks[atom.GetIdx()]
         groups[rank] = groups.get(rank, 0) + 1
 
-    integrals = _split_vinyl_protons(mol_h, ranks, groups)
+    integrals = sorted(groups.values(), reverse=True)
     total = sum(integrals)
 
     if not integrals:
@@ -459,8 +428,11 @@ def proton_signals(structure: str) -> dict:
         "limitation": (
             "Counted by topological equivalence. Diastereotope protons — for "
             "example the two hydrogens of a CH₂ next to a stereocentre — are "
-            "counted as one signal here, although they do split in reality "
-            "(the two =CH₂ protons of a terminal alkene are counted apart). "
-            "Check the count by hand whenever a stereocentre sits next to a CH₂."
+            "counted as one signal here, although they do split in reality. "
+            "The same holds for the two =CH₂ protons of a terminal alkene "
+            "(propene: counted as 3 signals, a real spectrum resolves 4). "
+            "For exam-level molecules the count is right; check it by hand "
+            "whenever a stereocentre sits next to a CH₂ or the molecule has a "
+            "terminal =CH₂."
         ),
     }

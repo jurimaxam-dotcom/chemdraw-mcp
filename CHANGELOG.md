@@ -6,12 +6,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.1] — 2026-11-10
+
 ### Added
 
 - Claude Code plugin marketplace in the repo; install links for VS Code and Cursor in the README.
 
 ### Fixed
 
+- Extension bundles: installing a new version no longer deletes the environment of the other
+  bundle. The base and pharma bundles share one directory; updating only one made each delete the
+  other's installation on every start. Other versions are now removed only after 30 days without a start.
 - Panel: a second result in the same panel no longer meets state of the previous one — a mechanism
   with fewer steps crashed the panel, a new reaction kept showing the old equation after "Apply
   coefficients", and a requested view (Haworth) of the same compound was ignored.
@@ -35,8 +40,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   rejected values too easily (n = 30: 2.908, not 2.709).
 - Titration: a blank at or above the reading is named as the cause instead of ending in a negative
   content or a division error. Pharmacokinetics: zero inputs get a message.
-- `predict_spectrum`: no ester band for anhydrides and carbamates; the two =CH₂ protons of a
-  terminal alkene count as two ¹H signals (propene: 4, not 3).
+- `predict_spectrum`: no ester band for anhydrides and carbamates; the ¹H limitation note names
+  the terminal =CH₂ case (counted as one signal, resolved as two in a real spectrum).
 - Name lookup no longer keeps an answer from an outage. When PubChem was briefly unreachable, the
   unchecked OPSIN reading of a trivial name ("methyldopa" as N-methyl-DOPA) stayed cached until the
   server restarted; now only answers that every asked source confirmed are cached.

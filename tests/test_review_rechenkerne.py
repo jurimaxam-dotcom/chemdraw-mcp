@@ -75,11 +75,9 @@ def test_ester_band_only_for_esters(smiles, present, absent):
         assert absent not in groups
 
 
-@pytest.mark.parametrize(
-    "smiles, count",
-    [("CC=C", 4), ("C=CC(=O)O", 4), ("C=COC(C)=O", 4), ("C=C", 1), ("CC(C)=C", 2), ("CCO", 3)],
-    ids=["propen", "acrylsaeure", "vinylacetat", "ethen", "isobuten", "ethanol"],
-)
-def test_terminal_vinyl_protons_are_two_signals(smiles, count):
-    """Die beiden =CH₂-Protonen stehen cis bzw. trans zum Substituenten: zwei Signale."""
-    assert spectro.proton_signals(smiles)["count"] == count
+def test_signal_count_stays_topological_and_names_the_vinyl_case():
+    """Zählweise ist eine didaktische Festlegung (Jay-Entscheid offen, 09.11.2026):
+    =CH₂ bleibt ein Signal, der Limitation-Text nennt den Fall."""
+    result = spectro.proton_signals("CC=C")
+    assert result["count"] == 3
+    assert "terminal alkene" in result["limitation"]

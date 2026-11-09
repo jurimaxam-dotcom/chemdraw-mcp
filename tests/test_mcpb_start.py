@@ -137,11 +137,44 @@ def test_zweiter_start_ruft_uv_gar_nicht_mehr(tmp_path):
     assert calls == [], f"uv wurde trotz fertiger Installation gerufen: {calls}"
 
 
-def test_neue_bundle_version_installiert_neu_und_raeumt_die_alte_weg(tmp_path):
+def _altern(tmp_path, version: str, tage: int) -> None:
+    import os
+    import time
+
+    stempel = _base(tmp_path) / f"env-{version}" / ".chemdraw-mcp-installiert"
+    alt = time.time() - tage * 86400
+    os.utime(stempel, (alt, alt))
+
+
+def test_neue_bundle_version_installiert_neu_und_raeumt_die_lange_ungenutzte_weg(tmp_path):
     _start(tmp_path, "9.9.1")
+    _altern(tmp_path, "9.9.1", tage=45)
     out, calls = _start(tmp_path, "9.9.2")
     assert out == "SERVER ==9.9.2"
     assert not (_base(tmp_path) / "env-9.9.1").exists()
+
+
+def test_zweites_bundle_in_anderer_version_behaelt_seine_umgebung(tmp_path):
+    """Basis- und Pharma-Bundle teilen ein Verzeichnis. Aktualisiert der Nutzer nur
+    eines, löschte dessen Installation die Umgebung des anderen — das installierte beim
+    nächsten Start neu und löschte zurück (Review 09.11.2026)."""
+    _start(tmp_path, "9.9.1")
+    _start(tmp_path, "9.9.2")
+    assert (_base(tmp_path) / "env-9.9.1").exists(), "Umgebung des anderen Bundles gelöscht"
+    (tmp_path / "calls.log").unlink()
+    out, calls = _start(tmp_path, "9.9.1")
+    assert out == "SERVER ==9.9.1"
+    assert calls == [], f"das ältere Bundle musste neu installieren: {calls}"
+
+
+def test_start_haelt_die_eigene_umgebung_als_genutzt_fest(tmp_path):
+    """Genutzt heißt gestartet, nicht installiert: sonst gälte eine täglich
+    gestartete Umgebung nach 30 Tagen als verwaist."""
+    _start(tmp_path, "9.9.1")
+    _altern(tmp_path, "9.9.1", tage=45)
+    _start(tmp_path, "9.9.1")
+    _start(tmp_path, "9.9.2")
+    assert (_base(tmp_path) / "env-9.9.1").exists()
 
 
 def test_eigenes_verzeichnis_statt_globalem(tmp_path):
