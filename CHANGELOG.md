@@ -12,6 +12,14 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Name lookup no longer keeps an answer from an outage. When PubChem was briefly unreachable, the
+  unchecked OPSIN reading of a trivial name ("methyldopa" as N-methyl-DOPA) stayed cached until the
+  server restarted; now only answers that every asked source confirmed are cached.
+- NCI lookups go over IPv4 first. The host's IPv6 address does not answer, which cost a 3 s connect
+  timeout per call (measured 3.4 s → 0.4 s; German names ask NCI twice).
+- Names with a slash such as `(+/-)-ibuprofen` reach PubChem; empty input is refused instead of
+  returning an empty data sheet; input a source rejects (HTTP 400/414) is reported as not found
+  instead of as an outage; a trailing line break no longer breaks the lookup.
 - CDXML keeps isotopes and radicals. Before, ChemDraw read deuterium as hydrogen and filled a radical
   with hydrogens (`[O]` opened as water).
 - A `$` pair in a title or label that is not valid mathtext no longer crashes spectra, TLC plates,

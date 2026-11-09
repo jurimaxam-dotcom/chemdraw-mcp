@@ -46,7 +46,7 @@ def search(query: str) -> list[dict[str, str]]:
         elif q in stem_lower:
             score = 80
         else:
-            content_raw = md.read_text(encoding="utf-8")
+            content_raw = md.read_text(encoding="utf-8", errors="replace")
             if q in content_raw.lower():
                 score = 50
 
@@ -54,7 +54,7 @@ def search(query: str) -> list[dict[str, str]]:
             continue
 
         if content_raw is None:
-            content_raw = md.read_text(encoding="utf-8")
+            content_raw = md.read_text(encoding="utf-8", errors="replace")
         snippet = _extract_snippet(content_raw, q)
         rel = md.relative_to(VAULT_PATH)
         cat = rel.parts[0] if len(rel.parts) > 1 else "Allgemein"
@@ -76,17 +76,19 @@ def read_entry(name: str) -> tuple[str | None, str | None]:
     if not is_enabled():
         return None, None
     n = name.lower().strip()
+    if not n:
+        return None, None  # "" steckt in jedem Dateinamen — sonst käme irgendeine Notiz
 
     for md in VAULT_PATH.rglob("*.md"):
         if md.stem.lower() == n:
-            return md.stem, md.read_text(encoding="utf-8")
+            return md.stem, md.read_text(encoding="utf-8", errors="replace")
 
     for md in VAULT_PATH.rglob("*.md"):
         if n in md.stem.lower():
-            return md.stem, md.read_text(encoding="utf-8")
+            return md.stem, md.read_text(encoding="utf-8", errors="replace")
 
     for md in VAULT_PATH.rglob("*.md"):
-        content = md.read_text(encoding="utf-8")
+        content = md.read_text(encoding="utf-8", errors="replace")
         if n in content.lower():
             return md.stem, content
 

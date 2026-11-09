@@ -83,3 +83,21 @@ def titel_offline(monkeypatch):
 
     monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: None)
     monkeypatch.setattr(server, "_TITLE_CACHE", {})
+
+
+@pytest.fixture(autouse=True)
+def _nci_ueber_requests_get(monkeypatch, request):
+    """NCI-Abfragen laufen im Test über `requests.get`, wie alle anderen.
+
+    Im Betrieb nimmt `resolver._nci_get` eine eigene IPv4-Session. Die
+    Resolver-Tests ersetzen aber `resolver.requests.get` — ohne diese Umleitung
+    ginge jeder NCI-Schritt an den Attrappen vorbei ins echte Netz.
+    `tests/test_resolver_review.py` prüft `_nci_get` selbst (Marker `echtes_nci_get`).
+    """
+    if request.node.get_closest_marker("echtes_nci_get"):
+        return
+    from chemdraw_tool import resolver
+
+    monkeypatch.setattr(
+        resolver, "_nci_get", lambda url: resolver.requests.get(url, timeout=resolver._TIMEOUT)
+    )

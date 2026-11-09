@@ -269,9 +269,11 @@ def _walk_sections(section: dict, results: list):
             entry = {"name": info.get("Name", section.get("TOCHeading", ""))}
             if "Value" in info:
                 val = info["Value"]
-                if "StringWithMarkup" in val:
+                # Leere Listen überspringen: ein IndexError hier warf früher alle
+                # schon gesammelten Eigenschaften mit weg (äußeres except).
+                if val.get("StringWithMarkup"):
                     entry["value"] = val["StringWithMarkup"][0].get("String", "")
-                elif "Number" in val:
+                elif val.get("Number"):
                     nums = val["Number"]
                     unit = val.get("Unit", "")
                     entry["value"] = f"{nums[0]} {unit}".strip()

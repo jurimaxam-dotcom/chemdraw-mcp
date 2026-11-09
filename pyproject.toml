@@ -67,6 +67,9 @@ exclude = ["chemdraw_tool/ui/node_modules"]
 # "scripts" mit drin, damit dortige test_*.py automatisch vom Gate erfasst werden;
 # die gen_*-Helfer selbst bleiben unberührt.
 testpaths = ["tests", "scripts"]
+markers = [
+    "echtes_nci_get: Test prüft resolver._nci_get selbst (keine Umleitung auf requests.get)",
+]
 
 [dependency-groups]
 dev = [

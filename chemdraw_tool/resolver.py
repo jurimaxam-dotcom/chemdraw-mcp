@@ -15,6 +15,7 @@ from typing import NamedTuple
 from urllib.parse import quote
 
 import requests
+import requests.adapters
 from rdkit import Chem, RDLogger
 
 from chemdraw_tool.de_names import english_variant, form_variant, salt_variant
@@ -129,12 +130,20 @@ def _classify_error(exc: Exception) -> tuple[str, str]:
         code = getattr(getattr(exc, "response", None), "status_code", None)
         if code == 404:
             return _NOT_FOUND, "name unknown (HTTP 404)"
+        if _input_rejected(code):
+            return _NOT_FOUND, f"input rejected (HTTP {code})"
         return _SOURCE_ERROR, f"HTTP {code}" if code else "HTTP error"
     if isinstance(exc, requests.exceptions.ConnectionError):
         return _UNREACHABLE, "connection failed"
     if isinstance(exc, requests.exceptions.RequestException):
         return _UNREACHABLE, f"request failed ({type(exc).__name__})"
     return _SOURCE_ERROR, f"unexpected answer ({type(exc).__name__})"
+
+
+def _input_rejected(code: int | None) -> bool:
+    """4xx außer Drosselung/Timeout: die Quelle lehnt DIESE Eingabe ab (zu lang,
+    kaputt). Das ist eine Antwort, kein Ausfall — „später nochmal“ wäre falsch."""
+    return code is not None and 400 <= code < 500 and code not in (404, 408, 429)
 
 
 def _record(report: list | None, source: str, status: str, detail: str) -> None:
@@ -154,9 +163,16 @@ def _pubchem_lookup(name: str, report: list | None = None) -> str | None:
     if _is_unreachable(report, _PUBCHEM):
         return None
     try:
-        resp = requests.get(
-            _PUBCHEM_URL.format(name=quote(name, safe="")), timeout=_TIMEOUT
-        )
+        if "/" in name:
+            # "(+/-)-ibuprofen": als %2F im Pfad antwortet PubChem 404, im
+            # POST-Body trifft derselbe Name (gemessen 09.11.2026).
+            resp = requests.post(
+                _PUBCHEM_URL.replace("/{name}", ""), data={"name": name}, timeout=_TIMEOUT
+            )
+        else:
+            resp = requests.get(
+                _PUBCHEM_URL.format(name=quote(name, safe="")), timeout=_TIMEOUT
+            )
         resp.raise_for_status()
         props_list = resp.json().get("PropertyTable", {}).get("Properties", [])
     except Exception as exc:
@@ -175,13 +191,36 @@ def _pubchem_lookup(name: str, report: list | None = None) -> str | None:
     return smiles
 
 
+class _IPv4Adapter(requests.adapters.HTTPAdapter):
+    """Verbindet nur über IPv4: eine IPv4-Quelladresse lässt IPv6-Ziele sofort ausscheiden."""
+
+    def init_poolmanager(self, *args, **kwargs):
+        kwargs["source_address"] = ("0.0.0.0", 0)
+        return super().init_poolmanager(*args, **kwargs)
+
+
+def _nci_get(url: str) -> requests.Response:
+    """NCI CIR abfragen, IPv4 zuerst.
+
+    cactus.nci.nih.gov trägt einen AAAA-Eintrag, der nicht antwortet. requests
+    kennt kein Happy Eyeballs und wartete bei jedem Aufruf das volle
+    Connect-Timeout ab, bevor es auf IPv4 auswich (gemessen 09.11.2026: 3,4 s
+    statt 0,35 s; deutsche Namen fragen NCI zweimal). Kommt über IPv4 keine
+    Verbindung zustande (reines IPv6-Netz), folgt der normale Weg.
+    """
+    try:
+        with requests.Session() as session:
+            session.mount("https://", _IPv4Adapter())
+            return session.get(url, timeout=_TIMEOUT)
+    except requests.exceptions.ConnectionError:
+        return requests.get(url, timeout=_TIMEOUT)
+
+
 def _nci_cir_lookup(name: str, report: list | None = None) -> str | None:
     if _is_unreachable(report, _NCI):
         return None
     try:
-        resp = requests.get(
-            _NCI_CIR_URL.format(name=quote(name, safe="")), timeout=_TIMEOUT
-        )
+        resp = _nci_get(_NCI_CIR_URL.format(name=quote(name, safe="")))
     except Exception as exc:
         _record(report, _NCI, *_classify_error(exc))
         return None
@@ -193,10 +232,13 @@ def _nci_cir_lookup(name: str, report: list | None = None) -> str | None:
         unknown = resp.status_code == 404 or (
             resp.status_code == 500 and "page not found" in (resp.text or "").lower()
         )
-        status = _NOT_FOUND if unknown else _SOURCE_ERROR
+        rejected = _input_rejected(resp.status_code)
+        status = _NOT_FOUND if unknown or rejected else _SOURCE_ERROR
         detail = (
             f"name unknown (HTTP {resp.status_code})"
-            if status == _NOT_FOUND
+            if unknown
+            else f"input rejected (HTTP {resp.status_code})"
+            if rejected
             else f"HTTP {resp.status_code}"
         )
         _record(report, _NCI, status, detail)
@@ -1132,8 +1174,32 @@ def resolve_name(name: str) -> str:
     return resolve_name_route(name).smiles
 
 
-@functools.lru_cache(maxsize=512)
+_ROUTE_CACHE_MAX = 512
+_ROUTE_CACHE: dict[str, Resolution] = {}
+
+
 def resolve_name_route(name: str) -> Resolution:
+    """Kaskade mit Cache: identische Namen gehen nur einmal ins Netz.
+
+    Gecacht wird nur, was alle befragten Quellen beantwortet haben. War eine
+    Quelle nicht erreichbar oder gestört, ist das Ergebnis ein Notbehelf (OPSIN
+    ohne PubChem-Gegenprobe liest "methyldopa" als N-Methyl-DOPA) — er darf im
+    tagelang laufenden Desktop-Prozess nicht stehen bleiben, wenn das Netz
+    zurück ist (Befund 09.11.2026; lru_cache hielt ihn bis zum Prozessende).
+    Ausnahmen werden wie zuvor nie gecacht.
+    """
+    if name in _ROUTE_CACHE:
+        return _ROUTE_CACHE[name]
+    report: list[_Attempt] = []
+    result = _resolve_name_route(name, report)
+    if not any(a.status in (_UNREACHABLE, _SOURCE_ERROR) for a in report):
+        if len(_ROUTE_CACHE) >= _ROUTE_CACHE_MAX:
+            _ROUTE_CACHE.pop(next(iter(_ROUTE_CACHE)))  # ältester Eintrag
+        _ROUTE_CACHE[name] = result
+    return result
+
+
+def _resolve_name_route(name: str, report: list) -> Resolution:
     """Resolve a compound name to SMILES via fallback cascade.
 
     0. Known family names ("xylene", "Glucose") raise kind="ambiguous"
@@ -1147,17 +1213,12 @@ def resolve_name_route(name: str) -> Resolution:
     8. PubChem with only the counter-ion in English (de_names.salt_variant)
     9. PubChem without the rotation sign beside R/S ("(S)-(−)-x" → "(S)-x")
 
-    Cached via lru_cache: identische Namen gehen nur einmal ins Netz.
-    Wichtig — lru_cache speichert KEINE Ausnahmen: ein Fehlschlag (offline!)
-    wird nicht festgeschrieben, sobald das Netz zurück ist greift der nächste
-    Versuch wieder. `resolve_name.cache_clear()` leert den Cache.
+    Der Cache sitzt in resolve_name_route; `report` sammelt, was jede Quelle
+    geantwortet hat. `resolve_name.cache_clear()` leert den Cache.
     """
     # Familienname zuerst: OPSIN würde ihn still zum ortho-Isomer machen.
-    # lru_cache speichert keine Ausnahmen — der Fehler wird nie festgeschrieben.
     if candidates := ambiguous_candidates(name):
         raise _ambiguous_error(name, candidates)
-
-    report: list[_Attempt] = []
 
     # OPSIN liest den Namen selbst; gewinnt PubChem die Gegenprobe, war es
     # derselbe Name — beides ist kein Umweg, also kein found_as.
@@ -1182,7 +1243,7 @@ def resolve_name_route(name: str) -> Resolution:
     # Nur nach erfolglosem Original und vor der reinen PubChem-Übersetzung:
     # Citral A+B braucht OPSIN ohne E/Z, PubChem allein liefert Geranial (E).
     if base := form_variant(name):
-        normalized = resolve_name_route(base)
+        normalized = _resolve_name_route(base, report)
         return Resolution(normalized.smiles, _found_as(name, normalized.found_as or base))
 
     # Ganz hinten, damit kein heute aufgelöster Name einen anderen Weg nimmt.
@@ -1216,8 +1277,8 @@ def resolve_name_route(name: str) -> Resolution:
 
 
 # Tests und Messskripte leeren den Cache über resolve_name.
-resolve_name.cache_clear = resolve_name_route.cache_clear  # type: ignore[attr-defined]
-resolve_name.cache_info = resolve_name_route.cache_info  # type: ignore[attr-defined]
+resolve_name.cache_clear = _ROUTE_CACHE.clear  # type: ignore[attr-defined]
+resolve_name_route.cache_clear = _ROUTE_CACHE.clear  # type: ignore[attr-defined]
 
 
 class Resolved(tuple):
@@ -1245,6 +1306,13 @@ def resolve(input_str: str) -> Resolved:
     # safe", so SMILES must win for ambiguous short inputs. Real names
     # ("Aspirin") don't parse as SMILES and still take the name path.
     candidate = input_str.strip()
+    if not candidate:
+        # MolFromSmiles("") ist ein gültiges leeres Molekül — ohne diese Zeile
+        # galt eine leere Eingabe als aufgelöst (Datenblatt ohne Atome).
+        raise NameResolutionError(
+            "No compound was given. Pass a name or a SMILES string.",
+            name=input_str, kind="not_found", attempts=[],
+        )
     if " " not in candidate and not _STEREO_PREFIX.match(candidate):
         mol = validate_smiles(candidate)
         if mol is not None:
@@ -1257,7 +1325,7 @@ def resolve(input_str: str) -> Resolved:
                 fault, name=input_str, kind="invalid_smiles", attempts=[]
             )
 
-    smiles, found_as = resolve_name_route(input_str)
+    smiles, found_as = resolve_name_route(candidate)
     mol = validate_smiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
