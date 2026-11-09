@@ -270,7 +270,8 @@ def test_model_may_open_the_panel_on_a_projection(server, monkeypatch):
     assert payload.initialView == "haworth"
     assert payload.viewSvg == haworth_svg(mol(BETA_GLCP))
     assert payload.svg.startswith("<") and payload.atoms
-    assert payload.views == ["all_h", "haworth"]
+    # Seit E5 (09.11.2026) bietet ein Pyranosering zusätzlich den Sessel an.
+    assert payload.views == ["all_h", "haworth", "chair"]
     assert "open-chain" in payload.projectionNote
     assert payload.properties["formula"] == "C6H12O6"
     assert payload.files == {}

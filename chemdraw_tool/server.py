@@ -748,6 +748,7 @@ def _projection_views(mol: Chem.Mol) -> list[str]:
             for name, applies in (
                 ("fischer", projection.fischer_rows),
                 ("haworth", projection.haworth_ring),
+                ("chair", projection.chair_ring),
             )
             if applies(mol) is not None
         ]
@@ -767,10 +768,14 @@ def _projection_note(mol: Chem.Mol) -> str:
         return ""
 
 
+_VIEWS = ("all_h", "fischer", "haworth", "chair")
+_UNKNOWN_VIEW = "Unknown view '{view}' — use all_h, fischer, haworth or chair."
+
+
 def _view_drawing(
     view: str, query: str, mol: Chem.Mol, annotate_stereo: bool, render_style: str
 ) -> tuple[str, list]:
-    """Zeichnung und Atomliste einer Zusatzansicht (all_h, fischer, haworth)."""
+    """Zeichnung und Atomliste einer Zusatzansicht (all_h, fischer, haworth, chair)."""
     from chemdraw_tool import projection
     from chemdraw_tool.svg_renderer import extract_atom_data, render_svg
 
@@ -785,10 +790,17 @@ def _view_drawing(
             style=render_style,
         )
         return svg, extract_atom_data(mol_h)
-    drawers = {"fischer": projection.fischer_svg, "haworth": projection.haworth_svg}
+    drawers = {
+        "fischer": projection.fischer_svg,
+        "haworth": projection.haworth_svg,
+        "chair": projection.chair_svg,
+    }
     if view not in drawers:
-        raise ValueError(f"Unknown view '{view}' — use all_h, fischer or haworth.")
+        raise ValueError(_UNKNOWN_VIEW.format(view=view))
     svg = drawers[view](mol)
+    if not svg and view == "chair":
+        # Der Sessel sagt, woran es liegt — „hat keinen" allein hilft nicht.
+        raise ValueError(f"'{query}' has no chair view: {projection.chair_problem(mol)}.")
     if not svg:
         raise ValueError(f"'{query}' has no {view} view.")
     return svg, []
@@ -864,8 +876,8 @@ def generate_molecule(
     found_as = _found_as(resolved)
     if stereo_variants:
         return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
-    if view and view not in ("all_h", "fischer", "haworth"):
-        raise ValueError(f"Unknown view '{view}' — use all_h, fischer or haworth.")
+    if view and view not in _VIEWS:
+        raise ValueError(_UNKNOWN_VIEW.format(view=view))
     mol = generate_2d(mol)
 
     input_issues = validate_input(mol)
