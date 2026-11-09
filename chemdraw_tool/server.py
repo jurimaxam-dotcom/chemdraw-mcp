@@ -3991,15 +3991,41 @@ def create_server(profile: str | None = None) -> MCPServer:
 mcp = create_server()
 
 
+_LOG_MAX_BYTES = 1_000_000
+_LOG_BACKUPS = 2
+
+
+def _configure_logging(log_dir: Path):
+    """server.log anlegen: rotierend und standardmäßig auf INFO.
+
+    Vorher DEBUG ohne Rotation — 8 MB in wenigen Wochen, drei Viertel davon
+    matplotlibs Font-Suche, dazu jede PubChem-URL (also jeder Stoffname) aus
+    urllib3. DEBUG gibt es weiter, aber nur auf Wunsch: CHEMDRAW_LOG_LEVEL=DEBUG.
+    """
+    import logging
+    from logging.handlers import RotatingFileHandler
+
+    wanted = os.environ.get("CHEMDRAW_LOG_LEVEL", "").strip().upper()
+    level = logging.getLevelNamesMapping().get(wanted, logging.INFO)
+
+    log_dir.mkdir(parents=True, exist_ok=True)
+    fh = RotatingFileHandler(
+        str(log_dir / "server.log"),
+        maxBytes=_LOG_MAX_BYTES,
+        backupCount=_LOG_BACKUPS,
+        encoding="utf-8",
+    )
+    fh.setLevel(level)
+    fh.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
+    root = logging.getLogger()
+    root.addHandler(fh)
+    root.setLevel(level)
+    return fh
+
+
 def main():
     import logging
 
-    log_path = Path.home() / "ChemDraw-Output" / "server.log"
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    fh = logging.FileHandler(str(log_path))
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
-    logging.getLogger().addHandler(fh)
-    logging.getLogger().setLevel(logging.DEBUG)
+    _configure_logging(Path.home() / "ChemDraw-Output")
     logging.getLogger(__name__).info("MCP server starting")
     mcp.run(transport="stdio")

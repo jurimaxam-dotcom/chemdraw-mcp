@@ -12,6 +12,9 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `~/ChemDraw-Output/server.log` no longer grows without bound: it rotates at 1 MB (two older files
+  kept) and logs at INFO instead of DEBUG, so lookup URLs are no longer written by default.
+  `CHEMDRAW_LOG_LEVEL=DEBUG` restores the full trace.
 - Docs: `docs/tools.md` no longer says that SMILES input never touches the network. Drawing is local, but
   `generate_molecule` and `batch_generate` look the structure up in PubChem (InChIKey first, the SMILES itself
   when PubChem does not know the key).

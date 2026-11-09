@@ -194,6 +194,11 @@ the profile. An invalid profile name stops startup with an error. Two optional v
 (`search_vault`, `read_vault_entry`) appear only in the full profile and only
 when `CHEMDRAW_VAULT_PATH` is set.
 
+The server keeps a small log at `~/ChemDraw-Output/server.log` (rotated at 1 MB,
+two older files kept). It records start-up, tool calls and errors; set
+`CHEMDRAW_LOG_LEVEL=DEBUG` for the full trace, which includes the lookup URLs
+and therefore the names you asked for.
+
 ## Limitations
 
 - **Without Java, names need the internet.** OPSIN is skipped and names are
