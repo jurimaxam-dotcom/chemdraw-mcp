@@ -204,10 +204,17 @@ function ScaledRow({ children }) {
     // inline style, and a state bailout (same scale) would never re-render
     // to put it back, leaving the row permanently unscaled.
     const prevTransform = inner.style.transform;
+    // Auch die Breite neutral messen (Fund c, 09.11.): geschrumpft trägt die
+    // Zeile width = 100/scale %, und scrollWidth ist nie kleiner als die
+    // eigene Breite — das Verhältnis kam als alter Maßstab zurück, die Zeile
+    // wuchs nach dem Verbreitern nie zurück (gemessen: 0.67 → 0.45 → 0.40).
+    const prevWidth = inner.style.width;
     inner.style.transform = "none";
+    inner.style.width = "max-content";
     const naturalW = inner.scrollWidth;
     const naturalHeight = inner.scrollHeight;
     inner.style.transform = prevTransform;
+    inner.style.width = prevWidth;
     if (naturalW <= 0) return;
     // Cap at 1: never blow small reactions up beyond their chemical scale —
     // only shrink-to-fit. Below MIN_SCALE we fall back to scrolling.

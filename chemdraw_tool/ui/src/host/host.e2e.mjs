@@ -622,6 +622,33 @@ try {
   check(await rxn.locator('[data-testid="balance-badge"]').getAttribute("data-state") === "balanced", "Reaktion: Bilanz ausgeglichen");
   check((await rxn.locator("body").innerText()).includes("H2SO4") || (await rxn.locator("body").innerText()).includes("H₂SO₄"), "Reaktion: Bedingung am Pfeil");
   // E3: Reaktion hat jetzt Pfad und Export in der Fußzeile; exportiert wird die zusammengesetzte Gleichung.
+  // Fund (c), Durchsicht 09.11.: nach Verkleinern und wieder Verbreitern des Panels muss
+  // die Reaktionszeile zur alten Größe zurückwachsen, nicht geschrumpft stehen bleiben.
+  {
+    const rowScale = () => rxn.evaluate(() => {
+      const row = [...document.querySelectorAll(".reaction-panel div")].find((el) => el.style.transformOrigin.includes("left"));
+      const m = /scale\(([\d.]+)\)/.exec(row?.style.transform ?? "");
+      // transform "none" heißt Scroll-Modus (unter MIN_SCALE) — als 0 melden, nicht als 1.
+      return m ? Number(m[1]) : (row ? 0 : NaN);
+    });
+    const setWidth = async (w) => {
+      await rxnPage.locator("iframe").last().evaluate((el, px) => { el.style.width = `${px}px`; }, w);
+      await rxnPage.waitForTimeout(400);
+    };
+    await setWidth(510);
+    const vorher = await rowScale();
+    await setWidth(420);
+    const schmal = await rowScale();
+    await setWidth(510);
+    const zurueck = await rowScale();
+    await setWidth(1400);
+    const breit = await rowScale();
+    console.log(`Reaktion-Skalierung: 510px ${vorher} → 420px ${schmal} → 510px ${zurueck} → 1400px ${breit}`);
+    check(schmal > 0 && schmal < vorher, `Reaktion: schmaleres Panel verkleinert die Zeile (${vorher} → ${schmal})`);
+    check(Math.abs(zurueck - vorher) < 0.01, `Reaktion: zurück auf 510px wächst die Zeile zurück (${schmal} → ${zurueck}, erwartet ${vorher})`);
+    check(breit >= vorher, `Reaktion: im breiten Panel nicht kleiner als vorher (${breit})`);
+    await setWidth(510);
+  }
   const rxnPfad = await rxn.locator("[data-testid='panel-footer'] .panel-footer-path").first().getAttribute("title");
   check(rxnPfad?.endsWith(".png") && existsSync(rxnPfad), "Reaktion: Fußzeile zeigt die echte PNG-Datei");
   await rxnPage.screenshot({ path: join(tmpdir(), "panel-host-reaction-footer.png") });

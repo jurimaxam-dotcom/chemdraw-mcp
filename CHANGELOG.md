@@ -14,6 +14,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   unbranched alkane chain (both ends abbreviated each other away); such a molecule is drawn in full.
 - Panel: a tool error is shown as a readable message instead of leaving the panel on "Waiting for
   data…" or on the previous result.
+- Panel: a reaction scheme that shrank to fit a narrow panel grows back when the panel is widened
+  again (it stayed at the smallest scale it had ever reached).
 - Installer: `chemdraw-install`, `install.sh` and the uv download step now speak English like the
   rest of the user-facing text (messages, warnings, errors and `--help`).
 
