@@ -18,3 +18,18 @@ export function extractToolData(params) {
   }
   return null;
 }
+
+// Fund (b), 09.11.: Fehler-Ergebnisse verwarf das Panel still. Diese Funktion
+// holt die Meldung heraus, damit das Panel sie zeigen kann. Das SDK stellt
+// „Error executing tool <name>: “ voran — für den Nutzer ist das Rauschen.
+export const TOOL_ERROR_FALLBACK = "The tool reported an error without a message.";
+
+export function extractToolError(params) {
+  if (!params?.isError) return null;
+  const text = (params.content ?? [])
+    .filter((block) => block?.type === "text" && typeof block.text === "string")
+    .map((block) => block.text.replace(/^Error executing tool \S+: /, "").trim())
+    .filter(Boolean)
+    .join("\n");
+  return text || TOOL_ERROR_FALLBACK;
+}

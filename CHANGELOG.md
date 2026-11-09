@@ -12,6 +12,8 @@ this project uses [Semantic Versioning](https://semver.org/).
   still loading is no longer lost — the last chosen view wins.
 - Mechanism drawings: chain abbreviation no longer deletes a molecule that is nothing but an
   unbranched alkane chain (both ends abbreviated each other away); such a molecule is drawn in full.
+- Panel: a tool error is shown as a readable message instead of leaving the panel on "Waiting for
+  data…" or on the previous result.
 - Installer: `chemdraw-install`, `install.sh` and the uv download step now speak English like the
   rest of the user-facing text (messages, warnings, errors and `--help`).
 

@@ -381,3 +381,8 @@ button:active { filter: brightness(0.92); }
 /* Rückmeldung nach Export PNG: steht für ein paar Sekunden an der Stelle der Pfade. */
 .export-feedback { font-family: var(--font); font-size: 12px; color: var(--copy-success); overflow-wrap: anywhere; }
 .export-feedback.is-error { color: var(--danger, #c0392b); }
+
+/* Tool-Fehler im Panel (Fund b, 09.11.): ruhig, lesbar, keine Alarmfarbe. */
+.tool-error { padding: 16px; font-size: 13px; }
+.tool-error-title { font-weight: 600; margin-bottom: 6px; }
+.tool-error-message { margin: 0; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }

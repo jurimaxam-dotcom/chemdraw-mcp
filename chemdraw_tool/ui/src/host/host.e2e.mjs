@@ -255,6 +255,31 @@ try {
     await p.close();
   }
 
+  // Fund (b), Durchsicht 09.11.: ein echter Tool-Fehler (kaputtes SMILES) muss im
+  // Panel lesbar landen, statt es auf „Waiting for data…“ stehen zu lassen.
+  {
+    const errorPage = await browser.newPage({ viewport: { width: 640, height: 400 } });
+    await errorPage.setContent('<body style="margin:0"></body>');
+    await errorPage.addScriptTag({ path: out });
+    await errorPage.exposeFunction("__callTool", (req) => client.callTool(req));
+    const gmTool = tools.find((t) => t.name === "generate_molecule");
+    const input = { name_or_smiles: "C1CC" };
+    const result = await client.callTool({ name: "generate_molecule", arguments: input });
+    check(result.isError, "generate_molecule mit kaputtem SMILES liefert eine echte Fehlerantwort");
+    const serverText = result.content.filter((b) => b.type === "text").map((b) => b.text).join(" ");
+    const resource = await client.readResource({ uri: gmTool._meta.ui.resourceUri });
+    await errorPage.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result });
+    const ef = errorPage.frames().at(-1);
+    const alert = ef.getByRole("alert");
+    await alert.waitFor({ timeout: 5000 }).catch(() => {});
+    const shown = (await ef.locator("body").innerText()).replace(/\s+/g, " ");
+    const kern = serverText.replace(/^Error executing tool \S+: /, "").slice(0, 40);
+    check(await alert.count() === 1 && shown.includes(kern),
+      `Tool-Fehler steht lesbar im Panel („${kern}…“), Panel zeigte: „${shown.slice(0, 80)}“`);
+    await errorPage.screenshot({ path: join(tmpdir(), "panel-host-tool-error.png") });
+    await errorPage.close();
+  }
+
   // Welle 2: calculate_ph ist absichtlich ein Text-Tool ohne Panel. Diese drei
   // echten MCP-Aufrufe prüfen pH, abwägbaren Pufferansatz und Ionisationsanteile.
   const calculatePh = tools.find((tool) => tool.name === "calculate_ph");
