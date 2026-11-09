@@ -476,3 +476,59 @@ def test_default_checks_cover_every_documented_failure_mode():
         "check_network",
         "check_output_dir",
     }
+
+
+# --- Review 09.11.2026: Doctor aus Sicht der Extension- und PyPI-Nutzer ---------------------
+
+
+def test_extension_install_without_config_entry_is_a_note_not_a_limitation(tmp_path):
+    """Die .mcpb-Extension trägt nichts in claude_desktop_config.json ein. Der Rat
+    „./install.sh“ hätte jedes Werkzeug doppelt registriert (README: pick one route)."""
+    from chemdraw_tool.doctor import NOTE
+
+    bundle = tmp_path / "chemdraw-mcp-bundle"
+    (bundle / "env-0.9.0").mkdir(parents=True)
+    path = _write_config(tmp_path / "config.json", {"mcpServers": {"other": {}}})
+    result = check_desktop_config(config_path=path, bundle_dir=bundle)
+    assert result.status == NOTE
+    assert "extension" in result.detail.lower()
+    assert not result.fix
+
+
+def test_entry_pointing_at_a_moved_clone_is_an_error(tmp_path):
+    """`uv --directory <weg>` startet nicht — bisher meldete der Doctor das als OK."""
+    uv = _executable(tmp_path / "bin" / "uv")
+    entry = {"command": str(uv), "args": ["--directory", str(tmp_path / "gibt-es-nicht"), "run", "x"]}
+    path = _write_config(
+        tmp_path / "config.json",
+        {"mcpServers": {"chemdraw": entry, "chemdraw-pharma": entry}},
+    )
+    result = check_desktop_config(config_path=path, bundle_dir=tmp_path / "kein-bundle")
+    assert result.status == ERROR
+    assert "gibt-es-nicht" in result.detail
+
+
+def test_fix_names_the_installer_the_user_actually_has(tmp_path, monkeypatch):
+    from chemdraw_tool import desktop_config
+
+    path = _write_config(tmp_path / "config.json", {"mcpServers": {"other": {}}})
+    monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
+    result = check_desktop_config(config_path=path, bundle_dir=tmp_path / "kein-bundle")
+    assert "chemdraw-install" in result.fix
+    assert "install.sh" not in result.fix
+
+
+def test_uv_fix_does_not_pipe_curl_into_a_shell():
+    from chemdraw_tool.doctor import check_uv
+
+    result = check_uv(resolve=lambda: "uv")
+    assert "| sh" not in result.fix
+    assert "docs.astral.sh/uv" in result.fix
+
+
+@pytest.fixture(autouse=True)
+def _kein_echtes_bundle(tmp_path, monkeypatch):
+    """Die Prüfungen dürfen nicht davon abhängen, ob auf dieser Maschine die Extension liegt."""
+    from chemdraw_tool import doctor
+
+    monkeypatch.setattr(doctor, "_bundle_dir", lambda: tmp_path / "kein-bundle-hier")

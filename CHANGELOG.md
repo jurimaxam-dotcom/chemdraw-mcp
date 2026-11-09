@@ -12,6 +12,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `chemdraw-doctor`: recognises an installed Claude Desktop extension instead of advising a second
+  registration (which shows every tool twice); reports an entry whose clone was moved or deleted as
+  a failure instead of OK; names the installer the user actually has (`chemdraw-install` outside a
+  clone) and no longer suggests piping an install script into a shell.
+- `chemdraw-install`: finds the launcher next to a virtual environment's interpreter without relying
+  on `PATH`; a config file that is valid JSON but not an object gets a message instead of a
+  traceback; the `.bak` backup keeps the state before the first installation.
+- Docs: quick start names the platforms and the one-time restart; the tool table shows the Anki
+  panel; the registry description says "drawn locally" instead of "offline".
 - `calculate_ph`: an unsorted `pka_values` list is refused for the pH number as it already was for
   the curves (0.1 M H₃PO₄ came out as pH 3.35 instead of 1.63); contradicting `pka` and `pkb` are
   refused; a buffer recipe says when the exact charge balance misses the target pH.

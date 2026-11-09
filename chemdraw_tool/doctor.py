@@ -96,6 +96,15 @@ def _installer_helpers():
     return desktop_config
 
 
+def _reinstall_fix() -> str:
+    if _installer_helpers().running_from_repo():
+        return "uv sync   (then quit and restart Claude Desktop completely)"
+    return (
+        "uv tool install --reinstall chemdraw-mcp   "
+        "(then quit and restart Claude Desktop completely)"
+    )
+
+
 def _runnable(path: str) -> bool:
     """Existiert die Datei und ist sie ausführbar?"""
     return _installer_helpers()._is_runnable(path)
@@ -136,7 +145,7 @@ def check_rendering(*, render: Callable[[str], bytes] | None = None) -> CheckRes
                 f"Rendering the probe molecule '{_PROBE_SMILES}' failed: "
                 f"{type(exc).__name__}: {exc}"
             ),
-            fix="uv sync   (then quit and restart Claude Desktop completely)",
+            fix=_reinstall_fix(),
         )
     if not isinstance(data, bytes) or not data.startswith(_PNG_MAGIC):
         return CheckResult(
@@ -146,7 +155,7 @@ def check_rendering(*, render: Callable[[str], bytes] | None = None) -> CheckRes
                 f"Rendering '{_PROBE_SMILES}' returned {len(data) if isinstance(data, bytes) else type(data).__name__} "
                 "that is not a PNG — the RDKit drawing backend is not working."
             ),
-            fix="uv sync   (then quit and restart Claude Desktop completely)",
+            fix=_reinstall_fix(),
         )
     return CheckResult(
         name="RDKit rendering",
@@ -228,15 +237,41 @@ def check_uv(*, resolve: Callable[[], str] | None = None) -> CheckResult:
             "Running the server by hand still works if uv is on your shell PATH, but a "
             "Claude Desktop entry using it would fail to start without a message."
         ),
-        fix="curl -LsSf https://astral.sh/uv/install.sh | sh   (then re-run ./install.sh)",
+        fix=f"Install uv as described at https://docs.astral.sh/uv/   (then re-run {_install_command()})",
     )
+
+
+def _install_command() -> str:
+    """Der Installer, den dieser Nutzer hat: `./install.sh` gibt es nur im Clone."""
+    return "./install.sh" if _installer_helpers().running_from_repo() else "chemdraw-install"
+
+
+def _bundle_dir() -> Path:
+    """Wohin die .mcpb-Extension ihre Umgebung legt (mcpb/server/run.sh: BASE)."""
+    base = os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local" / "share")
+    return Path(base) / "chemdraw-mcp-bundle"
+
+
+def _extension_installed(bundle_dir: Path) -> bool:
+    return bundle_dir.is_dir() and any(bundle_dir.glob("env-*"))
+
+
+def _missing_project_dir(entry: dict) -> str | None:
+    """Zeigt `--directory X` in den args auf einen Ordner ohne Projekt? Dann X."""
+    args = [str(a) for a in entry.get("args", [])]
+    for flag, value in zip(args, args[1:]):
+        if flag == "--directory" and not (Path(value) / "pyproject.toml").is_file():
+            return value
+    return None
 
 
 def _server_name() -> str:
     return _installer_helpers().SERVER_NAME
 
 
-def check_desktop_config(*, config_path: Path | None = None) -> CheckResult:
+def check_desktop_config(
+    *, config_path: Path | None = None, bundle_dir: Path | None = None
+) -> CheckResult:
     """Claude-Desktop-Config: vorhanden, gültig, Eintrag da, Startbefehl startbar?
 
     Wichtig: eine fehlende Config ist KEIN Fehler. Claude Code, die Web-App und
@@ -298,6 +333,18 @@ def check_desktop_config(*, config_path: Path | None = None) -> CheckResult:
                 ),
                 fix="chemdraw-install   (rewrites the entry with the absolute launcher path)",
             )
+        # Clone verschoben oder gelöscht: uv ist da, das Projekt nicht mehr.
+        if gone := _missing_project_dir(servers[connector]):
+            return CheckResult(
+                name=name,
+                status=ERROR,
+                detail=(
+                    f"The '{connector}' entry runs the server from {gone}, but there is no "
+                    "project there (no pyproject.toml) — the clone was moved or deleted. "
+                    "Claude Desktop fails to start it without any message."
+                ),
+                fix="./install.sh in the clone's new location   (or: uv tool install chemdraw-mcp && chemdraw-install)",
+            )
 
     if missing:
         if legacy:
@@ -308,6 +355,18 @@ def check_desktop_config(*, config_path: Path | None = None) -> CheckResult:
                 f"{' and '.join(connectors)}."
             )
         elif len(missing) == len(connectors):
+            if _extension_installed(bundle_dir or _bundle_dir()):
+                # Die Extension trägt nichts in diese Datei ein; ein zweiter
+                # Eintrag hier würde jedes Werkzeug doppelt zeigen.
+                return CheckResult(
+                    name=name,
+                    status=NOTE,
+                    detail=(
+                        "Installed as a Claude Desktop extension (.mcpb). Extensions are "
+                        f"managed by Claude Desktop itself and do not appear in {_short(path)}; "
+                        "nothing to add here. Enable or disable it under Settings → Extensions."
+                    ),
+                )
             detail = (
                 f"{_short(path)} exists but has no '{_server_name()}' entry, so Claude Desktop does "
                 "not know this server. Not a problem if you use another client."
@@ -322,7 +381,7 @@ def check_desktop_config(*, config_path: Path | None = None) -> CheckResult:
             name=name,
             status=LIMITED,
             detail=detail,
-            fix="./install.sh   (idempotent; leaves your other MCP servers untouched)",
+            fix=f"{_install_command()}   (idempotent; leaves your other MCP servers untouched)",
         )
 
     main_entry = servers[_server_name()]

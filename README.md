@@ -16,7 +16,8 @@ sign-up, no ChemDraw licence.
 ## Quick start
 
 1. **[Download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**
-   (`chemdraw-mcp-<version>.mcpb`), double-click it and confirm in Claude Desktop.
+   (`chemdraw-mcp-<version>.mcpb`, macOS and Linux), double-click it, confirm in Claude Desktop
+   and restart Claude Desktop once.
 2. Open a **new chat** and say *"Use the ChemDraw MCP: draw thalidomide"*.
 3. Try one of the [prompts below](#prompts-to-try) or the [tool table](#tools).
 
@@ -131,7 +132,7 @@ explained under [Development](#development).
 | | `lookup_molecule_data` | *"Give me a data sheet for capsaicin"* | yes |
 | | `predict_spectrum` | *"Which IR bands should capsaicin show?"* | text |
 | **Calculate** | `calculate_ph` | *"What is the pH of 0.1 M acetic acid, pKa 4.76?"* | text |
-| **Anki** | `export_anki_deck` | *"I have an exam on NSAIDs on Friday and need to know the structures"* | file |
+| **Anki** | `export_anki_deck` | *"I have an exam on NSAIDs on Friday and need to know the structures"* | yes |
 
 The 16th tool, `save_png`, is the server half of the panel's export button. It
 runs when you click that button and is never called by the model on its own.

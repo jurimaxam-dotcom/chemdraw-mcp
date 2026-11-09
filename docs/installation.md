@@ -37,7 +37,7 @@ chemdraw-install
 `chemdraw-install` adds both Claude Desktop entries (`chemdraw` and
 `chemdraw-pharma`) with the absolute path of the installed launcher, backs up
 the config first, replaces the single `chemdraw-tool` entry of versions before
-0.10, leaves other MCP servers untouched and prints what it registered.
+0.9.0, leaves other MCP servers untouched and prints what it registered.
 
 ## 3. From a clone (to read or change the code)
 
@@ -100,8 +100,8 @@ rendering, the Java/OPSIN runtime, the `uv` path, the Claude Desktop entry, the
 name databases and the output directory — and prints the command that fixes
 each problem. Results are `[OK]`, `[LIMITED]` (works, but restricted), `[FAIL]`
 or `[NOTE]` (does not apply). The exit code stays 0 while the server is usable.
-From a PyPI install the `uv` and Claude Desktop checks report `[NOTE]`, because
-they belong to the repository installer.
+With the extension installed, the Claude Desktop check reports `[NOTE]`:
+extensions are managed by Claude Desktop and are not listed in its config file.
 
 If the server code or a dependency changed, restart Claude Desktop: it keeps
 the server process running, and an old process mixed with new files fails in

@@ -151,9 +151,15 @@ def build_installed_entry(launcher: str | None = None, profile: str = "mvp") -> 
     """
     if launcher is None:
         for name in ("chemdraw-mcp", "chemdraw-tool-server"):
-            probe = Path(sys.executable).resolve().parent / name
-            if _is_runnable(str(probe)):
-                launcher = str(probe)
+            # Erst neben dem Interpreter, wie er aufgerufen wurde: in einer venv
+            # ist sys.executable ein Symlink auf das Basis-Python, das Startskript
+            # liegt aber im bin/ der venv — .resolve() suchte am falschen Ort.
+            for folder in (Path(sys.executable).parent, Path(sys.executable).resolve().parent):
+                probe = folder / name
+                if _is_runnable(str(probe)):
+                    launcher = str(probe)
+                    break
+            if launcher:
                 break
             found = shutil.which(name)
             if found:
@@ -232,9 +238,21 @@ def install_entries(entries: dict[str, dict], config_path: Path | None = None) -
                 "Datei wurde NICHT verändert — bitte erst reparieren "
                 "(oder löschen, dann legt der Installer sie neu an)."
             ) from exc
-        path.with_suffix(path.suffix + ".bak").write_text(
-            json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8"
-        )
+        if not isinstance(existing, dict) or not isinstance(
+            existing.get("mcpServers", {}), (dict, type(None))
+        ):
+            raise ValueError(
+                f"Claude config has an unexpected shape: {path} must be a JSON object "
+                'whose "mcpServers" is an object. The file was NOT changed — repair it '
+                "first (or delete it, then the installer creates a new one)."
+            )
+        if existing.get("mcpServers") is None:
+            existing = {**existing, "mcpServers": {}}
+        # Nur das erste Backup zählt: es hält den Stand vor der Installation.
+        # Ein zweiter Lauf überschrieb es früher mit dem schon geänderten Stand.
+        backup = path.with_suffix(path.suffix + ".bak")
+        if not backup.exists():
+            backup.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
 
     merged = merge_connectors(existing, entries)
 
