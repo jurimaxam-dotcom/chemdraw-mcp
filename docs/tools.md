@@ -19,7 +19,7 @@ trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI, with
 English, counter-ion, form and rotation-sign spellings as fallbacks, and a
 direct hit is cross-checked against the other source (free form over salt
 unless the name says salt, the more defined stereo form wins); a pinned
-identity test checks 25 inputs against their InChIKey, and family names such
+identity test checks 35 inputs against their InChIKey, and family names such
 as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
 buttons for the data sheet, PNG export, an Anki card and a rotatable 3D

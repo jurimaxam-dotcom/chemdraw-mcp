@@ -1317,3 +1317,65 @@ def test_form_suffix_is_not_shortened_to_vet_conflicting_original_hits(monkeypat
     monkeypatch.setattr(resolver, "_pubchem_lookup", lookup)
     assert resolver.resolve_name_route("Citral A+B") == ("CCN", "")
     lookup.assert_called_once_with("Citral A+B", [])
+
+
+# Zweiatomige Elemente (Befund 09.11.2026, auch in 0.9.0): OPSIN liest
+# "oxygen" als Atom [O] und wird für kohlenstofffreie Treffer nicht gegen
+# PubChem geprüft; "Stickstoff" ist bei PubChem [NH] (CID 5460607), "Iod"
+# kennt PubChem nicht und NCI liefert Iodid. Die Attrappen geben genau diese
+# gemessenen Fehlantworten zurück.
+_MEASURED_OPSIN = {
+    "nitrogen": "[N]", "oxygen": "[O]", "fluorine": "[F]", "chlorine": "[Cl]",
+    "bromine": "[Br]", "iodine": "[I]",
+    "sodium": "[Na]", "Natrium": "[Na]", "iron": "[Fe]", "ozone": "O=[O+][O-]",
+}
+_MEASURED_PUBCHEM = {
+    "hydrogen": "[HH]", "nitrogen": "N#N", "oxygen": "O=O", "fluorine": "FF",
+    "chlorine": "ClCl", "bromine": "BrBr", "iodine": "II",
+    "Wasserstoff": "[HH]", "Stickstoff": "[NH]", "Sauerstoff": "O=O",
+    "Fluor": "FF", "Chlor": "ClCl", "Brom": "BrBr", "Jod": "II",
+    "sodium": "[Na]", "Natrium": "[Na]", "iron": "[Fe]",
+    "ozone": "[O-][O+]=O", "oxygen atom": "O",
+}
+_MEASURED_NCI = {"Iod": "[I-]"}
+
+
+@pytest.fixture
+def _measured_sources(monkeypatch):
+    monkeypatch.setattr(resolver, "_opsin_lookup", lambda name: _MEASURED_OPSIN.get(name))
+    monkeypatch.setattr(resolver, "_pubchem_lookup",
+                        lambda name, report=None: _MEASURED_PUBCHEM.get(name))
+    monkeypatch.setattr(resolver, "_nci_cir_lookup",
+                        lambda name, report=None: _MEASURED_NCI.get(name))
+
+
+def _canonical(smiles):
+    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles))
+
+
+@pytest.mark.parametrize(("name", "expected"), [
+    ("hydrogen", "[HH]"), ("nitrogen", "N#N"), ("oxygen", "O=O"),
+    ("fluorine", "FF"), ("chlorine", "ClCl"), ("bromine", "BrBr"), ("iodine", "II"),
+    ("Wasserstoff", "[HH]"), ("Stickstoff", "N#N"), ("Sauerstoff", "O=O"),
+    ("Fluor", "FF"), ("Chlor", "ClCl"), ("Brom", "BrBr"), ("Iod", "II"), ("Jod", "II"),
+    ("Oxygen", "O=O"), (" chlorine ", "ClCl"),
+])
+def test_diatomic_element_names_resolve_to_the_molecule(_measured_sources, name, expected):
+    assert _canonical(resolve(name)[0]) == _canonical(expected)
+
+
+@pytest.mark.parametrize(("name", "expected"), [
+    ("sodium", "[Na]"), ("Natrium", "[Na]"), ("iron", "[Fe]"),
+    ("ozone", "O=[O+][O-]"), ("oxygen atom", "O"),
+])
+def test_other_element_names_keep_their_source_answer(_measured_sources, name, expected):
+    assert resolve(name)[0] == expected
+
+
+@pytest.mark.parametrize("smiles", ["O", "[O]", "O=O", "[Cl]"])
+def test_element_smiles_stay_smiles_without_any_lookup(monkeypatch, smiles):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("SMILES darf keine Quelle befragen")
+    for source in ("_opsin_lookup", "_pubchem_lookup", "_nci_cir_lookup"):
+        monkeypatch.setattr(resolver, source, forbidden)
+    assert resolve(smiles)[0] == smiles

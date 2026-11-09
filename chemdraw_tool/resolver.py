@@ -1136,6 +1136,22 @@ _AMBIGUOUS_FAMILIES: dict[str, tuple[IsomerCandidate, ...]] = {
     **dict.fromkeys(("glucose", "glukose"), _GLUCOSE),
 }
 
+# Die sieben zweiatomigen Elemente: Wer "oxygen" schreibt, meint O₂ — gemessen
+# 09.11.2026 lag jede Quelle anders daneben. OPSIN liest die englischen Namen
+# als Atom ([O], [Cl] …) und wird für kohlenstofffreie Treffer nicht gegen
+# PubChem geprüft (_opsin_checked); PubChem führt "Stickstoff" als [NH]
+# (CID 5460607); "Iod" kennt PubChem nicht, NCI liefert Iodid [I-]. Nur exakte
+# ganze Namen — "oxygen atom", "Natrium", "ozone" gehen weiter in die Kaskade.
+_DIATOMIC_ELEMENTS: dict[str, str] = {
+    **dict.fromkeys(("hydrogen", "wasserstoff"), "[HH]"),
+    **dict.fromkeys(("nitrogen", "stickstoff"), "N#N"),
+    **dict.fromkeys(("oxygen", "sauerstoff"), "O=O"),
+    **dict.fromkeys(("fluorine", "fluor"), "FF"),
+    **dict.fromkeys(("chlorine", "chlor"), "ClCl"),
+    **dict.fromkeys(("bromine", "brom"), "BrBr"),
+    **dict.fromkeys(("iodine", "iod", "jod"), "II"),
+}
+
 
 def ambiguous_candidates(name: str) -> list[IsomerCandidate] | None:
     """Die Kandidaten, wenn `name` ein bekannter Familienname ist — sonst None."""
@@ -1211,7 +1227,8 @@ def resolve_name_route(name: str) -> Resolution:
 def _resolve_name_route(name: str, report: list) -> Resolution:
     """Resolve a compound name to SMILES via fallback cascade.
 
-    0. Known family names ("xylene", "Glucose") raise kind="ambiguous"
+    0. Known family names ("xylene", "Glucose") raise kind="ambiguous";
+       names of the seven diatomic elements ("oxygen", "Stickstoff") → X₂
     1. OPSIN (offline, rule-based — systematic IUPAC names, no DB index needed)
     2. PubChem direct (handles English names + many synonyms)
     3. PubChem with umlaut transliteration (ä→ae etc.)
@@ -1228,6 +1245,10 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
     # Familienname zuerst: OPSIN würde ihn still zum ortho-Isomer machen.
     if candidates := ambiguous_candidates(name):
         raise _ambiguous_error(name, candidates)
+
+    # Elementname eines zweiatomigen Elements: das Molekül, offline.
+    if smiles := _DIATOMIC_ELEMENTS.get(name.strip().casefold()):
+        return Resolution(smiles)
 
     # OPSIN liest den Namen selbst; gewinnt PubChem die Gegenprobe, war es
     # derselbe Name — beides ist kein Umweg, also kein found_as.
