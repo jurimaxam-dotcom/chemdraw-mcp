@@ -287,7 +287,8 @@ def test_falsche_uv_pruefsumme_bricht_den_start_ab(tmp_path):
     r = _run(tmp_path, "9.9.1", **extra)
     assert r.returncode != 0
     assert "SERVER" not in r.stdout
-    assert "Prüfsumme" in r.stderr and "stimmt nicht" in r.stderr
+    # Wortlaut seit Fund (f), 09.11.: uv-holen.sh spricht Englisch (install.sh gibt es aus).
+    assert "checksum" in r.stderr and "does not match" in r.stderr
     assert not (tmp_path / "calls.log").exists(), "ungeprüftes uv wurde ausgeführt"
     assert not list((_base(tmp_path) / "uv").glob("uv-*")), (
         "ungeprüftes uv blieb liegen"

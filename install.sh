@@ -16,19 +16,19 @@ cd "$(dirname "$0")"
 PROJECT_DIR="$(pwd)"
 
 echo "== ChemDraw-Tool Installer =="
-echo "Projekt: $PROJECT_DIR"
+echo "Project: $PROJECT_DIR"
 echo ""
 
 # --- 1. uv -------------------------------------------------------------------
 # Kein `curl … | sh` mehr (Sicherheitsscan B4): fehlt uv, kommt eine feste
 # Version mit geprüfter SHA-256 — dieselbe Logik wie im Bundle-Starter.
 if ! command -v uv >/dev/null 2>&1; then
-  echo "→ uv (Python-Paketmanager) nicht gefunden — lade die geprüfte Version …"
+  echo "→ uv (Python package manager) not found — downloading the verified version …"
   UV_HOLEN_DIR="$PROJECT_DIR/mcpb/server"
   # shellcheck source=mcpb/server/uv-holen.sh
   . "$UV_HOLEN_DIR/uv-holen.sh"
   if ! UV_GEHOLT="$(hole_uv "${XDG_DATA_HOME:-$HOME/.local/share}/chemdraw-mcp-bundle/uv")"; then
-    echo "✗ uv-Installation fehlgeschlagen. Bitte manuell: https://docs.astral.sh/uv/"
+    echo "✗ uv installation failed. Please install it manually: https://docs.astral.sh/uv/"
     exit 1
   fi
   export PATH="$(dirname "$UV_GEHOLT"):$PATH"
@@ -41,26 +41,26 @@ echo "✓ uv: $UV_BIN"
 
 # --- 2. Dependencies ---------------------------------------------------------
 echo ""
-echo "→ Dependencies installieren (uv sync --locked) …"
+echo "→ Installing dependencies (uv sync --locked) …"
 # --locked: exakt uv.lock (mit Hashes), nie neu auflösen.
 uv sync --locked --quiet
-echo "✓ Dependencies bereit."
+echo "✓ Dependencies ready."
 
 # --- 3. Claude-Desktop-Config ------------------------------------------------
 echo ""
-echo "→ Beide Konnektoren in Claude Desktop registrieren …"
+echo "→ Registering both connectors in Claude Desktop …"
 uv run python scripts/install_claude_config.py \
   --project-dir "$PROJECT_DIR" --uv-command "$UV_BIN"
 
 # --- 4. Smoke-Test -----------------------------------------------------------
 echo ""
-echo "→ Smoke-Test (Server-Import) …"
+echo "→ Smoke test (server import) …"
 if uv run python -c "import chemdraw_tool.server" 2>/dev/null; then
-  echo "✓ Server importiert sauber."
+  echo "✓ Server imports cleanly."
 else
-  echo "✗ Server-Import fehlgeschlagen — bitte 'uv run python -c \"import chemdraw_tool.server\"' prüfen."
+  echo "✗ Server import failed — check with 'uv run python -c \"import chemdraw_tool.server\"'."
   exit 1
 fi
 
 echo ""
-echo "✅ Fertig. Claude Desktop neu starten, im Chat den Konnektor chemdraw (oder chemdraw-pharma) wählen, dann z.B.: \"Zeichne Aspirin\"."
+echo "✅ Done. Restart Claude Desktop, pick the connector chemdraw (or chemdraw-pharma) in the chat, then try e.g.: \"Draw aspirin\"."

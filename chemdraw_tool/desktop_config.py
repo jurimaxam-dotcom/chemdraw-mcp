@@ -118,8 +118,8 @@ def _profile_env(profile: str) -> dict[str, str]:
     """Das feste Profil eines Eintrags — nur die zwei, die der Server kennt."""
     if profile not in CONNECTORS.values():
         raise ValueError(
-            f"profile muss 'mvp' oder 'full' sein, war: {profile!r} "
-            f"(Konnektoren: {', '.join(f'{n}={p}' for n, p in CONNECTORS.items())})"
+            f"profile must be 'mvp' or 'full', got: {profile!r} "
+            f"(connectors: {', '.join(f'{n}={p}' for n, p in CONNECTORS.items())})"
         )
     return {"CHEMDRAW_PROFILE": profile}
 
@@ -129,7 +129,7 @@ def build_server_entry(
 ) -> dict:
     """Baut den mcpServers-Eintrag, der den Server via uv startet."""
     if not Path(project_dir).is_absolute():
-        raise ValueError(f"project_dir muss absolut sein, war: {project_dir!r}")
+        raise ValueError(f"project_dir must be absolute, got: {project_dir!r}")
     return {
         "command": resolve_uv_command(uv_command),
         "args": ["--directory", project_dir, "run", "chemdraw-tool-server"],
@@ -167,8 +167,8 @@ def build_installed_entry(launcher: str | None = None, profile: str = "mvp") -> 
                 break
     if not launcher:
         raise RuntimeError(
-            "Kein chemdraw-mcp-Startskript gefunden. Ist das Paket wirklich "
-            "installiert? (pip install chemdraw-mcp / uv tool install chemdraw-mcp)"
+            "No chemdraw-mcp launcher script found. Is the package actually "
+            "installed? (pip install chemdraw-mcp / uv tool install chemdraw-mcp)"
         )
     return {"command": launcher, "args": [], "env": _profile_env(profile)}
 
@@ -187,12 +187,12 @@ def verify_entry(entry: dict) -> str:
     """
     command = entry.get("command", "")
     if _is_runnable(command) and os.path.isabs(command):
-        return f"✓ Startet mit: {command}"
+        return f"✓ Starts with: {command}"
     return (
-        f"⚠ uv nicht als Absolutpfad auflösbar (Eintrag: {command!r}). "
-        "Claude Desktop startet MCP-Server mit minimalem GUI-PATH und findet "
-        "uv dort evtl. nicht. Bitte 'command' in der Config von Hand auf die "
-        "Ausgabe von 'which uv' setzen."
+        f"⚠ uv could not be resolved to an absolute path (entry: {command!r}). "
+        "Claude Desktop starts MCP servers with a minimal GUI PATH and may not "
+        "find uv there. Set 'command' in the config by hand to the output of "
+        "'which uv'."
     )
 
 
@@ -234,9 +234,9 @@ def install_entries(entries: dict[str, dict], config_path: Path | None = None) -
             existing = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
             raise ValueError(
-                f"Claude-Config ist kein gültiges JSON: {path} ({exc}). "
-                "Datei wurde NICHT verändert — bitte erst reparieren "
-                "(oder löschen, dann legt der Installer sie neu an)."
+                f"Claude config is not valid JSON: {path} ({exc}). "
+                "The file was NOT changed — repair it first "
+                "(or delete it, then the installer creates a new one)."
             ) from exc
         if not isinstance(existing, dict) or not isinstance(
             existing.get("mcpServers", {}), (dict, type(None))
@@ -278,20 +278,24 @@ def install(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
+    # Nicht __doc__: der Modul-Docstring ist Entwicklerdoku auf Deutsch, --help sieht der Nutzer.
+    ap = argparse.ArgumentParser(
+        description="Register the two ChemDraw MCP connectors (chemdraw = default "
+        "profile, chemdraw-pharma = full profile) in the Claude Desktop config. "
+        "Idempotent; other MCP servers stay untouched and a .bak backup is written "
+        "before the first change."
+    )
     ap.add_argument(
         "--project-dir",
         default=None,
-        help="Absoluter Pfad zum Projekt-Clone. Default: dieses Repo, wenn das "
-        "Modul aus einem Clone läuft — sonst wird das installierte Paket "
-        "eingetragen.",
+        help="Absolute path to the project clone. Default: this repository when "
+        "running from a clone — otherwise the installed package is registered.",
     )
     ap.add_argument(
         "--uv-command",
         default=None,
-        help="Pfad zum uv-Binary (Default: Auflösung über PATH bzw. bekannte "
-        "Installationsorte). install.sh reicht hier das uv durch, das es "
-        "gerade benutzt hat.",
+        help="Path to the uv binary (default: resolved via PATH or known install "
+        "locations). install.sh passes the uv it just used.",
     )
     args = ap.parse_args()
 
@@ -319,9 +323,9 @@ def main() -> int:
 
     path = install_entries(entries)
     names = " + ".join(f"{name} ({profile})" for name, profile in CONNECTORS.items())
-    print(f"✓ {names} in {path} registriert.")
+    print(f"✓ Registered {names} in {path}.")
     print(verify_entry(entries[SERVER_NAME]))
-    print("→ Claude Desktop neu starten, damit beide Konnektoren geladen werden.")
+    print("→ Restart Claude Desktop so that both connectors are loaded.")
     return 0
 
 

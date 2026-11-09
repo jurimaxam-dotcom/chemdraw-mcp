@@ -41,7 +41,7 @@ hole_uv() {
   pruefsummen="$UV_HOLEN_DIR/uv-checksums.txt"
   uv_version="$(awk '$1 == "version" { print $2 }' "$pruefsummen")"
   if ! triple="$(_uv_triple)"; then
-    _uv_log "FEHLER: keine uv-Version für $(uname -s)/$(uname -m) hinterlegt. Bitte uv selbst installieren: https://docs.astral.sh/uv/"
+    _uv_log "ERROR: no pinned uv version for $(uname -s)/$(uname -m). Please install uv yourself: https://docs.astral.sh/uv/"
     return 1
   fi
   asset="uv-$triple.tar.gz"
@@ -52,32 +52,32 @@ hole_uv() {
     return 0
   fi
   if [ -z "$erwartet" ]; then
-    _uv_log "FEHLER: keine Prüfsumme für $asset in $pruefsummen."
+    _uv_log "ERROR: no checksum for $asset in $pruefsummen."
     return 1
   fi
   if ! command -v curl >/dev/null 2>&1; then
-    _uv_log "FEHLER: weder uv noch curl vorhanden. Bitte uv installieren: https://docs.astral.sh/uv/"
+    _uv_log "ERROR: neither uv nor curl is available. Please install uv: https://docs.astral.sh/uv/"
     return 1
   fi
   basis="${CHEMDRAW_UV_DOWNLOAD_BASE:-https://github.com/astral-sh/uv/releases/download}"
   tmp="$(mktemp -d "${TMPDIR:-/tmp}/chemdraw-uv.XXXXXX")" || return 1
-  _uv_log "lade uv $uv_version ($asset) …"
+  _uv_log "downloading uv $uv_version ($asset) …"
   if ! curl --proto '=https,file' -fsSL -o "$tmp/$asset" "$basis/$uv_version/$asset"; then
     rm -rf "$tmp"
-    _uv_log "FEHLER: Download von uv $uv_version fehlgeschlagen ($basis)."
+    _uv_log "ERROR: download of uv $uv_version failed ($basis)."
     return 1
   fi
   ist="$(_uv_sha256 "$tmp/$asset" || true)"
   if [ -z "$ist" ] || [ "$ist" != "$erwartet" ]; then
     rm -rf "$tmp"
-    _uv_log "FEHLER: Prüfsumme von $asset stimmt nicht — Abbruch, nichts installiert."
-    _uv_log "  erwartet: $erwartet"
-    _uv_log "  erhalten: ${ist:-(kein sha256-Werkzeug)}"
+    _uv_log "ERROR: checksum of $asset does not match — aborting, nothing installed."
+    _uv_log "  expected: $erwartet"
+    _uv_log "  got:      ${ist:-(no sha256 tool)}"
     return 1
   fi
   if ! tar -xzf "$tmp/$asset" -C "$tmp" || [ ! -x "$tmp/uv-$triple/uv" ]; then
     rm -rf "$tmp"
-    _uv_log "FEHLER: $asset ließ sich nicht entpacken."
+    _uv_log "ERROR: $asset could not be unpacked."
     return 1
   fi
   mkdir -p "$ziel_basis"
@@ -90,6 +90,6 @@ hole_uv() {
     rm -rf "$ziel.neu.$$"
   fi
   [ -x "$ziel/uv" ] || return 1
-  _uv_log "uv $uv_version geprüft (sha256 $erwartet)"
+  _uv_log "uv $uv_version verified (sha256 $erwartet)"
   printf '%s' "$ziel/uv"
 }
