@@ -10,6 +10,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 - Panel: a second click on a drawing button (All H, Fischer, Haworth) while the first drawing is
   still loading is no longer lost — the last chosen view wins.
+- Mechanism drawings: chain abbreviation no longer deletes a molecule that is nothing but an
+  unbranched alkane chain (both ends abbreviated each other away); such a molecule is drawn in full.
 
 ## [0.9.1] — 2026-11-10
 

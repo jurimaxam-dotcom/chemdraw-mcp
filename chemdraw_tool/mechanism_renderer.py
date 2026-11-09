@@ -201,7 +201,10 @@ def abbreviate_chains(mol: Chem.RWMol, keep: set[int]) -> set[int]:
         path, prev, cur = [end.GetIdx()], -1, end
         while True:
             nxt = [n for n in cur.GetNeighbors() if n.GetIdx() != prev]
-            if not nxt:  # das ganze Molekül ist eine Kette (kein Anknüpfungspunkt): nicht kürzen
+            # Das ganze Bruchstück ist eine Kette (am anderen Ende wieder ein kürzbares Kettenende,
+            # kein Anknüpfungspunkt): nicht kürzen. Sonst kürzen beide Enden einander weg und vom
+            # n-Alkan bleibt nichts (Fund h, 09.11.).
+            if not nxt or (eligible(nxt[0]) and nxt[0].GetDegree() == 1):
                 path = []
                 break
             if eligible(nxt[0]) and nxt[0].GetDegree() == 2:

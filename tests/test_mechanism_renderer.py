@@ -200,6 +200,8 @@ def test_lange_kette_wird_als_summenformel_abgekuerzt():
     ("CCCCO", 5),          # Butyl: bleibt gezeichnet (unter der Schwelle)
     ("CC(C)CCO", 6),       # verzweigt: bleibt
     ("OC1CCCCC1", 7),      # Ring: bleibt
+    ("CCCCCC", 6),         # reines n-Alkan: nichts, woran ein Etikett hängen könnte (Fund h, 09.11.)
+    ("CCCCCCCCCCCC", 12),  # dito lang: vorher kürzten beide Enden einander weg, null Atome blieben
 ])
 def test_kurze_verzweigte_und_ringketten_bleiben(smiles, atome):
     from chemdraw_tool.mechanism_renderer import abbreviate_chains
