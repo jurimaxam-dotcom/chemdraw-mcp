@@ -201,7 +201,8 @@ test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Stru
 const SVG_ALL_H = "<svg viewBox='0 0 40 20'><path d='M1 1' data-all-h='1'/></svg>";
 const SVG_FISCHER = "<svg viewBox='0 0 40 20'><text data-fischer='1'>CHO</text></svg>";
 const SVG_HAWORTH = "<svg viewBox='0 0 40 20'><text data-haworth='1'>O</text></svg>";
-const VIEW_SVG = { all_h: SVG_ALL_H, fischer: SVG_FISCHER, haworth: SVG_HAWORTH };
+const SVG_CHAIR = "<svg viewBox='0 0 40 20'><text data-chair='1'>OH</text></svg>";
+const VIEW_SVG = { all_h: SVG_ALL_H, fischer: SVG_FISCHER, haworth: SVG_HAWORTH, chair: SVG_CHAIR };
 const REQUEST = { name_or_smiles: "CC(=O)Oc1ccccc1C(=O)O", annotate_stereo: true };
 
 function renderMolecule(data, respond) {
@@ -353,6 +354,18 @@ test("„Haworth“ zeigt den Ring und den Satz, warum es keine Fischer-Projekti
   await click(buttonByText(container, "Haworth"));
   assert.ok(container.querySelector(".structure-drawing [data-haworth]"), "Haworth nicht sichtbar");
   assert.match(textOf(container), /open-chain/, "Hinweis fehlt in der Haworth-Ansicht");
+  unmount();
+});
+
+test("„Chair“ holt den Sessel per view=chair, ohne den Haworth-Satz", async () => {
+  const note = "The Fischer projection shows the open-chain form.";
+  const data = { ...MOLECULE, views: ["all_h", "haworth", "chair"], viewRequest: REQUEST, projectionNote: note };
+  const { container, calls, unmount } = renderMolecule(data);
+  await click(buttonByText(container, "Chair"));
+  assert.deepEqual(calls[0].arguments, { ...REQUEST, view: "chair" });
+  assert.ok(container.querySelector(".structure-drawing [data-chair]"), "Sessel nicht sichtbar");
+  assert.equal(buttonByText(container, "Chair").getAttribute("aria-pressed"), "true");
+  assert.doesNotMatch(textOf(container), /open-chain/, "Haworth-Satz gehört nicht zum Sessel");
   unmount();
 });
 

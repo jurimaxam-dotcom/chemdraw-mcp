@@ -347,6 +347,7 @@ const DRAWING_TOGGLES = [
   { key: "all_h", label: "All H", title: "Draw every hydrogen atom" },
   { key: "fischer", label: "Fischer", title: "Fischer projection" },
   { key: "haworth", label: "Haworth", title: "Haworth projection" },
+  { key: "chair", label: "Chair", title: "Chair conformation" },
 ];
 
 // Ein Knopf der Ansicht-Achse. Lädt er, dreht sich derselbe Spinner wie am
