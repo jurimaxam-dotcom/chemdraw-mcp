@@ -12,6 +12,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `calculate_ph`: an unsorted `pka_values` list is refused for the pH number as it already was for
+  the curves (0.1 M H₃PO₄ came out as pH 3.35 instead of 1.63); contradicting `pka` and `pkb` are
+  refused; a buffer recipe says when the exact charge balance misses the target pH.
+- Grubbs test above 20 values uses the exact critical value instead of the one for n = 20, which
+  rejected values too easily (n = 30: 2.908, not 2.709).
+- Titration: a blank at or above the reading is named as the cause instead of ending in a negative
+  content or a division error. Pharmacokinetics: zero inputs get a message.
+- `predict_spectrum`: no ester band for anhydrides and carbamates; the two =CH₂ protons of a
+  terminal alkene count as two ¹H signals (propene: 4, not 3).
 - Name lookup no longer keeps an answer from an outage. When PubChem was briefly unreachable, the
   unchecked OPSIN reading of a trivial name ("methyldopa" as N-methyl-DOPA) stayed cached until the
   server restarted; now only answers that every asked source confirmed are cached.

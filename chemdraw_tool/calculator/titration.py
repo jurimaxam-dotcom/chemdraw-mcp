@@ -29,6 +29,18 @@ def _validate_positive_scalar(name: str, value: float) -> None:
         raise ValueError(f"{name} = {value} — must be positive.")
 
 
+def _validate_blank(name: str, volumina: list[float], blindwert: float) -> None:
+    """Der Blindwert muss unter jeder Ablesung liegen — sonst wird der Gehalt
+    null oder negativ und die Folgefehler nennen die Ursache nicht mehr."""
+    for i, v in enumerate(volumina, start=1):
+        if not v > blindwert:
+            raise ValueError(
+                f"{name}[{i}] = {v} mL is not above the blank ({blindwert} mL). "
+                "The blank consumption must be smaller than every reading — "
+                "are blank and reading swapped?"
+            )
+
+
 def calculate_titer(
     ref_einwaagen: list[float],
     ref_volumina: list[float],
@@ -50,6 +62,7 @@ def calculate_titer(
     _validate_positive("ref_volumina", ref_volumina)
     _validate_positive_scalar("faktor", faktor)
     _validate_positive_scalar("soll_gehalt", soll_gehalt)
+    _validate_blank("ref_volumina", ref_volumina, blindwert)
     gehalte = []
     for m, v in zip(ref_einwaagen, ref_volumina):
         gehalt = (faktor * (v - blindwert)) / m * 100
@@ -75,6 +88,7 @@ def calculate_gehalt_titration(
     _validate_positive("volumina", volumina)
     _validate_positive_scalar("faktor", faktor)
     _validate_positive_scalar("titer", titer)
+    _validate_blank("volumina", volumina, blindwert)
     results = []
     formula = "w = (F · T · (V − V_blind)) / m · 100%"
     explanation = (

@@ -239,14 +239,45 @@ _GRUBBS_CRITICAL = {
 }
 
 
+def _t_cdf(t: float, df: int) -> float:
+    """Verteilungsfunktion der t-Verteilung für t ≥ 0 (Simpson, ohne scipy)."""
+    norm = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2)) / math.sqrt(df * math.pi)
+    steps = 2000
+    h = t / steps
+    total = 0.0
+    for i in range(steps + 1):
+        x = i * h
+        weight = 1 if i in (0, steps) else (4 if i % 2 else 2)
+        total += weight * (1 + x * x / df) ** (-(df + 1) / 2)
+    return 0.5 + norm * total * h / 3
+
+
+def _t_quantile(p: float, df: int) -> float:
+    lo, hi = 0.0, 200.0
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        if _t_cdf(mid, df) < p:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
+
+def _grubbs_critical_exact(n: int, alpha: float = 0.05) -> float:
+    """Zweiseitiger kritischer Wert: G = (n−1)/√n · √(t² / (n−2+t²)), t = t(1−α/(2n); n−2)."""
+    t = _t_quantile(1 - alpha / (2 * n), n - 2)
+    return (n - 1) / math.sqrt(n) * math.sqrt(t * t / (n - 2 + t * t))
+
+
 def _lookup_grubbs_critical(n: int) -> float:
     if n in _GRUBBS_CRITICAL:
         return _GRUBBS_CRITICAL[n]
-    # Über der Tabelle: den grössten bekannten Wert nehmen. Konservativ in die
-    # sichere Richtung — der Test wird strenger, verwirft also seltener einen
-    # echten Messwert.
-    largest = max(_GRUBBS_CRITICAL)
-    return _GRUBBS_CRITICAL[largest] if n > largest else _GRUBBS_CRITICAL[3]
+    if n < 3:
+        return _GRUBBS_CRITICAL[3]
+    # Über der Tabelle rechnen statt den Wert für n = 20 weiterzuverwenden:
+    # G_crit steigt mit n, der alte Wert verwarf lange Reihen zu leicht
+    # (n = 30: 2,709 statt 2,908).
+    return round(_grubbs_critical_exact(n), 3)
 
 
 def grubbs_test(values: list[float], alpha: float = 0.05) -> dict:

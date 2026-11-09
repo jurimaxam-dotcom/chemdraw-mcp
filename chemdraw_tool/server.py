@@ -2439,6 +2439,8 @@ def calculate_ph(
         return "\n".join(lines)
 
     if topic == "weak_acid":
+        if pka_values:
+            _check_pka_values(pka_values)  # unsortiert rechnete still falsch (3,35 statt 1,63)
         r = ph_calc.weak_acid_ph(
             concentration=concentration or 0,
             pka=pka or None,

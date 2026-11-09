@@ -42,6 +42,8 @@ def resolve(
     Sind mehr Größen gegeben als nötig und sie passen nicht zusammen, wird das benannt
     statt stillschweigend eine zu wählen.
     """
+    # Erst prüfen, dann teilen: vd = 0 oder ke = 0 endete sonst in ZeroDivisionError.
+    _positiv(**{k: v for k, v in (("vd", vd), ("ke", ke), ("t_half", t_half), ("cl", cl)) if v is not None})
     if ke is None and t_half is not None:
         ke = ke_from_half_life(t_half)
     if ke is None and cl is not None and vd is not None:

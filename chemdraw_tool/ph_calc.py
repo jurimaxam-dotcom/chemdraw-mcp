@@ -114,6 +114,11 @@ def weak_base_ph(
             "A weak base needs either pkb (of the base) or pka (of its "
             "conjugate acid). pKa + pKb = 14."
         )
+    if pka is not None and pkb is not None and abs(pka + pkb - PKW) > 0.02:
+        raise ValueError(
+            f"pka ({pka:g}) and pkb ({pkb:g}) do not belong to one acid-base pair: "
+            f"they add up to {pka + pkb:g}, not 14. Give only one of them."
+        )
     pka_conj = pka if pka is not None else PKW - pkb
     pkb_value = pkb if pkb is not None else PKW - pka
 
@@ -233,6 +238,18 @@ def buffer_recipe(
             f"pH {target_ph:g} is {distance:.2f} units from the pKa. It works, "
             "but the capacity is already poor on one side."
         )
+
+    # Das Rezept folgt Henderson-Hasselbalch. Gegenprobe mit der Ladungsbilanz:
+    # bei verdünnten Puffern mit niedrigem pKa ist [H+] nicht mehr klein gegen c.
+    if acid_concentration > 0 and base_concentration > 0:
+        actual = exact_ph([pka], c_acid=total_concentration, c_na=base_concentration)
+        if abs(actual - target_ph) > 0.1:
+            notes.append(
+                f"Mixed as written, the exact charge balance gives pH {actual:.2f}, "
+                f"not {target_ph:g}: Henderson-Hasselbalch assumes [H+] and [OH-] are "
+                "small against the buffer concentration, which fails here. Use a "
+                "higher total concentration or adjust with the pH meter."
+            )
 
     result = {
         "target_ph": target_ph,
