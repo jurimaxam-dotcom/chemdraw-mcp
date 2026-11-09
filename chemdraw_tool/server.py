@@ -826,15 +826,16 @@ def generate_molecule(
     SMILES are always safe; use `label` for the localized display name.
 
     Args:
-        name_or_smiles: English/IUPAC compound name or SMILES string.
+        name_or_smiles: English/IUPAC name or SMILES. Peptides:
+            "Ala-Gly-Ser" (D-Ala, Ac-, -NH2, cyclo(…)); one-letter only as
+            "peptide:AGS" (lowercase = D).
         label: Display name shown below the structure (may be localized).
-        formats: Any of "png", "svg", "cdxml" (default: png + svg). Add
-            "cdxml" only when the structure is to be edited in ChemDraw.
+        formats: "png", "svg", "cdxml" (default: png + svg); "cdxml" only
+            when the structure is to be edited in ChemDraw.
         annotate_stereo: True prints CIP descriptors (R/S, E/Z) at each
             stereocenter.
-        abbreviate_groups: True draws common substituents as the short labels
-            chemists write by hand (Ph, Bn, OAc, OMe, CO2H, NO2, tBu, Boc, Ts,
-            TMS). The chemistry is unchanged; no hover tooltips in the panel.
+        abbreviate_groups: True draws substituents as short labels (Ph,
+            OAc, Boc, …); chemistry unchanged, no panel tooltips.
         render_style: "" standard · "compact" thin bonds for small print ·
             "presentation" thick bonds for slides · "grayscale" b/w palette.
         stereo_variants: True returns every stereoisomer of the open centers

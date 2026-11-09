@@ -6,6 +6,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Peptides from their sequence, offline: three-letter code as the name (`Ala-Trp-Lys-Ser-Gly`, `D-Ala`, `Ac-…-NH2`, `cyclo(…)`), one-letter code with the prefix `peptide:` (`peptide:AGS`, lowercase = D). Sequences no database knows (before: not found) now draw; linear peptides from five residues get a stretched backbone layout.
+- "X zwitterion" keeps the stereo of X ("alanine zwitterion" was racemic, "Alanin Zwitterion" was not found, "Ala zwitterion" was Ala-Leu-Ala).
+
 ### Fixed
 
 - Panel: a second click on a drawing button (All H, Fischer, Haworth) while the first drawing is

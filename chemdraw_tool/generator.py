@@ -1,10 +1,33 @@
 from rdkit import Chem
-from rdkit.Chem import AllChem
+from rdkit.Chem import AllChem, rdCoordGen
+
+# Lineare Peptide (E4, 09.11.2026): Das Standard-Layout faltet ab fünf Resten
+# das Rückgrat zur Haarnadel (Pentapeptid: N- und C-Terminus nebeneinander),
+# CoordGen legt es als Lehrbuch-Zickzack. Umgeschaltet wird nach der Struktur,
+# nicht nach dem Eingabeweg — sonst sähe dasselbe Peptid im Datenblatt (das
+# Panel ruft es per SMILES ab) anders aus als in der Strukturansicht. Ringe
+# im Rückgrat (Oxytocin, Cyclopeptide) bleiben beim Standard-Layout.
+# rdCoordGen.AddCoords statt SetPreferCoordGen: der Schalter wäre prozessweit,
+# die Tools laufen in Worker-Threads.
+_PEPTIDE_LINK = Chem.MolFromSmarts("[NX3][CX4][CX3](=O)!@[NX3][CX4][CX3]=O")
+_RING_LINK = Chem.MolFromSmarts("[NX3][CX4][CX3](=O)@[NX3][CX4][CX3]=O")
+MIN_PEPTIDE_LINKS = 4  # fünf Reste; bis vier sieht das Standard-Layout gut aus
+
+
+def is_linear_peptide(mol: Chem.Mol) -> bool:
+    """Mindestens fünf α-Reste in Kette, keine Amidbindung des Rückgrats im Ring."""
+    if mol.HasSubstructMatch(_RING_LINK):
+        return False
+    links = {(m[2], m[4]) for m in mol.GetSubstructMatches(_PEPTIDE_LINK)}
+    return len(links) >= MIN_PEPTIDE_LINKS
 
 
 def generate_2d(mol: Chem.Mol) -> Chem.Mol:
     mol_copy = Chem.RWMol(mol)
-    AllChem.Compute2DCoords(mol_copy)
+    if is_linear_peptide(mol_copy):
+        rdCoordGen.AddCoords(mol_copy)
+    else:
+        AllChem.Compute2DCoords(mol_copy)
     return mol_copy.GetMol()
 
 

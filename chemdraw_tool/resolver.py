@@ -18,6 +18,7 @@ import requests
 import requests.adapters
 from rdkit import Chem, RDLogger
 
+from chemdraw_tool import peptide
 from chemdraw_tool.de_names import english_variant, form_variant, salt_variant
 
 logger = logging.getLogger(__name__)
@@ -1171,6 +1172,34 @@ def _ambiguous_error(name: str, candidates: list[IsomerCandidate]) -> NameResolu
     )
 
 
+# „X zwitterion“ (E4, 09.11.2026): PubChem führt „alanine zwitterion“ beim
+# Racemat, „Alanin Zwitterion“ kennt keine Quelle, „Ala zwitterion“ wird bei
+# PubChem das Tripeptid Ala-Leu-Ala. Darum: Grundname durch die Kaskade, dann
+# genau EIN α-Aminosäure-Motiv umladen (α-NH → NH3+, α-COOH → COO-). Kein oder
+# mehr als ein Motiv (Cystin) → die alte Kaskade mit dem ganzen Namen.
+_ZWITTERION = re.compile(r"(.+?)[\s-]+zwitterion", re.IGNORECASE)
+_ALPHA_AMINO_ACID = Chem.MolFromSmarts(
+    "[NX3;H2,H1;+0;!$(N[C,S]=[O,S,N])][CX4][CX3](=O)[OX2H1]"
+)
+
+
+def _zwitterion(smiles: str) -> str | None:
+    mol = Chem.MolFromSmiles(smiles)
+    matches = mol.GetSubstructMatches(_ALPHA_AMINO_ACID) if mol else ()
+    if len(matches) != 1:
+        return None
+    nitrogen, _, _, _, oxygen = matches[0]
+    mol = Chem.RWMol(mol)
+    mol.GetAtomWithIdx(nitrogen).SetFormalCharge(1)
+    mol.GetAtomWithIdx(oxygen).SetFormalCharge(-1)
+    for idx in (nitrogen, oxygen):
+        atom = mol.GetAtomWithIdx(idx)
+        atom.SetNumExplicitHs(0)
+        atom.SetNoImplicit(False)
+    Chem.SanitizeMol(mol)
+    return Chem.MolToSmiles(mol)
+
+
 class Resolution(NamedTuple):
     """Ergebnis der Namenskaskade.
 
@@ -1228,7 +1257,9 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
     """Resolve a compound name to SMILES via fallback cascade.
 
     0. Known family names ("xylene", "Glucose") raise kind="ambiguous";
-       names of the seven diatomic elements ("oxygen", "Stickstoff") → X₂
+       names of the seven diatomic elements ("oxygen", "Stickstoff") → X₂;
+       peptides: "peptide:AGS" (one-letter) and "Ala-Gly-Ser" (three-letter)
+       are built offline (chemdraw_tool.peptide)
     1. OPSIN (offline, rule-based — systematic IUPAC names, no DB index needed)
     2. PubChem direct (handles English names + many synonyms)
     3. PubChem with umlaut transliteration (ä→ae etc.)
@@ -1249,6 +1280,31 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
     # Elementname eines zweiatomigen Elements: das Molekül, offline.
     if smiles := _DIATOMIC_ELEMENTS.get(name.strip().casefold()):
         return Resolution(smiles)
+
+    # Peptide (E4): Einbuchstabencode nur hinter "peptide:", Dreibuchstaben-
+    # Sequenzen offline. Eine Sequenz mit unbaubarem Rest ("Val-Cit") fragt
+    # erst die Kaskade — die Peptid-Meldung kommt nur, wenn die nichts findet.
+    if (sequence := peptide.one_letter_sequence(name)) is not None:
+        try:
+            return Resolution(peptide.one_letter_smiles(sequence))
+        except peptide.PeptideSequenceError as exc:
+            raise NameResolutionError(
+                str(exc), name=name, kind="not_found", attempts=[]
+            ) from exc
+    peptide_fault = ""
+    try:
+        if smiles := peptide.three_letter_smiles(name):
+            return Resolution(smiles)
+    except peptide.PeptideSequenceError as exc:
+        peptide_fault = str(exc)
+
+    if match := _ZWITTERION.fullmatch(name.strip()):
+        try:
+            base = _resolve_name_route(match.group(1), report)
+        except NameResolutionError:
+            base = None
+        if base and (smiles := _zwitterion(base.smiles)):
+            return Resolution(smiles, base.found_as)
 
     # OPSIN liest den Namen selbst; gewinnt PubChem die Gegenprobe, war es
     # derselbe Name — beides ist kein Umweg, also kein found_as.
@@ -1303,7 +1359,14 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
         "; ".join(f"{a.source}={a.status}({a.detail})" for a in report)
         or "no attempts",
     )
-    raise _resolution_error(name, report)
+    error = _resolution_error(name, report)
+    if peptide_fault and error.kind == "not_found":
+        raise NameResolutionError(
+            f"Could not resolve '{name.strip()}': no database knows this name, and "
+            f"{peptide_fault[0].lower()}{peptide_fault[1:]}",
+            name=name, kind="not_found", attempts=report,
+        )
+    raise error
 
 
 # Tests und Messskripte leeren den Cache über resolve_name.

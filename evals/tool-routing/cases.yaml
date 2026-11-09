@@ -570,3 +570,21 @@ cases:
     why: >
       Zwei Stoffe vergleichen. In Desktop kam ein pharmakologischer Textvergleich
       ohne Strukturbild; compare_molecules zeigt die Strukturunterschiede.
+
+  # --- Peptide (E4, 09.11.2026) ----------------------------------------------
+  - id: peptide-three-letter
+    prompt: "Zeichne das Pentapeptid Ala-Trp-Lys-Ser-Gly"
+    expect: generate_molecule
+    forbidden: [batch_generate, generate_reaction, lookup]
+    why: >
+      Eine Sequenz ist EIN Molekül. Die Bindestriche dürfen weder als fünf
+      Einzelstoffe (batch_generate) noch als Reaktion gelesen werden.
+
+  - id: peptide-one-letter
+    prompt: "Draw the peptide with the one-letter sequence YGGFM"
+    expect: generate_molecule
+    forbidden: [batch_generate, lookup, lookup_molecule_data]
+    why: >
+      Einbuchstabencode geht nur über das Präfix "peptide:" — ohne es wäre
+      "YGGFM" ein Name. Der Fall prüft die Toolwahl; ob das Modell das Präfix
+      setzt, zeigt erst der bewertete Lauf (Argumente).

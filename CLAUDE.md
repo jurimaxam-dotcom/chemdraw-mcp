@@ -111,7 +111,7 @@ regenerated to make a diff disappear**:
 `identitaet.py` is the same idea one step earlier, and it is the only check
 on the step that can make everything else *consistently* wrong: if `resolve()`
 picks the wrong record, drawing, formula, mass and CAS all agree — for the
-wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 35
+wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 44
 entries (plus 3 broken SMILES that must fail as `invalid_smiles`) (German trivial names, IUPAC names, raw SMILES, a salt, `O` for water)
 and the runner separates **red** (resolved to something else) from **yellow**
 (a source is down, or a documented gap) — a check that goes red because PubChem

@@ -19,13 +19,24 @@ trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI, with
 English, counter-ion, form and rotation-sign spellings as fallbacks, and a
 direct hit is cross-checked against the other source (free form over salt
 unless the name says salt, the more defined stereo form wins); a pinned
-identity test checks 35 inputs against their InChIKey, and family names such
+identity test checks 44 inputs against their InChIKey, and family names such
 as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
 buttons for the data sheet, PNG export, an Anki card and a rotatable 3D
 model; when the name was found under another spelling, a "Found as" line
 says which. Fischer and Haworth projections and all-H drawings are a `view`
 option and panel buttons.
+
+**Peptides.** A three-letter sequence is built offline, even when no database
+knows it: `Ala-Trp-Lys-Ser-Gly`, `ala-gly`, `D-Ala-Gly`, `Ac-Ala-Gly-NH2`,
+`cyclo(Arg-Gly-Asp-D-Phe-Val)`. Free termini (H-…-OH) are the default. The
+one-letter code needs the prefix `peptide:` (`peptide:AGS`, lowercase = D
+residue, `peptide:Ac-AG-NH2`, `peptide:cyclo(RGDfV)`), because without it
+"AGS" is a name (ATPγS) and "CCC" is propane. Linear peptides of five or more
+residues are laid out as a stretched backbone. Names with a protecting group
+or ester (`Boc-Ala-OH`, `Asp-Phe-OMe`) and trivial names (`Met-enkephalin`) go
+to the databases as before. "X zwitterion" resolves X and charges its
+α-amino and α-carboxyl group, keeping the stereo of X.
 
 <p align="center"><img src="../assets/caffeine.png" alt="Caffeine structure, rendered by generate_molecule" width="380"></p>
 
@@ -220,6 +231,12 @@ and therefore every name you asked for.
 - **Mechanisms are three families** (SN1, SN2, Fischer esterification), each
   within a stated substrate limit; allylic halides are refused, because the
   allyl cation gives two products and drawing one would be wrong.
+- **Peptides: the 20 standard residues plus Orn, Nle, Nva, Sar and Abu,
+  at most 20 residues.** Above 20 the atom labels shrink below 10 px. Not
+  available: disulfide bridges, side-chain (γ/ε) isopeptide links (glutathione
+  only by name), phosphorylation, and residues such as Hyp, Aib, pGlu or Cit;
+  a sequence containing one is looked up by name and, if no database knows it,
+  the error names the residue.
 - **3D is one conformer**, a plausible geometry to look at — not a
   conformational search and not an energy statement.
 - **CDXML is a side path.** It is round-trip validated, but PNG and SVG are
