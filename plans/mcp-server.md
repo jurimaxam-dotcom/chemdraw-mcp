@@ -1,16 +1,15 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — Owner-Session, „Submit your build“ steht bei Frage 13 (07.11.2026, 17:55)
+## Weiter bei — Owner-Session, „Submit your build“ abgeschickt, als Nächstes Show HN (09.11.2026, 20:47)
 
-- **Nächster Schritt = Jays Klick:** Chrome-Fenster „Project submission“ (Typeform VIUAjxNi, vorderstes Fenster) bei Q13 „Consent to be contacted“ → I accept → OK · Q14 „Consent to feature“ (Lizenztext, Eigentum bleibt) → I accept → OK · Q15 → Submit. Claude klickt keine Einwilligungen (Auto-Mode-Sperre). Danach: Plan-Haken „Submit your build abgeschickt“ setzen, Vermarktungsplan Zeile 177 abhaken.
-- **Formular-Stand 17:55:** neu ausgefüllt Q1–Q12 (Wortlaut verbatim in `chemdraw-vermarktung/submit-your-build.md`, Commit `6499fae`), Q7 jetzt mit Open-Source-Satz (RDKit BSD-3, OPSIN/py2opsin MIT, molmass BSD-3, genanki MIT, matplotlib-Lizenz; Lizenzen aus Paket-Metadaten). GIF-Upload bei Q9 war von Typeform aus dem Browser-Speicher wiederhergestellt (Vorschau geprüft, behalten). Screenshot Q13 bei Jay.
+- [x] **„Submit your build“ abgeschickt** (Jay 09.11.2026; Aussage von Jay, keine Bestätigung von Typeform eingesehen).
+- **Formular-Stand 07.11., 17:55:** neu ausgefüllt Q1–Q12 (Wortlaut verbatim in `chemdraw-vermarktung/submit-your-build.md`, Commit `6499fae`), Q7 jetzt mit Open-Source-Satz (RDKit BSD-3, OPSIN/py2opsin MIT, molmass BSD-3, genanki MIT, matplotlib-Lizenz; Lizenzen aus Paket-Metadaten). GIF-Upload bei Q9 war von Typeform aus dem Browser-Speicher wiederhergestellt (Vorschau geprüft, behalten). Screenshot Q13 bei Jay.
 - **Vorfall 17:35:** Tab der alten Session war zu (Chrome 0 Fenster), Typeform hatte die Antworten aber im localStorage — Neuausfüllen bestätigte jeden Wert („previous:“ identisch).
-- **Falls Jay abbricht:** Tab zu, Show-HN-Text für Di 10.11. 13 Uhr vorbereiten.
 - **Erledigt und belegt 16:30–17:20:** Kurswechsel „Aufmerksamkeit zuerst“ (`a04c028`) · Anthropic-Weg geprüft (kein Showcase; Directory nur Plugin ohne Panel oder Remote-HTTPS) · Formular bis Q12 ausgefüllt (Juri Maxam, Freiburg) · Desktop-Aufnahme per `scripts/ax-claude.sh` (Fenster aus Vollbild geholt, 820×1000 bei 454,60; Sidebar zu; Chips per `clickat`; `screencapture -R`) · GIF gebaut, Codex-Zweitmeinung Faden `20261107-170723-anthropic-formular-submit-your` (GIF behalten; erledigt 17:12).
 - **Desktop-Zustand:** Claude Desktop läuft mit Chat „Ibuprofen structure drawing“, Fenster 820×1000 nicht Vollbild (Jay hatte Vollbild; bei Bedarf `AXFullScreen` wieder setzen).
 - **Danach (Reihung, Jay 16:30 „Aufmerksamkeit zuerst“, Panel-Bau pausiert):** Show HN zweiter Versuch Di 10.11. 13–18 Uhr CET (Text `chemdraw-vermarktung/docs/distribution/posts-2026-07.md` Post 3 slot-fertig machen: Titel mit Funktion, GIF ohne Installationshürde) · mcp.directory (3 min, Jay) · Discord #scientific-computing-ig (Text liegt, `communication.md`-Wortlaut nachlesen). Helferarbeit dafür in einer Vermarktungs-Session per `cc-oeffnen`, sobald Jay die Reihung bestätigt.
 - **Prüfmethoden, die gelten:** Helfer-Berichte am Dateisystem prüfen (Codex-Maße per ffprobe nachgemessen: GIF 2.225.436 Bytes stimmt) · kein Senden/Submit durch Helfer (Außenkommunikation) · Desktop-Tasten nur bei Leerlauf (HIDIdleTime war 1335 s, Jay folgt vom Handy).
-- **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (0) „trag ein“ / „abbrechen“ (oben). (1) Shorts-Sichtprüfung — Jay 16:25 „noch nicht angesehen“. (1b) Plugin-Bundle ins Anthropic-Directory (ohne Panel)? (2) D-Glucose offene Kette? (3) Anki-Import-Dialog. (4) Desktop-Rechte „Always allow“ je Konnektor. (5) Mechanismus-Panel vs. Diagramme — zurückgestellt.
+- **Offene Fragen an Jay — unbeantwortet, nicht bauen:** (1) Shorts-Sichtprüfung — Jay 16:25 „noch nicht angesehen“. (1b) Plugin-Bundle ins Anthropic-Directory (ohne Panel)? (2) D-Glucose offene Kette? (3) Anki-Import-Dialog. (4) Desktop-Rechte „Always allow“ je Konnektor. (5) Mechanismus-Panel vs. Diagramme — zurückgestellt.
 - **Tisch:** keine offenen chemdraw-Fäden (Codex-Faden 17:07 erledigt), keine Leases. Codex-Kontingent 4 %, frei 17:13.
 
 ### Vorheriger Block (16:40, abgearbeitet bis zum Formular)
