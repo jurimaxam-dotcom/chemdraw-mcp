@@ -880,8 +880,9 @@ def generate_molecule(
     except NameResolutionError as exc:
         if exc.kind != "ambiguous":
             raise
-        # Erfolgsantwort statt Fehler: der Host verwirft isError-Antworten
-        # (toolData.js), die Vorschaubilder brauchen ein Payload.
+        # Erfolgsantwort statt Fehler: Das Panel zeigt isError-Antworten zwar
+        # als Text an (toolData.js, ToolError.jsx), die Isomer-Auswahl mit
+        # ihren Vorschaubildern braucht aber ein Payload.
         return _ambiguous_payload(name_or_smiles, exc.candidates)
     smiles, mol = resolved
     found_as = _found_as(resolved)
