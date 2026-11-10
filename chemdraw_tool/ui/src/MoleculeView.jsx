@@ -311,9 +311,12 @@ export default function MoleculeView({ data }) {
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
           {is3d && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens</p>}
-          {/* Stereo, Gruppen und der Haworth-Satz beziehen sich auf die 2D-Zeichnung — in 3D aus. */}
+          {/* Stereo, Gruppen und der Projektionssatz beziehen sich auf die 2D-Zeichnung — in 3D aus.
+              Der Satz steht dort, wo er etwas erklärt: mit Fischer-Knopf unter Fischer (offene
+              Kette), ohne ihn unter Haworth (Glykosid: warum es keine Fischer-Projektion gibt). */}
           {!is3d && <>
-            {shown === "haworth" && data.projectionNote && <Note>{data.projectionNote}</Note>}
+            {shown === (views.includes("fischer") ? "fischer" : "haworth") && data.projectionNote
+              && <Note>{data.projectionNote}</Note>}
             <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
               variantsBusy={variantsLoading} />
             {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}

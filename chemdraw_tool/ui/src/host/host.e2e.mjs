@@ -894,11 +894,14 @@ try {
     prüfe(labels.includes(soll) && (fehlt === null || !(await f.getByRole("button", { name: fehlt }).count())),
       `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei)${fehlt ? `, kein ${fehlt}-Knopf` : ""}`);
     if (knopf === "Haworth") {
-      prüfe((await f.locator("body").innerText()).includes("open-chain"), `${stoff}: Hinweis zur offenen Form`);
+      // Befund 10.11.2026: der Satz zur offenen Kette gehört unter Fischer, nicht unter Haworth.
+      // „anomeric configuration“ steht nur im Satz, nicht in der Unterschrift der Zeichnung.
+      prüfe(!(await f.locator("body").innerText()).includes("anomeric configuration"), `${stoff}: unter Haworth kein Fischer-Satz`);
       await f.getByRole("button", { name: "Fischer" }).click();
       await f.locator(".structure-drawing svg text", { hasText: "open-chain form" }).waitFor({ timeout: 5000 });
       const offen = await f.locator(".structure-drawing svg text").allTextContents();
       prüfe(offen.includes("CHO") && offen.includes("open-chain form"), `${stoff}: Fischer zeigt die offene Form (CHO, Unterschrift)`);
+      prüfe((await f.locator("body").innerText()).includes("anomeric configuration"), `${stoff}: Satz zur offenen Form steht unter Fischer`);
       await f.getByRole("button", { name: "Haworth" }).click();
       await f.locator(".structure-drawing svg text", { hasText: "CH2OH" }).first().waitFor({ timeout: 5000 }).catch(() => {});
     }
@@ -909,7 +912,8 @@ try {
     await p.close();
   }
 
-  // 3f. Modell setzt view selbst (Befund Desktop 26.10.): Panel startet auf Haworth, mit Titel, Knöpfen, Hinweis
+  // 3f. Modell setzt view selbst (Befund Desktop 26.10.): Panel startet auf Haworth, mit Titel und Knöpfen;
+  // der Satz zur offenen Kette steht seit 10.11.2026 unter Fischer (der Knopf ist seit E17 da)
   {
     const input = { name_or_smiles: "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O", label: "β-D-Glucopyranose", view: "haworth" };
     const result = await client.callTool({ name: "generate_molecule", arguments: input });
@@ -922,8 +926,9 @@ try {
     const f = p.frames().find((x) => x !== p.mainFrame());
     await f.locator('button[aria-pressed="true"]', { hasText: "Haworth" }).waitFor({ timeout: 10000 });
     const body = await f.locator("body").innerText();
-    prüfe(body.includes("β-D-Glucopyranose") && body.includes("open-chain") && await f.getByRole("button", { name: "All H" }).count() === 1,
-      "view=haworth vom Modell: Panel startet auf Haworth, mit Titel, All-H-Knopf und Hinweis");
+    prüfe(body.includes("β-D-Glucopyranose") && !body.includes("anomeric configuration")
+      && await f.getByRole("button", { name: "All H" }).count() === 1 && await f.getByRole("button", { name: "Fischer" }).count() === 1,
+      "view=haworth vom Modell: Panel startet auf Haworth, mit Titel, All-H- und Fischer-Knopf, ohne Fischer-Satz");
     await p.screenshot({ path: join(tmpdir(), "panel-host-model-view.png") });
     await p.close();
   }

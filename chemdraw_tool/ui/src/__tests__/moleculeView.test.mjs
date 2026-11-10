@@ -369,6 +369,34 @@ test("„Chair“ holt den Sessel per view=chair, ohne den Haworth-Satz", async 
   unmount();
 });
 
+test("der Satz zur offenen Kette steht unter Fischer, nicht unter Haworth oder Chair", async () => {
+  // Befund 10.11.2026 (sugar-views.gif): seit E17 hat der Ringzucker einen Fischer-Knopf,
+  // der Satz „The Fischer projection shows …“ erschien aber weiter unter Haworth.
+  const note = "The Fischer projection shows the open-chain form of this sugar.";
+  const data = { ...MOLECULE, views: ["all_h", "fischer", "haworth", "chair"], viewRequest: REQUEST, projectionNote: note };
+  const { container, unmount } = renderMolecule(data);
+  assert.doesNotMatch(textOf(container), /open-chain/, "Hinweis vor dem Klick");
+  await click(buttonByText(container, "Fischer"));
+  assert.ok(container.querySelector(".structure-drawing [data-fischer]"), "Fischer nicht sichtbar");
+  assert.match(textOf(container), /open-chain/, "Hinweis fehlt in der Fischer-Ansicht");
+  await click(buttonByText(container, "Haworth"));
+  assert.ok(container.querySelector(".structure-drawing [data-haworth]"), "Haworth nicht sichtbar");
+  assert.doesNotMatch(textOf(container), /open-chain/, "Fischer-Satz steht unter Haworth");
+  await click(buttonByText(container, "Chair"));
+  assert.doesNotMatch(textOf(container), /open-chain/, "Fischer-Satz steht unter Chair");
+  unmount();
+});
+
+test("startet das Panel auf Fischer, steht der Satz zur offenen Kette sofort da", () => {
+  const note = "The Fischer projection shows the open-chain form of this sugar.";
+  const data = { ...MOLECULE, views: ["all_h", "fischer", "haworth", "chair"], viewRequest: REQUEST,
+    initialView: "fischer", viewSvg: SVG_FISCHER, viewAtoms: [], projectionNote: note };
+  const { container, unmount } = renderMolecule(data);
+  assert.ok(container.querySelector(".structure-drawing [data-fischer]"), "startet nicht auf Fischer");
+  assert.match(textOf(container), /open-chain/, "Hinweis fehlt beim Start auf Fischer");
+  unmount();
+});
+
 test("ein Fehlschlag bleibt sichtbar und wiederholbar", async () => {
   let fail = true;
   const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
