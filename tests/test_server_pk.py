@@ -49,10 +49,10 @@ def test_loading_dose_und_erhaltungsrate():
 def test_fehlende_angabe_nennt_was_fehlt():
     with pytest.raises(ValueError, match="dose_mg"):
         pk_tool("iv_bolus", vd_l=70, ke_per_h=0.15)
-    with pytest.raises(ValueError, match="Halbwertszeit"):
+    with pytest.raises(ValueError, match="half-life"):
         pk_tool("half_life", vd_l=70)
 
 
 def test_widerspruch_wird_nicht_still_aufgeloest():
-    with pytest.raises(ValueError, match="widersprechen"):
+    with pytest.raises(ValueError, match="contradict"):
         pk_tool("half_life", vd_l=70, ke_per_h=0.15, clearance_l_per_h=20)

@@ -36,6 +36,9 @@ this project uses [Semantic Versioning](https://semver.org/).
 - `generate_calibration_curve` names the method it actually uses for LOD/LOQ: the ICH Q2
   estimate from residual standard deviation and slope (3.3·s/a, 10·s/a), not DIN 32645. The
   numbers are unchanged.
+- Tool errors that were still German are now English, now that the panel shows them word for
+  word: the Anki deck checks, `compare_molecules` (2 to 4 structures), output formats, render
+  styles, scope figures, pharmacokinetics input checks, PNG export and the vault search texts.
 
 ## [0.9.1] — 2026-11-10
 

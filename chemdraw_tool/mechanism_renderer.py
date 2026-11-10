@@ -371,7 +371,7 @@ def geometry_of(svg: str) -> dict:
     """Geometrie-Datensatz, den render_step_svg ins SVG legt (Pfeile, Beschriftungen, Bindungslänge)."""
     m = re.search(r"data-geometry='([^']*)'", svg)
     if m is None:
-        raise ValueError("SVG enthält keinen Geometrie-Datensatz (data-geometry)")
+        raise ValueError("SVG carries no geometry record (data-geometry)")
     return json.loads(m.group(1))
 
 

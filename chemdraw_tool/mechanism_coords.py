@@ -78,8 +78,8 @@ def compute_step_coords(
 
         if result_mol.GetNumConformers() == 0:
             raise ValueError(
-                f"Compute2DCoords erzeugte keinen Konformer für "
-                f"{Chem.MolToSmiles(result_mol)} — Koordinaten nicht berechenbar."
+                f"Compute2DCoords produced no conformer for "
+                f"{Chem.MolToSmiles(result_mol)} — no coordinates available."
             )
         conf = result_mol.GetConformer()
         xs = [conf.GetAtomPosition(i).x for i in range(result_mol.GetNumAtoms())]
@@ -95,8 +95,8 @@ def extract_positions(mols: list[Chem.Mol]) -> dict[int, tuple[float, float]]:
     for mol in mols:
         if mol.GetNumConformers() == 0:
             raise ValueError(
-                "Molekül hat keine 2D-Koordinaten (Konformer fehlt) — "
-                "Compute2DCoords muss zuvor erfolgreich gelaufen sein."
+                "Molecule has no 2D coordinates (no conformer) — "
+                "Compute2DCoords must have run successfully first."
             )
         conf = mol.GetConformer()
         for atom in mol.GetAtoms():
@@ -176,7 +176,7 @@ def _anchored_mol(smiles: str, anchors: dict[int, tuple[float, float]]) -> Chem.
     else:
         AllChem.Compute2DCoords(mol)
     if mol.GetNumConformers() == 0:
-        raise ValueError(f"Compute2DCoords erzeugte keinen Konformer für {smiles}")
+        raise ValueError(f"Compute2DCoords produced no conformer for {smiles}")
     return mol.GetMol()
 
 
@@ -192,7 +192,7 @@ def layout_anchored(steps) -> list[list[Chem.Mol]]:
     for step in steps:
         anchors = step.anchors or [{} for _ in step.molecules]
         if len(anchors) != len(step.molecules):
-            raise ValueError(f"Schritt '{step.label}': {len(anchors)} Anker für {len(step.molecules)} Moleküle")
+            raise ValueError(f"Step '{step.label}': {len(anchors)} anchors for {len(step.molecules)} molecules")
         placed: list[Chem.Mol] = []
         for smiles, anchor in zip(step.molecules, anchors):
             mol = _anchored_mol(smiles, anchor)

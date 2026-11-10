@@ -93,7 +93,7 @@ def test_more_columns_than_entries_is_capped():
 
 
 def test_absurd_column_count_raises():
-    with pytest.raises(ValueError, match="[Ss]palten"):
+    with pytest.raises(ValueError, match="columns"):
         build_grid(12, columns=9)
 
 
@@ -102,7 +102,7 @@ def test_zero_columns_means_default():
 
 
 def test_no_entries_raises():
-    with pytest.raises(ValueError, match="[Ee]intrag"):
+    with pytest.raises(ValueError, match="entry"):
         build_grid(0)
 
 
@@ -363,7 +363,7 @@ def test_header_reaction_is_composed_above_the_grid():
 
 
 def test_render_without_items_raises():
-    with pytest.raises(ValueError, match="[Ee]intrag"):
+    with pytest.raises(ValueError, match="entry"):
         render_scope_png([])
 
 

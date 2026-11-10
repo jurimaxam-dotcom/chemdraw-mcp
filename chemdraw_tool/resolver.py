@@ -360,12 +360,12 @@ class _OpsinProcess:
         # EOF (b"") vor dem Strippen prüfen — sonst sähe ein toter Prozess
         # aus wie "unparsebar" (b"\t…\n").
         if not line:
-            raise _OpsinUnavailable("JVM beendet")
+            raise _OpsinUnavailable("JVM exited")
         smiles, sep, echoed = (
             line.decode("utf-8", "replace").rstrip("\r\n").partition("\t")
         )
         if not sep or echoed != name:
-            raise _OpsinUnavailable(f"Antwort passt nicht zur Frage: {echoed!r}")
+            raise _OpsinUnavailable(f"answer does not match the query: {echoed!r}")
         return smiles
 
     def close(self) -> None:
@@ -406,7 +406,7 @@ def _start_opsin_process() -> _OpsinProcess:
     java = shutil.which("java")
     jar = _opsin_jar()
     if not java or not jar:
-        raise _OpsinUnavailable("kein java oder kein OPSIN-JAR")
+        raise _OpsinUnavailable("no java or no OPSIN JAR")
     try:
         proc = _OpsinProcess(java, jar)
     except OSError as exc:

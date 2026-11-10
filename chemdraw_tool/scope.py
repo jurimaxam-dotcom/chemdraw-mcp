@@ -197,15 +197,15 @@ def build_grid(count: int, columns: int = 0) -> GridGeometry:
     """
     if count <= 0:
         raise ValueError(
-            "Mindestens ein Eintrag wird benötigt — eine Scope-Figur ohne "
-            "Substrate hat nichts zu zeigen"
+            "At least one entry is needed — a scope figure without "
+            "substrates has nothing to show."
         )
     if columns < 0 or columns > MAX_COLUMNS:
         raise ValueError(
-            f"{columns} Spalten sind nicht darstellbar — erlaubt sind 1 bis "
-            f"{MAX_COLUMNS} Spalten (0 = automatisch). Mehr Spalten zwingen "
-            "RDKit zu einer so kleinen Bindungslänge, dass die Strukturen "
-            "unleserlich werden."
+            f"{columns} columns cannot be drawn — use 1 to "
+            f"{MAX_COLUMNS} columns (0 = automatic). More columns force "
+            "RDKit to such a short bond length that the structures become "
+            "unreadable."
         )
 
     cols = min(columns or default_columns(count), count)
@@ -488,8 +488,8 @@ def _prepare(
 ) -> _Plan:
     if not items:
         raise ValueError(
-            "Mindestens ein Eintrag wird benötigt — eine Scope-Figur ohne "
-            "Substrate hat nichts zu zeigen"
+            "At least one entry is needed — a scope figure without "
+            "substrates has nothing to show."
         )
     get_style(style)  # unbekannter Stil: scheitern, bevor gezeichnet wird
 

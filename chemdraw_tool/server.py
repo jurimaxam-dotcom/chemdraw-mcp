@@ -160,7 +160,7 @@ def _normalize_formats(formats: list[str] | None) -> list[str]:
     unknown = sorted(set(fmts) - set(VALID_FORMATS))
     if unknown:
         raise ValueError(
-            f"Unbekannte Formate: {unknown} — erlaubt sind {list(VALID_FORMATS)}"
+            f"Unknown formats: {unknown} — use {list(VALID_FORMATS)}"
         )
     return fmts
 
@@ -1187,8 +1187,8 @@ def generate_scope_table(
     fmts = _normalize_formats(formats)
     if "cdxml" in fmts:
         raise ValueError(
-            "Scope-Figuren unterstützen nur png/svg — CDXML ist ein "
-            "Strukturformat für einzelne Moleküle, keine Abbildung"
+            "Scope figures support png/svg only — CDXML is a structure "
+            "format for single molecules, not a figure."
         )
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
 
@@ -1234,8 +1234,8 @@ def generate_scope_table(
 
     if not items:
         raise ValueError(
-            "Kein einziger Eintrag ließ sich zeichnen — ohne Struktur gibt es "
-            f"keine Figur. Nicht auflösbar: {failed}"
+            "Not a single entry could be drawn — without a structure there is "
+            f"no figure. Could not resolve: {failed}"
         )
 
     header = None
@@ -1336,9 +1336,9 @@ def export_anki_deck(
         deck_name, card_models = get_curated_deck(curated_deck_id)
     else:
         if not cards:
-            raise ValueError("Das Deck braucht mindestens eine Karte.")
+            raise ValueError("The deck needs at least one card.")
         if not deck_name:
-            raise ValueError("Das Deck braucht einen Namen.")
+            raise ValueError("The deck needs a name.")
         card_models = [AnkiCard.model_validate(c) for c in cards]
     if deliver not in ("apkg", "open", "ankiconnect"):
         raise ValueError(
@@ -1749,8 +1749,8 @@ def generate_dose_response(
 
     if (antagonist_concentration is None) != (antagonist_kb is None):
         raise ValueError(
-            "Für den Antagonisten werden antagonist_concentration UND antagonist_kb gebraucht — "
-            "es wurde nur eines von beiden angegeben."
+            "The antagonist needs both antagonist_concentration and antagonist_kb — "
+            "only one of them was given."
         )
     if ec50 <= 0:
         raise ValueError(f"ec50 must be greater than zero, got {ec50:g}.")
@@ -1821,7 +1821,7 @@ def compare_molecules(
     )
 
     if not 2 <= len(structures) <= 4:
-        raise ValueError("compare_molecules braucht 2 bis 4 Strukturen.")
+        raise ValueError("compare_molecules needs 2 to 4 structures.")
 
     if labels and len(labels) != len(structures):
         raise ValueError(
@@ -2675,7 +2675,7 @@ def calculate_pharmacokinetics(
 
     def need(name: str, value: float | None) -> float:
         if value is None:
-            raise ValueError(f"Für '{topic}' fehlt {name}.")
+            raise ValueError(f"'{topic}' needs {name}.")
         return value
 
     r = pk.resolve(vd=vd_l, ke=ke_per_h, t_half=half_life_h, cl=clearance_l_per_h)
@@ -3996,8 +3996,8 @@ if vault_enabled():
         results = search(query)
         if not results:
             entries = list_entries()
-            lines = [f"Keine Treffer für '{query}'.\n"]
-            lines.append("**Verfügbare Einträge:**\n")
+            lines = [f"No matches for '{query}'.\n"]
+            lines.append("**Available entries:**\n")
             for cat, names in sorted(entries.items()):
                 lines.append(f"### {cat}")
                 for name in names:
@@ -4005,14 +4005,14 @@ if vault_enabled():
                 lines.append("")
             return "\n".join(lines)
 
-        lines = [f"## Suchergebnisse für '{query}'\n"]
+        lines = [f"## Search results for '{query}'\n"]
         for r in results:
             lines.append(f"### {r['name']} ({r['category']})")
-            lines.append(f"*Pfad: {r['path']}*")
+            lines.append(f"*Path: {r['path']}*")
             if r["snippet"]:
                 lines.append(f"\n> {r['snippet']}\n")
             lines.append(
-                f'→ `read_vault_entry("{r["name"]}")` für vollständigen Inhalt\n'
+                f'→ `read_vault_entry("{r["name"]}")` for the full content\n'
             )
         return "\n".join(lines)
 
@@ -4026,8 +4026,8 @@ if vault_enabled():
         entry_name, content = read_entry(name)
         if content is None:
             entries = list_entries()
-            lines = [f"Eintrag '{name}' nicht gefunden.\n"]
-            lines.append("**Verfügbare Einträge:**\n")
+            lines = [f"Entry '{name}' not found.\n"]
+            lines.append("**Available entries:**\n")
             for cat, names in sorted(entries.items()):
                 lines.append(f"### {cat}")
                 for name in names:

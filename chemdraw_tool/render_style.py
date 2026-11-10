@@ -103,8 +103,8 @@ def get_style(name: str | None) -> DrawStyle | None:
         return STYLES[key]
     except KeyError:
         raise ValueError(
-            f"Unbekannter render_style: {name!r} — erlaubt sind "
-            f"{sorted(STYLES)} oder '' für den Standardstil."
+            f"Unknown render_style: {name!r} — use one of "
+            f"{sorted(STYLES)} or '' for the default style."
         ) from None
 
 

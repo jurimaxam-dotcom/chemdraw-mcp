@@ -104,7 +104,7 @@ def test_one_broken_entry_does_not_kill_the_figure():
 
 def test_all_entries_broken_raises():
     with patch("chemdraw_tool.server.resolve", side_effect=_resolver("Nope")):
-        with pytest.raises(ValueError, match="[Ee]intrag"):
+        with pytest.raises(ValueError, match="entry"):
             generate_scope_table([{"structure": "Nope"}])
 
 

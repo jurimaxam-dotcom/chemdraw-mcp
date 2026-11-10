@@ -90,7 +90,7 @@ def _create_fragment(
 
     if not positions:
         raise ValueError(
-            "Molekül ohne Atome kann nicht zu einem CDXML-Fragment werden."
+            "A molecule without atoms cannot become a CDXML fragment."
         )
 
     xs = [p[0] for p in positions]

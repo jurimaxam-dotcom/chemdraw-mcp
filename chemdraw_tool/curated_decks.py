@@ -135,6 +135,6 @@ CURATED_DECKS: dict[str, dict] = {
 def get_curated_deck(deck_id: str) -> tuple[str, list[AnkiCard]]:
     if deck_id not in CURATED_DECKS:
         available = ", ".join(sorted(CURATED_DECKS))
-        raise ValueError(f"Unbekanntes Deck {deck_id!r} — verfügbar: {available}")
+        raise ValueError(f"Unknown curated deck {deck_id!r} — available: {available}")
     entry = CURATED_DECKS[deck_id]
     return entry["name"], entry["build"]()

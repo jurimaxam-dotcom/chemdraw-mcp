@@ -36,12 +36,12 @@ def test_resolve_aus_halbwertszeit_und_vd_liefert_clearance():
 
 
 def test_resolve_widerspruch_wird_benannt():
-    with pytest.raises(ValueError, match="widersprechen"):
+    with pytest.raises(ValueError, match="contradict"):
         pk.resolve(vd=70, ke=0.15, cl=20)
 
 
 def test_resolve_zu_wenig_angaben():
-    with pytest.raises(ValueError, match="Halbwertszeit"):
+    with pytest.raises(ValueError, match="half-life"):
         pk.resolve(vd=70)
 
 

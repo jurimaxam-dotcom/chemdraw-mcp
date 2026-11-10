@@ -212,7 +212,7 @@ def _side_html(
 
 def _model_for(card: AnkiCard) -> genanki.Model:
     if card.cloze and card.reversed:
-        raise ValueError("Eine Karte kann nicht cloze UND reversed sein.")
+        raise ValueError("A card cannot be both cloze and reversed.")
     if card.cloze:
         return _MODEL_CLOZE
     return _MODEL_REVERSED if card.reversed else _MODEL

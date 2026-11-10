@@ -97,7 +97,7 @@ def test_export_anki_deck_needs_a_name_for_own_cards(tmp_path, monkeypatch):
     monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
     import pytest
 
-    with pytest.raises(ValueError, match="Namen"):
+    with pytest.raises(ValueError, match="name"):
         export_anki_deck("", _cards())
 
 

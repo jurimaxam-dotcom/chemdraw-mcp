@@ -52,7 +52,7 @@ def validate_substrates(template: MechanismTemplate, smiles_list: list[str]) -> 
     substrate_pat = Chem.MolFromSmarts(template.substrate_pattern)
     if substrate_pat is None:
         raise ValueError(
-            f"Ungültiges SMARTS-Substrat-Pattern im Template '{template.id}': "
+            f"Invalid substrate SMARTS pattern in template '{template.id}': "
             f"{template.substrate_pattern!r}"
         )
 
@@ -72,7 +72,7 @@ def validate_substrates(template: MechanismTemplate, smiles_list: list[str]) -> 
         nuc_pat = Chem.MolFromSmarts(template.nucleophile_pattern)
         if nuc_pat is None:
             raise ValueError(
-                f"Ungültiges SMARTS-Nucleophil-Pattern im Template "
+                f"Invalid nucleophile SMARTS pattern in template "
                 f"'{template.id}': {template.nucleophile_pattern!r}"
             )
         for smi in smiles_list:

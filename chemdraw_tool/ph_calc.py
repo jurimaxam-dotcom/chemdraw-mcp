@@ -351,7 +351,7 @@ def ionisation(pka: float, ph: float, kind: str = "acid") -> dict:
     (pKs der konjugierten Säure BH⁺). Ungeladen ist die Form, die Membranen passiert.
     """
     if kind not in ("acid", "base"):
-        raise ValueError("kind muss 'acid' oder 'base' sein.")
+        raise ValueError("kind must be 'acid' or 'base'.")
     exponent = (ph - pka) if kind == "acid" else (pka - ph)
     ratio = 10.0**exponent
     ionised = ratio / (1 + ratio)

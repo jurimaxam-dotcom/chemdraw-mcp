@@ -41,15 +41,15 @@ def decode_png(png_base64: str) -> bytes:
     # ceil(MAX_PNG_BYTES / 3) * 4, plus slack for padding.
     max_encoded = (MAX_PNG_BYTES + 2) // 3 * 4 + 16
     if len(payload) > max_encoded:
-        raise ValueError(f"PNG zu groß (encoded {len(payload)} > {max_encoded} Bytes)")
+        raise ValueError(f"PNG too large (encoded {len(payload)} > {max_encoded} bytes)")
     try:
         raw = base64.b64decode(payload, validate=True)
     except (binascii.Error, ValueError) as exc:
-        raise ValueError(f"Ungültiges base64: {exc}") from exc
+        raise ValueError(f"Invalid base64: {exc}") from exc
     if len(raw) > MAX_PNG_BYTES:
-        raise ValueError(f"PNG zu groß ({len(raw)} > {MAX_PNG_BYTES} Bytes)")
+        raise ValueError(f"PNG too large ({len(raw)} > {MAX_PNG_BYTES} bytes)")
     if not raw.startswith(PNG_MAGIC):
-        raise ValueError("Daten sind kein PNG (Magic-Bytes fehlen)")
+        raise ValueError("Data is not a PNG (magic bytes missing)")
     return raw
 
 

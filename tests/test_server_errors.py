@@ -50,7 +50,7 @@ def test_plain_value_error_text_reaches_the_client():
     result = _call("full", "compare_molecules", {"structures": ["CCO"]})
 
     assert result.is_error
-    assert "compare_molecules braucht 2 bis 4 Strukturen." in _text(result)
+    assert "compare_molecules needs 2 to 4 structures." in _text(result)
 
 
 def test_unexpected_crash_stays_generic(monkeypatch):

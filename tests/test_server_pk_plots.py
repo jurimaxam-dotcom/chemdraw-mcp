@@ -27,7 +27,7 @@ def test_pk_curve_mehrfachgabe_nennt_steady_state_in_den_notizen(tmp_path, monke
 
 def test_pk_curve_widerspruch_wird_benannt(tmp_path, monkeypatch):
     monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
-    with pytest.raises(ValueError, match="widersprechen"):
+    with pytest.raises(ValueError, match="contradict"):
         generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, clearance_l_per_h=20)
 
 

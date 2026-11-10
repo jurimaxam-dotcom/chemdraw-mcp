@@ -16,7 +16,7 @@ LN2 = math.log(2)
 def _positiv(**werte: float) -> None:
     for name, wert in werte.items():
         if not wert > 0:
-            raise ValueError(f"{name} muss größer als 0 sein (bekommen: {wert}).")
+            raise ValueError(f"{name} must be greater than 0 (got {wert}).")
 
 
 def half_life(ke: float) -> float:
@@ -52,8 +52,8 @@ def resolve(
         vd = cl / ke
     if ke is None or vd is None:
         raise ValueError(
-            "Zu wenig Angaben: gebraucht werden das Verteilungsvolumen Vd und eine der Größen "
-            "Eliminationskonstante ke, Halbwertszeit oder Clearance (oder Clearance plus ke/Halbwertszeit)."
+            "Not enough data: needs the volume of distribution Vd and one of elimination "
+            "constant ke, half-life or clearance (or clearance plus ke/half-life)."
         )
     _positiv(vd=vd, ke=ke)
     ableitung = ke * vd
@@ -61,15 +61,15 @@ def resolve(
         _positiv(cl=cl)
         if abs(cl - ableitung) > tol * max(cl, ableitung):
             raise ValueError(
-                f"Die Angaben widersprechen sich: ke × Vd = {ableitung:.4g} L/h, "
-                f"gegeben wurde aber eine Clearance von {cl:.4g} L/h."
+                f"The values contradict each other: ke × Vd = {ableitung:.4g} L/h, "
+                f"but the clearance given is {cl:.4g} L/h."
             )
     else:
         cl = ableitung
     if t_half is not None and abs(t_half - LN2 / ke) > tol * t_half:
         raise ValueError(
-            f"Die Angaben widersprechen sich: ke = {ke:.4g}/h entspricht t½ = {LN2 / ke:.4g} h, "
-            f"gegeben wurde t½ = {t_half:.4g} h."
+            f"The values contradict each other: ke = {ke:.4g}/h means t½ = {LN2 / ke:.4g} h, "
+            f"but t½ = {t_half:.4g} h was given."
         )
     return {"vd": vd, "ke": ke, "t_half": LN2 / ke, "cl": cl}
 
@@ -78,7 +78,7 @@ def c_iv(dose: float, vd: float, ke: float, t: float) -> float:
     """i.v.-Bolus: C(t) = D/Vd · e^(−ke·t)."""
     _positiv(dose=dose, vd=vd, ke=ke)
     if t < 0:
-        raise ValueError("Die Zeit t darf nicht negativ sein.")
+        raise ValueError("The time t must not be negative.")
     return dose / vd * math.exp(-ke * t)
 
 
@@ -90,7 +90,7 @@ def c_oral(dose: float, f: float, vd: float, ke: float, ka: float, t: float) -> 
     """
     _positiv(dose=dose, f=f, vd=vd, ke=ke, ka=ka)
     if t < 0:
-        raise ValueError("Die Zeit t darf nicht negativ sein.")
+        raise ValueError("The time t must not be negative.")
     if abs(ka - ke) < 1e-9 * max(ka, ke):
         return f * dose * ka * t * math.exp(-ke * t) / vd
     return f * dose * ka / (vd * (ka - ke)) * (math.exp(-ke * t) - math.exp(-ka * t))
@@ -140,7 +140,7 @@ def time_to_fraction_ss(ke: float, fraction: float = 0.9) -> float:
     """Zeit bis zu einem Anteil des Steady State: −ln(1−Anteil)/ke."""
     _positiv(ke=ke)
     if not 0 < fraction < 1:
-        raise ValueError("Der Anteil muss zwischen 0 und 1 liegen (z. B. 0,9 für 90 %).")
+        raise ValueError("The fraction must lie between 0 and 1 (e.g. 0.9 for 90 %).")
     return -math.log(1 - fraction) / ke
 
 
@@ -173,9 +173,9 @@ def concentration_profile(
     (dann gilt F = 1 für die Dosis, f wird ignoriert).
     """
     if n_doses < 1:
-        raise ValueError("n_doses muss mindestens 1 sein.")
+        raise ValueError("n_doses must be at least 1.")
     if n_doses > 1 and not tau:
-        raise ValueError("Für mehrere Gaben wird das Dosierungsintervall tau gebraucht.")
+        raise ValueError("Repeated doses need the dosing interval tau.")
     werte = []
     for t in times:
         summe = 0.0
@@ -192,7 +192,7 @@ def response(c: float, ec50: float, emax: float = 100.0, hill: float = 1.0) -> f
     """Hill-Gleichung: E = Emax · c^n / (EC50^n + c^n)."""
     _positiv(ec50=ec50, emax=emax, hill=hill)
     if c < 0:
-        raise ValueError("Die Konzentration darf nicht negativ sein.")
+        raise ValueError("The concentration must not be negative.")
     if c == 0:
         return 0.0
     x = c**hill
@@ -206,5 +206,5 @@ def dose_ratio(antagonist: float, kb: float) -> float:
     """
     _positiv(kb=kb)
     if antagonist < 0:
-        raise ValueError("Die Antagonistenkonzentration darf nicht negativ sein.")
+        raise ValueError("The antagonist concentration must not be negative.")
     return 1 + antagonist / kb

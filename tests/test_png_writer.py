@@ -26,7 +26,7 @@ def test_decode_strips_data_url_prefix():
 
 def test_decode_rejects_non_png():
     bad = base64.b64encode(b"this is not a png").decode()
-    with pytest.raises(ValueError, match="kein PNG"):
+    with pytest.raises(ValueError, match="not a PNG"):
         decode_png(bad)
 
 
@@ -38,7 +38,7 @@ def test_decode_rejects_broken_base64():
 def test_decode_rejects_oversized(monkeypatch):
     monkeypatch.setattr("chemdraw_tool.png_writer.MAX_PNG_BYTES", 4)
     big = base64.b64encode(PNG_MAGIC + b"xxxxx").decode()  # 13 bytes > 4
-    with pytest.raises(ValueError, match="zu groß"):
+    with pytest.raises(ValueError, match="too large"):
         decode_png(big)
 
 
@@ -77,12 +77,12 @@ def test_decode_rejects_oversized_before_decode(monkeypatch):
     monkeypatch.setattr("chemdraw_tool.png_writer.MAX_PNG_BYTES", 9)
     # Encoded string longer than the recomputed encoded cap → rejected pre-decode.
     huge = "A" * 1000
-    with pytest.raises(ValueError, match="zu groß"):
+    with pytest.raises(ValueError, match="too large"):
         decode_png(huge)
 
 
 def test_decode_data_url_prefix_only_is_not_png():
-    with pytest.raises(ValueError, match="kein PNG"):
+    with pytest.raises(ValueError, match="not a PNG"):
         decode_png("data:image/png;base64,")
 
 
