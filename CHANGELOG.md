@@ -6,6 +6,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Molecule panel: for ring sugars the sentence explaining that the Fischer projection shows the open-chain form now appears under the Fischer view instead of under Haworth. Glycosides, which have no Fischer view, keep their explanation under Haworth.
+
 ## [0.10.0] — 2026-11-10
 
 ### Added
