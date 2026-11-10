@@ -1,3 +1,8 @@
+<!-- Kopf: Marke chempane (Logo D2); Paket und Repo heißen weiter chemdraw-mcp. PNG statt SVG, damit die Schrift überall gleich aussieht. -->
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/readme-kopf-dunkel.png"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/readme-kopf-hell.png" alt="chempane (chemdraw-mcp): An MCP server for chemistry, with interactive panels in Claude Desktop. Unofficial, not affiliated with Revvity." width="800"></picture>
+</p>
+
 # chemdraw-mcp
 
 <!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->
