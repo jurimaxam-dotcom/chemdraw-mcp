@@ -26,6 +26,10 @@ window.__startHost = async ({ html, toolInput, toolResult, prelude = "" }) => {
     { serverTools: {}, updateModelContext: { text: {} }, message: { text: {} } },
   );
   bridge.oncalltool = async (params) => window.__callTool(params);
+  // Größenmeldung des Panels (ui/notifications/size-changed) wie Desktop
+  // mitschreiben; die Tests entscheiden selbst, ob sie die Höhe übernehmen.
+  window.__panelSizes = window.__panelSizes || [];
+  bridge.onsizechange = (size) => { window.__panelSizes.push(size); };
   // Folge-Ergebnisse im selben Panel (Chat ruft das Tool erneut): Fund b prüft so,
   // dass ein Fehler das alte Ergebnis ersetzt und ein Erfolg den Fehler.
   window.__sendToolResult = (result) => bridge.sendToolResult(result);

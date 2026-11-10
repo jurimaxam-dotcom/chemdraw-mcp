@@ -7,6 +7,7 @@ import { test } from "node:test";
 import React, { act } from "react";
 
 import ProteinView, { viewerDeps } from "../ProteinView";
+import BackboneCanvas from "../components/BackboneCanvas";
 import App from "../App";
 import { buttonByText, click, render, textOf } from "./harness.mjs";
 
@@ -292,5 +293,45 @@ test("Schema-Text folgt dem Farbschema: keine feste Textfarbe außerhalb der Dom
   const loose = texts.filter((t) => !t.closest("g[transform]"));
   assert.ok(loose.length >= 6);
   for (const t of loose) assert.match(t.getAttribute("fill"), /^var\(--/, t.textContent);
+  unmount();
+});
+
+// --- E19: Bildgröße wie der 3D-Knopf im Molekülpanel ---------------------------
+// jsdom kennt kein Layout: hier nur der Vertrag (eine gemeinsame, selbst bemessene
+// Fläche für Cartoon, Spur und Schema; keine feste Panelhöhe). Die Pixel misst
+// test:host in Chromium.
+
+test("E19: Panel ohne feste Höhe, eine Bildfläche für Cartoon, Spur und Schema", async () => {
+  const { container, unmount } = render(React.createElement(ProteinView, {
+    data: antibody({ start: "structure", highlight: "fab", caption: "" }),
+  }));
+  const root = container.firstElementChild;
+  assert.equal(root.style.height, "", "intrinsische Höhe: der Host bemisst das iframe am Inhalt");
+  const stage = container.querySelector("[data-protein-viewer]");
+  assert.ok(stage.classList.contains("protein-stage"), "Bildfläche trägt ihre eigene Größe");
+  assert.equal(stage.style.flex, "", "nicht mehr der Rest einer festen Höhe");
+  assert.ok(stage.contains(container.querySelector("svg[data-backbone]")), "Spur in der Fläche");
+  assert.ok(stage.contains(container.querySelector("[data-cartoon-host]")), "Cartoon in der Fläche");
+  await click(buttonByText(container, "Scheme"));
+  assert.ok(stage.contains(container.querySelector("svg[data-igg-scheme]")), "Schema in derselben Fläche");
+  unmount();
+});
+
+test("E19: styles.css bemisst die Bildfläche wie den 3D-Knopf (Quadrat, höchstens 720 px)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+  const yardstick = /\.structure-layout\[data-layout-3d\] \.structure-canvas \{[^}]*aspect-ratio: 1 \/ 1;[^}]*720px/.exec(css);
+  assert.ok(yardstick, "Maßstab: 3D-Fläche im Molekülpanel");
+  const rule = /\.protein-stage \{([^}]*)\}/.exec(css);
+  assert.ok(rule, ".protein-stage fehlt");
+  for (const decl of ["width: 100%", "aspect-ratio: 1 / 1", "max-height: 720px", "position: relative"]) {
+    assert.ok(rule[1].includes(decl), `.protein-stage: ${decl}`);
+  }
+  assert.ok(!/\d+vh/.test(rule[1]), "keine vh-Höhe — die Größenmeldung misst max-content");
+});
+
+test("E19: Spur übernimmt die gemessene Fläche als Zeichenmaß (kein Briefkasten)", () => {
+  const { container, unmount } = render(React.createElement(BackboneCanvas, { chains: ONE_CHAIN.protein.chains, width: 796, height: 720 }));
+  assert.equal(container.querySelector("svg[data-backbone]").getAttribute("viewBox"), "0 0 796 720");
   unmount();
 });

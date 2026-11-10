@@ -29,10 +29,12 @@ try {
   browser = await chromium.launch();
   // Welle 1: echte Galerie-Antworten über denselben sandboxed Host wie Desktop.
   const check = (ok, message) => { if (!ok) throw new Error("ROT: " + message); console.log("✔", message); };
-  const mount = async (p, name, input, prelude = "") => {
+  const mount = async (p, name, input, prelude = "", patch = null) => {
     const tool = tools.find((t) => t.name === name);
     check(tool?._meta?.ui?.resourceUri, `${name} ist als Panel-Tool registriert`);
     const result = await client.callTool({ name, arguments: input });
+    // patch: echte Antwort gezielt abwandeln (eine Variante, die kein Lehrbuchname liefert)
+    if (patch) { patch(result.structuredContent); result.content = [{ type: "text", text: JSON.stringify(result.structuredContent) }]; }
     check(!result.isError, `${name} liefert eine erfolgreiche echte Serverantwort`);
     const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
     await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result, prelude });
@@ -157,9 +159,17 @@ try {
     const els = [document.querySelector(".panel-title"), ...document.querySelectorAll("[data-protein-viewer] ~ div")];
     return Math.min(...els.filter(Boolean).map(ratio));
   });
+  // Wie Desktop: iframe auf die gemeldete Panelhöhe (E19: das Bild ist größer als
+  // die alten 560 px; ohne das scrollte das Rad den iframe-Inhalt statt der Seite)
+  const fitFrame = async (page) => {
+    await page.waitForTimeout(250);
+    const size = await page.evaluate(() => window.__panelSizes.at(-1));
+    if (size) await page.locator("iframe").last().evaluate((el, h) => { el.style.height = `${h}px`; }, size.height);
+    await page.waitForTimeout(150);
+  };
   for (const colorScheme of ["light", "dark"])
   for (const [tool, name, title] of proteinCases) {
-    const page = await browser.newPage({ viewport: { width: 530, height: 660 }, colorScheme });
+    const page = await browser.newPage({ viewport: { width: 530, height: 1000 }, colorScheme });
     const tag = `${name} (${colorScheme})`;
     await page.setContent('<body style="margin:0"></body>');
     await page.addScriptTag({ path: out });
@@ -179,6 +189,7 @@ try {
           .map((t) => rgb(getComputedStyle(t).fill).reduce((a, v, i) => a + Math.abs(v - bg[i]), 0)));
       });
       check(worst > 200, `Protein ${tag}: Schema-Beschriftung hebt sich vom Grund ab (Abstand ${worst})`);
+      await fitFrame(page);
       await page.screenshot({ path: join(shots, `panel-${name}-scheme-${colorScheme}.png`) });
     };
     if (name === "antibody" || name === "IgG") {
@@ -191,11 +202,14 @@ try {
       await f.getByRole("tab", { name: "Structure" }).click();
     }
     await f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
+    await fitFrame(page);
     await page.waitForTimeout(1700); // Einblend-Drehung (1,2 s) abwarten
     const vorher = await inked(f);
     // Untergrenze: es ist etwas gezeichnet; Obergrenze: der Hintergrund ist hell
     // (ein schwarzer Hintergrund — Farbe als rgb() statt Hex — bestand sonst)
-    check(vorher.n > 1500 && vorher.n < 12000 && vorher.colored > 800,
+    // Untergrenze 1000 seit E19: die Fläche ist jetzt quadratisch statt quer — ein
+    // langgestrecktes Modell (CsrD) füllt davon weniger (1455 Pixel, Bild geprüft)
+    check(vorher.n > 1000 && vorher.n < 12000 && vorher.colored > 800,
       `Protein ${tag}: Cartoon gezeichnet (${vorher.n} von 19200 Pixeln Struktur, ${vorher.colored} farbig)`);
     check(colorScheme === "dark" ? vorher.bgLum < 90 : vorher.bgLum > 200,
       `Protein ${tag}: Zeichengrund folgt dem Farbschema (Helligkeit ${Math.round(vorher.bgLum)})`);
@@ -263,13 +277,14 @@ try {
   }
   // Rückfall in der echten Sandbox: ohne WebGL-Kontext bleibt die SVG-Spur stehen
   for (const colorScheme of ["light", "dark"]) {
-    const page = await browser.newPage({ viewport: { width: 530, height: 660 }, colorScheme });
+    const page = await browser.newPage({ viewport: { width: 530, height: 1000 }, colorScheme });
     await page.setContent('<body style="margin:0"></body>');
     await page.addScriptTag({ path: out });
     await page.exposeFunction("__callTool", (req) => client.callTool(req));
     const noGl = "HTMLCanvasElement.prototype.getContext=(o=>function(t,...a){return /webgl/i.test(t)?null:o.call(this,t,...a)})(HTMLCanvasElement.prototype.getContext);";
     const f = await mount(page, "generate_molecule", { name_or_smiles: "lysozyme" }, noGl);
     await f.locator('[data-protein-viewer="failed"]').waitFor({ timeout: 30000 });
+    await fitFrame(page);
     const trace = f.locator("svg[data-backbone]");
     check(await trace.isVisible() && await trace.locator("path[data-residue-ss]").count() > 100,
       `Protein ohne WebGL (${colorScheme}): SVG-Spur als Rückfall gezeichnet, keine leere Fläche`);
@@ -283,6 +298,148 @@ try {
     await page.screenshot({ path: join(shots, `panel-fallback-lysozyme-${colorScheme}.png`) });
     await page.close();
   }
+
+  // E19: Bildgröße im Proteinpanel am Maßstab des Molekül-3D-Knopfs
+  // (styles.css, `.structure-layout[data-layout-3d] .structure-canvas`: Quadrat,
+  // höchstens 720 px). Wie Desktop: das iframe bekommt die Höhe, die das Panel
+  // per size-changed meldet — dann darf im Panel nichts scrollen oder abschneiden.
+  const sizeShots = process.env.PROTEIN_SIZE_SHOTS || join(tmpdir(), "chemdraw-protein-size");
+  mkdirSync(sizeShots, { recursive: true });
+  const fitted = async (page, width, tool, name, prelude = "", patch = null) => {
+    await page.setContent('<body style="margin:0"></body>');
+    await page.addScriptTag({ path: out });
+    await page.exposeFunction("__callTool", (req) => client.callTool(req));
+    const f = await mount(page, tool, { name_or_smiles: name }, prelude, patch);
+    await page.locator("iframe").last().evaluate((el, w) => { el.style.width = `${w}px`; }, width);
+    const fit = async () => {
+      await page.waitForTimeout(250); // ResizeObserver + rAF der Größenmeldung
+      const size = await page.evaluate(() => window.__panelSizes.at(-1));
+      check(size && size.height > 0, `E19 ${name} ${width}px: Panel meldet seine Höhe (${size?.height} px)`);
+      await page.locator("iframe").last().evaluate((el, h) => { el.style.height = `${h}px`; }, size.height);
+      await page.waitForTimeout(150);
+      const doc = await f.evaluate(() => ({ sh: document.documentElement.scrollHeight, ih: innerHeight,
+        sw: document.documentElement.scrollWidth, iw: innerWidth }));
+      check(doc.sh <= doc.ih + 1 && doc.sw <= doc.iw,
+        `E19 ${name} ${width}px: gemeldete Höhe reicht, nichts scrollt oder ragt seitlich heraus (${doc.sw}×${doc.sh} in ${doc.iw}×${doc.ih})`);
+      return size;
+    };
+    return { f, fit };
+  };
+  // Fläche des Bildes: Box des Viewers und die tatsächlich gemalte Größe einer
+  // SVG-Zeichnung (viewBox mit „meet“ eingepasst)
+  const stageOf = (f) => f.evaluate(() => {
+    const r = (el) => { const b = el.getBoundingClientRect(); return { w: Math.round(b.width), h: Math.round(b.height) }; };
+    const painted = (svg) => {
+      if (!svg) return null;
+      const vb = svg.viewBox.baseVal, b = svg.getBoundingClientRect();
+      const s = Math.min(b.width / vb.width, b.height / vb.height);
+      return { w: Math.round(vb.width * s), h: Math.round(vb.height * s) };
+    };
+    const stage = document.querySelector("[data-protein-viewer]");
+    const canvas = document.querySelector("[data-cartoon-host] canvas");
+    return { stage: r(stage), canvas: canvas && getComputedStyle(canvas.parentElement).visibility !== "hidden" ? r(canvas) : null,
+      backbone: painted(document.querySelector("svg[data-backbone]")),
+      scheme: painted(document.querySelector("svg[data-igg-scheme]")) };
+  });
+  // Eigener Browser für die großen WebGL-Flächen: danach konnte der gemeinsame
+  // Browser in Welle 2 keine Screenshots mehr aufnehmen (Page.captureScreenshot,
+  // zweimal in Folge, 10.11.)
+  const e19Browser = await chromium.launch();
+  const groß = {};
+  for (const width of [860, 360]) {
+    const page = await e19Browser.newPage({ viewport: { width: width + 40, height: 1300 } });
+    const { f, fit } = await fitted(page, width, "generate_molecule", "lysozyme");
+    await f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
+    await fit();
+    const m = await stageOf(f);
+    groß[`cartoon-${width}`] = m;
+    const inhalt = width - 64; // body 16 + Panel 16 je Seite
+    check(m.stage.w >= inhalt - 2 && Math.abs(m.stage.h - Math.min(m.stage.w, 720)) <= 1,
+      `E19 lysozyme ${width}px: Bildfläche volle Breite, Höhe wie der 3D-Knopf (Quadrat, höchstens 720) — ${m.stage.w}×${m.stage.h}`);
+    check(m.canvas && m.canvas.w === m.stage.w && m.canvas.h === m.stage.h, `E19 lysozyme ${width}px: Cartoon füllt die Fläche (${m.canvas?.w}×${m.canvas?.h})`);
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: join(sizeShots, `e19-cartoon-lysozyme-${width}.png`), fullPage: true });
+    if (width === 860) {
+      // Das große Bild fängt das Rad nicht ein: bloßes Rad über der Bildmitte
+      // scrollt die Seite (den Chat), das Bild bleibt, wie es war
+      await page.setViewportSize({ width: 900, height: 600 });
+      await page.evaluate(() => window.scrollTo(0, 0));
+      const box = await f.locator("[data-cartoon-host] canvas").boundingBox();
+      const vorRad = await inked(f);
+      await page.mouse.move(box.x + box.width / 2, Math.min(box.y + box.height / 2, 560));
+      await page.mouse.wheel(0, 300);
+      await page.waitForTimeout(450);
+      const y = await page.evaluate(() => window.scrollY);
+      check(y > 0 && (await inked(f)).sum === vorRad.sum, `E19 lysozyme 860px: Rad über dem großen Bild scrollt die Seite (${y} px), Bild unverändert`);
+    }
+    await page.close();
+  }
+  {
+    const noGl = "HTMLCanvasElement.prototype.getContext=(o=>function(t,...a){return /webgl/i.test(t)?null:o.call(this,t,...a)})(HTMLCanvasElement.prototype.getContext);";
+    const page = await e19Browser.newPage({ viewport: { width: 900, height: 1300 } });
+    const { f, fit } = await fitted(page, 860, "generate_molecule", "lysozyme", noGl);
+    await f.locator('[data-protein-viewer="failed"]').waitFor({ timeout: 30000 });
+    await fit();
+    const m = await stageOf(f);
+    const c = groß["cartoon-860"];
+    check(m.stage.w === c.stage.w && m.stage.h === c.stage.h,
+      `E19 Rückfall: SVG-Spur in derselben Fläche wie der Cartoon (${m.stage.w}×${m.stage.h} ↔ ${c.stage.w}×${c.stage.h})`);
+    check(m.backbone && m.backbone.w >= m.stage.w - 2 && m.backbone.h >= m.stage.h - 2,
+      `E19 Rückfall: Spur malt die ganze Fläche aus, kein Briefkasten (${m.backbone?.w}×${m.backbone?.h})`);
+    await page.screenshot({ path: join(sizeShots, "e19-fallback-lysozyme-860.png"), fullPage: true });
+    await page.close();
+  }
+  // Varianten: Fab-Arm markiert (Trastuzumab), ganzes IgG markiert (dieselbe
+  // Antwort, Markierung auf „igg“ umgestellt), allgemeine Architektur ohne Markierung
+  const toIgg = (sc) => { sc.protein.scheme.highlight = "igg"; };
+  for (const [width, name, patch, shot] of [
+    [860, "trastuzumab", null, "trastuzumab"], [360, "trastuzumab", null, "trastuzumab"],
+    [860, "trastuzumab", toIgg, "igg-highlight"], [860, "antibody", null, "antibody-general"],
+  ]) {
+    const page = await e19Browser.newPage({ viewport: { width: width + 40, height: 1300 } });
+    const { f, fit } = await fitted(page, width, "generate_molecule", name, "", patch);
+    await f.locator("[data-protein-viewer]").waitFor({ timeout: 30000 });
+    if (name !== "antibody") await f.getByRole("tab", { name: "Scheme" }).click();
+    await fit();
+    const m = await stageOf(f);
+    if (width === 860 && !patch && name === "trastuzumab") {
+      const c = groß["cartoon-860"];
+      check(m.stage.w === c.stage.w && m.stage.h === c.stage.h, `E19 Schema: dieselbe Fläche wie der Cartoon (${m.stage.w}×${m.stage.h})`);
+      check(m.scheme && m.scheme.h >= 700, `E19 Schema 860px: gemalt ${m.scheme?.w}×${m.scheme?.h} (vorher ~330×300)`);
+    }
+    // Beschriftung „antigen-binding site“ frei: kein Schnitt mit dem gestrichelten
+    // Rahmen des Fab-Arms, keine Überlappung mit anderen Texten, innerhalb der viewBox
+    const frei = await f.evaluate(() => {
+      const svg = document.querySelector("svg[data-igg-scheme]");
+      const texts = [...svg.querySelectorAll("text")].filter((t) => !t.closest("g[transform]"));
+      const label = texts.find((t) => t.textContent === "antigen-binding site");
+      const b = label.getBBox(), pad = 2;
+      const inBox = ([x, y], q) => x > q.x - pad && x < q.x + q.width + pad && y > q.y - pad && y < q.y + q.height + pad;
+      const poly = svg.querySelector("[data-highlight] polygon");
+      const rect = svg.querySelector("[data-highlight] rect");
+      const num = (el, a) => Number(el.getAttribute(a));
+      const pts = poly ? poly.getAttribute("points").trim().split(/\s+/).map((p) => p.split(",").map(Number))
+        : rect ? [[num(rect, "x"), num(rect, "y")], [num(rect, "x") + num(rect, "width"), num(rect, "y")],
+          [num(rect, "x") + num(rect, "width"), num(rect, "y") + num(rect, "height")], [num(rect, "x"), num(rect, "y") + num(rect, "height")]]
+        : [];
+      let rahmen = false;
+      for (let i = 0; i < pts.length; i++) {
+        const [a, c] = [pts[i], pts[(i + 1) % pts.length]];
+        for (let k = 0; k <= 200; k++) if (inBox([a[0] + (c[0] - a[0]) * k / 200, a[1] + (c[1] - a[1]) * k / 200], b)) rahmen = true;
+      }
+      const überlappt = texts.filter((t) => t !== label).map((t) => [t.textContent, t.getBBox()])
+        .filter(([, q]) => q.x < b.x + b.width && b.x < q.x + q.width && q.y < b.y + b.height && b.y < q.y + q.height).map(([s]) => s);
+      const vb = svg.viewBox.baseVal;
+      const drin = b.x >= vb.x && b.y >= vb.y && b.x + b.width <= vb.x + vb.width && b.y + b.height <= vb.y + vb.height;
+      return { markierung: svg.getAttribute("data-igg-scheme"), rahmen, überlappt, drin };
+    });
+    check(!frei.rahmen && frei.überlappt.length === 0 && frei.drin,
+      `E19 Schema ${shot} ${width}px: „antigen-binding site“ frei von Rahmen und Texten, ganz sichtbar (${JSON.stringify(frei)})`);
+    await page.screenshot({ path: join(sizeShots, `e19-scheme-${shot}-${width}.png`), fullPage: true });
+    await page.close();
+  }
+  await e19Browser.close();
+  console.log("E19 Maße:", JSON.stringify(groß));
 
   // Welle 2: reale Spektren im sandboxed Panel, einschließlich Dateiausgabe.
   for (const [spectrum_type, title, peaks, axis] of [

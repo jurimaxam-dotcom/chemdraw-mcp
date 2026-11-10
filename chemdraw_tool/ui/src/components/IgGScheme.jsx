@@ -66,8 +66,16 @@ export default function IgGScheme({ highlight = "", caption = "" }) {
   const note = { fill: "var(--fg-muted)", fontSize: 12 };
   const tipL = arms[0].at(36 + 1.5 * DOM_L + 6, (DOM_W + 4) / 2);
   const tipR = arms[1].at(36 + 1.5 * DOM_L + 6, (DOM_W + 4) / 2);
+  // Beschriftung wie in igg_scheme.py: „antigen-binding site“ oben links mit
+  // Hinweislinie zur Spitze, „Fab“ über der äußeren Rahmenecke — vorher stieß der
+  // Text an den gestrichelten Rahmen des markierten Arms (Handtest 10.11.)
+  const labelAt = [60, 31];
+  const toTip = [labelAt[0] - tipL[0], labelAt[1] - tipL[1]];
+  const len = Math.hypot(...toTip);
+  const leaderEnd = [tipL[0] + (toTip[0] / len) * 8.5, tipL[1] + (toTip[1] / len) * 8.5];
+  const fabCorner = arms.map((a) => a.at(36 + 1.5 * DOM_L + 10, -DOM_W / 2 - 6));
   return (
-    <svg data-igg-scheme={highlight || "none"} viewBox="40 6 360 346" role="img"
+    <svg data-igg-scheme={highlight || "none"} viewBox="40 -10 360 362" role="img"
       aria-label={`IgG1 domain scheme${caption ? ` — ${caption}` : ""}`}
       style={{ width: "100%", height: "100%", display: "block" }}
       fontFamily="var(--font)">
@@ -76,14 +84,14 @@ export default function IgGScheme({ highlight = "", caption = "" }) {
         <g data-highlight="fab">
           <polygon points={armBox(arms[0])} fill="var(--accent)" fillOpacity="0.12"
             stroke="var(--accent)" strokeWidth="2" strokeDasharray="6 4" strokeLinejoin="round" />
-          <text x="48" y="24" {...text} fill="var(--accent)" fontWeight="600">Shown structure: this Fab arm</text>
+          <text x="48" y="6" {...text} fill="var(--accent)" fontWeight="600">Shown structure: this Fab arm</text>
         </g>
       )}
       {highlight === "igg" && (
         <g data-highlight="igg">
           <rect x="62" y="34" width="276" height="300" rx="10" fill="var(--accent)" fillOpacity="0.08"
             stroke="var(--accent)" strokeWidth="2" strokeDasharray="6 4" />
-          <text x="48" y="24" {...text} fill="var(--accent)" fontWeight="600">Shown structure: the whole antibody</text>
+          <text x="48" y="6" {...text} fill="var(--accent)" fontWeight="600">Shown structure: the whole antibody</text>
         </g>
       )}
       {/* Fc-Stamm und Gelenk */}
@@ -106,8 +114,9 @@ export default function IgGScheme({ highlight = "", caption = "" }) {
         <circle key={x} cx={x} cy={y} r="7" fill="none" stroke="#CC79A7" strokeWidth="2.2" />
       ))}
       {/* Beschriftung */}
-      <text x="66" y="62" {...text} fontWeight="700" fontSize="15">Fab</text>
-      <text x="312" y="62" {...text} fontWeight="700" fontSize="15">Fab</text>
+      {fabCorner.map(([x, y]) => (
+        <text key={x} x={x} y={y - 7} {...text} textAnchor="middle" fontWeight="700" fontSize="15">Fab</text>
+      ))}
       <line x1="256" y1="232" x2="262" y2="232" stroke="var(--fg-muted)" />
       <line x1="262" y1="232" x2="262" y2="322" stroke="var(--fg-muted)" />
       <line x1="256" y1="322" x2="262" y2="322" stroke="var(--fg-muted)" />
@@ -115,7 +124,8 @@ export default function IgGScheme({ highlight = "", caption = "" }) {
       <line x1="220" y1="195" x2="300" y2="214" stroke="var(--fg-muted)" strokeWidth="0.8" />
       <text x="302" y="218" {...note}>hinge (H–H S–S)</text>
       <text x="146" y="262" {...note} textAnchor="end">N297 glycan</text>
-      <text x={tipL[0] - 4} y={tipL[1] - 20} {...note} textAnchor="middle">antigen-binding site</text>
+      <line x1={labelAt[0]} y1={labelAt[1]} x2={leaderEnd[0]} y2={leaderEnd[1]} stroke="var(--fg-muted)" strokeWidth="0.8" />
+      <text x="48" y="26" {...note}>antigen-binding site</text>
       <text x="396" y="346" {...note} textAnchor="end" fontSize="11">human IgG1 · EU numbering</text>
     </svg>
   );

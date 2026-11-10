@@ -173,6 +173,23 @@ export default function ProteinView({ data }) {
     return () => mq.removeEventListener?.("change", follow);
   }, [ready]);
 
+  // Maß der Bildfläche für die SVG-Spur: viewBox = Pixel der Fläche, damit der
+  // Rückfall sie ausfüllt wie der Cartoon (sonst 480 × 330 mit Briefkasten).
+  // Ohne Layout (jsdom) bleibt es beim Vorgabemaß der Spur.
+  const [stageSize, setStageSize] = useState({});
+  useEffect(() => {
+    const el = viewer.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const measure = () => {
+      const w = Math.round(el.clientWidth), h = Math.round(el.clientHeight);
+      if (w > 0 && h > 0) setStageSize((s) => (s.width === w && s.height === h ? s : { width: w, height: h }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const resetView = () => {
     if (ready) ctl.current?.resetView();
     else setResetKey((k) => k + 1);
@@ -193,7 +210,8 @@ export default function ProteinView({ data }) {
   return (
     <div
       style={{
-        height: 620, // intrinsisch — der Host bemisst das iframe am Inhalt
+        // keine feste Höhe (E19): die Bildfläche bemisst sich selbst
+        // (.protein-stage), der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -234,8 +252,8 @@ export default function ProteinView({ data }) {
           <button type="button" onClick={resetView} title="Back to the starting view">Reset</button>
         </div>}
       </div>
-      <div ref={viewer} data-protein-viewer={engine} style={{ flex: 1, minHeight: 0, display: "flex", position: "relative" }}>
-        {!ready && <BackboneCanvas key={resetKey} chains={protein.chains} colorBy={mode} />}
+      <div ref={viewer} data-protein-viewer={engine} className="protein-stage">
+        {!ready && <BackboneCanvas key={resetKey} chains={protein.chains} colorBy={mode} {...stageSize} />}
         <div
           ref={host}
           data-cartoon-host=""

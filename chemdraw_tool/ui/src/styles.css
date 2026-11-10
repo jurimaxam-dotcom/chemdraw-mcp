@@ -262,6 +262,10 @@ button:active { filter: brightness(0.92); }
 /* 3D (Jay 07.11.): die Kuhle bekommt die volle Panelbreite als Quadrat, die Kernwerte rutschen als Reihe darunter. */
 .structure-layout[data-layout-3d] { grid-template-columns: minmax(0, 1fr); }
 .structure-layout[data-layout-3d] .structure-canvas { display: flex; height: auto; aspect-ratio: 1 / 1; width: min(100%, 720px); margin-inline: auto; }
+/* E19: Proteinbild am selben Maßstab — Höhe wie die 3D-Kuhle (Quadrat, höchstens 720 px),
+   Breite die ganze Zeile, weil Proteine im Ansichtsrahmen quer liegen. Eigene Größe statt
+   Rest einer festen Panelhöhe; Cartoon, Spur und Schema teilen dieselbe Fläche. */
+.protein-stage { position: relative; display: flex; width: 100%; aspect-ratio: 1 / 1; max-height: 720px; min-height: 0; flex-shrink: 0; }
 .structure-layout[data-layout-3d] .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
 .structure-drawing > svg { width: 100%; height: 100%; }
 .molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }

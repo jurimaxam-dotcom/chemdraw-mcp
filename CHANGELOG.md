@@ -60,6 +60,7 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Larger protein pictures in the panel.** The cartoon, its backbone-trace fallback and the IgG scheme now share one drawing area as tall as the molecule panel's 3D view (square, at most 720 px, full width), instead of the space left over in a fixed-height panel; the "antigen-binding site" label no longer touches the dashed Fab frame.
 - **A structure you type is no longer sent to any database by default.** Until 0.9.1, when
   PubChem did not know a structure's InChIKey, `generate_molecule`, `batch_generate` and the
   panel's Data button (`lookup_molecule_data`) posted the SMILES itself to PubChem, and `lookup`
