@@ -123,3 +123,10 @@ def test_konfiguration_bleibt_unveraendert(tmp_path, monkeypatch, capsys):
     desktop_config.main()
     servers = json.loads(cfg.read_text())["mcpServers"]
     assert set(servers) == {"chemdraw", "chemdraw-pharma"}
+
+
+def test_bundle_start_spricht_englisch():
+    """run.sh bindet uv-holen.sh ein — beide schreiben ins selbe Bundle-Log."""
+    text = _shell_output_lines(ROOT / "mcpb" / "server" / "run.sh", r"^log\s+\"")
+    assert text, "keine log-Zeilen gefunden — Test misst nichts"
+    assert _german(text) == []

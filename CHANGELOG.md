@@ -39,6 +39,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 - Tool errors that were still German are now English, now that the panel shows them word for
   word: the Anki deck checks, `compare_molecules` (2 to 4 structures), output formats, render
   styles, scope figures, pharmacokinetics input checks, PNG export and the vault search texts.
+- Extension bundle: the start script logs in English, like the uv download step it includes
+  (the bundle log mixed German and English).
 
 ## [0.9.1] — 2026-11-10
 

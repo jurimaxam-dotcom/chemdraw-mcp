@@ -115,7 +115,7 @@ while ! mkdir "$LOCK" 2>/dev/null; do
   fi
   versuche=$((versuche + 1))
   if [ "$versuche" -gt 900 ]; then  # 180 s — dann ohne Sperre weiter
-    log "Installationssperre hängt — fahre ohne fort"
+    log "install lock is stuck — continuing without it"
     break
   fi
   sleep 0.2
@@ -132,7 +132,7 @@ fi
 
 if [ ! -f "$REQS" ]; then
   gib_frei
-  log "FEHLER: $REQS fehlt — das Bundle ist unvollständig gebaut (scripts/build-mcpb.sh)."
+  log "ERROR: $REQS is missing — the bundle was built incompletely (scripts/build-mcpb.sh)."
   exit 1
 fi
 
@@ -142,10 +142,10 @@ fi
 UV="${CHEMDRAW_MCP_UV:-$(find_uv || true)}"
 [ "$UV" = "-" ] && UV=""
 if [ -z "$UV" ]; then
-  log "uv nicht gefunden — lade die geprüfte Version nach $BASE/uv"
+  log "uv not found — downloading the verified version to $BASE/uv"
   if ! UV="$(hole_uv "$BASE/uv")"; then
     gib_frei
-    log "FEHLER: uv konnte nicht sicher installiert werden. Bitte uv installieren: https://docs.astral.sh/uv/"
+    log "ERROR: uv could not be installed safely. Please install uv: https://docs.astral.sh/uv/"
     exit 1
   fi
 fi
@@ -173,7 +173,7 @@ installiere() {
   [ -x "$SERVER" ] && printf '%s\n' "$VERSION" > "$STEMPEL"
 }
 
-log "installiere chemdraw-mcp $VERSION über $UV (einmalig, Hashes geprüft; danach startet es ohne uv und offline)"
+log "installing chemdraw-mcp $VERSION via $UV (once, hashes verified; later starts need neither uv nor the network)"
 installiere >&2 &
 KIND=$!
 if wait "$KIND" && installiert; then
@@ -199,5 +199,5 @@ rm -rf "$UMGEBUNG"
 gib_frei
 
 # Kein Rückfall auf `uv tool run`: der würde ohne Hashes auflösen (B4).
-log "FEHLER: Installation von chemdraw-mcp $VERSION fehlgeschlagen (Netz? Hash-Abweichung?). Details stehen oben."
+log "ERROR: installing chemdraw-mcp $VERSION failed (network? hash mismatch?). Details above."
 exit 1

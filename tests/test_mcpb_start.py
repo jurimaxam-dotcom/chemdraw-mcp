@@ -189,7 +189,7 @@ def test_scheitert_die_installation_bricht_der_start_ab(tmp_path):
     r = _run(tmp_path, "9.9.1", STUB_FAIL_INSTALL="1")
     assert r.returncode != 0
     assert "SERVER" not in r.stdout
-    assert "Installation von chemdraw-mcp 9.9.1 fehlgeschlagen" in r.stderr
+    assert "installing chemdraw-mcp 9.9.1 failed" in r.stderr
     assert "tool run" not in (tmp_path / "calls.log").read_text()
     assert not (_base(tmp_path) / "env-9.9.1").exists(), "halbe Umgebung blieb liegen"
 
@@ -197,7 +197,7 @@ def test_scheitert_die_installation_bricht_der_start_ab(tmp_path):
 def test_ohne_requirements_lock_kein_ungeprueftes_install(tmp_path):
     r = _run(tmp_path, "9.9.1", reqs=False)
     assert r.returncode != 0
-    assert "requirements.lock fehlt" in r.stderr
+    assert "requirements.lock is missing" in r.stderr
     log = tmp_path / "calls.log"
     assert not log.exists() or "pip install" not in log.read_text()
 
