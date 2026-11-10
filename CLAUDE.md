@@ -5,8 +5,8 @@
 The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
 `compare_molecules`, `generate_reaction`, `export_anki_deck` (since 21.10.2026,
 for the panel's Add to Anki button and the chat route), plus
-`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph` (16 tools, 12 with a panel). Set `CHEMDRAW_PROFILE=full`
-and restart to restore the full catalog (23 tools, 16 with a panel).
+`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein` (17 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
+and restart to restore the full catalog (24 tools, 17 with a panel).
 Other tools remain implemented and tested, but are not registered in the MVP.
 The immediate goal is a reliable input → correct structure → usable export
 workflow for general chemistry. Specialized pharmacy, trainer, quiz and payment
@@ -74,8 +74,8 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (default MVP: 16 tools, 12 with a panel;
-full profile: 23 tools, 16 with a panel).
+the two numbers the Python side predicts (default MVP: 17 tools, 13 with a panel;
+full profile: 24 tools, 17 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): `tisch auftrag codex` with prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/`; Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 
@@ -140,7 +140,7 @@ a tested promise in `tests/test_server_taxonomy.py`:
 
 | Area | Tools | What belongs here |
 |---|---|---|
-| Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d | structures and reactions |
+| Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d · generate_protein | structures and reactions |
 | Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution · generate_calibration_curve · generate_pk_curve · generate_dose_response | measured data as a diagram |
 | Look up | lookup · lookup_molecule_data · predict_spectrum | facts about a substance, from a database or derived from its structure |
 | Calculate | calculate_solution · calculate_content · calculate_ph · calculate_pharmacokinetics | a number **and** the working behind it |
@@ -157,7 +157,9 @@ selectable: any tool confusable with an existing one must carry a
 `Not this tool for: … — use X` line naming the alternative (also test-enforced),
 and the count has a ceiling that is only ever raised deliberately, with the
 reason written into the test (16 → 18 for the calculating area, → 19 for the
-calibration curve, → 20 for the spectrum prediction, → 21 for pharmacokinetics, → 23 for the pharmacology curves).
+calibration curve, → 20 for the spectrum prediction, → 21 for pharmacokinetics, → 23 for the pharmacology curves, → 24 for
+`generate_protein`, because Claude Desktop routes on tool names alone before its
+tool search: 0 of 8 protein requests reached the server without one).
 
 **Delimit in both directions.** The tool that fails to exclude a case is the
 one that wins it. `generate_titration_curve` therefore points at

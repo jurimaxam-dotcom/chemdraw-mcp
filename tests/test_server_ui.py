@@ -134,6 +134,7 @@ _KNOWN_PANEL_TOOLS = frozenset(
         "generate_species_distribution",
         "compare_molecules",
         "generate_3d",
+        "generate_protein",
     }
 )
 

@@ -29,6 +29,8 @@ MVP = {
     "generate_species_distribution",
     # Jay 31.10.2026: der pH als Zahl gehört in Welle 2, neben die Kurven.
     "calculate_ph",
+    # 10.11.2026: Desktop routet vor der Tool-Suche nur über Toolnamen.
+    "generate_protein",
 }
 FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 
@@ -141,6 +143,14 @@ def _summary(tool):
     ("generate_reaction", "generate_mechanism"),
     ("generate_molecule", "generate_3d"),
     ("generate_3d", "generate_molecule"),
+    # 10.11.2026: Proteine haben ein eigenes Tool — beide Zeichen-Nachbarn, die
+    # einen Proteinnamen ebenfalls annehmen, zeigen darauf, und es zurück.
+    ("generate_molecule", "generate_protein"),
+    ("generate_3d", "generate_protein"),
+    ("lookup", "generate_protein"),
+    ("generate_protein", "generate_molecule"),
+    ("generate_protein", "generate_3d"),
+    ("generate_protein", "lookup"),
     ("generate_molecule", "lookup"),
     ("lookup_molecule_data", "lookup"),
     ("lookup", "lookup_molecule_data"),
@@ -179,6 +189,7 @@ def test_mvp_neighbours_fence_towards_newly_enabled_tools(neighbour, target):
     "generate_mechanism", "generate_3d", "lookup",
     "predict_spectrum", "generate_spectrum", "generate_tlc",
     "generate_titration_curve", "generate_species_distribution", "calculate_ph",
+    "generate_protein",
 ])
 def test_mvp_instructions_route_newly_enabled_tools(tool):
     assert tool in _data()["instructions"]

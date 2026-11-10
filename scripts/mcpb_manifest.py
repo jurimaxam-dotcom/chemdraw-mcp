@@ -29,7 +29,7 @@ PHARMA = {
         "with an interactive panel."
     ),
     "long_description": (
-        "The second connector of chemdraw-mcp. It runs the full profile: 23 tools in "
+        "The second connector of chemdraw-mcp. It runs the full profile: 24 tools in "
         "five areas (draw, lab graphics, look up, calculate, Anki) — everything the "
         "default ChemDraw MCP extension has, plus the substrate-scope figure, the "
         "calibration curve with LOD/LOQ, plasma-concentration and dose-response "

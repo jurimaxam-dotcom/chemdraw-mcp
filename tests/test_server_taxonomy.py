@@ -39,6 +39,9 @@ ZEICHNEN = {
     "generate_mechanism",
     "generate_scope_table",
     "generate_3d",
+    # Seit 10.11.2026: Proteine und Antikörper als Cartoon — derselbe Weg wie
+    # generate_molecule, aber mit einem Namen, an dem Desktop den Fall erkennt.
+    "generate_protein",
 }
 
 LABORGRAFIK = {
@@ -123,8 +126,14 @@ def test_tool_count_stays_reviewable():
     ist ein `topic` bzw. eine `method`, kein eigenes Tool. Am 03.10.2026 auf 23:
     zwei Diagramme fuer die Pharmakologie (Konzentrations-Zeit-Kurve und
     Dosis-Wirkung) — Kurven, nicht Zahlen, also Laborgrafik, kein `topic`.
+    Am 10.11.2026 auf 24 fuer `generate_protein`: Claude Desktop zeigt dem
+    Modell vor der Tool-Suche nur die Toolnamen (Server-`instructions` kommen
+    nicht an, Beschreibungen erst nach dem Laden). Mit Proteinen nur als
+    Faehigkeit von generate_molecule kamen 0 von 8 Protein- und
+    Antikoerper-Auftraegen hier an (docs/evidence/desktop-routing-2026-11-10.md)
+    — ein Parameter hilft dort nicht, nur ein Name.
     """
-    assert len(_registered()) <= 23
+    assert len(_registered()) <= 24
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -153,7 +162,11 @@ def test_removed_tools_are_not_registered(gone):
 # Tools, deren Verwechslung real passiert ist oder naheliegt: Sie müssen sagen,
 # wofür sie NICHT zuständig sind, und das Alternativtool beim Namen nennen.
 NEEDS_DELIMITATION = {
-    "generate_molecule": ("generate_scope_table", "lookup"),
+    "generate_molecule": ("generate_scope_table", "lookup", "generate_protein"),
+    # Proteine (10.11.2026): beidseitig zu den beiden Zeichen-Tools, die den
+    # Namen auch annehmen, und zum Datenblatt (Funktion, EC-Nummer).
+    "generate_protein": ("generate_molecule", "generate_3d", "lookup"),
+    "generate_3d": ("generate_protein", "generate_molecule"),
     "generate_scope_table": ("generate_molecule",),
     "compare_molecules": ("generate_molecule",),
     "batch_generate": ("generate_molecule",),

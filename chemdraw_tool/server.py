@@ -248,7 +248,7 @@ highlight, which prose cannot do.
 - Naming a substance while you explain it → generate_molecule, then keep
   explaining. A bare compound name ("caffeine") means exactly this.
 - A protein, enzyme or antibody name (lysozyme, trastuzumab) →
-  generate_molecule draws its cartoon from the PDB; do not sketch your own.
+  generate_protein draws its cartoon from the PDB; do not sketch your own.
 - Walking through a reaction → generate_reaction; through its steps and
   electron flow → generate_mechanism.
 - Contrasting substances ("difference between ibuprofen and naproxen") →
@@ -260,7 +260,7 @@ highlight, which prose cannot do.
 
 The five areas: Draw (generate_molecule · batch_generate ·
 compare_molecules · generate_reaction · generate_mechanism ·
-generate_scope_table · generate_3d) · Lab graphic (generate_spectrum ·
+generate_scope_table · generate_3d · generate_protein) · Lab graphic (generate_spectrum ·
 generate_tlc · generate_titration_curve · generate_species_distribution ·
 generate_calibration_curve · generate_pk_curve · generate_dose_response) · Look up, for a named fact (lookup ·
 lookup_molecule_data · predict_spectrum) · Calculate, a number with its
@@ -298,6 +298,9 @@ MVP_TOOLS = frozenset({
     # Jay 31.10.2026: der pH als Zahl gehört in Welle 2 — dieselbe
     # Ladungsbilanz wie die Kurve, also stimmen Zahl und Bild überein.
     "calculate_ph",
+    # 10.11.2026: Desktop routet vor der Tool-Suche nur über Toolnamen — ein
+    # Protein braucht ein Tool, das „protein" heißt (0 von 8 ohne).
+    "generate_protein",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -307,7 +310,7 @@ interactive panel, and compute the numbers behind them.
 - A bare compound name ("caffeine") means generate_molecule. Use it also
   while explaining a compound when its structure helps.
 - A protein, enzyme or antibody name (lysozyme, trastuzumab):
-  generate_molecule draws its cartoon from the PDB; do not sketch your own.
+  generate_protein draws its cartoon from the PDB; do not sketch your own.
 - A pH, buffer recipe or degree of ionisation asked as a number:
   calculate_ph, also when you could work it out yourself — it solves the
   exact charge balance and shows the approximation beside it.
@@ -345,8 +348,7 @@ _MVP_SUMMARIES = {
 
 Writes PNG/SVG files and an interactive panel (properties, functional
 groups). A bare compound name ("caffeine") also
-means this tool — a protein or antibody name gives its cartoon
-(PDB/AlphaFold) — and so does a question about why one compound behaves as it
+means this tool, and so does a question about why one compound behaves as it
 does (acidity, solubility) — the answer is in its structure.
 A Fischer or Haworth projection of a sugar or amino acid, a chair
 conformation of a cyclohexane or pyranose ring, or a drawing with all H
@@ -358,8 +360,8 @@ generate_reaction), a data sheet (use lookup_molecule_data), a single named
 value such as melting point, CAS number or GHS hazards (use lookup), the IR
 bands or ¹H signals to expect (use predict_spectrum), a spectrum drawing (use
 generate_spectrum), which species of an acid dominates at a given pH (use
-generate_species_distribution), or a rotatable 3D model or the shape in space
-(use generate_3d).
+generate_species_distribution), a rotatable 3D model or the shape in space
+(use generate_3d), or a protein, enzyme or antibody (use generate_protein).
 """,
     "batch_generate": """Draw several individual compounds as separate PNG/SVG files and panels.
 
@@ -1021,8 +1023,12 @@ def _protein_text(name: str, choice, backbone, view) -> str:
     return " ".join(parts)
 
 
-def _protein_payload(name: str, label: str, exc: NameResolutionError, cls):
-    """Rückgratspur als Erfolgsantwort; ohne Struktur bleibt es die Fehlermeldung."""
+def _protein_payload(name: str, label: str, exc: NameResolutionError, cls, fmts=("png", "svg")):
+    """Rückgratspur als Erfolgsantwort; ohne Struktur bleibt es die Fehlermeldung.
+
+    fmts: welche Bilddateien entstehen (generate_protein reicht `formats` durch;
+    generate_molecule und generate_3d schreiben wie bisher PNG und SVG).
+    """
     import logging
 
     from chemdraw_tool import protein_render as pr
@@ -1055,10 +1061,8 @@ def _protein_payload(name: str, label: str, exc: NameResolutionError, cls):
         subtitle += f" · {choice.structure.note}"
     title = choice.figure_title
     slug = _slugify(label or name) or "protein"
-    artifacts = {
-        "png": pr.render_protein_png(view, title, subtitle, citation),
-        "svg": pr.render_protein_svg(view, title, subtitle, citation),
-    }
+    render = {"png": pr.render_protein_png, "svg": pr.render_protein_svg}
+    artifacts = {f: render[f](view, title, subtitle, citation) for f in fmts}
     files = write_files(PROTEIN_DIR / slug, artifacts)
     if choice.scheme:
         from chemdraw_tool.igg_scheme import render_igg_png, render_igg_svg
@@ -1067,11 +1071,12 @@ def _protein_payload(name: str, label: str, exc: NameResolutionError, cls):
             f"{choice.title.split(' ')[0]}: same domain plan; structure shown is the "
             f"{choice.antibody_what}"
         )
+        render_scheme = {"png": render_igg_png, "svg": render_igg_svg}
         scheme = write_files(
             PROTEIN_DIR / f"{slug}-igg-scheme",
-            {"png": render_igg_png(subtitle=sub), "svg": render_igg_svg(subtitle=sub)},
+            {f: render_scheme[f](subtitle=sub) for f in fmts},
         )
-        files.update({"scheme_png": scheme["png"], "scheme_svg": scheme["svg"]})
+        files.update({f"scheme_{f}": path for f, path in scheme.items()})
     color_by = "chain" if len(view.chains) > 1 else "ss"
     panel_scheme = None
     if choice.scheme:
@@ -1106,8 +1111,11 @@ def _protein_payload(name: str, label: str, exc: NameResolutionError, cls):
     )
 
 
-def _protein_for_too_large(name: str, exc: NameResolutionError) -> NameResolutionError | None:
-    """Ein zu großer Name, der ein Protein ist → Proteinfehler mit Wahl, sonst None."""
+def _protein_for_too_large(name: str, exc: NameResolutionError | None) -> NameResolutionError | None:
+    """Ein Name, den UniProt als Protein kennt → Proteinfehler mit Wahl, sonst None.
+
+    generate_molecule fragt so bei zu großen Namen, generate_protein bei jedem Namen.
+    """
     from chemdraw_tool import resolver as _resolver
 
     try:
@@ -1139,13 +1147,13 @@ def generate_molecule(
     structures or chemical drawings — "draw aspirin", "structure of caffeine".
     A bare compound name with no further request ("caffeine", "aspirin")
     also means this tool: show the substance, and the panel carries its data.
-    A protein or antibody name gives its cartoon (PDB/AlphaFold).
 
     Not this tool for: several products of one reaction with yields (use
     generate_scope_table); several unrelated structures at once (use
     batch_generate); differences between structures (use compare_molecules);
     an equation with an arrow (use generate_reaction); a named single value
-    such as melting point, CAS number or GHS hazards (use lookup).
+    such as melting point, CAS number or GHS hazards (use lookup); a protein,
+    enzyme or antibody (use generate_protein).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.
@@ -2179,12 +2187,11 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
     Use this when the user asks about 3D structure, molecular geometry
     (tetrahedral, planar...), conformation or spatial arrangement.
-    A protein, enzyme or antibody name (also a gene symbol such as RecA)
-    gives a rotatable cartoon from PDB or AlphaFold instead of atoms.
 
     Not this tool for: a flat 2D structure drawing, a Fischer/Haworth
     projection or a chair drawing — use generate_molecule. Nor for a
-    protein's function, EC number or cofactors — use lookup, topic "biochem".
+    protein, enzyme or antibody, also its 3D structure — use generate_protein
+    (its panel rotates); its function or EC number — use lookup, "biochem".
 
     IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
     localized display name.
@@ -2218,6 +2225,94 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
         bonds=bonds,
         files={"sdf": str(sdf_path)},
     )
+
+
+# --- generate_protein (10.11.2026) --------------------------------------------
+# Claude Desktop zeigt dem Modell vor der Tool-Suche nur die Toolnamen; Server-
+# `instructions` kommen dort nicht an. Mit Proteinen nur als Fähigkeit von
+# generate_molecule kamen 0 von 8 Protein- und Antikörperaufträgen hier an
+# (docs/evidence/desktop-routing-2026-11-10.md). Dieses Tool ist deshalb nur ein
+# Name: derselbe Resolver-Weg und dieselbe _protein_payload wie generate_molecule.
+
+
+def _protein_formats(formats: list[str] | None) -> tuple[str, ...]:
+    fmts = _normalize_formats(formats)
+    if "cdxml" in fmts:
+        raise ValueError(
+            "A protein cartoon has no CDXML — that format holds skeletal formulas. "
+            'Use "png" and/or "svg".'
+        )
+    return tuple(dict.fromkeys(fmts))
+
+
+def _not_a_protein(name: str, mol=None, structure: bool = False) -> ValueError:
+    # Nur sagen, was feststeht: wie der Name gelesen wurde und dass UniProt ihn
+    # nicht kennt — nicht „ist kein Protein" (PubChem liest manche Proteinnamen
+    # als kleine Moleküle, gemessen: ubiquitin → C6H8O7).
+    shown = name.strip()
+    if structure:
+        from rdkit.Chem import rdMolDescriptors
+
+        lead = (f"'{shown}' is a structure ({rdMolDescriptors.CalcMolFormula(mol)}), "
+                f"not a protein name")
+    elif mol is None:
+        lead = (f"'{shown}' names several compounds, and UniProt lists no protein under "
+                f"this name")
+    else:
+        from rdkit.Chem import rdMolDescriptors
+
+        lead = (f"'{shown}' was read as the compound {rdMolDescriptors.CalcMolFormula(mol)}, "
+                f"and UniProt lists no protein under this name")
+    return ValueError(
+        f"{lead}, so nothing was drawn. generate_protein draws proteins, enzymes and "
+        f"antibodies only. Draw this compound with generate_molecule (or generate_3d for "
+        f"a 3D model); for a protein, pass its full name, e.g. with the organism."
+    )
+
+
+@_tool(structured_output=True, meta=_UI_META)
+def generate_protein(name: str, formats: list[str] | None = None) -> ProteinPayload:
+    """Draw a protein, enzyme or antibody as a cartoon (ribbon diagram).
+
+    Fetches its structure from the PDB (AlphaFold model if there is none) and
+    writes PNG/SVG files plus a rotatable panel: helices as spirals, strands as
+    arrows, bound groups such as heme or zinc as sticks. Works for enzyme and
+    protein names (lysozyme, trypsin, hemoglobin, insulin), gene symbols
+    (RecA), antibody INNs (trastuzumab) and a plain "antibody" or "IgG".
+    Antibodies come with the IgG domain scheme; an antibody without a known
+    structure shows the architecture of an intact IgG. A protein's 3D
+    structure is this tool too — the panel rotates.
+
+    Not this tool for: a small molecule, a peptide sequence or any skeletal
+    formula (use generate_molecule); a small molecule as a 3D model (use
+    generate_3d); a protein's function, EC number or cofactors as text (use
+    lookup, topic "biochem").
+
+    Args:
+        name: English protein, enzyme, gene or antibody name ("lysozyme",
+            "trastuzumab", "antibody"); an organism may follow ("human
+            lysozyme").
+        formats: "png", "svg" (default both). A cartoon has no CDXML.
+    """
+    fmts = _protein_formats(formats)
+    try:
+        resolved = resolve(name)
+    except NameResolutionError as exc:
+        if exc.kind == "protein" and exc.protein is not None:
+            return _protein_payload(name, "", exc, ProteinPayload, fmts)
+        if exc.kind == "ambiguous":
+            if as_protein := _protein_for_too_large(name, None):
+                return _protein_payload(name, "", as_protein, ProteinPayload, fmts)
+            raise _not_a_protein(name) from exc
+        raise
+    smiles, mol = resolved
+    structure = getattr(resolved, "user_structure", True)
+    # Ein Name (nie ein SMILES — Datenschutz, E12), den PubChem als Stoff kennt:
+    # wer dieses Tool ruft, meint das Protein, also fragt UniProt — wie bei
+    # generate_molecule für zu große Namen, hier für jede Größe.
+    if not structure and (as_protein := _protein_for_too_large(name, None)):
+        return _protein_payload(name, "", as_protein, ProteinPayload, fmts)
+    raise _not_a_protein(name, mol, structure)
 
 
 def _format_calculation(title: str, result_line: str, steps, notes) -> str:
@@ -3235,7 +3330,7 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
     - "biochem": compound class and biological role (ChEBI), related
       enzymes and proteins (UniProt); for a protein, enzyme or antibody
       name, its UniProt data sheet (function, EC, length, PDB). Drawing
-      a protein is generate_molecule (2D) or generate_3d, not this tool.
+      a protein is generate_protein, not this tool.
     - "pathway": metabolic pathways the compound appears in (KEGG).
 
     Not this tool for: a bare compound name with no named value asked for —
@@ -3752,7 +3847,7 @@ def _choice_sheet(name: str, choice) -> str:
         if chebi := chebi_lookup(name):
             desc = f" — {chebi['description']}" if chebi["description"] else ""
             lines.append(f"- **ChEBI:** {chebi['obo_id']} {chebi['label']}{desc}")
-    lines.append(f"- **Drawn structure:** {_drawn_structure(choice)} — generate_molecule / generate_3d")
+    lines.append(f"- **Drawn structure:** {_drawn_structure(choice)} — generate_protein")
     if choice.alternatives:
         lines.append(f"- **Other common sources:** {choice.alternatives}")
     if choice.others:
@@ -4272,7 +4367,7 @@ def batch_generate(
                 failed.append(f"{name_or_smiles} (ambiguous: {labels})")
             elif exc.kind == "protein":
                 failed.append(
-                    f'{name_or_smiles} (protein: no skeletal formula — generate_molecule draws its cartoon)'
+                    f'{name_or_smiles} (protein: no skeletal formula — generate_protein draws its cartoon)'
                 )
             else:
                 failed.append(name_or_smiles)

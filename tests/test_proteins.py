@@ -604,7 +604,8 @@ def test_batch_generate_says_protein_instead_of_a_bare_failure(drawing, monkeypa
     monkeypatch.setattr(resolver, "resolve_name_route", route)
     result = server.batch_generate(["trastuzumab"])
     assert result.failed == [
-        'trastuzumab (protein: no skeletal formula — generate_molecule draws its cartoon)'
+        # Seit 10.11.2026 zeigt der Verweis auf das eigene Protein-Tool.
+        'trastuzumab (protein: no skeletal formula — generate_protein draws its cartoon)'
     ]
 
 

@@ -40,8 +40,13 @@ to the databases as before. "X zwitterion" resolves X and charges its
 α-amino and α-carboxyl group, keeping the stereo of X.
 
 **Proteins.** Enzymes, antibodies and large peptide hormones have no readable
-skeletal formula. `generate_molecule` (2D image + panel) and `generate_3d`
-(rotatable panel) draw them as a **cartoon** (ribbon diagram, since E13):
+skeletal formula. `generate_protein` (image files + rotatable panel) draws
+them as a **cartoon**; `generate_molecule` and `generate_3d` give the same
+answer for a protein name. A tool of its own because Claude Desktop shows the
+model only tool names before it loads any description — without "protein" in
+a name, protein requests went to the host's own drawing tool. A name that is
+not a protein (caffeine, a SMILES) gets a message pointing at
+`generate_molecule` instead of a picture. The cartoon (ribbon diagram, since E13):
 α-helices as ribbons, β-strands as flat arrows pointing to the C-terminus,
 loops as a thin tube, from the backbone atoms (N, Cα, C, O) of an
 experimental structure (PDB) or, without one, of the AlphaFold model. The
@@ -119,7 +124,7 @@ SVG backbone trace and says so — never an empty area.
   CC0, cited with the PDB ID), AlphaFold DB (CC BY 4.0; Jumper et al. 2021,
   Varadi et al. 2024), UniProt (CC BY 4.0) — each image carries its line.
 - `batch_generate` and `compare_molecules` still draw no proteins; their
-  message points at `generate_molecule`.
+  message points at `generate_protein`.
 
 Before E8 `generate_molecule` explained instead of drawing; these rules from
 E6 still decide for names outside the table:
@@ -293,8 +298,8 @@ structure card.
 
 | Profile | Tools | Contents |
 |---|---|---|
-| `mvp` (default) | 16, 12 with a panel | the five areas above |
-| `full` | 23, 16 with a panel | adds a substrate-scope figure, a calibration curve, pharmacology curves and three more calculators |
+| `mvp` (default) | 17, 13 with a panel | the five areas above |
+| `full` | 24, 17 with a panel | adds a substrate-scope figure, a calibration curve, pharmacology curves and three more calculators |
 
 The `full` profile adds:
 
@@ -321,7 +326,7 @@ To switch, set `CHEMDRAW_PROFILE` and restart the server:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 23 tools
+CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 24 tools
 ```
 
 In Claude Desktop the two profiles are two connectors from one installation:

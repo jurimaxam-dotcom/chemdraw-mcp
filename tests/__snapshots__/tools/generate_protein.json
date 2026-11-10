@@ -1,0 +1,464 @@
+{
+  "description": "Draw a protein, enzyme or antibody as a cartoon (ribbon diagram).\n\nFetches its structure from the PDB (AlphaFold model if there is none) and\nwrites PNG/SVG files plus a rotatable panel: helices as spirals, strands as\narrows, bound groups such as heme or zinc as sticks. Works for enzyme and\nprotein names (lysozyme, trypsin, hemoglobin, insulin), gene symbols\n(RecA), antibody INNs (trastuzumab) and a plain \"antibody\" or \"IgG\".\nAntibodies come with the IgG domain scheme; an antibody without a known\nstructure shows the architecture of an intact IgG. A protein's 3D\nstructure is this tool too — the panel rotates.\n\nNot this tool for: a small molecule, a peptide sequence or any skeletal\nformula (use generate_molecule); a small molecule as a 3D model (use\ngenerate_3d); a protein's function, EC number or cofactors as text (use\nlookup, topic \"biochem\").\n\nArgs:\n    name: English protein, enzyme, gene or antibody name (\"lysozyme\",\n        \"trastuzumab\", \"antibody\"); an organism may follow (\"human\n        lysozyme\").\n    formats: \"png\", \"svg\" (default both). A cartoon has no CDXML.",
+  "inputSchema": {
+    "properties": {
+      "formats": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Formats"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "generate_proteinArguments",
+    "type": "object"
+  },
+  "name": "generate_protein",
+  "outputSchema": {
+    "$defs": {
+      "AtomData": {
+        "properties": {
+          "charge": {
+            "default": 0,
+            "title": "Charge",
+            "type": "integer"
+          },
+          "el": {
+            "title": "El",
+            "type": "string"
+          },
+          "hCount": {
+            "default": 0,
+            "title": "Hcount",
+            "type": "integer"
+          },
+          "idx": {
+            "title": "Idx",
+            "type": "integer"
+          },
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "idx",
+          "el",
+          "x",
+          "y"
+        ],
+        "title": "AtomData",
+        "type": "object"
+      },
+      "FunctionalGroup": {
+        "properties": {
+          "atomIndices": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atomindices",
+            "type": "array"
+          },
+          "color": {
+            "default": "#999999",
+            "title": "Color",
+            "type": "string"
+          },
+          "count": {
+            "default": 1,
+            "title": "Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "FunctionalGroup",
+        "type": "object"
+      },
+      "IsomerCandidate": {
+        "description": "One structure a family name (\"xylene\", \"Glucose\") can mean.",
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "smiles": {
+            "title": "Smiles",
+            "type": "string"
+          },
+          "svg": {
+            "default": "",
+            "title": "Svg",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "smiles"
+        ],
+        "title": "IsomerCandidate",
+        "type": "object"
+      },
+      "LipinskiData": {
+        "properties": {
+          "hba": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hba"
+          },
+          "hbd": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hbd"
+          },
+          "logP": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Logp"
+          },
+          "mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mw"
+          },
+          "passes": {
+            "default": false,
+            "title": "Passes",
+            "type": "boolean"
+          },
+          "violations": {
+            "default": 0,
+            "title": "Violations",
+            "type": "integer"
+          }
+        },
+        "title": "LipinskiData",
+        "type": "object"
+      },
+      "ProteinView": {
+        "description": "Protein cartoon for the panel (backbone N/Cα/O, secondary structure, bound groups).",
+        "properties": {
+          "chains": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Chains",
+            "type": "array"
+          },
+          "citation": {
+            "default": "",
+            "title": "Citation",
+            "type": "string"
+          },
+          "colorBy": {
+            "default": "ss",
+            "title": "Colorby",
+            "type": "string"
+          },
+          "identifier": {
+            "default": "",
+            "title": "Identifier",
+            "type": "string"
+          },
+          "ligands": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Ligands",
+            "type": "array"
+          },
+          "plddtMean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Plddtmean"
+          },
+          "scheme": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Scheme"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          },
+          "ssSource": {
+            "default": "deposited",
+            "title": "Sssource",
+            "type": "string"
+          },
+          "subtitle": {
+            "default": "",
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "title": "ProteinView",
+        "type": "object"
+      },
+      "StereoWarning": {
+        "description": "Ein Stereoelement, dessen Konfiguration die Eingabe offen lässt.",
+        "properties": {
+          "atoms": {
+            "default": [],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Atoms",
+            "type": "array"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "StereoWarning",
+        "type": "object"
+      }
+    },
+    "description": "Protein instead of a skeletal formula: cartoon (generate_molecule).",
+    "properties": {
+      "atoms": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AtomData"
+        },
+        "title": "Atoms",
+        "type": "array"
+      },
+      "candidates": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/IsomerCandidate"
+        },
+        "title": "Candidates",
+        "type": "array"
+      },
+      "cdxml_path": {
+        "default": "",
+        "title": "Cdxml Path",
+        "type": "string"
+      },
+      "files": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Files",
+        "type": "object"
+      },
+      "foundAs": {
+        "default": "",
+        "title": "Foundas",
+        "type": "string"
+      },
+      "functionalGroups": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/FunctionalGroup"
+        },
+        "title": "Functionalgroups",
+        "type": "array"
+      },
+      "initialView": {
+        "default": "",
+        "title": "Initialview",
+        "type": "string"
+      },
+      "lipinski": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/LipinskiData"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "message": {
+        "default": "",
+        "title": "Message",
+        "type": "string"
+      },
+      "name": {
+        "default": "",
+        "title": "Name",
+        "type": "string"
+      },
+      "projectionNote": {
+        "default": "",
+        "title": "Projectionnote",
+        "type": "string"
+      },
+      "properties": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "default": {},
+        "title": "Properties",
+        "type": "object"
+      },
+      "protein": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ProteinView"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "stereoNote": {
+        "default": "",
+        "title": "Stereonote",
+        "type": "string"
+      },
+      "stereoWarnings": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/StereoWarning"
+        },
+        "title": "Stereowarnings",
+        "type": "array"
+      },
+      "subtitle": {
+        "default": "",
+        "title": "Subtitle",
+        "type": "string"
+      },
+      "svg": {
+        "default": "",
+        "title": "Svg",
+        "type": "string"
+      },
+      "type": {
+        "default": "protein",
+        "title": "Type",
+        "type": "string"
+      },
+      "viewAtoms": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AtomData"
+        },
+        "title": "Viewatoms",
+        "type": "array"
+      },
+      "viewRequest": {
+        "additionalProperties": true,
+        "default": {},
+        "title": "Viewrequest",
+        "type": "object"
+      },
+      "viewSvg": {
+        "default": "",
+        "title": "Viewsvg",
+        "type": "string"
+      },
+      "views": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Views",
+        "type": "array"
+      }
+    },
+    "title": "ProteinPayload",
+    "type": "object"
+  }
+}

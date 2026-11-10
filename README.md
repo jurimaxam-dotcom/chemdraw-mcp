@@ -113,7 +113,7 @@ is not drawn.
 
 ## Tools
 
-The default profile registers 16 tools, 12 of them with an interactive panel.
+The default profile registers 17 tools, 13 of them with an interactive panel.
 Files go to `~/ChemDraw-Output/`. How the model picks the right tool is
 explained under [Development](#development).
 
@@ -125,6 +125,7 @@ explained under [Development](#development).
 | | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol"* | yes |
 | | `generate_mechanism` | *"Show me the SN2 mechanism step by step"* | yes |
 | | `generate_3d` | *"Show methane as a rotatable 3D model"* | yes |
+| | `generate_protein` | *"Draw lysozyme"*, *"Draw trastuzumab"* | yes |
 | **Lab graphics** | `generate_spectrum` | *"Draw the IR spectrum of aspirin"* | yes |
 | | `generate_tlc` | *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | yes |
 | | `generate_titration_curve` | *"Titrate phosphoric acid with NaOH and show the curve"* | yes |
@@ -135,7 +136,7 @@ explained under [Development](#development).
 | **Calculate** | `calculate_ph` | *"What is the pH of 0.1 M acetic acid, pKa 4.76?"* | text |
 | **Anki** | `export_anki_deck` | *"I have an exam on NSAIDs on Friday and need to know the structures"* | yes |
 
-The 16th tool, `save_png`, is the server half of the panel's export button. It
+The 17th tool, `save_png`, is the server half of the panel's export button. It
 runs when you click that button and is never called by the model on its own.
 
 What each tool does in detail, the options on the drawing tools (`formats`,
@@ -205,8 +206,8 @@ only in the profile the server starts with:
 
 | Connector | Profile | Tools | Adds |
 |---|---|---|---|
-| `chemdraw` | `mvp` (default) | 16, 12 with a panel | the five areas in the [tool table](#tools) |
-| `chemdraw-pharma` | `full` | 23, 16 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics |
+| `chemdraw` | `mvp` (default) | 17, 13 with a panel | the five areas in the [tool table](#tools) |
+| `chemdraw-pharma` | `full` | 24, 17 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics |
 
 The extension route ships them as two bundles (`chemdraw-mcp-<version>.mcpb`,
 `chemdraw-mcp-pharma-<version>.mcpb`); `chemdraw-install` writes both entries

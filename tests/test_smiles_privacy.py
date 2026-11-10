@@ -175,6 +175,10 @@ AUFRUFE = {
     "generate_3d(Genkürzel + SMILES)": lambda: srv.generate_3d("LipA " + AMID),
     "lookup(Genkürzel + SMILES)": lambda: srv.lookup("RecA from " + AMID, "biochem"),
     "generate_3d(Protein + SMILES)": lambda: srv.generate_3d("lysozyme " + BROMID),
+    # 10.11.2026: eigener Protein-Eingang — dieselbe Regel wie generate_molecule.
+    "generate_protein": lambda: srv.generate_protein(AMID),
+    "generate_protein(Genkürzel + SMILES)": lambda: srv.generate_protein("RecA " + BROMID),
+    "generate_protein(Protein + SMILES)": lambda: srv.generate_protein("lysozyme " + BROMID),
 }
 
 # Reaktions-SMILES: ein klarer Fehler statt einer Namenssuche.
