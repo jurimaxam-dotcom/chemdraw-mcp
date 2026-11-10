@@ -166,3 +166,24 @@ def test_pk_curve_bioavailability_is_a_fraction(f):
 def test_pk_curve_refuses_a_zero_interval():
     with pytest.raises(ValueError, match="tau"):
         s.generate_pk_curve(500, 70, half_life_h=4, tau_h=0)
+
+
+# --- Einzelatome (10.11.2026) -------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(("name", "formula"), [("hydrogen atom", "H"), ("oxygen atom", "O")])
+def test_single_atom_names_are_drawn_as_one_atom(tmp_path, monkeypatch, name, formula):
+    """"hydrogen atom" → [H]: ein einzelnes H ohne Nachbarn muss 2D-Layout,
+    Validierung und beide Renderer überstehen (RDKit entfernt es nicht)."""
+    from chemdraw_tool import resolver
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("kein Netz")
+    for source in ("_opsin_lookup", "_pubchem_lookup", "_nci_cir_lookup"):
+        monkeypatch.setattr(resolver, source, forbidden)
+    payload = s.generate_molecule(name)
+    assert "<svg" in payload.svg
+    assert len(payload.atoms) == 1
+    assert payload.atoms[0].el == formula
+    assert payload.atoms[0].hCount == 0
+    assert {"png", "svg"} <= set(payload.files)

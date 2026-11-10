@@ -1153,6 +1153,25 @@ _DIATOMIC_ELEMENTS: dict[str, str] = {
     **dict.fromkeys(("iodine", "iod", "jod"), "II"),
 }
 
+# Das Einzelatom derselben Elemente: "oxygen atom" / "atomic oxygen". PubChem
+# führt "oxygen atom" als Synonym von Wasser (CID 962) und "hydrogen atom" als
+# [1HH]; OPSIN kennt beide Wendungen nicht (gemessen 10.11.2026). Nur Englisch
+# und nur genau diese zwei Formen — alles andere geht durch die Kaskade.
+_ATOMIC_ELEMENTS: dict[str, str] = {
+    "hydrogen": "[H]", "nitrogen": "[N]", "oxygen": "[O]", "fluorine": "[F]",
+    "chlorine": "[Cl]", "bromine": "[Br]", "iodine": "[I]",
+}
+
+
+def _atom_phrase_key(name: str) -> str | None:
+    """Element aus "<element> atom" bzw. "atomic <element>", sonst None."""
+    words = name.casefold().split()
+    if len(words) == 2 and words[1] == "atom":
+        return words[0]
+    if len(words) == 2 and words[0] == "atomic":
+        return words[1]
+    return None
+
 
 def ambiguous_candidates(name: str) -> list[IsomerCandidate] | None:
     """Die Kandidaten, wenn `name` ein bekannter Familienname ist — sonst None."""
@@ -1279,6 +1298,8 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
 
     # Elementname eines zweiatomigen Elements: das Molekül, offline.
     if smiles := _DIATOMIC_ELEMENTS.get(name.strip().casefold()):
+        return Resolution(smiles)
+    if smiles := _ATOMIC_ELEMENTS.get(_atom_phrase_key(name) or ""):
         return Resolution(smiles)
 
     # Peptide (E4): Einbuchstabencode nur hinter "peptide:", Dreibuchstaben-

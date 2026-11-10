@@ -41,6 +41,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   styles, scope figures, pharmacokinetics input checks, PNG export and the vault search texts.
 - Extension bundle: the start script logs in English, like the uv download step it includes
   (the bundle log mixed German and English).
+- "oxygen atom", "hydrogen atom" and "atomic hydrogen" drew water or H₂, because PubChem lists
+  these phrases as synonyms of the molecules. "<element> atom" and "atomic <element>" now give the
+  single atom for hydrogen, nitrogen, oxygen and the halogens, without asking any database.
 
 ## [0.9.1] — 2026-11-10
 

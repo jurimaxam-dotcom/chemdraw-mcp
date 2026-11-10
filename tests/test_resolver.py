@@ -1366,10 +1366,38 @@ def test_diatomic_element_names_resolve_to_the_molecule(_measured_sources, name,
 
 @pytest.mark.parametrize(("name", "expected"), [
     ("sodium", "[Na]"), ("Natrium", "[Na]"), ("iron", "[Fe]"),
-    ("ozone", "O=[O+][O-]"), ("oxygen atom", "O"),
+    ("ozone", "O=[O+][O-]"),
 ])
 def test_other_element_names_keep_their_source_answer(_measured_sources, name, expected):
     assert resolve(name)[0] == expected
+
+
+# Einzelatome (Messung 10.11.2026, OPSIN mit Java aktiv): OPSIN kennt
+# "oxygen atom"/"atomic oxygen" nicht (None). PubChem führt "oxygen atom" als
+# Synonym von Wasser (CID 962 → O), "hydrogen atom" als [1HH] und "atomic
+# hydrogen" als [HH] — dreimal ein Molekül statt des Atoms. Die übrigen
+# Kombinationen liefert PubChem schon heute als Atom ([O], [N], [Cl], [F], [Br],
+# [I]); die Regel macht das ohne Netz und für alle sieben Elemente gleich.
+@pytest.mark.parametrize(("name", "expected"), [
+    ("oxygen atom", "[O]"), ("atomic oxygen", "[O]"),
+    ("hydrogen atom", "[H]"), ("atomic hydrogen", "[H]"),
+    ("nitrogen atom", "[N]"), ("atomic nitrogen", "[N]"),
+    ("chlorine atom", "[Cl]"), ("atomic chlorine", "[Cl]"),
+    ("fluorine atom", "[F]"), ("bromine atom", "[Br]"), ("iodine atom", "[I]"),
+    ("Oxygen Atom", "[O]"), ("  atomic  oxygen ", "[O]"),
+])
+def test_atom_names_resolve_to_the_single_atom_without_any_lookup(monkeypatch, name, expected):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Atomname darf keine Quelle befragen")
+    for source in ("_opsin_lookup", "_pubchem_lookup", "_nci_cir_lookup"):
+        monkeypatch.setattr(resolver, source, forbidden)
+    assert resolve(name)[0] == expected
+
+
+@pytest.mark.parametrize("name", ["oxygen atoms", "sodium atom", "atomic mass", "oxygen atom transfer"])
+def test_atom_rule_stays_narrow(_measured_sources, name):
+    """Nur Element der Tabelle + "atom" bzw. "atomic" + Element, sonst die Kaskade."""
+    assert resolver._ATOMIC_ELEMENTS.get(resolver._atom_phrase_key(name)) is None
 
 
 @pytest.mark.parametrize("smiles", ["O", "[O]", "O=O", "[Cl]"])
