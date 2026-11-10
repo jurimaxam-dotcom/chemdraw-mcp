@@ -89,6 +89,9 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **An amide nitrogen is no longer listed as an amine.** Capsaicin carried "Amide" and "Secondary
+  amine" on the same nitrogen, thalidomide a "Tertiary amine" on its imide nitrogen. The amine
+  chips now skip a nitrogen bound to C=O, C=S or S=O; the README panel GIFs are re-recorded.
 - Panel readability: abbreviation labels (Boc, Ph, CO₂H, OAc) are light in the dark colour
   scheme like every other label (before: near-black on the dark card), and no longer lose their
   last letter at the drawing's edge ("CO2" for CO₂H). Large structures in a reaction (porphyrins,
