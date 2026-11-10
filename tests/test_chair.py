@@ -244,6 +244,40 @@ def test_chair_svg_labels_do_not_overlap():
                 assert not overlap, (smiles, a, b)
 
 
+@pytest.mark.parametrize(
+    "smiles",
+    [
+        BETA_GLCP,
+        ALPHA_GLCP,
+        L_BETA_GLCP,
+        METHYLCYCLOHEXANE,
+        TRANS_12,
+        CIS_12,
+        CIS_13,
+        TRANS_13,
+        TRANS_14,
+        CIS_14,
+        MENTHOL,
+        TBU_CIS_14,
+    ],
+)
+def test_no_label_touches_a_bond_or_another_label(smiles):
+    """Befund Auftraggeber 10.11.2026: in β-/α-Glcp lief die Ringbindung
+    C5–O durch das „OH" von CH2OH. Kein Beschriftungsrechteck (mit
+    Helvetica-Breiten, nicht der knappen Schätzung) schneidet eine fremde
+    Strecke oder eine andere Beschriftung."""
+    from chemdraw_tool.projection import chair_collisions
+
+    assert chair_collisions(mol(smiles)) == 0
+
+
+def test_label_width_is_not_underestimated():
+    from chemdraw_tool.projection import _chair_text_width
+
+    # Helvetica 16 px: C 11,6 · H 11,6 · O 12,4; Ziffer tiefgestellt 11 px · 0,556
+    assert _chair_text_width("CH2OH") >= 52
+
+
 # --- Anbindung an generate_molecule ---------------------------------------
 
 

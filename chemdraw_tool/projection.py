@@ -669,7 +669,8 @@ def haworth_svg(mol: Chem.Mol) -> str:
 # daran nichts — es übertreibt nur die Faltung wie im Lehrbuch.
 #
 # Muster übernommen (nicht der Code, nicht die Koordinaten) aus
-# scotthartley/chem-svg-cdxml (MIT), chair.py: Sesselwahl über die Summe der
+# scotthartley/chem-svg-cdxml (MIT), Sessel-Modul („Chair conformers of single
+# six-membered rings", gelesen als lokale Kopie): Sesselwahl über die Summe der
 # A-Werte der axialen Gruppen; 1C4 als Spiegelbild des 4C1-Gerüsts; ein
 # Ringatom ohne Stereo-Tag stellt seinen Substituenten äquatorial, von zwei
 # geminalen ohne Tag den sperrigeren.
@@ -1063,6 +1064,36 @@ def _chair_drawing(mol: Chem.Mol):
     return None if ring is None else _chair_geometry(ring)
 
 
+# Helvetica-Laufweiten (Anteil der Schriftgröße). _label_width rechnet mit
+# 0,62 für alles und unterschätzt Großbuchstaben um rund 15 % — für die
+# Kollisionsprüfung zu knapp (CH2OH lag an der Ringbindung C5–O).
+_HELVETICA = {
+    "O": 0.78,
+    "C": 0.72,
+    "H": 0.72,
+    "N": 0.72,
+    "I": 0.28,
+    "F": 0.61,
+    "B": 0.67,
+    "(": 0.33,
+    ")": 0.33,
+    "+": 0.58,
+    "-": 0.33,
+}
+
+
+def _chair_text_width(text: str) -> float:
+    w = 0.0
+    for i, ch in enumerate(text):
+        if ch.isdigit() or (ch in "+-" and i == len(text) - 1):
+            w += _SUB_SIZE * 0.556
+        elif ch.islower():
+            w += _FONT_SIZE * 0.56
+        else:
+            w += _FONT_SIZE * _HELVETICA.get(ch, 0.72)
+    return w
+
+
 def _chair_geometry(ring: dict):
     pts, ax, eq = _chair_template(ring["conformer"] == "1C4")
     pts = [(x * _CHAIR_SCALE, y * _CHAIR_SCALE) for x, y in pts]
@@ -1080,10 +1111,12 @@ def _chair_geometry(ring: dict):
         # `own`: die Strecken, die an dieser Beschriftung enden
         parts.append(_text(text, x, y, anchor))
         box.label(text, x, y, anchor)
-        w = _label_width(text)
+        w = _chair_text_width(text)
         left = {"start": x, "middle": x - w / 2, "end": x - w}[anchor]
+        box.add(left, y - _FONT_SIZE, left + w, y + _SUB_SHIFT + 2)
         labels.append((left, y - _FONT_SIZE + 3, left + w, y + 2, frozenset(own)))
 
+    steep = []
     o_slots = [k for k in range(6) if pos[k].get("label") == "O"]
     for k in range(6):
         j = (k + 1) % 6
@@ -1124,23 +1157,59 @@ def _chair_geometry(ring: dict):
         put(p["axial"], x, ty, "middle", {stem})
         # äquatorial: entlang der berechneten Richtung
         ex, ey = eq[k]
+        label = p["equatorial"]
+        if abs(ex) < 0.45:
+            # Steiler Strich (Innenecken): erst setzen, wenn alle anderen
+            # Striche stehen — die Lage hängt an den Nachbarn.
+            steep.append((x, y, ex, ey, label))
+            continue
         tx, tyy = x + ex * _CHAIR_EQUATORIAL, y + ey * _CHAIR_EQUATORIAL
         stem = line(x, y, tx, tyy)
-        label = p["equatorial"]
         # Text in Verlängerung des Strichs: steile Striche heben/senken ihn
         ly = tyy + _BASELINE + ey * 8
-        if abs(ex) < 0.45:
-            # Steiler Strich (Innenecken): Text über/unter dem Ende, zur Seite
-            # weg vom Nachbaratom, dessen axialer Strich daneben steht.
-            ly = tyy - 4 if ey < 0 else tyy + _FONT_SIZE - 2
-            if ex < 0:
-                put(label, tx - 5, ly, "start", {stem})
-            else:
-                put(_CHAIR_LEFT.get(label, label), tx + 5, ly, "end", {stem})
-        elif ex > 0:
+        if ex > 0:
             put(label, tx + 2, ly, "start", {stem})
         else:
             put(_CHAIR_LEFT.get(label, label), tx - 2, ly, "end", {stem})
+
+    # Steile äquatoriale Striche: die erste Lage, deren Beschriftung keine
+    # fremde Strecke und keine andere Beschriftung trifft (Befund 10.11.:
+    # CH2OH an C5 lag sonst auf der Ringbindung C5–O). Länger vor quer.
+    for x, y, ex, ey, label in steep:
+        options = []
+        for length in (_CHAIR_EQUATORIAL, _CHAIR_EQUATORIAL + 12):
+            tx, tyy = x + ex * length, y + ey * length
+            ly = tyy - 4 if ey < 0 else tyy + _FONT_SIZE - 2
+            away = (
+                (label, tx - 5, "start")
+                if ex < 0
+                else (_CHAIR_LEFT.get(label, label), tx + 5, "end")
+            )
+            toward = (
+                (_CHAIR_LEFT.get(label, label), tx + 5, "end")
+                if ex < 0
+                else (label, tx - 5, "start")
+            )
+            for text, lx, anchor in (away, toward, (label, tx, "middle")):
+                options.append(((x, y, tx, tyy), text, lx, ly, anchor))
+        best = None
+        for rank, (seg, text, lx, ly, anchor) in enumerate(options):
+            w = _chair_text_width(text)
+            left = {"start": lx, "middle": lx - w / 2, "end": lx - w}[anchor]
+            own = frozenset({len(segments)})
+            trial = (left, ly - _FONT_SIZE + 3, left + w, ly + 2, own)
+            hits = _chair_collisions(
+                (None, None, labels + [trial], segments + [seg]),
+                only=len(labels),
+            )
+            hits += sum(_hits(lab[:4], seg) for lab in labels)
+            if best is None or (hits, rank) < best[0]:
+                best = ((hits, rank), seg, text, lx, ly, anchor)
+            if hits == 0:
+                break
+        _, seg, text, lx, ly, anchor = best
+        stem = line(*seg)
+        put(text, lx, ly, anchor, {stem})
     return parts, box, labels, segments
 
 
@@ -1153,7 +1222,7 @@ def _hits(box: tuple, seg: tuple) -> bool:
     )
 
 
-def _chair_collisions(drawing) -> int:
+def _chair_collisions(drawing, only: int | None = None) -> int:
     """Beschriftung über Bindung oder Beschriftung — 0 heißt lesbar.
 
     Eine Strecke, die an der Beschriftung endet (ihr eigener Strich, die am
@@ -1162,8 +1231,16 @@ def _chair_collisions(drawing) -> int:
     _, _, labels, segments = drawing
     count = 0
     for i, b in enumerate(labels):
-        # _label_width schätzt Großbuchstaben knapp: seitlich 2 px Luft
-        inner = (b[0] - 2, b[1] + 1, b[2] + 2, b[3] - 1)
+        if only is not None and i != only:
+            # nur die Probe-Beschriftung gegen alles andere prüfen
+            if any(
+                b[0] < c[2] and c[0] < b[2] and b[1] < c[3] and c[1] < b[3]
+                for c in labels[only : only + 1]
+            ):
+                count += 1
+            continue
+        # 3 px Luft zur Seite: ein Strich darf am Buchstaben nicht anliegen
+        inner = (b[0] - 3, b[1] + 1, b[2] + 3, b[3] - 1)
         for j, s in enumerate(segments):
             if j not in b[4]:
                 count += _hits(inner, s)
