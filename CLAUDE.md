@@ -222,7 +222,7 @@ chemdraw_tool/
 │                            (molmass — it parses hydrates, RDKit cannot)
 ├── ph_calc.py             — pH/buffer numbers; shares `ph_plots.exact_ph`
 │                            with the curve, so figure and number agree
-├── calibration.py         — least squares, read-back, LOD/LOQ (DIN 32645)
+├── calibration.py         — least squares, read-back, LOD/LOQ (ICH Q2: 3,3·s(y)/a)
 ├── calibration_plot.py    — the calibration figure (reuses ph_plots helpers)
 ├── spectro.py             — expected IR bands (curated table × SMARTS) and
 │                            ¹H signal counts; no ppm shifts on purpose

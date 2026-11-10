@@ -30,6 +30,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   again (it stayed at the smallest scale it had ever reached).
 - Installer: `chemdraw-install`, `install.sh` and the uv download step now speak English like the
   rest of the user-facing text (messages, warnings, errors and `--help`).
+- `generate_calibration_curve` names the method it actually uses for LOD/LOQ: the ICH Q2
+  estimate from residual standard deviation and slope (3.3·s/a, 10·s/a), not DIN 32645. The
+  numbers are unchanged.
 
 ## [0.9.1] — 2026-11-10
 

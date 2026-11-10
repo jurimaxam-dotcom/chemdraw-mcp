@@ -12,7 +12,9 @@ from __future__ import annotations
 
 import math
 
-# DIN 32645, Schnellschätzung über die Reststreuung der Kalibriergeraden.
+# ICH Q2: Schätzung aus Reststandardabweichung s(y) der Kalibriergeraden und
+# Steigung (LOD = 3,3·s(y)/a, LOQ = 10·s(y)/a). Nicht DIN 32645 — deren
+# Kalibrierverfahren rechnet mit t-Quantil und Prognoseintervall.
 LOD_FACTOR = 3.3
 LOQ_FACTOR = 10.0
 
@@ -139,7 +141,7 @@ def interpolate(signal: float, regression: dict) -> dict:
 
 
 def detection_limits(regression: dict) -> dict:
-    """Nachweis- und Bestimmungsgrenze aus der Reststreuung (DIN 32645)."""
+    """Nachweis- und Bestimmungsgrenze aus Reststreuung und Steigung (ICH Q2)."""
     slope = regression["slope"]
     s_y = regression["s_y"]
 

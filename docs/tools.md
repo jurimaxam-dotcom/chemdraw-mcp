@@ -176,8 +176,9 @@ The `full` profile adds:
   literature: general equation with conditions on top, products below with
   identifier, yield and optional ee/dr.
 - **`generate_calibration_curve`** — least-squares line through your
-  standards, unknowns read back off it, LOD/LOQ (DIN 32645); a sample outside
-  the calibrated range is labelled as extrapolated.
+  standards, unknowns read back off it, LOD/LOQ (ICH Q2 estimate from residual
+  standard deviation and slope); a sample outside the calibrated range is
+  labelled as extrapolated.
 - **`generate_pk_curve`** and **`generate_dose_response`** — plasma
   concentration over time (one-compartment model, single or repeated doses,
   therapeutic window) and the Hill curve with a competitive antagonist.

@@ -1462,8 +1462,9 @@ def generate_calibration_curve(
     range is labelled as extrapolated rather than quietly reported — the line
     was never verified there.
 
-    Also reports the limit of detection and quantitation (DIN 32645, from the
-    residual scatter), which is what a validation question asks for.
+    Also reports the limit of detection and quantitation (ICH Q2 estimate:
+    3.3 and 10 × residual standard deviation / slope), which is what a
+    validation question asks for.
 
     Not this tool for: content from a monograph method with a known
     A(1%,1cm) or titration factor — that is calculate_content, which needs no
@@ -1514,7 +1515,8 @@ def generate_calibration_curve(
     if limits["lod"]:
         notes.append(
             f"Limit of detection ≈ {limits['lod']:.4g}, limit of quantitation "
-            f"≈ {limits['loq']:.4g} ({limits['formula']})."
+            f"≈ {limits['loq']:.4g} (ICH Q2 estimate from the residual standard "
+            f"deviation and the slope: {limits['formula']})."
         )
     notes.extend(limits["notes"])
 

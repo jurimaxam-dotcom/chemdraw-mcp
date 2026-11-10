@@ -60,6 +60,18 @@ def test_detection_limits_are_reported_for_real_data():
     assert any("detection" in n.lower() for n in p.notes)
 
 
+def test_detection_limits_name_the_method_actually_computed():
+    """Gerechnet wird 3,3·s(y)/a und 10·s(y)/a mit der Reststreuung der Geraden:
+    die Schnellschätzung nach ICH Q2, nicht das Kalibrierverfahren nach DIN 32645
+    (das braucht t-Quantile und Prognoseintervall)."""
+    p = generate_calibration_curve(STANDARDS, SIGNALS)
+    limit_note = next(n for n in p.notes if "detection" in n.lower())
+    assert "ICH Q2" in limit_note
+    doc = generate_calibration_curve.__doc__
+    assert "DIN" not in doc
+    assert "ICH Q2" in doc
+
+
 def test_poor_linearity_is_called_out():
     p = generate_calibration_curve(
         [0.1, 0.2, 0.4, 0.6, 0.8], [0.10, 0.35, 0.30, 0.75, 0.60]
