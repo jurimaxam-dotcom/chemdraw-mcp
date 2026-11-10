@@ -1,0 +1,251 @@
+{
+ "results": [
+  {
+   "primaryAccession": "O69315",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Thermus thermophilus",
+    "lineage": [
+     "Bacteria",
+     "Thermotogati",
+     "Deinococcota",
+     "Deinococci",
+     "Thermales",
+     "Thermaceae",
+     "Thermus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 645,
+    "molWeight": 72824
+   },
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1KWG",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.60 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-645"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q53WD0",
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "organism": {
+    "scientificName": "Thermus thermophilus (strain ATCC 27634 / DSM 579 / HB8)",
+    "lineage": [
+     "Bacteria",
+     "Thermotogati",
+     "Deinococcota",
+     "Deinococci",
+     "Thermales",
+     "Thermaceae",
+     "Thermus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "BAD71828.1"
+        }
+       ],
+       "value": "Beta-galactosidase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "BAD71828.1"
+        }
+       ],
+       "value": "TTHB032"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 574,
+    "molWeight": 64221
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q745T5",
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "organism": {
+    "scientificName": "Thermus thermophilus (strain ATCC BAA-163 / DSM 7039 / HB27)",
+    "lineage": [
+     "Bacteria",
+     "Thermotogati",
+     "Deinococcota",
+     "Deinococci",
+     "Thermales",
+     "Thermaceae",
+     "Thermus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAS82550.1"
+        }
+       ],
+       "value": "Probable beta-galactosidase"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "AAS82550.1"
+         }
+        ],
+        "value": "3.2.1.23"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAS82550.1"
+        }
+       ],
+       "value": "TT_P0222"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 682,
+    "molWeight": 77617
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q745T7",
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "organism": {
+    "scientificName": "Thermus thermophilus (strain ATCC BAA-163 / DSM 7039 / HB27)",
+    "lineage": [
+     "Bacteria",
+     "Thermotogati",
+     "Deinococcota",
+     "Deinococci",
+     "Thermales",
+     "Thermaceae",
+     "Thermus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAS82548.1"
+        }
+       ],
+       "value": "Probable beta-galactosidase protein"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "AAS82548.1"
+         }
+        ],
+        "value": "3.2.1.23"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAS82548.1"
+        }
+       ],
+       "value": "TT_P0220"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 574,
+    "molWeight": 64208
+   },
+   "uniProtKBCrossReferences": []
+  }
+ ]
+}

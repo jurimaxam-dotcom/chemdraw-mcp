@@ -288,6 +288,7 @@ def _build_figure(
         ((_apex(cfg, p, parsed), p) for p in parsed if p.label),
         key=lambda item: item[0][0],
     )
+    placed: list = []
     prev_x: float | None = None
     prev_above: bool | None = None
     stack = 0
@@ -307,7 +308,7 @@ def _build_figure(
             floor_px = ax.transData.transform((lx, y_lo + 0.04 * y_span))[1]
             min_offset = (floor_px - anchor_px) / px_per_pt
             offset = max(offset, min_offset)
-        ax.annotate(
+        ann = ax.annotate(
             safe_text(p.label),
             xy=(lx, ly),
             xytext=(0, offset),
@@ -315,9 +316,101 @@ def _build_figure(
             ha="center",
             fontsize=9,
         )
+        placed.append((ann, lx, ly, offset, above))
         prev_x, prev_above = lx, above
 
+    _spread_overlapping_labels(fig, ax, placed)
     return fig
+
+
+LABEL_GAP_PX = 6
+# Eine gespreizte Gruppe steht so weit von ihren Apexen weg, dass die
+# Führungslinien steil laufen und unter/über der Labelreihe bleiben.
+LABEL_ROW_LIFT = 22
+_LEADER = {"arrowstyle": "-", "color": "#888888", "linewidth": 0.6, "shrinkA": 1, "shrinkB": 2}
+
+
+def _text_box(ann, renderer):
+    """Nur die Textbox — Annotation.get_window_extent schlösse die Führungslinie ein."""
+    from matplotlib.text import Text
+
+    ann.update_positions(renderer)
+    return Text.get_window_extent(ann, renderer)
+
+
+def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
+    """Labels, die sich wirklich überschneiden, als Reihe mit Führungslinien (E17).
+
+    Die Staffelung oben kennt nur den x-Abstand; zwei tiefe IR-Banden (1750/
+    1690 cm⁻¹) landen über den Boden-Clamp trotzdem auf derselben Höhe. Hier
+    zählt die gemessene Textbox: überschneidende Labels einer Gruppe stehen
+    nebeneinander (Reihenfolge wie die Banden) in einer Reihe, die um
+    LABEL_ROW_LIFT vom Apex weg versetzt ist — bei IR in die Bande hinein,
+    sonst darüber —, jedes mit einer dünnen Linie zu seinem Apex. Ohne
+    Überschneidung passiert nichts: das Bild bleibt byteweise gleich.
+    """
+    if len(placed) < 2:
+        return
+    renderer = fig._get_renderer()
+    px_per_pt = fig.dpi / 72.0
+    area = ax.get_window_extent(renderer)
+    group = list(range(len(placed)))
+
+    def root(i):
+        while group[i] != i:
+            i = group[i]
+        return i
+
+    for _round in range(4):
+        boxes = [_text_box(item[0], renderer) for item in placed]
+        pairs = [
+            (i, j)
+            for i in range(len(boxes))
+            for j in range(i + 1, len(boxes))
+            if boxes[i].overlaps(boxes[j])
+        ]
+        if not pairs:
+            return
+        for i, j in pairs:
+            group[root(i)] = root(j)
+        members: dict[int, list[int]] = {}
+        for i in range(len(placed)):
+            members.setdefault(root(i), []).append(i)
+        for idx in members.values():
+            if len(idx) < 2:
+                continue
+            anchor = {i: ax.transData.transform((placed[i][1], placed[i][2])) for i in idx}
+            idx.sort(key=lambda i: anchor[i][0])
+            widths = [boxes[i].width for i in idx]
+            total = sum(widths) + LABEL_GAP_PX * (len(idx) - 1)
+            centre = sum(a[0] for a in anchor.values()) / len(idx)
+            start = min(max(centre - total / 2, area.x0), area.x1 - total)
+            # Reihe auf gemeinsamer Höhe: über dem höchsten Apex (IR: die
+            # Labels gehen in die Bande hinein) bzw. über dem höchsten Peak.
+            top = max(a[1] for a in anchor.values()) + LABEL_ROW_LIFT * px_per_pt
+            for i, width in zip(idx, widths):
+                ann, lx, ly, offset, above = placed[i]
+                text = ann.get_text()
+                ann.remove()
+                dx = (start + width / 2 - anchor[i][0]) / px_per_pt
+                dy = (top - anchor[i][1]) / px_per_pt
+                placed[i] = (
+                    ax.annotate(
+                        text,
+                        xy=(lx, ly),
+                        xytext=(dx, dy),
+                        textcoords="offset points",
+                        ha="center",
+                        va="bottom",
+                        fontsize=9,
+                        arrowprops=_LEADER,
+                    ),
+                    lx,
+                    ly,
+                    offset,
+                    above,
+                )
+                start += width + LABEL_GAP_PX
 
 
 def render_spectrum_png(

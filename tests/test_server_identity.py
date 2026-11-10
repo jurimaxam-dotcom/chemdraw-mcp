@@ -81,7 +81,11 @@ def test_lookup_goes_by_inchikey_first(monkeypatch):
 
 
 def test_lookup_falls_back_to_smiles_when_the_key_is_unknown(monkeypatch):
-    """Kennt PubChem den InChIKey nicht, ist der SMILES-Weg besser als nichts."""
+    """Kennt PubChem den InChIKey nicht, ist der SMILES-Weg besser als nichts.
+
+    Seit E12 nur mit Opt-in (CHEMDRAW_SMILES_LOOKUP); den Standard ohne Upload
+    prüft tests/test_smiles_privacy.py am abgefangenen Netzverkehr."""
+    monkeypatch.setenv("CHEMDRAW_SMILES_LOOKUP", "1")
     monkeypatch.setattr(server, "pubchem_properties_by_inchikey", lambda k: None)
     monkeypatch.setattr(
         server, "pubchem_properties_by_smiles", lambda s: {"Title": "Irgendwas", "CID": 7}
@@ -96,7 +100,8 @@ def test_lookup_falls_back_to_smiles_when_the_key_is_unknown(monkeypatch):
 
 
 def test_unparsable_input_skips_the_key_route(monkeypatch):
-    """Ohne Molekuel kein InChIKey — dann direkt ueber SMILES, ohne Absturz."""
+    """Ohne Molekuel kein InChIKey — dann direkt ueber SMILES (Opt-in), ohne Absturz."""
+    monkeypatch.setenv("CHEMDRAW_SMILES_LOOKUP", "1")
     monkeypatch.setattr(
         server,
         "pubchem_properties_by_inchikey",
@@ -106,6 +111,15 @@ def test_unparsable_input_skips_the_key_route(monkeypatch):
     monkeypatch.setattr(server, "pubchem_synonyms_by_smiles", lambda s: (None, []))
 
     assert server._enrich_properties("kein_smiles")["pubchemTitle"] == "X"
+
+
+def test_unparsable_input_without_opt_in_asks_nobody(monkeypatch):
+    """Ohne Opt-in: kein InChIKey, kein SMILES-POST — leerer Datensatz statt Upload."""
+    monkeypatch.delenv("CHEMDRAW_SMILES_LOOKUP", raising=False)
+    for fn in ("pubchem_properties_by_inchikey", "pubchem_properties_by_smiles",
+               "pubchem_synonyms_by_smiles"):
+        monkeypatch.setattr(server, fn, lambda *a, fn=fn: pytest.fail(f"{fn} ohne Opt-in"))
+    assert server._pubchem_record("kein_smiles") == ({}, None)
 
 
 def test_inchikey_endpoints_exist():

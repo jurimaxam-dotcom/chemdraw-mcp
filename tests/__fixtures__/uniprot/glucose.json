@@ -1,0 +1,657 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"glucose\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "Q16851",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305",
+        "source": "PubMed",
+        "id": "8354390"
+       }
+      ],
+      "value": "UTP--glucose-1-phosphate uridylyltransferase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "31820119"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "8354390"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "8631325"
+        }
+       ],
+       "value": "2.7.7.9"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "UDP-glucose pyrophosphorylase"
+      },
+      "shortNames": [
+       {
+        "value": "UDPGP"
+       },
+       {
+        "value": "UGPase"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 508,
+    "molWeight": 56940
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P13866",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "37217492"
+       }
+      ],
+      "value": "Sodium/glucose cotransporter 1"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "8563765"
+        }
+       ],
+       "value": "Na(+)/glucose cotransporter 1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "High affinity sodium-glucose cotransporter"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Solute carrier family 5 member 1"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 664,
+    "molWeight": 73498
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P31639",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "37217492"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "38057552"
+       }
+      ],
+      "value": "Sodium/glucose cotransporter 2"
+     },
+     "shortNames": [
+      {
+       "value": "Na(+)/glucose cotransporter 2"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Low affinity sodium-glucose cotransporter"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Solute carrier family 5 member 2"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 672,
+    "molWeight": 72897
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P35575",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:4056"
+       }
+      ],
+      "value": "Glucose-6-phosphatase catalytic subunit 1"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "10960498"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "12093795"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15542400"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "9332655"
+        }
+       ],
+       "value": "3.1.3.9"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Glucose-6-phosphatase"
+      },
+      "shortNames": [
+       {
+        "value": "G-6-Pase"
+       },
+       {
+        "value": "G6Pase"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Glucose-6-phosphatase alpha"
+      },
+      "shortNames": [
+       {
+        "value": "G6Pase-alpha"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 357,
+    "molWeight": 40484
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q9NY64",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Solute carrier family 2, facilitated glucose transporter member 8"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "10821868"
+        }
+       ],
+       "value": "Glucose transporter type 8"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "10821868"
+         }
+        ],
+        "value": "GLUT-8"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "10671487"
+        }
+       ],
+       "value": "Glucose transporter type X1"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 477,
+    "molWeight": 50819
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "O95455",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "UDP-D-glucose 4,6-dehydratase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "40836090"
+        }
+       ],
+       "value": "4.2.1.76"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "Reference",
+         "id": "Ref.1"
+        }
+       ],
+       "value": "dTDP-D-glucose 4,6-dehydratase"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 350,
+    "molWeight": 40214
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P11166",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Solute carrier family 2, facilitated glucose transporter member 1"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "18245775"
+        }
+       ],
+       "value": "Glucose transporter type 1, erythrocyte/brain"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "18245775"
+         }
+        ],
+        "value": "GLUT-1"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "2834252"
+        },
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "3839598"
+        }
+       ],
+       "value": "HepG2 glucose transporter"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 492,
+    "molWeight": 54084
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "O95528",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Solute carrier family 2, facilitated glucose transporter member 10"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "11247674"
+        }
+       ],
+       "value": "Glucose transporter type 10"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "11247674"
+         }
+        ],
+        "value": "GLUT-10"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 541,
+    "molWeight": 56911
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q8TDB8",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Solute carrier family 2, facilitated glucose transporter member 14"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "12504846"
+        }
+       ],
+       "value": "Glucose transporter type 14"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "12504846"
+         }
+        ],
+        "value": "GLUT-14"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 520,
+    "molWeight": 56320
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q9BUM1",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Glucose-6-phosphatase 3"
+     },
+     "shortNames": [
+      {
+       "value": "G-6-Pase 3"
+      },
+      {
+       "value": "G6Pase 3"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.1.3.9"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Glucose-6-phosphatase beta"
+      },
+      "shortNames": [
+       {
+        "value": "G6Pase-beta"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Ubiquitous glucose-6-phosphatase catalytic subunit-related protein"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 346,
+    "molWeight": 38735
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q9UGQ3",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Solute carrier family 2, facilitated glucose transporter member 6"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "30431159"
+        }
+       ],
+       "value": "Glucose transporter type 6"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "30431159"
+         }
+        ],
+        "value": "GLUT-6"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 507,
+    "molWeight": 54539
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q2M3M2",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Sodium/glucose cotransporter 4"
+     },
+     "shortNames": [
+      {
+       "value": "Na(+)/glucose cotransporter 4"
+      },
+      {
+       "value": "hSGLT4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Solute carrier family 5 member 9"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 681,
+    "molWeight": 74073
+   },
+   "features": []
+  }
+ ]
+}

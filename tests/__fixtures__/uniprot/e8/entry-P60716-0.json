@@ -1,0 +1,375 @@
+{
+ "entryType": "UniProtKB reviewed (Swiss-Prot)",
+ "primaryAccession": "P60716",
+ "organism": {
+  "scientificName": "Escherichia coli (strain K12)",
+  "taxonId": 83333,
+  "lineage": [
+   "Bacteria",
+   "Pseudomonadati",
+   "Pseudomonadota",
+   "Gammaproteobacteria",
+   "Enterobacterales",
+   "Enterobacteriaceae",
+   "Escherichia"
+  ]
+ },
+ "proteinDescription": {
+  "recommendedName": {
+   "fullName": {
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "HAMAP-Rule",
+      "id": "MF_00206"
+     }
+    ],
+    "value": "Lipoyl synthase"
+   },
+   "ecNumbers": [
+    {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      },
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "15157071"
+      }
+     ],
+     "value": "2.8.1.8"
+    }
+   ]
+  },
+  "alternativeNames": [
+   {
+    "fullName": {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      }
+     ],
+     "value": "Lip-syn"
+    },
+    "shortNames": [
+     {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "LS"
+     }
+    ]
+   },
+   {
+    "fullName": {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      }
+     ],
+     "value": "Lipoate synthase"
+    }
+   },
+   {
+    "fullName": {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      }
+     ],
+     "value": "Lipoic acid synthase"
+    }
+   },
+   {
+    "fullName": {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      }
+     ],
+     "value": "Sulfur insertion protein LipA"
+    }
+   }
+  ]
+ },
+ "genes": [
+  {
+   "geneName": {
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "HAMAP-Rule",
+      "id": "MF_00206"
+     }
+    ],
+    "value": "lipA"
+   }
+  }
+ ],
+ "comments": [
+  {
+   "texts": [
+    {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "11106496"
+      },
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "14700636"
+      },
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "15157071"
+      }
+     ],
+     "value": "Catalyzes the radical-mediated insertion of two sulfur atoms into the C-6 and C-8 positions of the octanoyl moiety bound to the lipoyl domains of lipoate-dependent enzymes, thereby converting the octanoylated domains into lipoylated derivatives. Free octanoate is not a substrate for LipA"
+    }
+   ],
+   "commentType": "FUNCTION"
+  },
+  {
+   "commentType": "CATALYTIC ACTIVITY",
+   "reaction": {
+    "name": "[[Fe-S] cluster scaffold protein carrying a second [4Fe-4S](2+) cluster] + N(6)-octanoyl-L-lysyl-[protein] + 2 oxidized [2Fe-2S]-[ferredoxin] + 2 S-adenosyl-L-methionine + 4 H(+) = [[Fe-S] cluster scaffold protein] + N(6)-[(R)-dihydrolipoyl]-L-lysyl-[protein] + 4 Fe(3+) + 2 hydrogen sulfide + 2 5'-deoxyadenosine + 2 L-methionine + 2 reduced [2Fe-2S]-[ferredoxin]",
+    "reactionCrossReferences": [
+     {
+      "database": "Rhea",
+      "id": "RHEA:16585"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:9928"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:10000"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:10001"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:10475"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:14568"
+     },
+     {
+      "database": "Rhea",
+      "id": "RHEA-COMP:14569"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:15378"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:17319"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:29034"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:29919"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:33722"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:33737"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:33738"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:57844"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:59789"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:78809"
+     },
+     {
+      "database": "ChEBI",
+      "id": "CHEBI:83100"
+     }
+    ],
+    "ecNumber": "2.8.1.8",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "HAMAP-Rule",
+      "id": "MF_00206"
+     },
+     {
+      "evidenceCode": "ECO:0000269",
+      "source": "PubMed",
+      "id": "15157071"
+     }
+    ]
+   }
+  },
+  {
+   "commentType": "COFACTOR",
+   "cofactors": [
+    {
+     "name": "[4Fe-4S] cluster",
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "HAMAP-Rule",
+       "id": "MF_00206"
+      },
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "15362861"
+      }
+     ],
+     "cofactorCrossReference": {
+      "database": "ChEBI",
+      "id": "CHEBI:49883"
+     }
+    }
+   ],
+   "note": {
+    "texts": [
+     {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       },
+       {
+        "evidenceCode": "ECO:0000269",
+        "source": "PubMed",
+        "id": "15362861"
+       }
+      ],
+      "value": "Binds 2 [4Fe-4S] clusters per subunit. One cluster is coordinated with 3 cysteines and an exchangeable S-adenosyl-L-methionine."
+     }
+    ]
+   }
+  }
+ ],
+ "features": [
+  {
+   "type": "Chain",
+   "location": {
+    "start": {
+     "value": 1,
+     "modifier": "EXACT"
+    },
+    "end": {
+     "value": 321,
+     "modifier": "EXACT"
+    }
+   },
+   "description": "Lipoyl synthase",
+   "featureId": "PRO_0000102313"
+  }
+ ],
+ "uniProtKBCrossReferences": [],
+ "sequence": {
+  "value": "MSKPIVMERGVKYRDADKMALIPVKNVATEREALLRKPEWMKIKLPADSTRIQGIKAAMRKNGLHSVCEEASCPNLAECFNHGTATFMILGAICTRRCPFCDVAHGRPVAPDANEPVKLAQTIADMALRYVVITSVDRDDLRDGGAQHFADCITAIREKSPQIKIETLVPDFRGRMDRALDILTATPPDVFNHNLENVPRIYRQVRPGADYNWSLKLLERFKEAHPEIPTKSGLMVGLGETNEEIIEVMRDLRRHGVTMLTLGQYLQPSRHHLPVQRYVSPDEFDEMKAEALAMGFTHAACGPFVRSSYHADLQAKGMEVK",
+  "length": 321,
+  "molWeight": 36072,
+  "crc64": "BE7BF32A4E3AA358",
+  "md5": "723AFA78DD8CB0F4392BBDC68D14ADC4"
+ },
+ "lineages": [
+  {
+   "scientificName": "cellular organisms",
+   "taxonId": 131567,
+   "rank": "no rank",
+   "hidden": true
+  },
+  {
+   "scientificName": "Bacteria",
+   "commonName": "bacteria",
+   "taxonId": 2,
+   "rank": "domain",
+   "hidden": false
+  },
+  {
+   "scientificName": "Pseudomonadati",
+   "taxonId": 3379134,
+   "rank": "kingdom",
+   "hidden": false
+  },
+  {
+   "scientificName": "Pseudomonadota",
+   "commonName": "proteobacteria",
+   "taxonId": 1224,
+   "rank": "phylum",
+   "hidden": false
+  },
+  {
+   "scientificName": "Gammaproteobacteria",
+   "commonName": "g-proteobacteria",
+   "taxonId": 1236,
+   "rank": "class",
+   "hidden": false
+  },
+  {
+   "scientificName": "Enterobacterales",
+   "taxonId": 91347,
+   "rank": "order",
+   "hidden": false
+  },
+  {
+   "scientificName": "Enterobacteriaceae",
+   "commonName": "enterobacteria",
+   "taxonId": 543,
+   "rank": "family",
+   "hidden": false
+  },
+  {
+   "scientificName": "Escherichia",
+   "taxonId": 561,
+   "rank": "genus",
+   "hidden": false
+  },
+  {
+   "scientificName": "Escherichia coli",
+   "taxonId": 562,
+   "rank": "species",
+   "hidden": true
+  }
+ ],
+ "extraAttributes": {
+  "uniParcId": "UPI000012E6C7"
+ }
+}

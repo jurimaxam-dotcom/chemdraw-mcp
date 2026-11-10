@@ -26,6 +26,8 @@ Fehlerart scheitern — loest der Server sie doch auf, ist das ROT: dann hat er
 eine kaputte Eingabe still zu irgendeinem Stoff gemacht. Bei
 "fehler": "ambiguous" (Familienname wie "xylene") prueft optional
 "kandidaten" die InChIKeys der angebotenen Isomere in ihrer Reihenfolge.
+"fehler": "protein" (seit E6): ein Protein- oder Antikörpername, der keine
+Strukturformel bekommt, sondern den UniProt-Eintrag bzw. einen ehrlichen Satz.
 
 Aufruf:  uv run python scripts/identitaet.py [--json] [--datei PFAD] [--protokoll PFAD]
          --datei     andere Fixture gleichen Schemas (Standard: tests/identity/stoffe.json),

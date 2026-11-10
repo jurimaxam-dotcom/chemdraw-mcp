@@ -9,6 +9,7 @@ import ScopeView from "./ScopeView";
 import AnkiDeckView from "./AnkiDeckView";
 import PlotView from "./PlotView";
 import Molecule3DView from "./Molecule3DView";
+import ProteinView from "./ProteinView";
 import AmbiguousView from "./AmbiguousView";
 
 // Ein Eintrag aus `failed` (server.py batch_generate) ist die Eingabe selbst,
@@ -98,6 +99,8 @@ export default function App({ data }) {
       return <PlotView data={data} />;
     case "molecule3d":
       return <Molecule3DView data={data} />;
+    case "protein":
+      return <ProteinView data={data} />;
     default:
       return <div style={{ color: "#8b949e", padding: 16 }}>Unknown type: {data.type}</div>;
   }

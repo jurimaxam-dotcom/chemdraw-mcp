@@ -328,7 +328,8 @@ def test_stereoless_disubstituted_ring_warns(server):
 
 def test_ring_sugar_offers_haworth_and_chair(server):
     payload = server.generate_molecule(BETA_GLCP)
-    assert payload.views == ["all_h", "haworth", "chair"]
+    # Fischer seit E17 (10.11.2026): die offene Form des Ringzuckers.
+    assert payload.views == ["all_h", "fischer", "haworth", "chair"]
 
 
 def test_unsuitable_chair_request_names_the_reason(server):

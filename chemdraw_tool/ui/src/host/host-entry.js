@@ -4,11 +4,20 @@
 // window.__callTool an den echten MCP-Server (Node-Seite, host.e2e.mjs).
 import { AppBridge, PostMessageTransport } from "@modelcontextprotocol/ext-apps/app-bridge";
 
-window.__startHost = async ({ html, toolInput, toolResult }) => {
+// Standard-CSP eines Hosts für eine Ressource ohne `_meta.ui.csp`
+// (ext-apps-Spezifikation 2026-01-26, „default-src 'none' …“): kein eval, keine
+// Blob-/Fremd-Skripte, Bilder nur data:. Seit E13 gesetzt, damit der Test die
+// Grenzen sieht, die Claude Desktop setzen darf. `prelude` = Script vor dem
+// Panel (der Test erzwingt damit z. B. „kein WebGL“).
+const CSP = "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+  + "img-src 'self' data:; media-src 'self' data:; connect-src 'none'";
+
+window.__startHost = async ({ html, toolInput, toolResult, prelude = "" }) => {
   const iframe = document.createElement("iframe");
   iframe.setAttribute("sandbox", "allow-scripts");
   iframe.style.cssText = "width:640px;height:640px;border:0";
-  iframe.srcdoc = html;
+  const head = `<meta http-equiv="Content-Security-Policy" content="${CSP}">${prelude ? `<script>${prelude}</script>` : ""}`;
+  iframe.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (m) => m + head) : head + html;
   document.body.appendChild(iframe);
 
   const bridge = new AppBridge(

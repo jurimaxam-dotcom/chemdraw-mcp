@@ -1,0 +1,797 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P00903",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "taxonId": 83333,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Aminodeoxychorismate synthase component 2"
+     },
+     "shortNames": [
+      {
+       "value": "ADC synthase"
+      },
+      {
+       "value": "ADCS"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "7592344"
+        },
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "4914080"
+        }
+       ],
+       "value": "2.6.1.85"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "4-amino-4-deoxychorismate synthase component 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Aminodeoxychorismate synthase, glutamine amidotransferase component"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "4914080"
+       }
+      ],
+      "value": "pabA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "b3360"
+      },
+      {
+       "value": "JW3323"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "8RP0",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.64 A"
+      },
+      {
+       "key": "Chains",
+       "value": "AAA/BBB=1-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "8RP1",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.86 A"
+      },
+      {
+       "key": "Chains",
+       "value": "AAA/BBB=1-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "8RP2",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.98 A"
+      },
+      {
+       "key": "Chains",
+       "value": "AAA/BBB=1-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "8RP6",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.45 A"
+      },
+      {
+       "key": "Chains",
+       "value": "AAA/BBB=1-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "8RP7",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.82 A"
+      },
+      {
+       "key": "Chains",
+       "value": "AAA/BBB/CCC=1-187"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 187,
+    "molWeight": 20772
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001311AF"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P28819",
+   "organism": {
+    "scientificName": "Bacillus subtilis (strain 168)",
+    "taxonId": 224308,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Bacillaceae",
+     "Bacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Aminodeoxychorismate/anthranilate synthase component 2"
+     },
+     "shortNames": [
+      {
+       "value": "ADC synthase"
+      },
+      {
+       "value": "ADCS"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "2123867"
+        }
+       ],
+       "value": "2.6.1.85"
+      },
+      {
+       "value": "4.1.3.27"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "4-amino-4-deoxychorismate synthase component 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Aminodeoxychorismate synthase, glutamine amidotransferase component"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "9384377"
+       }
+      ],
+      "value": "pabA"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "2123867"
+        }
+       ],
+       "value": "trpG"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "BSU00750"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 194,
+    "molWeight": 21685
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillaceae",
+     "taxonId": 186817,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus",
+     "taxonId": 1386,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus subtilis group",
+     "taxonId": 653685,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis",
+     "taxonId": 1423,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis subsp. subtilis",
+     "taxonId": 135461,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000005FDF8"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P06195",
+   "organism": {
+    "scientificName": "Serratia marcescens",
+    "taxonId": 615,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Serratia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Aminodeoxychorismate synthase component 2"
+     },
+     "shortNames": [
+      {
+       "value": "ADC synthase"
+      },
+      {
+       "value": "ADCS"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.6.1.85"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "4-amino-4-deoxychorismate synthase component 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Aminodeoxychorismate synthase, glutamine amidotransferase component"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "pabA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 191,
+    "molWeight": 21143
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Yersiniaceae",
+     "taxonId": 1903411,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Serratia",
+     "taxonId": 613,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001311B2"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P06193",
+   "organism": {
+    "scientificName": "Salmonella typhimurium (strain LT2 / SGSC1412 / ATCC 700720)",
+    "taxonId": 99287,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Salmonella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Aminodeoxychorismate synthase component 2"
+     },
+     "shortNames": [
+      {
+       "value": "ADC synthase"
+      },
+      {
+       "value": "ADCS"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.6.1.85"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "4-amino-4-deoxychorismate synthase component 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Aminodeoxychorismate synthase, glutamine amidotransferase component"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "pabA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "STM3469"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 187,
+    "molWeight": 20801
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Salmonella",
+     "taxonId": 590,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Salmonella enterica",
+     "synonyms": [
+      "Salmonella choleraesuis"
+     ],
+     "taxonId": 28901,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Salmonella enterica I",
+     "taxonId": 59201,
+     "rank": "subspecies",
+     "hidden": true
+    },
+    {
+     "scientificName": "Salmonella typhimurium",
+     "taxonId": 90371,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001311B1"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P06194",
+   "organism": {
+    "scientificName": "Klebsiella aerogenes",
+    "commonName": "Enterobacter aerogenes",
+    "taxonId": 548,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Aminodeoxychorismate synthase component 2"
+     },
+     "shortNames": [
+      {
+       "value": "ADC synthase"
+      },
+      {
+       "value": "ADCS"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.6.1.85"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "4-amino-4-deoxychorismate synthase component 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Aminodeoxychorismate synthase, glutamine amidotransferase component"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "pabA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 187,
+    "molWeight": 20564
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella",
+     "taxonId": 570,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001311B0"
+   }
+  }
+ ]
+}

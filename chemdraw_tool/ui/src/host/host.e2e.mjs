@@ -8,7 +8,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { mkdtempSync, existsSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -29,13 +29,13 @@ try {
   browser = await chromium.launch();
   // Welle 1: echte Galerie-Antworten über denselben sandboxed Host wie Desktop.
   const check = (ok, message) => { if (!ok) throw new Error("ROT: " + message); console.log("✔", message); };
-  const mount = async (p, name, input) => {
+  const mount = async (p, name, input, prelude = "") => {
     const tool = tools.find((t) => t.name === name);
     check(tool?._meta?.ui?.resourceUri, `${name} ist als Panel-Tool registriert`);
     const result = await client.callTool({ name, arguments: input });
     check(!result.isError, `${name} liefert eine erfolgreiche echte Serverantwort`);
     const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
-    await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result });
+    await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result, prelude });
     const iframe = p.locator("iframe").last();
     await iframe.evaluate((el) => { el.style.width = "510px"; el.style.height = "560px"; });
     return p.frames().at(-1);
@@ -98,6 +98,191 @@ try {
   await spatial.mouse.up();
   check(JSON.stringify(await geometry()) !== before, "3D: Ziehen ändert die projizierten Atomkoordinaten");
   await spatial.close();
+
+  // E8/E13: Proteine — Cartoon (Mol*-Engine, WebGL) statt Strukturformel, über
+  // beide Einstiege, in der Sandbox mit Standard-CSP. PROTEIN_SHOTS=<ordner>
+  // legt zusätzlich die Bildschau aller Laborfälle ab.
+  const shots = process.env.PROTEIN_SHOTS || join(tmpdir(), "chemdraw-protein");
+  mkdirSync(shots, { recursive: true });
+  const proteinCases = [
+    ["generate_molecule", "lysozyme", /Lysozyme C, Gallus gallus \(hen egg white\)/],
+    ["generate_3d", "trypsin", /Bos taurus/],
+    ["generate_molecule", "trastuzumab", /Trastuzumab Fab fragment/],
+    // Genkürzel ohne PDB-Eintrag → AlphaFold-Modell (gemessen 10.11.: E. coli CsrD, P13518)
+    ["generate_molecule", "CsrD", /RNase E specificity factor CsrD, Escherichia coli/],
+    ["generate_molecule", "hemoglobin", /Hemoglobin/],
+    ["generate_molecule", "antibody", /Architecture of an intact IgG/],
+  ];
+  if (process.env.PROTEIN_SHOTS) {
+    proteinCases.push(
+      ["generate_molecule", "insulin", /Insulin/],
+      ["generate_molecule", "GFP", /Green fluorescent protein/],
+      ["generate_molecule", "IgG", /Architecture of an intact IgG antibody/],
+      ["generate_molecule", "carbonic anhydrase", /Carbonic anhydrase/],
+      ["generate_molecule", "myoglobin", /Myoglobin/],
+    );
+  }
+  // Pixel der Zeichenfläche, die sich vom Hintergrund (Ecke) abheben, und davon
+  // die farbigen; dazu die Helligkeit des Hintergrunds (WebGL-Puffer bleibt
+  // dank preserveDrawingBuffer lesbar)
+  const inked = (f) => f.locator("[data-cartoon-host] canvas").evaluate((c) => {
+    const t = document.createElement("canvas");
+    t.width = 160; t.height = 120;
+    const g = t.getContext("2d");
+    g.drawImage(c, 0, 0, 160, 120);
+    const d = g.getImageData(0, 0, 160, 120).data;
+    const bg = [d[0], d[1], d[2]];
+    let n = 0, colored = 0, sum = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      sum = (sum * 31 + d[i] + d[i + 1] + d[i + 2]) % 1000003;
+      if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > 60) n++;
+      if (Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 40) colored++;
+    }
+    return { n, colored, sum, bgLum: (bg[0] + bg[1] + bg[2]) / 3 };
+  });
+  // Lesbarkeit im Farbschema: Kontrast von Titel, Legende und Quellenzeile zum Panelgrund
+  const contrast = (f) => f.locator("body").evaluate(() => {
+    const lum = (c) => {
+      const [r, g, b] = c.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number).map((v) => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const bg = lum(getComputedStyle(document.body).backgroundColor);
+    const ratio = (el) => {
+      const l = lum(getComputedStyle(el).color);
+      return (Math.max(l, bg) + 0.05) / (Math.min(l, bg) + 0.05);
+    };
+    const els = [document.querySelector(".panel-title"), ...document.querySelectorAll("[data-protein-viewer] ~ div")];
+    return Math.min(...els.filter(Boolean).map(ratio));
+  });
+  for (const colorScheme of ["light", "dark"])
+  for (const [tool, name, title] of proteinCases) {
+    const page = await browser.newPage({ viewport: { width: 530, height: 660 }, colorScheme });
+    const tag = `${name} (${colorScheme})`;
+    await page.setContent('<body style="margin:0"></body>');
+    await page.addScriptTag({ path: out });
+    await page.exposeFunction("__callTool", (req) => client.callTool(req));
+    const f = await mount(page, tool, { name_or_smiles: name });
+    await f.locator("[data-protein-viewer]").waitFor({ timeout: 30000 });
+    check(title.test(await f.locator(".panel-title").innerText()), `Protein ${tag}: Titel nennt Protein und Organismus`);
+    // Antikörper: IgG-Schema im Panel (allgemein: Startansicht; Fab: Umschalter, ein Arm markiert)
+    const schemeShot = async (expect) => {
+      const svg = f.locator("svg[data-igg-scheme]");
+      check(await svg.isVisible() && (await svg.getAttribute("data-igg-scheme")) === expect,
+        `Protein ${tag}: IgG-Schema im Panel (Markierung ${expect})`);
+      const worst = await svg.evaluate((el) => {
+        const rgb = (c) => c.match(/\d+/g).slice(0, 3).map(Number);
+        const bg = rgb(getComputedStyle(document.body).backgroundColor);
+        return Math.min(...[...el.querySelectorAll("text")].filter((t) => !t.closest("g[transform]"))
+          .map((t) => rgb(getComputedStyle(t).fill).reduce((a, v, i) => a + Math.abs(v - bg[i]), 0)));
+      });
+      check(worst > 200, `Protein ${tag}: Schema-Beschriftung hebt sich vom Grund ab (Abstand ${worst})`);
+      await page.screenshot({ path: join(shots, `panel-${name}-scheme-${colorScheme}.png`) });
+    };
+    if (name === "antibody" || name === "IgG") {
+      await schemeShot("none");
+      await f.getByRole("tab", { name: "Structure" }).click();
+    }
+    if (name === "trastuzumab") {
+      await f.getByRole("tab", { name: "Scheme" }).click();
+      await schemeShot("fab");
+      await f.getByRole("tab", { name: "Structure" }).click();
+    }
+    await f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
+    await page.waitForTimeout(1700); // Einblend-Drehung (1,2 s) abwarten
+    const vorher = await inked(f);
+    // Untergrenze: es ist etwas gezeichnet; Obergrenze: der Hintergrund ist hell
+    // (ein schwarzer Hintergrund — Farbe als rgb() statt Hex — bestand sonst)
+    check(vorher.n > 1500 && vorher.n < 12000 && vorher.colored > 800,
+      `Protein ${tag}: Cartoon gezeichnet (${vorher.n} von 19200 Pixeln Struktur, ${vorher.colored} farbig)`);
+    check(colorScheme === "dark" ? vorher.bgLum < 90 : vorher.bgLum > 200,
+      `Protein ${tag}: Zeichengrund folgt dem Farbschema (Helligkeit ${Math.round(vorher.bgLum)})`);
+    const k = await contrast(f);
+    check(k >= 4.5, `Protein ${tag}: Titel, Legende und Quellen lesbar (Kontrast ≥ ${k.toFixed(1)})`);
+    await page.screenshot({ path: join(shots, `panel-${name.split(" ")[0]}-${colorScheme}.png`) });
+    const box = await f.locator("[data-cartoon-host] canvas").boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 70, box.y + box.height / 2 + 30, { steps: 6 });
+    await page.mouse.up();
+    await page.waitForTimeout(300);
+    check((await inked(f)).sum !== vorher.sum, `Protein ${tag}: Ziehen dreht den Cartoon`);
+    const pfad = await f.locator("[data-testid='panel-footer'] .panel-footer-path").first().getAttribute("title");
+    check(pfad?.endsWith(".png") && existsSync(pfad), `Protein ${tag}: Fußzeile zeigt die echte PNG-Datei`);
+    if (name === "lysozyme" && colorScheme === "light") {
+      // Bedienung mit der echten Engine: bloßes Rad scrollt den Chat (Bild bleibt),
+      // Strg+Rad zoomt, Rechtsziehen verschiebt, Reset kehrt zurück, Umschalter wirken
+      const mitte = [box.x + box.width / 2, box.y + box.height / 2];
+      const stand = async () => { await page.waitForTimeout(450); return inked(f); };
+      const ruhe = await stand();
+      await page.mouse.move(...mitte);
+      await page.mouse.wheel(0, -400);
+      check((await stand()).sum === ruhe.sum, `Protein ${tag}: bloßes Mausrad zoomt nicht (Chat scrollt weiter)`);
+      await page.keyboard.down("Control");
+      await page.mouse.wheel(0, -400);
+      await page.keyboard.up("Control");
+      const zoom = await stand();
+      check(zoom.n > ruhe.n * 1.15, `Protein ${tag}: Strg+Rad zoomt (${ruhe.n} → ${zoom.n} Pixel Struktur)`);
+      await page.mouse.move(...mitte);
+      await page.mouse.down({ button: "right" });
+      await page.mouse.move(mitte[0] + 80, mitte[1], { steps: 6 });
+      await page.mouse.up({ button: "right" });
+      check((await stand()).sum !== zoom.sum, `Protein ${tag}: Rechtsziehen verschiebt`);
+      await f.getByRole("button", { name: "Reset" }).click();
+      const zurück = await stand();
+      check(Math.abs(zurück.n - vorher.n) < vorher.n * 0.1, `Protein ${tag}: Reset stellt die Ausgangsansicht her (${vorher.n} ↔ ${zurück.n})`);
+      let bild = zurück.sum;
+      for (const [rolle, text] of [["tab", "Trace"], ["tab", "Cartoon"], ["tab", "Rainbow N→C"], ["tab", "Secondary"]]) {
+        await f.getByRole(rolle, { name: text }).click();
+        const jetzt = await stand();
+        check(jetzt.sum !== bild && await f.locator('[data-protein-viewer="ready"]').count() === 1,
+          `Protein ${tag}: „${text}“ ändert das Bild, Engine bleibt bereit`);
+        bild = jetzt.sum;
+      }
+    }
+    if (name === "CsrD") {
+      const vorFarbe = (await inked(f)).sum;
+      await f.getByRole("tab", { name: "Confidence" }).click();
+      await page.waitForTimeout(300);
+      check((await f.locator("body").innerText()).includes("pLDDT > 90") && (await inked(f)).sum !== vorFarbe,
+        `Protein ${tag}: Konfidenz-Ansicht des AlphaFold-Modells färbt um`);
+    }
+    if (name === "hemoglobin") {
+      check((await f.locator("body").innerText()).includes("heme b (HEM) ×4"), `Protein ${tag}: Legende nennt die vier Häm-Gruppen`);
+      await f.getByRole("button", { name: "Export as PNG" }).click();
+      await f.getByRole("button", { name: /Saved:/ }).waitFor({ timeout: 15000 });
+      const savedPath = (await f.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
+      const png = readFileSync(savedPath);
+      // PNG-Kopf, dann Breite (Bytes 16–19): das Cartoon-Bild in dreifacher Auflösung, nicht die 480-px-Spur
+      check(png.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && png.readUInt32BE(16) > 1200,
+        `Protein hemoglobin: Export schreibt das Cartoon-Bild als PNG (${png.readUInt32BE(16)} px breit)`);
+    }
+    await page.close();
+  }
+  // Rückfall in der echten Sandbox: ohne WebGL-Kontext bleibt die SVG-Spur stehen
+  for (const colorScheme of ["light", "dark"]) {
+    const page = await browser.newPage({ viewport: { width: 530, height: 660 }, colorScheme });
+    await page.setContent('<body style="margin:0"></body>');
+    await page.addScriptTag({ path: out });
+    await page.exposeFunction("__callTool", (req) => client.callTool(req));
+    const noGl = "HTMLCanvasElement.prototype.getContext=(o=>function(t,...a){return /webgl/i.test(t)?null:o.call(this,t,...a)})(HTMLCanvasElement.prototype.getContext);";
+    const f = await mount(page, "generate_molecule", { name_or_smiles: "lysozyme" }, noGl);
+    await f.locator('[data-protein-viewer="failed"]').waitFor({ timeout: 30000 });
+    const trace = f.locator("svg[data-backbone]");
+    check(await trace.isVisible() && await trace.locator("path[data-residue-ss]").count() > 100,
+      `Protein ohne WebGL (${colorScheme}): SVG-Spur als Rückfall gezeichnet, keine leere Fläche`);
+    check((await f.locator("body").innerText()).includes("3D cartoon unavailable here"), `Protein ohne WebGL (${colorScheme}): Panel sagt, warum`);
+    const marken = await f.locator("svg[data-backbone] text").evaluateAll((ts) => {
+      const rgb = (c) => c.match(/\d+/g).slice(0, 3).map(Number);
+      const bg = rgb(getComputedStyle(document.body).backgroundColor);
+      return ts.map((t) => rgb(getComputedStyle(t).fill).reduce((a, v, i) => a + Math.abs(v - bg[i]), 0));
+    });
+    check(marken.length >= 2 && Math.min(...marken) > 200, `Protein ohne WebGL (${colorScheme}): N-/C-Marken heben sich vom Grund ab (${marken.join(", ")})`);
+    await page.screenshot({ path: join(shots, `panel-fallback-lysozyme-${colorScheme}.png`) });
+    await page.close();
+  }
 
   // Welle 2: reale Spektren im sandboxed Panel, einschließlich Dateiausgabe.
   for (const [spectrum_type, title, peaks, axis] of [
@@ -532,7 +717,8 @@ try {
     "Methylphenidate hat keinen Projektionsknopf");
   // Seit 41da7c4 (OPSIN-Treffer gegen PubChem geprüft) liefert "D-glucose" den PubChem-Record,
   // also den Pyranosering → Haworth; die offene Kette (Fischer) heißt jetzt "aldehydo-D-glucose".
-  for (const [stoff, knopf, fehlt, soll] of [["aldehydo-D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", "Fischer", "CH2OH"]]) {
+  // Seit E17 (10.11.2026) hat auch der Ringzucker einen Fischer-Knopf: die lokal hergeleitete offene Form.
+  for (const [stoff, knopf, fehlt, soll] of [["aldehydo-D-glucose", "Fischer", "Haworth", "CHO"], ["beta-D-glucose", "Haworth", null, "CH2OH"]]) {
     const input = { name_or_smiles: stoff };
     const result = await client.callTool({ name: "generate_molecule", arguments: input });
     if (result.isError) throw new Error(`generate_molecule ${stoff}: ` + JSON.stringify(result.content).slice(0, 300));
@@ -546,9 +732,17 @@ try {
     await f.getByRole("button", { name: knopf }).click();
     await f.locator(".structure-drawing svg text").first().waitFor({ timeout: 5000 });
     const labels = await f.locator(".structure-drawing svg text").allTextContents();
-    prüfe(labels.includes(soll) && !(await f.getByRole("button", { name: fehlt }).count()),
-      `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei), kein ${fehlt}-Knopf`);
-    if (knopf === "Haworth") prüfe((await f.locator("body").innerText()).includes("open-chain"), `${stoff}: Hinweis zur offenen Form`);
+    prüfe(labels.includes(soll) && (fehlt === null || !(await f.getByRole("button", { name: fehlt }).count())),
+      `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei)${fehlt ? `, kein ${fehlt}-Knopf` : ""}`);
+    if (knopf === "Haworth") {
+      prüfe((await f.locator("body").innerText()).includes("open-chain"), `${stoff}: Hinweis zur offenen Form`);
+      await f.getByRole("button", { name: "Fischer" }).click();
+      await f.locator(".structure-drawing svg text", { hasText: "open-chain form" }).waitFor({ timeout: 5000 });
+      const offen = await f.locator(".structure-drawing svg text").allTextContents();
+      prüfe(offen.includes("CHO") && offen.includes("open-chain form"), `${stoff}: Fischer zeigt die offene Form (CHO, Unterschrift)`);
+      await f.getByRole("button", { name: "Haworth" }).click();
+      await f.locator(".structure-drawing svg text", { hasText: "CH2OH" }).first().waitFor({ timeout: 5000 }).catch(() => {});
+    }
     await p.emulateMedia({ colorScheme: "dark" });
     const fill = await f.evaluate(() => getComputedStyle(document.querySelector(".structure-drawing svg text")).fill);
     prüfe(fill !== "rgb(0, 0, 0)", `${stoff}: Beschriftung im Dunkelmodus hell (${fill})`);
@@ -618,6 +812,75 @@ try {
   check(scaffold.n > 0 && scaffold.bg > 0.9 && scaffold.maxStroke < 0.5 && scaffold.maxFill < 0.5,
     `Vergleich dunkel: Gerüst dunkel auf weißem Grund (${scaffold.n} Pfade, Strich ${scaffold.maxStroke.toFixed(2)}, Schrift ${scaffold.maxFill.toFixed(2)})`);
   await cmpDark.close();
+
+  // E16 (10.11.2026): (1) Abkürzungs-Labels (Boc, Ph, CO2H) standen im dunklen
+  // Schema fast schwarz auf dunklem Grund — RDKit zeichnet Dummy-Atome in #191919.
+  // (2) Große Strukturen im Reaktions-Panel waren so klein, dass man N/O nicht lesen konnte.
+  // Gemessen wird, was der Nutzer sieht: berechnete Farbe gegen den Kartengrund und die
+  // gerenderte Glyphenhöhe in CSS-px, bei Desktop-Panelbreite (≈930 px).
+  {
+    const PORPHYRIN = {
+      reactants: ["CC1=C(CCC(=O)O)C2=CC3=C(CCC(=O)O)C(C)=C(N3)C=C4C(C)=C(C=C)C(=N4)C=C5C(C=C)=C(C)C(=N5)C=C1N2", "[Fe+2]"], products: ["CC1=C(C2=CC3=NC(=CC4=C(C(=C([N-]4)C=C5C(=C(C(=N5)C=C1[N-]2)C)C=C)C)C=C)C(=C3CCC(=O)O)C)CCC(=O)O.[Fe+2]", "[H+]"], coefficients: [1, 1, 1, 2],
+      conditions: "ferrochelatase", name: "Protoporphyrin IX → heme b",
+    };
+    const open = async (name, input, colorScheme, width = 930) => {
+      const p = await browser.newPage({ viewport: { width: width + 20, height: 1400 }, colorScheme });
+      await p.setContent('<body style="margin:0"></body>');
+      await p.addScriptTag({ path: out });
+      await p.exposeFunction("__callTool", (req) => client.callTool(req));
+      const f = await mount(p, name, input);
+      await p.locator("iframe").last().evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "1380px"; }, width);
+      await f.locator("svg").first().waitFor();
+      await p.waitForTimeout(400);
+      return [p, f];
+    };
+    // Kontrast der Kürzel: mittlere Helligkeit der Label-Glyphen gegen den Grund ihrer Karte.
+    const labelContrast = (f) => f.evaluate(() => {
+      const lum = (c) => { const m = c.match(/\d+(\.\d+)?/g); if (!m) return 0; const [r, g, b] = m.map(Number); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
+      const glyphs = [...document.querySelectorAll('svg path[fill="#191919"]')].filter((el) => el.getAttribute("d"));
+      const bgOf = (el) => { for (let n = el; n; n = n.parentElement) { const c = getComputedStyle(n).backgroundColor; if (c && !/rgba\(0, 0, 0, 0\)|transparent/.test(c)) return lum(c); } return 1; };
+      const vals = glyphs.map((g) => Math.abs(lum(getComputedStyle(g).fill) - bgOf(g)));
+      return { n: glyphs.length, min: Math.min(...vals) };
+    });
+    for (const colorScheme of ["light", "dark"]) {
+      for (const [what, name, input] of [
+        ["Boc/Ph", "generate_molecule", { name_or_smiles: "O=C(c1ccccc1)CC1CCN(C(=O)OC(C)(C)C)CC1", abbreviate_groups: true }],
+        ["CO2H (Porphyrin)", "generate_reaction", { ...PORPHYRIN, abbreviate_groups: true }],
+      ]) {
+        const [p, f] = await open(name, input, colorScheme);
+        const c = await labelContrast(f);
+        check(c.n > 0 && c.min > 0.45, `${colorScheme}: Kürzel ${what} heben sich vom Grund ab (${c.n} Glyphen, Kontrast min ${c.min.toFixed(2)})`);
+        await p.close();
+      }
+    }
+    // Lesbare Atomlabels in großen Reaktionen: kleinste gerenderte N-Glyphe ≥ 9 px hoch.
+    const [p, f] = await open("generate_reaction", PORPHYRIN, "dark");
+    const labelPx = await f.evaluate(() => Math.min(...[...document.querySelectorAll('.reaction-panel svg path[fill="#0000FF"]')]
+      .filter((el) => el.getAttribute("d")).map((el) => el.getBoundingClientRect().height)));
+    check(labelPx >= 9, `Reaktion Porphyrin: N-Labels ${labelPx.toFixed(1)} px hoch (≥ 9 px)`);
+    check(await f.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "Reaktion Porphyrin: kein horizontales Abschneiden");
+    await p.close();
+    // Gestapelt ↔ nebeneinander darf nicht pendeln: ohne Bedingungen ist der senkrechte Pfeil
+    // ~116 px schmaler als der waagrechte — misst die Entscheidung den gerade gezeigten Pfeil,
+    // gibt es ein Breitenband, in dem jeder Zustand für den anderen stimmt.
+    {
+      const [sp, sf] = await open("generate_reaction", { reactants: [PORPHYRIN.reactants[0]], products: [PORPHYRIN.products[0]] }, "light");
+      const iframe = sp.locator("iframe").last();
+      const flips = [];
+      for (let w = 700; w <= 1100; w += 10) {
+        await iframe.evaluate((el, px) => { el.style.width = `${px}px`; }, w);
+        await sp.waitForTimeout(120);
+        const seen = new Set();
+        for (let i = 0; i < 4; i++) {
+          seen.add(await sf.evaluate(() => Boolean(document.querySelector("[data-stacked]"))));
+          await sp.waitForTimeout(40);
+        }
+        if (seen.size > 1) flips.push(w);
+      }
+      check(flips.length === 0, `Reaktion ohne Bedingungen: Stapeln pendelt nicht (${flips.length ? flips.join(", ") + " px" : "700–1100 px stabil"})`);
+      await sp.close();
+    }
+  }
 
   // Release 0.7.0 (02.11.2026): die beiden Panel-Tools ohne Host-Fall.
   const rxnPage = await browser.newPage({ viewport: { width: 720, height: 600 } });

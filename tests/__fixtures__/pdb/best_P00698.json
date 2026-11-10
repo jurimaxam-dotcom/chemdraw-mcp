@@ -1,0 +1,40 @@
+{
+ "P00698": [
+  {
+   "pdb_id": "2vb1",
+   "chain_id": "A",
+   "experimental_method": "X-ray diffraction",
+   "resolution": 0.65,
+   "tax_id": 9031,
+   "unp_start": 19,
+   "unp_end": 147,
+   "start": 1,
+   "end": 129,
+   "coverage": 1.0
+  },
+  {
+   "pdb_id": "8zst",
+   "chain_id": "A",
+   "experimental_method": "X-ray diffraction",
+   "resolution": 0.8,
+   "tax_id": 9031,
+   "unp_start": 19,
+   "unp_end": 147,
+   "start": 1,
+   "end": 129,
+   "coverage": 1.0
+  },
+  {
+   "pdb_id": "9qum",
+   "chain_id": "A",
+   "experimental_method": "Electron crystallography",
+   "resolution": 0.83,
+   "tax_id": 9031,
+   "unp_start": 1,
+   "unp_end": 147,
+   "start": 1,
+   "end": 147,
+   "coverage": 1.0
+  }
+ ]
+}

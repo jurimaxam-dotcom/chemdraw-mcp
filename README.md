@@ -88,6 +88,7 @@ lie flat on paper turn out to sit twisted against each other.
 - *"Draw thalidomide"*, then click **Show variants** and pick (S).
 - *"Show morphine as a rotatable 3D model"*, or draw it and click **3D**.
 - *"Draw capsaicin"*, then hover a functional group or click **Data**.
+- *"Draw lysozyme"* or *"Draw trastuzumab"*: proteins and antibodies as a cartoon (helices, strands, bound heme or inhibitors) from the PDB or AlphaFold, rotatable in the panel (Mol*; third-party notices in `THIRD_PARTY_LICENSES`).
 
 <details>
 <summary>More prompts: reactions, mechanisms and lab graphics</summary>
@@ -214,6 +215,23 @@ entry of earlier versions). In a chat, **enable one connector at a time** in
 the connector menu: with both on, the model sees the default tools twice.
 Switching between them needs no restart. What the `full` profile adds in
 detail: [docs/tools.md#profiles](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md#profiles).
+
+### What leaves your machine
+
+Structures are drawn locally. A SMILES or InChI you type is **not sent to any
+database** by default; to fetch its name, CAS number and properties, the server
+sends PubChem only the structure's InChIKey, a hash computed on your machine.
+The key does not contain the structure; it only matches a record PubChem
+already holds. If PubChem has no record for it, those fields stay empty.
+Common group abbreviations (`Ph`, `Boc`, `OMe` …) are expanded locally; a
+SMILES that still cannot be read is refused, not searched as a name. Compound names you type are sent to PubChem, NCI and,
+for enzyme and protein names, UniProt to resolve them; protein names and gene
+symbols go to UniProt, the UniProt accession to PDBe and the AlphaFold DB, the
+PDB ID to RCSB; a systematic IUPAC name
+reveals the structure as much as a SMILES does. To also search by the SMILES
+itself, turn on **Look up typed structures by SMILES** in the extension
+settings of Claude Desktop, or set `CHEMDRAW_SMILES_LOOKUP=1`. Details:
+[docs/tools.md#what-leaves-your-machine](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md#what-leaves-your-machine).
 
 ## Development
 

@@ -709,7 +709,7 @@ def test_lookup_biochem_formats_chebi_and_uniprot():
     assert "P35557" not in out
 
 
-def test_lookup_biochem_without_chebi_hit_still_lists_proteins():
+def test_lookup_biochem_protein_name_gets_the_uniprot_sheet():
     with http(
         {
             "ols4/api/search": _Resp(json_data={"response": {"docs": []}}),
@@ -718,9 +718,13 @@ def test_lookup_biochem_without_chebi_hit_still_lists_proteins():
     ):
         out = lookup_biochem("Hexokinase")
 
-    assert "No ChEBI entry found." in out
+    # Seit E6 (10.11.2026) ist ein Proteinname kein ChEBI-Fall mehr: UniProt
+    # führt "Hexokinase-1" unter genau diesem Namen → Protein-Datenblatt.
+    assert out.startswith("## Hexokinase — Protein (UniProt)")
     assert "### ChEBI" not in out
-    assert "- **Hexokinase-1** (P19367)" in out
+    assert "- **Name:** Hexokinase-1" in out
+    assert "- **UniProt:** P19367" in out
+    assert "Hexokinase-2 (P52789)" in out
 
 
 def test_lookup_biochem_handles_chebi_entry_without_description():

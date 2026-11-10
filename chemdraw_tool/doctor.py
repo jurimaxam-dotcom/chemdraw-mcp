@@ -517,6 +517,28 @@ def check_output_dir(*, root: Path | None = None) -> CheckResult:
     )
 
 
+def check_smiles_lookup() -> CheckResult:
+    """Darf eine eingegebene Struktur an Datenbanken gehen? (E12, Standard: nein.)
+
+    Kein Fehler in beiden Stellungen — nur Auskunft. Gelesen wird die Umgebung
+    DIESES Prozesses: Das Häkchen der Desktop-Extension wirkt im Serverprozess,
+    den Claude Desktop startet; dessen Stand steht beim Start in server.log.
+    """
+    from chemdraw_tool.privacy import HOW_TO_ENABLE, smiles_lookup_enabled, status_line
+
+    where = (
+        " This command sees only its own environment; the server Claude Desktop runs "
+        "records its setting at startup in ~/ChemDraw-Output/server.log."
+    )
+    if smiles_lookup_enabled():
+        return CheckResult(name="SMILES lookup", status=NOTE, detail=status_line() + where)
+    return CheckResult(
+        name="SMILES lookup",
+        status=OK,
+        detail=status_line() + f" To also search by SMILES, {HOW_TO_ENABLE}." + where,
+    )
+
+
 # Reihenfolge = Lesereihenfolge des Berichts: erst der Funktionsbeweis, dann die
 # Umgebung, zuletzt das Optionale.
 DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
@@ -525,6 +547,7 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_uv,
     check_desktop_config,
     check_network,
+    check_smiles_lookup,
     check_output_dir,
 )
 

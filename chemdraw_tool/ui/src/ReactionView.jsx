@@ -5,10 +5,25 @@ import PanelFooter, { fileEntries } from "./components/PanelFooter";
 import { composeSvg } from "./utils/composeSvg";
 import { useAppBridge } from "./AppContext";
 import { extractToolData } from "./utils/toolData";
+import { naturalHeight, naturalWidth } from "./utils/svgSize";
 
 export const APPLY_ERROR = "The coefficients could not be applied. Click again to retry.";
 
 const MIN_SCALE = 0.4;
+// Große Stoffe (E16, 10.11.2026, z. B. Porphyrine): der Server zeichnet sie im festen
+// Bindungsmaßstab auf eine größere Fläche statt sie auf 250×200 zu quetschen. Eine
+// Zeile aus zwei Porphyrinen ist dann ~1000 px breit; auf Panelbreite geschrumpft
+// wären N/O-Labels wieder < 9 px. Solche Reaktionen stapeln Edukte | Pfeil | Produkte,
+// statt unter READABLE_SCALE zu schrumpfen. Kleine Reaktionen nehmen diesen Weg nie.
+const READABLE_SCALE = 0.85; // N-Glyphe 10,6 px × 0,85 ≈ 9 px
+// Was auf RDKits 250×200-Fläche passt, ist nach dem Zuschnitt höchstens 250+2·22 breit
+// bzw. 200+2·22 hoch (svg_renderer.SVG_PADDING) — alles darüber kam von der größeren Fläche.
+const LARGE_W = 294;
+const LARGE_H = 244;
+
+function isLarge(molecule) {
+  return (naturalWidth(molecule.svg) ?? 0) > LARGE_W || (naturalHeight(molecule.svg) ?? 0) > LARGE_H;
+}
 
 // Pfeilformen im 110×18-Raster. Vorwaerts bleibt der bisherige Pfeil;
 // Gleichgewicht = zwei Halbpfeile (⇌), Retro = Doppelschaft mit offener Spitze (⇒).
@@ -61,10 +76,33 @@ function ArrowText({ text, position }) {
   );
 }
 
+// Gestapelt (große Stoffe): Pfeil nach unten, Bedingungen rechts daneben.
+function VerticalArrow({ kind, above, below }) {
+  return (
+    <div data-arrow-layout="vertical"
+      style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", flexShrink: 0 }}>
+      <div style={{ position: "relative", width: 18, height: 64, flexShrink: 0 }}>
+        {/* 64×18 um die Mitte gedreht: Mittelpunkt (32,9) → (9,32) */}
+        <svg data-arrow={kind} width="64" height="18" viewBox="0 0 110 18" preserveAspectRatio="none"
+          style={{ position: "absolute", left: -23, top: 23, transform: "rotate(90deg)", maxWidth: "none" }}>
+          <ArrowGlyph kind={kind} />
+        </svg>
+      </div>
+      {(above || below) && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <ArrowText text={above} position="above" />
+          <ArrowText text={below} position="below" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Pfeilspalte: Bedingungen oben ueber, unten unter dem Pfeil — wie im
 // exportierten Bild und im CDXML.
-function ReactionArrow({ kind, above, below }) {
+function ReactionArrow({ kind, above, below, vertical = false }) {
   const known = ["forward", "equilibrium", "retro"].includes(kind) ? kind : "forward";
+  if (vertical) return <VerticalArrow kind={known} above={above} below={below} />;
   return (
     <div
       style={{
@@ -189,11 +227,21 @@ function MoleculeGroup({ molecules }) {
   );
 }
 
-function ScaledRow({ children }) {
+// Zuschlag, um den der waagrechte Pfeil breiter wäre als der gerade gezeigte (0, wenn er
+// schon waagrecht steht): max(110, Textbreite) + 2·12 Polster gegen die senkrechte Breite.
+function horizontalArrowExtra(inner) {
+  const arrow = inner.querySelector('[data-arrow-layout="vertical"]');
+  if (!arrow) return 0;
+  const text = Math.max(0, ...[...arrow.querySelectorAll("[data-conditions]")].map((el) => el.offsetWidth));
+  return Math.max(110, text) + 24 - arrow.offsetWidth;
+}
+
+function ScaledRow({ children, canStack = false }) {
   const outerRef = useRef(null);
   const innerRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [naturalH, setNaturalH] = useState(0);
+  const [stacked, setStacked] = useState(false);
 
   const measure = useCallback(() => {
     const outer = outerRef.current;
@@ -211,8 +259,29 @@ function ScaledRow({ children }) {
     const prevWidth = inner.style.width;
     inner.style.transform = "none";
     inner.style.width = "max-content";
-    const naturalW = inner.scrollWidth;
-    const naturalHeight = inner.scrollHeight;
+    let naturalW = inner.scrollWidth;
+    let naturalHeight = inner.scrollHeight;
+    // Gestapelt wird nur gemessen, wenn die Zeile nebeneinander unter die Lesegrenze fiele —
+    // die Zeilenbreite muss dafür im Zeilenmodus gemessen werden, egal wie gerade gezeigt.
+    let stack = false;
+    if (canStack) {
+      const prevDir = inner.style.flexDirection;
+      inner.style.flexDirection = "row";
+      // Beide Zustände entscheiden über dieselbe Zahl: die Zeilenbreite mit WAAGRECHTEM Pfeil.
+      // Gestapelt ist der Pfeil senkrecht und ~116 px schmaler — mit ihm gemessen stimmte
+      // jeder Zustand für den anderen, die Ansicht pendelte (Host-Test, Breitenband).
+      const rowW = inner.scrollWidth + horizontalArrowExtra(inner);
+      if (rowW > 0 && containerW / rowW < READABLE_SCALE) {
+        inner.style.flexDirection = "column";
+        stack = true;
+        naturalW = inner.scrollWidth;
+        naturalHeight = inner.scrollHeight;
+      } else {
+        naturalW = rowW;
+        naturalHeight = inner.scrollHeight;
+      }
+      inner.style.flexDirection = prevDir;
+    }
     inner.style.transform = prevTransform;
     inner.style.width = prevWidth;
     if (naturalW <= 0) return;
@@ -220,7 +289,8 @@ function ScaledRow({ children }) {
     // only shrink-to-fit. Below MIN_SCALE we fall back to scrolling.
     setScale(Math.min(1, Math.max(MIN_SCALE, containerW / naturalW)));
     setNaturalH(naturalHeight);
-  }, []);
+    setStacked(stack);
+  }, [canStack]);
 
   useLayoutEffect(() => {
     measure();
@@ -249,8 +319,10 @@ function ScaledRow({ children }) {
     >
       <div
         ref={innerRef}
+        data-stacked={stacked || undefined}
         style={{
           display: "flex",
+          flexDirection: stacked ? "column" : "row",
           alignItems: "center",
           gap: 4,
           transformOrigin: "top left",
@@ -258,7 +330,7 @@ function ScaledRow({ children }) {
           width: needsScroll ? undefined : `${100 / scale}%`,
         }}
       >
-        {children}
+        {typeof children === "function" ? children(stacked) : children}
       </div>
     </div>
   );
@@ -356,10 +428,14 @@ export default function ReactionView({ data: initial }) {
           overflow: "hidden",
         }}
       >
-        <ScaledRow>
-          {reactants.length > 0 && <MoleculeGroup molecules={reactants} />}
-          <ReactionArrow kind={data.arrow} above={conditions} below={conditionsBelow} />
-          {products.length > 0 && <MoleculeGroup molecules={products} />}
+        <ScaledRow canStack={[...reactants, ...products].some(isLarge)}>
+          {(stacked) => (
+            <>
+              {reactants.length > 0 && <MoleculeGroup molecules={reactants} />}
+              <ReactionArrow kind={data.arrow} above={conditions} below={conditionsBelow} vertical={stacked} />
+              {products.length > 0 && <MoleculeGroup molecules={products} />}
+            </>
+          )}
         </ScaledRow>
       </div>
       <BalanceBadge balance={data.balance} onApply={data.request ? handleApply : null}

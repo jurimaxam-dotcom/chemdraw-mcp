@@ -387,3 +387,48 @@ def test_peptide_layout_keeps_the_standard_bond_length():
         for b in mol.GetBonds()
     )
     assert abs(lengths[len(lengths) // 2] - 1.5) < 0.05
+
+
+# --- Anzeigename (E17, 10.11.2026) ------------------------------------------
+# Legende und Dateiname zeigten das Eingabe-Präfix: „peptide:YGGFM“, Datei
+# `peptideyggfm.png`. Bis acht Reste steht der Dreibuchstabencode da (lesbar,
+# D-Reste als „D-Phe“ — der Einbuchstabencode unterscheidet sie nur über die
+# Kleinschreibung, die der Dateiname verlöre), darüber die Sequenz ohne Präfix.
+
+
+@pytest.mark.parametrize(
+    "query, shown",
+    [
+        ("peptide:YGGFM", "Tyr-Gly-Gly-Phe-Met"),
+        ("peptide:cyclo(RGDfV)", "cyclo(Arg-Gly-Asp-D-Phe-Val)"),
+        ("peptide:Ac-aG-NH2", "Ac-D-Ala-Gly-NH2"),
+        ("peptide:aG", "D-Ala-Gly"),
+        ("peptide:ACDEFGHIKLMN", "ACDEFGHIKLMN"),
+        ("Tyr-Gly-Gly-Phe-Met", None),
+        ("aspirin", None),
+        ("peptide:XZ", None),  # nicht baubar: die Fehlermeldung kommt woanders
+    ],
+)
+def test_display_name_of_a_one_letter_peptide(query, shown):
+    assert peptide.display_name(query) == shown
+
+
+def test_legend_and_file_name_without_the_prefix(tmp_path, monkeypatch):
+    from chemdraw_tool import server
+
+    for const in [k for k in dir(server) if k.endswith("_DIR")]:
+        monkeypatch.setattr(server, const, tmp_path / const)
+    monkeypatch.setattr(server, "_enrich_properties", lambda smiles: {})
+    shown = server.generate_molecule("peptide:YGGFM")
+    assert shown.name == "Tyr-Gly-Gly-Phe-Met"
+    assert all("peptide" not in path for path in shown.files.values())
+    assert all(path.endswith(("tyr-gly-gly-phe-met.png", "tyr-gly-gly-phe-met.svg"))
+               for path in shown.files.values())
+    # D-Rest bleibt im Dateinamen unterscheidbar
+    d_form = server.generate_molecule("peptide:yGGFM")
+    assert set(d_form.files.values()).isdisjoint(shown.files.values())
+    # das Label des Nutzers gewinnt weiter
+    named = server.generate_molecule("peptide:YGGFM", label="Met-enkephalin")
+    assert named.name == "Met-enkephalin"
+    assert all(path.endswith(("met-enkephalin.png", "met-enkephalin.svg"))
+               for path in named.files.values())

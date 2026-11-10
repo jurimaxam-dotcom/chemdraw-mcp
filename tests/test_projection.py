@@ -242,7 +242,8 @@ def test_open_chain_sugar_announces_fischer_only(server):
 
 def test_ring_sugar_announces_haworth_and_a_note(server):
     payload = server.generate_molecule(BETA_GLCP)
-    assert "haworth" in payload.views and "fischer" not in payload.views
+    # Seit E17 (10.11.2026) zeigt Fischer die offene Form — vorher kein Knopf.
+    assert "haworth" in payload.views and "fischer" in payload.views
     assert "open-chain" in payload.projectionNote
     view = server.generate_molecule(**payload.viewRequest, view="haworth")
     assert view.viewSvg.startswith("<svg")
@@ -270,8 +271,9 @@ def test_model_may_open_the_panel_on_a_projection(server, monkeypatch):
     assert payload.initialView == "haworth"
     assert payload.viewSvg == haworth_svg(mol(BETA_GLCP))
     assert payload.svg.startswith("<") and payload.atoms
-    # Seit E5 (09.11.2026) bietet ein Pyranosering zusätzlich den Sessel an.
-    assert payload.views == ["all_h", "haworth", "chair"]
+    # Seit E5 (09.11.2026) bietet ein Pyranosering zusätzlich den Sessel an,
+    # seit E17 (10.11.2026) Fischer für die offene Form.
+    assert payload.views == ["all_h", "fischer", "haworth", "chair"]
     assert "open-chain" in payload.projectionNote
     assert payload.properties["formula"] == "C6H12O6"
     assert payload.files == {}
@@ -292,3 +294,71 @@ def test_a_broken_projection_never_breaks_the_drawing(server, monkeypatch):
     payload = server.generate_molecule(D_GLUCOSE)
     assert payload.svg.startswith("<")
     assert "fischer" not in payload.views
+
+
+# --- Fischer für Ringzucker über die offene Form (E17, 10.11.2026) ------------
+# Befund: Der Hinweis riet zu „D-glucose“, das bei PubChem die Pyranose ist —
+# wieder ohne Fischer-Knopf; nur „aldehydo-D-glucose“ ging. Jetzt leitet das
+# Panel die offene Kette lokal her (Halbacetal öffnen: anomeres C → C=O,
+# Ring-O → OH, alle anderen Zentren bleiben). Referenz-Keys: PubChem
+# (aldehydo-D-mannose CID 161658, die übrigen = Konstanten oben).
+D_MANNOSE = "C([C@H]([C@H]([C@@H]([C@@H](C=O)O)O)O)O)O"
+ALPHA_MANP = "C([C@@H]1[C@H]([C@@H]([C@@H]([C@H](O1)O)O)O)O)O"  # PubChem CID 185698
+BETA_FRUP = "C1[C@H]([C@H]([C@@H]([C@](O1)(CO)O)O)O)O"  # PubChem CID 24310
+FRUP_OPEN_ANOMER = "C1[C@H]([C@H]([C@@H](C(O1)(CO)O)O)O)O"  # PubChem „D-fructose“
+
+
+def key(smiles_or_mol):
+    m = mol(smiles_or_mol) if isinstance(smiles_or_mol, str) else smiles_or_mol
+    return Chem.MolToInchiKey(m)
+
+
+@pytest.mark.parametrize(
+    "ring, open_chain",
+    [
+        (BETA_GLCP, D_GLUCOSE),
+        (ALPHA_GLCP, D_GLUCOSE),
+        (GLCP_OPEN_ANOMER, D_GLUCOSE),
+        (BETA_GALP, D_GALACTOSE),
+        (ALPHA_MANP, D_MANNOSE),
+        (BETA_RIBF, D_RIBOSE),
+        (BETA_FRUF, D_FRUCTOSE),
+        (BETA_FRUP, D_FRUCTOSE),
+        (FRUP_OPEN_ANOMER, D_FRUCTOSE),
+    ],
+)
+def test_ring_sugar_opens_to_its_open_chain_form(ring, open_chain):
+    from chemdraw_tool.projection import open_chain_form
+
+    opened = open_chain_form(mol(ring))
+    assert opened is not None and key(opened) == key(open_chain)
+    assert fischer_rows(opened) == fischer_rows(mol(open_chain))
+
+
+@pytest.mark.parametrize("name", ["methyl glucoside", "sucrose", "glucose ohne Stereo", "ethanol"])
+def test_glycosides_and_others_have_no_open_chain_form(name):
+    from chemdraw_tool.projection import open_chain_form
+
+    assert open_chain_form(mol(NOT_PROJECTABLE[name])) is None
+
+
+def test_ring_sugar_offers_fischer_of_the_open_chain(server):
+    from chemdraw_tool.projection import open_chain_form
+
+    payload = server.generate_molecule(BETA_GLCP)
+    assert payload.views == ["all_h", "fischer", "haworth", "chair"]
+    view = server.generate_molecule(**payload.viewRequest, view="fischer")
+    assert view.viewSvg.startswith("<svg") and "open-chain form" in view.viewSvg
+    # dieselben Zeilen wie die echte offene Kette
+    open_svg = fischer_svg(open_chain_form(mol(BETA_GLCP)))
+    drawing = open_svg.split("'>", 1)[1].removesuffix("</svg>")
+    assert drawing in view.viewSvg
+    # Identität bleibt die Pyranose
+    assert view.properties["formula"] == "C6H12O6"
+    assert view.viewRequest["name_or_smiles"] == payload.viewRequest["name_or_smiles"]
+
+
+def test_note_no_longer_sends_the_user_to_a_name_without_fischer():
+    note = projection_note(mol(BETA_GLCP))
+    assert "'D-glucose'" not in note
+    assert "open-chain" in note and "anomer" in note

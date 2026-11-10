@@ -60,6 +60,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.Draw import rdMolDraw2D
 
+from chemdraw_tool.generator import coordination_drawing
 from chemdraw_tool.image_export import (
     ARROW_LENGTH,
     ARROW_PAD,
@@ -526,7 +527,8 @@ def _draw_grid(drawer, plan: _Plan, style: str) -> None:
     # Nach dem Preset: der freie Streifen ist eine Layout-Entscheidung dieser
     # Figur (Zeilenzahl der Beschriftung), keine Stilfrage.
     opts.legendFraction = plan.layout.legend_fraction
-    drawer.DrawMolecules(plan.mols, legends=[_RESERVE_LEGEND] * len(plan.mols))
+    mols = [coordination_drawing(m) for m in plan.mols]  # Metall-Tetrapyrrole
+    drawer.DrawMolecules(mols, legends=[_RESERVE_LEGEND] * len(mols))
     drawer.FinishDrawing()
 
 

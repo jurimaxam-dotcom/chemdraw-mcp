@@ -23,6 +23,8 @@ import subprocess
 import tarfile
 from pathlib import Path
 
+import pytest
+
 SERVER_DIR = Path(__file__).parent.parent / "mcpb" / "server"
 RUN_SH = SERVER_DIR / "run.sh"
 
@@ -47,7 +49,7 @@ if [ "$1 $2" = "pip install" ]; then
   done
   spec="$(sed -n 's/^chemdraw-mcp\(==[^ ]*\).*/\1/p' "$reqs")"
   bin="$(dirname "$py")"
-  printf '#!/bin/sh\necho "SERVER %s${CHEMDRAW_PROFILE:+ profile=$CHEMDRAW_PROFILE}"\n' "$spec" > "$bin/chemdraw-mcp"
+  printf '#!/bin/sh\necho "SERVER %s${CHEMDRAW_PROFILE:+ profile=$CHEMDRAW_PROFILE}${CHEMDRAW_SMILES_LOOKUP:+ smiles=$CHEMDRAW_SMILES_LOOKUP}"\n' "$spec" > "$bin/chemdraw-mcp"
   chmod +x "$bin/chemdraw-mcp"
   echo "install-end" >> "$STUB_LOG"
   exit 0
@@ -464,7 +466,10 @@ def test_basis_manifest_pinnt_das_mvp_profil():
 
     manifest = json.loads(MANIFEST.read_text())
     assert manifest["name"] == "chemdraw-mcp"
-    assert manifest["server"]["mcp_config"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
+    assert manifest["server"]["mcp_config"]["env"] == {
+        "CHEMDRAW_PROFILE": "mvp",
+        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}",
+    }
 
 
 def test_mvp_variante_ist_das_basis_manifest():
@@ -484,7 +489,10 @@ def test_pharma_variante_hat_eigene_id_und_festes_vollprofil():
     assert pharma["name"] != base["name"], (
         "gleiche ID hieße: eine Extension überschreibt die andere"
     )
-    assert pharma["server"]["mcp_config"]["env"] == {"CHEMDRAW_PROFILE": "full"}
+    assert pharma["server"]["mcp_config"]["env"] == {
+        "CHEMDRAW_PROFILE": "full",
+        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}",
+    }
     assert pharma["display_name"] != base["display_name"]
     assert pharma["author"] == base["author"]
     assert pharma["server"]["entry_point"] == base["server"]["entry_point"], (
@@ -514,3 +522,30 @@ def test_run_sh_reicht_das_profil_an_den_server_durch(tmp_path):
     dem Weg zum Server weder verlieren noch überschreiben."""
     out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="full").stdout.strip()
     assert out == "SERVER ==9.9.1 profile=full"
+
+
+# --- E12: Häkchen „SMILES-Abgleich“ in den Extension-Einstellungen ---------------
+# Standard aus: ein eingegebenes SMILES geht an keine Datenbank. Claude Desktop
+# baut aus `user_config` die Einstellungsseite und setzt boolesche Werte als Text
+# "true"/"false" in `mcp_config.env` ein (@anthropic-ai/mcpb 2.1.2,
+# dist/shared/config.js); chemdraw_tool.privacy liest genau diese Variable.
+
+
+@pytest.mark.parametrize("profile", ["mvp", "full"])
+def test_beide_bundles_haben_das_haekchen_standard_aus(profile):
+    from chemdraw_tool.privacy import ENV_VAR, SETTING_TITLE
+
+    manifest = _variant(profile)
+    option = manifest["user_config"]["smiles_lookup"]
+    assert option["type"] == "boolean"
+    assert option["default"] is False
+    assert option.get("required", False) is False
+    assert option["title"] == SETTING_TITLE
+    beschreibung = option["description"]
+    assert "InChIKey" in beschreibung and "SMILES" in beschreibung and "PubChem" in beschreibung
+    assert manifest["server"]["mcp_config"]["env"][ENV_VAR] == "${user_config.smiles_lookup}"
+
+
+def test_run_sh_reicht_das_haekchen_an_den_server_durch(tmp_path):
+    out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="mvp", CHEMDRAW_SMILES_LOOKUP="true").stdout.strip()
+    assert out == "SERVER ==9.9.1 profile=mvp smiles=true"

@@ -1,0 +1,3588 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P02920",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "taxonId": 83333,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "6444453"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "6444453"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "b0343"
+      },
+      {
+       "value": "JW0334"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1PV6",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=1-417"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1PV7",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.60 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=1-417"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2CFP",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.30 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-417"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2CFQ",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.95 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-417"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2V8N",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.60 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=1-417"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46503
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000011F071"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P22733",
+   "organism": {
+    "scientificName": "Lactobacillus delbrueckii subsp. bulgaricus (strain ATCC 11842 / DSM 20081 / BCRC 10696 / JCM 1002 / NBRC 13953 / NCIMB 11778 / NCTC 12712 / WDCM 00102 / Lb 14)",
+    "taxonId": 390333,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Lactobacillaceae",
+     "Lactobacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose transport protein"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lactose-proton symporter"
+      }
+     }
+    ],
+    "includes": [
+     {
+      "recommendedName": {
+       "fullName": {
+        "value": "Putative phosphotransferase enzyme IIA component"
+       },
+       "ecNumbers": [
+        {
+         "value": "2.7.1.-"
+        }
+       ]
+      },
+      "alternativeNames": [
+       {
+        "fullName": {
+         "value": "Putative PTS system EIIA component"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacY"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Ldb1202"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 627,
+    "molWeight": 68289
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillales",
+     "taxonId": 186826,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillaceae",
+     "taxonId": 33958,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillus",
+     "taxonId": 1578,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillus delbrueckii",
+     "taxonId": 1584,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Lactobacillus delbrueckii subsp. bulgaricus",
+     "taxonId": 1585,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E1EF"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P59832",
+   "organism": {
+    "scientificName": "Klebsiella pneumoniae",
+    "taxonId": 573,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella",
+     "Klebsiella pneumoniae complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose-proton symport"
+      }
+     }
+    ],
+    "flag": "Fragment"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacY"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 131,
+    "molWeight": 14959
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella",
+     "taxonId": 570,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella pneumoniae complex",
+     "taxonId": 3390273,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001C041F"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P47234",
+   "organism": {
+    "scientificName": "Citrobacter freundii",
+    "taxonId": 546,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Citrobacter",
+     "Citrobacter freundii complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacY"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 416,
+    "molWeight": 46537
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter",
+     "taxonId": 544,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter freundii complex",
+     "taxonId": 1344959,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E1ED"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P18817",
+   "organism": {
+    "scientificName": "Klebsiella oxytoca",
+    "taxonId": 571,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacY"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 416,
+    "molWeight": 46221
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella",
+     "taxonId": 570,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E1EE"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A0J5KF19",
+   "organism": {
+    "scientificName": "Pluralibacter gergoviae",
+    "commonName": "Enterobacter gergoviae",
+    "taxonId": 61647,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "KMK05065.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000036196"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Pluralibacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "KMK05065.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "KMK05065.1"
+        }
+       ],
+       "value": "ABW06_25580"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46517
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pluralibacter",
+     "taxonId": 1330546,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000650F2FD"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A2A2M6G8",
+   "organism": {
+    "scientificName": "Hafnia paralvei",
+    "taxonId": 546367,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "PAV94049.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000218796"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Hafniaceae",
+     "Hafnia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "PAV94049.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "PAV94049.1"
+        }
+       ],
+       "value": "CJD50_22765"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46485
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hafniaceae",
+     "taxonId": 1903412,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hafnia",
+     "taxonId": 568,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000BAC13EF"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A3N2RQH7",
+   "organism": {
+    "scientificName": "Kluyvera ascorbata",
+    "taxonId": 51288,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "MEE9657682.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001331691"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Kluyvera"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MEE9657682.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MEE9657682.1"
+        }
+       ],
+       "value": "V4836_26945"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46535
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Kluyvera",
+     "taxonId": 579,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0003D91934"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A839CUB2",
+   "organism": {
+    "scientificName": "Klebsiella grimontii",
+    "taxonId": 2058152,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "MEM0627974.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001458070"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MEM0627974.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MEM0627974.1"
+        }
+       ],
+       "value": "AAFL32_29320"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46567
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella",
+     "taxonId": 570,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0003BFC700"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A9X3YEQ0",
+   "organism": {
+    "scientificName": "Leclercia adecarboxylata",
+    "taxonId": 83655,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "MEC3938775.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001357437"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Leclercia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MEC3938775.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MEC3938775.1"
+        }
+       ],
+       "value": "VOF76_21695"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46566
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leclercia",
+     "taxonId": 83654,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000956DECF"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABU4DYV0",
+   "organism": {
+    "scientificName": "Atlantibacter subterraneus",
+    "taxonId": 255519,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "MDV7022023.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001187066"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Atlantibacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MDV7022023.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MDV7022023.1"
+        }
+       ],
+       "value": "R4P48_04905"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46567
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Atlantibacter",
+     "taxonId": 1903434,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0001576484"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABX9EUU2",
+   "organism": {
+    "scientificName": "Enterobacter kobei",
+    "taxonId": 208224,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "RAY20033.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000250603"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Enterobacter",
+     "Enterobacter cloacae complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "RAY20033.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "RAY20033.1"
+        }
+       ],
+       "value": "DP181_23510"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46567
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacter",
+     "taxonId": 547,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacter cloacae complex",
+     "taxonId": 354276,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0001576484"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABY2PXU3",
+   "organism": {
+    "scientificName": "Citrobacter murliniae",
+    "taxonId": 67829,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "THE41303.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000306790"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Citrobacter",
+     "Citrobacter freundii complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "THE41303.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "THE41303.1"
+        }
+       ],
+       "value": "DJ535_03730"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46770
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter",
+     "taxonId": 544,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter freundii complex",
+     "taxonId": 1344959,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0010A426D0"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABZ2E4J5",
+   "organism": {
+    "scientificName": "Klebsiella ornithinolytica",
+    "commonName": "Raoultella ornithinolytica",
+    "taxonId": 54291,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "WWC14507.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001350972"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "WWC14507.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "WWC14507.1"
+        }
+       ],
+       "value": "LM286_27290"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46611
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Klebsiella",
+     "taxonId": 570,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0002500184"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "B7MD16",
+   "organism": {
+    "scientificName": "Escherichia coli O45:K1 (strain S88 / ExPEC)",
+    "taxonId": 585035,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "CAR01701.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000000747"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "CAR01701.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "CAR01701.1"
+        }
+       ],
+       "value": "ECS88_0350"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46503
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000011F071"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "Q5ETW2",
+   "organism": {
+    "scientificName": "Salmonella sp. CDC 156-87",
+    "taxonId": 310798,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AAW73245.1"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Salmonella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ],
+    "flag": "Fragment"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AAW73245.1"
+       }
+      ],
+      "value": "lacY"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 315,
+    "molWeight": 35134
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Salmonella",
+     "taxonId": 590,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "unclassified Salmonella",
+     "taxonId": 2614656,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00004CEE3B"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A2C6DM10",
+   "organism": {
+    "scientificName": "Budvicia aquatica",
+    "taxonId": 82979,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "PHI29841.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000224974"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Budviciaceae",
+     "Budvicia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "PHI29841.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "PHI29841.1"
+        }
+       ],
+       "value": "CRN84_11055"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 418,
+    "molWeight": 46898
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Budviciaceae",
+     "taxonId": 1903416,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Budvicia",
+     "taxonId": 82978,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000429F9AD"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A2P5GMB4",
+   "organism": {
+    "scientificName": "Superficieibacter electus",
+    "taxonId": 2022662,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "POP42020.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000237073"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Superficieibacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "POP42020.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "POP42020.1"
+        }
+       ],
+       "value": "CHU33_20795"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 420,
+    "molWeight": 46823
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Superficieibacter",
+     "taxonId": 2303321,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000CDA05D2"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0AAW6XEX1",
+   "organism": {
+    "scientificName": "Serratia nevei",
+    "taxonId": 2703794,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "MDK5174118.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP001174748"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Serratia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MDK5174118.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MDK5174118.1"
+        }
+       ],
+       "value": "P9921_27220"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46567
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Yersiniaceae",
+     "taxonId": 1903411,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Serratia",
+     "taxonId": 613,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0001576484"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABN5H8W5",
+   "organism": {
+    "scientificName": "Mixta calida",
+    "taxonId": 665913,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AUY24959.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000237673"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Erwiniaceae",
+     "Mixta"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AUY24959.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AUY24959.1"
+        }
+       ],
+       "value": "C2E16_08585"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46551
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Erwiniaceae",
+     "taxonId": 1903409,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mixta",
+     "taxonId": 2100764,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00028311FE"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ABX5N5U3",
+   "organism": {
+    "scientificName": "Serratia marcescens",
+    "taxonId": 615,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "PYA55350.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000247823"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Serratia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "PYA55350.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "PYA55350.1"
+        }
+       ],
+       "value": "DMW51_25975"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46611
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Yersiniaceae",
+     "taxonId": 1903411,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Serratia",
+     "taxonId": 613,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0002500184"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A7ZI90",
+   "organism": {
+    "scientificName": "Escherichia coli O139:H28 (strain E24377A / ETEC)",
+    "taxonId": 331111,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "ABV18153.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000001122"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "ABV18153.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "ABV18153.1"
+        }
+       ],
+       "value": "EcE24377A_0367"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46503
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Escherichia coli O139:H28",
+     "taxonId": 1603259,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000011F071"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "Q5ETW6",
+   "organism": {
+    "scientificName": "Citrobacter freundii",
+    "taxonId": 546,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AAW73241.1"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Citrobacter",
+     "Citrobacter freundii complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ],
+    "flag": "Fragment"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AAW73241.1"
+       }
+      ],
+      "value": "lacY"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 324,
+    "molWeight": 36083
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter",
+     "taxonId": 544,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Citrobacter freundii complex",
+     "taxonId": 1344959,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00004CEE37"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "Q8X4M4",
+   "organism": {
+    "scientificName": "Escherichia coli O157:H7",
+    "taxonId": 83334,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "BAB33819.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000000558"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00071606"
+       }
+      ],
+      "value": "Lactose permease"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00081023"
+        }
+       ],
+       "value": "Lactose-proton symport"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "BAB33819.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "BAB33819.1"
+        }
+       ],
+       "value": "ECs_0396"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 417,
+    "molWeight": 46517
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00000D0DB3"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A089HKV1",
+   "organism": {
+    "scientificName": "Paenibacillus durus",
+    "commonName": "Paenibacillus azotofixans",
+    "taxonId": 44251,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AIQ11315.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000029409"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Paenibacillaceae",
+     "Paenibacillus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AIQ11315.1"
+        }
+       ],
+       "value": "Galactoside permease"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AIQ11315.1"
+       }
+      ],
+      "value": "lacY"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AIQ11315.1"
+        }
+       ],
+       "value": "PDUR_04385"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 413,
+    "molWeight": 45189
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paenibacillaceae",
+     "taxonId": 186822,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paenibacillus",
+     "taxonId": 44249,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0004F773D4"
+   }
+  }
+ ]
+}

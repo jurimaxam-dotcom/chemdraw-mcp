@@ -1,0 +1,2083 @@
+{
+ "results": [
+  {
+   "primaryAccession": "P00722",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "b0344"
+      },
+      {
+       "value": "JW0335"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116483
+   },
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1DP0",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D=10-1024"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P07833",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Plasmodium falciparum (isolate K1 / Thailand)",
+    "lineage": [
+     "Eukaryota",
+     "Sar",
+     "Alveolata",
+     "Apicomplexa",
+     "Aconoidasida",
+     "Haemosporida",
+     "Plasmodiidae",
+     "Plasmodium",
+     "Laverania"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hypoxanthine-guanine-xanthine phosphoribosyltransferase"
+     },
+     "shortNames": [
+      {
+       "value": "HGPRT"
+      },
+      {
+       "value": "HGXPRT"
+      },
+      {
+       "value": "HGXPRTase"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "Q26997"
+        }
+       ],
+       "value": "2.4.2.22"
+      },
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "Q26997"
+        }
+       ],
+       "value": "2.4.2.8"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "LACZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 231,
+    "molWeight": 26393
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A3FEW8",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Enterobacter agglomerans",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Erwiniaceae",
+     "Pantoea",
+     "Pantoea agglomerans group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "value": "Beta-gal"
+      },
+      {
+       "value": "Bga"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Transglycosylating beta-galactosidase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 1028,
+    "molWeight": 116394
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P20035",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Plasmodium falciparum (isolate FCR-3 / Gambia)",
+    "lineage": [
+     "Eukaryota",
+     "Sar",
+     "Alveolata",
+     "Apicomplexa",
+     "Aconoidasida",
+     "Haemosporida",
+     "Plasmodiidae",
+     "Plasmodium",
+     "Laverania"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hypoxanthine-guanine-xanthine phosphoribosyltransferase"
+     },
+     "shortNames": [
+      {
+       "value": "HGPRT"
+      },
+      {
+       "value": "HGXPRT"
+      },
+      {
+       "value": "HGXPRTase"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "Q26997"
+        }
+       ],
+       "value": "2.4.2.22"
+      },
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "Q26997"
+        }
+       ],
+       "value": "2.4.2.8"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "LACZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 231,
+    "molWeight": 26348
+   },
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1CJB",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D=1-231"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P81650",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Pseudoalteromonas haloplanktis",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Alteromonadales",
+     "Pseudoalteromonadaceae",
+     "Pseudoalteromonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Beta-D-galactoside galactohydrolase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 1039,
+    "molWeight": 118199
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A1A831",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli O1:K1 / APEC",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Ecok1_03270"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "APECO1_1649"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116488
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A7FH78",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Yersinia pseudotuberculosis serotype O:1b (strain IP 31758)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Yersinia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "YpsIP31758_1629"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1066,
+    "molWeight": 123440
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A8GGN3",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Serratia proteamaculans (strain 568)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Serratia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Spro_3173"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1029,
+    "molWeight": 118303
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "B2VHN8",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Erwinia tasmaniensis (strain DSM 17950 / CFBP 7177 / CIP 109463 / NCPPB 4357 / Et1/99)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Erwiniaceae",
+     "Erwinia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "ETA_25680"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1026,
+    "molWeight": 116920
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q03WL0",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Leuconostoc mesenteroides subsp. mesenteroides (strain ATCC 8293 / DSM 20343 / BCRC 11652 / CCM 1803 / JCM 6124 / NCDO 523 / NBRC 100496 / NCIMB 8023 / NCTC 12954 / NRRL B-1118 / 37Y)",
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Lactobacillaceae",
+     "Leuconostoc"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "LEUM_1316"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1036,
+    "molWeight": 119401
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q1G9Z4",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Lactobacillus delbrueckii subsp. bulgaricus (strain ATCC 11842 / DSM 20081 / BCRC 10696 / JCM 1002 / NBRC 13953 / NCIMB 11778 / NCTC 12712 / WDCM 00102 / Lb 14)",
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Lactobacillaceae",
+     "Lactobacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Ldb1201"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1008,
+    "molWeight": 114160
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q32JB6",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Shigella dysenteriae serotype 1 (strain Sd197)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Shigella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "SDY_0378"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116614
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q48727",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Lactococcus lactis subsp. lactis (strain IL1403)",
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Streptococcaceae",
+     "Lactococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "LL1980"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "L0025"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 998,
+    "molWeight": 115440
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q5FJ41",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Lactobacillus acidophilus (strain ATCC 700396 / NCK56 / N2 / NCFM)",
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Lactobacillaceae",
+     "Lactobacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Beta-galactosidase LacZ"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P19668"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "3.2.1.23"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "EMBL",
+        "id": "AAV43283.1"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "LBA1462"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 667,
+    "molWeight": 76584
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q8X685",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli O157:H7",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Z0440"
+      },
+      {
+       "value": "ECs0397"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116410
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A7KGA5",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Klebsiella pneumoniae",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella",
+     "Klebsiella pneumoniae complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116341
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P26257",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Thermoanaerobacterium thermosulfurigenes",
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Clostridia",
+     "Thermoanaerobacterales",
+     "Thermoanaerobacteraceae",
+     "Thermoanaerobacterium"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1840542"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1840542"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "1840542"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1840542"
+       }
+      ],
+      "value": "lacZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 716,
+    "molWeight": 83781
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q8VNN2",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     }
+    }
+   ],
+   "sequence": {
+    "length": 1029,
+    "molWeight": 116967
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A1JTC4",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Yersinia enterocolitica serotype O:8 / biotype 1B (strain NCTC 13174 / 8081)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Yersinia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "YE2592"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1050,
+    "molWeight": 121234
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A4TLL5",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Yersinia pestis (strain Pestoides F)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Yersiniaceae",
+     "Yersinia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "YPDSF_1792"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1060,
+    "molWeight": 122625
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A7ZWZ1",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli O9:H4 (strain HS)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "EcHS_A0408"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116462
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "B1J0T5",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli (strain ATCC 8739 / DSM 1576 / NBRC 3972 / NCIMB 8545 / WDCM 00012 / Crooks)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "EcolC_3281"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116512
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "B1LIM9",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli (strain SMS-3-5 / SECEC)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "EcSMS35_0375"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116542
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q1RFJ2",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Escherichia coli (strain UTI89 / UPEC)",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "UTI89_C0371"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116503
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q2XQU3",
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "organism": {
+    "scientificName": "Enterobacter cloacae",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Enterobacter",
+     "Enterobacter cloacae complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase 2"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "synonyms": [
+      {
+       "value": "bga"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1029,
+    "molWeight": 116816
+   },
+   "uniProtKBCrossReferences": []
+  }
+ ]
+}

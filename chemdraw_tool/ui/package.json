@@ -13,6 +13,7 @@
     "test:host": "node src/host/host.e2e.mjs",
     "readme:gifs": "node src/host/readme-gifs.mjs",
     "panel:clips": "node src/host/readme-gifs.mjs --video",
+    "panel:shots": "node src/host/panel-shots.mjs",
     "test:e2e:update": "UPDATE_SNAPSHOTS=1 node src/utils/svgToPng.e2e.mjs",
     "test": "npm run test:unit && npm run test:dom && npm run test:e2e",
     "test:ui:watch": "node --import ./src/test-setup.mjs --test --watch src/__tests__/*.test.mjs",
@@ -21,6 +22,7 @@
   "dependencies": {
     "@modelcontextprotocol/client": "^2.0.0",
     "@modelcontextprotocol/ext-apps": "^2.0.3",
+    "molstar": "5.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^4.6.7"

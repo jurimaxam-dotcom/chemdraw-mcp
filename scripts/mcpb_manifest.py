@@ -5,7 +5,8 @@ Claude Desktop leitet die Extension-ID aus author + name ab
 (local.mcpb.<author>.<name>). Zwei Bundles aus demselben Starter (server/run.sh,
 dieselbe Installation unter chemdraw-mcp-bundle/env-<version>): `chemdraw-mcp`
 mit dem Standardprofil und `chemdraw-mcp-pharma` mit dem Vollprofil, beide mit
-festem Profil in server.mcp_config.env. Eine Quelle (die Basisdatei), damit
+festem Profil in server.mcp_config.env (und demselben
+user_config-Häkchen für den SMILES-Abgleich). Eine Quelle (die Basisdatei), damit
 Version, Autor, Lizenz und Starter nie auseinanderlaufen.
 
 Aufruf:  python scripts/mcpb_manifest.py mvp|full   → JSON auf stdout
@@ -38,8 +39,9 @@ PHARMA = {
         "on first start it installs chemdraw-mcp from PyPI with uv, every file "
         "checked against hashes pinned at release time (a pinned, checksum-verified "
         "uv is downloaded if none is installed). Structure rendering runs locally; "
-        "name resolution and data sheets may access online sources. Not affiliated "
-        "with Revvity/ChemDraw."
+        "name resolution and data sheets use online databases. A SMILES or InChI you "
+        "type is not sent to them unless you turn on the SMILES lookup setting; data "
+        "sheets ask by its InChIKey. Not affiliated with Revvity/ChemDraw."
     ),
 }
 
@@ -52,7 +54,8 @@ def manifest(profile: str) -> dict:
         raise ValueError(f"profile must be 'mvp' or 'full', was {profile!r}")
     variant = json.loads(json.dumps(base))
     variant.update(PHARMA)
-    variant["server"]["mcp_config"]["env"] = {"CHEMDRAW_PROFILE": "full"}
+    # Nur das Profil tauschen: der Rest von env (E12: das SMILES-Häkchen) gilt für beide.
+    variant["server"]["mcp_config"]["env"]["CHEMDRAW_PROFILE"] = "full"
     return variant
 
 

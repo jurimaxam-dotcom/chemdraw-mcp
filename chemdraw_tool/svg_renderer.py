@@ -7,6 +7,7 @@ import re
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
+from chemdraw_tool.generator import coordination_drawing
 from chemdraw_tool.render_style import apply_style
 
 SVG_WIDTH = 900
@@ -22,13 +23,33 @@ SVG_PADDING = 22
 BOND_LINE_WIDTH = 1.5
 
 
+_LABEL_MARGIN = 4
+_GLYPH_PATH = re.compile(r"<path class='atom-\d+' d='([^']*)' fill='#[0-9A-Fa-f]{6}'")
+_POINT = re.compile(r"(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)")
+
+
+def _label_glyph_points(svg: str):
+    """Alle Stützpunkte der Label-Glyphen (RDKit: <path class='atom-N' … fill=…>)."""
+    for m in _GLYPH_PATH.finditer(svg):
+        for x, y in _POINT.findall(m.group(1)):
+            yield float(x), float(y)
+
+
+def _has_abbreviation(mol: Chem.Mol) -> bool:
+    return any(a.HasProp("_displayLabel") for a in mol.GetAtoms())
+
+
 def _crop_svg_to_content(
     svg: str,
     drawer: rdMolDraw2D.MolDraw2DSVG,
     num_atoms: int,
     fill_container: bool = False,
+    include_labels: bool = False,
 ) -> str:
     """Crop viewBox to atom bounds. Set sizing per `fill_container` mode.
+
+    include_labels=True widens the box to every label glyph — needed for
+    abbreviation labels (CO₂H, Boc), which reach beyond SVG_PADDING.
 
     - fill_container=False (default): intrinsic pixel size matching atom extent.
       Use for reactions where consistent bond scale across molecules matters.
@@ -40,10 +61,16 @@ def _crop_svg_to_content(
     pts = [drawer.GetDrawCoords(i) for i in range(num_atoms)]
     xs = [p.x for p in pts]
     ys = [p.y for p in pts]
-    vx = min(xs) - SVG_PADDING
-    vy = min(ys) - SVG_PADDING
-    vw = max(xs) - min(xs) + 2 * SVG_PADDING
-    vh = max(ys) - min(ys) + 2 * SVG_PADDING
+    x0, x1 = min(xs) - SVG_PADDING, max(xs) + SVG_PADDING
+    y0, y1 = min(ys) - SVG_PADDING, max(ys) + SVG_PADDING
+    if include_labels:
+        # Kürzel ragen über die Atommitte ± SVG_PADDING hinaus („CO₂H“ am
+        # Rand verlor sein H, Bildschau E16). Nur dann aufziehen — ohne
+        # Kürzel bleibt der Zuschnitt byte-gleich (goldene SVGs).
+        for gx, gy in _label_glyph_points(svg):
+            x0, x1 = min(x0, gx - _LABEL_MARGIN), max(x1, gx + _LABEL_MARGIN)
+            y0, y1 = min(y0, gy - _LABEL_MARGIN), max(y1, gy + _LABEL_MARGIN)
+    vx, vy, vw, vh = x0, y0, x1 - x0, y1 - y0
 
     svg = re.sub(
         r"viewBox='[^']*'",
@@ -92,6 +119,17 @@ def render_svg(
 
     style: named preset from render_style.STYLES; "" keeps today's look.
     """
+    drawer, mol = _draw(mol, width, height, annotate_stereo, style)
+    return _crop_svg_to_content(
+        drawer.GetDrawingText(), drawer, mol.GetNumAtoms(), fill_container=fill_container,
+        include_labels=_has_abbreviation(mol),
+    )
+
+
+def _draw(
+    mol: Chem.Mol, width: int, height: int, annotate_stereo: bool, style: str
+) -> tuple[rdMolDraw2D.MolDraw2DSVG, Chem.Mol]:
+    """Zeichnet `mol` auf eine width×height-Fläche; gibt Drawer und Zeichen-Mol zurück."""
     drawer = rdMolDraw2D.MolDraw2DSVG(width, height)
     opts = drawer.drawOptions()
     opts.fixedBondLength = FIXED_BOND_LENGTH
@@ -101,12 +139,65 @@ def render_svg(
     if annotate_stereo:
         opts.addStereoAnnotation = True
     apply_style(opts, style)
+    # Metall-Tetrapyrrole: N–Metall-Bindungen nur in der Zeichnung (generator.py).
+    mol = coordination_drawing(mol)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
     drawer.FinishDrawing()
-    svg = drawer.GetDrawingText()
-    return _crop_svg_to_content(
-        svg, drawer, mol.GetNumAtoms(), fill_container=fill_container
+    return drawer, mol
+
+
+# Zeichenfläche je Stoff im Reaktions-Panel. Passt ein Molekül bei
+# FIXED_BOND_LENGTH nicht darauf, verwirft RDKit fixedBondLength und
+# verkleinert es — ein Porphyrin auf ~0,5, N-Labels 4,5 px (E16, 10.11.2026).
+REACTION_ENTRY_WIDTH = 250
+REACTION_ENTRY_HEIGHT = 200
+# Obergrenze fürs Vergrößern: ein Stoff, der selbst darauf nicht passt, ist
+# kein Reaktionsteilnehmer mehr, den man im Panel liest.
+_REACTION_ENTRY_MAX = 4000
+
+
+def _drawn_bond_length(drawer: rdMolDraw2D.MolDraw2DSVG, mol: Chem.Mol) -> float | None:
+    """Längste gezeichnete Bindung in Pixeln — None ohne Bindung."""
+    lengths = []
+    for bond in mol.GetBonds():
+        a = drawer.GetDrawCoords(bond.GetBeginAtomIdx())
+        b = drawer.GetDrawCoords(bond.GetEndAtomIdx())
+        lengths.append(((a.x - b.x) ** 2 + (a.y - b.y) ** 2) ** 0.5)
+    return max(lengths, default=None)
+
+
+def _fits_fixed_scale(drawer: rdMolDraw2D.MolDraw2DSVG, mol: Chem.Mol) -> bool:
+    """True, wenn RDKit im festen Maßstab gezeichnet hat (nichts verkleinert)."""
+    drawn = _drawn_bond_length(drawer, mol)
+    if drawn is None:
+        return True
+    # Die längste Bindung im 2D-Layout ist ≈ 1 Å, gezeichnet also ≈ FIXED_BOND_LENGTH;
+    # verkleinert RDKit, liegt sie deutlich darunter (Porphyrin: ~0,5).
+    conf = mol.GetConformer()
+    longest = max(
+        (conf.GetAtomPosition(b.GetBeginAtomIdx()) - conf.GetAtomPosition(b.GetEndAtomIdx())).Length()
+        for b in mol.GetBonds()
     )
+    return drawn >= 0.98 * FIXED_BOND_LENGTH * longest
+
+
+def render_reaction_entry(mol: Chem.Mol, style: str = "") -> str:
+    """SVG eines Reaktionsteilnehmers fürs Panel, immer im festen Bindungsmaßstab.
+
+    Passt der Stoff auf REACTION_ENTRY_WIDTH×HEIGHT, ist das Ergebnis byte-
+    gleich zu `render_svg(mol, 250, 200)`; sonst wird die Fläche verdoppelt,
+    bis er passt. Das SVG ist ohnehin auf die Atome zugeschnitten — die
+    Fläche bestimmt nur, ob RDKit verkleinern muss.
+    """
+    width, height = REACTION_ENTRY_WIDTH, REACTION_ENTRY_HEIGHT
+    while True:
+        drawer, drawn = _draw(mol, width, height, False, style)
+        if _fits_fixed_scale(drawer, drawn) or width * 2 > _REACTION_ENTRY_MAX:
+            return _crop_svg_to_content(
+                drawer.GetDrawingText(), drawer, drawn.GetNumAtoms(),
+                include_labels=_has_abbreviation(drawn),
+            )
+        width, height = width * 2, height * 2
 
 
 def extract_atom_data(
@@ -121,7 +212,9 @@ def extract_atom_data(
     opts.fixedBondLength = FIXED_BOND_LENGTH
     opts.clearBackground = False
     opts.bondLineWidth = BOND_LINE_WIDTH
-    rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol)
+    # Dasselbe Zeichen-Mol wie render_svg, sonst säßen die Tooltips woanders
+    # als die Atome. Ladung/H im Tooltip kommen aus `mol`, der Quelle.
+    rdMolDraw2D.PrepareAndDrawMolecule(drawer, coordination_drawing(mol))
     drawer.FinishDrawing()
 
     atoms = []
@@ -247,11 +340,9 @@ def reaction_payload(
     name: str = "",
 ) -> dict:
     """Build a reaction payload dict. Each entry in reactants/products is (mol, label)."""
-    r_width, r_height = 250, 200
-
     def _mol_entry(mol: Chem.Mol, label: str) -> dict:
         return {
-            "svg": render_svg(mol, width=r_width, height=r_height),
+            "svg": render_reaction_entry(mol),
             "name": label,
         }
 

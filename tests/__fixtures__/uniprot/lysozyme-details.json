@@ -1,0 +1,632 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"lysozyme\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "O75951",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme-like protein 6"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.17"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 148,
+    "molWeight": 16956
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "May be involved sperm-egg plasma membrane adhesion and fusion during fertilization (PubMed:28182716). Exhibits bacteriolytic activity in vitro against Micrococcus luteus and Staphylococcus aureus (PubMed:24013621, PubMed:28182716). Shows weak bacteriolytic activity against Gram-positive bacteria at physiological pH (PubMed:28182716). Bacteriolytic activity is pH-dependent, with a maximum at around pH 5.6 (PubMed:28182716)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P61626",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme C"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.17"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "1,4-beta-N-acetylmuramidase C"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 148,
+    "molWeight": 16537
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Lysozymes have primarily a bacteriolytic function; those in tissues and body fluids are associated with the monocyte-macrophage system and enhance the activity of immunoagents"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "133L"
+    },
+    {
+     "database": "PDB",
+     "id": "134L"
+    },
+    {
+     "database": "PDB",
+     "id": "1B5U"
+    },
+    {
+     "database": "PDB",
+     "id": "1B5V"
+    },
+    {
+     "database": "PDB",
+     "id": "1B5W"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P00709",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alpha-lactalbumin"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lactose synthase B protein"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lysozyme-like protein 7"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 142,
+    "molWeight": 16225
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Regulatory subunit of lactose synthase, changes the substrate specificity of galactosyltransferase in the mammary gland making glucose a good acceptor substrate for this enzyme. This enables LS to synthesize lactose, the major carbohydrate component of milk. In other tissues, galactosyltransferase transfers galactose onto the N-acetylglucosamine of the oligosaccharide chains in glycoproteins"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1A4V"
+    },
+    {
+     "database": "PDB",
+     "id": "1B9O"
+    },
+    {
+     "database": "PDB",
+     "id": "1CB3"
+    },
+    {
+     "database": "PDB",
+     "id": "1HML"
+    },
+    {
+     "database": "PDB",
+     "id": "3B0I"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9D925",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme-like protein 4"
+     },
+     "shortNames": [
+      {
+       "value": "Lysozyme-4"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 145,
+    "molWeight": 16198
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "May be involved in fertilization (PubMed:21444326). Has no detectable bacteriolytic in vitro (PubMed:21444326). Has no lysozyme activity in vitro (By similarity)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q8IXA5",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Sperm acrosome membrane-associated protein 3"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Cancer/testis antigen 54"
+      },
+      "shortNames": [
+       {
+        "value": "CT54"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Lysozyme-like acrosomal sperm-specific secretory protein ALLP-17"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lysozyme-like protein 3"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sperm lysozyme-like protein 1"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sperm protein reactive with antisperm antibodies"
+      },
+      "shortNames": [
+       {
+        "value": "Sperm protein reactive with ASA"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 215,
+    "molWeight": 23431
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Sperm surface membrane protein that may be involved in sperm-egg plasma membrane adhesion and fusion during fertilization. It could be a potential receptor for the egg oligosaccharide residue N-acetylglucosamine, which is present in the extracellular matrix over the egg plasma membrane. The processed form has no detectable bacteriolytic activity in vitro"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "O62415",
+   "organism": {
+    "scientificName": "Caenorhabditis elegans",
+    "taxonId": 6239
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Lysozyme-like protein 1"
+     }
+    }
+   },
+   "sequence": {
+    "length": 298,
+    "molWeight": 32379
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Involved in resistance to Gram-negative bacterium S.marcescens and to bacterium Gram-positive S.aureus infection"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P0AD59",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "taxonId": 83333
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Inhibitor of vertebrate lysozyme"
+     }
+    }
+   },
+   "sequence": {
+    "length": 157,
+    "molWeight": 16872
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Strong inhibitor of lysozyme C"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1GPQ"
+    },
+    {
+     "database": "PDB",
+     "id": "1XS0"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P08905",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme C-2"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.17"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "1,4-beta-N-acetylmuramidase C"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lysozyme C type M"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 148,
+    "molWeight": 16689
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Lysozymes have primarily a bacteriolytic function; those in tissues and body fluids are associated with the monocyte-macrophage system and enhance the activity of immunoagents. Lyz2 is active against a range of Gram-positive and Gram-negative bacteria. More effective than Lyz1 in killing Gram-negative bacteria. Lyz1 and Lyz2 are equally effective in killing Gram-positive bacteria"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1IVM"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P17897",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme C-1"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.17"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "1,4-beta-N-acetylmuramidase C"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lysozyme C type P"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 148,
+    "molWeight": 16794
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Lysozymes have primarily a bacteriolytic function; those in tissues and body fluids are associated with the monocyte-macrophage system and enhance the activity of immunoagents. Lyz1 is active against a range of Gram-positive and Gram-negative bacteria. Less effective than Lyz2 in killing Gram-negative bacteria. Lyz1 and Lyz2 are equally effective in killing Gram-positive bacteria"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q8T1G4",
+   "organism": {
+    "scientificName": "Dictyostelium discoideum",
+    "taxonId": 44689
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme A"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.n3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "1,4-beta-N-acetylmuramidase A"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 181,
+    "molWeight": 19526
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Has antibacterial activity against the Gram-positive bacteria B.subtilis, B.megaterium and M.luteus. No antibacterial activity detected against the Gram-positive bacterium S.aureus or against the Gram-negative bacterium E.coli. Lacks chitinase activity"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P04421",
+   "organism": {
+    "scientificName": "Bos taurus",
+    "taxonId": 9913
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysozyme C"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.2.1.17"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "1,4-beta-N-acetylmuramidase C"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 16373
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Lysozymes have primarily a bacteriolytic function; those in tissues and body fluids are associated with the monocyte-macrophage system and enhance the activity of immunoagents"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "O76357",
+   "organism": {
+    "scientificName": "Caenorhabditis elegans",
+    "taxonId": 6239
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Invertebrate-type lysozyme 3"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "27525822"
+        }
+       ],
+       "value": "3.2.1.17"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "1,4-beta-N-acetylmuramidase"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 139,
+    "molWeight": 14995
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Has bacteriolytic activity against Gram-positive bacteria. Plays a role in defense against bacterial pathogens. Involved in pharyngeal grinder function by enabling proper lysis of ingested bacteria"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  }
+ ]
+}

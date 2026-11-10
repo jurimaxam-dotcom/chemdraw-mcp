@@ -331,3 +331,78 @@ def test_error_messages_are_english(spectrum_type, peaks):
     message = str(error.value)
     for german in ("benötigt", "Spektrentyp", "erlaubt", "mindestens", "Alle"):
         assert german not in message
+
+
+# --- Kollisionsvermeidung der Bandenlabels (E17, 10.11.2026) -----------------
+# Zwei tiefe IR-Banden bei 1750 und 1690 cm⁻¹: der Boden-Clamp zog beide
+# Labels auf dieselbe Höhe, die 3-Ebenen-Staffelung half nicht — „1750“ und
+# „1690“ standen übereinander. Jetzt werden sich tatsächlich überschneidende
+# Labels nebeneinander gelegt und per Führungslinie an ihre Bande gebunden.
+# Ohne Überschneidung bleibt das Bild byteweise wie bisher.
+
+
+def _label_overlaps(spectrum_type, peaks):
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+
+    from chemdraw_tool import spectrum as sp
+
+    fig = sp._build_figure(spectrum_type, peaks, "", (10.0, 6.5))
+    FigureCanvasAgg(fig)
+    renderer = fig.canvas.get_renderer()
+    from matplotlib.text import Text
+
+    def text_box(ann):  # nur der Text — die Annotation-Box schlösse die Führungslinie ein
+        ann.update_positions(renderer)
+        return Text.get_window_extent(ann, renderer)
+
+    boxes = [text_box(t) for t in fig.axes[0].texts]
+    axes_box = fig.axes[0].get_window_extent(renderer)
+    inside = all(axes_box.x0 - 1 <= b.x0 and b.x1 <= axes_box.x1 + 1 for b in boxes)
+    return sum(a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i + 1 :]), inside
+
+
+CROWDED = {
+    "ir_1750_1690": ("ir", [{"position": 1750, "intensity": 0.9, "label": "1750"},
+                            {"position": 1690, "intensity": 0.9, "label": "1690"}]),
+    "ir_long_labels": ("ir", [{"position": 1750, "intensity": 0.9, "label": "C=O stretch 1750 cm-1"},
+                              {"position": 1500, "intensity": 0.9, "label": "C=C aromatic 1500 cm-1"}]),
+    "ir_four_close": ("ir", [{"position": p, "intensity": 0.8, "label": f"band {p}"}
+                             for p in (1750, 1720, 1690, 1660)]),
+    "nmr_five_close": ("nmr_1h", [{"position": p, "intensity": 1.0, "label": f"H{k} {p} ppm"}
+                                  for k, p in enumerate((7.3, 7.25, 7.2, 7.15, 7.1))]),
+}
+
+
+@pytest.mark.parametrize("case", sorted(CROWDED))
+def test_crowded_band_labels_do_not_overlap(case):
+    overlaps, inside = _label_overlaps(*CROWDED[case])
+    assert overlaps == 0
+    assert inside
+
+
+@pytest.mark.parametrize(
+    "spectrum_type, peaks",
+    [
+        ("ir", [{"position": 3300, "intensity": 0.6, "label": "O-H"},
+                {"position": 1715, "intensity": 0.9, "label": "C=O"},
+                {"position": 1200, "intensity": 0.7, "label": "C-O"}]),
+        ("nmr_1h", [{"position": 7.26, "intensity": 1, "label": "ArH"},
+                    {"position": 2.1, "intensity": 0.5, "label": "CH3"}]),
+    ],
+)
+def test_uncrowded_spectrum_is_byte_identical_without_avoidance(spectrum_type, peaks, monkeypatch):
+    import re
+
+    import matplotlib
+
+    from chemdraw_tool import spectrum as sp
+
+    monkeypatch.setitem(matplotlib.rcParams, "svg.hashsalt", "e17")  # feste Pfad-IDs
+
+    def svg():  # matplotlib stempelt die Uhrzeit ins SVG
+        return re.sub(r"<dc:date>[^<]*</dc:date>", "", sp.render_spectrum_svg(spectrum_type, peaks))
+
+    png, before = sp.render_spectrum_png(spectrum_type, peaks), svg()
+    monkeypatch.setattr(sp, "_spread_overlapping_labels", lambda *a, **k: None)
+    assert sp.render_spectrum_png(spectrum_type, peaks) == png
+    assert svg() == before

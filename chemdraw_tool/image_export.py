@@ -13,13 +13,15 @@ druckfertig fürs Protokoll.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from rdkit import Chem
+from rdkit import Chem, RDConfig
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Geometry import Point2D, Point3D
 
+from chemdraw_tool.generator import coordination_drawing
 from chemdraw_tool.render_style import apply_style, get_style
 from chemdraw_tool.svg_renderer import BOND_LINE_WIDTH
 
@@ -175,8 +177,103 @@ def _draw_molecule(
     # ohne BOND_LINE_WIDTH umzudefinieren — svg_renderer.render_svg wendet das
     # Preset an derselben Stelle an, deshalb bleibt die Parität je Stil erhalten.
     apply_style(drawer.drawOptions(), style)
+    # Gleiches Zeichen-Mol wie svg_renderer.render_svg (Metall-Tetrapyrrole).
+    mol = coordination_drawing(mol)
     rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol, legend=legend)
     drawer.FinishDrawing()
+
+
+# --- Legenden mit Nicht-ASCII-Zeichen ---------------------------------------
+# RDKit 2026.09 zerlegt Legendentext in Bytes und sucht je Byte eine Glyphe:
+# „Sirohäm“ kam als „Siroh  m“ an (PNG und SVG), obwohl der eingebaute Font
+# Telex ä/ö/ü/ß/é enthält. Für reine ASCII-Legenden bleibt alles bytegleich;
+# sonst reserviert RDKit die Zeile mit Leerzeichen (Struktur bleibt pixelgleich)
+# und der Text kommt hier dazu — PNG mit Telex über Pillow, SVG als <text>.
+# Ort und Größe misst eine Probe mit „H“ in derselben Zeichenfläche.
+
+
+def _rdkit_legend(legend: str) -> str:
+    return legend if legend.isascii() else " " * len(legend)
+
+
+def _rdkit_labels(labels):
+    return None if labels is None else [_rdkit_legend(label) for label in labels]
+
+
+@dataclass(frozen=True)
+class _LegendSlot:
+    center_x: float
+    baseline: float
+    cap_height: float
+
+
+def _legend_slots(draw, size, panel, count) -> list[_LegendSlot]:
+    """Legendenzeilen je Panel, gemessen am SVG-Pfad eines „H“."""
+    probe = rdMolDraw2D.MolDraw2DSVG(size[0], size[1], panel[0], panel[1])
+    draw(probe, ["H"] * count)
+    svg = probe.GetDrawingText()
+    points: list[list[tuple[float, float]]] = [[] for _ in range(count)]
+    for path in re.findall(r"<path class='legend' d='([^']*)'", svg):
+        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", path)]
+        for x, y in zip(numbers[::2], numbers[1::2]):
+            points[min(count - 1, int(x // panel[0]))].append((x, y))
+    slots = []
+    for index, pts in enumerate(points):
+        if not pts:
+            raise ValueError("legend probe drew nothing")
+        ys = [y for _, y in pts]
+        slots.append(
+            _LegendSlot(
+                center_x=index * panel[0] + panel[0] / 2,
+                baseline=max(ys),
+                cap_height=max(ys) - min(ys),
+            )
+        )
+    return slots
+
+
+def _legend_font_size(cap_height: float) -> float:
+    """Schriftgröße, bei der Telex' „H“ so hoch ist wie in RDKits Legende."""
+    from PIL import ImageFont
+
+    reference = ImageFont.truetype(_LEGEND_FONT, 100)
+    _, top, _, bottom = reference.getbbox("H", anchor="ls")
+    return 100 * cap_height / (bottom - top)
+
+
+_LEGEND_FONT = str(Path(RDConfig.RDDataDir) / "Fonts" / "Telex-Regular.ttf")
+
+
+def _overlay_png_legends(png: bytes, legends, slots, transparent: bool = False) -> bytes:
+    import io
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    image = Image.open(io.BytesIO(png)).convert("RGBA" if transparent else "RGB")
+    draw = ImageDraw.Draw(image)
+    for legend, slot in zip(legends, slots):
+        if legend.isascii():
+            continue
+        font = ImageFont.truetype(_LEGEND_FONT, max(1, round(_legend_font_size(slot.cap_height))))
+        draw.text((slot.center_x, slot.baseline), legend, fill=(0, 0, 0), font=font, anchor="ms")
+    out = io.BytesIO()
+    image.save(out, format="PNG")
+    return out.getvalue()
+
+
+def _overlay_svg_legends(svg: str, legends, slots) -> str:
+    from xml.sax.saxutils import escape
+
+    text_els = "".join(
+        f"<text class='legend' x='{slot.center_x:.1f}' y='{slot.baseline:.1f}' "
+        f"text-anchor='middle' font-family='sans-serif' "
+        f"font-size='{_legend_font_size(slot.cap_height):.1f}px' fill='#000000'>"
+        # Zeichenreferenzen: RDKit erklärt das SVG als iso-8859-1.
+        f"{escape(legend).encode('ascii', 'xmlcharrefreplace').decode()}</text>\n"
+        for legend, slot in zip(legends, slots)
+        if not legend.isascii()
+    )
+    return svg.replace("</svg>", text_els + "</svg>")
 
 
 def render_molecule_png(
@@ -188,8 +285,17 @@ def render_molecule_png(
     transparent: bool = False,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(*size)
-    _draw_molecule(drawer, mol, legend, annotate_stereo, style, transparent)
-    return drawer.GetDrawingText()
+    _draw_molecule(drawer, mol, _rdkit_legend(legend), annotate_stereo, style, transparent)
+    png = drawer.GetDrawingText()
+    if legend.isascii():
+        return png
+    slots = _legend_slots(
+        lambda probe, legends: _draw_molecule(probe, mol, legends[0], annotate_stereo, style),
+        size,
+        size,
+        1,
+    )
+    return _overlay_png_legends(png, [legend], slots, transparent)
 
 
 def render_molecule_svg(
@@ -200,8 +306,17 @@ def render_molecule_svg(
     style: str = "",
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(*size)
-    _draw_molecule(drawer, mol, legend, annotate_stereo, style)
-    return drawer.GetDrawingText()
+    _draw_molecule(drawer, mol, _rdkit_legend(legend), annotate_stereo, style)
+    svg = drawer.GetDrawingText()
+    if legend.isascii():
+        return svg
+    slots = _legend_slots(
+        lambda probe, legends: _draw_molecule(probe, mol, legends[0], annotate_stereo, style),
+        size,
+        size,
+        1,
+    )
+    return _overlay_svg_legends(svg, [legend], slots)
 
 
 @dataclass(frozen=True)
@@ -320,6 +435,10 @@ def _draw_reaction(
     Text selbst (SVG: <text>, PNG: Pillow).
     """
     arrow_length, _ = _reaction_metrics(style)
+    # Metall-Tetrapyrrole: Bindungen je Molekül, bevor sie ins kombinierte Mol
+    # gehen (dort gäbe es mehr als ein Metall, die Regel griffe nicht mehr).
+    reactants = [coordination_drawing(m) for m in reactants]
+    products = [coordination_drawing(m) for m in products]
     layout = _compose_reaction(reactants, products, arrow_length, coefficients)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
     if transparent:
@@ -491,10 +610,35 @@ def _mcs_diff_highlights(
     return atom_highlights, bond_highlights
 
 
-def _draw_comparison(drawer, mols, labels) -> None:
+def _comparison_highlights(mols: list[Chem.Mol]) -> tuple[list[list[int]], list[list[int]]]:
+    """Differenz-Hervorhebung des Vergleichs, ohne gemeinsames Metall.
+
+    Ein Metall als eigenes Fragment (PubChem-Häm) liegt nie im MCS und würde
+    rot, obwohl alle verglichenen Stoffe es tragen (etwa vier Fe-Tetrapyrrole).
+    Die MCS selbst läuft weiter auf den Quell-Mols — mit den gezeichneten
+    Metallbindungen lief sie bei vier Fe-Tetrapyrrolen in den 10-s-Timeout und
+    markierte danach fast alles (gemessen 10.11.2026).
+    """
+    from chemdraw_tool.generator import _is_metal
+
     atom_hl, bond_hl = _mcs_diff_highlights(mols)
+    shared = set.intersection(
+        *({a.GetAtomicNum() for a in m.GetAtoms() if _is_metal(a)} for m in mols)
+    ) if mols else set()
+    if not shared:
+        return atom_hl, bond_hl
+    return [
+        [i for i in hl if mol.GetAtomWithIdx(i).GetAtomicNum() not in shared]
+        for mol, hl in zip(mols, atom_hl)
+    ], bond_hl
+
+
+def _draw_comparison(drawer, mols, labels) -> None:
+    atom_hl, bond_hl = _comparison_highlights(mols)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
-    prepared = [rdMolDraw2D.PrepareMolForDrawing(m) for m in mols]
+    # Metall-Tetrapyrrole: Atome bleiben gleich, die Metallbindungen hängen
+    # hinten an — die Indizes der Hervorhebung bleiben gültig.
+    prepared = [rdMolDraw2D.PrepareMolForDrawing(coordination_drawing(m)) for m in mols]
     drawer.DrawMolecules(
         prepared,
         highlightAtoms=atom_hl,
@@ -510,8 +654,12 @@ def render_comparison_png(
     panel: tuple[int, int] = CMP_PANEL,
 ) -> bytes:
     drawer = rdMolDraw2D.MolDraw2DCairo(panel[0] * len(mols), panel[1], *panel)
-    _draw_comparison(drawer, mols, labels)
-    return drawer.GetDrawingText()
+    _draw_comparison(drawer, mols, _rdkit_labels(labels))
+    png = drawer.GetDrawingText()
+    if all(label.isascii() for label in labels or []):
+        return png
+    slots = _comparison_legend_slots(mols, panel)
+    return _overlay_png_legends(png, labels, slots)
 
 
 def render_comparison_svg(
@@ -520,5 +668,18 @@ def render_comparison_svg(
     panel: tuple[int, int] = CMP_PANEL,
 ) -> str:
     drawer = rdMolDraw2D.MolDraw2DSVG(panel[0] * len(mols), panel[1], *panel)
-    _draw_comparison(drawer, mols, labels)
-    return drawer.GetDrawingText()
+    _draw_comparison(drawer, mols, _rdkit_labels(labels))
+    svg = drawer.GetDrawingText()
+    if all(label.isascii() for label in labels or []):
+        return svg
+    slots = _comparison_legend_slots(mols, panel)
+    return _overlay_svg_legends(svg, labels, slots)
+
+
+def _comparison_legend_slots(mols, panel):
+    return _legend_slots(
+        lambda probe, legends: _draw_comparison(probe, mols, legends),
+        (panel[0] * len(mols), panel[1]),
+        panel,
+        len(mols),
+    )

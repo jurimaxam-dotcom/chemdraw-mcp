@@ -1,0 +1,865 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"insulin\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P01308",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin"
+     }
+    }
+   },
+   "sequence": {
+    "length": 110,
+    "molWeight": 11981
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Hormone secreted by pancreatic islet beta cells, that is the principal anabolic regulator of glucose, lipid, and protein metabolism and the central controller of blood glucose homeostasis (PubMed:32291281). Acts by binding to and activating the insulin receptor INSR, a receptor tyrosine kinase, triggering INSR autophosphorylation and recruitment/phosphorylation of insulin receptor substrate proteins IRS1 and IRS2, which activate the downstream PI3K/AKT and RAS/MAPK signaling cascades (PubMed:7983060). Through the PI3K/AKT pathway, stimulates glucose uptake into skeletal muscle and adipose tissue by promoting translocation of the glucose transporter GLUT4/SLC2A4 from intracellular storage vesicles to the plasma membrane (PubMed:9235985). In liver and muscle, promotes glycogen synthesis through AKT-mediated inhibitory phosphorylation of glycogen synthase kinase-3 (GSK3), thereby activating glycogen synthase (PubMed:7763247). In the liver, suppresses hepatic glucose production by inhibiting gluconeogenesis, in part through phosphorylation and exclusion of the FOXO1 transcription factor, which downregulates the gluconeogenic enzymes PEPCK and glucose-6-phosphatase (PubMed:12754525). In adipose tissue, promotes lipogenesis and potently suppresses lipolysis, reducing the flux of free fatty acids and glycerol to the liver and thereby further restraining hepatic gluconeogenesis (PubMed:15113941)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1A7F"
+    },
+    {
+     "database": "PDB",
+     "id": "1AI0"
+    },
+    {
+     "database": "PDB",
+     "id": "1AIY"
+    },
+    {
+     "database": "PDB",
+     "id": "1B9E"
+    },
+    {
+     "database": "PDB",
+     "id": "1BEN"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P06213",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor"
+     },
+     "shortNames": [
+      {
+       "value": "IR"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1382,
+    "molWeight": 156333
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Receptor tyrosine kinase which mediates the pleiotropic actions of insulin. Binding of insulin leads to phosphorylation of several intracellular substrates, including, insulin receptor substrates (IRS1, 2, 3, 4), SHC, GAB1, CBL and other signaling intermediates. Each of these phosphorylated proteins serve as docking proteins for other signaling proteins that contain Src-homology-2 domains (SH2 domain) that specifically recognize different phosphotyrosine residues, including the p85 regulatory subunit of PI3K and SHP2. Phosphorylation of IRSs proteins lead to the activation of two main signaling pathways: the PI3K-AKT/PKB pathway, which is responsible for most of the metabolic actions of insulin, and the Ras-MAPK pathway, which regulates expression of some genes and cooperates with the PI3K pathway to control cell growth and differentiation. Binding of the SH2 domains of PI3K to phosphotyrosines on IRS1 leads to the activation of PI3K and the generation of phosphatidylinositol-(3, 4, 5)-triphosphate (PIP3), a lipid second messenger, which activates several PIP3-dependent serine/threonine kinases, such as PDPK1 and subsequently AKT/PKB. The net effect of this pathway is to produce a translocation of the glucose transporter SLC2A4/GLUT4 from cytoplasmic vesicles to the cell membrane to facilitate glucose transport. Moreover, upon insulin stimulation, activated AKT/PKB is responsible for: anti-apoptotic effect of insulin by inducing phosphorylation of BAD; regulates the expression of gluconeogenic and lipogenic enzymes by controlling the activity of the winged helix or forkhead (FOX) class of transcription factors. Another pathway regulated by PI3K-AKT/PKB activation is mTORC1 signaling pathway which regulates cell growth and metabolism and integrates signals from insulin. AKT mediates insulin-stimulated protein synthesis by phosphorylating TSC2 thereby activating mTORC1 pathway. The Ras/RAF/MAP2K/MAPK pathway is mainly involved in mediating cell growth, survival and cellular differentiation of insulin. Phosphorylated IRS1 recruits GRB2/SOS complex, which triggers the activation of the Ras/RAF/MAP2K/MAPK pathway. In addition to binding insulin, the insulin receptor can bind insulin-like growth factors (IGFI and IGFII). Isoform Short has a higher affinity for IGFII binding. When present in a hybrid receptor with IGF1R, binds IGF1. PubMed:12138094 shows that hybrid receptors composed of IGF1R and INSR isoform Long are activated with a high affinity by IGF1, with low affinity by IGF2 and not significantly activated by insulin, and that hybrid receptors composed of IGF1R and INSR isoform Short are activated by IGF1, IGF2 and insulin. In contrast, PubMed:16831875 shows that hybrid receptors composed of IGF1R and INSR isoform Long and hybrid receptors composed of IGF1R and INSR isoform Short have similar binding characteristics, both bind IGF1 and have a low affinity for insulin. In adipocytes, inhibits lipolysis (By similarity)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1GAG"
+    },
+    {
+     "database": "PDB",
+     "id": "1I44"
+    },
+    {
+     "database": "PDB",
+     "id": "1IR3"
+    },
+    {
+     "database": "PDB",
+     "id": "1IRK"
+    },
+    {
+     "database": "PDB",
+     "id": "1P14"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9Y5Q6",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like peptide INSL5"
+     },
+     "shortNames": [
+      {
+       "value": "Insulin-like peptide 5"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 135,
+    "molWeight": 15333
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "May have a role in gut contractility or in thymic development and regulation. Activates RXFP4 with high potency and appears to be the endogenous ligand for this receptor"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "2K1V"
+    },
+    {
+     "database": "PDB",
+     "id": "2KBC"
+    },
+    {
+     "database": "PDB",
+     "id": "7YJ4"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P51460",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like 3"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Leydig insulin-like peptide"
+      },
+      "shortNames": [
+       {
+        "value": "Ley-I-L"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Relaxin-like factor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 131,
+    "molWeight": 14502
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Seems to play a role in testicular function. May be a trophic hormone with a role in testicular descent in fetal life. Is a ligand for LGR8 receptor"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "2H8B"
+    },
+    {
+     "database": "PDB",
+     "id": "2K6T"
+    },
+    {
+     "database": "PDB",
+     "id": "2K6U"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P14735",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "20364150"
+       }
+      ],
+      "value": "Insulin-degrading enzyme"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "10684867"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "17051221"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "21098034"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "2293021"
+        }
+       ],
+       "value": "3.4.24.56"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Abeta-degrading protease"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "20364150"
+        }
+       ],
+       "value": "Insulin protease"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "20364150"
+         }
+        ],
+        "value": "Insulinase"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "20364150"
+        }
+       ],
+       "value": "Insulysin"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1019,
+    "molWeight": 117968
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Plays a role in the cellular breakdown of insulin, APP peptides, IAPP peptides, natriuretic peptides, glucagon, bradykinin, kallidin, and other peptides, and thereby plays a role in intercellular peptide signaling (PubMed:10684867, PubMed:17051221, PubMed:17613531, PubMed:18986166, PubMed:19321446, PubMed:21098034, PubMed:2293021, PubMed:23922390, PubMed:24847884, PubMed:26394692, PubMed:26968463, PubMed:29596046). Substrate binding induces important conformation changes, making it possible to bind and degrade larger substrates, such as insulin (PubMed:23922390, PubMed:26394692, PubMed:29596046). Contributes to the regulation of peptide hormone signaling cascades and regulation of blood glucose homeostasis via its role in the degradation of insulin, glucagon and IAPP (By similarity). Plays a role in the degradation and clearance of APP-derived amyloidogenic peptides that are secreted by neurons and microglia (Probable) (PubMed:26394692, PubMed:9830016). Degrades the natriuretic peptides ANP, BNP and CNP, inactivating their ability to raise intracellular cGMP (PubMed:21098034). Also degrades an aberrant frameshifted 40-residue form of NPPA (fsNPPA) which is associated with familial atrial fibrillation in heterozygous patients (PubMed:21098034). Involved in antigen processing. Produces both the N terminus and the C terminus of MAGEA3-derived antigenic peptide (EVDPIGHLY) that is presented to cytotoxic T lymphocytes by MHC class I"
+      }
+     ]
+    },
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "(Microbial infection) The membrane-associated isoform acts as an entry receptor for varicella-zoster virus (VZV)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "2G47"
+    },
+    {
+     "database": "PDB",
+     "id": "2G48"
+    },
+    {
+     "database": "PDB",
+     "id": "2G49"
+    },
+    {
+     "database": "PDB",
+     "id": "2G54"
+    },
+    {
+     "database": "PDB",
+     "id": "2G56"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P14616",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor-related protein"
+     },
+     "shortNames": [
+      {
+       "value": "IRR"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "IR-related receptor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1297,
+    "molWeight": 143720
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Receptor with tyrosine-protein kinase activity. Functions as a pH sensing receptor which is activated by increased extracellular pH. Activates an intracellular signaling pathway that involves IRS1 and AKT1/PKB"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "7PL4"
+    },
+    {
+     "database": "PDB",
+     "id": "7TYJ"
+    },
+    {
+     "database": "PDB",
+     "id": "7TYK"
+    },
+    {
+     "database": "PDB",
+     "id": "7TYM"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P08069",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like growth factor 1 receptor"
+     },
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Insulin-like growth factor I receptor"
+      },
+      "shortNames": [
+       {
+        "value": "IGF-I receptor"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1367,
+    "molWeight": 154793
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Receptor tyrosine kinase which mediates actions of insulin-like growth factor 1 (IGF1). Binds IGF1 with high affinity and IGF2 and insulin (INS) with a lower affinity. The activated IGF1R is involved in cell growth and survival control. IGF1R is crucial for tumor transformation and survival of malignant cell. Ligand binding activates the receptor kinase, leading to receptor autophosphorylation, and tyrosines phosphorylation of multiple substrates, that function as signaling adapter proteins including, the insulin-receptor substrates (IRS1/2), Shc and 14-3-3 proteins. Phosphorylation of IRSs proteins lead to the activation of two main signaling pathways: the PI3K-AKT/PKB pathway and the Ras-MAPK pathway. The result of activating the MAPK pathway is increased cellular proliferation, whereas activating the PI3K pathway inhibits apoptosis and stimulates protein synthesis. Phosphorylated IRS1 can activate the 85 kDa regulatory subunit of PI3K (PIK3R1), leading to activation of several downstream substrates, including protein AKT/PKB. AKT phosphorylation, in turn, enhances protein synthesis through mTOR activation and triggers the antiapoptotic effects of IGFIR through phosphorylation and inactivation of BAD. In parallel to PI3K-driven signaling, recruitment of Grb2/SOS by phosphorylated IRS1 or Shc leads to recruitment of Ras and activation of the ras-MAPK pathway. In addition to these two main signaling pathways IGF1R signals also through the Janus kinase/signal transducer and activator of transcription pathway (JAK/STAT). Phosphorylation of JAK proteins can lead to phosphorylation/activation of signal transducers and activators of transcription (STAT) proteins. In particular activation of STAT3, may be essential for the transforming activity of IGF1R. The JAK/STAT pathway activates gene transcription and may be responsible for the transforming activity. JNK kinases can also be activated by the IGF1R. IGF1 exerts inhibiting activities on JNK activation via phosphorylation and inhibition of MAP3K5/ASK1, which is able to directly associate with the IGF1R"
+      }
+     ]
+    },
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "When present in a hybrid receptor with INSR, binds IGF1. PubMed:12138094 shows that hybrid receptors composed of IGF1R and INSR isoform Long are activated with a high affinity by IGF1, with low affinity by IGF2 and not significantly activated by insulin, and that hybrid receptors composed of IGF1R and INSR isoform Short are activated by IGF1, IGF2 and insulin. In contrast, PubMed:16831875 shows that hybrid receptors composed of IGF1R and INSR isoform Long and hybrid receptors composed of IGF1R and INSR isoform Short have similar binding characteristics, both bind IGF1 and have a low affinity for insulin"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1IGR"
+    },
+    {
+     "database": "PDB",
+     "id": "1JQH"
+    },
+    {
+     "database": "PDB",
+     "id": "1K3A"
+    },
+    {
+     "database": "PDB",
+     "id": "1M7N"
+    },
+    {
+     "database": "PDB",
+     "id": "1P4O"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9Y4H2",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor substrate 2"
+     },
+     "shortNames": [
+      {
+       "value": "IRS-2"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1338,
+    "molWeight": 137334
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Signaling adapter protein that participates in the signal transduction from two prominent receptor tyrosine kinases, insulin receptor/INSR and insulin-like growth factor I receptor/IGF1R (PubMed:25879670). Plays therefore an important role in development, growth, glucose homeostasis as well as lipid metabolism (PubMed:24616100). Upon phosphorylation by the insulin receptor, functions as a signaling scaffold that propagates insulin action through binding to SH2 domain-containing proteins including the p85 regulatory subunit of PI3K, NCK1, NCK2, GRB2 or SHP2 (PubMed:15316008, PubMed:19109239). Recruitment of GRB2 leads to the activation of the guanine nucleotide exchange factor SOS1 which in turn triggers the Ras/Raf/MEK/MAPK signaling cascade (By similarity). Activation of the PI3K/AKT pathway is responsible for most of insulin metabolic effects in the cell, and the Ras/Raf/MEK/MAPK is involved in the regulation of gene expression and in cooperation with the PI3K pathway regulates cell growth and differentiation. Acts a positive regulator of the Wnt/beta-catenin signaling pathway through suppression of DVL2 autophagy-mediated degradation leading to cell proliferation (PubMed:24616100). Plays a role in cell cycle progression by promoting a robust spindle assembly checkpoint (SAC) during M-phase (PubMed:32554797). In macrophages, IL4-induced tyrosine phosphorylation of IRS2 leads to the recruitment and activation of phosphoinositide 3-kinase (PI3K) (PubMed:19109239)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "3FQW"
+    },
+    {
+     "database": "PDB",
+     "id": "3FQX"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P35568",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor substrate 1"
+     },
+     "shortNames": [
+      {
+       "value": "IRS-1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1242,
+    "molWeight": 131591
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Signaling adapter protein that participates in the signal transduction from two prominent receptor tyrosine kinases, insulin receptor/INSR and insulin-like growth factor I receptor/IGF1R (PubMed:7541045, PubMed:33991522, PubMed:38625937). Plays therefore an important role in development, growth, glucose homeostasis as well as lipid metabolism (PubMed:19639489). Upon phosphorylation by the insulin receptor, functions as a signaling scaffold that propagates insulin action through binding to SH2 domain-containing proteins including the p85 regulatory subunit of PI3K, NCK1, NCK2, GRB2 or SHP2 (PubMed:11171109, PubMed:8265614). Recruitment of GRB2 leads to the activation of the guanine nucleotide exchange factor SOS1 which in turn triggers the Ras/Raf/MEK/MAPK signaling cascade (By similarity). Activation of the PI3K/AKT pathway is responsible for most of insulin metabolic effects in the cell, and the Ras/Raf/MEK/MAPK is involved in the regulation of gene expression and in cooperation with the PI3K pathway regulates cell growth and differentiation. Acts a positive regulator of the Wnt/beta-catenin signaling pathway through suppression of DVL2 autophagy-mediated degradation leading to cell proliferation (PubMed:24616100)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1IRS"
+    },
+    {
+     "database": "PDB",
+     "id": "1K3A"
+    },
+    {
+     "database": "PDB",
+     "id": "1QQG"
+    },
+    {
+     "database": "PDB",
+     "id": "2Z8C"
+    },
+    {
+     "database": "PDB",
+     "id": "5U1M"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "O15503",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "12202038"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "9268630"
+       }
+      ],
+      "value": "Insulin-induced gene 1 protein"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "12202038"
+        }
+       ],
+       "value": "INSIG-1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 277,
+    "molWeight": 29987
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Oxysterol-binding protein that mediates feedback control of cholesterol synthesis by controlling both endoplasmic reticulum to Golgi transport of SCAP and degradation of HMGCR (PubMed:12202038, PubMed:12535518, PubMed:16168377, PubMed:16399501, PubMed:16606821, PubMed:32322062). Acts as a negative regulator of cholesterol biosynthesis by mediating the retention of the SCAP-SREBP complex in the endoplasmic reticulum, thereby blocking the processing of sterol regulatory element-binding proteins (SREBPs) SREBF1/SREBP1 and SREBF2/SREBP2 (PubMed:12202038, PubMed:16399501, PubMed:26311497, PubMed:32322062). Binds oxysterol, including 25-hydroxycholesterol, regulating interaction with SCAP and retention of the SCAP-SREBP complex in the endoplasmic reticulum (PubMed:32322062). In presence of oxysterol, interacts with SCAP, retaining the SCAP-SREBP complex in the endoplasmic reticulum, thereby preventing SCAP from escorting SREBF1/SREBP1 and SREBF2/SREBP2 to the Golgi (PubMed:15899885, PubMed:32322062). Sterol deprivation or phosphorylation by PCK1 reduce oxysterol-binding, disrupting the interaction between INSIG1 and SCAP, thereby promoting Golgi transport of the SCAP-SREBP complex, followed by processing and nuclear translocation of SREBF1/SREBP1 and SREBF2/SREBP2 (PubMed:26311497, PubMed:32322062). Also regulates cholesterol synthesis by regulating degradation of HMGCR: initiates the sterol-mediated ubiquitin-mediated endoplasmic reticulum-associated degradation (ERAD) of HMGCR via recruitment of the reductase to the ubiquitin ligases AMFR/gp78 and/or RNF139 (PubMed:12535518, PubMed:16168377, PubMed:22143767). Also regulates degradation of SOAT2/ACAT2 when the lipid levels are low: initiates the ubiquitin-mediated degradation of SOAT2/ACAT2 via recruitment of the ubiquitin ligases AMFR/gp78 (PubMed:28604676)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "4J81"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9Y5U4",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "12242332"
+       }
+      ],
+      "value": "Insulin-induced gene 2 protein"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "12242332"
+        }
+       ],
+       "value": "INSIG-2"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 225,
+    "molWeight": 24778
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Oxysterol-binding protein that mediates feedback control of cholesterol synthesis by controlling both endoplasmic reticulum to Golgi transport of SCAP and degradation of HMGCR (PubMed:12242332, PubMed:16606821, PubMed:32322062). Acts as a negative regulator of cholesterol biosynthesis by mediating the retention of the SCAP-SREBP complex in the endoplasmic reticulum, thereby blocking the processing of sterol regulatory element-binding proteins (SREBPs) SREBF1/SREBP1 and SREBF2/SREBP2 (PubMed:32322062). Binds oxysterol, including 22-hydroxycholesterol, 24-hydroxycholesterol, 25-hydroxycholesterol and 27-hydroxycholesterol, regulating interaction with SCAP and retention of the SCAP-SREBP complex in the endoplasmic reticulum (PubMed:17428920, PubMed:26160948, PubMed:32322062). In presence of oxysterol, interacts with SCAP, retaining the SCAP-SREBP complex in the endoplasmic reticulum, thereby preventing SCAP from escorting SREBF1/SREBP1 and SREBF2/SREBP2 to the Golgi (PubMed:32322062). Sterol deprivation or phosphorylation by PCK1 reduce oxysterol-binding, disrupting the interaction between INSIG2 and SCAP, thereby promoting Golgi transport of the SCAP-SREBP complex, followed by processing and nuclear translocation of SREBF1/SREBP1 and SREBF2/SREBP2 (PubMed:32322062). Also regulates cholesterol synthesis by regulating degradation of HMGCR: initiates the sterol-mediated ubiquitin-mediated endoplasmic reticulum-associated degradation (ERAD) of HMGCR via recruitment of the reductase to the ubiquitin ligase RNF139 (PubMed:16606821, PubMed:22143767)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "4J82"
+    },
+    {
+     "database": "PDB",
+     "id": "6M49"
+    },
+    {
+     "database": "PDB",
+     "id": "7ETW"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P01344",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:5466"
+       }
+      ],
+      "value": "Insulin-like growth factor 2"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "6382022"
+        }
+       ],
+       "value": "Insulin-like growth factor II"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "3881277"
+         }
+        ],
+        "value": "IGF-II"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Somatomedin-A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "T3M-11-derived growth factor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20140
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "The insulin-like growth factors possess growth-promoting activity (By similarity). Major fetal growth hormone in mammals. Plays a key role in regulating fetoplacental development. IGF2 is influenced by placental lactogen. Also involved in tissue differentiation. In adults, involved in glucose metabolism in adipose tissue, skeletal muscle and liver (Probable). Acts as a ligand for integrin which is required for IGF2 signaling (PubMed:28873464). Positively regulates myogenic transcription factor MYOD1 function by facilitating the recruitment of transcriptional coactivators, thereby controlling muscle terminal differentiation (By similarity). Inhibits myoblast differentiation and modulates metabolism via increasing the mitochondrial respiration rate (By similarity)"
+      }
+     ]
+    },
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Preptin undergoes glucose-mediated co-secretion with insulin, and acts as a physiological amplifier of glucose-mediated insulin secretion. Exhibits osteogenic properties by increasing osteoblast mitogenic activity through phosphoactivation of MAPK1 and MAPK3"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1IGL"
+    },
+    {
+     "database": "PDB",
+     "id": "2L29"
+    },
+    {
+     "database": "PDB",
+     "id": "2V5P"
+    },
+    {
+     "database": "PDB",
+     "id": "3E4Z"
+    },
+    {
+     "database": "PDB",
+     "id": "3KR3"
+    }
+   ]
+  }
+ ]
+}

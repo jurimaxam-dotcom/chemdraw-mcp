@@ -1,0 +1,5530 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P38571",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "commonName": "Human",
+    "taxonId": 9606,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Primates",
+     "Haplorrhini",
+     "Catarrhini",
+     "Hominidae",
+     "Homo"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysosomal acid lipase/cholesteryl ester hydrolase"
+     },
+     "shortNames": [
+      {
+       "value": "Acid cholesteryl ester hydrolase"
+      },
+      {
+       "value": "LAL"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15269241"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "7204383"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "8112342"
+        }
+       ],
+       "value": "3.1.1.13"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Cholesteryl esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Diacylglycerol lipase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lipase A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sterol esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol lipase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "LIPA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "6V7N",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.62 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=22-399"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 399,
+    "molWeight": 45419
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Primates",
+     "commonName": "primates",
+     "taxonId": 9443,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Haplorrhini",
+     "taxonId": 376913,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Simiiformes",
+     "taxonId": 314293,
+     "rank": "infraorder",
+     "hidden": true
+    },
+    {
+     "scientificName": "Catarrhini",
+     "taxonId": 9526,
+     "rank": "parvorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hominoidea",
+     "commonName": "apes",
+     "taxonId": 314295,
+     "rank": "superfamily",
+     "hidden": true
+    },
+    {
+     "scientificName": "Hominidae",
+     "commonName": "great apes",
+     "taxonId": 9604,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Homininae",
+     "taxonId": 207598,
+     "rank": "subfamily",
+     "hidden": true
+    },
+    {
+     "scientificName": "Homo",
+     "taxonId": 9605,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000013C851"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P37957",
+   "organism": {
+    "scientificName": "Bacillus subtilis (strain 168)",
+    "taxonId": 224308,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Bacillaceae",
+     "Bacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lipase EstA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Lipase A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "11029590"
+         },
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "8396026"
+         }
+        ],
+        "value": "3.1.1.3"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol lipase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "estA"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1320940"
+        }
+       ],
+       "value": "lip"
+      },
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "11029590"
+        }
+       ],
+       "value": "lipA"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "BSU02700"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1I6W",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=32-212"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1ISP",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.30 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=32-212"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1R4Z",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=32-212"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1R50",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.45 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=32-212"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1T2N",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=32-212"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 212,
+    "molWeight": 22791
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillaceae",
+     "taxonId": 186817,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus",
+     "taxonId": 1386,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus subtilis group",
+     "taxonId": 653685,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis",
+     "taxonId": 1423,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis subsp. subtilis",
+     "taxonId": 135461,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000005FEB5"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q64194",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "commonName": "Rat",
+    "taxonId": 10116,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Glires",
+     "Rodentia",
+     "Myomorpha",
+     "Muroidea",
+     "Muridae",
+     "Murinae",
+     "Rattus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysosomal acid lipase/cholesteryl ester hydrolase"
+     },
+     "shortNames": [
+      {
+       "value": "Acid cholesteryl ester hydrolase"
+      },
+      {
+       "value": "LAL"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P38571"
+        }
+       ],
+       "value": "3.1.1.13"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Cholesteryl esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Diacylglycerol lipase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lipase A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sterol esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol lipase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "Lipa"
+     },
+     "synonyms": [
+      {
+       "value": "Lal"
+      },
+      {
+       "value": "Lip1"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 397,
+    "molWeight": 45186
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Glires",
+     "commonName": "Rodents and rabbits",
+     "taxonId": 314147,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rodentia",
+     "commonName": "rodents",
+     "taxonId": 9989,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Myomorpha",
+     "commonName": "mice and others",
+     "taxonId": 1963758,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muroidea",
+     "taxonId": 337687,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muridae",
+     "taxonId": 10066,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Murinae",
+     "taxonId": 39107,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rattus",
+     "commonName": "rats",
+     "taxonId": 10114,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E679"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q9Z0M5",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "commonName": "Mouse",
+    "taxonId": 10090,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Glires",
+     "Rodentia",
+     "Myomorpha",
+     "Muroidea",
+     "Muridae",
+     "Murinae",
+     "Mus",
+     "Mus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysosomal acid lipase/cholesteryl ester hydrolase"
+     },
+     "shortNames": [
+      {
+       "value": "Acid cholesteryl ester hydrolase"
+      },
+      {
+       "value": "LAL"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P38571"
+        }
+       ],
+       "value": "3.1.1.13"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Cholesteryl esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Diacylglycerol lipase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lipase A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sterol esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol lipase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "Lipa"
+     },
+     "synonyms": [
+      {
+       "value": "Lip1"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 397,
+    "molWeight": 45325
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Glires",
+     "commonName": "Rodents and rabbits",
+     "taxonId": 314147,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rodentia",
+     "commonName": "rodents",
+     "taxonId": 9989,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Myomorpha",
+     "commonName": "mice and others",
+     "taxonId": 1963758,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muroidea",
+     "taxonId": 337687,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muridae",
+     "taxonId": 10066,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Murinae",
+     "taxonId": 39107,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mus",
+     "commonName": "mice",
+     "taxonId": 10088,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mus",
+     "taxonId": 862507,
+     "rank": "subgenus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000022434"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P60716",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "taxonId": 83333,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15157071"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "synonyms": [
+      {
+       "value": "lip"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "b0628"
+      },
+      {
+       "value": "JW0623"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 321,
+    "molWeight": 36072
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E6C7"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0DUB8",
+   "organism": {
+    "scientificName": "Burkholderia plantarii",
+    "taxonId": 41899,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Betaproteobacteria",
+     "Burkholderiales",
+     "Burkholderiaceae",
+     "Burkholderia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1476423"
+       }
+      ],
+      "value": "Triacylglycerol lipase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "1476423"
+        }
+       ],
+       "value": "3.1.1.3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1476423"
+        }
+       ],
+       "value": "Extracellular lipase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "lip"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1476423"
+        }
+       ],
+       "value": "lipA"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1TAH",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D=41-358"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2ES4",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.85 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=40-358"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 358,
+    "molWeight": 36929
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Betaproteobacteria",
+     "commonName": "b-proteobacteria",
+     "taxonId": 28216,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiales",
+     "taxonId": 80840,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiaceae",
+     "taxonId": 119060,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderia",
+     "taxonId": 32008,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000002CA53"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P22088",
+   "organism": {
+    "scientificName": "Burkholderia cepacia",
+    "commonName": "Pseudomonas cepacia",
+    "taxonId": 292,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Betaproteobacteria",
+     "Burkholderiales",
+     "Burkholderiaceae",
+     "Burkholderia",
+     "Burkholderia cepacia complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1987151"
+       }
+      ],
+      "value": "Triacylglycerol lipase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "1856176"
+        },
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "7522571"
+        }
+       ],
+       "value": "3.1.1.3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1987151"
+        }
+       ],
+       "value": "Extracellular lipase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "lip"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1987151"
+        }
+       ],
+       "value": "lipA"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1HQD",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.30 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=45-364"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1OIL",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.10 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=45-364"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1YS1",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.10 A"
+      },
+      {
+       "key": "Chains",
+       "value": "X=45-364"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1YS2",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "X=45-364"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2LIP",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.10 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=45-364"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 364,
+    "molWeight": 37494
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Betaproteobacteria",
+     "commonName": "b-proteobacteria",
+     "taxonId": 28216,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiales",
+     "taxonId": 80840,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiaceae",
+     "taxonId": 119060,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderia",
+     "taxonId": 32008,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderia cepacia complex",
+     "taxonId": 87882,
+     "rank": "no rank",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E722"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P26876",
+   "organism": {
+    "scientificName": "Pseudomonas aeruginosa (strain ATCC 15692 / DSM 22644 / CIP 104116 / JCM 14847 / LMG 12228 / 1C / PRS 101 / PAO1)",
+    "taxonId": 208964,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Pseudomonadales",
+     "Pseudomonadaceae",
+     "Pseudomonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1748875"
+       }
+      ],
+      "value": "Triacylglycerol lipase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "1748875"
+        }
+       ],
+       "value": "3.1.1.3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1748875"
+        }
+       ],
+       "value": "Extracellular lipase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1512563"
+        }
+       ],
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "lip"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1512563"
+        }
+       ],
+       "value": "lipA"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "PA2862"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1EX9",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.54 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=27-311"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 311,
+    "molWeight": 32723
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadales",
+     "taxonId": 72274,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadaceae",
+     "taxonId": 135621,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonas",
+     "taxonId": 286,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonas aeruginosa group",
+     "taxonId": 136841,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Pseudomonas aeruginosa",
+     "taxonId": 287,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000031212"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P31837",
+   "organism": {
+    "scientificName": "Phanerodontia chrysosporium",
+    "commonName": "White-rot fungus",
+    "synonyms": [
+     "Sporotrichum pruinosum"
+    ],
+    "taxonId": 2822231,
+    "lineage": [
+     "Eukaryota",
+     "Fungi",
+     "Dikarya",
+     "Basidiomycota",
+     "Agaricomycotina",
+     "Agaricomycetes",
+     "Polyporales",
+     "Phanerochaetaceae",
+     "Phanerodontia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ligninase A"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "3240864"
+        }
+       ],
+       "value": "1.11.1.14"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Diarylpropane peroxidase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lignin peroxidase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "LIPA"
+     },
+     "synonyms": [
+      {
+       "value": "LPOB"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 372,
+    "molWeight": 39394
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Fungi",
+     "taxonId": 4751,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dikarya",
+     "taxonId": 451864,
+     "rank": "subkingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Basidiomycota",
+     "commonName": "basidiomycete fungi",
+     "taxonId": 5204,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Agaricomycotina",
+     "taxonId": 5302,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Agaricomycetes",
+     "taxonId": 155619,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Agaricomycetes incertae sedis",
+     "taxonId": 355688,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Polyporales",
+     "taxonId": 5303,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Phanerochaetaceae",
+     "taxonId": 396331,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Phanerodontia",
+     "taxonId": 2492674,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E687"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0CT91",
+   "organism": {
+    "scientificName": "Sodiomyces alcalophilus",
+    "commonName": "Acremonium alcalophilum",
+    "taxonId": 398408,
+    "lineage": [
+     "Eukaryota",
+     "Fungi",
+     "Dikarya",
+     "Ascomycota",
+     "Pezizomycotina",
+     "Sordariomycetes",
+     "Hypocreomycetidae",
+     "Glomerellales",
+     "Plectosphaerellaceae",
+     "Sodiomyces"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "23915965"
+       }
+      ],
+      "value": "Lipase A"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "23915965"
+        }
+       ],
+       "value": "3.1.1.3"
+      },
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "23915965"
+        }
+       ],
+       "value": "3.1.1.72"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Acetylxylan esterase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "23915965"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orfNames": [
+      {
+       "value": "fgenesh2_kg.3_#_445_#_Contig6955"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 416,
+    "molWeight": 45645
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Fungi",
+     "taxonId": 4751,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dikarya",
+     "taxonId": 451864,
+     "rank": "subkingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Ascomycota",
+     "commonName": "ascomycete fungi",
+     "taxonId": 4890,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "saccharomyceta",
+     "taxonId": 716545,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Pezizomycotina",
+     "taxonId": 147538,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "leotiomyceta",
+     "taxonId": 716546,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "sordariomyceta",
+     "taxonId": 715989,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Sordariomycetes",
+     "taxonId": 147550,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hypocreomycetidae",
+     "taxonId": 222543,
+     "rank": "subclass",
+     "hidden": false
+    },
+    {
+     "scientificName": "Glomerellales",
+     "taxonId": 1028384,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Plectosphaerellaceae",
+     "taxonId": 1033978,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sodiomyces",
+     "taxonId": 1401161,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00077B6CAA"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q4R4S5",
+   "organism": {
+    "scientificName": "Macaca fascicularis",
+    "commonName": "Crab-eating macaque",
+    "synonyms": [
+     "Cynomolgus monkey"
+    ],
+    "taxonId": 9541,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Primates",
+     "Haplorrhini",
+     "Catarrhini",
+     "Cercopithecidae",
+     "Cercopithecinae",
+     "Macaca"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Lysosomal acid lipase/cholesteryl ester hydrolase"
+     },
+     "shortNames": [
+      {
+       "value": "Acid cholesteryl ester hydrolase"
+      },
+      {
+       "value": "LAL"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P38571"
+        }
+       ],
+       "value": "3.1.1.13"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Cholesteryl esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Diacylglycerol lipase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Lipase A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Sterol esterase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Triacylglycerol lipase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "LIPA"
+     },
+     "orfNames": [
+      {
+       "value": "QflA-10548"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 399,
+    "molWeight": 45480
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Primates",
+     "commonName": "primates",
+     "taxonId": 9443,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Haplorrhini",
+     "taxonId": 376913,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Simiiformes",
+     "taxonId": 314293,
+     "rank": "infraorder",
+     "hidden": true
+    },
+    {
+     "scientificName": "Catarrhini",
+     "taxonId": 9526,
+     "rank": "parvorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cercopithecoidea",
+     "taxonId": 314294,
+     "rank": "superfamily",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cercopithecidae",
+     "commonName": "Old World monkeys",
+     "taxonId": 9527,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cercopithecinae",
+     "taxonId": 9528,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Macaca",
+     "commonName": "macaques",
+     "taxonId": 9539,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00005308DF"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0DUB9",
+   "organism": {
+    "scientificName": "Pseudarthrobacter phenanthrenivorans",
+    "commonName": "Arthrobacter phenanthrenivorans",
+    "taxonId": 361575,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Micrococcales",
+     "Micrococcaceae",
+     "Pseudarthrobacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Triacylglycerol lipase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "7786905"
+        }
+       ],
+       "value": "3.1.1.3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "Extracellular lipase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "lip"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "7786905"
+        }
+       ],
+       "value": "lipA"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1CVL",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.60 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-319"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1QGE",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "D=1-222, E=223-319"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 319,
+    "molWeight": 33092
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Micrococcales",
+     "taxonId": 85006,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Micrococcaceae",
+     "taxonId": 1268,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudarthrobacter",
+     "taxonId": 1742993,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000110E0B"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "O32129",
+   "organism": {
+    "scientificName": "Bacillus subtilis (strain 168)",
+    "taxonId": 224308,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Bacillaceae",
+     "Bacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "synonyms": [
+      {
+       "value": "yutB"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "BSU32330"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 298,
+    "molWeight": 33921
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillaceae",
+     "taxonId": 186817,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus",
+     "taxonId": 1386,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus subtilis group",
+     "taxonId": 653685,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis",
+     "taxonId": 1423,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis subsp. subtilis",
+     "taxonId": 135461,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E6C0"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P15493",
+   "organism": {
+    "scientificName": "Vibrio cholerae serotype O1 (strain ATCC 39315 / El Tor Inaba N16961)",
+    "taxonId": 243277,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Vibrionales",
+     "Vibrionaceae",
+     "Vibrio"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "9371455"
+       }
+      ],
+      "value": "Triacylglycerol lipase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "3.1.1.3"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "Extracellular lipase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P26876"
+        }
+       ],
+       "value": "Triacylglycerol ester hydrolase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "2162464"
+       }
+      ],
+      "value": "hlyC"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "9371455"
+        }
+       ],
+       "value": "lipA"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "VC_A0221"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 312,
+    "molWeight": 32995
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrionales",
+     "taxonId": 135623,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrionaceae",
+     "taxonId": 641,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrio",
+     "taxonId": 662,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrio cholerae",
+     "taxonId": 666,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Vibrio cholerae O1",
+     "taxonId": 127906,
+     "rank": "serogroup",
+     "hidden": true
+    },
+    {
+     "scientificName": "Vibrio cholerae serotype O1 biovar El Tor",
+     "taxonId": 686,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E729"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P9WK91",
+   "organism": {
+    "scientificName": "Mycobacterium tuberculosis (strain ATCC 25618 / H37Rv)",
+    "taxonId": 83332,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Mycobacteriales",
+     "Mycobacteriaceae",
+     "Mycobacterium",
+     "Mycobacterium tuberculosis complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "26841001"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "26841001"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Rv2218"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "MTCY190.29"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "5EXI",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.28 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-311"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "5EXJ",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.64 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-311"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "5EXK",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.86 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/C/E/G/I/K=1-311"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 311,
+    "molWeight": 34719
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriales",
+     "taxonId": 85007,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriaceae",
+     "taxonId": 1762,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium",
+     "taxonId": 1763,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium tuberculosis complex",
+     "taxonId": 77643,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium tuberculosis",
+     "taxonId": 1773,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E6CB"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q86G50",
+   "organism": {
+    "scientificName": "Toxoplasma gondii",
+    "taxonId": 5811,
+    "lineage": [
+     "Eukaryota",
+     "Sar",
+     "Alveolata",
+     "Apicomplexa",
+     "Conoidasida",
+     "Coccidia",
+     "Eucoccidiorida",
+     "Eimeriorina",
+     "Sarcocystidae",
+     "Toxoplasma"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_03123"
+       }
+      ],
+      "value": "Lipoyl synthase, apicoplast"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        },
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "25433292"
+        }
+       ],
+       "value": "Lipoate synthase"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_03123"
+         }
+        ],
+        "value": "LS"
+       },
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_03123"
+         }
+        ],
+        "value": "Lip-syn"
+       },
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "25433292"
+         }
+        ],
+        "value": "TgLipA"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_03123"
+       }
+      ],
+      "value": "lipA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 543,
+    "molWeight": 58706
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sar",
+     "commonName": "SAR supergroup",
+     "taxonId": 2698737,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alveolata",
+     "commonName": "alveolates",
+     "taxonId": 33630,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Apicomplexa",
+     "commonName": "apicomplexans",
+     "taxonId": 5794,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Conoidasida",
+     "taxonId": 1280412,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Coccidia",
+     "taxonId": 5796,
+     "rank": "subclass",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eucoccidiorida",
+     "taxonId": 75739,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eimeriorina",
+     "taxonId": 423054,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcocystidae",
+     "taxonId": 5809,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Toxoplasma",
+     "taxonId": 5810,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000018D030"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q97U63",
+   "organism": {
+    "scientificName": "Saccharolobus solfataricus (strain ATCC 35092 / DSM 1617 / JCM 11322 / P2)",
+    "commonName": "Sulfolobus solfataricus",
+    "taxonId": 273057,
+    "lineage": [
+     "Archaea",
+     "Thermoproteota",
+     "Thermoprotei",
+     "Sulfolobales",
+     "Sulfolobaceae",
+     "Saccharolobus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "16500612"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "16500612"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "16500612"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "SSO3158"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 285,
+    "molWeight": 32111
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Archaea",
+     "taxonId": 2157,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermoproteati",
+     "taxonId": 1783275,
+     "rank": "kingdom",
+     "hidden": true
+    },
+    {
+     "scientificName": "Thermoproteota",
+     "taxonId": 28889,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermoprotei",
+     "taxonId": 183924,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sulfolobales",
+     "taxonId": 2281,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sulfolobaceae",
+     "taxonId": 118883,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Saccharolobus",
+     "taxonId": 2100760,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Saccharolobus solfataricus",
+     "synonyms": [
+      "Sulfolobus solfataricus"
+     ],
+     "taxonId": 2287,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000012E6DD"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q9L2J6",
+   "organism": {
+    "scientificName": "Streptomyces coelicolor (strain ATCC BAA-471 / A3(2) / M145)",
+    "taxonId": 100226,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Kitasatosporales",
+     "Streptomycetaceae",
+     "Streptomyces",
+     "Streptomyces albidoflavus group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "38867087"
+       }
+      ],
+      "value": "Bis(hydroxyethyl) terephthalate hydrolase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "38867087"
+        }
+       ],
+       "value": "BHET hydrolase"
+      },
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "38867087"
+        }
+       ],
+       "value": "BHETase"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "38867087"
+        }
+       ],
+       "value": "3.1.1.-"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "38867087"
+        }
+       ],
+       "value": "BHET-degrading enzyme"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "38867087"
+        }
+       ],
+       "value": "BHET-degrading esterase A"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "38867087"
+       }
+      ],
+      "value": "bdeA"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "38867087"
+        },
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "EMBL",
+         "id": "CAB69685.1"
+        }
+       ],
+       "value": "lipA"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "EMBL",
+         "id": "CAB69685.1"
+        }
+       ],
+       "value": "SCO0713"
+      }
+     ],
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "EMBL",
+         "id": "CAB69685.1"
+        }
+       ],
+       "value": "SCF42.23c"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 310,
+    "molWeight": 32665
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Kitasatosporales",
+     "taxonId": 85011,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptomycetaceae",
+     "taxonId": 2062,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptomyces",
+     "taxonId": 1883,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptomyces albidoflavus group",
+     "taxonId": 1477431,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptomyces coelicolor",
+     "taxonId": 1902,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00000DB7E9"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q8IDQ0",
+   "organism": {
+    "scientificName": "Plasmodium falciparum (isolate 3D7)",
+    "taxonId": 36329,
+    "lineage": [
+     "Eukaryota",
+     "Sar",
+     "Alveolata",
+     "Apicomplexa",
+     "Aconoidasida",
+     "Haemosporida",
+     "Plasmodiidae",
+     "Plasmodium",
+     "Laverania"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_03123"
+       }
+      ],
+      "value": "Lipoyl synthase, apicoplast"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        }
+       ],
+       "value": "Lipoate synthase"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_03123"
+         }
+        ],
+        "value": "LS"
+       },
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_03123"
+         }
+        ],
+        "value": "Lip-syn"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_03123"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_03123"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orfNames": [
+      {
+       "value": "MAL13P1.220"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 415,
+    "molWeight": 47593
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sar",
+     "commonName": "SAR supergroup",
+     "taxonId": 2698737,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alveolata",
+     "commonName": "alveolates",
+     "taxonId": 33630,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Apicomplexa",
+     "commonName": "apicomplexans",
+     "taxonId": 5794,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Aconoidasida",
+     "taxonId": 422676,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Haemosporida",
+     "commonName": "haemosporidians",
+     "taxonId": 5819,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Plasmodiidae",
+     "taxonId": 1639119,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Plasmodium",
+     "taxonId": 5820,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Laverania",
+     "taxonId": 418107,
+     "rank": "subgenus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Plasmodium falciparum",
+     "commonName": "malaria parasite P. falciparum",
+     "taxonId": 5833,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000085503"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A0LTD9",
+   "organism": {
+    "scientificName": "Acidothermus cellulolyticus (strain ATCC 43068 / DSM 8971 / 11B)",
+    "taxonId": 351607,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Acidothermales",
+     "Acidothermaceae",
+     "Acidothermus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Acel_0926"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 323,
+    "molWeight": 36163
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acidothermales",
+     "taxonId": 1643683,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acidothermaceae",
+     "taxonId": 85032,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acidothermus",
+     "taxonId": 28048,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acidothermus cellulolyticus",
+     "taxonId": 28049,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00006BFA32"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A0M4W4",
+   "organism": {
+    "scientificName": "Christiangramia forsetii (strain DSM 17595 / CGMCC 1.15422 / KT0803)",
+    "commonName": "Gramella forsetii",
+    "taxonId": 411154,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Bacteroidota",
+     "Flavobacteriia",
+     "Flavobacteriales",
+     "Flavobacteriaceae",
+     "Christiangramia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "GFO_2703"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 293,
+    "molWeight": 33330
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "FCB group",
+     "taxonId": 1783270,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteroidota/Chlorobiota group",
+     "taxonId": 68336,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteroidota",
+     "commonName": "CFB group bacteria",
+     "taxonId": 976,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Flavobacteriia",
+     "taxonId": 117743,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Flavobacteriales",
+     "taxonId": 200644,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Flavobacteriaceae",
+     "taxonId": 49546,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Christiangramia",
+     "taxonId": 292691,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Christiangramia forsetii",
+     "taxonId": 411153,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000E67FD4"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1B1T3",
+   "organism": {
+    "scientificName": "Paracoccus denitrificans (strain Pd 1222)",
+    "taxonId": 318586,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rhodobacterales",
+     "Paracoccaceae",
+     "Paracoccus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Pden_1376"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 315,
+    "molWeight": 34980
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacterales",
+     "taxonId": 204455,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccaceae",
+     "taxonId": 31989,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccus",
+     "taxonId": 265,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccus denitrificans",
+     "taxonId": 266,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000555613"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1SZ17",
+   "organism": {
+    "scientificName": "Psychromonas ingrahamii (strain DSM 17664 / CCUG 51855 / 37)",
+    "taxonId": 357804,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Alteromonadales",
+     "Psychromonadaceae",
+     "Psychromonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Ping_3030"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 322,
+    "molWeight": 36030
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alteromonadales",
+     "taxonId": 135622,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Psychromonadaceae",
+     "taxonId": 267894,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Psychromonas",
+     "taxonId": 67572,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Psychromonas ingrahamii",
+     "taxonId": 357794,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000D80AE1"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1UIB4",
+   "organism": {
+    "scientificName": "Mycobacterium sp. (strain KMS)",
+    "taxonId": 189918,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Mycobacteriales",
+     "Mycobacteriaceae",
+     "Mycobacterium"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Mkms_3378"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 325,
+    "molWeight": 36147
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriales",
+     "taxonId": 85007,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriaceae",
+     "taxonId": 1762,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium",
+     "taxonId": 1763,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "unclassified Mycobacterium",
+     "taxonId": 2642494,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000D57E38"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1WT98",
+   "organism": {
+    "scientificName": "Halorhodospira halophila (strain DSM 244 / SL1)",
+    "commonName": "Ectothiorhodospira halophila (strain DSM 244 / SL1)",
+    "taxonId": 349124,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Chromatiales",
+     "Ectothiorhodospiraceae",
+     "Halorhodospira"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "Lipoyl synthase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "2.8.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lip-syn"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000255",
+          "source": "HAMAP-Rule",
+          "id": "MF_00206"
+         }
+        ],
+        "value": "LS"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoate synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Lipoic acid synthase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00206"
+        }
+       ],
+       "value": "Sulfur insertion protein LipA"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00206"
+       }
+      ],
+      "value": "lipA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Hhal_0116"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 334,
+    "molWeight": 36704
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chromatiales",
+     "taxonId": 135613,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Ectothiorhodospiraceae",
+     "commonName": "purple sulfur bacteria",
+     "taxonId": 72276,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Halorhodospira",
+     "taxonId": 85108,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Halorhodospira halophila",
+     "synonyms": [
+      "Ectothiorhodospira halophila"
+     ],
+     "taxonId": 1053,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00006B5118"
+   }
+  }
+ ]
+}

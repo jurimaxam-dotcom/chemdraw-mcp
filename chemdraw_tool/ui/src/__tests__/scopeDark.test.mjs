@@ -12,17 +12,18 @@ import ScopeView from "../ScopeView";
 import { render } from "./harness.mjs";
 
 const CSS = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
-// Alle Umfärbe-Regeln für schwarze Striche/Glyphen, beide Dunkel-Varianten.
+// Alle Umfärbe-Regeln für schwarze Striche/Glyphen (auch #191919 der Kürzel), beide Dunkel-Varianten.
 const SELECTORS = [
-  ...CSS.matchAll(/^\s*(:root[^{\n]*svg:not\([^{\n]*?(?:path|text)\[[^\]]*000000[^\]]*\])\s*\{/gm),
+  ...CSS.matchAll(/^\s*(:root[^{\n]*svg:not\([^{\n]*?(?:path|text)\[[^\]]*(?:000000|191919)[^\]]*\])\s*\{/gm),
 ].map((m) => m[1].trim());
 
 const FIGURE =
   '<svg viewBox="0 0 10 10"><path style="stroke:#000000" d="M0 0L5 5"/>' +
-  '<path fill="#000000" d="M1 1"/><text fill="#000000">R</text></svg>';
+  '<path fill="#000000" d="M1 1"/><text fill="#000000">R</text>' +
+  '<path style="stroke:#191919" d="M0 5L5 5"/><path fill="#191919" d="M2 2"/></svg>';
 
 test("Umfärbe-Selektoren gefunden (sonst prüft der Test nichts)", () => {
-  assert.ok(SELECTORS.length >= 6, `nur ${SELECTORS.length} Selektoren`);
+  assert.ok(SELECTORS.length >= 10, `nur ${SELECTORS.length} Selektoren`);
 });
 
 test("Scope-SVG trägt die Ausnahme-Klasse und bleibt von der Dunkel-Umfärbung unberührt", () => {

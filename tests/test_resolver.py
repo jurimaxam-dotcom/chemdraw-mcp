@@ -285,6 +285,56 @@ def test_name_with_locants_never_cross_checked(_opsin, mock_pubchem):
     mock_pubchem.assert_not_called()
 
 
+# --- Drehsinn-Präfix (E17, 10.11.2026) ----------------------------------------
+# „(-)-menthol“ kam flach heraus (drei offene Zentren), „L-menthol“ nicht.
+# Ursache: OPSIN liest den Drehsinn nicht (er folgt nicht aus der Struktur) und
+# baut flaches Menthol; die Klammer im Namen zählte als systematisches Merkmal,
+# also fragte _opsin_checked PubChem gar nicht erst. PubChem kennt „(-)-menthol“
+# mit allen drei Zentren. Antworten gemessen 10.11.2026 (OPSIN | PubChem).
+_DREHSINN = {
+    "(-)-menthol": ("C1(CC(C(CC1)C(C)C)O)C", "C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C",
+                    "NOOLISFMXDJSKH-KXUCPTDWSA-N"),
+    "(−)-menthol": ("C1(CC(C(CC1)C(C)C)O)C", "C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C",
+                    "NOOLISFMXDJSKH-KXUCPTDWSA-N"),
+    "(+)-menthol": ("C1(CC(C(CC1)C(C)C)O)C", "C[C@H]1CC[C@@H]([C@H](C1)O)C(C)C",
+                    "NOOLISFMXDJSKH-AEJSXWLSSA-N"),
+    "(-)-nicotine": ("N1=CC(C2N(C)CCC2)=CC=C1", "CN1CCC[C@H]1C2=CN=CC=C2",
+                     "SNICXCGAKADSCV-JTQLQIEISA-N"),
+    "(+)-camphor": ("C12(C(=O)CC(CC1)C2(C)C)C", "C[C@@]12CC[C@@H](C1(C)C)CC2=O",
+                    "DSSYKIVIOFKYAU-XCBNKYQSSA-N"),
+}
+
+
+@pytest.mark.parametrize("name", sorted(_DREHSINN))
+def test_rotation_sign_takes_pubchems_defined_stereo(name):
+    opsin, pubchem, key = _DREHSINN[name]
+    resolve_name.cache_clear()
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+        smiles = resolve_name(name)
+    assert Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)) == key
+
+
+def test_racemate_and_bare_name_stay_flat():
+    """(±) ist der Racemat — flach ist richtig; ein nackter Name bleibt bei OPSIN."""
+    flat = "C1(CC(C(CC1)C(C)C)O)C"
+    for name in ("(±)-menthol", "menthol"):
+        resolve_name.cache_clear()
+        with patch("chemdraw_tool.resolver._opsin_lookup", return_value=flat), \
+             patch("chemdraw_tool.resolver._pubchem_lookup",
+                   return_value="C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C"):
+            assert resolve_name(name) == flat
+
+
+def test_rotation_sign_never_changes_the_skeleton():
+    """Liefert PubChem ein anderes Gerüst, bleibt OPSINs Lesart (die Klammer
+    ist dann ein systematischer Name wie bisher)."""
+    resolve_name.cache_clear()
+    with patch("chemdraw_tool.resolver._opsin_lookup", return_value="CC(O)CC"), \
+         patch("chemdraw_tool.resolver._pubchem_lookup", return_value="C[C@H](O)c1ccccc1"):
+        assert resolve_name("(-)-butan-2-ol") == "CC(O)CC"
+
+
 # Nachbesserung (Codex-Abnahme 06.11.): PubChem führt "sodium phosphate" als
 # Hydrogenphosphat-Anion (Ladung −2) und Silikate in anderer Stöchiometrie.
 # Gemessen an 22 Fällen: jede Salz-Kippe ist kohlenstofffrei, jeder Gewinn

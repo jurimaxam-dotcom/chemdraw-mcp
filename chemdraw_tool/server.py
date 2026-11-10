@@ -19,6 +19,7 @@ from chemdraw_tool.condition_text import subscript_formulas
 from chemdraw_tool.databases import (
     _get_cid,
     chebi_lookup,
+    is_antibody_name,
     kegg_compound,
     kegg_find,
     order_ghs_sources,
@@ -30,6 +31,8 @@ from chemdraw_tool.databases import (
     pubchem_synonyms,
     pubchem_synonyms_by_inchikey,
     pubchem_synonyms_by_smiles,
+    uniprot_entry,
+    uniprot_protein,
     uniprot_search,
 )
 from chemdraw_tool.generator import (
@@ -67,6 +70,9 @@ from chemdraw_tool.payloads import (
     Molecule3DPayload,
     MoleculePayload,
     PlotPayload,
+    Protein3DPayload,
+    ProteinPayload,
+    ProteinView,
     ReactionPayload,
     ReactionSpec,
     ScopeEntry,
@@ -77,8 +83,16 @@ from chemdraw_tool.payloads import (
     TlcLane,
     TlcPayload,
 )
+from chemdraw_tool.privacy import HOW_TO_ENABLE, smiles_lookup_enabled
 from chemdraw_tool.render_style import condense_groups, get_style
-from chemdraw_tool.resolver import NameResolutionError, resolve
+from chemdraw_tool.resolver import (
+    NOTATION_HINTS,
+    NameResolutionError,
+    parse_smiles_input,
+    resolve,
+    structure_notation,
+    unreadable_reason,
+)
 from chemdraw_tool.spectrum import (
     SPECTRUM_TYPES,
     render_spectrum_png,
@@ -97,6 +111,7 @@ SCOPE_DIR = Path.home() / "ChemDraw-Output" / "scope"
 ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
 PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
 THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
+PROTEIN_DIR = Path.home() / "ChemDraw-Output" / "proteine"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -328,7 +343,8 @@ _MVP_SUMMARIES = {
 
 Writes PNG/SVG files and an interactive panel (properties, functional
 groups). A bare compound name ("caffeine") also
-means this tool, and so does a question about why one compound behaves as it
+means this tool — a protein or antibody name gives its cartoon
+(PDB/AlphaFold) — and so does a question about why one compound behaves as it
 does (acidity, solubility) — the answer is in its structure.
 A Fischer or Haworth projection of a sugar or amino acid, a chair
 conformation of a cyclohexane or pyranose ring, or a drawing with all H
@@ -494,11 +510,11 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
     gleiche Struktur, gleicher InChIKey, aber ohne CAS. Ueber den InChIKey
     steht der Stammdatensatz an erster Stelle.
 
-    Der SMILES-Weg bleibt als Rueckfallebene: Kennt PubChem den Schluessel
-    nicht (Tautomer-Normalisierung, exotische Strukturen), ist ein Datensatz
-    gleicher Struktur besser als gar keiner. CHEMDRAW_NO_SMILES_UPLOAD=1
-    schaltet nur diesen Rueckfall ab (das SMILES selbst geht dann nie hinaus);
-    der InChIKey-Weg bleibt. Gelesen bei jedem Aufruf, nicht beim Import.
+    Der SMILES-Weg ist seit E12 (Jay 10.11.2026, „Weg 1“) Opt-in: Kennt
+    PubChem den Schlüssel nicht, geht das SMILES nur mit CHEMDRAW_SMILES_LOOKUP=1
+    (Häkchen in den Extension-Einstellungen) per POST hinaus — sonst bleibt der
+    Datensatz leer. Eine unveröffentlichte Struktur verlässt den Rechner so nie,
+    nur ihr InChIKey. Gelesen bei jedem Aufruf (chemdraw_tool.privacy).
     """
     key = None
     mol = Chem.MolFromSmiles(smiles)
@@ -514,15 +530,28 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
             cas, _ = pubchem_synonyms_by_inchikey(key)
             return props, cas
 
-    if _smiles_upload_disabled():
+    if not smiles_lookup_enabled():
         return {}, None
     return (pubchem_properties_by_smiles(smiles) or {}), pubchem_synonyms_by_smiles(smiles)[0]
 
 
-def _smiles_upload_disabled() -> bool:
-    """CHEMDRAW_NO_SMILES_UPLOAD gesetzt (1/true/yes/on)? Leer oder 0 = Standard."""
-    value = os.environ.get("CHEMDRAW_NO_SMILES_UPLOAD", "").strip().lower()
-    return value in ("1", "true", "yes", "on")
+# Warum CAS/logP fehlen, wenn der Schutz den SMILES-Rückfall unterbindet (E12).
+# Ein Satz im properties-dict: kein neuer Payload-Typ, das Panel zeigt ihn nicht,
+# das Modell liest ihn mit.
+_LOOKUP_NOTE = (
+    "PubChem returned no record for this structure's InChIKey (or could not be "
+    "reached), so CAS, logP, TPSA and H-bond counts are missing; formula and molar "
+    "mass were computed locally. The structure itself was not sent. To also search "
+    f"PubChem by SMILES, {HOW_TO_ENABLE}."
+)
+
+
+def _local_formula_mw(mol: Chem.Mol) -> dict[str, str]:
+    """Formel und Molmasse aus der Struktur selbst — reine Arithmetik, kein Netz."""
+    return {
+        "formula": rdMolDescriptors.CalcMolFormula(mol),
+        "mw": f"{Descriptors.MolWt(mol):.2f} g/mol",
+    }
 
 
 def _enrich_properties(smiles: str) -> dict[str, str]:
@@ -548,8 +577,8 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
     if "formula" not in properties or "mw" not in properties:
         mol = Chem.MolFromSmiles(smiles)
         if mol is not None:
-            properties.setdefault("formula", rdMolDescriptors.CalcMolFormula(mol))
-            properties.setdefault("mw", f"{Descriptors.MolWt(mol):.2f} g/mol")
+            for key, value in _local_formula_mw(mol).items():
+                properties.setdefault(key, value)
     if (v := props_raw.get("XLogP")) is not None:
         properties["logP"] = str(v)
     if (v := props_raw.get("TPSA")) is not None:
@@ -572,6 +601,8 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
         properties["cid"] = str(v)
     if cas:
         properties["cas"] = cas
+    if not props_raw and not smiles_lookup_enabled():
+        properties["lookupNote"] = _LOOKUP_NOTE
     return properties
 
 
@@ -666,6 +697,13 @@ def _slugify(text: str) -> str:
         head = text.encode()[:_SLUG_MAX_BYTES].decode("utf-8", "ignore").rstrip("-")
         text = f"{head}-{tag}"
     return text or "molecule"
+
+
+def _shown_name(query: str) -> str:
+    """Legende/Dateiname einer Eingabe: "peptide:YGGFM" ohne Präfix (E17), sonst unverändert."""
+    from chemdraw_tool import peptide
+
+    return peptide.display_name(query) or query
 
 
 def _molecule_slug(display_name: str, smiles: str) -> str:
@@ -767,7 +805,7 @@ def _projection_views(mol: Chem.Mol) -> list[str]:
         return [
             name
             for name, applies in (
-                ("fischer", projection.fischer_rows),
+                ("fischer", projection.fischer_source),
                 ("haworth", projection.haworth_ring),
                 ("chair", projection.chair_ring),
             )
@@ -812,7 +850,7 @@ def _view_drawing(
         )
         return svg, extract_atom_data(mol_h)
     drawers = {
-        "fischer": projection.fischer_svg,
+        "fischer": projection.fischer_view_svg,
         "haworth": projection.haworth_svg,
         "chair": projection.chair_svg,
     }
@@ -825,6 +863,258 @@ def _view_drawing(
     if not svg:
         raise ValueError(f"'{query}' has no {view} view.")
     return svg, []
+
+
+# Größengrenze für Namen (E6, gemessen 10.11.2026 an 1000×800-px-Bildern):
+# Palytoxin (186 Schweratome), Bivalirudin (155) und 20-Reste-Peptide (~170)
+# bleiben lesbar; Calcitonin (239), Glucagon (246) und Insulin (404) nicht —
+# die Schrift fällt auf RDKits Mindestgröße, Ketten überlagern sich. Die Grenze
+# liegt in der Lücke. Ein selbst geliefertes SMILES oder eine Sequenz wird
+# weiter gezeichnet: Der Nutzer hat die Struktur bewusst gewählt, und die
+# Panel-Knöpfe rufen generate_molecule mit dem SMILES erneut auf.
+MAX_NAMED_HEAVY_ATOMS = 200
+_PEPTIDE_RESIDUE = Chem.MolFromSmarts("[NX3][CX4][CX3](=O)")
+
+
+def _too_large_error(query: str, mol: Chem.Mol) -> NameResolutionError:
+    local = _local_formula_mw(mol)
+    residues = len({m[1] for m in mol.GetSubstructMatches(_PEPTIDE_RESIDUE)})
+    shown = query.strip()
+    what = f" — a peptide of {residues} amino-acid residues" if residues >= 3 else ""
+    mw = float(local["mw"].split()[0])
+    message = (
+        f"'{shown}' resolves to {local['formula']} ({mw:.1f} g/mol, "
+        f"{mol.GetNumHeavyAtoms()} heavy atoms){what}. A skeletal formula above "
+        f"{MAX_NAMED_HEAVY_ATOMS} heavy atoms is no longer legible, so nothing was "
+        f"drawn. For a protein's data (function, UniProt entry) call lookup with "
+        f'topic "biochem". To draw a stretch of a peptide chain, pass it as a '
+        f'sequence ("Gly-Ile-Val" or "peptide:GIV", up to 20 residues). If the '
+        f"full formula is really needed, pass its SMILES — a supplied structure is "
+        f"drawn without this limit."
+    )
+    return NameResolutionError(message, name=query, kind="too_large", attempts=[])
+
+
+# --- Proteine als Rückgratspur (E8, 10.11.2026) --------------------------------
+# Ein Protein- oder Antikörpername scheitert im Resolver mit kind="protein" und
+# trägt die gewählte ProteinChoice (protein_catalog). generate_molecule und
+# generate_3d machen daraus eine Erfolgsantwort mit eigenem Payload-type —
+# Claude Desktop öffnet für einen fehlgeschlagenen Aufruf kein Panel (gemessen).
+# Dieselbe Wahl liefert Meldung, Datenblatt (lookup biochem) und Bild.
+
+_AF_CITATION = (
+    "Model: AlphaFold DB {id} (CC BY 4.0) — Jumper et al. 2021, Nature 596:583; "
+    "Varadi et al. 2024, Nucleic Acids Res. 52:D368"
+)
+
+
+def _load_protein_structure(choice):
+    """Rückgrat zur Wahl laden; füllt bei "best" PDB-ID/Kette bzw. AlphaFold nach."""
+    from chemdraw_tool import protein_structure as ps
+
+    ref = choice.structure
+    if ref.source == "pdb":
+        return ps.pdb_backbone(ref.pdb, list(ref.chains) or None)
+    backbone, chain = ps.structure_for_accession(choice.accession[0])
+    if backbone.source == "alphafold":
+        ref.source, ref.pdb, ref.chains = "alphafold", "", ()
+    else:
+        ref.source, ref.pdb, ref.chains = "pdb", backbone.identifier, (chain,)
+    return backbone
+
+
+def _protein_citation(choice, backbone) -> str:
+    if backbone.source == "alphafold":
+        cite = _AF_CITATION.format(id=backbone.identifier)
+    else:
+        cite = f"Structure: PDB {backbone.identifier} (wwPDB, CC0)"
+    if choice.accession:
+        cite += f" · UniProt {', '.join(choice.accession)} (CC BY 4.0)"
+    return cite
+
+
+def _ligand_summary(view) -> str:
+    """„heme b (HEM) ×4, Zn²⁺“ — Reihenfolge wie in der Datei."""
+    counts: dict[tuple[str, str], int] = {}
+    for lig in view.ligands:
+        counts[(lig.name, lig.code)] = counts.get((lig.name, lig.code), 0) + 1
+    out = []
+    for (name, code), k in counts.items():
+        label = name if len(code) <= 2 or name == code else f"{name} ({code})"
+        out.append(label + (f" ×{k}" if k > 1 else ""))
+    return ", ".join(out)
+
+
+def _protein_text(name: str, choice, backbone, view) -> str:
+    """Was das Modell liest: Protein, Rückgratspur, Quelle, Alternativen."""
+    from chemdraw_tool.resolver import _choice_facts
+
+    shown = name.strip()
+    what = "an antibody" if choice.kind.startswith("antibody") else "a protein"
+    lead = (
+        f"'{shown}' is {what}, drawn as a cartoon (ribbon diagram: helices as spirals, "
+        f"strands as arrows), not a skeletal formula: {choice.headline}."
+    )
+    parts = [lead]
+    facts = _choice_facts(choice)
+    if facts:
+        parts.append(f"Facts: {facts}.")
+    parts.append(f"Shown: {view.residues} residues in {len(view.chains)} chain(s).")
+    if view.ligands:
+        parts.append(f"Bound groups drawn as sticks/spheres: {_ligand_summary(view)}.")
+    if view.ss_source == "computed":
+        parts.append(
+            "The entry carries no helix/sheet annotation for these chains; the secondary "
+            "structure was assigned from the backbone hydrogen bonds (DSSP-like)."
+        )
+    elif view.ss_source == "deposited+computed":
+        parts.append(
+            "Helices the entry's annotation omits were added from the backbone hydrogen "
+            "bonds (DSSP-like)."
+        )
+    if choice.structure.note:
+        parts.append(f"Note: {choice.structure.note}.")
+    if backbone.source == "alphafold":
+        parts.append(
+            f"This is a predicted model (mean pLDDT {view.plddt_mean}); residues with "
+            f"pLDDT below 70 are drawn pale in the image file; the panel colours by confidence "
+            f"on request."
+        )
+    if choice.kind == "antibody_generic":
+        parts.append(
+            "No structure of this particular antibody is shown: the picture is the general "
+            "architecture of an intact IgG; the panel opens on the IgG domain scheme (also "
+            "written as a second file), the structure tab shows the example."
+        )
+    elif choice.scheme:
+        parts.append(
+            "The IgG domain scheme is in the panel's Scheme tab (also written as a second "
+            "file); it marks which part of the antibody the structure is."
+        )
+    if choice.alternatives:
+        parts.append(f"Other common sources: {choice.alternatives}.")
+    if choice.others:
+        names = ", ".join(o["name"] for o in choice.others)
+        if choice.kind == "gene":
+            parts.append(
+                f"The same gene is also found in {names} — add the organism to the name "
+                f"(\"{shown.split()[0]} {choice.others[0]['name']}\") to get that one."
+            )
+        else:
+            parts.append(f"UniProt lists more proteins under this name: {names}.")
+    if choice.kind == "gene":
+        parts.append(
+            f"Read as a gene/protein symbol; written in capitals "
+            f"('{shown.split()[0].upper()}') the name is read as a compound abbreviation."
+        )
+    if choice.by_name_for:
+        parts.append(
+            f"UniProt has no entry with the gene name {choice.by_name_for} for this organism; "
+            f"this entry was found by its protein name ('{choice.title}', the name the other "
+            f"{choice.by_name_for} entries carry) — check that it is the protein you mean."
+        )
+    if choice.other_reading:
+        parts.append(choice.other_reading + ".")
+    parts.append('Data sheet (function, reaction, cofactors): lookup with topic "biochem".')
+    return " ".join(parts)
+
+
+def _protein_payload(name: str, label: str, exc: NameResolutionError, cls):
+    """Rückgratspur als Erfolgsantwort; ohne Struktur bleibt es die Fehlermeldung."""
+    import logging
+
+    from chemdraw_tool import protein_render as pr
+    from chemdraw_tool import protein_structure as ps
+
+    choice = exc.protein
+    try:
+        backbone = _load_protein_structure(choice)
+    except ps.NoStructure as why:
+        raise NameResolutionError(
+            f"{exc} There is neither an experimental structure (PDB) nor an AlphaFold model "
+            f"for this entry, so nothing was drawn.",
+            name=name, kind="protein", attempts=exc.attempts, protein=choice,
+        ) from why
+    except ps.StructureUnavailable as why:
+        logging.getLogger(__name__).warning("Protein structure unavailable for %r: %s", name, why)
+        raise NameResolutionError(
+            f"{exc} The backbone structure could not be fetched right now (PDB/AlphaFold "
+            f"unreachable), so nothing was drawn.",
+            name=name, kind="protein", attempts=exc.attempts, protein=choice,
+        ) from why
+    except ps.TooLarge as why:
+        raise ValueError(f"{exc} {why}") from why
+    view = pr.make_view(backbone, choice.structure.chain_labels)
+    citation = _protein_citation(choice, backbone)
+    subtitle = f"{choice.source_label} · cartoon · {view.residues} residues"
+    if view.plddt_mean is not None:
+        subtitle += f" · mean pLDDT {view.plddt_mean}"
+    if choice.structure.note:
+        subtitle += f" · {choice.structure.note}"
+    title = choice.figure_title
+    slug = _slugify(label or name) or "protein"
+    artifacts = {
+        "png": pr.render_protein_png(view, title, subtitle, citation),
+        "svg": pr.render_protein_svg(view, title, subtitle, citation),
+    }
+    files = write_files(PROTEIN_DIR / slug, artifacts)
+    if choice.scheme:
+        from chemdraw_tool.igg_scheme import render_igg_png, render_igg_svg
+
+        sub = "general IgG1 architecture" if choice.kind == "antibody_generic" else (
+            f"{choice.title.split(' ')[0]}: same domain plan; structure shown is the "
+            f"{choice.antibody_what}"
+        )
+        scheme = write_files(
+            PROTEIN_DIR / f"{slug}-igg-scheme",
+            {"png": render_igg_png(subtitle=sub), "svg": render_igg_svg(subtitle=sub)},
+        )
+        files.update({"scheme_png": scheme["png"], "scheme_svg": scheme["svg"]})
+    color_by = "chain" if len(view.chains) > 1 else "ss"
+    panel_scheme = None
+    if choice.scheme:
+        if choice.kind == "antibody_generic":
+            panel_scheme = {"start": "scheme", "highlight": "",
+                            "caption": "General IgG1 architecture; the structure tab shows an "
+                                       f"intact IgG1 as an example (PDB {backbone.identifier})."}
+        else:
+            fab = choice.antibody_what.startswith("Fab")
+            panel_scheme = {"start": "structure", "highlight": "fab" if fab else "igg",
+                            "caption": f"The structure shown (PDB {backbone.identifier}) is "
+                                       + ("one Fab arm of the IgG." if fab else "the whole antibody.")}
+    protein = ProteinView(
+        title=title,
+        subtitle=subtitle,
+        source=backbone.source,
+        identifier=backbone.identifier,
+        colorBy=color_by,
+        chains=pr.panel_chains(view),
+        ligands=pr.panel_ligands(view),
+        citation=citation,
+        plddtMean=view.plddt_mean,
+        ssSource=view.ss_source,
+        scheme=panel_scheme,
+    )
+    return cls(
+        name=label or name.strip(),
+        subtitle=subtitle,
+        message=_protein_text(name, choice, backbone, view),
+        files=files,
+        protein=protein,
+    )
+
+
+def _protein_for_too_large(name: str, exc: NameResolutionError) -> NameResolutionError | None:
+    """Ein zu großer Name, der ein Protein ist → Proteinfehler mit Wahl, sonst None."""
+    from chemdraw_tool import resolver as _resolver
+
+    try:
+        record = _resolver._protein_lookup(name)
+    except Exception:  # noqa: BLE001 — die too_large-Meldung bleibt dann
+        return None
+    if not record:
+        return None
+    return _resolver._protein_error(name, record)
 
 
 @_tool(structured_output=True, meta=_UI_META)
@@ -847,6 +1137,7 @@ def generate_molecule(
     structures or chemical drawings — "draw aspirin", "structure of caffeine".
     A bare compound name with no further request ("caffeine", "aspirin")
     also means this tool: show the substance, and the panel carries its data.
+    A protein or antibody name gives its cartoon (PDB/AlphaFold).
 
     Not this tool for: several products of one reaction with yields (use
     generate_scope_table); several unrelated structures at once (use
@@ -868,10 +1159,10 @@ def generate_molecule(
         annotate_stereo: True prints CIP descriptors (R/S, E/Z).
         abbreviate_groups: True draws substituents as short labels (Ph,
             OAc, Boc, …); chemistry unchanged, no panel tooltips.
-        render_style: "" standard · "compact" thin bonds for small print ·
-            "presentation" thick bonds for slides · "grayscale" b/w palette.
-        stereo_variants: True returns every stereoisomer of the open centers
-            (max 3) as a pick list instead of a drawing; only on request.
+        render_style: "" standard, "compact" (small print), "presentation"
+            (slides) or "grayscale".
+        stereo_variants: True returns the stereoisomers of open centers
+            (max 3) as a pick list; only on request.
         view: "fischer"/"haworth"/"chair"/"all_h" opens on that drawing,
             only if the user names it.
     """
@@ -887,6 +1178,8 @@ def generate_molecule(
     try:
         resolved = resolve(name_or_smiles)
     except NameResolutionError as exc:
+        if exc.kind == "protein" and exc.protein is not None:
+            return _protein_payload(name_or_smiles, label, exc, ProteinPayload)
         if exc.kind != "ambiguous":
             raise
         # Erfolgsantwort statt Fehler: Das Panel zeigt isError-Antworten zwar
@@ -894,6 +1187,14 @@ def generate_molecule(
         # ihren Vorschaubildern braucht aber ein Payload.
         return _ambiguous_payload(name_or_smiles, exc.candidates)
     smiles, mol = resolved
+    if (
+        not getattr(resolved, "user_structure", True)
+        and mol.GetNumHeavyAtoms() > MAX_NAMED_HEAVY_ATOMS
+    ):
+        too_large = _too_large_error(name_or_smiles, mol)
+        if as_protein := _protein_for_too_large(name_or_smiles, too_large):
+            return _protein_payload(name_or_smiles, label, as_protein, ProteinPayload)
+        raise too_large
     found_as = _found_as(resolved)
     if stereo_variants:
         return _stereo_variants_payload(name_or_smiles, label, smiles, mol)
@@ -906,7 +1207,7 @@ def generate_molecule(
         if issue.severity == Severity.ERROR:
             raise ValueError(f"Input validation failed: {issue.message}")
 
-    display_name = label or name_or_smiles
+    display_name = label or _shown_name(name_or_smiles)
     slug = _molecule_slug(display_name, smiles)
     # Abgekürzt wird nur die Zeichnung. Analyse (funktionelle Gruppen,
     # Properties, Validierung) und CDXML laufen weiter am vollen Molekül.
@@ -1876,9 +2177,12 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
     Use this when the user asks about 3D structure, molecular geometry
     (tetrahedral, planar...), conformation or spatial arrangement.
+    A protein, enzyme or antibody name (also a gene symbol such as RecA)
+    gives a rotatable cartoon from PDB or AlphaFold instead of atoms.
 
     Not this tool for: a flat 2D structure drawing, a Fischer/Haworth
-    projection or a chair drawing — use generate_molecule.
+    projection or a chair drawing — use generate_molecule. Nor for a
+    protein's function, EC number or cofactors — use lookup, topic "biochem".
 
     IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
     localized display name.
@@ -1889,11 +2193,17 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
     """
     from chemdraw_tool.structure3d import atoms_and_bonds, embed_3d
 
-    smiles, mol = resolve(name_or_smiles)
+    try:
+        smiles, mol = resolve(name_or_smiles)
+    except NameResolutionError as exc:
+        # E8: Protein- und Antikörpernamen → drehbare Rückgratspur
+        if exc.kind == "protein" and exc.protein is not None:
+            return _protein_payload(name_or_smiles, label, exc, Protein3DPayload)
+        raise
     mol3d = embed_3d(mol)
     atoms, bonds = atoms_and_bonds(mol3d)
 
-    display_name = label or name_or_smiles
+    display_name = label or _shown_name(name_or_smiles)
     THREED_DIR.mkdir(parents=True, exist_ok=True)
     sdf_path = THREED_DIR / f"{_molecule_slug(display_name, smiles)}.sdf"
     from rdkit import Chem as _Chem
@@ -2921,7 +3231,9 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
     - "physical": experimental melting point, boiling point, density,
       solubility.
     - "biochem": compound class and biological role (ChEBI), related
-      enzymes and proteins (UniProt).
+      enzymes and proteins (UniProt); for a protein, enzyme or antibody
+      name, its UniProt data sheet (function, EC, length, PDB). Drawing
+      a protein is generate_molecule (2D) or generate_3d, not this tool.
     - "pathway": metabolic pathways the compound appears in (KEGG).
 
     Not this tool for: a bare compound name with no named value asked for —
@@ -2952,15 +3264,135 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
         raise ValueError(
             f"Unknown topic '{topic}' — allowed: {', '.join(handlers)}."
         )
+    # E12: eine eingegebene Struktur geht ohne Opt-in nie wörtlich an eine Quelle.
+    if not smiles_lookup_enabled() and (typed := _typed_structure(name)) is not None:
+        kind, mol = typed
+        if mol is None:
+            reason = NOTATION_HINTS.get(kind) or unreadable_reason(name)
+            return (
+                f"## {name} — not looked up\n\nThe input is written in {kind} notation, so "
+                f"it was not sent to any database as a name. {reason}"
+            )
+        return _lookup_structure(name, mol, topic, handlers)
     return handlers[topic](name)
 
 
-def _lookup_compound(name: str) -> str:
-    """PubChem-Grunddaten als Markdown — Thema "properties" von `lookup`."""
+_SHORT_LETTERS = re.compile(r"[A-Za-z]{1,5}")
+
+
+def _typed_structure(text: str) -> tuple[str, Chem.Mol | None] | None:
+    """Struktur statt Name? → (Schreibweise, Mol), sonst None.
+
+    Dieselben Regeln wie resolve(): parse-first ("O" ist Wasser), dann InChI,
+    CXSMILES & Co. (resolver.structure_notation), dann eine Peptidsequenz, die
+    sich offline bauen lässt — auch sie beschreibt eine Struktur.
+    """
+    from rdkit import rdBase
+
+    from chemdraw_tool import peptide
+    from chemdraw_tool.resolver import _smiles_fault
+
+    # Kurze reine Buchstabenfolgen sind hier Namen (Akronyme, Genkürzel): 37 von
+    # 49 gemessenen Biochemie-Akronymen lesen sich als SMILES, alle mit 2–4
+    # Zeichen ("PC" wäre Methylphosphin, "NOS" ein Thiohydroxylamin). Ein reines
+    # Buchstaben-SMILES bis 5 Zeichen ist höchstens Pentan, Diethylether oder
+    # Propandiol — nichts Vertrauliches. Nur in `lookup`; resolve() bleibt
+    # parse-first ("O" ist Wasser).
+    if _SHORT_LETTERS.fullmatch(text.strip()):
+        return None
+    with rdBase.BlockLogs():
+        if (mol := parse_smiles_input(text)) is not None:
+            return "SMILES", mol
+        if (notation := structure_notation(text)) is not None:
+            return notation
+        stripped = text.strip()
+        if " " not in stripped and _smiles_fault(stripped):
+            return "SMILES", None
+        try:
+            if (seq := peptide.one_letter_sequence(text)) is not None:
+                smiles = peptide.one_letter_smiles(seq)
+            else:
+                smiles = peptide.three_letter_smiles(text)
+        except peptide.PeptideSequenceError:
+            smiles = None
+        if smiles:
+            return "peptide sequence", Chem.MolFromSmiles(smiles)
+    return None
+
+
+def _lookup_structure(name: str, mol: Chem.Mol, topic: str, handlers: dict) -> str:
+    """`lookup` für eine eingegebene Struktur: nur der lokal gerechnete InChIKey geht hinaus.
+
+    PubChem liefert zum Schlüssel CID und Titel; Sicherheit/Physik fragen mit der
+    CID weiter, ChEBI/UniProt/KEGG mit PubChems Namen des Datensatzes — beides
+    öffentlich, sobald PubChem die Struktur kennt. Kennt PubChem sie nicht, sagt
+    die Antwort, was lokal gerechnet wurde und wie man den Abgleich einschaltet.
+    """
+    try:
+        key = MolToInchiKey(mol)
+    except Exception:  # InChI kapituliert vor manchen Strukturen
+        key = ""
+    props = pubchem_properties_by_inchikey(key) if key else None
+    cid = props.get("CID") if props else None
+    if not props or not cid:
+        local = _local_formula_mw(mol)
+        return "\n".join([
+            f"## {name} — no database record found\n",
+            "Read as a structure (SMILES, InChI or peptide sequence), not as a compound "
+            "name; to look up a name, write it out. Computed "
+            f"locally: formula {local['formula']}, molar mass {local['mw']}"
+            + (f", InChIKey {key}." if key else "."),
+            "",
+            "PubChem returned no record for this InChIKey (or could not be reached), "
+            f"so there is nothing to look up for '{topic}'. The structure itself was "
+            "not sent to any database.",
+            "",
+            f"To also search by the SMILES itself, {HOW_TO_ENABLE}.",
+        ])
+    title = str(props.get("Title") or "")
+    if topic == "properties":
+        text = _lookup_compound(name, props=props, synonyms=pubchem_synonyms_by_inchikey(key))
+        how = "PubChem was asked by this InChIKey"
+    elif topic in ("safety", "physical"):
+        text = handlers[topic](name, cid=int(cid))
+        how = f"PubChem was asked by this InChIKey (CID {cid})"
+    elif not title:
+        # Ohne Namen gibt es nichts, womit ChEBI/UniProt/KEGG zu fragen wären;
+        # „CID 19079503“ als Suchwort lieferte Zufallstreffer (gemessen: „NOS“).
+        text = (
+            f"## {name} — PubChem CID {cid}\n\nPubChem has a record for this structure "
+            f"(CID {cid}) but no name for it, so the {topic} sources, which are searched "
+            "by name, were not asked."
+        )
+        how = "PubChem was asked by this InChIKey"
+    else:
+        text = handlers[topic](title)
+        how = (
+            f"PubChem was asked by this InChIKey; the {topic} sources were asked with "
+            f"PubChem's name for that record, '{title}'"
+        )
+    return (
+        f"{text}\n\n*Read as a structure. InChIKey {key}, computed locally; {how}. "
+        "The structure itself was not sent.*"
+    )
+
+
+def _lookup_compound(
+    name: str,
+    *,
+    props: dict | None = None,
+    synonyms: tuple[str | None, list[str]] | None = None,
+) -> str:
+    """PubChem-Grunddaten als Markdown — Thema "properties" von `lookup`.
+
+    `props`/`synonyms` vorgegeben (E12: Datensatz über den InChIKey einer
+    eingegebenen Struktur) ersetzen die Namensabfrage.
+    """
     lines = [f"## {name} — PubChem data\n"]
     cid = "?"
 
-    props = pubchem_properties(name)
+    if props is None:
+        props = pubchem_properties(name)
     have_table = bool(props)
     if props:
         cid = props.get("CID", "?")
@@ -2990,7 +3422,7 @@ def _lookup_compound(name: str) -> str:
     else:
         lines.append("Properties could not be retrieved from PubChem.")
 
-    cas, synonyms = pubchem_synonyms(name)
+    cas, synonyms = synonyms if synonyms is not None else pubchem_synonyms(name)
     if cas:
         # Ohne Tabellenkopf wäre eine Pipe-Zeile roher Text im Chat.
         if have_table:
@@ -3101,9 +3533,9 @@ def _ghs_compact(group: GhsGroup) -> str:
     return " · ".join(parts) or "no hazard data"
 
 
-def _lookup_safety(name: str) -> str:
+def _lookup_safety(name: str, cid: int | None = None) -> str:
     """GHS-Einstufung als Markdown — Thema "safety" von `lookup`. Leitquelle zuerst."""
-    cid = _get_cid(name)
+    cid = cid or _get_cid(name)
     if cid is None:
         return f"Compound '{name}' not found in PubChem."
 
@@ -3149,9 +3581,9 @@ def _lookup_safety(name: str) -> str:
     return "\n".join(lines)
 
 
-def _lookup_physical(name: str) -> str:
+def _lookup_physical(name: str, cid: int | None = None) -> str:
     """Schmelz-/Siedepunkt, Dichte, Löslichkeit — Thema "physical" von `lookup`."""
-    cid = _get_cid(name)
+    cid = cid or _get_cid(name)
     if cid is None:
         return f"Compound '{name}' not found in PubChem."
 
@@ -3179,8 +3611,178 @@ def _lookup_physical(name: str) -> str:
     return "\n".join(lines)
 
 
+# Das Datenblatt darf länger warten als die Fehlermeldung des Resolvers.
+_LOOKUP_TIMEOUT = (3, 10)
+_EVIDENCE = re.compile(r"\s*\((?:PubMed|By similarity|Probable)[^)]*\)")
+_SENTENCE_END = re.compile(r"(?<=\.)\s+(?=[A-Z])")
+
+
+def _short_function(text: str) -> str:
+    """UniProts FUNCTION-Text: ohne Belegklammern, 1–3 Sätze, höchstens ~400 Zeichen."""
+    text = _EVIDENCE.sub("", text).strip()
+    if text and not text.endswith("."):
+        text += "."
+    kept = []
+    for sentence in _SENTENCE_END.split(text):
+        if kept and (len(kept) == 3 or len(" ".join(kept + [sentence])) > 400):
+            break
+        kept.append(sentence)
+    return " ".join(kept)
+
+
+def _protein_sheet(name: str, p: dict) -> str:
+    """UniProt-Datenblatt eines Proteinnamens (E6) — Thema "biochem" von `lookup`."""
+    acc = p["accession"]
+    title = p["name"] if p["matched"] == p["name"] else f"{p['name']} (also called {p['matched']})"
+    lines = [f"## {name} — Protein (UniProt)\n"]
+    if p.get("family"):
+        lines.append(
+            f"'{name}' is a protein family; UniProt lists its chains separately. "
+            f"This is the first of them:\n"
+        )
+    lines.append(f"- **Name:** {title}")
+    lines.append(f"- **UniProt:** {acc} (reviewed, Swiss-Prot)")
+    if p.get("organism"):
+        lines.append(f"- **Organism:** {p['organism']}")
+    note = (
+        " (precursor as encoded — signal peptide/propeptides are cleaved off, "
+        "the mature protein is shorter)"
+        if p.get("precursor")
+        else ""
+    )
+    if p.get("length"):
+        lines.append(f"- **Length:** {p['length']} amino acids{note}")
+    if p.get("mass"):
+        lines.append(f"- **Mass:** {p['mass'] / 1000:.1f} kDa ({p['mass']} Da, same sequence)")
+    if p.get("ec"):
+        lines.append(f"- **EC number:** {', '.join(p['ec'])}")
+    if p.get("function"):
+        lines.append(f"- **Function:** {_short_function(p['function'])}")
+    if p.get("pdb"):
+        lines.append(f"- **PDB structures:** {', '.join(p['pdb'])} (first of UniProt's list)")
+    if p.get("others"):
+        others = ", ".join(f"{o['name']} ({o['accession']})" for o in p["others"])
+        lines.append(f"- **Also under this name:** {others}")
+    lines.append(f"\n*Source: [UniProt {acc}](https://www.uniprot.org/uniprotkb/{acc})*")
+    return "\n".join(lines)
+
+
+def _drawn_structure(choice) -> str:
+    """Welche Struktur das Bild zeigt — dieselbe Regel wie _load_protein_structure."""
+    from chemdraw_tool import protein_structure as ps
+
+    ref = choice.structure
+    if ref.source == "pdb":
+        return choice.source_label + (f" ({ref.note})" if ref.note else "")
+    acc = choice.accession[0]
+    try:
+        best = ps.best_pdb_chain(acc)
+    except ps.StructureUnavailable:
+        return "PDB (PDBe best structure) or, without one, the AlphaFold model"
+    if best:
+        return f"PDB {best[0].upper()}, chain {best[1]} (PDBe best structure)"
+    return f"AlphaFold model AF-{acc}-F1 (predicted; no PDB structure)"
+
+
+def _choice_sheet(name: str, choice) -> str:
+    """Datenblatt aus der ProteinChoice (E8): Organismus, Quelle, Reaktion, Bild."""
+    is_ab = choice.kind.startswith("antibody")
+    # Antikörper haben keinen UniProt-Eintrag (E17): Kopf ohne Quelle, und
+    # statt „Organism“ die Felder, die die Tabelle wirklich belegt.
+    source = " (UniProt)" if choice.accession else ""
+    lines = [f"## {name} — {'Antibody' if is_ab else 'Protein'}{source}\n"]
+    title = choice.title
+    if choice.gene and choice.gene.casefold() not in title.casefold():
+        title += f" (gene {choice.gene})"
+    lines.append(f"- **Name:** {title}")
+    if choice.kind == "antibody":
+        lines.append("- **Type:** therapeutic monoclonal antibody")
+        from chemdraw_tool.protein_catalog import ANTIBODIES, _norm
+
+        row = next((ab for ab in ANTIBODIES if ab.inn == _norm(choice.query)), None)
+        if row is not None:
+            lines.append(f"- **Target:** {row.antigen}")
+    elif choice.kind == "antibody_generic":
+        lines.append(f"- **Example shown:** {choice.organism.removesuffix(' as the example')}")
+    elif choice.organism:
+        lines.append(f"- **Organism:** {choice.organism}")
+    entry = None
+    if choice.accession:
+        status = "reviewed, Swiss-Prot" if choice.reviewed else "unreviewed, TrEMBL"
+        lines.append(f"- **UniProt:** {', '.join(choice.accession)} ({status})")
+        entry = uniprot_entry(choice.accession[0], timeout=_LOOKUP_TIMEOUT)
+    length = choice.length or (entry or {}).get("mature_length") or (entry or {}).get("length")
+    mass = choice.mass_da or (entry or {}).get("mature_mass") or (entry or {}).get("mass")
+    if length:
+        # Reif nur aus der Tabelle (gemessen) oder aus UniProts Chain-Merkmalen
+        mature = (
+            " (mature chain)"
+            if (choice.kind == "curated" and choice.length) or (entry or {}).get("mature_length")
+            else ""
+        )
+        lines.append(f"- **Length:** {length} amino acids{mature}")
+    if mass:
+        lines.append(f"- **Mass:** {mass / 1000:.1f} kDa ({mass} Da)")
+    if entry:
+        if entry["ec"]:
+            lines.append(f"- **EC number:** {', '.join(entry['ec'])}")
+        if entry["function"]:
+            lines.append(f"- **Function:** {_short_function(entry['function'])}")
+        for reaction in entry["reactions"][:2]:
+            rhea = f" ({reaction['rhea']})" if reaction["rhea"] else ""
+            lines.append(f"- **Catalysed reaction:** {reaction['equation']}{rhea}")
+        if entry["cofactors"]:
+            lines.append(f"- **Cofactors:** {', '.join(entry['cofactors'])}")
+        if any("S-adenosyl-L-methionine" in r["equation"] for r in entry["reactions"]) and not any(
+            "adenosyl" in c for c in entry["cofactors"]
+        ):
+            lines.append(
+                "- **S-adenosyl-L-methionine (SAM) is a co-substrate** (consumed in the "
+                "reaction above, radical-SAM chemistry), not a bound cofactor."
+            )
+    if is_ab:
+        lines.append(
+            "- **What it is:** a monoclonal antibody (protein; an IgG is about 150 kDa). "
+            "UniProt does not list therapeutic antibodies under their INN."
+            if choice.kind == "antibody" else
+            "- **What it is:** an antibody (protein); no structure of this one is in the table."
+        )
+        if chebi := chebi_lookup(name):
+            desc = f" — {chebi['description']}" if chebi["description"] else ""
+            lines.append(f"- **ChEBI:** {chebi['obo_id']} {chebi['label']}{desc}")
+    lines.append(f"- **Drawn structure:** {_drawn_structure(choice)} — generate_molecule / generate_3d")
+    if choice.alternatives:
+        lines.append(f"- **Other common sources:** {choice.alternatives}")
+    if choice.others:
+        lines.append(f"- **Also found in:** {', '.join(o['name'] for o in choice.others)}")
+    if choice.by_name_for:
+        lines.append(
+            f"- **Found by protein name:** no entry with the gene name {choice.by_name_for} "
+            f"for this organism — check that it is the protein you mean"
+        )
+    if choice.other_reading:
+        lines.append(f"- **Note:** {choice.other_reading}")
+    if choice.accession:
+        acc = choice.accession[0]
+        lines.append(f"\n*Source: [UniProt {acc}](https://www.uniprot.org/uniprotkb/{acc}) (CC BY 4.0)*")
+    return "\n".join(lines)
+
+
 def _lookup_biochem(name: str) -> str:
-    """ChEBI-Klassifikation + UniProt-Enzyme — Thema "biochem" von `lookup`."""
+    """ChEBI-Klassifikation + UniProt-Enzyme — Thema "biochem" von `lookup`.
+
+    Heißt ein Swiss-Prot-Eintrag so wie `name` (E6), kommt stattdessen sein
+    Datenblatt; kleine Moleküle treffen keinen Eintrag und bleiben wie bisher.
+    Tabelle und Genkürzel (E8) gehen vor — dieselbe Wahl wie das Bild.
+    """
+    from chemdraw_tool.resolver import protein_choice
+
+    if choice := protein_choice(name):
+        return _choice_sheet(name, choice)
+    if not is_antibody_name(name) and (
+        protein := uniprot_protein(name, details=True, timeout=_LOOKUP_TIMEOUT)
+    ):
+        return _protein_sheet(name, protein)
     lines = [f"## {name} — Biochemical classification\n"]
 
     chebi = chebi_lookup(name)
@@ -3196,6 +3798,18 @@ def _lookup_biochem(name: str) -> str:
         )
     else:
         lines.append("No ChEBI entry found.\n")
+
+    if is_antibody_name(name):
+        # UniProt führt therapeutische Antikörper nicht unter dem INN; die
+        # Volltextsuche lieferte für trastuzumab "Protein phosphatase 1H".
+        lines.append(
+            "\n### Antibody\n\n"
+            f"- '{name}' is a monoclonal antibody (INN stem -mab): a protein, "
+            "typically a full IgG of about 150 kDa (antibody fragments are "
+            "smaller). UniProt does not list therapeutic antibodies under their "
+            "INN, so there is no UniProt entry to show."
+        )
+        return "\n".join(lines)
 
     proteins = uniprot_search(name)
     if proteins:
@@ -3432,7 +4046,7 @@ def generate_reaction(
             for a balanced equation; otherwise draw as given — the panel's
             "Apply coefficients" button sets them.
     """
-    from chemdraw_tool.svg_renderer import render_svg
+    from chemdraw_tool.svg_renderer import render_reaction_entry
 
     fmts = _normalize_formats(formats)
     get_style(render_style)  # unbekannter Stil: scheitern, bevor Dateien entstehen
@@ -3541,7 +4155,6 @@ def generate_reaction(
         cdxml_path = str(filepath)
         files["cdxml"] = cdxml_path
 
-    r_w, r_h = 250, 200
     from chemdraw_tool.payloads import MolEntry
     from chemdraw_tool.reaction_balance import check_balance
 
@@ -3554,7 +4167,8 @@ def generate_reaction(
     factors = coefficients or [1] * (len(reactants) + len(products))
 
     def entry(mol: Chem.Mol, label: str, factor: int) -> MolEntry:
-        svg = render_svg(mol, r_w, r_h, style=render_style)
+        # Fester Bindungsmaßstab auch für große Stoffe (Porphyrine, E16).
+        svg = render_reaction_entry(mol, style=render_style)
         return MolEntry(svg=svg, name=label, coefficient=factor)
 
     return ReactionPayload(
@@ -3654,6 +4268,10 @@ def batch_generate(
             if exc.kind == "ambiguous":
                 labels = ", ".join(c.label for c in exc.candidates)
                 failed.append(f"{name_or_smiles} (ambiguous: {labels})")
+            elif exc.kind == "protein":
+                failed.append(
+                    f'{name_or_smiles} (protein: no skeletal formula — generate_molecule draws its cartoon)'
+                )
             else:
                 failed.append(name_or_smiles)
             continue
@@ -3676,7 +4294,7 @@ def batch_generate(
             failed.append(name_or_smiles)
             continue
 
-        display_name = name_or_smiles
+        display_name = _shown_name(name_or_smiles)
         slug = _molecule_slug(display_name, smiles)
         drawn = condense_groups(mol) if abbreviate_groups else mol
 
@@ -4054,7 +4672,7 @@ def _user_facing_errors(fn):
     Seit mcp 2.1 kommt von jeder anderen Exception beim Client nur
     "Error executing tool <name>" an. Die ValueErrors dieses Servers sind aber
     Bedienhinweise — allen voran `NameResolutionError` mit seinem `kind`
-    (not_found/offline/sources_down/partial/invalid_smiles/ambiguous), der sagt, was
+    (not_found/offline/sources_down/partial/invalid_smiles/ambiguous/protein/too_large), der sagt, was
     tatsächlich hilft.
     Echte Abstürze (alles andere) bleiben bewusst pauschal. `functools.wraps`
     hält Name, Docstring und Signatur gleich, also auch die Schemas.
@@ -4140,4 +4758,7 @@ def main():
 
     _configure_logging(Path.home() / "ChemDraw-Output")
     logging.getLogger(__name__).info("MCP server starting")
+    from chemdraw_tool.privacy import status_line
+
+    logging.getLogger(__name__).info(status_line())
     mcp.run(transport="stdio")

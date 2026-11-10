@@ -1,0 +1,513 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"insulin\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P01308",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin"
+     }
+    }
+   },
+   "sequence": {
+    "length": 110,
+    "molWeight": 11981
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P06213",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor"
+     },
+     "shortNames": [
+      {
+       "value": "IR"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1382,
+    "molWeight": 156333
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9Y5Q6",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like peptide INSL5"
+     },
+     "shortNames": [
+      {
+       "value": "Insulin-like peptide 5"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 135,
+    "molWeight": 15333
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P51460",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like 3"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Leydig insulin-like peptide"
+      },
+      "shortNames": [
+       {
+        "value": "Ley-I-L"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Relaxin-like factor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 131,
+    "molWeight": 14502
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P14735",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "20364150"
+       }
+      ],
+      "value": "Insulin-degrading enzyme"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "10684867"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "17051221"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "21098034"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "2293021"
+        }
+       ],
+       "value": "3.4.24.56"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Abeta-degrading protease"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "20364150"
+        }
+       ],
+       "value": "Insulin protease"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "20364150"
+         }
+        ],
+        "value": "Insulinase"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "20364150"
+        }
+       ],
+       "value": "Insulysin"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1019,
+    "molWeight": 117968
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P14616",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor-related protein"
+     },
+     "shortNames": [
+      {
+       "value": "IRR"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "IR-related receptor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1297,
+    "molWeight": 143720
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P08069",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin-like growth factor 1 receptor"
+     },
+     "ecNumbers": [
+      {
+       "value": "2.7.10.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Insulin-like growth factor I receptor"
+      },
+      "shortNames": [
+       {
+        "value": "IGF-I receptor"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 1367,
+    "molWeight": 154793
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9Y4H2",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor substrate 2"
+     },
+     "shortNames": [
+      {
+       "value": "IRS-2"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1338,
+    "molWeight": 137334
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P35568",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Insulin receptor substrate 1"
+     },
+     "shortNames": [
+      {
+       "value": "IRS-1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 1242,
+    "molWeight": 131591
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "O15503",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "12202038"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "9268630"
+       }
+      ],
+      "value": "Insulin-induced gene 1 protein"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "12202038"
+        }
+       ],
+       "value": "INSIG-1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 277,
+    "molWeight": 29987
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q9Y5U4",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "12242332"
+       }
+      ],
+      "value": "Insulin-induced gene 2 protein"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "12242332"
+        }
+       ],
+       "value": "INSIG-2"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 225,
+    "molWeight": 24778
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P01344",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:5466"
+       }
+      ],
+      "value": "Insulin-like growth factor 2"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "6382022"
+        }
+       ],
+       "value": "Insulin-like growth factor II"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "3881277"
+         }
+        ],
+        "value": "IGF-II"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Somatomedin-A"
+      }
+     },
+     {
+      "fullName": {
+       "value": "T3M-11-derived growth factor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20140
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  }
+ ]
+}

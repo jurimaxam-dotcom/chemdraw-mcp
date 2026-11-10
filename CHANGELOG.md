@@ -8,6 +8,18 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **Proteins as cartoons.** Proteins are drawn as a ribbon diagram instead of a Cα trace:
+  helices as ribbons, strands as arrows, loops as a thin tube, from the backbone atoms N/Cα/C/O.
+  Heme, metal ions and inhibitors near the protein are drawn and named (hemoglobin with its four
+  hemes, carbonic anhydrase with its zinc); water, buffers and glycans are left out. Entries without
+  HELIX/SHEET records get a DSSP-style secondary structure; helices that old entries omit (lysozyme 1LYZ,
+  trypsin 2PTN) are filled in from it. The panel renders the cartoon with
+  Mol* 5.13.1 (MIT, bundled; notices in `THIRD_PARTY_LICENSES`): rotate, pinch or ⌘/Ctrl+scroll
+  to zoom, move, colour by secondary structure / chain / N→C / pLDDT, Cartoon/Trace, Reset; Export
+  PNG saves the cartoon. Antibodies: Structure | Scheme toggle with the IgG domain scheme in the
+  panel (general names open on the scheme; a Fab structure is marked as one arm). Without WebGL the panel keeps the SVG backbone trace. The panel file grows
+  from 0.47 MB to 2.96 MB (0.13 → 0.85 MB gzip); the engine only runs for proteins, the molecule
+  panel starts in about 55 ms instead of 30 ms.
 - **Chair conformation.** `generate_molecule(view="chair")` and a Chair button in the molecule
   panel draw a single saturated six-membered ring (cyclohexanes, pyranoses) as a textbook chair:
   axial bonds vertical, equatorial bonds parallel to the next-but-one ring bond, substituents
@@ -16,13 +28,69 @@ this project uses [Semantic Versioning](https://semver.org/).
   structures (no six-membered ring, a ring double bond, fused or spiro rings, more than one ring,
   ring heteroatoms other than one oxygen, unknown substituents) are refused with the reason.
 - Peptides from their sequence, offline: three-letter code as the name (`Ala-Trp-Lys-Ser-Gly`, `D-Ala`, `Ac-…-NH2`, `cyclo(…)`), one-letter code with the prefix `peptide:` (`peptide:AGS`, lowercase = D). Sequences no database knows (before: not found) now draw; linear peptides from five residues get a stretched backbone layout.
+- Metal tetrapyrroles (heme b, hemin, zinc protoporphyrin, copper phthalocyanine, …) are drawn
+  with the metal in the ring centre, as in a textbook: undistorted macrocycle, metal bonded to
+  the four nitrogens (anionic N as a plain bond, the others as dative arrows). Before, the metal floated beside a ring of squashed pyrroles. Formula, InChIKey, CAS
+  and the panel's data-sheet SMILES are unchanged; the bonds exist only in the drawing (panel,
+  files, reaction, comparison and scope images). Metal-free porphyrins and phthalocyanine get the
+  undistorted ring too. Chlorophylls and cobalamins keep their old drawing: the macrocycle layout
+  would distort or cross their extra rings. Loose protons in a record (heme d1: four `[H+]` next
+  to a tetracarboxylate) are drawn on the carboxylates instead of as floating H⁺. A comparison no
+  longer marks a metal that all compared structures share as a difference.
+- A small built-in table keeps the structures of metal tetrapyrroles stable: heme b ("heme",
+  "Häm", "protoheme"), hemin, heme d1 and related iron complexes resolve offline to fixed
+  structures in one notation (acids, Fe²⁺ with two N⁻). PubChem switched "heme b" to
+  Ferriheme b on 10.11.2026; these names no longer follow.
 - "X zwitterion" keeps the stereo of X ("alanine zwitterion" was racemic, "Alanin Zwitterion" was not found, "Ala zwitterion" was Ala-Leu-Ala).
-- `CHEMDRAW_NO_SMILES_UPLOAD=1` stops the SMILES fallback to PubChem: when PubChem does not know a
-  structure's InChIKey, the SMILES string itself is no longer sent. The InChIKey query and the
-  drawing stay; such a structure is drawn without name, CAS and properties. Off by default.
+- **Proteins.** A protein name no structure database knows ("Lysozym", "Trypsin", "hemoglobin")
+  now gets its UniProt entry (accession, organism, length, mass) instead of "not found", and
+  antibody names (-mab, "trastuzumab") a plain sentence. `lookup(topic="biochem")` returns a
+  compact UniProt data sheet for a protein name (function, EC number, up to three PDB IDs).
+- **Proteins as backbone traces.** `generate_molecule` and `generate_3d` draw enzymes and
+  antibodies: smoothed Cα trace from the PDB (or the AlphaFold model), principal-axis view,
+  PNG/SVG in `~/ChemDraw-Output/proteine/` and a rotatable panel (colour by secondary structure,
+  chain or AlphaFold confidence). A curated lab-standard table picks the usual entry (hen
+  lysozyme, bovine trypsin, BSA, GFP, Taq, human insulin, haemoglobin tetramer, testis ACE …);
+  an organism in the name selects another ("Lysozym Huhn", "RecA Bacillus subtilis").
+  Gene symbols (`RecA`, `LipA`) go to UniProt's gene field — "PabA" was 4-aminobenzoic
+  acid, "GFP" a fluorinated sugar phosphate, "BSA" a silylation reagent. Antibodies show their
+  Fab structure, honestly labelled, plus an IgG domain scheme; an unknown antibody shows the
+  architecture of an intact IgG (1HZH). `lookup(topic="biochem")` uses the same choice and adds
+  the catalysed reaction (Rhea), cofactors and the drawn structure.
+
+### Changed
+
+- **A structure you type is no longer sent to any database by default.** Until 0.9.1, when
+  PubChem did not know a structure's InChIKey, `generate_molecule`, `batch_generate` and the
+  panel's Data button (`lookup_molecule_data`) posted the SMILES itself to PubChem, and `lookup`
+  passed a SMILES or InChI as typed to PubChem, ChEBI, UniProt or KEGG. Now only the InChIKey,
+  computed locally, goes out. A structure PubChem has no record for is drawn without name, CAS
+  number, logP and TPSA (formula and molar mass are computed locally), and the result says why.
+  `lookup` reads its input with the same parse-first rule as the drawing tools and looks a typed
+  structure up by InChIKey; a bare run of up to five letters (`PC`, `NOS`, `RecA`) stays a name
+  there. InChI, CXSMILES, a SMILES with a label after it or a stereo prefix before it are read
+  locally by every tool instead of being searched as a name. The group abbreviations Me, Et, Ph,
+  Bn, Ac, Ts, Boc, tBu, OMe and OEt are expanded in unambiguous places, so
+  `PhC(=O)CC1CCN(Boc)CC1` is drawn; a SMILES that still cannot be read, and a reaction SMILES
+  (`A>>B`), get a clear error instead of a name search.
+  To restore the old lookup, turn on **Look up typed structures by SMILES** in the extension
+  settings of Claude Desktop (new, both bundles) or set `CHEMDRAW_SMILES_LOOKUP=1`.
+  `chemdraw-doctor` and `server.log` show the setting.
 
 ### Fixed
 
+- Panel readability: abbreviation labels (Boc, Ph, CO₂H, OAc) are light in the dark colour
+  scheme like every other label (before: near-black on the dark card), and no longer lose their
+  last letter at the drawing's edge ("CO2" for CO₂H). Large structures in a reaction (porphyrins,
+  ~40 heavy atoms) keep the normal bond scale instead of being squeezed to about half size; when the row
+  would get too small to read, reactants, a downward arrow and products are stacked. Small
+  reactions look exactly as before; exported files are unchanged.
+- Legends with umlauts and accents ("Sirohäm", "Häm b") are drawn in full in PNG and SVG
+  exports and comparisons; before, RDKit left a gap ("Siroh  m"). ASCII legends are unchanged.
+- "lysozyme" drew a 159-atom peptide fragment and "alcohol dehydrogenase" an acyl-CoA (PubChem
+  files both under these titles); enzyme names are now checked against UniProt first.
+- A name that resolves to more than 200 heavy atoms (insulin, glucagon) is no longer drawn as an
+  unreadable tangle; the message says what it is and what helps. Supplied SMILES are still drawn.
 - Panel: formula and molar mass are computed from the structure when PubChem has no record for
   it (a peptide built from its sequence showed neither).
 - "hydrogen" is drawn as H–H (two atoms and a bond); it showed the bare label "HH".
@@ -47,6 +115,15 @@ this project uses [Semantic Versioning](https://semver.org/).
 - "oxygen atom", "hydrogen atom" and "atomic hydrogen" drew water or H₂, because PubChem lists
   these phrases as synonyms of the molecules. "<element> atom" and "atomic <element>" now give the
   single atom for hydrogen, nitrogen, oxygen and the halogens, without asking any database.
+- A compound PubChem, ChEBI or KEGG does not know (HTTP 404, e.g. a peptide built from its sequence) no longer writes a full traceback to stderr and `server.log`; it is one INFO line. Server errors and timeouts are still logged with their traceback.
+- One-letter peptides ("peptide:YGGFM") no longer show the prefix in the legend and the file name (`peptideyggfm.png`): up to eight residues the legend is the three-letter code ("Tyr-Gly-Gly-Phe-Met", D-residues as "D-Phe"), longer sequences the bare one-letter code. A `label` still wins.
+- Peptides with arginine (`cyclo(Arg-Gly-Asp-D-Phe-Val)`) and other amidines/guanidines no longer warn "Unspecified double bond geometry (E/Z)" at the guanidine C=N: with an N–H next to it, tautomerism moves that double bond, so no E/Z isomer exists. Oximes, hydrazones, imines, stilbenes and amidines without N–H are still reported.
+- `lookup(topic="biochem")` for an antibody ("trastuzumab") no longer puts "therapeutic antibody against HER2" in the Organism field and "(UniProt)" in the heading, although UniProt has no entry for it; the sheet now says Type and Target (from the curated table), and "Example shown" for the generic IgG sheet.
+- Optical-rotation prefixes no longer lose the stereochemistry: "(-)-menthol" (also with the Unicode minus), "(+)-menthol", "(-)-nicotine" and "(+)-camphor" came out flat, because OPSIN ignores the rotation sign and the bracket skipped the PubChem cross-check. With the same skeleton and more defined stereo, PubChem's enantiomer is used now; "(±)-" stays racemic.
+- Ring sugars ("beta-D-glucose", "D-fructose", "alpha-D-mannose") now offer the Fischer projection of their open-chain form, derived locally and captioned "open-chain form". Before, the note advised entering "D-glucose", which PubChem resolves to the pyranose, again without a Fischer button. Glycosides keep no Fischer view and say why.
+- Spectra: band labels that actually overlap (two deep IR bands at 1750 and 1690 cm⁻¹, crowded ¹H signals) are set side by side in a row with thin leader lines to their bands; before, the floor clamp put them on top of each other. Spectra without overlapping labels are unchanged byte for byte.
+- Metal-free porphyrins (porphine, protoporphyrin IX) are drawn axis-aligned like heme and phthalocyanine; the layout came out tilted by 11.5° and looked distorted. Structures, bond lengths and identity are unchanged.
+- README image `assets/wave1-mechanisms.png` re-rendered with `scripts/readme_bilder.py`: Fischer esterification now shows "Step 2 / 8" (it showed 7), and the SN2 transition state is drawn without arrows, as the tool draws it.
 
 ## [0.9.1] — 2026-11-10
 

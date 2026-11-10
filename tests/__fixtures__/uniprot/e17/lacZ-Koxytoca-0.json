@@ -1,0 +1,237 @@
+{
+ "results": [
+  {
+   "primaryAccession": "A0AAP2BNC7",
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "organism": {
+    "scientificName": "Klebsiella oxytoca",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00013303"
+       },
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00012756"
+        },
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00032230"
+        },
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MBQ0602583.1"
+        }
+       ],
+       "value": "J7S78_22495"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1035,
+    "molWeight": 118331
+   },
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "A0AAP2FN01",
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "organism": {
+    "scientificName": "Klebsiella oxytoca",
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Klebsiella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00013303"
+       },
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       }
+      ],
+      "value": "Beta-galactosidase"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Beta-gal"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00012756"
+        },
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "3.2.1.23"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00032230"
+        },
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "HAMAP-Rule",
+         "id": "MF_01687"
+        }
+       ],
+       "value": "Lactase"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "HAMAP-Rule",
+        "id": "MF_01687"
+       },
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "MBQ0604495.1"
+       }
+      ],
+      "value": "lacZ"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "MBQ0604495.1"
+        }
+       ],
+       "value": "J7S78_32545"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 1024,
+    "molWeight": 116394
+   },
+   "uniProtKBCrossReferences": []
+  }
+ ]
+}

@@ -43,6 +43,6 @@ def test_sdist_ships_only_the_allowlist(tmp_path):
     with tarfile.open(sdists[0]) as tar:
         # erster Pfadteil ist chemdraw_mcp-<version>/
         tops = {n.split("/", 2)[1] for n in tar.getnames() if n.count("/") >= 1}
-    erlaubt = {"chemdraw_tool", "README.md", "LICENSE", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}
+    erlaubt = {"chemdraw_tool", "README.md", "LICENSE", "THIRD_PARTY_LICENSES", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}
     assert tops <= erlaubt, f"unerwartet im sdist: {sorted(tops - erlaubt)}"
     assert "chemdraw_tool" in tops

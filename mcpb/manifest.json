@@ -5,7 +5,7 @@
   "display_name": "ChemDraw MCP (unofficial)",
   "version": "@@VERSION@@",
   "description": "Molecule names or SMILES to 2D structures, comparisons and reaction schemes as PNG/SVG files with an interactive panel.",
-  "long_description": "Draw individual molecules, batches, structural comparisons and reaction schemes, with data sheets and PNG export. The default profile registers 16 tools in five areas (draw, lab graphics, look up, calculate, Anki); seven more are available in the optional full profile. The bundle is a launcher: on first start it installs chemdraw-mcp from PyPI with uv, every file checked against hashes pinned at release time (a pinned, checksum-verified uv is downloaded if none is installed). Structure rendering runs locally; name resolution and data sheets may access online sources. Not affiliated with Revvity/ChemDraw.",
+  "long_description": "Draw individual molecules, batches, structural comparisons and reaction schemes, with data sheets and PNG export. The default profile registers 16 tools in five areas (draw, lab graphics, look up, calculate, Anki); seven more are available in the optional full profile. The bundle is a launcher: on first start it installs chemdraw-mcp from PyPI with uv, every file checked against hashes pinned at release time (a pinned, checksum-verified uv is downloaded if none is installed). Structure rendering runs locally; name resolution and data sheets use online databases. A SMILES or InChI you type is not sent to them unless you turn on the SMILES lookup setting; data sheets ask by its InChIKey. Not affiliated with Revvity/ChemDraw.",
   "author": {
     "name": "jurimaxam-dotcom",
     "url": "https://github.com/jurimaxam-dotcom"
@@ -21,7 +21,19 @@
     "mcp_config": {
       "command": "/bin/sh",
       "args": ["${__dirname}/server/run.sh"],
-      "env": {"CHEMDRAW_PROFILE": "mvp"}
+      "env": {
+        "CHEMDRAW_PROFILE": "mvp",
+        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}"
+      }
+    }
+  },
+  "user_config": {
+    "smiles_lookup": {
+      "type": "boolean",
+      "title": "Look up typed structures by SMILES",
+      "description": "Off (default): a structure you type as SMILES or InChI is not sent to any database. Data sheets ask PubChem only with its InChIKey, a hash computed on your machine that matches only records PubChem already holds; if PubChem has no record for it, CAS number, logP and other database fields stay empty. On: when PubChem has no record for the InChIKey, the SMILES itself is sent to PubChem, and the lookup tool sends a typed SMILES as written to PubChem, ChEBI, UniProt or KEGG. Leave this off for unpublished structures. This setting does not cover compound names: a name is looked up online (PubChem, NCI) unless it can be read offline, and so is a short letters-only input to the lookup tool (an acronym such as PC or NOS).",
+      "default": false,
+      "required": false
     }
   },
   "compatibility": {

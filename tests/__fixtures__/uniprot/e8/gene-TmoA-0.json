@@ -1,0 +1,291 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q00456",
+   "organism": {
+    "scientificName": "Ectopseudomonas mendocina",
+    "commonName": "Pseudomonas mendocina",
+    "taxonId": 300,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Pseudomonadales",
+     "Pseudomonadaceae",
+     "Ectopseudomonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "15240250"
+       }
+      ],
+      "value": "Toluene-4-monooxygenase system, hydroxylase component subunit alpha"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1885512"
+        }
+       ],
+       "value": "T4MO"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15240250"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "19290655"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "19705873"
+        },
+        {
+         "evidenceCode": "ECO:0000305",
+         "source": "PubMed",
+         "id": "2019563"
+        }
+       ],
+       "value": "1.14.13.236"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1885512"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase hydroxylase subunit"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "1885512"
+         }
+        ],
+        "value": "T4moH"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "1885512"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "1885512"
+         }
+        ],
+        "value": "T4moA"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1885512"
+       }
+      ],
+      "value": "tmoA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "3DHG",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.85 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/D=1-500"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "3DHH",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.94 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-500"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "3DHI",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.68 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-500"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "3GE3",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.52 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-500"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "3GE8",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.19 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/D=1-500"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 500,
+    "molWeight": 58104
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadales",
+     "taxonId": 72274,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadaceae",
+     "taxonId": 135621,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Ectopseudomonas",
+     "taxonId": 3236654,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000034EB45"
+   }
+  }
+ ]
+}

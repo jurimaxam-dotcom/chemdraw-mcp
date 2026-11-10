@@ -163,3 +163,59 @@ def test_note_reaches_the_model_without_a_panel():
     result = asyncio.run(run())
     text = "\n".join(getattr(b, "text", "") for b in result.content)
     assert "1 stereocenter is unspecified" in text
+
+
+# --- Amidin/Guanidin (E17, 10.11.2026) ----------------------------------------
+# cyclo(RGDfV) meldete „Unspecified double bond geometry (E/Z)“ am Arginin-
+# Guanidin. Trägt das C einer C=N-Bindung noch ein N mit H, wandert die
+# Doppelbindung per 1,3-H-Verschiebung (Amidin-/Guanidin-Tautomerie): welches
+# N gerade doppelt gebunden ist, legt die Zeichnung fest, nicht der Stoff —
+# eine E/Z-Angabe an dieser einen Bindung beschreibt kein Isomer. Gemeldet
+# wird weiter jede C=N ohne diesen Weg: Oxime, Hydrazone (N–Heteroatom), Imine,
+# Amidine ohne N–H.
+
+# So baut peptide.three_letter_smiles("cyclo(Arg-Gly-Asp-D-Phe-Val)") die Kette.
+CYCLO_RGDFV = (
+    "CC(C)[C@@H]1NC(=O)[C@@H](Cc2ccccc2)NC(=O)[C@H](CC(=O)O)NC(=O)CNC(=O)"
+    "[C@H](CCCNC(=N)N)NC1=O"
+)
+
+
+@pytest.mark.parametrize(
+    "smiles",
+    [
+        CYCLO_RGDFV,
+        "N=C(N)NCCC[C@H](N)C(=O)NCC(=O)O",  # Arg-Gly, wie der Sequenzbau es schreibt
+        "NC(=N)NCCC",  # Alkylguanidin
+        "CC(=N)N",  # Acetamidin
+        "CN=C(N)c1ccccc1",  # N-Methylbenzamidin: Tautomer über das NH2
+    ],
+)
+def test_amidine_and_guanidine_c_n_is_not_reported(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    assert [w for w in find_unspecified_stereo(mol) if w["kind"] == "double_bond"] == []
+
+
+@pytest.mark.parametrize(
+    "smiles",
+    [
+        "c1ccccc1C=Cc1ccccc1",  # Stilben ohne Angabe
+        "CC=NO",  # Acetaldoxim
+        "c1ccccc1C(=NO)C",  # Acetophenonoxim
+        "CC(=NO)N",  # Amidoxim: N–O, E/Z messbar
+        "CC=NN",  # Hydrazon
+        "CC=NC",  # Imin
+        "CC(=NC)N(C)C",  # Amidin ohne N–H: keine Tautomerie
+    ],
+)
+def test_real_open_double_bonds_are_still_reported(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    assert [w for w in find_unspecified_stereo(mol) if w["kind"] == "double_bond"]
+
+
+def test_stereo_variants_skip_the_guanidine():
+    from chemdraw_tool.generator import stereo_variants
+
+    variants = stereo_variants(Chem.MolFromSmiles("CC(F)CCNC(=N)N"))
+    assert len(variants) == 2
+    assert all("/" not in v["smiles"] and "\\" not in v["smiles"] for v in variants)

@@ -1,0 +1,4328 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q06609",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "commonName": "Human",
+    "taxonId": 9606,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Primates",
+     "Haplorrhini",
+     "Catarrhini",
+     "Hominidae",
+     "Homo"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "DNA repair protein RAD51 homolog 1"
+     },
+     "shortNames": [
+      {
+       "value": "HsRAD51"
+      },
+      {
+       "value": "hRAD51"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15226506"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "19303847"
+        }
+       ],
+       "value": "3.6.4.-"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "RAD51 homolog A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "8358431"
+       },
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:9817"
+       }
+      ],
+      "value": "RAD51"
+     },
+     "synonyms": [
+      {
+       "value": "RAD51A"
+      },
+      {
+       "value": "RECA"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1B22",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "NMR"
+      },
+      {
+       "key": "Resolution",
+       "value": "-"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-114"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1N0W",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=97-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "5H1B",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "4.40 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "5H1C",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "4.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "5JZC",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "4.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G=1-339"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 339,
+    "molWeight": 36966
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Primates",
+     "commonName": "primates",
+     "taxonId": 9443,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Haplorrhini",
+     "taxonId": 376913,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Simiiformes",
+     "taxonId": 314293,
+     "rank": "infraorder",
+     "hidden": true
+    },
+    {
+     "scientificName": "Catarrhini",
+     "taxonId": 9526,
+     "rank": "parvorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hominoidea",
+     "commonName": "apes",
+     "taxonId": 314295,
+     "rank": "superfamily",
+     "hidden": true
+    },
+    {
+     "scientificName": "Hominidae",
+     "commonName": "great apes",
+     "taxonId": 9604,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Homininae",
+     "taxonId": 207598,
+     "rank": "subfamily",
+     "hidden": true
+    },
+    {
+     "scientificName": "Homo",
+     "taxonId": 9605,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000000D8D2"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0A7G6",
+   "organism": {
+    "scientificName": "Escherichia coli (strain K12)",
+    "taxonId": 83333,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "synonyms": [
+      {
+       "value": "lexB"
+      },
+      {
+       "value": "recH"
+      },
+      {
+       "value": "rnmB"
+      },
+      {
+       "value": "tif"
+      },
+      {
+       "value": "umuB"
+      },
+      {
+       "value": "zab"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "b2699"
+      },
+      {
+       "value": "JW2669"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1AA3",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "NMR"
+      },
+      {
+       "key": "Resolution",
+       "value": "-"
+      },
+      {
+       "key": "Chains",
+       "value": "A=269-331"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1N03",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "20.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G=2-353"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1REA",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=2-353"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1U94",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.90 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=2-353"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1U98",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=2-353"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 353,
+    "molWeight": 37973
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000112C1C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P16971",
+   "organism": {
+    "scientificName": "Bacillus subtilis (strain 168)",
+    "taxonId": 224308,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Bacillaceae",
+     "Bacillus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "9384377"
+       }
+      ],
+      "value": "recA"
+     },
+     "synonyms": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "2115993"
+        }
+       ],
+       "value": "recE"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "BSU16940"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 348,
+    "molWeight": 38059
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillaceae",
+     "taxonId": 186817,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus",
+     "taxonId": 1386,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillus subtilis group",
+     "taxonId": 653685,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis",
+     "taxonId": 1423,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacillus subtilis subsp. subtilis",
+     "taxonId": 135461,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001748B3"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q08297",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "commonName": "Mouse",
+    "taxonId": 10090,
+    "lineage": [
+     "Eukaryota",
+     "Metazoa",
+     "Chordata",
+     "Craniata",
+     "Vertebrata",
+     "Euteleostomi",
+     "Mammalia",
+     "Eutheria",
+     "Euarchontoglires",
+     "Glires",
+     "Rodentia",
+     "Myomorpha",
+     "Muroidea",
+     "Muridae",
+     "Murinae",
+     "Mus",
+     "Mus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "DNA repair protein RAD51 homolog 1"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "Q06609"
+        }
+       ],
+       "value": "3.6.4.-"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "RAD51 homolog A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "8358431"
+       },
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "MGI",
+        "id": "MGI:97890"
+       }
+      ],
+      "value": "Rad51"
+     },
+     "synonyms": [
+      {
+       "value": "Rad51a"
+      },
+      {
+       "value": "Reca"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "9UI4",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.91 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G/H/I=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9UI5",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.04 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G/H/I=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9UI7",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.91 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9UI8",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G/H/I=1-339"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9UI9",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.42 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C/D/E/F/G/H/I=1-339"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 339,
+    "molWeight": 36971
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Opisthokonta",
+     "taxonId": 33154,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Metazoa",
+     "commonName": "animals",
+     "taxonId": 33208,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumetazoa",
+     "taxonId": 6072,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bilateria",
+     "taxonId": 33213,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Deuterostomia",
+     "taxonId": 33511,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Chordata",
+     "commonName": "chordates",
+     "taxonId": 7711,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Craniata",
+     "taxonId": 89593,
+     "rank": "subphylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vertebrata",
+     "commonName": "vertebrates",
+     "taxonId": 7742,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gnathostomata",
+     "commonName": "jawed vertebrates",
+     "taxonId": 7776,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Teleostomi",
+     "taxonId": 117570,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euteleostomi",
+     "commonName": "bony vertebrates",
+     "taxonId": 117571,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sarcopterygii",
+     "taxonId": 8287,
+     "rank": "superclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "Dipnotetrapodomorpha",
+     "taxonId": 1338369,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Tetrapoda",
+     "commonName": "tetrapods",
+     "taxonId": 32523,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Amniota",
+     "commonName": "amniotes",
+     "taxonId": 32524,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Mammalia",
+     "commonName": "mammals",
+     "taxonId": 40674,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Theria",
+     "taxonId": 32525,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eutheria",
+     "commonName": "placentals",
+     "taxonId": 9347,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Boreoeutheria",
+     "taxonId": 1437010,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Euarchontoglires",
+     "taxonId": 314146,
+     "rank": "superorder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Glires",
+     "commonName": "Rodents and rabbits",
+     "taxonId": 314147,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rodentia",
+     "commonName": "rodents",
+     "taxonId": 9989,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Myomorpha",
+     "commonName": "mice and others",
+     "taxonId": 1963758,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muroidea",
+     "taxonId": 337687,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Muridae",
+     "taxonId": 10066,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Murinae",
+     "taxonId": 39107,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mus",
+     "commonName": "mice",
+     "taxonId": 10088,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mus",
+     "taxonId": 862507,
+     "rank": "subgenus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000001A3B"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0A452",
+   "organism": {
+    "scientificName": "Streptococcus pneumoniae (strain ATCC BAA-255 / R6)",
+    "taxonId": 171101,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Streptococcaceae",
+     "Streptococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "spr1757"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "8AMD",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.90 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/F/G=1-388"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "8AMF",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/F/G=1-388"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 388,
+    "molWeight": 41950
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillales",
+     "taxonId": 186826,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcaceae",
+     "taxonId": 1300,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcus",
+     "taxonId": 1301,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcus pneumoniae",
+     "taxonId": 1313,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000051A59"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P9WHJ3",
+   "organism": {
+    "scientificName": "Mycobacterium tuberculosis (strain ATCC 25618 / H37Rv)",
+    "taxonId": 83332,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Mycobacteriales",
+     "Mycobacteriaceae",
+     "Mycobacterium",
+     "Mycobacterium tuberculosis complex"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Recombinase A"
+      }
+     }
+    ],
+    "contains": [
+     {
+      "recommendedName": {
+       "fullName": {
+        "value": "Endonuclease PI-MtuI"
+       },
+       "ecNumbers": [
+        {
+         "value": "3.1.-.-"
+        }
+       ]
+      },
+      "alternativeNames": [
+       {
+        "fullName": {
+         "value": "Mtu RecA intein"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Rv2737c"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "MTV002.02c"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1G18",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-790"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1G19",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-790"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1MO3",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.10 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-790"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1MO4",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-790"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1MO5",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.25 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-790"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 790,
+    "molWeight": 85389
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriales",
+     "taxonId": 85007,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriaceae",
+     "taxonId": 1762,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium",
+     "taxonId": 1763,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium tuberculosis complex",
+     "taxonId": 77643,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium tuberculosis",
+     "taxonId": 1773,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000040744"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P42445",
+   "organism": {
+    "scientificName": "Helicobacter pylori (strain ATCC 700392 / 26695)",
+    "commonName": "Campylobacter pylori",
+    "taxonId": 85962,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Campylobacterota",
+     "Epsilonproteobacteria",
+     "Campylobacterales",
+     "Helicobacteraceae",
+     "Helicobacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "HP_0153"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 347,
+    "molWeight": 37686
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacterota",
+     "commonName": "e-proteobacteria",
+     "taxonId": 29547,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Epsilonproteobacteria",
+     "taxonId": 3031852,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacterales",
+     "taxonId": 213849,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Helicobacteraceae",
+     "taxonId": 72293,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Helicobacter",
+     "taxonId": 209,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Helicobacter pylori",
+     "synonyms": [
+      "Campylobacter pylori"
+     ],
+     "taxonId": 210,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001334EA"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q39199",
+   "organism": {
+    "scientificName": "Arabidopsis thaliana",
+    "commonName": "Mouse-ear cress",
+    "taxonId": 3702,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "rosids",
+     "malvids",
+     "Brassicales",
+     "Brassicaceae",
+     "Camelineae",
+     "Arabidopsis"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "DNA repair protein recA homolog 1, chloroplastic"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Recombinase A homolog 1"
+      }
+     }
+    ],
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "RECA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "At1g79050"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "YUP8H12R.33"
+      },
+      {
+       "value": "YUP8H12R_18"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 439,
+    "molWeight": 47733
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids",
+     "taxonId": 71275,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "malvids",
+     "taxonId": 91836,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicales",
+     "taxonId": 3699,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicaceae",
+     "commonName": "mustard family",
+     "taxonId": 3700,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Camelineae",
+     "taxonId": 980083,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Arabidopsis",
+     "taxonId": 3701,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000001771"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q75JL2",
+   "organism": {
+    "scientificName": "Dictyostelium discoideum",
+    "commonName": "Social amoeba",
+    "taxonId": 44689,
+    "lineage": [
+     "Eukaryota",
+     "Amoebozoa",
+     "Evosea",
+     "Eumycetozoa",
+     "Dictyostelia",
+     "Dictyosteliales",
+     "Dictyosteliaceae",
+     "Dictyostelium"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Mitochondrial DNA repair protein recA homolog"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Recombinase A homolog"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "recA"
+     },
+     "orfNames": [
+      {
+       "value": "DDB_G0276073"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 452,
+    "molWeight": 49782
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Amoebozoa",
+     "taxonId": 554915,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Evosea",
+     "taxonId": 2605435,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Eumycetozoa",
+     "taxonId": 142796,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dictyostelia",
+     "commonName": "cellular slime molds",
+     "taxonId": 33083,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dictyosteliales",
+     "taxonId": 2058949,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dictyosteliaceae",
+     "taxonId": 2058185,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Dictyostelium",
+     "taxonId": 5782,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000002B8A"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P45383",
+   "organism": {
+    "scientificName": "Vibrio cholerae serotype O1 (strain ATCC 39315 / El Tor Inaba N16961)",
+    "taxonId": 243277,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Vibrionales",
+     "Vibrionaceae",
+     "Vibrio"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "VC_0543"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 354,
+    "molWeight": 38250
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrionales",
+     "taxonId": 135623,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrionaceae",
+     "taxonId": 641,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrio",
+     "taxonId": 662,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vibrio cholerae",
+     "taxonId": 666,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Vibrio cholerae O1",
+     "taxonId": 127906,
+     "rank": "serogroup",
+     "hidden": true
+    },
+    {
+     "scientificName": "Vibrio cholerae serotype O1 biovar El Tor",
+     "taxonId": 686,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000133545"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q59560",
+   "organism": {
+    "scientificName": "Mycolicibacterium smegmatis (strain ATCC 700084 / mc(2)155)",
+    "commonName": "Mycobacterium smegmatis",
+    "taxonId": 246196,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Mycobacteriales",
+     "Mycobacteriaceae",
+     "Mycolicibacterium"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "MSMEG_2723"
+      },
+      {
+       "value": "MSMEI_2656"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1UBC",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-349"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1UBE",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.30 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-349"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1UBF",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-349"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1UBG",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-349"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2G88",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-349"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 349,
+    "molWeight": 37301
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriales",
+     "taxonId": 85007,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriaceae",
+     "taxonId": 1762,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycolicibacterium",
+     "taxonId": 1866885,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycolicibacterium smegmatis",
+     "synonyms": [
+      "Mycobacterium smegmatis"
+     ],
+     "taxonId": 1772,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000133501"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P65977",
+   "organism": {
+    "scientificName": "Salmonella typhimurium (strain LT2 / SGSC1412 / ATCC 700720)",
+    "taxonId": 99287,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Salmonella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "STM2829"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 353,
+    "molWeight": 37944
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Salmonella",
+     "taxonId": 590,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Salmonella enterica",
+     "synonyms": [
+      "Salmonella choleraesuis"
+     ],
+     "taxonId": 28901,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Salmonella enterica I",
+     "taxonId": 59201,
+     "rank": "subspecies",
+     "hidden": true
+    },
+    {
+     "scientificName": "Salmonella typhimurium",
+     "taxonId": 90371,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000005A334"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "B7UHB7",
+   "organism": {
+    "scientificName": "Escherichia coli O127:H6 (strain E2348/69 / EPEC)",
+    "taxonId": 574521,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "E2348C_2962"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 353,
+    "molWeight": 37973
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Escherichia coli O127:H6",
+     "taxonId": 168807,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000112C1C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P42443",
+   "organism": {
+    "scientificName": "Deinococcus radiodurans (strain ATCC 13939 / DSM 20539 / JCM 16871 / CCUG 27074 / LMG 4051 / NBRC 15346 / NCIMB 9279 / VKM B-1422 / R1)",
+    "taxonId": 243230,
+    "lineage": [
+     "Bacteria",
+     "Thermotogati",
+     "Deinococcota",
+     "Deinococci",
+     "Deinococcales",
+     "Deinococcaceae",
+     "Deinococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "DR_2340"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1XP8",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=1-363"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 363,
+    "molWeight": 38145
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermotogati",
+     "taxonId": 3384194,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococcota",
+     "taxonId": 1297,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococci",
+     "taxonId": 188787,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococcales",
+     "taxonId": 118964,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococcaceae",
+     "taxonId": 183710,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococcus",
+     "taxonId": 1298,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Deinococcus radiodurans",
+     "taxonId": 1299,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001334E2"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q07809",
+   "organism": {
+    "scientificName": "Stutzerimonas stutzeri",
+    "commonName": "Pseudomonas stutzeri",
+    "taxonId": 316,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Pseudomonadales",
+     "Pseudomonadaceae",
+     "Stutzerimonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 347,
+    "molWeight": 37114
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadales",
+     "taxonId": 72274,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadaceae",
+     "taxonId": 135621,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Stutzerimonas",
+     "taxonId": 2901164,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Stutzerimonas stutzeri group",
+     "taxonId": 136846,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Stutzerimonas stutzeri subgroup",
+     "taxonId": 578833,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00003BF87A"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q2YRU7",
+   "organism": {
+    "scientificName": "Brucella abortus (strain 2308)",
+    "taxonId": 359391,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Hyphomicrobiales",
+     "Brucellaceae",
+     "Brucella/Ochrobactrum group",
+     "Brucella",
+     "Brucella melitensis group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "BAB1_1224"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 361,
+    "molWeight": 38735
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hyphomicrobiales",
+     "taxonId": 356,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brucellaceae",
+     "taxonId": 118882,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brucella/Ochrobactrum group",
+     "taxonId": 2826938,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brucella",
+     "taxonId": 234,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brucella melitensis group",
+     "taxonId": 3703990,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brucella abortus",
+     "taxonId": 235,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001334D4"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1WXK7",
+   "organism": {
+    "scientificName": "Halorhodospira halophila (strain DSM 244 / SL1)",
+    "commonName": "Ectothiorhodospira halophila (strain DSM 244 / SL1)",
+    "taxonId": 349124,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Chromatiales",
+     "Ectothiorhodospiraceae",
+     "Halorhodospira"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Hhal_1655"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 354,
+    "molWeight": 37646
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chromatiales",
+     "taxonId": 135613,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Ectothiorhodospiraceae",
+     "commonName": "purple sulfur bacteria",
+     "taxonId": 72276,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Halorhodospira",
+     "taxonId": 85108,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Halorhodospira halophila",
+     "synonyms": [
+      "Ectothiorhodospira halophila"
+     ],
+     "taxonId": 1053,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00006B502D"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A2CC22",
+   "organism": {
+    "scientificName": "Prochlorococcus marinus (strain MIT 9303)",
+    "taxonId": 59922,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Synechococcales",
+     "Prochlorococcaceae",
+     "Prochlorococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "P9303_22971"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 379,
+    "molWeight": 40547
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcales",
+     "taxonId": 1890424,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Prochlorococcaceae",
+     "taxonId": 2881426,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Prochlorococcus",
+     "taxonId": 1218,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Prochlorococcus marinus",
+     "taxonId": 1219,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000EF7A2F"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A4J0C1",
+   "organism": {
+    "scientificName": "Francisella tularensis subsp. tularensis (strain WY96-3418)",
+    "taxonId": 418136,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Thiotrichales",
+     "Francisellaceae",
+     "Francisella"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "FTW_1988"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 359,
+    "molWeight": 38834
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thiotrichales",
+     "taxonId": 72273,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Francisellaceae",
+     "taxonId": 34064,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Francisella",
+     "taxonId": 262,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Francisella tularensis",
+     "taxonId": 263,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Francisella tularensis subsp. tularensis",
+     "taxonId": 119856,
+     "rank": "subspecies",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000049C5F9"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A7I456",
+   "organism": {
+    "scientificName": "Campylobacter hominis (strain ATCC BAA-381 / DSM 21671 / CCUG 45161 / LMG 19568 / NCTC 13146 / CH001A)",
+    "taxonId": 360107,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Campylobacterota",
+     "Epsilonproteobacteria",
+     "Campylobacterales",
+     "Campylobacteraceae",
+     "Campylobacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "CHAB381_1787"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 348,
+    "molWeight": 37549
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacterota",
+     "commonName": "e-proteobacteria",
+     "taxonId": 29547,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Epsilonproteobacteria",
+     "taxonId": 3031852,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacterales",
+     "taxonId": 213849,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacteraceae",
+     "taxonId": 72294,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacter",
+     "taxonId": 194,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Campylobacter hominis",
+     "taxonId": 76517,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0001594393"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A8A3H6",
+   "organism": {
+    "scientificName": "Escherichia coli O9:H4 (strain HS)",
+    "taxonId": 331112,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "EcHS_A2835"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 353,
+    "molWeight": 37973
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000112C1C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A8Z1V6",
+   "organism": {
+    "scientificName": "Staphylococcus aureus (strain USA300 / TCH1516)",
+    "taxonId": 451516,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Staphylococcaceae",
+     "Staphylococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "USA300HOU_1217"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 347,
+    "molWeight": 37657
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Staphylococcaceae",
+     "taxonId": 90964,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Staphylococcus",
+     "taxonId": 1279,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Staphylococcus aureus",
+     "taxonId": 1280,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Staphylococcus aureus (strain USA300)",
+     "taxonId": 367830,
+     "rank": "strain",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000013352D"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "B0SCX2",
+   "organism": {
+    "scientificName": "Leptospira biflexa serovar Patoc (strain Patoc 1 / Ames)",
+    "taxonId": 355278,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Spirochaetota",
+     "Leptospiria",
+     "Leptospirales",
+     "Leptospiraceae",
+     "Leptospira"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "LBF_2374"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 387,
+    "molWeight": 42320
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Spirochaetota",
+     "taxonId": 203691,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leptospiria",
+     "taxonId": 3118682,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leptospirales",
+     "taxonId": 1643688,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leptospiraceae",
+     "taxonId": 170,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leptospira",
+     "taxonId": 171,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Leptospira biflexa",
+     "taxonId": 172,
+     "rank": "species",
+     "hidden": true
+    },
+    {
+     "scientificName": "Leptospira biflexa serovar Patoc",
+     "taxonId": 145259,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000165A78F"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "B1LQ17",
+   "organism": {
+    "scientificName": "Escherichia coli (strain SMS-3-5 / SECEC)",
+    "taxonId": 439855,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Enterobacterales",
+     "Enterobacteriaceae",
+     "Escherichia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "EcSMS35_2822"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 353,
+    "molWeight": 37973
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacterales",
+     "taxonId": 91347,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Enterobacteriaceae",
+     "commonName": "enterobacteria",
+     "taxonId": 543,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia",
+     "taxonId": 561,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Escherichia coli",
+     "taxonId": 562,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000112C1C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "B2IM28",
+   "organism": {
+    "scientificName": "Streptococcus pneumoniae (strain CGSP14)",
+    "taxonId": 516950,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Lactobacillales",
+     "Streptococcaceae",
+     "Streptococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "Protein RecA"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000255",
+         "source": "HAMAP-Rule",
+         "id": "MF_00268"
+        }
+       ],
+       "value": "Recombinase A"
+      }
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00268"
+       }
+      ],
+      "value": "recA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "SPCG_1913"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 388,
+    "molWeight": 41954
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lactobacillales",
+     "taxonId": 186826,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcaceae",
+     "taxonId": 1300,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcus",
+     "taxonId": 1301,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptococcus pneumoniae",
+     "taxonId": 1313,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00004A7FDD"
+   }
+  }
+ ]
+}

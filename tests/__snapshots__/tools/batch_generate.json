@@ -294,6 +294,17 @@
             "title": "Properties",
             "type": "object"
           },
+          "protein": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ProteinView"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "stereoNote": {
             "default": "",
             "title": "Stereonote",
@@ -351,6 +362,93 @@
           }
         },
         "title": "MoleculePayload",
+        "type": "object"
+      },
+      "ProteinView": {
+        "description": "Protein cartoon for the panel (backbone N/Cα/O, secondary structure, bound groups).",
+        "properties": {
+          "chains": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Chains",
+            "type": "array"
+          },
+          "citation": {
+            "default": "",
+            "title": "Citation",
+            "type": "string"
+          },
+          "colorBy": {
+            "default": "ss",
+            "title": "Colorby",
+            "type": "string"
+          },
+          "identifier": {
+            "default": "",
+            "title": "Identifier",
+            "type": "string"
+          },
+          "ligands": {
+            "default": [],
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Ligands",
+            "type": "array"
+          },
+          "plddtMean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Plddtmean"
+          },
+          "scheme": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Scheme"
+          },
+          "source": {
+            "default": "",
+            "title": "Source",
+            "type": "string"
+          },
+          "ssSource": {
+            "default": "deposited",
+            "title": "Sssource",
+            "type": "string"
+          },
+          "subtitle": {
+            "default": "",
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "title": "ProteinView",
         "type": "object"
       },
       "StereoWarning": {

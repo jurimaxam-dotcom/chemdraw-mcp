@@ -1,0 +1,1445 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A375I0P9",
+   "organism": {
+    "scientificName": "Cupriavidus neocaledonicus",
+    "taxonId": 1040979,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "SOZ40552.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000256710"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Betaproteobacteria",
+     "Burkholderiales",
+     "Burkholderiaceae",
+     "Cupriavidus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "SOZ40552.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "SOZ40552.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "SOZ40552.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "SOZ40552.1"
+        }
+       ],
+       "value": "CBM2605_P270007"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 501,
+    "molWeight": 57405
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Betaproteobacteria",
+     "commonName": "b-proteobacteria",
+     "taxonId": 28216,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiales",
+     "taxonId": 80840,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiaceae",
+     "taxonId": 119060,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cupriavidus",
+     "taxonId": 106589,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0001719A8E"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A4P1KFW9",
+   "organism": {
+    "scientificName": "Brevundimonas vancanneytii",
+    "taxonId": 1325724,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "VTO19185.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000309952"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Caulobacterales",
+     "Caulobacteraceae",
+     "Brevundimonas"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "VTO19185.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "VTO19185.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "VTO19185.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "VTO19185.1"
+        }
+       ],
+       "value": "NCTC9239_03026"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 459,
+    "molWeight": 53135
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caulobacterales",
+     "taxonId": 204458,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caulobacteraceae",
+     "taxonId": 76892,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brevundimonas",
+     "taxonId": 41275,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0010C491E5"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ACS1EGV2",
+   "organism": {
+    "scientificName": "Mycobacterium kansasii 662",
+    "taxonId": 1299326,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "EUA20350.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000020561"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Mycobacteriales",
+     "Mycobacteriaceae",
+     "Mycobacterium"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "EUA20350.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "EUA20350.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "EUA20350.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "EUA20350.1"
+        }
+       ],
+       "value": "I545_1789"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 506,
+    "molWeight": 58356
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriales",
+     "taxonId": 85007,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacteriaceae",
+     "taxonId": 1762,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium",
+     "taxonId": 1763,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mycobacterium kansasii",
+     "taxonId": 1768,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00044F9C77"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A1C3NYD1",
+   "organism": {
+    "scientificName": "Candidatus Protofrankia californiensis",
+    "taxonId": 1839754,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "SBW22540.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000199013"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Actinomycetota",
+     "Actinomycetes",
+     "Frankiales",
+     "Frankiaceae",
+     "Protofrankia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00012710"
+       }
+      ],
+      "value": "propane 2-monooxygenase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00012710"
+        }
+       ],
+       "value": "1.14.13.227"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "SBW22540.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "SBW22540.1"
+        }
+       ],
+       "value": "FDG2_2788"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 507,
+    "molWeight": 57721
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetota",
+     "commonName": "actinobacteria",
+     "synonyms": [
+      "Actinobacteria"
+     ],
+     "taxonId": 201174,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Actinomycetes",
+     "commonName": "high G+C Gram-positive bacteria",
+     "taxonId": 1760,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Frankiales",
+     "taxonId": 85013,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Frankiaceae",
+     "taxonId": 74712,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Protofrankia",
+     "taxonId": 2994361,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000807CBC4"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A7Z0VQ93",
+   "organism": {
+    "scientificName": "Candidatus Thiodiazotropha endolucinida",
+    "taxonId": 1655433,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "ODJ89376.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000094769"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Chromatiales",
+     "Sedimenticolaceae",
+     "Candidatus Thiodiazotropha"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "ODJ89376.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "ODJ89376.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "ODJ89376.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "ODJ89376.1"
+        }
+       ],
+       "value": "CODIS_04750"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 507,
+    "molWeight": 59440
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chromatiales",
+     "taxonId": 135613,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sedimenticolaceae",
+     "taxonId": 3067276,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Candidatus Thiodiazotropha",
+     "taxonId": 1913444,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00083FBB49"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0ACA8ZC85",
+   "organism": {
+    "scientificName": "Kyrpidia spormannii",
+    "taxonId": 2055160,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "CAB3393601.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000501793"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Bacillota",
+     "Bacilli",
+     "Caryophanales",
+     "Alicyclobacillaceae",
+     "Kyrpidia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000256",
+        "source": "ARBA",
+        "id": "ARBA00012710"
+       }
+      ],
+      "value": "propane 2-monooxygenase"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000256",
+         "source": "ARBA",
+         "id": "ARBA00012710"
+        }
+       ],
+       "value": "1.14.13.227"
+      }
+     ]
+    }
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "CAB3393601.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "CAB3393601.1"
+        }
+       ],
+       "value": "FAVT5_2461"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 494,
+    "molWeight": 57473
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillota",
+     "commonName": "firmicutes",
+     "synonyms": [
+      "Firmicutes"
+     ],
+     "taxonId": 1239,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacilli",
+     "taxonId": 91061,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophanales",
+     "taxonId": 1385,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alicyclobacillaceae",
+     "taxonId": 186823,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Kyrpidia",
+     "taxonId": 1129704,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00143FECCD"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "Q1LNS7",
+   "organism": {
+    "scientificName": "Cupriavidus metallidurans (strain ATCC 43123 / DSM 2839 / NBRC 102507 / CH34)",
+    "commonName": "Ralstonia metallidurans",
+    "taxonId": 266264,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "ABF08199.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000002429"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Betaproteobacteria",
+     "Burkholderiales",
+     "Burkholderiaceae",
+     "Cupriavidus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "ABF08199.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A (Belongs to CMGI-2)"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "ABF08199.1"
+         }
+        ],
+        "value": "1.14.13.25"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "ABF08199.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "ABF08199.1"
+        }
+       ],
+       "value": "Rmet_1316"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 500,
+    "molWeight": 57775
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Betaproteobacteria",
+     "commonName": "b-proteobacteria",
+     "taxonId": 28216,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiales",
+     "taxonId": 80840,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiaceae",
+     "taxonId": 119060,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cupriavidus",
+     "taxonId": 106589,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cupriavidus metallidurans",
+     "taxonId": 119219,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000037C6A6"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "Q97YT1",
+   "organism": {
+    "scientificName": "Saccharolobus solfataricus (strain ATCC 35092 / DSM 1617 / JCM 11322 / P2)",
+    "commonName": "Sulfolobus solfataricus",
+    "taxonId": 273057,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AAK41473.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000001974"
+     }
+    ],
+    "lineage": [
+     "Archaea",
+     "Thermoproteota",
+     "Thermoprotei",
+     "Sulfolobales",
+     "Sulfolobaceae",
+     "Saccharolobus"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAK41473.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A. amino end (TmoA)"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "AAK41473.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AAK41473.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orderedLocusNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AAK41473.1"
+        }
+       ],
+       "value": "SSO1227"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 268,
+    "molWeight": 30705
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Archaea",
+     "taxonId": 2157,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermoproteati",
+     "taxonId": 1783275,
+     "rank": "kingdom",
+     "hidden": true
+    },
+    {
+     "scientificName": "Thermoproteota",
+     "taxonId": 28889,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermoprotei",
+     "taxonId": 183924,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sulfolobales",
+     "taxonId": 2281,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sulfolobaceae",
+     "taxonId": 118883,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Saccharolobus",
+     "taxonId": 2100760,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Saccharolobus solfataricus",
+     "synonyms": [
+      "Sulfolobus solfataricus"
+     ],
+     "taxonId": 2287,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00000643B8"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A0K0WTC9",
+   "organism": {
+    "scientificName": "Ralstonia sp. AET-6-14",
+    "taxonId": 1661199,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "AKS26195.1"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Betaproteobacteria",
+     "Burkholderiales",
+     "Burkholderiaceae",
+     "Ralstonia"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "AKS26195.1"
+        }
+       ],
+       "value": "Toluene monooxygenase"
+      }
+     }
+    ],
+    "flag": "Fragment"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "AKS26195.1"
+       }
+      ],
+      "value": "tmoA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 162,
+    "molWeight": 18698
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Betaproteobacteria",
+     "commonName": "b-proteobacteria",
+     "taxonId": 28216,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiales",
+     "taxonId": 80840,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Burkholderiaceae",
+     "taxonId": 119060,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Ralstonia",
+     "taxonId": 48736,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "unclassified Ralstonia",
+     "taxonId": 209769,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00067A487E"
+   }
+  },
+  {
+   "entryType": "UniProtKB unreviewed (TrEMBL)",
+   "primaryAccession": "A0A2U3MYH3",
+   "organism": {
+    "scientificName": "Acinetobacter stercoris",
+    "taxonId": 2126983,
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "EMBL",
+      "id": "SPL70488.1"
+     },
+     {
+      "evidenceCode": "ECO:0000313",
+      "source": "Proteomes",
+      "id": "UP000245974"
+     }
+    ],
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Gammaproteobacteria",
+     "Moraxellales",
+     "Moraxellaceae",
+     "Acinetobacter"
+    ]
+   },
+   "proteinDescription": {
+    "submissionNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "SPL70488.1"
+        }
+       ],
+       "value": "Toluene-4-monooxygenase system protein A"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000313",
+          "source": "EMBL",
+          "id": "SPL70488.1"
+         }
+        ],
+        "value": "1.14.13.-"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000313",
+        "source": "EMBL",
+        "id": "SPL70488.1"
+       }
+      ],
+      "value": "tmoA"
+     },
+     "orfNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000313",
+         "source": "EMBL",
+         "id": "SPL70488.1"
+        }
+       ],
+       "value": "KPC_1666"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 508,
+    "molWeight": 59905
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gammaproteobacteria",
+     "commonName": "g-proteobacteria",
+     "taxonId": 1236,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Moraxellales",
+     "taxonId": 2887326,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Moraxellaceae",
+     "taxonId": 468,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acinetobacter",
+     "taxonId": 469,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000D6099E6"
+   }
+  }
+ ]
+}

@@ -1,0 +1,721 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"alcohol dehydrogenase\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P00326",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Alcohol dehydrogenase 1C"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "3676282"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "6342669"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "6391957"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase subunit gamma"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "Aryl-alcohol dehydrogenase ADH1C"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "6342669"
+         }
+        ],
+        "value": "1.1.1.90"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 375,
+    "molWeight": 39868
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P07327",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Alcohol dehydrogenase 1A"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "2738060"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase subunit alpha"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 375,
+    "molWeight": 39859
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P28332",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alcohol dehydrogenase 6"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "1755855"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 368,
+    "molWeight": 39073
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P00325",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alcohol dehydrogenase 1B"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15564879"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "2738060"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "3676282"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "6342669"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase subunit beta"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "All-trans-retinol dehydrogenase [NAD(+)] ADH1B"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "16787387"
+         }
+        ],
+        "value": "1.1.1.105"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "Aryl-alcohol dehydrogenase ADH1B"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "6342669"
+         }
+        ],
+        "value": "1.1.1.90"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 375,
+    "molWeight": 39835
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P08319",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "All-trans-retinol dehydrogenase [NAD(+)] ADH4"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "17279314"
+        }
+       ],
+       "value": "1.1.1.105"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "17279314"
+        }
+       ],
+       "value": "Alcohol dehydrogenase 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase 4"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class II pi chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 380,
+    "molWeight": 40222
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P11766",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Alcohol dehydrogenase class-3"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "8460164"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase 5"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class chi chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class-III"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Glutathione-dependent formaldehyde dehydrogenase"
+      },
+      "shortNames": [
+       {
+        "value": "FALDH"
+       },
+       {
+        "value": "FDH"
+       },
+       {
+        "value": "GSH-FDH"
+       }
+      ],
+      "ecNumbers": [
+       {
+        "value": "1.1.1.-"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "S-(hydroxymethyl)glutathione dehydrogenase"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "8460164"
+         }
+        ],
+        "value": "1.1.1.284"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 374,
+    "molWeight": 39724
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q8IWW8",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hydroxyacid-oxoacid transhydrogenase, mitochondrial"
+     },
+     "shortNames": [
+      {
+       "value": "HOT"
+      }
+     ],
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "16435184"
+        }
+       ],
+       "value": "1.1.99.24"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase iron-containing protein 1"
+      },
+      "shortNames": [
+       {
+        "value": "ADHFe1"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Fe-containing alcohol dehydrogenase"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 467,
+    "molWeight": 50308
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P40394",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "All-trans-retinol dehydrogenase [NAD(+)] ADH7"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "15369820"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "16787387"
+        }
+       ],
+       "value": "1.1.1.105"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class 4 mu/sigma chain"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "9600267"
+         }
+        ],
+        "value": "1.1.1.1"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class IV mu/sigma chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Gastric alcohol dehydrogenase"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "Omega-hydroxydecanoate dehydrogenase ADH7"
+      },
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "source": "PubMed",
+          "id": "9600267"
+         }
+        ],
+        "value": "1.1.1.66"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Retinol dehydrogenase"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 386,
+    "molWeight": 41481
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P06757",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "taxonId": 10116
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alcohol dehydrogenase 1"
+     },
+     "ecNumbers": [
+      {
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase A subunit"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 376,
+    "molWeight": 39645
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P10127",
+   "organism": {
+    "scientificName": "Saccharomyces cerevisiae (strain ATCC 204508 / S288c)",
+    "taxonId": 559292
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Alcohol dehydrogenase 4"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "3282541"
+        }
+       ],
+       "value": "1.1.1.1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase IV"
+      },
+      "shortNames": [
+       {
+        "value": "ADHIV"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 382,
+    "molWeight": 41142
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P00334",
+   "organism": {
+    "scientificName": "Drosophila melanogaster",
+    "taxonId": 7227
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alcohol dehydrogenase"
+     },
+     "ecNumbers": [
+      {
+       "value": "1.1.1.1"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 256,
+    "molWeight": 27761
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q64563",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "taxonId": 10116
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "All-trans-retinol dehydrogenase [NAD(+)] ADH4"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "17279314"
+        }
+       ],
+       "value": "1.1.1.105"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "17279314"
+        }
+       ],
+       "value": "Alcohol dehydrogenase 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase 4"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Alcohol dehydrogenase class II"
+      },
+      "shortNames": [
+       {
+        "value": "Alcohol dehydrogenase II"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 377,
+    "molWeight": 40277
+   },
+   "features": []
+  }
+ ]
+}

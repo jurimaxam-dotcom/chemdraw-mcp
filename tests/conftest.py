@@ -101,3 +101,30 @@ def _nci_ueber_requests_get(monkeypatch, request):
     monkeypatch.setattr(
         resolver, "_nci_get", lambda url: resolver.requests.get(url, timeout=resolver._TIMEOUT)
     )
+
+
+@pytest.fixture(autouse=True)
+def _protein_lookup_offline(monkeypatch):
+    """UniProt-Nachfrage des Resolvers (E6) ohne Netz: kein Protein bekannt.
+
+    Der Resolver fragt UniProt, wenn alle Strukturquellen einen Namen nicht
+    kennen, und bei Enzymnamen (-ase, -zyme). Ohne diese Attrappe ginge jeder
+    not_found-Test einmal mehr ins Netz (unter `kein_netz` rot).
+    `tests/test_proteins.py` setzt die Nachfrage je Test selbst.
+    """
+    from chemdraw_tool import resolver
+
+    monkeypatch.setattr(resolver, "_protein_lookup", lambda name: None)
+
+
+@pytest.fixture(autouse=True)
+def _gene_lookup_offline(monkeypatch):
+    """Genkürzel-Nachfrage des Resolvers (E8) ohne Netz: kein Gen bekannt.
+
+    Der Resolver fragt UniProt vor der Kaskade, wenn die Eingabe wie ein
+    bakterielles Genkürzel aussieht ("RecA"). Tests, die das prüfen, setzen
+    `resolver._gene_lookup` selbst.
+    """
+    from chemdraw_tool import resolver
+
+    monkeypatch.setattr(resolver, "_gene_lookup", lambda name: None)

@@ -332,6 +332,62 @@ def fischer_rows(mol: Chem.Mol) -> list[dict] | None:
     return None
 
 
+def open_chain_form(mol: Chem.Mol) -> Chem.Mol | None:
+    """Offenkettige Form eines Ringzuckers (Halbacetal) mit Fischer-Projektion, oder None.
+
+    E17 (10.11.2026): Ring-O–C(anomer)-Bindung lösen, das anomere C wird
+    Aldehyd/Keton, der Ring-O eine OH-Gruppe. Die übrigen Stereozentren
+    behalten ihren Chiralitätstag — ihre Nachbarn bleiben dieselben. Nur
+    Halbacetale: ein Glykosid (OMe, Saccharose) hat keine offene Form.
+    """
+    if mol is None or any(a.GetAtomicNum() not in (1, 6, 8) for a in mol.GetAtoms()):
+        return None
+    rings = mol.GetRingInfo().AtomRings()
+    if len(rings) != 1 or len(rings[0]) not in (5, 6):
+        return None
+    ring = set(rings[0])
+    ring_o = [i for i in ring if mol.GetAtomWithIdx(i).GetAtomicNum() == 8]
+    if len(ring_o) != 1:
+        return None
+    anomeric = []
+    for c in mol.GetAtomWithIdx(ring_o[0]).GetNeighbors():
+        oh = [
+            n
+            for n in c.GetNeighbors()
+            if n.GetIdx() not in ring
+            and n.GetAtomicNum() == 8
+            and n.GetDegree() == 1
+            and n.GetTotalNumHs() == 1
+        ]
+        if oh:
+            anomeric.append((c.GetIdx(), oh[0].GetIdx()))
+    if len(anomeric) != 1:
+        return None
+    c, oh = anomeric[0]
+    rw = Chem.RWMol(mol)
+    rw.RemoveBond(c, ring_o[0])
+    rw.GetBondBetweenAtoms(c, oh).SetBondType(Chem.BondType.DOUBLE)
+    carbon = rw.GetAtomWithIdx(c)
+    carbon.SetChiralTag(_UNSPECIFIED)
+    for idx in (c, oh, ring_o[0]):
+        rw.GetAtomWithIdx(idx).SetNoImplicit(False)
+        rw.GetAtomWithIdx(idx).SetNumExplicitHs(0)
+    opened = rw.GetMol()
+    try:
+        Chem.SanitizeMol(opened)
+    except Exception:  # noqa: BLE001 — kein sauberes Halbacetal: keine offene Form
+        return None
+    opened = Chem.MolFromSmiles(Chem.MolToSmiles(opened))
+    return opened if fischer_rows(opened) is not None else None
+
+
+def fischer_source(mol: Chem.Mol) -> Chem.Mol | None:
+    """Das Molekül, dessen Fischer-Projektion das Panel zeigt: es selbst oder seine offene Form."""
+    if fischer_rows(mol) is not None:
+        return mol
+    return open_chain_form(mol)
+
+
 # --- Haworth --------------------------------------------------------------
 
 
@@ -442,12 +498,21 @@ def haworth_ring(mol: Chem.Mol) -> list[dict] | None:
 
 
 def projection_note(mol: Chem.Mol) -> str:
-    """Ein Satz für Ringzucker: warum es keine Fischer-Projektion gibt."""
+    """Ein Satz für Ringzucker: was die Fischer-Projektion zeigt (oder warum es keine gibt).
+
+    E17: Der alte Rat „'D-glucose' eingeben“ führte zur Pyranose ohne
+    Fischer-Knopf. Jetzt zeigt Fischer die lokal hergeleitete offene Form.
+    """
     if mol is None or haworth_ring(mol) is None:
         return ""
+    if open_chain_form(mol) is not None:
+        return (
+            "The Fischer projection shows the open-chain form of this sugar; the "
+            "ring and the anomeric configuration (alpha/beta) are not part of it."
+        )
     return (
-        "The Fischer projection shows the open-chain form. Draw the open-chain "
-        "sugar (e.g. 'D-glucose' instead of 'beta-D-glucopyranose') to get it."
+        "No Fischer projection: the anomeric carbon carries no OH (a glycoside), "
+        "so the ring has no open-chain form."
     )
 
 
@@ -574,6 +639,34 @@ def fischer_svg(mol: Chem.Mol) -> str:
             box.label(row["left"], -_ARM - 4, y + _BASELINE, "end")
             box.label(row["right"], _ARM + 4, y + _BASELINE, "start")
     return _wrap(parts, box)
+
+
+_CAPTION_SIZE = 12
+
+
+def fischer_view_svg(mol: Chem.Mol) -> str:
+    """Fischer-Ansicht des Panels: der Stoff selbst oder, bei einem Ringzucker,
+    seine offene Form mit der Unterschrift „open-chain form“ (E17)."""
+    if fischer_rows(mol) is not None:
+        return fischer_svg(mol)
+    opened = open_chain_form(mol)
+    if opened is None:
+        return ""
+    svg = fischer_svg(opened)
+    rows = len(fischer_rows(opened))
+    y = (rows - 1) * _ROW + _BASELINE + 2 * _FONT_SIZE
+    caption = (
+        f"<text x='0' y='{y:.1f}' font-family='{_FONT}' font-size='{_CAPTION_SIZE}' "
+        f"text-anchor='middle' fill='{_STROKE}'>open-chain form</text>"
+    )
+    # viewBox nach unten um die Unterschrift erweitern (Breite reicht: 15 Zeichen < Kette)
+    head, rest = svg.split("viewBox='", 1)
+    vx, vy, vw, vh = (float(v) for v in rest.split("'", 1)[0].split())
+    width = max(vw, _CAPTION_SIZE * 0.62 * 15 + 2 * _PAD)
+    vx = min(vx, -width / 2)
+    box = f"{vx:.0f} {vy:.0f} {max(vw, width):.0f} {y - vy + _PAD:.0f}"
+    body = rest.split("'", 1)[1]
+    return f"{head}viewBox='{box}'{body[:-len('</svg>')]}{caption}</svg>"
 
 
 _S = 62

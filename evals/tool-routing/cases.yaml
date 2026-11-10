@@ -245,6 +245,57 @@ cases:
     forbidden: [lookup, generate_molecule]
     why: Datenblatt heisst Panel mit Struktur plus gruppierten Quellen.
 
+  # --- Proteine (E6, 10.11.2026) ---------------------------------------------
+  - id: protein-bare-name
+    prompt: "Show me trastuzumab"
+    expect: generate_molecule
+    forbidden: [lookup_molecule_data, batch_generate]
+    why: >
+      Ein blosser Stoffname bleibt bei generate_molecule, auch fuer ein
+      Protein — dort kommt seit E8 die Rückgratspur (Fab-Fragment 1N8Z).
+      Die Default-Regel darf an Proteinnamen nicht aufweichen.
+
+  # --- Proteine zeichnen (E8, 10.11.2026) -------------------------------------
+  - id: protein-draw-enzyme
+    prompt: "Draw lysozyme"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data, generate_3d]
+    why: >
+      Zeichenauftrag für ein Enzym: generate_molecule liefert das
+      Rückgratbild (PDB 1LYZ, Huhn) als PNG/SVG plus Panel.
+
+  - id: protein-3d-structure
+    prompt: "Show me the 3D structure of trypsin"
+    expect: generate_3d
+    forbidden: [generate_molecule, lookup]
+    why: >
+      „3D structure“ eines Proteins ist die drehbare Rückgratspur von
+      generate_3d — nicht das Datenblatt, nicht das flache Bild.
+
+  - id: protein-draw-antibody
+    prompt: "Draw an antibody"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data, generate_spectrum]
+    why: >
+      Ein Antikörper ohne Namen bekommt die Architektur eines intakten IgG
+      (1HZH) plus das IgG-Domänenschema — über generate_molecule.
+
+  - id: protein-draw-antibody-german
+    prompt: "Zeichne Trastuzumab"
+    expect: generate_molecule
+    forbidden: [lookup, lookup_molecule_data, batch_generate]
+    why: >
+      Deutscher Zeichenauftrag mit INN: dasselbe wie „Draw trastuzumab“ —
+      Fab-Fragment, ehrlich beschriftet, nicht das ganze IgG.
+
+  - id: lookup-protein-function
+    prompt: "Welche Funktion hat Lysozym und welche EC-Nummer?"
+    expect: lookup
+    forbidden: [generate_molecule, lookup_molecule_data]
+    why: >
+      Benannte Fakten zu einem Protein (Funktion, EC-Nummer) sind das
+      UniProt-Datenblatt von lookup topic biochem — kein Zeichenauftrag.
+
   # --- Rechnen vs. Zeichnen (die Kurve gegen die Zahl) ----------------------
   - id: calc-ph-number
     prompt: "Welchen pH hat 0,1 M Essigsaeure? pKs 4,76"

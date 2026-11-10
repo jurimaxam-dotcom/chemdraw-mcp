@@ -78,6 +78,9 @@
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[fill="#000000"]          { fill: var(--atom-c); }
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) text[fill="#000000"]          { fill: var(--atom-c); } /* Fischer/Haworth-Beschriftung */
+  /* Kürzel (Boc, Ph, CO2H …) sind Dummy-Atome, RDKit zeichnet sie in #191919 — Label und angrenzende Halbbindung (E16, 10.11.2026). */
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#191919"] { stroke: var(--atom-c) !important; }
+  :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[fill="#191919"]          { fill: var(--atom-c); }
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[fill="#FF0000"]          { fill: var(--atom-o); }
   :root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }
@@ -143,6 +146,8 @@
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#000000"] { stroke: var(--atom-c) !important; }
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[fill="#000000"]          { fill: var(--atom-c); }
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) text[fill="#000000"]          { fill: var(--atom-c); }
+  :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#191919"] { stroke: var(--atom-c) !important; }
+  :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[fill="#191919"]          { fill: var(--atom-c); }
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#FF0000"] { stroke: var(--atom-o) !important; }
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[fill="#FF0000"]          { fill: var(--atom-o); }
   :root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg) path[style*="stroke:#0000FF"] { stroke: var(--atom-n) !important; }

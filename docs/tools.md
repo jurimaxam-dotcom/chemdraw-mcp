@@ -19,7 +19,7 @@ trivial names) or SMILES. Names resolve through OPSIN, PubChem and NCI, with
 English, counter-ion, form and rotation-sign spellings as fallbacks, and a
 direct hit is cross-checked against the other source (free form over salt
 unless the name says salt, the more defined stereo form wins); a pinned
-identity test checks 44 inputs against their InChIKey, and family names such
+identity test checks 67 inputs against their InChIKey, and family names such
 as "xylene" return an isomer picker instead of a silent guess. The panel
 shows properties, functional groups and the Lipinski rule of five, with
 buttons for the data sheet, PNG export, an Anki card and a rotatable 3D
@@ -38,6 +38,130 @@ residues are laid out as a stretched backbone. Names with a protecting group
 or ester (`Boc-Ala-OH`, `Asp-Phe-OMe`) and trivial names (`Met-enkephalin`) go
 to the databases as before. "X zwitterion" resolves X and charges its
 α-amino and α-carboxyl group, keeping the stereo of X.
+
+**Proteins.** Enzymes, antibodies and large peptide hormones have no readable
+skeletal formula. `generate_molecule` (2D image + panel) and `generate_3d`
+(rotatable panel) draw them as a **cartoon** (ribbon diagram, since E13):
+α-helices as ribbons, β-strands as flat arrows pointing to the C-terminus,
+loops as a thin tube, from the backbone atoms (N, Cα, C, O) of an
+experimental structure (PDB) or, without one, of the AlphaFold model. The
+view is the principal-axis view (longest extent horizontal, N-terminus
+left, tilted when that shows less overlap; a rotation, never a mirror
+image), coloured by secondary structure or — for several chains — by chain.
+Bound groups near the protein (heme, metal ions, bound inhibitors)
+are drawn as sticks and spheres and named in the
+legend; water, buffer components, simple salts and glycans are left out.
+Secondary structure comes from the entry's HELIX/SHEET records; an entry
+without them (some NMR and cryo-EM files) gets its own DSSP-style
+assignment (Kabsch & Sander), and the message says so. Old entries whose
+annotation omits helices (1LYZ helix D, 2PTN's C-terminal helix) get those
+helices filled in from the same assignment — only where the annotation says
+loop over the whole computed helix of six or more residues. PNG and SVG land in
+`~/ChemDraw-Output/proteine/`; title, subtitle and image always name
+protein, organism and source.
+
+**The protein panel.** The cartoon is rendered with
+[Mol*](https://molstar.org) 5.13.1 (MIT; Sehnal et al. 2021), the viewer
+RCSB and PDBe use, with ambient occlusion and outlines. Drag to rotate,
+pinch or ⌘/Ctrl+scroll to zoom (plain scrolling keeps scrolling the chat),
+right-drag to move; colour by secondary structure, chain (several chains),
+rainbow N→C (always offered) or — for AlphaFold models — pLDDT confidence;
+Cartoon/Trace toggle; Reset. Antibodies get a Structure | Scheme toggle: the
+IgG domain scheme is drawn in the panel itself (light and dark theme); a
+general antibody name opens on the scheme, an antibody with its own Fab
+structure opens on the structure and marks in the scheme which Fab arm it
+is. The panel follows the host's light/dark theme; the files stay light. Export
+PNG saves the cartoon as shown, at three times the panel resolution. The
+engine is about 2.4 MB of the panel file but only runs when a protein is
+shown. If the host has no WebGL (or blocks the script), the panel keeps the
+SVG backbone trace and says so — never an empty area.
+
+- **Which entry.** One place (`resolver.protein_choice`) decides for message,
+  picture and `lookup` data sheet. First a curated lab-standard table (each
+  row checked against UniProt and RCSB on 10.11.2026): hen egg-white
+  lysozyme (1LYZ), bovine trypsin (2PTN) and chymotrypsin (4CHA), RNase A
+  (7RSA), BSA (4F5S), bovine liver catalase (8CAT), HRP (1ATJ), GFP (1GFL),
+  proteinase K (2PRK), streptavidin (1STP), Taq polymerase (1TAU), human
+  insulin (3I40; porcine 4INS named as the alternative), haemoglobin A
+  tetramer (2HHB), horse/sperm-whale myoglobin, carbonic anhydrase II (3KS3),
+  yeast/horse-liver ADH, firefly luciferase, pepsin, papain, thrombin and
+  testis ACE (1UZE). An organism in the name selects the
+  row ("Lysozym Huhn", "Rindertrypsin", "human lysozyme"); the message names
+  the other common sources. Then gene symbols in bacterial style (`RecA`,
+  `LipA`, `GroEL`: lower–lower–Upper) go to UniProt's gene field, reviewed
+  entries first, with the other organisms named; everything after the
+  symbol (or after "from"/"aus") filters by organism, also genus or short
+  form (`RecA Bacillus`, `RecA from B. subtilis`), then unreviewed
+  (TrEMBL) entries count too and are labelled so. If no entry carries the
+  gene name for that organism, the entry is found by the protein name the
+  other entries carry, and the message says so. All-caps abbreviations stay
+  compounds (`PABA`, `ATP`, `NADH`, `DMSO`, `EDTA`). Measured cost: 0.2–0.5 s
+  per gene lookup, about 0.9 s with the organism fallback.
+- **Antibodies.** A table of wild-type Fab structures checked by RCSB
+  title (trastuzumab 1N8Z, rituximab 4KAQ, adalimumab 4NYL, cetuximab 1YY9,
+  nivolumab 5WT9, infliximab 4G3Y, omalizumab 2XA8, ofatumumab 3GIZ;
+  pembrolizumab 5DK3 as intact IgG4), labelled "Fab fragment, not the full
+  IgG", antigen chains left out. Any other antibody name ("anti-GFP",
+  "IgG", "Antikörper", an unknown -mab) gets the architecture of an intact
+  IgG (1HZH, "not <name>"). Both write the IgG domain scheme as a second
+  file (heavy chain blue, light chain orange, inter-chain disulfides, N297
+  glycan).
+- **Limits.** No side chains; bound groups only as described above (up to
+  16, none from other copies of the crystal); one model, one copy of a
+  multi-copy crystal; up to 3000 residues. 3₁₀- and π-helices are drawn as
+  loops. A
+  predicted model says "AlphaFold model, predicted" and shows mean pLDDT;
+  residues below 70 are pale in the image file, and the panel's Confidence
+  colouring shows the four pLDDT classes. Without network the protein message stays,
+  with the reason, and nothing is drawn.
+- **Privacy.** A protein name goes to UniProt, PDBe (best structure), the
+  RCSB ModelServer or the AlphaFold DB. Sources and licences: PDB (wwPDB,
+  CC0, cited with the PDB ID), AlphaFold DB (CC BY 4.0; Jumper et al. 2021,
+  Varadi et al. 2024), UniProt (CC BY 4.0) — each image carries its line.
+- `batch_generate` and `compare_molecules` still draw no proteins; their
+  message points at `generate_molecule`.
+
+Before E8 `generate_molecule` explained instead of drawing; these rules from
+E6 still decide for names outside the table:
+
+- A name that UniProt (Swiss-Prot) lists as a protein — "lysozyme",
+  "Trypsin", "hemoglobin", German "Lysozym", "Katalase", "Kollagen" — is
+  answered with the entry: name, accession, organism, length and mass (marked
+  as precursor when a signal peptide or propeptide is cleaved off), and a
+  pointer to `lookup` with topic `biochem` (data sheet: function, EC number,
+  catalysed reaction with Rhea ID, cofactors, and which structure is drawn). Enzyme names (ending in -ase or
+  -zyme) are checked before the structure databases, because PubChem files a
+  peptide fragment under "lysozyme" and an acyl-CoA under "alcohol
+  dehydrogenase". Other names ask UniProt only after every structure source
+  answered "unknown" — never when they were unreachable.
+- Antibody names (INN stem -mab, "trastuzumab") get a plain sentence: a
+  monoclonal antibody, a protein of about 150 kDa as a full IgG. UniProt does
+  not list therapeutic antibodies under their INN, so no numbers are given.
+- A name that resolves to a structure with more than 200 heavy atoms
+  (insulin 404, glucagon 246, calcitonin 239) is not drawn; the message gives
+  formula, mass, heavy atoms and the number of residues. Palytoxin (186),
+  oxytocin and 20-residue peptides are still drawn. A SMILES or a peptide
+  sequence you pass yourself is always drawn.
+
+**Metal tetrapyrroles.** Heme, hemin, zinc protoporphyrin,
+copper phthalocyanine and related complexes are drawn as in a
+textbook: undistorted macrocycle, metal in the centre, bonded to the four ring
+nitrogens. A nitrogen anion paired with a positive metal charge is drawn as a
+plain bond (both charges cancel), any remaining nitrogen as a dative arrow
+N→M; heme thus shows two lines, two arrows and no charges. The bonds exist
+only in the drawing — formula, InChIKey, CAS and the SMILES used for the data
+sheet are those of the database record (which lists the metal as a separate
+ion). The CDXML file keeps the record's bonds, with the metal placed in the
+centre. Metal-free porphyrins get the same undistorted ring. When the layout
+would cross or stretch bonds (chlorophyll a, bacteriochlorophyll a, the
+cobalamins), the drawing stays as before.
+
+A small built-in table keeps the structures of a few metal tetrapyrroles
+(heme b, hemin, heme d1 and related iron complexes) stable: they resolve
+offline to fixed structures in one notation (carboxylic acids, Fe²⁺ with two
+N⁻), so they look alike side by side and do not depend on which PubChem record
+a name points to that day. Accepted names include "heme", "Häm", "protoheme",
+"hemin", "Hämin".
 
 <p align="center"><img src="../assets/caffeine.png" alt="Caffeine structure, rendered by generate_molecule" width="380"></p>
 
@@ -108,7 +232,9 @@ species across pH 0–14:
 - **`lookup`** answers one question as text, picked by `topic`: `properties`
   (formula, mass, CAS, InChIKey), `safety` (GHS statements, pictograms, signal
   word), `physical` (melting and boiling point, solubility, density), `biochem`
-  (ChEBI classification, UniProt entries) or `pathway` (KEGG pathways).
+  (ChEBI classification, UniProt entries; for a protein name a UniProt data
+  sheet with function, EC number, length, mass and PDB IDs) or `pathway`
+  (KEGG pathways).
 - **`lookup_molecule_data`** builds the PubChem + GHS data sheet in the panel.
   The molecule panel's **Data** button calls it too, so a drawn structure is
   one click away from its data sheet.
@@ -213,6 +339,70 @@ when its lookup needed a second attempt or failed. Set
 `CHEMDRAW_LOG_LEVEL=DEBUG` for the full trace, which includes every lookup URL
 and therefore every name you asked for.
 
+## What leaves your machine
+
+Drawing is local: RDKit parses, lays out and renders every structure on your
+computer. Online databases are asked for names and data. In detail:
+
+- **A structure you type is not sent to any database (default).** This covers
+  a SMILES or InChI passed to any tool, and the structure behind the panel's
+  Data button. What counts as a structure is the same rule everywhere: whatever
+  RDKit reads as SMILES is one (`O` is water, not oxygen); InChI, CXSMILES, a
+  SMILES with a label after or before it (`CCO batch 7`, `batch 7 CCO`) or
+  preceded by a stereo prefix count too, and in `lookup` also a peptide sequence that can be built offline.
+  The group abbreviations Me, Et, Ph, Bn, Ac, Ts, Boc, tBu, OMe and OEt are
+  expanded locally where their place is unambiguous (at the start, at the end
+  of the chain or a branch, or alone in parentheses), so
+  `PhC(=O)CC1CCN(Boc)CC1` is drawn. An input that looks like a SMILES — a
+  bracket, `=` or `#` together with an abbreviation, or `=`/`#` with an
+  unreadable character — but cannot be read is refused with what was not read,
+  and nothing is sent. A reaction SMILES (`A>>B`) is refused too. In `lookup`
+  only, a bare run of up to five letters (`PC`, `NOS`, `CBS`, a gene symbol
+  such as `RecA`) is a name, not a structure, and is sent as typed: such
+  acronyms often happen to be valid SMILES, and a letters-only SMILES that
+  short is at most pentane-sized. **Anything else RDKit cannot read is treated
+  as a compound name and sent like one** — including `MeOH`, `Et3N` or `Boc2O`.
+- **The InChIKey of a structure goes to PubChem.** `generate_molecule`,
+  `batch_generate`, `lookup_molecule_data`, `lookup` and the substrate titles
+  of `generate_mechanism` compute the InChIKey locally and ask PubChem for the
+  record with it (name, CAS number, properties, GHS). The InChIKey is a hash:
+  the structure cannot be computed back from it, but anyone who already has
+  the structure can compute the same key and match it. When PubChem has no
+  record for the key, CAS number, logP, TPSA and H-bond counts stay empty,
+  formula and molar mass are computed locally, and the result says why
+  (`lookupNote`). With a typed structure, `lookup` asks by InChIKey too, then
+  uses the record's CID for `safety` and `physical` and PubChem's name for that
+  record for `biochem` (ChEBI, UniProt) and `pathway` (KEGG). Without a record
+  it answers with what it computed locally.
+- **Compound names are sent, to resolve them.** A name goes to PubChem and
+  NCI CIR (in several spellings), enzyme-like names and names no structure
+  database knows also to UniProt. With Java, OPSIN reads systematic names with
+  locants offline; a name without locants is cross-checked against PubChem.
+  `lookup` passes a name to PubChem, ChEBI, UniProt or KEGG as typed,
+  depending on `topic`. A systematic IUPAC name describes a structure as
+  exactly as a SMILES does: for an unpublished compound, pass the SMILES, not
+  the name.
+- **Protein names go to UniProt, accession numbers and PDB IDs onward.**
+  A protein, enzyme or antibody name and a gene symbol (`RecA`, with the
+  organism typed after it) go to UniProt; the UniProt accession number goes
+  to PDBe (best structure) and the AlphaFold DB; the PDB ID to the RCSB
+  ModelServer, which returns the structure file (backbone atoms and bound groups are taken from it). Names from the curated table
+  (lysozyme, trypsin, trastuzumab …) skip the search and only fetch the
+  structure by its PDB ID. No structure you typed is part of these requests:
+  a SMILES with a word before it (`RecA <SMILES>`) counts as a structure.
+
+**Turning on the SMILES lookup.** In Claude Desktop, open Settings →
+Extensions, then the settings of the ChemDraw MCP extension, and turn on
+**Look up typed structures by SMILES** (both bundles have it). Elsewhere set
+`CHEMDRAW_SMILES_LOOKUP=1` in the server's environment (`true`, `yes` and `on`
+work too; anything else means off) and restart the server. With it on, two
+things change: when PubChem has no record for the InChIKey, the SMILES itself
+is posted to PubChem, which standardizes it itself and may find a record the
+InChIKey query missed; and `lookup`
+passes a typed SMILES as written to PubChem, ChEBI, UniProt or KEGG.
+`chemdraw-doctor` reports the setting of its own environment; the server
+writes its setting to `server.log` at startup ("SMILES lookup: off" or "on").
+
 ## Limitations
 
 - **Without Java, names need the internet.** OPSIN is skipped and names are
@@ -220,17 +410,11 @@ and therefore every name you asked for.
   are found. With Java, systematic names with locants are parsed offline;
   a name without locants is cross-checked against PubChem when the network
   is there.
-- **SMILES input is drawn locally, but looked up online.** Parsing and drawing
-  need no network. When the network is there, `generate_molecule` and
-  `batch_generate` ask PubChem for the name, CAS number and properties of the
-  structure: first by InChIKey, and if PubChem does not know that key, the
-  SMILES string itself is sent. Without a network the drawing still works and
-  those fields stay empty. Set `CHEMDRAW_NO_SMILES_UPLOAD=1` to stop that
-  second step: these tools then never send the SMILES, the InChIKey query
-  still goes out, and a structure PubChem does not know by its key is drawn
-  without name, CAS and properties. The same applies to the panel's Data button
-  (`lookup_molecule_data`). The switch does not cover `lookup`, which passes
-  its `name` argument to PubChem, KEGG and UniProt as typed.
+- **A typed structure PubChem does not know has no database fields.** By
+  default its SMILES is never sent, so a structure whose InChIKey PubChem has
+  no record for is drawn without name, CAS number, logP and TPSA; formula and
+  molar mass are computed locally. See
+  [What leaves your machine](#what-leaves-your-machine).
 - **Lab graphics are drawings of given numbers.** Spectra, TLC plates and pH
   curves show the values passed in. They measure nothing; values the model
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,

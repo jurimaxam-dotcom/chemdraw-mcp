@@ -467,13 +467,17 @@ def test_main_prints_report_and_returns_exit_code(capsys):
 
 
 def test_default_checks_cover_every_documented_failure_mode():
-    """Die sechs realen Fehlerbilder des Projekts — keins darf wegfallen."""
+    """Die sechs realen Fehlerbilder des Projekts — keins darf wegfallen.
+
+    Dazu seit E12 (10.11.2026) eine reine Auskunft: ob eingegebene Strukturen an
+    Datenbanken gehen dürfen (check_smiles_lookup, nie rot)."""
     assert {check.__name__ for check in DEFAULT_CHECKS} == {
         "check_rendering",
         "check_java",
         "check_uv",
         "check_desktop_config",
         "check_network",
+        "check_smiles_lookup",
         "check_output_dir",
     }
 

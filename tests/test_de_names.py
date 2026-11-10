@@ -208,3 +208,4 @@ def test_dinitrate_is_not_split_into_stem_di_and_nitrate():
 def test_benzathine_is_separated_without_adding_e_to_penicillin():
     assert english_variant("Benzylpenicillin-Benzathin") == "Benzylpenicillin benzathine"
     assert english_variant("Benzylpenicillinbenzathin") == "Benzylpenicillin benzathine"
+

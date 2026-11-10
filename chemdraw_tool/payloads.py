@@ -53,6 +53,30 @@ class IsomerCandidate(BaseModel):
     svg: str = ""
 
 
+class ProteinView(BaseModel):
+    """Protein cartoon for the panel (backbone N/Cα/O, secondary structure, bound groups)."""
+
+    # Docstring steht im Ausgabeschema (Modell liest es) → Englisch.
+    # Bewusst ohne `type`: Teil von ProteinPayload/Protein3DPayload, kein eigenes Panel.
+    title: str = ""
+    subtitle: str = ""
+    source: str = ""  # "pdb" | "alphafold"
+    identifier: str = ""  # PDB-ID oder AlphaFold-Modell
+    colorBy: str = "ss"  # Ausgangsfarbe: "ss" | "chain"
+    # Je Kette: id, label, color, first, last, segments=[{ca: Base64 int16 in
+    # 0,1 Å, o: Base64 int8 O−Cα in 0,1 Å, ss: "HEC…", q: AlphaFold-
+    # Konfidenzklasse 1–4 je Rest}] — Format in protein_view.py
+    chains: list[dict[str, Any]] = []
+    # Cofaktoren/Metallionen/Inhibitoren: code, name, chain, e (Elemente), xyz (wie ca)
+    ligands: list[dict[str, Any]] = []
+    citation: str = ""
+    plddtMean: float | None = None
+    ssSource: str = "deposited"  # "computed": eigene DSSP-artige Zuweisung
+    # Antikörper: IgG-Schema im Panel. start "scheme"|"structure", highlight
+    # "fab"|"igg"|"" (welcher Teil des IgG die gezeigte Struktur ist), caption.
+    scheme: dict[str, str] | None = None
+
+
 class MoleculePayload(BaseModel):
     type: str = "molecule"
     svg: str = ""
@@ -97,6 +121,15 @@ class MoleculePayload(BaseModel):
     # das SDK in {"result": …} wickeln).
     message: str = ""
     candidates: list[IsomerCandidate] = []
+    # Nur bei type="protein" gefüllt (ProteinPayload, E8): ein Protein- oder
+    # Antikörpername, gezeichnet als Rückgratspur statt Strukturformel.
+    protein: ProteinView | None = None
+
+
+class ProteinPayload(MoleculePayload):
+    """Protein instead of a skeletal formula: cartoon (generate_molecule)."""
+
+    type: str = "protein"
 
 
 class AmbiguousPayload(MoleculePayload):
@@ -386,3 +419,13 @@ class Molecule3DPayload(BaseModel):
     atoms: list[dict] = []
     bonds: list[dict] = []
     files: dict[str, str] = {}
+    # Nur bei type="protein" (Protein3DPayload, E8): Rückgratspur statt Konformer.
+    subtitle: str = ""
+    message: str = ""
+    protein: ProteinView | None = None
+
+
+class Protein3DPayload(Molecule3DPayload):
+    """Protein instead of a conformer: rotatable cartoon (generate_3d)."""
+
+    type: str = "protein"

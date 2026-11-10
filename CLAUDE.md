@@ -111,13 +111,17 @@ regenerated to make a diff disappear**:
 `identitaet.py` is the same idea one step earlier, and it is the only check
 on the step that can make everything else *consistently* wrong: if `resolve()`
 picks the wrong record, drawing, formula, mass and CAS all agree — for the
-wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 44
+wrong substance. `tests/identity/stoffe.json` pins input → InChIKey for 57
 entries (plus 3 broken SMILES that must fail as `invalid_smiles`) (German trivial names, IUPAC names, raw SMILES, a salt, `O` for water)
 and the runner separates **red** (resolved to something else) from **yellow**
 (a source is down, or a documented gap) — a check that goes red because PubChem
 hiccups is a check that gets ignored. It paid for itself on the first run:
 PubChem answered the metformin SMILES with its `[14C]` record (no CAS), which is
-why properties are now fetched by InChIKey with the SMILES route as fallback.
+why properties are now fetched by InChIKey. The SMILES route behind it is
+opt-in since E12 (`CHEMDRAW_SMILES_LOOKUP`, the bundles' `user_config` checkbox):
+by default a typed structure (SMILES, InChI) goes to no database, only its
+InChIKey does — `lookup` included. `tests/test_smiles_privacy.py` catches every
+`requests` call per tool and goes red on a SMILES or InChI in URL or body.
 "Glucose" (like Xylol, Kresol, Toluidin, Butanol) is now pinned as `ambiguous`:
 `generate_molecule` returns an isomer picker instead of silently choosing one.
 
@@ -199,9 +203,15 @@ chemdraw_tool/
 │                            PubChem transliterated (ä→ae) → NCI CIR ×2.
 │                            Errors carry a `kind`: not_found / offline /
 │                            sources_down / partial / invalid_smiles /
-│                            ambiguous (family names → isomer picker) — the message tells the user
-│                            what actually helps
-├── generator.py           — RDKit 2D coordinates
+│                            ambiguous (family names → isomer picker) / protein
+│                            (UniProt entry instead of a structure; enzyme names
+│                            checked first) — the message tells the user
+│                            what actually helps. generate_molecule adds
+│                            too_large (name → over 200 heavy atoms)
+├── generator.py           — RDKit 2D coordinates; structure switches: linear
+│                            peptides (CoordGen), metal tetrapyrroles (metal in
+│                            the ring centre; N–M bonds only via
+│                            coordination_drawing, which every renderer calls)
 ├── image_export.py        — PNG/SVG file rendering (primary output path)
 ├── svg_renderer.py        — SVG for the embedded UI preview (shared BOND_LINE_WIDTH)
 ├── render_style.py        — named render profiles (compact/presentation/grayscale)
@@ -213,6 +223,17 @@ chemdraw_tool/
 ├── layout.py              — reaction scheme layout (arrows, +, conditions)
 ├── mechanism*.py          — reaction mechanism definitions/coords/rendering
 ├── structure3d.py         — 3D conformer for the rotatable viewer
+├── protein_catalog.py     — which protein entry: lab-standard table, antibody
+│                            table, gene symbols (RecA), organism in the name;
+│                            ProteinChoice feeds message, image and data sheet
+├── protein_structure.py   — backbone N/Cα/C/O + bound groups (heme, metals,
+│                            inhibitors; no water/buffer) from RCSB ModelServer /
+│                            PDBe best structure / AlphaFold DB (mmCIF parser)
+├── protein_ss.py          — DSSP-style H/E/C when an entry has no HELIX/SHEET
+├── protein_view.py        — view rotation (choose_frame) + panel format
+│                            (Base64 int16 Cα / int8 O offsets, ~12 chars/residue)
+├── protein_render.py      — 2D cartoon PNG/SVG (protein_cartoon.py geometry)
+├── igg_scheme.py          — 2D IgG domain scheme for antibody answers
 ├── databases.py           — PubChem / ChEBI / KEGG / UniProt lookups
 ├── ph_plots.py            — titration curves + species distribution
 ├── anki_export.py         — .apkg decks with rendered images
@@ -233,6 +254,8 @@ chemdraw_tool/
 │                            each `type` needs a matching case in App.jsx
 ├── png_writer.py          — client-rendered PNG → file
 ├── vault.py               — optional notes lookup (only if CHEMDRAW_VAULT_PATH)
+├── privacy.py             — may a typed structure go online? (CHEMDRAW_SMILES_LOOKUP,
+│                            default off; read on every call)
 ├── chemdraw.py            — macOS AppleScript bridge (no tool right now; CDXML
 │                            stays available as an output format)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
@@ -282,6 +305,24 @@ Test output paths are redirected with `monkeypatch.setattr` against
 `chemdraw_tool.server.<DIR>`. `tests/conftest.py` compares the real
 `~/ChemDraw-Output` before and after the suite, so a redirect that points
 nowhere fails loudly instead of quietly writing into the user's folder.
+
+**The protein panel carries a 3D engine — and a fallback that must survive.**
+`ui/src/protein/cartoonEngine.js` (Mol* 5.13.1, MIT, pinned exactly; notices in
+`THIRD_PARTY_LICENSES`) is built by `vite.config.js` into a separate IIFE and
+embedded as `<script type="text/plain" id="chem-cartoon-engine">`; only
+`protein/loadEngine.js` executes it, when a protein is shown. Measured
+10.11.2026: panel file 0.47 → 2.96 MB (0.13 → 0.85 MB gzip), molecule panel
+start ~30 → ~55 ms (a plain import cost 210 ms — never import Mol* from the
+main bundle). The engine path uses no eval, Worker or blob URL; `test:host`
+runs the panel under the ext-apps default CSP. **Fallback rule:** the SVG
+backbone trace (`BackboneCanvas`) shows while the engine loads and stays when
+it fails (no WebGL, blocked script, engine error) — never an empty area. Both
+are tested: `proteinView.test.mjs` (forced failure, fake engine) and
+`test:host` (real Mol* in Chromium, plus a run with WebGL removed).
+Colours: `ui/src/protein/colors.js` mirrors `protein_render.py` (SS, element
+colours) — change both. `ui/src/components/IgGScheme.jsx` redraws
+`igg_scheme.py` for the panel with theme variables; a content change to the
+scheme belongs in both.
 
 ## Conventions
 

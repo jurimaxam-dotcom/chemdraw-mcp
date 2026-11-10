@@ -4,6 +4,7 @@ Das ist der ChemDraw-unabhängige Primärpfad: RDKit rendert PNG (Cairo) und
 SVG direkt, ohne dass ChemDraw installiert sein muss. Kein Netz.
 """
 
+import html
 import io
 import re
 
@@ -327,3 +328,79 @@ def test_png_multiline_both_sides_is_valid_and_inside_the_canvas():
     assert png[: len(PNG_MAGIC)] == PNG_MAGIC
     top, bottom, height = _ink_rows(png, bare)
     assert 0 < top < height / 2 < bottom < height
+
+
+# --- Legenden mit Nicht-ASCII-Zeichen (E11, 10.11.2026) -----------------------
+# RDKit 2026.09 zeichnet jedes Byte eines UTF-8-Zeichens einzeln und findet
+# dafür keine Glyphe: „Sirohäm“ kam als „Siroh  m“ in PNG und SVG an
+# (/tmp/chemdraw-heme/vorher-legende.png), obwohl der Font (Telex) ä kennt.
+
+_NON_ASCII = ["ä", "ö", "ü", "ß", "é", "Ä"]
+
+
+def _ink_in_band(png: bytes, top: int, bottom: int, left: int = 0, right: int | None = None) -> int:
+    import io
+
+    import numpy as np
+    from PIL import Image
+
+    gray = np.asarray(Image.open(io.BytesIO(png)).convert("L"))
+    return int((gray[top:bottom, left:right] < 128).sum())
+
+
+def _ethanol():
+    from rdkit.Chem import AllChem
+
+    mol = Chem.MolFromSmiles("CCO")
+    AllChem.Compute2DCoords(mol)
+    return mol
+
+
+@pytest.mark.parametrize("char", _NON_ASCII)
+def test_png_legend_draws_non_ascii_letters(char):
+    from chemdraw_tool.image_export import MOL_PNG_SIZE, render_molecule_png
+
+    height = MOL_PNG_SIZE[1]
+    png = render_molecule_png(_ethanol(), legend=char)
+    assert _ink_in_band(png, int(height * 0.9), height) > 20
+
+
+@pytest.mark.parametrize("char", _NON_ASCII)
+def test_svg_legend_carries_non_ascii_letters(char):
+    from chemdraw_tool.image_export import render_molecule_svg
+
+    svg = render_molecule_svg(_ethanol(), legend=f"Siroh{char}m")
+    assert f"Siroh{char}m" in html.unescape(svg)
+
+
+def test_non_ascii_legend_keeps_the_molecule_where_it_was():
+    """Nur die Legendenzeile ändert sich — die Struktur bleibt pixelgleich."""
+    import io
+
+    import numpy as np
+    from PIL import Image
+
+    from chemdraw_tool.image_export import MOL_PNG_SIZE, render_molecule_png
+
+    def pixels(legend):
+        png = render_molecule_png(_ethanol(), legend=legend)
+        return np.asarray(Image.open(io.BytesIO(png)).convert("L"))
+
+    cut = int(MOL_PNG_SIZE[1] * 0.9)
+    assert (pixels("Sirohäm")[:cut] == pixels("Siroham")[:cut]).all()
+
+
+def test_comparison_png_labels_draw_non_ascii_letters():
+    from chemdraw_tool.image_export import CMP_PANEL, render_comparison_png
+
+    png = render_comparison_png([_ethanol(), _ethanol()], labels=["ä", "ß"])
+    width, height = CMP_PANEL
+    for panel in range(2):
+        assert _ink_in_band(png, int(height * 0.9), height, panel * width, (panel + 1) * width) > 20
+
+
+def test_comparison_svg_labels_carry_non_ascii_letters():
+    from chemdraw_tool.image_export import render_comparison_svg
+
+    svg = render_comparison_svg([_ethanol(), _ethanol()], labels=["Sirohäm", "Coprohäm"])
+    assert "Sirohäm" in html.unescape(svg) and "Coprohäm" in html.unescape(svg)

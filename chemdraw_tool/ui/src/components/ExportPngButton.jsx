@@ -65,7 +65,8 @@ export default function ExportPngButton({ svg, getSvg, filename, size, backgroun
     try {
       let source = "";
       try {
-        source = getSvg ? getSvg() : svg;
+        // 3D-Cartoon (WebGL): getSvg liefert ein Promise (Bild erst rendern)
+        source = getSvg ? await getSvg() : svg;
       } catch {
         source = "";
       }

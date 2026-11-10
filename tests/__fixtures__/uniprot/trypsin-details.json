@@ -1,0 +1,1097 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"trypsin\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P07477",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:9475"
+       }
+      ],
+      "value": "Serine protease 1"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.4.21.4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Anionic trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Anionic trypsin-I"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Beta-trypsin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Cationic trypsinogen"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Pretrypsinogen I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "HGNC",
+         "id": "HGNC:9475"
+        }
+       ],
+       "value": "Trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Trypsin-1"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 247,
+    "molWeight": 26558
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Has activity against the synthetic substrates Boc-Phe-Ser-Arg-Mec, Boc-Leu-Thr-Arg-Mec, Boc-Gln-Ala-Arg-Mec and Boc-Val-Pro-Arg-Mec. The single-chain form is more active than the two-chain form against all of these substrates"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1FXY"
+    },
+    {
+     "database": "PDB",
+     "id": "1TRN"
+    },
+    {
+     "database": "PDB",
+     "id": "2RA3"
+    },
+    {
+     "database": "PDB",
+     "id": "4WWY"
+    },
+    {
+     "database": "PDB",
+     "id": "4WXV"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P07478",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Trypsin-2"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.4.21.4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Anionic trypsinogen"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Serine protease 2"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Trypsin II"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 247,
+    "molWeight": 26488
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "In the ileum, may be involved in defensin processing, including DEFA5"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "7Z9F"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P35030",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Trypsin-3"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "11827488"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "14507909"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "18077447"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "25301953"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "27810896"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "6698368"
+        },
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "9099703"
+        }
+       ],
+       "value": "3.4.21.4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "8294000"
+        }
+       ],
+       "value": "Brain trypsinogen"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "14507909"
+        }
+       ],
+       "value": "Mesotrypsin"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "9099703"
+        }
+       ],
+       "value": "Mesotrypsinogen"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Serine protease 3"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Serine protease 4"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Trypsin III"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "8294000"
+        }
+       ],
+       "value": "Trypsin IV"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 304,
+    "molWeight": 32529
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Digestive protease that cleaves proteins preferentially after an Arg residue and has proteolytic activity toward Kunitz-type trypsin inhibitors"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1H4W"
+    },
+    {
+     "database": "PDB",
+     "id": "2R9P"
+    },
+    {
+     "database": "PDB",
+     "id": "3L33"
+    },
+    {
+     "database": "PDB",
+     "id": "3L3T"
+    },
+    {
+     "database": "PDB",
+     "id": "3P92"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P00995",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "HGNC",
+        "id": "HGNC:11244"
+       }
+      ],
+      "value": "Serine protease inhibitor Kazal-type 1"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "3501289"
+        }
+       ],
+       "value": "Pancreatic secretory trypsin inhibitor"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Tumor-associated trypsin inhibitor"
+      },
+      "shortNames": [
+       {
+        "value": "TATI"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 79,
+    "molWeight": 8507
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Serine protease inhibitor which exhibits anti-trypsin activity (PubMed:7142173). In the pancreas, protects against trypsin-catalyzed premature activation of zymogens (By similarity)"
+      }
+     ]
+    },
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "In the male reproductive tract, binds to sperm heads where it modulates sperm capacitance by inhibiting calcium uptake and nitrogen oxide (NO) production"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1CGI"
+    },
+    {
+     "database": "PDB",
+     "id": "1CGJ"
+    },
+    {
+     "database": "PDB",
+     "id": "1HPT"
+    },
+    {
+     "database": "PDB",
+     "id": "7QE8"
+    },
+    {
+     "database": "PDB",
+     "id": "7QE9"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "A4D1T9",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000305"
+       }
+      ],
+      "value": "Probable inactive serine protease 37"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Probable inactive trypsin-X2"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 235,
+    "molWeight": 26445
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Plays a role in male fertility (By similarity). May have a role in sperm migration or binding to zona-intact eggs (By similarity). Involved in the activation of the proacrosin/acrosin system (PubMed:27649891)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P00760",
+   "organism": {
+    "scientificName": "Bos taurus",
+    "taxonId": 9913
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000250",
+        "source": "UniProtKB",
+        "id": "P07477"
+       }
+      ],
+      "value": "Serine protease 1"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.4.21.4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Anionic trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Anionic trypsin-I"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Beta-trypsin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Cationic trypsin"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P00762"
+        }
+       ],
+       "value": "Pretrypsinogen I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P07477"
+        }
+       ],
+       "value": "Trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Trypsin-I"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 246,
+    "molWeight": 25785
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1AQ7"
+    },
+    {
+     "database": "PDB",
+     "id": "1AUJ"
+    },
+    {
+     "database": "PDB",
+     "id": "1AZ8"
+    },
+    {
+     "database": "PDB",
+     "id": "1BJU"
+    },
+    {
+     "database": "PDB",
+     "id": "1BJV"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q86T26",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Transmembrane protease serine 11B"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.4.21.-"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Airway trypsin-like protease 5"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 416,
+    "molWeight": 46337
+   },
+   "features": [],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Serine protease"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P00762",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "taxonId": 10116
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "RGD",
+        "id": "3417"
+       }
+      ],
+      "value": "Serine protease 1"
+     },
+     "ecNumbers": [
+      {
+       "value": "3.4.21.4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "RGD",
+         "id": "3417"
+        }
+       ],
+       "value": "Anionic trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "RGD",
+         "id": "3417"
+        }
+       ],
+       "value": "Anionic trypsin-1"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Beta-trypsin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Cationic trypsinogen"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "source": "RGD",
+         "id": "3417"
+        }
+       ],
+       "value": "Pretrypsinogen I"
+      }
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000250",
+         "source": "UniProtKB",
+         "id": "P07477"
+        }
+       ],
+       "value": "Trypsin I"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Trypsin-1"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 246,
+    "molWeight": 25959
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q14624",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Inter-alpha-trypsin inhibitor heavy chain H4"
+     },
+     "shortNames": [
+      {
+       "value": "ITI heavy chain H4"
+      },
+      {
+       "value": "ITI-HC4"
+      },
+      {
+       "value": "Inter-alpha-inhibitor heavy chain 4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Inter-alpha-trypsin inhibitor family heavy chain-related protein"
+      },
+      "shortNames": [
+       {
+        "value": "IHRP"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "value": "Plasma kallikrein sensitive glycoprotein 120"
+      },
+      "shortNames": [
+       {
+        "value": "Gp120"
+       },
+       {
+        "value": "PK-120"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 930,
+    "molWeight": 103357
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Type II acute-phase protein (APP) involved in inflammatory responses to trauma. May also play a role in liver development or regeneration"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "9C4F"
+    },
+    {
+     "database": "PDB",
+     "id": "9C4N"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q9R0T7",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000312",
+        "source": "MGI",
+        "id": "MGI:102757"
+       }
+      ],
+      "value": "Trypsin-4"
+     },
+     "ecNumbers": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000269",
+         "source": "PubMed",
+         "id": "23814066"
+        }
+       ],
+       "value": "3.4.21.4"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 246,
+    "molWeight": 26274
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Serine protease capable of autoactivation"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "Q8RXD5",
+   "organism": {
+    "scientificName": "Arabidopsis thaliana",
+    "taxonId": 3702
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "30042779"
+       }
+      ],
+      "value": "Kunitz trypsin inhibitor 4"
+     },
+     "shortNames": [
+      {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "30042779"
+        }
+       ],
+       "value": "AtKTI4"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "19825555"
+        }
+       ],
+       "value": "Kunitz trypsin inhibitor 1"
+      },
+      "shortNames": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "source": "PubMed",
+          "id": "19825555"
+         }
+        ],
+        "value": "AtKTI1"
+       }
+      ]
+     },
+     {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000303",
+         "source": "PubMed",
+         "id": "16236154"
+        }
+       ],
+       "value": "Trypsin protease inhibitor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 215,
+    "molWeight": 23793
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Exhibits Kunitz trypsin protease inhibitor activity (PubMed:19825555). Involved in modulating programmed cell death (PCD) in plant-pathogen interactions (PubMed:19825555). Can inhibit both serine proteases and cysteine proteases (PubMed:30042779). May be involved in the modulation of the proteases that participate in the hydrolysis of dietary proteins in the gut of spider mites (PubMed:30042779)"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": []
+  },
+  {
+   "primaryAccession": "P19827",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Inter-alpha-trypsin inhibitor heavy chain H1"
+     },
+     "shortNames": [
+      {
+       "value": "ITI heavy chain H1"
+      },
+      {
+       "value": "ITI-HC1"
+      },
+      {
+       "value": "Inter-alpha-inhibitor heavy chain 1"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Inter-alpha-trypsin inhibitor complex component III"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Serum-derived hyaluronan-associated protein"
+      },
+      "shortNames": [
+       {
+        "value": "SHAP"
+       }
+      ]
+     }
+    ]
+   },
+   "sequence": {
+    "length": 911,
+    "molWeight": 101389
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ],
+   "comments": [
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "May act as a carrier of hyaluronan in serum or as a binding protein between hyaluronan and other matrix protein, including those on cell surfaces in tissues to regulate the localization, synthesis and degradation of hyaluronan which are essential to cells undergoing biological processes"
+      }
+     ]
+    },
+    {
+     "commentType": "FUNCTION",
+     "texts": [
+      {
+       "value": "Contains a potential peptide which could stimulate a broad spectrum of phagocytotic cells"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "6FPY"
+    },
+    {
+     "database": "PDB",
+     "id": "6FPZ"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,442 @@
+{
+ "entryType": "UniProtKB reviewed (Swiss-Prot)",
+ "primaryAccession": "P00698",
+ "organism": {
+  "scientificName": "Gallus gallus",
+  "commonName": "Chicken",
+  "taxonId": 9031,
+  "lineage": [
+   "Eukaryota",
+   "Metazoa",
+   "Chordata",
+   "Craniata",
+   "Vertebrata",
+   "Euteleostomi",
+   "Archelosauria",
+   "Archosauria",
+   "Dinosauria",
+   "Saurischia",
+   "Theropoda",
+   "Coelurosauria",
+   "Aves",
+   "Neognathae",
+   "Galloanserae",
+   "Galliformes",
+   "Phasianidae",
+   "Phasianinae",
+   "Gallus"
+  ]
+ },
+ "proteinDescription": {
+  "recommendedName": {
+   "fullName": {
+    "value": "Lysozyme C"
+   },
+   "ecNumbers": [
+    {
+     "value": "3.2.1.17"
+    }
+   ]
+  },
+  "alternativeNames": [
+   {
+    "fullName": {
+     "value": "1,4-beta-N-acetylmuramidase C"
+    }
+   },
+   {
+    "fullName": {
+     "value": "Allergen Gal d IV"
+    }
+   }
+  ],
+  "allergenName": {
+   "value": "Gal d 4"
+  },
+  "flag": "Precursor"
+ },
+ "genes": [
+  {
+   "geneName": {
+    "value": "LYZ"
+   }
+  }
+ ],
+ "comments": [
+  {
+   "texts": [
+    {
+     "evidences": [
+      {
+       "evidenceCode": "ECO:0000255",
+       "source": "PROSITE-ProRule",
+       "id": "PRU00680"
+      },
+      {
+       "evidenceCode": "ECO:0000269",
+       "source": "PubMed",
+       "id": "22044478"
+      }
+     ],
+     "value": "Lysozymes have primarily a bacteriolytic function; those in tissues and body fluids are associated with the monocyte-macrophage system and enhance the activity of immunoagents. Has bacteriolytic activity against M.luteus"
+    }
+   ],
+   "commentType": "FUNCTION"
+  },
+  {
+   "commentType": "CATALYTIC ACTIVITY",
+   "reaction": {
+    "name": "Hydrolysis of (1->4)-beta-linkages between N-acetylmuramic acid and N-acetyl-D-glucosamine residues in a peptidoglycan and between N-acetyl-D-glucosamine residues in chitodextrins.",
+    "ecNumber": "3.2.1.17"
+   }
+  }
+ ],
+ "features": [
+  {
+   "type": "Signal",
+   "location": {
+    "start": {
+     "value": 1,
+     "modifier": "EXACT"
+    },
+    "end": {
+     "value": 18,
+     "modifier": "EXACT"
+    }
+   },
+   "description": "",
+   "evidences": [
+    {
+     "evidenceCode": "ECO:0000269",
+     "source": "PubMed",
+     "id": "14063294"
+    }
+   ]
+  },
+  {
+   "type": "Chain",
+   "location": {
+    "start": {
+     "value": 19,
+     "modifier": "EXACT"
+    },
+    "end": {
+     "value": 147,
+     "modifier": "EXACT"
+    }
+   },
+   "description": "Lysozyme C",
+   "featureId": "PRO_0000018495"
+  }
+ ],
+ "uniProtKBCrossReferences": [
+  {
+   "database": "PDB",
+   "id": "132L",
+   "properties": [
+    {
+     "key": "Method",
+     "value": "X-ray"
+    },
+    {
+     "key": "Resolution",
+     "value": "1.80 A"
+    },
+    {
+     "key": "Chains",
+     "value": "A=19-147"
+    }
+   ]
+  },
+  {
+   "database": "PDB",
+   "id": "193L",
+   "properties": [
+    {
+     "key": "Method",
+     "value": "X-ray"
+    },
+    {
+     "key": "Resolution",
+     "value": "1.33 A"
+    },
+    {
+     "key": "Chains",
+     "value": "A=19-147"
+    }
+   ]
+  },
+  {
+   "database": "PDB",
+   "id": "194L",
+   "properties": [
+    {
+     "key": "Method",
+     "value": "X-ray"
+    },
+    {
+     "key": "Resolution",
+     "value": "1.40 A"
+    },
+    {
+     "key": "Chains",
+     "value": "A=19-147"
+    }
+   ]
+  },
+  {
+   "database": "PDB",
+   "id": "1A2Y",
+   "properties": [
+    {
+     "key": "Method",
+     "value": "X-ray"
+    },
+    {
+     "key": "Resolution",
+     "value": "1.50 A"
+    },
+    {
+     "key": "Chains",
+     "value": "C=19-147"
+    }
+   ]
+  },
+  {
+   "database": "PDB",
+   "id": "1AKI",
+   "properties": [
+    {
+     "key": "Method",
+     "value": "X-ray"
+    },
+    {
+     "key": "Resolution",
+     "value": "1.50 A"
+    },
+    {
+     "key": "Chains",
+     "value": "A=19-147"
+    }
+   ]
+  }
+ ],
+ "sequence": {
+  "value": "MRSLLILVLCFLPLAALGKVFGRCELAAAMKRHGLDNYRGYSLGNWVCAAKFESNFNTQATNRNTDGSTDYGILQINSRWWCNDGRTPGSRNLCNIPCSALLSSDITASVNCAKKIVSDGNGMNAWVAWRNRCKGTDVQAWIRGCRL",
+  "length": 147,
+  "molWeight": 16239,
+  "crc64": "81E85743FF579468",
+  "md5": "E485279D5BF21CAA3B7967C566C68A5A"
+ },
+ "lineages": [
+  {
+   "scientificName": "cellular organisms",
+   "taxonId": 131567,
+   "rank": "no rank",
+   "hidden": true
+  },
+  {
+   "scientificName": "Eukaryota",
+   "commonName": "eukaryotes",
+   "taxonId": 2759,
+   "rank": "domain",
+   "hidden": false
+  },
+  {
+   "scientificName": "Opisthokonta",
+   "taxonId": 33154,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Metazoa",
+   "commonName": "animals",
+   "taxonId": 33208,
+   "rank": "kingdom",
+   "hidden": false
+  },
+  {
+   "scientificName": "Eumetazoa",
+   "taxonId": 6072,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Bilateria",
+   "taxonId": 33213,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Deuterostomia",
+   "taxonId": 33511,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Chordata",
+   "commonName": "chordates",
+   "taxonId": 7711,
+   "rank": "phylum",
+   "hidden": false
+  },
+  {
+   "scientificName": "Craniata",
+   "taxonId": 89593,
+   "rank": "subphylum",
+   "hidden": false
+  },
+  {
+   "scientificName": "Vertebrata",
+   "commonName": "vertebrates",
+   "taxonId": 7742,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Gnathostomata",
+   "commonName": "jawed vertebrates",
+   "taxonId": 7776,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Teleostomi",
+   "taxonId": 117570,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Euteleostomi",
+   "commonName": "bony vertebrates",
+   "taxonId": 117571,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Sarcopterygii",
+   "taxonId": 8287,
+   "rank": "superclass",
+   "hidden": true
+  },
+  {
+   "scientificName": "Dipnotetrapodomorpha",
+   "taxonId": 1338369,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Tetrapoda",
+   "commonName": "tetrapods",
+   "taxonId": 32523,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Amniota",
+   "commonName": "amniotes",
+   "taxonId": 32524,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Sauropsida",
+   "commonName": "sauropsids",
+   "taxonId": 8457,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Sauria",
+   "commonName": "diapsids",
+   "taxonId": 32561,
+   "rank": "clade",
+   "hidden": true
+  },
+  {
+   "scientificName": "Archelosauria",
+   "taxonId": 1329799,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Archosauria",
+   "taxonId": 8492,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Dinosauria",
+   "commonName": "dinosaurs",
+   "taxonId": 436486,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Saurischia",
+   "taxonId": 436489,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Theropoda",
+   "taxonId": 436491,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Coelurosauria",
+   "taxonId": 436492,
+   "rank": "clade",
+   "hidden": false
+  },
+  {
+   "scientificName": "Aves",
+   "commonName": "birds",
+   "taxonId": 8782,
+   "rank": "class",
+   "hidden": false
+  },
+  {
+   "scientificName": "Neognathae",
+   "taxonId": 8825,
+   "rank": "infraclass",
+   "hidden": false
+  },
+  {
+   "scientificName": "Galloanserae",
+   "taxonId": 1549675,
+   "rank": "superorder",
+   "hidden": false
+  },
+  {
+   "scientificName": "Galliformes",
+   "commonName": "landfowls",
+   "taxonId": 8976,
+   "rank": "order",
+   "hidden": false
+  },
+  {
+   "scientificName": "Phasianidae",
+   "commonName": "turkeys",
+   "taxonId": 9005,
+   "rank": "family",
+   "hidden": false
+  },
+  {
+   "scientificName": "Phasianinae",
+   "taxonId": 9072,
+   "rank": "subfamily",
+   "hidden": false
+  },
+  {
+   "scientificName": "Gallus",
+   "taxonId": 9030,
+   "rank": "genus",
+   "hidden": false
+  }
+ ],
+ "extraAttributes": {
+  "uniParcId": "UPI0000000F06"
+ }
+}

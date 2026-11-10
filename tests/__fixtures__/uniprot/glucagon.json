@@ -1,0 +1,359 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"glucagon\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P47871",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Glucagon receptor"
+     },
+     "shortNames": [
+      {
+       "value": "GL-R"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 477,
+    "molWeight": 54009
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P01275",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20909
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P43220",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Glucagon-like peptide 1 receptor"
+     },
+     "shortNames": [
+      {
+       "value": "GLP-1 receptor"
+      },
+      {
+       "value": "GLP-1-R"
+      },
+      {
+       "value": "GLP-1R"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 463,
+    "molWeight": 53026
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P30082",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "taxonId": 10116
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Glucagon receptor"
+     },
+     "shortNames": [
+      {
+       "value": "GL-R"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 485,
+    "molWeight": 55038
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q61606",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Glucagon receptor"
+     },
+     "shortNames": [
+      {
+       "value": "GL-R"
+      }
+     ]
+    }
+   },
+   "sequence": {
+    "length": 485,
+    "molWeight": 54929
+   },
+   "features": [
+    {
+     "type": "Signal"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P06883",
+   "organism": {
+    "scientificName": "Rattus norvegicus",
+    "taxonId": 10116
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20846
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P01272",
+   "organism": {
+    "scientificName": "Bos taurus",
+    "taxonId": 9913
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20944
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P55095",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20906
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P68259",
+   "organism": {
+    "scientificName": "Gallus gallus",
+    "taxonId": 9031
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 206,
+    "molWeight": 23876
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P05110",
+   "organism": {
+    "scientificName": "Cavia porcellus",
+    "taxonId": 10141
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 20972
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "Q8MJ25",
+   "organism": {
+    "scientificName": "Ovis aries",
+    "taxonId": 9940
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 176,
+    "molWeight": 20336
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  },
+  {
+   "primaryAccession": "P29794",
+   "organism": {
+    "scientificName": "Canis lupus familiaris",
+    "taxonId": 9615
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Pro-glucagon"
+     }
+    }
+   },
+   "sequence": {
+    "length": 180,
+    "molWeight": 21115
+   },
+   "features": [
+    {
+     "type": "Signal"
+    },
+    {
+     "type": "Propeptide"
+    },
+    {
+     "type": "Propeptide"
+    }
+   ]
+  }
+ ]
+}

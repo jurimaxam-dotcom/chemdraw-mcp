@@ -1,0 +1,413 @@
+{
+ "_quelle": "rest.uniprot.org, aufgenommen 2026-11-10, gekürzt auf die ersten 12 Treffer und die genutzten Felder",
+ "_query": "(protein_name:\"hemoglobin\") AND reviewed:true",
+ "results": [
+  {
+   "primaryAccession": "P02100",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit epsilon"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Epsilon-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin epsilon chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 16203
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P02042",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit delta"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Delta-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin delta chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 16055
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P02008",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit zeta"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "HBAZ"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin zeta chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Zeta-globin"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 142,
+    "molWeight": 15637
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P69905",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit alpha"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alpha-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin alpha chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 142,
+    "molWeight": 15258
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P69891",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit gamma-1"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Gamma-1-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hb F Agamma"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin gamma-1 chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin gamma-A chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 16128
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P69892",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit gamma-2"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Gamma-2-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hb F Ggamma"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin gamma-2 chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin gamma-G chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 16126
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P68871",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit beta"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Beta-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 15998
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "Q9NZD4",
+   "organism": {
+    "scientificName": "Homo sapiens",
+    "taxonId": 9606
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Alpha-hemoglobin-stabilizing protein"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Erythroid differentiation-related factor"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Erythroid-associated factor"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 102,
+    "molWeight": 11840
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P01966",
+   "organism": {
+    "scientificName": "Bos taurus",
+    "taxonId": 9913
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit alpha"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Alpha-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin alpha chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 142,
+    "molWeight": 15184
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P02088",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit beta-1"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Beta-1-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta-1 chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta-major chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 15840
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P02070",
+   "organism": {
+    "scientificName": "Bos taurus",
+    "taxonId": 9913
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit beta"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Beta-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 145,
+    "molWeight": 15954
+   },
+   "features": []
+  },
+  {
+   "primaryAccession": "P02089",
+   "organism": {
+    "scientificName": "Mus musculus",
+    "taxonId": 10090
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Hemoglobin subunit beta-2"
+     }
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Beta-2-globin"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta-2 chain"
+      }
+     },
+     {
+      "fullName": {
+       "value": "Hemoglobin beta-minor chain"
+      }
+     }
+    ]
+   },
+   "sequence": {
+    "length": 147,
+    "molWeight": 15878
+   },
+   "features": []
+  }
+ ]
+}

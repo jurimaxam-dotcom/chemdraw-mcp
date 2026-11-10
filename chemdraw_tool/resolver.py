@@ -18,7 +18,7 @@ import requests
 import requests.adapters
 from rdkit import Chem, RDLogger
 
-from chemdraw_tool import peptide
+from chemdraw_tool import peptide, protein_catalog
 from chemdraw_tool.de_names import english_variant, form_variant, salt_variant
 
 logger = logging.getLogger(__name__)
@@ -88,7 +88,10 @@ class NameResolutionError(ValueError):
     `kind` ist einer von 'not_found' | 'offline' | 'sources_down' | 'partial'
     | 'invalid_smiles' (Eingabe ist kaputtes SMILES, die Kaskade wurde nie
     betreten — `attempts` ist dann leer) | 'ambiguous' (Familienname wie
-    "xylene": mehrere Isomere, keins gewählt — `candidates` nennt sie).
+    "xylene": mehrere Isomere, keins gewählt — `candidates` nennt sie)
+    | 'protein' (Name eines Proteins oder Antikörpers: keine Strukturformel,
+    die Meldung nennt den UniProt-Eintrag) | 'too_large' (generate_molecule:
+    ein Name ergab eine Struktur über der Lesbarkeitsgrenze, nichts gezeichnet).
     """
 
     def __init__(
@@ -99,12 +102,17 @@ class NameResolutionError(ValueError):
         kind: str,
         attempts: list,
         candidates: tuple = (),
+        protein=None,
     ):
         super().__init__(message)
         self.name = name
         self.kind = kind
         self.attempts = attempts
         self.candidates = list(candidates)
+        # Bei kind="protein" (E8): die gewählte ProteinChoice aus
+        # protein_catalog — generate_molecule/generate_3d zeichnen daraus die
+        # Rückgratspur, statt nur die Meldung weiterzugeben.
+        self.protein = protein
 
 
 class _Attempt:
@@ -543,6 +551,22 @@ def _skeleton(smiles: str | None) -> str | None:
     return Chem.MolToInchiKey(mol).split("-")[0]
 
 
+# Nur ein Drehsinn vorn, kein R/S daneben: "(-)-menthol", "(+)-camphor".
+# "(±)-" ist der Racemat — flach ist dort richtig.
+_ROTATION_ONLY = re.compile(r"^\((?:[+\-−])\)-")
+
+
+def _n_open_stereo(smiles: str) -> int:
+    """Zahl der Stereozentren/-bindungen, die RDKit als unbestimmt meldet."""
+    mol = Chem.MolFromSmiles(smiles) if smiles else None
+    if mol is None:
+        return 0
+    return sum(
+        info.specified == Chem.StereoSpecified.Unspecified
+        for info in Chem.FindPotentialStereo(mol)
+    )
+
+
 def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     """OPSIN-Treffer für einen Namen ohne Lokanten gegen PubChem prüfen.
 
@@ -564,6 +588,19 @@ def _opsin_checked(name: str, opsin_smiles: str, report: list) -> str:
     und kippt "diiodo-L-tyrosine" (PubChem: richtiges Gerüst als Anion, OPSIN:
     N,N-Diiod) zurück auf den falschen Stoff.
     """
+    if _ROTATION_ONLY.match(name) and _n_open_stereo(opsin_smiles):
+        # E17: OPSIN überliest den Drehsinn ("(-)-menthol" → flaches Menthol),
+        # und die Klammer zählte unten als systematisches Merkmal — PubChem
+        # wurde nie gefragt. Gleiches Gerüst mit mehr festgelegter Stereo-
+        # chemie: dann ist der PubChem-Eintrag das genannte Enantiomer.
+        pubchem = _pubchem_lookup(name, report)
+        if (
+            pubchem
+            and _skeleton(pubchem) == _skeleton(opsin_smiles)
+            and _n_defined_stereo(pubchem) > _n_defined_stereo(opsin_smiles)
+        ):
+            logger.info("OPSIN ignores the rotation sign in %r — using PubChem's stereo", name)
+            return pubchem
     if _SYSTEMATIC_MARK.search(name):
         return opsin_smiles
     opsin_mol = Chem.MolFromSmiles(opsin_smiles)
@@ -1164,6 +1201,71 @@ _ATOMIC_ELEMENTS: dict[str, str] = {
 }
 
 
+# Metall-Tetrapyrrole (E11): feste Strukturen statt PubChems Tagesform —
+# PubChem beantwortete „heme b“ (→ CID 53356674 Ferriheme b) und
+# „Fe-coproporphyrin III“ (→ CID 70678602, neutrales Fe) zeitweise mit
+# anderen Datensätzen; „12,18-didecarboxysiroheme“ findet PubChem unter dem
+# Namen nur als Anion. Eine Schreibweise für alle Einträge: COOH, Fe²⁺ mit
+# zwei N⁻ (PubChems Säureform von Häm), damit verwandte Strukturen gleich
+# gezeichnet werden. Belege (CID, InChIKey, Formeln): tests/test_metal_tetrapyrrole_table.py.
+# Nur exakte ganze Namen; CAS/Titel kommen weiter über den InChIKey.
+_METAL_TETRAPYRROLES: dict[str, str] = {
+    # PubChem CID 4973 „Heme b“, KABFMIBPWCXCRK-UHFFFAOYSA-L
+    **dict.fromkeys(
+        ("heme b", "heme", "häm", "häm b", "haem", "haem b", "protoheme"),
+        "CC1=C(C2=CC3=NC(=CC4=C(C(=C([N-]4)C=C5C(=C(C(=N5)C=C1[N-]2)C)C=C)C)C=C)"
+        "C(=C3CCC(=O)O)C)CCC(=O)O.[Fe+2]",
+    ),
+    # PubChem CID 439303, DLKSSIHHLYNIKN-QIISWYHFSA-L
+    **dict.fromkeys(
+        ("siroheme", "sirohäm", "sirohaem"),
+        "C[C@@]1([C@@H](C2=CC3=NC(=CC4=C(C(=C([N-]4)C=C5[C@@]([C@@H](C(=N5)C=C1[N-]2)"
+        "CCC(=O)O)(C)CC(=O)O)CC(=O)O)CCC(=O)O)C(=C3CC(=O)O)CCC(=O)O)CCC(=O)O)CC(=O)O.[Fe+2]",
+    ),
+    # Säureform aus PubChem CID 91820468 (Hexacarboxylat, neutrales Fe):
+    # Carboxylate protoniert, Fe²⁺. Gleiche InChI-Konnektivität und -Stereo-
+    # schicht wie CID 91820468/121225535; Struktur = CID 439303 mit Methyl
+    # statt Carboxymethyl an C12 und C18.
+    # PubChem führt genau diese Form als CID 134694609 (gleicher InChIKey).
+    # Nicht CID 137349829: gleicher erster Block, andere Stereoschicht.
+    # JJIIPBCQUZPJAW-MQNDWNIASA-L
+    **dict.fromkeys(
+        (
+            "12,18-didecarboxysiroheme",
+            "didecarboxysiroheme",
+            "12,18-didecarboxysirohäm",
+            "12,18-didecarboxysirohaem",
+        ),
+        "CC1=C2C=C3[C@H]([C@](C(=N3)C=C4[C@H]([C@](C(=CC5=NC(=CC(=C1CCC(=O)O)[N-]2)"
+        "C(=C5C)CCC(=O)O)[N-]4)(C)CC(=O)O)CCC(=O)O)(C)CC(=O)O)CCC(=O)O.[Fe+2]",
+    ),
+    # PubChem CID 447356 (= CID 42626838 „Coproheme III“), SXDINBXHOHHTMY-UHFFFAOYSA-L
+    **dict.fromkeys(
+        (
+            "fe-coproporphyrin iii",
+            "iron-coproporphyrin iii",
+            "coproheme",
+            "coproheme iii",
+            "coprohäm",
+        ),
+        "CC1=C(C2=CC3=NC(=CC4=C(C(=C([N-]4)C=C5C(=C(C(=N5)C=C1[N-]2)C)CCC(=O)O)C)"
+        "CCC(=O)O)C(=C3CCC(=O)O)C)CCC(=O)O.[Fe+2]",
+    ),
+    # PubChem CID 6438545 ohne die vier losen [H+]: auf die Carboxylate gesetzt,
+    # gleicher InChIKey YTCKFKAUGWIMPJ-WVLIHFOGSA-L
+    **dict.fromkeys(
+        ("heme d1", "häm d1"),
+        "CC1=C(C2=CC3=C(C(=C([N-]3)C=C4C(C(=O)C(=N4)C=C5C(C(=O)C(=N5)C=C1[N-]2)(C)CC(=O)O)"
+        "(C)CC(=O)O)C)/C=C/C(=O)O)CCC(=O)O.[Fe+2]",
+    ),
+    # PubChem CID 455658, BTIJJDXEELBZFS-UHFFFAOYSA-K (Fe³⁺ + Cl⁻)
+    **dict.fromkeys(
+        ("hemin", "hämin"),
+        "CC1=C(C2=CC3=C(C(=C([N-]3)C=C4C(=C(C(=N4)C=C5C(=C(C(=N5)C=C1[N-]2)C)C=C)C)C=C)C)"
+        "CCC(=O)O)CCC(=O)O.[Cl-].[Fe+3]",
+    ),
+}
+
 def _atom_phrase_key(name: str) -> str | None:
     """Element aus "<element> atom" bzw. "atomic <element>", sonst None."""
     words = name.casefold().split()
@@ -1250,6 +1352,198 @@ _ROUTE_CACHE: dict[str, Resolution] = {}
 _ROUTE_CACHE_LOCK = threading.Lock()
 
 
+# --- Proteine (E6, 10.11.2026) ----------------------------------------------
+# Gemessen: "Lysozym", "Trastuzumab", "hemoglobin", "Trypsin" → not_found;
+# "lysozyme" → PubChem CID 91976556, ein 159-Atom-Peptidfragment mit dem Titel
+# "Lysozyme"; "alcohol dehydrogenase" → CID 78120390, ein Acyl-CoA mit dem Titel
+# "Alcohol Dehydrogenase". Eine Titel-Regel greift also nicht — der Titel stimmt,
+# der Stoff nicht. Darum:
+#   - Enzymnamen (letztes Wort auf -ase/-zyme) fragen UniProt VOR der Kaskade;
+#     kennt UniProt den Namen als Protein, ist das die Antwort. Der Rest der
+#     Namen zahlt nichts (stoffe-masse.json: 0 von 711 Namen enden so).
+#   - Sonst erst, wenn alle Quellen geantwortet haben und keine den Namen kennt
+#     (kind not_found) — nie bei offline/sources_down/partial, sonst machte eine
+#     UniProt-Antwort aus einem Netzproblem eine Diagnose.
+#   - Antikörper (INN-Stamm -mab) führt UniProt nicht unter dem INN (gemessen:
+#     trastuzumab 0 Treffer) — ein ehrlicher Satz ohne Netz, ohne Zahlen.
+# Fällt UniProt aus, bleibt die bisherige Antwort (Treffer oder not_found).
+
+_ENZYME_NAME = re.compile(r"[a-z]{3,}(?:ase|zyme?)", re.IGNORECASE)
+
+
+def _protein_lookup(name: str) -> dict | None:
+    from chemdraw_tool.databases import uniprot_protein
+    from chemdraw_tool.protein_catalog import organism_hint
+
+    # E8: "human lysozyme", "Lysozym Huhn" — der Organismus geht als Filter mit.
+    base, organism = organism_hint(name)
+    if organism:
+        return uniprot_protein(base, organism=organism)
+    return uniprot_protein(name)
+
+
+def _gene_lookup(name: str) -> dict | None:
+    """Genkürzel ("RecA", "RecA Escherichia coli") → UniProt-Datensatz oder None (E8)."""
+    from chemdraw_tool.databases import uniprot_gene
+    from chemdraw_tool.protein_catalog import split_gene_symbol
+
+    symbol, organism = split_gene_symbol(name)
+    return uniprot_gene(symbol, organism)
+
+
+def protein_choice(name: str):
+    """Tabelle, dann Genkürzel → ProteinChoice oder None (E8).
+
+    Die eine Stelle, an der Meldung, Bild und Datenblatt ihren Eintrag wählen.
+    Genkürzel ("RecA"): nur diese enge Form fragt UniProt vorab — "PabA" wäre
+    sonst über das PubChem-Synonym PABA 4-Aminobenzoesäure.
+    """
+    if choice := protein_catalog.curated_choice(name):
+        return choice
+    if protein_catalog.is_gene_symbol(name) and (gene := _gene_lookup(name)):
+        return protein_catalog.from_gene_record(gene, name)
+    return None
+
+
+def _is_enzyme_name(name: str) -> bool:
+    words = name.split()
+    return bool(words) and bool(_ENZYME_NAME.fullmatch(words[-1]))
+
+
+_DRAW_INSTEAD = (
+    "To draw a stretch of the chain, pass it as a sequence (\"Lys-Val-Phe\" or "
+    "\"peptide:KVF\", up to 20 residues)."
+)
+
+# E8: generate_molecule und generate_3d fangen kind="protein" ab und zeigen die
+# Rückgratspur. Die Meldung lesen also nur noch Aufrufer ohne Proteinansicht
+# (batch_generate, compare_molecules, lookup_molecule_data) — und
+# generate_molecule selbst, wenn die Struktur nicht zu holen war.
+_BACKBONE_INSTEAD = (
+    "Proteins have no skeletal formula, so no structure formula was drawn and "
+    "nothing was drawn here; generate_molecule and generate_3d show it as a "
+    "cartoon (PDB or AlphaFold structure)."
+)
+
+
+def _choice_facts(choice) -> str:
+    facts = []
+    if choice.accession:
+        facts.append("UniProt " + ", ".join(choice.accession))
+    if choice.length:
+        facts.append(f"{choice.length} amino acids")
+    if choice.mass_da:
+        facts.append(f"{choice.mass_da / 1000:.1f} kDa")
+    return "; ".join(facts)
+
+
+def protein_choice_message(name: str, choice) -> str:
+    """Meldung zu einer ProteinChoice — dieselbe Wahl wie Bild und Datenblatt."""
+    shown = name.strip()
+    if choice.kind == "antibody_generic":
+        lead = (
+            f"'{shown}' is an antibody, not a small molecule. An antibody is a protein — "
+            f"a full IgG has four chains, about 1,300 amino acids and roughly 150 kDa; "
+            f"fragments such as Fab are smaller."
+        )
+    elif choice.kind == "antibody":
+        lead = (
+            f"'{shown}' is a monoclonal antibody, not a small molecule — a protein; a full "
+            f"IgG has four chains, about 1,300 amino acids and roughly 150 kDa. Its "
+            f"structure: {choice.headline}."
+        )
+    else:
+        facts = _choice_facts(choice)
+        lead = f"'{shown}' is a protein, not a small molecule: {choice.headline}"
+        lead += f" ({facts})." if facts else "."
+    parts = [lead, _BACKBONE_INSTEAD]
+    if choice.alternatives:
+        parts.append(f"Other common sources: {choice.alternatives}.")
+    if choice.others:
+        names = ", ".join(o["name"] for o in choice.others)
+        if choice.kind == "gene":
+            ex = choice.others[0]["name"]
+            parts.append(
+                f"The same gene is also found in {names} — add the organism to the name "
+                f"(\"{shown} {ex}\") to get that one."
+            )
+        else:
+            parts.append(f"UniProt lists more proteins under this name: {names}.")
+    if choice.kind == "gene":
+        parts.append(
+            f"Read as a gene/protein symbol; written in capitals ('{shown.split()[0].upper()}') "
+            f"the name is read as a compound abbreviation instead."
+        )
+    if choice.by_name_for:
+        parts.append(
+            f"UniProt has no entry with the gene name {choice.by_name_for} for this organism; "
+            f"this entry was found by its protein name ('{choice.title}', the name the other "
+            f"{choice.by_name_for} entries carry) — check that it is the protein you mean."
+        )
+    if choice.other_reading:
+        parts.append(choice.other_reading + ".")
+    parts.append('For its data sheet call lookup with topic "biochem".')
+    return " ".join(parts)
+
+
+def _choice_error(name: str, choice, attempts=None) -> NameResolutionError:
+    return NameResolutionError(
+        protein_choice_message(name, choice), name=name, kind="protein",
+        attempts=attempts or [], protein=choice,
+    )
+
+
+def _protein_error(name: str, protein: dict) -> NameResolutionError:
+    shown = name.strip()
+    facts = [f"UniProt {protein['accession']}", protein.get("organism") or ""]
+    if protein.get("length"):
+        facts.append(f"{protein['length']} amino acids")
+    if protein.get("mass"):
+        facts.append(f"{protein['mass'] / 1000:.1f} kDa")
+    detail = ", ".join(f for f in facts if f)
+    if protein.get("precursor"):
+        detail += " — length and mass of the precursor; the mature protein is shorter"
+    title = protein.get("name") or protein["matched"]
+    if protein["matched"] != title:
+        title = f"{title} (also called {protein['matched']}; {detail})"
+    else:
+        title = f"{title} ({detail})"
+    others = ", ".join(f"{o['name']} ({o['accession']})" for o in protein.get("others", []))
+    if protein.get("family"):
+        lead = (
+            f"'{shown}' is a protein family, not a small molecule: UniProt lists its "
+            f"chains separately, e.g. {title}"
+        )
+        lead += f"; also {others}." if others else "."
+    else:
+        lead = f"'{shown}' is a protein, not a small molecule: {title}."
+        if others:
+            lead += f" UniProt lists more proteins under this name: {others}."
+    message = (
+        f"{lead} {_BACKBONE_INSTEAD} "
+        f"For its data sheet (function, EC number, PDB structures) call lookup "
+        f"with topic \"biochem\". {_DRAW_INSTEAD}"
+    )
+    from chemdraw_tool.protein_catalog import from_uniprot_record
+
+    return NameResolutionError(
+        message, name=name, kind="protein", attempts=[],
+        protein=from_uniprot_record(protein, name),
+    )
+
+
+def _antibody_error(name: str, attempts: list) -> NameResolutionError:
+    message = (
+        f"'{name.strip()}' is a monoclonal antibody (INN stem -mab), not a small "
+        f"molecule. An antibody is a protein — a full IgG has four chains, about "
+        f"1,300 amino acids and roughly 150 kDa; fragments such as Fab are "
+        f"smaller. It has no skeletal formula and no structure database lists it "
+        f"as a compound, so nothing was drawn. For what ChEBI lists about it, call "
+        f"lookup with topic \"biochem\"."
+    )
+    return NameResolutionError(message, name=name, kind="protein", attempts=attempts)
+
+
 def resolve_name_route(name: str) -> Resolution:
     """Kaskade mit Cache: identische Namen gehen nur einmal ins Netz.
 
@@ -1263,8 +1557,30 @@ def resolve_name_route(name: str) -> Resolution:
     cached = _ROUTE_CACHE.get(name)
     if cached is not None:
         return cached
+    # E8: Laborstandards und Antikörper (Tabelle, ohne Netz) vor der Kaskade —
+    # "GFP", "myoglobin", "ACE" lösten PubChem sonst als fremde kleine Moleküle auf.
+    if choice := protein_choice(name):
+        raise _choice_error(name, choice)
+    asked_uniprot = False
+    if _is_enzyme_name(name):
+        asked_uniprot = True
+        if protein := _protein_lookup(name):
+            raise _protein_error(name, protein)
     report: list[_Attempt] = []
-    result = _resolve_name_route(name, report)
+    try:
+        result = _resolve_name_route(name, report)
+    except NameResolutionError as exc:
+        # Nur wenn jede befragte Quelle geantwortet hat (attempts leer = nichts
+        # gefragt, z. B. eine kaputte peptide:-Eingabe).
+        if exc.kind != "not_found" or not exc.attempts:
+            raise
+        from chemdraw_tool.databases import is_antibody_name
+
+        if is_antibody_name(name):
+            raise _antibody_error(name, exc.attempts) from exc
+        if not asked_uniprot and (protein := _protein_lookup(name)):
+            raise _protein_error(name, protein) from exc
+        raise
     if not any(a.status in (_UNREACHABLE, _SOURCE_ERROR) for a in report):
         with _ROUTE_CACHE_LOCK:
             while len(_ROUTE_CACHE) >= _ROUTE_CACHE_MAX:
@@ -1278,6 +1594,7 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
 
     0. Known family names ("xylene", "Glucose") raise kind="ambiguous";
        names of the seven diatomic elements ("oxygen", "Stickstoff") → X₂;
+       metal tetrapyrroles ("heme b", "hemin", "heme d1") → fixed SMILES;
        peptides: "peptide:AGS" (one-letter) and "Ala-Gly-Ser" (three-letter)
        are built offline (chemdraw_tool.peptide)
     1. OPSIN (offline, rule-based — systematic IUPAC names, no DB index needed)
@@ -1301,6 +1618,8 @@ def _resolve_name_route(name: str, report: list) -> Resolution:
     if smiles := _DIATOMIC_ELEMENTS.get(name.strip().casefold()):
         return Resolution(smiles)
     if smiles := _ATOMIC_ELEMENTS.get(_atom_phrase_key(name) or ""):
+        return Resolution(smiles)
+    if smiles := _METAL_TETRAPYRROLES.get(name.strip().casefold()):
         return Resolution(smiles)
 
     # Peptide (E4): Einbuchstabencode nur hinter "peptide:", Dreibuchstaben-
@@ -1405,11 +1724,199 @@ class Resolved(tuple):
     """
 
     found_as: str
+    # True, wenn der Nutzer die Struktur selbst geliefert hat (SMILES oder
+    # Peptidsequenz) — dann gilt keine Größengrenze beim Zeichnen (E6).
+    user_structure: bool
 
-    def __new__(cls, smiles: str, mol: Chem.Mol, found_as: str = ""):
+    def __new__(
+        cls, smiles: str, mol: Chem.Mol, found_as: str = "", user_structure: bool = False
+    ):
         self = super().__new__(cls, (smiles, mol))
         self.found_as = found_as
+        self.user_structure = user_structure
         return self
+
+
+def _is_sequence(text: str) -> bool:
+    """Peptidsequenz ("peptide:AGS", "Ala-Gly-Ser") statt Stoffname?"""
+    if peptide.one_letter_sequence(text) is not None:
+        return True
+    try:
+        return peptide.three_letter_smiles(text) is not None
+    except peptide.PeptideSequenceError:
+        return False
+
+
+def parse_smiles_input(text: str) -> Chem.Mol | None:
+    """Die Parse-first-Regel von resolve(): ist `text` ein SMILES? Lokal, ohne Netz.
+
+    Was RDKit als SMILES liest, IST ein SMILES ("O" ist Wasser, "CO" Methanol);
+    Eingaben mit Leerzeichen oder Stereo-Präfix ("(S)-…") sind Namen. Eine Quelle
+    für resolve() und lookup() (E12), damit beide dieselbe Eingabe gleich lesen.
+    """
+    candidate = text.strip()
+    if not candidate or " " in candidate or _STEREO_PREFIX.match(candidate):
+        return None
+    return validate_smiles(candidate)
+
+
+_CXSMILES = re.compile(r"(\S+)\s+\|[^|]*\|")
+
+# --- Abkürzungen in SMILES-artigen Eingaben (E12, Nachauftrag) ----------------
+# Doktoranden tippen "PhC(=O)CC1CCN(Boc)CC1". RDKit liest das nicht, und als
+# "Name" ging es an PubChem, NCI und UniProt. Ersetzt wird nur an eindeutigen
+# Stellen: am Anfang (vor einem Atom/einer Bindung), am Ende der Kette oder
+# eines Zweigs (nach einem Atom, einer Klammer zu, Ring-Ziffer oder Bindung;
+# "C(=O)OMe", "C(OtBu)") oder allein in Klammern "(Boc)".
+# Je Gruppe zwei Schreibweisen: Anbindung zuerst (Ende/Klammer) und Anbindung
+# zuletzt (Anfang). Ringe als %99, damit offene Ringe der Eingabe nie
+# vorzeitig schließen. Erreicht wird der Ersetzer nur, wenn RDKit die Eingabe
+# als Ganzes nicht liest — ein gültiges SMILES ("[Ac]", "Bn…") bleibt unberührt.
+_ABBREVIATIONS: dict[str, tuple[str, str]] = {
+    "tBu": ("C(C)(C)C", "CC(C)(C)"),
+    "Boc": ("C(=O)OC(C)(C)C", "CC(C)(C)OC(=O)"),
+    "OMe": ("OC", "CO"),
+    "OEt": ("OCC", "CCO"),
+    "Me": ("C", "C"),
+    "Et": ("CC", "CC"),
+    "Ph": ("c%99ccccc%99", "c%99ccccc%99"),
+    "Bn": ("Cc%99ccccc%99", "c%99ccccc%99C"),
+    "Ac": ("C(C)=O", "CC(=O)"),
+    "Ts": ("S(=O)(=O)c%99ccc(C)cc%99", "Cc%99ccc(cc%99)S(=O)(=O)"),
+}
+_ABBREVIATION_TOKEN = re.compile("|".join(sorted(_ABBREVIATIONS, key=len, reverse=True)))
+_STRONG_MARKER = re.compile(r"[()=#\[]")
+_BOND_TOKENS = {"-", "=", "#", "$", ":", "/", "\\"}
+
+
+def _abbreviation_tokens(text: str) -> list[tuple[str, bool]]:
+    """(Token, ist_abkürzung) über den ganzen Text; unbekannte Zeichen als ("?x", False)."""
+    tokens, pos = [], 0
+    while pos < len(text):
+        if text[pos] != "[" and (m := _ABBREVIATION_TOKEN.match(text, pos)):
+            tokens.append((m.group(), True))
+        elif m := _SMILES_TOKEN.match(text, pos):
+            tokens.append((m.group(), False))
+        else:
+            tokens.append(("?" + text[pos], False))
+            pos += 1
+            continue
+        pos = m.end()
+    return tokens
+
+
+def _expand_abbreviations(tokens) -> str | None:
+    """Abkürzungen an eindeutigen Stellen ersetzen — sonst None."""
+    out = []
+    for i, (tok, is_abbr) in enumerate(tokens):
+        if not is_abbr:
+            out.append(tok)
+            continue
+        before = tokens[i - 1][0] if i > 0 else None
+        after = tokens[i + 1][0] if i + 1 < len(tokens) else None
+        attach_first, attach_last = _ABBREVIATIONS[tok]
+        if before is None and after is not None and (_is_atom_token(after) or after in _BOND_TOKENS):
+            out.append(attach_last)
+        elif before == "(" and after == ")":
+            out.append(attach_first)
+        elif after in (None, ")") and before is not None and (
+            _is_atom_token(before) or before == ")" or before.isdigit() or before in _BOND_TOKENS
+        ):
+            out.append(attach_first)
+        else:
+            return None
+    return "".join(out)
+
+
+def _unreadable_parts(tokens) -> list[str]:
+    parts = [tok[1:] for tok, is_abbr in tokens if not is_abbr and tok.startswith("?")]
+    parts += [tok for tok, is_abbr in tokens if is_abbr]
+    return parts
+
+
+def _abbreviated_or_unreadable(text: str) -> tuple[str, Chem.Mol | None] | None:
+    """SMILES mit Abkürzungen (→ Mol) oder erkennbar ein SMILES, aber unlesbar (→ None).
+
+    Eng gefasst, damit kein Name als kaputtes SMILES gilt (Test gegen
+    Identitätsliste, Routing-Fälle und systematische Namen):
+    - mit Abkürzung: kein Leerzeichen, alles sonst SMILES-Zeichen, dazu eine
+      Klammer, "=", "#" oder "[" ("Boc2O", "Et3N", "MeOH" bleiben Namen);
+    - ohne: "=" oder "#" plus mindestens drei Atome — beides steht in keinem Namen.
+    """
+    if not text or any(ch.isspace() for ch in text) or _looks_like_formula(text):
+        return None
+    tokens = _abbreviation_tokens(text)
+    unknown = any(tok.startswith("?") for tok, _ in tokens)
+    abbreviated = any(is_abbr for _, is_abbr in tokens)
+    if abbreviated and not unknown and _STRONG_MARKER.search(text):
+        expanded = _expand_abbreviations(tokens)
+        mol = validate_smiles(expanded) if expanded else None
+        return ("SMILES with abbreviations", mol) if mol is not None else ("SMILES", None)
+    atoms = sum(1 for tok, is_abbr in tokens if is_abbr or (not tok.startswith("?") and _is_atom_token(tok)))
+    if unknown and re.search(r"[=#]", text) and atoms >= 3:
+        return "SMILES", None
+    return None
+
+
+def unreadable_reason(text: str) -> str:
+    """Englischer Satz: was an einer SMILES-artigen Eingabe nicht gelesen wurde."""
+    parts = _unreadable_parts(_abbreviation_tokens(text.strip()))
+    known = ", ".join(_ABBREVIATIONS)
+    what = f" ({', '.join(repr(p) for p in parts)})" if parts else ""
+    return (
+        f"Could not read '{text.strip()}' as SMILES{what}. It looks like a structure, so it "
+        "was not looked up as a compound name and nothing was sent to any database. "
+        f"Group abbreviations are expanded only for {known}, and only at the start, at the "
+        "end of the chain or a branch, or alone in parentheses, e.g. N(Boc); write other "
+        "groups out (OMe → OC). "
+        "To search it as a name anyway, turn on the SMILES lookup setting "
+        "(CHEMDRAW_SMILES_LOOKUP=1)."
+    )
+
+# Hinweis je Schreibweise, die RDKit als Molekül nicht liest, die aber
+# erkennbar eine Struktur ist (E12): klarer Fehler statt Namenssuche.
+NOTATION_HINTS = {
+    "reaction SMILES": "For a reaction use generate_reaction with reactants and products "
+    "as separate SMILES.",
+}
+
+
+def structure_notation(text: str) -> tuple[str, Chem.Mol | None] | None:
+    """Eine Struktur in anderer Schreibweise als reinem SMILES? → (Art, Mol), sonst None.
+
+    Mol None heißt: erkennbar eine Struktur, aber unlesbar — dann nie als Name
+    weitersuchen (E12: sonst ging sie wörtlich an PubChem, NCI und UniProt).
+    Erkannt werden InChI, Molfile, CXSMILES, Reaktions-SMILES (A>>B), ein SMILES
+    mit Etikett dahinter ("CCO batch 7") und ein Stereo-Präfix vor einem SMILES
+    ("(S)-C[C@H](N)C(=O)O"). Für die letzten beiden muss das SMILES ein
+    SMILES-Zeichen tragen (Klammer, Ring-Ziffer, =, # …): "NO synthase" bleibt
+    ein Name. Rein lokal (RDKit); das Molfile wird ungekürzt gelesen.
+    """
+    from rdkit import rdBase
+
+    stripped = text.strip()
+    with rdBase.BlockLogs():
+        if stripped.startswith("InChI="):
+            return "InChI", Chem.MolFromInchi(stripped)
+        if "M  END" in text:
+            return "molfile", Chem.MolFromMolBlock(text)
+        if (m := _CXSMILES.fullmatch(stripped)) and validate_smiles(m.group(1)) is not None:
+            return "CXSMILES", Chem.MolFromSmiles(stripped)
+        if ">>" in stripped and " " not in stripped:
+            return "reaction SMILES", None
+        head, _, tail = stripped.partition(" ")
+        if tail and _SMILES_MARKER.search(head) and (mol := validate_smiles(head)) is not None:
+            return "SMILES", mol
+        # Etikett davor ("batch-7 CCO…", "RecA <SMILES>"): sonst ging das SMILES als
+        # Teil des Namens an PubChem/NCI und als Organismusfilter an UniProt (E8).
+        for token in tail.split():
+            if _SMILES_MARKER.search(token) and (mol := validate_smiles(token)) is not None:
+                return "SMILES", mol
+        if (prefix := _STEREO_PREFIX.match(stripped)) and " " not in stripped:
+            rest = stripped[prefix.end():]
+            if _SMILES_MARKER.search(rest) and (mol := validate_smiles(rest)) is not None:
+                return "SMILES", mol
+        return _abbreviated_or_unreadable(stripped)
 
 
 def resolve(input_str: str) -> Resolved:
@@ -1428,10 +1935,9 @@ def resolve(input_str: str) -> Resolved:
             "No compound was given. Pass a name or a SMILES string.",
             name=input_str, kind="not_found", attempts=[],
         )
+    if (mol := parse_smiles_input(candidate)) is not None:
+        return Resolved(candidate, mol, user_structure=True)
     if " " not in candidate and not _STEREO_PREFIX.match(candidate):
-        mol = validate_smiles(candidate)
-        if mol is not None:
-            return Resolved(candidate, mol)
         # Kaputtes SMILES bekommt eine eigene Diagnose und geht NIE in die
         # Namenskaskade — dort würde es still zu einem anderen Stoff (NCI:
         # "c1cccc1" → Cyclopentan) oder bekäme einen falschen Rat.
@@ -1439,9 +1945,31 @@ def resolve(input_str: str) -> Resolved:
             raise NameResolutionError(
                 fault, name=input_str, kind="invalid_smiles", attempts=[]
             )
+    # InChI, Molfile, CXSMILES: ebenfalls eine Struktur, kein Name — lokal lesen,
+    # nie in die Namenskaskade (E12: sonst ging der InChI wörtlich an PubChem/NCI).
+    if (notation := structure_notation(input_str)) is not None:
+        kind, mol = notation
+        if mol is not None:
+            return Resolved(Chem.MolToSmiles(mol), mol, user_structure=True)
+        if kind in NOTATION_HINTS:
+            raise NameResolutionError(
+                f"The input is written in {kind} notation, so it was not looked up as a "
+                "compound name. " + NOTATION_HINTS[kind],
+                name=input_str, kind="invalid_smiles", attempts=[],
+            )
+        from chemdraw_tool.privacy import smiles_lookup_enabled
+
+        # Mit Opt-in wie vor E12: die unlesbare Eingabe geht als Name in die Kaskade.
+        if not smiles_lookup_enabled():
+            message = (
+                unreadable_reason(input_str) if kind == "SMILES"
+                else f"Could not read the input as {kind}; it was not looked up as a "
+                "compound name and nothing was sent to any database."
+            )
+            raise NameResolutionError(message, name=input_str, kind="invalid_smiles", attempts=[])
 
     smiles, found_as = resolve_name_route(candidate)
     mol = validate_smiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
-    return Resolved(smiles, mol, found_as)
+    return Resolved(smiles, mol, found_as, user_structure=_is_sequence(candidate))

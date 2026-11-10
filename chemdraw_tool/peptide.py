@@ -228,3 +228,41 @@ def one_letter_smiles(sequence: str) -> str:
         )
     _check_length(len(monomers), label)
     return _build([m for m in (n_cap, *monomers, c_cap) if m], cyclic)
+
+
+# Bis hierhin steht ein Einbuchstaben-Peptid im Dreibuchstabencode in Legende
+# und Dateiname; länger wäre die Legende breiter als das Bild (E17).
+DISPLAY_THREE_LETTER_MAX = 8
+
+
+def display_name(name: str) -> str | None:
+    """Anzeigename für "peptide:…" ohne das Präfix — None für jede andere Eingabe.
+
+    "peptide:YGGFM" → "Tyr-Gly-Gly-Phe-Met", "peptide:cyclo(RGDfV)" →
+    "cyclo(Arg-Gly-Asp-D-Phe-Val)"; über acht Reste die Sequenz selbst
+    ("ACDEFGHIKLMN"). Nicht baubare Sequenzen → None (die Meldung dazu kommt
+    aus one_letter_smiles).
+    """
+    sequence = one_letter_sequence(name)
+    if sequence is None:
+        return None
+    try:
+        one_letter_smiles(sequence)
+    except PeptideSequenceError:
+        return None
+    text, cyclic = _split_cyclo(sequence)
+    n_cap = c_cap = ""
+    if not cyclic:
+        lowered = text.casefold()
+        if lowered.startswith(("ac-", "h-")):
+            n_cap = "Ac-" if lowered.startswith("ac-") else ""
+            text = text[text.index("-") + 1 :]
+        if text.casefold().endswith(("-nh2", "-oh")):
+            c_cap = "-NH2" if text.casefold().endswith("-nh2") else ""
+            text = text[: text.rindex("-")]
+    if len(text) > DISPLAY_THREE_LETTER_MAX:
+        return sequence
+    residues = "-".join(
+        f"D-{_ONE_LETTER[c.upper()]}" if c.islower() else _ONE_LETTER[c] for c in text
+    )
+    return f"cyclo({residues})" if cyclic else f"{n_cap}{residues}{c_cap}"

@@ -21,7 +21,7 @@ export function fileEntries(files) {
   const rank = (key) => (ORDER.includes(key) ? ORDER.indexOf(key) : ORDER.length);
   return entries
     .sort(([a], [b]) => rank(a) - rank(b))
-    .map(([key, path]) => ({ label: key.toUpperCase(), path }));
+    .map(([key, path]) => ({ label: key.toUpperCase().replace(/_/g, " "), path }));
 }
 
 export default function PanelFooter({ files = [], children }) {

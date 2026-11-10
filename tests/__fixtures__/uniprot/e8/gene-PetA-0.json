@@ -1,0 +1,4086 @@
+{
+ "results": [
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0CY48",
+   "organism": {
+    "scientificName": "Rhodobacter capsulatus",
+    "commonName": "Rhodopseudomonas capsulata",
+    "taxonId": 1061,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rhodobacterales",
+     "Rhodobacter group",
+     "Rhodobacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "synonyms": [
+      {
+       "value": "fbcF"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1ZRT",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "E/R=1-191"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 191,
+    "molWeight": 20416
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacterales",
+     "taxonId": 204455,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacter group",
+     "taxonId": 3374108,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacter",
+     "taxonId": 1060,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000016FE33"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P56771",
+   "organism": {
+    "scientificName": "Arabidopsis thaliana",
+    "commonName": "Mouse-ear cress",
+    "taxonId": 3702,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "rosids",
+     "malvids",
+     "Brassicales",
+     "Brassicaceae",
+     "Camelineae",
+     "Arabidopsis"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "AtCg00540"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35357
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids",
+     "taxonId": 71275,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "malvids",
+     "taxonId": 91836,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicales",
+     "taxonId": 3699,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicaceae",
+     "commonName": "mustard family",
+     "taxonId": 3700,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Camelineae",
+     "taxonId": 980083,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Arabidopsis",
+     "taxonId": 3701,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128BF1"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P23577",
+   "organism": {
+    "scientificName": "Chlamydomonas reinhardtii",
+    "commonName": "Chlamydomonas smithii",
+    "taxonId": 3055,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Chlorophyta",
+     "core chlorophytes",
+     "Chlorophyceae",
+     "CS clade",
+     "Chlamydomonadales",
+     "Chlamydomonadaceae",
+     "Chlamydomonas"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1CFM",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=32-282"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1E2V",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.85 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=32-282"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1E2W",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.60 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B=32-282"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1E2Z",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=32-282"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1EWH",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.35 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A/B/C=32-282"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 317,
+    "molWeight": 34292
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chlorophyta",
+     "commonName": "green algae",
+     "taxonId": 3041,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "core chlorophytes",
+     "taxonId": 2692248,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chlorophyceae",
+     "taxonId": 3166,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "CS clade",
+     "taxonId": 2812636,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chlamydomonadales",
+     "taxonId": 3042,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chlamydomonadaceae",
+     "taxonId": 3051,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chlamydomonas",
+     "taxonId": 3052,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128BF5"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q1RIA5",
+   "organism": {
+    "scientificName": "Rickettsia bellii (strain RML369-C)",
+    "taxonId": 336407,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rickettsiales",
+     "Rickettsiaceae",
+     "Rickettsieae",
+     "Rickettsia",
+     "belli group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "RBE_0828"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 186,
+    "molWeight": 20321
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiales",
+     "commonName": "rickettsias",
+     "taxonId": 766,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiaceae",
+     "taxonId": 775,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsieae",
+     "taxonId": 33988,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia",
+     "taxonId": 780,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "belli group",
+     "taxonId": 1129742,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia bellii",
+     "taxonId": 33990,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000D503A7"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P23136",
+   "organism": {
+    "scientificName": "Rhodospirillum rubrum",
+    "taxonId": 1085,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rhodospirillales",
+     "Rhodospirillaceae",
+     "Rhodospirillum"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "synonyms": [
+      {
+       "value": "fbcF"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 183,
+    "molWeight": 19513
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodospirillales",
+     "taxonId": 204441,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodospirillaceae",
+     "commonName": "purple nonsulfur bacteria",
+     "taxonId": 41295,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodospirillum",
+     "taxonId": 1081,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000016FF34"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P81380",
+   "organism": {
+    "scientificName": "Blastochloris viridis",
+    "commonName": "Rhodopseudomonas viridis",
+    "taxonId": 1079,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Hyphomicrobiales",
+     "Blastochloridaceae",
+     "Blastochloris"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "synonyms": [
+      {
+       "value": "fbcF"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 179,
+    "molWeight": 19011
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hyphomicrobiales",
+     "taxonId": 356,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Blastochloridaceae",
+     "taxonId": 2831090,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Blastochloris",
+     "taxonId": 59282,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000137A6D"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P83793",
+   "organism": {
+    "scientificName": "Mastigocladus laminosus",
+    "commonName": "Fischerella sp.",
+    "taxonId": 83541,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Nostocales",
+     "Hapalosiphonaceae",
+     "Mastigocladus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1VF5",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/P=45-333"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2D2C",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/P=45-333"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2E74",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.00 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C=45-333"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2E75",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.55 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C=45-333"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2E76",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.41 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C=45-333"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 333,
+    "molWeight": 36450
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Nostocales",
+     "taxonId": 1161,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hapalosiphonaceae",
+     "taxonId": 1892263,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mastigocladus",
+     "taxonId": 29417,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000444279"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q02762",
+   "organism": {
+    "scientificName": "Cereibacter sphaeroides",
+    "commonName": "Rhodobacter sphaeroides",
+    "taxonId": 1063,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rhodobacterales",
+     "Paracoccaceae",
+     "Cereibacter"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "synonyms": [
+      {
+       "value": "fbcF"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "2FYN",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/F/I/L/O/R=1-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2NUK",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.20 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=47-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2NUM",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=47-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2NVE",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=47-187"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2NVF",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.50 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=47-187"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 187,
+    "molWeight": 19910
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacterales",
+     "taxonId": 204455,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccaceae",
+     "taxonId": 31989,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cereibacter",
+     "taxonId": 1653176,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000137A6C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q92IR2",
+   "organism": {
+    "scientificName": "Rickettsia conorii (strain ATCC VR-613 / Malish 7)",
+    "taxonId": 272944,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rickettsiales",
+     "Rickettsiaceae",
+     "Rickettsieae",
+     "Rickettsia",
+     "spotted fever group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "RC0358"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 177,
+    "molWeight": 19211
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiales",
+     "commonName": "rickettsias",
+     "taxonId": 766,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiaceae",
+     "taxonId": 775,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsieae",
+     "taxonId": 33988,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia",
+     "taxonId": 780,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "spotted fever group",
+     "taxonId": 114277,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia conorii",
+     "taxonId": 781,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00000CBD66"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q9ZDQ5",
+   "organism": {
+    "scientificName": "Rickettsia prowazekii (strain Madrid E)",
+    "taxonId": 272947,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rickettsiales",
+     "Rickettsiaceae",
+     "Rickettsieae",
+     "Rickettsia",
+     "typhus group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "RP270"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 177,
+    "molWeight": 19350
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiales",
+     "commonName": "rickettsias",
+     "taxonId": 766,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiaceae",
+     "taxonId": 775,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsieae",
+     "taxonId": 33988,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia",
+     "taxonId": 780,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "typhus group",
+     "taxonId": 114292,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia prowazekii",
+     "taxonId": 782,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000137A6E"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P05417",
+   "organism": {
+    "scientificName": "Paracoccus denitrificans",
+    "taxonId": 266,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rhodobacterales",
+     "Paracoccaceae",
+     "Paracoccus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "2YIU",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/F=1-190"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 190,
+    "molWeight": 20300
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rhodobacterales",
+     "taxonId": 204455,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccaceae",
+     "taxonId": 31989,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Paracoccus",
+     "taxonId": 265,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000137A67"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P51130",
+   "organism": {
+    "scientificName": "Bradyrhizobium diazoefficiens (strain JCM 10833 / BCRC 13528 / IAM 13628 / NBRC 14792 / USDA 110)",
+    "taxonId": 224911,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Hyphomicrobiales",
+     "Nitrobacteraceae",
+     "Bradyrhizobium"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "synonyms": [
+      {
+       "value": "fbcF"
+      }
+     ],
+     "orderedLocusNames": [
+      {
+       "value": "blr2485"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 176,
+    "molWeight": 18823
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hyphomicrobiales",
+     "taxonId": 356,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Nitrobacteraceae",
+     "taxonId": 41294,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bradyrhizobium",
+     "taxonId": 374,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bradyrhizobium diazoefficiens",
+     "taxonId": 1355477,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000005E7B7"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P36438",
+   "organism": {
+    "scientificName": "Brassica rapa subsp. rapa",
+    "commonName": "Turnip",
+    "taxonId": 51350,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "rosids",
+     "malvids",
+     "Brassicales",
+     "Brassicaceae",
+     "Brassiceae",
+     "Brassica"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "1CTM",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.30 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=36-285"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1HCZ",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "X-ray"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.96 A"
+      },
+      {
+       "key": "Chains",
+       "value": "A=36-287"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "1TKW",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "NMR"
+      },
+      {
+       "key": "Resolution",
+       "value": "-"
+      },
+      {
+       "key": "Chains",
+       "value": "B=36-287"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "2PCF",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "NMR"
+      },
+      {
+       "key": "Resolution",
+       "value": "-"
+      },
+      {
+       "key": "Chains",
+       "value": "B=36-285"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35389
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids",
+     "taxonId": 71275,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "malvids",
+     "taxonId": 91836,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicales",
+     "taxonId": 3699,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassicaceae",
+     "commonName": "mustard family",
+     "taxonId": 3700,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassiceae",
+     "taxonId": 981071,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassica",
+     "taxonId": 3705,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Brassica campestris",
+     "commonName": "Field mustard",
+     "taxonId": 3711,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128BF3"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q68XA0",
+   "organism": {
+    "scientificName": "Rickettsia typhi (strain ATCC VR-144 / Wilmington)",
+    "taxonId": 257363,
+    "lineage": [
+     "Bacteria",
+     "Pseudomonadati",
+     "Pseudomonadota",
+     "Alphaproteobacteria",
+     "Rickettsiales",
+     "Rickettsiaceae",
+     "Rickettsieae",
+     "Rickettsia",
+     "typhus group"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Ubiquinol-cytochrome c reductase iron-sulfur subunit"
+     },
+     "ecNumbers": [
+      {
+       "value": "7.1.1.8"
+      }
+     ]
+    },
+    "alternativeNames": [
+     {
+      "fullName": {
+       "value": "Rieske iron-sulfur protein"
+      },
+      "shortNames": [
+       {
+        "value": "RISP"
+       }
+      ]
+     }
+    ]
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "RT0261"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 177,
+    "molWeight": 19191
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadati",
+     "taxonId": 3379134,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pseudomonadota",
+     "commonName": "proteobacteria",
+     "taxonId": 1224,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Alphaproteobacteria",
+     "commonName": "a-proteobacteria",
+     "taxonId": 28211,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiales",
+     "commonName": "rickettsias",
+     "taxonId": 766,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsiaceae",
+     "taxonId": 775,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsieae",
+     "taxonId": 33988,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia",
+     "taxonId": 780,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "typhus group",
+     "taxonId": 114292,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Rickettsia typhi",
+     "taxonId": 785,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000041A350"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0C389",
+   "organism": {
+    "scientificName": "Oryza sativa subsp. japonica",
+    "commonName": "Rice",
+    "taxonId": 39947,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "Liliopsida",
+     "Poales",
+     "Poaceae",
+     "BOP clade",
+     "Oryzoideae",
+     "Oryzeae",
+     "Oryzinae",
+     "Oryza",
+     "Oryza sativa"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "LOC_Osp1g00480"
+      }
+     ],
+     "orfNames": [
+      {
+       "value": "Nip074"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35467
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Liliopsida",
+     "commonName": "monocots",
+     "taxonId": 4447,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Petrosaviidae",
+     "taxonId": 1437197,
+     "rank": "subclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "commelinids",
+     "taxonId": 4734,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Poales",
+     "taxonId": 38820,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Poaceae",
+     "taxonId": 4479,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "BOP clade",
+     "taxonId": 359160,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Oryzoideae",
+     "taxonId": 147367,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Oryzeae",
+     "taxonId": 147380,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Oryzinae",
+     "taxonId": 1648021,
+     "rank": "subtribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Oryza",
+     "taxonId": 4527,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Oryza sativa",
+     "commonName": "Rice",
+     "taxonId": 4530,
+     "rank": "species",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00000010B5"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "A1E9T7",
+   "organism": {
+    "scientificName": "Sorghum bicolor",
+    "commonName": "Sorghum",
+    "synonyms": [
+     "Sorghum vulgare"
+    ],
+    "taxonId": 4558,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "Liliopsida",
+     "Poales",
+     "Poaceae",
+     "PACMAD clade",
+     "Panicoideae",
+     "Andropogonodae",
+     "Andropogoneae",
+     "Sorghinae",
+     "Sorghum"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35463
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Liliopsida",
+     "commonName": "monocots",
+     "taxonId": 4447,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Petrosaviidae",
+     "taxonId": 1437197,
+     "rank": "subclass",
+     "hidden": true
+    },
+    {
+     "scientificName": "commelinids",
+     "taxonId": 4734,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Poales",
+     "taxonId": 38820,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Poaceae",
+     "taxonId": 4479,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "PACMAD clade",
+     "taxonId": 147370,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Panicoideae",
+     "taxonId": 147369,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Andropogonodae",
+     "taxonId": 1648033,
+     "rank": "no rank",
+     "hidden": false
+    },
+    {
+     "scientificName": "Andropogoneae",
+     "taxonId": 147429,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sorghinae",
+     "taxonId": 1648028,
+     "rank": "subtribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Sorghum",
+     "taxonId": 4557,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000E8DA06"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P00155",
+   "organism": {
+    "scientificName": "Pisum sativum",
+    "commonName": "Garden pea",
+    "synonyms": [
+     "Lathyrus oleraceus"
+    ],
+    "taxonId": 3888,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "rosids",
+     "fabids",
+     "Fabales",
+     "Fabaceae",
+     "Papilionoideae",
+     "50 kb inversion clade",
+     "NPAAA clade",
+     "Hologalegina",
+     "IRL clade",
+     "Fabeae",
+     "Lathyrus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35148
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids",
+     "taxonId": 71275,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "fabids",
+     "taxonId": 91835,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Fabales",
+     "taxonId": 72025,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Fabaceae",
+     "taxonId": 3803,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Papilionoideae",
+     "taxonId": 3814,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "50 kb inversion clade",
+     "taxonId": 2231393,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "NPAAA clade",
+     "taxonId": 2231382,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Hologalegina",
+     "taxonId": 2233838,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "IRL clade",
+     "taxonId": 2233839,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Fabeae",
+     "taxonId": 163743,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Lathyrus",
+     "taxonId": 3853,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128C02"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P0C8N5",
+   "organism": {
+    "scientificName": "Thermosynechococcus vestitus (strain NIES-2133 / IAM M-273 / BP-1)",
+    "taxonId": 197221,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Acaryochloridales",
+     "Thermosynechococcaceae",
+     "Thermosynechococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "tlr0960"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 311,
+    "molWeight": 33340
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Acaryochloridales",
+     "taxonId": 3079744,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermosynechococcaceae",
+     "taxonId": 2881378,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermosynechococcus",
+     "taxonId": 146785,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Thermosynechococcus vestitus",
+     "taxonId": 146786,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128C0A"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P16013",
+   "organism": {
+    "scientificName": "Spinacia oleracea",
+    "commonName": "Spinach",
+    "taxonId": 3562,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "Caryophyllales",
+     "Amaranthaceae",
+     "Chenopodioideae",
+     "Anserineae",
+     "Spinacia"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "6RQF",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.58 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=36-320"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "7QRM",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.70 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=1-320"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "7ZYV",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.13 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=1-320"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9ES7",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "1.94 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=1-320"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "9ES8",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.24 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=1-320"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35319
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Caryophyllales",
+     "taxonId": 3524,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Amaranthaceae",
+     "commonName": "amaranth family",
+     "taxonId": 3563,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Chenopodioideae",
+     "taxonId": 1307796,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anserineae",
+     "taxonId": 1307775,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Spinacia",
+     "taxonId": 3561,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128C09"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "P26287",
+   "organism": {
+    "scientificName": "Synechocystis sp. (strain ATCC 27184 / PCC 6803 / Kazusa)",
+    "taxonId": 1111708,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Synechococcales",
+     "Merismopediaceae",
+     "Synechocystis"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       },
+       {
+        "evidenceCode": "ECO:0000303",
+        "source": "PubMed",
+        "id": "1907512"
+       }
+      ],
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "sll1317"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [
+    {
+     "database": "PDB",
+     "id": "7R0W",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "2.80 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=1-328"
+      }
+     ]
+    },
+    {
+     "database": "PDB",
+     "id": "7ZXY",
+     "properties": [
+      {
+       "key": "Method",
+       "value": "EM"
+      },
+      {
+       "key": "Resolution",
+       "value": "3.15 A"
+      },
+      {
+       "key": "Chains",
+       "value": "C/K=45-328"
+      }
+     ]
+    }
+   ],
+   "sequence": {
+    "length": 328,
+    "molWeight": 35231
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcales",
+     "taxonId": 1890424,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Merismopediaceae",
+     "taxonId": 1890428,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechocystis",
+     "taxonId": 1142,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "unclassified Synechocystis",
+     "taxonId": 2640012,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Synechocystis sp. PCC 6803",
+     "taxonId": 1148,
+     "rank": "species",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000128C0C"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q0ZJ07",
+   "organism": {
+    "scientificName": "Vitis vinifera",
+    "commonName": "Grape",
+    "taxonId": 29760,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Spermatophyta",
+     "Magnoliopsida",
+     "eudicotyledons",
+     "Gunneridae",
+     "Pentapetalae",
+     "rosids",
+     "Vitales",
+     "Vitaceae",
+     "Viteae",
+     "Vitis"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 320,
+    "molWeight": 35318
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Spermatophyta",
+     "taxonId": 58024,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Magnoliopsida",
+     "commonName": "flowering plants",
+     "taxonId": 3398,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Mesangiospermae",
+     "taxonId": 1437183,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "eudicotyledons",
+     "taxonId": 71240,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Gunneridae",
+     "taxonId": 91827,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pentapetalae",
+     "taxonId": 1437201,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids",
+     "taxonId": 71275,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "rosids incertae sedis",
+     "taxonId": 91834,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Vitales",
+     "taxonId": 403667,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vitaceae",
+     "taxonId": 3602,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viteae",
+     "taxonId": 2304100,
+     "rank": "tribe",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vitis",
+     "taxonId": 3603,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000D5BB32"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q3ALY1",
+   "organism": {
+    "scientificName": "Synechococcus sp. (strain CC9605)",
+    "taxonId": 110662,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Synechococcales",
+     "Synechococcaceae",
+     "Synechococcus"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "Syncc9605_0627"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 310,
+    "molWeight": 32882
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcales",
+     "taxonId": 1890424,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcaceae",
+     "taxonId": 1890426,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcus",
+     "taxonId": 1129,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "unclassified Synechococcus",
+     "taxonId": 2626047,
+     "rank": "no rank",
+     "hidden": true
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI000176167E"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q7U565",
+   "organism": {
+    "scientificName": "Parasynechococcus marenigrum (strain WH8102)",
+    "taxonId": 84588,
+    "lineage": [
+     "Bacteria",
+     "Bacillati",
+     "Cyanobacteriota",
+     "Cyanophyceae",
+     "Synechococcales",
+     "Prochlorococcaceae",
+     "Parasynechococcus",
+     "Parasynechococcus marenigrum"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     },
+     "orderedLocusNames": [
+      {
+       "value": "SYNW1842"
+      }
+     ]
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 311,
+    "molWeight": 33052
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Bacteria",
+     "commonName": "bacteria",
+     "taxonId": 2,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Bacillati",
+     "taxonId": 1783272,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanobacteriota/Melainabacteria group",
+     "taxonId": 1798711,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Cyanobacteriota",
+     "commonName": "cyanobacteria",
+     "taxonId": 1117,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Cyanophyceae",
+     "taxonId": 3028117,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Synechococcales",
+     "taxonId": 1890424,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Prochlorococcaceae",
+     "taxonId": 2881426,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Parasynechococcus",
+     "taxonId": 2881427,
+     "rank": "genus",
+     "hidden": false
+    },
+    {
+     "scientificName": "Parasynechococcus marenigrum",
+     "taxonId": 2881428,
+     "rank": "species",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00001BA016"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q85AR2",
+   "organism": {
+    "scientificName": "Anthoceros angustus",
+    "commonName": "Hornwort",
+    "synonyms": [
+     "Anthoceros formosae"
+    ],
+    "taxonId": 48387,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Anthocerotophyta",
+     "Anthocerotopsida",
+     "Anthocerotidae",
+     "Anthocerotales",
+     "Anthocerotaceae",
+     "Anthoceros"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 322,
+    "molWeight": 35745
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthocerotophyta",
+     "commonName": "hornworts",
+     "taxonId": 13809,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthocerotopsida",
+     "taxonId": 402688,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthocerotidae",
+     "taxonId": 405585,
+     "rank": "subclass",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthocerotales",
+     "taxonId": 13810,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthocerotaceae",
+     "taxonId": 13811,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Anthoceros",
+     "taxonId": 3233,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI0000002020"
+   }
+  },
+  {
+   "entryType": "UniProtKB reviewed (Swiss-Prot)",
+   "primaryAccession": "Q85FK9",
+   "organism": {
+    "scientificName": "Adiantum capillus-veneris",
+    "commonName": "Maidenhair fern",
+    "taxonId": 13818,
+    "lineage": [
+     "Eukaryota",
+     "Viridiplantae",
+     "Streptophyta",
+     "Embryophyta",
+     "Tracheophyta",
+     "Polypodiopsida",
+     "Polypodiidae",
+     "Polypodiales",
+     "Pteridineae",
+     "Pteridaceae",
+     "Vittarioideae",
+     "Adiantum"
+    ]
+   },
+   "proteinDescription": {
+    "recommendedName": {
+     "fullName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "Cytochrome f"
+     }
+    },
+    "flag": "Precursor"
+   },
+   "genes": [
+    {
+     "geneName": {
+      "evidences": [
+       {
+        "evidenceCode": "ECO:0000255",
+        "source": "HAMAP-Rule",
+        "id": "MF_00610"
+       }
+      ],
+      "value": "petA"
+     }
+    }
+   ],
+   "uniProtKBCrossReferences": [],
+   "sequence": {
+    "length": 321,
+    "molWeight": 35195
+   },
+   "lineages": [
+    {
+     "scientificName": "cellular organisms",
+     "taxonId": 131567,
+     "rank": "no rank",
+     "hidden": true
+    },
+    {
+     "scientificName": "Eukaryota",
+     "commonName": "eukaryotes",
+     "taxonId": 2759,
+     "rank": "domain",
+     "hidden": false
+    },
+    {
+     "scientificName": "Viridiplantae",
+     "commonName": "green plants",
+     "taxonId": 33090,
+     "rank": "kingdom",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophyta",
+     "taxonId": 35493,
+     "rank": "phylum",
+     "hidden": false
+    },
+    {
+     "scientificName": "Streptophytina",
+     "taxonId": 131221,
+     "rank": "subphylum",
+     "hidden": true
+    },
+    {
+     "scientificName": "Embryophyta",
+     "commonName": "land plants",
+     "taxonId": 3193,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Tracheophyta",
+     "taxonId": 58023,
+     "rank": "clade",
+     "hidden": false
+    },
+    {
+     "scientificName": "Euphyllophyta",
+     "taxonId": 78536,
+     "rank": "clade",
+     "hidden": true
+    },
+    {
+     "scientificName": "Polypodiopsida",
+     "taxonId": 241806,
+     "rank": "class",
+     "hidden": false
+    },
+    {
+     "scientificName": "Polypodiidae",
+     "taxonId": 1521262,
+     "rank": "subclass",
+     "hidden": false
+    },
+    {
+     "scientificName": "Polypodiales",
+     "taxonId": 3268,
+     "rank": "order",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pteridineae",
+     "taxonId": 2003540,
+     "rank": "suborder",
+     "hidden": false
+    },
+    {
+     "scientificName": "Pteridaceae",
+     "taxonId": 13819,
+     "rank": "family",
+     "hidden": false
+    },
+    {
+     "scientificName": "Vittarioideae",
+     "taxonId": 29626,
+     "rank": "subfamily",
+     "hidden": false
+    },
+    {
+     "scientificName": "Adiantum",
+     "taxonId": 13817,
+     "rank": "genus",
+     "hidden": false
+    }
+   ],
+   "extraAttributes": {
+    "uniParcId": "UPI00003B4768"
+   }
+  }
+ ]
+}
