@@ -1354,14 +1354,22 @@ def _canonical(smiles):
 
 
 @pytest.mark.parametrize(("name", "expected"), [
-    ("hydrogen", "[HH]"), ("nitrogen", "N#N"), ("oxygen", "O=O"),
+    ("hydrogen", "[H][H]"), ("nitrogen", "N#N"), ("oxygen", "O=O"),
     ("fluorine", "FF"), ("chlorine", "ClCl"), ("bromine", "BrBr"), ("iodine", "II"),
-    ("Wasserstoff", "[HH]"), ("Stickstoff", "N#N"), ("Sauerstoff", "O=O"),
+    ("Wasserstoff", "[H][H]"), ("Stickstoff", "N#N"), ("Sauerstoff", "O=O"),
     ("Fluor", "FF"), ("Chlor", "ClCl"), ("Brom", "BrBr"), ("Iod", "II"), ("Jod", "II"),
     ("Oxygen", "O=O"), (" chlorine ", "ClCl"),
 ])
 def test_diatomic_element_names_resolve_to_the_molecule(_measured_sources, name, expected):
     assert _canonical(resolve(name)[0]) == _canonical(expected)
+
+
+@pytest.mark.parametrize("name", ["hydrogen", "Wasserstoff"])
+def test_hydrogen_is_drawn_as_two_atoms_with_a_bond(_measured_sources, name):
+    """„[HH]“ ist EIN Atom mit einem impliziten H — die Zeichnung zeigte „HH“
+    statt H–H (Desktop-Handtest 10.11.2026). Zwei Atome, eine Bindung."""
+    mol = resolve(name)[1]
+    assert (mol.GetNumAtoms(), mol.GetNumBonds()) == (2, 1)
 
 
 @pytest.mark.parametrize(("name", "expected"), [

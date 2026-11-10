@@ -23,6 +23,7 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- "hydrogen" is drawn as H–H (two atoms and a bond); it showed the bare label "HH".
 - Panel: a second click on a drawing button (All H, Fischer, Haworth) while the first drawing is
   still loading is no longer lost — the last chosen view wins.
 - Mechanism drawings: chain abbreviation no longer deletes a molecule that is nothing but an

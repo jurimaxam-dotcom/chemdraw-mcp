@@ -1144,7 +1144,8 @@ _AMBIGUOUS_FAMILIES: dict[str, tuple[IsomerCandidate, ...]] = {
 # (CID 5460607); "Iod" kennt PubChem nicht, NCI liefert Iodid [I-]. Nur exakte
 # ganze Namen — "oxygen atom", "Natrium", "ozone" gehen weiter in die Kaskade.
 _DIATOMIC_ELEMENTS: dict[str, str] = {
-    **dict.fromkeys(("hydrogen", "wasserstoff"), "[HH]"),
+    # [H][H], nicht [HH]: zwei Atome mit Bindung, sonst zeichnet RDKit „HH“.
+    **dict.fromkeys(("hydrogen", "wasserstoff"), "[H][H]"),
     **dict.fromkeys(("nitrogen", "stickstoff"), "N#N"),
     **dict.fromkeys(("oxygen", "sauerstoff"), "O=O"),
     **dict.fromkeys(("fluorine", "fluor"), "FF"),
