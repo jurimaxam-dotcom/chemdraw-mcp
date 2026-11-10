@@ -236,6 +236,8 @@ def extract_atom_data(
     return atoms
 
 
+_KEIN_ACYL_N = "!$(N[#6]=[O,S]);!$(N[#16]=O)"
+
 _FUNCTIONAL_GROUPS: list[tuple[str, str, str]] = [
     # (name, SMARTS, color)
     # Colors follow pharmacophore conventions:
@@ -251,9 +253,11 @@ _FUNCTIONAL_GROUPS: list[tuple[str, str, str]] = [
     ("Amid", "[CX3](=O)[NX3]", "#8e44ad"),
     ("Sulfonamid", "S(=O)(=O)[NX3]", "#7d3c98"),
     # --- Donors (green family) ---
-    ("Prim. Amin", "[NX3H2][#6]", "#2ecc71"),
-    ("Sek. Amin", "[NX3H1]([#6])[#6]", "#27ae60"),
-    ("Tert. Amin", "[NX3]([#6])([#6])[#6]", "#1e8449"),
+    # Ein N an C=O, C=S oder S=O ist Amid/Thioamid/Sulfonamid, kein Amin —
+    # sonst trug Capsaicin „Amid“ und „Sek. Amin“ auf demselben Stickstoff.
+    ("Prim. Amin", f"[NX3H2;{_KEIN_ACYL_N}][#6]", "#2ecc71"),
+    ("Sek. Amin", f"[NX3H1;{_KEIN_ACYL_N}]([#6])[#6]", "#27ae60"),
+    ("Tert. Amin", f"[NX3;{_KEIN_ACYL_N}]([#6])([#6])[#6]", "#1e8449"),
     ("Hydroxyl", "[OX2H1][CX4]", "#52be80"),
     ("Phenol", "[OX2H1]c", "#1abc9c"),
     ("Thiol", "[SX2H1]", "#82e0aa"),

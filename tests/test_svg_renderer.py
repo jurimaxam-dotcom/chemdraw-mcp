@@ -1,5 +1,6 @@
 import re
 
+import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
@@ -227,3 +228,44 @@ def test_aromat_counts_rings_not_ring_atoms():
     aromat = next(g for g in extract_functional_groups(mol) if g["name"] == "Aromat")
     assert aromat["count"] == 2
     assert len(aromat["atomIndices"]) == 10
+
+
+# --- Amid-Stickstoff ist kein Amin (10.11.2026) --------------------------------
+# Capsaicin zeigte neben „Amid“ den Chip „Sek. Amin“ auf demselben N: der
+# Amin-Treffer überlebte, weil seine beiden C-Nachbarn noch niemandem gehörten.
+
+
+def _group_names(smiles: str) -> list[str]:
+    return [g["name"] for g in extract_functional_groups(Chem.MolFromSmiles(smiles))]
+
+
+@pytest.mark.parametrize(
+    ("smiles", "falsch"),
+    [
+        ("COc1cc(CNC(=O)CCCC/C=C/C(C)C)ccc1O", "Sek. Amin"),  # Capsaicin
+        ("CC(=O)Nc1ccc(O)cc1", "Sek. Amin"),  # Paracetamol
+        ("CC(=O)N", "Prim. Amin"),  # Acetamid: N hat nur ein C, aber sicher ist sicher
+        ("CC(=O)N(C)C", "Tert. Amin"),  # N,N-Dimethylacetamid
+        ("O=C1CCC(N2C(=O)c3ccccc3C2=O)C(=O)N1", "Tert. Amin"),  # Thalidomid, Imid-N
+        ("CC(=S)NC", "Sek. Amin"),  # Thioamid
+        ("COC(=O)NC", "Sek. Amin"),  # Carbamat
+        ("CC(=O)NS(C)(=O)=O", "Sek. Amin"),  # N-Acylsulfonamid
+    ],
+)
+def test_amide_nitrogen_is_not_an_amine(smiles, falsch):
+    assert falsch not in _group_names(smiles)
+
+
+@pytest.mark.parametrize(
+    ("smiles", "erwartet"),
+    [
+        ("CCN", "Prim. Amin"),
+        ("CCNCC", "Sek. Amin"),
+        ("CCN(CC)CC", "Tert. Amin"),
+        ("CNc1ccccc1", "Sek. Amin"),  # N-Methylanilin bleibt ein Amin
+        ("NCC(=O)NC", "Prim. Amin"),  # Amin neben einem Amid bleibt erhalten
+        ("CNCCC(=O)N(C)C", "Sek. Amin"),
+    ],
+)
+def test_real_amines_keep_their_chip(smiles, erwartet):
+    assert erwartet in _group_names(smiles)
