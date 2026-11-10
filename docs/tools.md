@@ -225,7 +225,12 @@ and therefore every name you asked for.
   `batch_generate` ask PubChem for the name, CAS number and properties of the
   structure: first by InChIKey, and if PubChem does not know that key, the
   SMILES string itself is sent. Without a network the drawing still works and
-  those fields stay empty.
+  those fields stay empty. Set `CHEMDRAW_NO_SMILES_UPLOAD=1` to stop that
+  second step: these tools then never send the SMILES, the InChIKey query
+  still goes out, and a structure PubChem does not know by its key is drawn
+  without name, CAS and properties. The same applies to the panel's Data button
+  (`lookup_molecule_data`). The switch does not cover `lookup`, which passes
+  its `name` argument to PubChem, KEGG and UniProt as typed.
 - **Lab graphics are drawings of given numbers.** Spectra, TLC plates and pH
   curves show the values passed in. They measure nothing; values the model
   supplied from memory need checking. TLC spot `intensity` is a drawing hint,

@@ -495,7 +495,9 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
 
     Der SMILES-Weg bleibt als Rueckfallebene: Kennt PubChem den Schluessel
     nicht (Tautomer-Normalisierung, exotische Strukturen), ist ein Datensatz
-    gleicher Struktur besser als gar keiner.
+    gleicher Struktur besser als gar keiner. CHEMDRAW_NO_SMILES_UPLOAD=1
+    schaltet nur diesen Rueckfall ab (das SMILES selbst geht dann nie hinaus);
+    der InChIKey-Weg bleibt. Gelesen bei jedem Aufruf, nicht beim Import.
     """
     key = None
     mol = Chem.MolFromSmiles(smiles)
@@ -511,7 +513,15 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
             cas, _ = pubchem_synonyms_by_inchikey(key)
             return props, cas
 
+    if _smiles_upload_disabled():
+        return {}, None
     return (pubchem_properties_by_smiles(smiles) or {}), pubchem_synonyms_by_smiles(smiles)[0]
+
+
+def _smiles_upload_disabled() -> bool:
+    """CHEMDRAW_NO_SMILES_UPLOAD gesetzt (1/true/yes/on)? Leer oder 0 = Standard."""
+    value = os.environ.get("CHEMDRAW_NO_SMILES_UPLOAD", "").strip().lower()
+    return value in ("1", "true", "yes", "on")
 
 
 def _enrich_properties(smiles: str) -> dict[str, str]:

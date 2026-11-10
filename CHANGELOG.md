@@ -17,6 +17,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   ring heteroatoms other than one oxygen, unknown substituents) are refused with the reason.
 - Peptides from their sequence, offline: three-letter code as the name (`Ala-Trp-Lys-Ser-Gly`, `D-Ala`, `Ac-…-NH2`, `cyclo(…)`), one-letter code with the prefix `peptide:` (`peptide:AGS`, lowercase = D). Sequences no database knows (before: not found) now draw; linear peptides from five residues get a stretched backbone layout.
 - "X zwitterion" keeps the stereo of X ("alanine zwitterion" was racemic, "Alanin Zwitterion" was not found, "Ala zwitterion" was Ala-Leu-Ala).
+- `CHEMDRAW_NO_SMILES_UPLOAD=1` stops the SMILES fallback to PubChem: when PubChem does not know a
+  structure's InChIKey, the SMILES string itself is no longer sent. The InChIKey query and the
+  drawing stay; such a structure is drawn without name, CAS and properties. Off by default.
 
 ### Fixed
 
