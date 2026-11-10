@@ -345,12 +345,45 @@ def test_linear_peptides_from_five_residues_get_the_linear_layout():
     assert not is_linear_peptide(cyclic)
 
 
-def test_peptide_backbone_is_drawn_stretched_out():
-    """Standard-Layout faltet ein Pentapeptid zur Haarnadel; CoordGen legt das
-    Rückgrat als Zickzack. Maß: Abstand N-Terminus ↔ C-Terminus in Bindungslängen."""
+def _positions(mol):
+    return [tuple(round(v, 4) for v in p) for p in mol.GetConformer().GetPositions()]
+
+
+def test_layout_switch_hits_only_linear_peptides():
+    """Pentapeptid: CoordGen; Tetrapeptid, Cyclopeptid, Aspirin: Standard-Layout
+    unverändert. (Der frühere Spannweiten-Test war auch mit dem Standard-Layout
+    grün — er unterschied nichts.)"""
+    from rdkit.Chem import AllChem, rdCoordGen
+
+    def expected(mol, use_coordgen):
+        ref = Chem.Mol(mol)
+        if use_coordgen:
+            rdCoordGen.AddCoords(ref)
+            conf = ref.GetConformer()
+            for i in range(ref.GetNumAtoms()):
+                p = conf.GetAtomPosition(i)
+                conf.SetAtomPosition(i, (p.x * 1.5, p.y * 1.5, 0.0))
+        else:
+            AllChem.Compute2DCoords(ref)
+        return _positions(ref)
+
+    penta = Chem.MolFromSequence("AWKSG")
+    assert _positions(generate_2d(penta)) == expected(penta, True)
+    for mol in (
+        Chem.MolFromSequence("YGGF"),
+        Chem.MolFromHELM("PEPTIDE1{R.G.D.[dF].V}$PEPTIDE1,PEPTIDE1,5:R2-1:R1$$$"),
+        Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O"),
+    ):
+        assert _positions(generate_2d(mol)) == expected(mol, False)
+
+
+def test_peptide_layout_keeps_the_standard_bond_length():
+    """CoordGen legt Bindungen auf 1,0, Compute2DCoords auf 1,5 — CDXML und
+    Reaktions-/Vergleichsbilder mischen sonst zwei Maßstäbe."""
     mol = generate_2d(Chem.MolFromSequence("AWKSGFDCM"))
     conf = mol.GetConformer()
-    n_term = mol.GetSubstructMatch(Chem.MolFromSmarts("[NH2][CX4]C(=O)N"))[0]
-    c_term = mol.GetSubstructMatch(Chem.MolFromSmarts("NCC(=O)[OH1]"))[2]
-    span = (conf.GetAtomPosition(n_term) - conf.GetAtomPosition(c_term)).Length()
-    assert span > 15, f"Rückgrat gefaltet: N↔C nur {span:.1f} Bindungslängen"
+    lengths = sorted(
+        (conf.GetAtomPosition(b.GetBeginAtomIdx()) - conf.GetAtomPosition(b.GetEndAtomIdx())).Length()
+        for b in mol.GetBonds()
+    )
+    assert abs(lengths[len(lengths) // 2] - 1.5) < 0.05

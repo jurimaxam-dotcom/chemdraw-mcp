@@ -26,6 +26,13 @@ def generate_2d(mol: Chem.Mol) -> Chem.Mol:
     mol_copy = Chem.RWMol(mol)
     if is_linear_peptide(mol_copy):
         rdCoordGen.AddCoords(mol_copy)
+        # CoordGen legt Bindungen auf 1,0, Compute2DCoords auf 1,5 (gemessen
+        # 10.11.2026) — CDXML, Reaktions- und Vergleichsbilder brauchen einen
+        # Maßstab.
+        conf = mol_copy.GetConformer()
+        for i in range(mol_copy.GetNumAtoms()):
+            p = conf.GetAtomPosition(i)
+            conf.SetAtomPosition(i, (p.x * 1.5, p.y * 1.5, 0.0))
     else:
         AllChem.Compute2DCoords(mol_copy)
     return mol_copy.GetMol()
