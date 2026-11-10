@@ -1421,7 +1421,7 @@ _DRAW_INSTEAD = (
 # generate_molecule selbst, wenn die Struktur nicht zu holen war.
 _BACKBONE_INSTEAD = (
     "Proteins have no skeletal formula, so no structure formula was drawn and "
-    "nothing was drawn here; generate_protein shows it as a cartoon (PDB or "
+    "nothing was drawn here; generate_protein_or_antibody shows it as a cartoon (PDB or "
     "AlphaFold structure)."
 )
 

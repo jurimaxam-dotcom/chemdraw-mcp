@@ -323,14 +323,14 @@ def test_too_large_name_that_is_a_protein_is_drawn(structures, monkeypatch):
     assert payload.protein.subtitle.startswith("PDB 1LYZ, chain A")
 
 
-# --- generate_protein: eigener Eingang mit „protein" im Namen (10.11.2026) -----
+# --- generate_protein_or_antibody: eigener Eingang mit „protein" im Namen (10.11.2026) -----
 # Desktop zeigt dem Modell vor der Tool-Suche nur Toolnamen (Messung 10.11.2026,
 # docs/evidence/desktop-routing-2026-11-10.md: 0 von 8 Protein-Aufträgen kamen
 # hier an). Dasselbe Ergebnis wie generate_molecule, nur ein erkennbarer Name.
 
 
 def test_generate_protein_draws_lysozyme(structures):
-    payload = srv.generate_protein("lysozyme")
+    payload = srv.generate_protein_or_antibody("lysozyme")
     assert payload.type == "protein"
     assert payload.protein.title == "Lysozyme C, Gallus gallus (hen egg white)"
     assert payload.protein.subtitle.startswith("PDB 1LYZ, chain A · cartoon · 129 residues")
@@ -340,7 +340,7 @@ def test_generate_protein_draws_lysozyme(structures):
 
 
 def test_generate_protein_draws_trastuzumab_with_the_scheme(structures):
-    payload = srv.generate_protein("trastuzumab")
+    payload = srv.generate_protein_or_antibody("trastuzumab")
     assert payload.type == "protein"
     assert payload.protein.title.startswith("Trastuzumab Fab fragment")
     assert payload.protein.scheme["highlight"] == "fab"
@@ -348,7 +348,7 @@ def test_generate_protein_draws_trastuzumab_with_the_scheme(structures):
 
 
 def test_generate_protein_antibody_is_the_general_igg_architecture(structures):
-    payload = srv.generate_protein("antibody")
+    payload = srv.generate_protein_or_antibody("antibody")
     assert payload.type == "protein"
     assert payload.protein.title.startswith("Architecture of an intact IgG")
     assert payload.protein.scheme["start"] == "scheme"
@@ -363,7 +363,7 @@ def test_generate_protein_too_large_name_that_is_a_protein(structures, monkeypat
         "accession": "P00698", "name": "Lysozyme C", "matched": "Lysozyme C",
         "organism": "Gallus gallus", "length": 147, "mass": 16239})
     monkeypatch.setattr(ps, "best_pdb_chain", lambda acc: ("1LYZ", "A"))
-    assert srv.generate_protein("calcitonin").type == "protein"
+    assert srv.generate_protein_or_antibody("calcitonin").type == "protein"
 
 
 CAFFEINE = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
@@ -374,7 +374,7 @@ def test_generate_protein_refuses_a_small_molecule_by_name(structures, monkeypat
                         lambda n: resolver.Resolution(CAFFEINE) if n == "caffeine" else None)
     monkeypatch.setattr(resolver, "_protein_lookup", lambda n: None)
     with pytest.raises(ValueError) as info:
-        srv.generate_protein("caffeine")
+        srv.generate_protein_or_antibody("caffeine")
     message = str(info.value)
     assert "'caffeine' was read as the compound C8H10N4O2" in message
     assert "UniProt lists no protein under this name" in message
@@ -384,51 +384,51 @@ def test_generate_protein_refuses_a_small_molecule_by_name(structures, monkeypat
 
 def test_generate_protein_prefers_the_protein_when_pubchem_misreads_the_name(structures, monkeypatch):
     """Gemessen 10.11.2026: PubChem liest „ubiquitin" als C6H8O7, „calmodulin" als
-    C7H15N3O2. Wer generate_protein ruft, meint das Protein — UniProt entscheidet."""
+    C7H15N3O2. Wer generate_protein_or_antibody ruft, meint das Protein — UniProt entscheidet."""
     monkeypatch.setattr(resolver, "resolve_name_route",
                         lambda n: resolver.Resolution("OC(=O)CC(O)(C(=O)O)CC(=O)O"))
     monkeypatch.setattr(resolver, "_protein_lookup", lambda n: {
         "accession": "P00698", "name": "Lysozyme C", "matched": "Lysozyme C",
         "organism": "Gallus gallus", "length": 147, "mass": 16239})
     monkeypatch.setattr(ps, "best_pdb_chain", lambda acc: ("1LYZ", "A"))
-    payload = srv.generate_protein("ubiquitin")
+    payload = srv.generate_protein_or_antibody("ubiquitin")
     assert payload.type == "protein"
     assert payload.protein.subtitle.startswith("PDB 1LYZ, chain A")
 
 
 def test_generate_protein_refuses_a_smiles(structures):
     with pytest.raises(ValueError) as info:
-        srv.generate_protein(CAFFEINE)
+        srv.generate_protein_or_antibody(CAFFEINE)
     assert "not a protein" in str(info.value) and "generate_molecule" in str(info.value)
 
 
 def test_generate_protein_writes_only_the_requested_format(structures):
-    payload = srv.generate_protein("lysozyme", formats=["png"])
+    payload = srv.generate_protein_or_antibody("lysozyme", formats=["png"])
     assert set(payload.files) == {"png"}
     assert not list(Path(srv.PROTEIN_DIR).rglob("*.svg"))
 
 
 def test_generate_protein_has_no_cdxml(structures):
     with pytest.raises(ValueError) as info:
-        srv.generate_protein("lysozyme", formats=["cdxml"])
+        srv.generate_protein_or_antibody("lysozyme", formats=["cdxml"])
     assert "CDXML" in str(info.value)
 
 
 @pytest.mark.parametrize("profile", ["mvp", "full"])
 def test_generate_protein_is_a_panel_tool_in_both_profiles(profile):
     tools = {t.name: t for t in asyncio.run(srv.create_server(profile).list_tools())}
-    assert "generate_protein" in tools
-    assert (tools["generate_protein"].meta or {}).get("ui") == srv._UI_META["ui"]
+    assert "generate_protein_or_antibody" in tools
+    assert (tools["generate_protein_or_antibody"].meta or {}).get("ui") == srv._UI_META["ui"]
 
 
 def test_generate_protein_through_the_sdk_client(structures):
-    result = _call("generate_protein", {"name": "insulin"})
+    result = _call("generate_protein_or_antibody", {"name": "insulin"})
     assert not result.is_error, result.content
     assert result.structured_content["type"] == "protein"
 
 
 def test_generate_protein_error_through_the_sdk_client_names_generate_molecule(structures):
-    result = _call("generate_protein", {"name": CAFFEINE})
+    result = _call("generate_protein_or_antibody", {"name": CAFFEINE})
     assert result.is_error
     text = "\n".join(getattr(b, "text", "") for b in result.content)
     assert "generate_molecule" in text

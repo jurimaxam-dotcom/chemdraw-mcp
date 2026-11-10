@@ -5,7 +5,7 @@
 The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
 `compare_molecules`, `generate_reaction`, `export_anki_deck` (since 21.10.2026,
 for the panel's Add to Anki button and the chat route), plus
-`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein` (17 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
+`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein_or_antibody` (17 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
 and restart to restore the full catalog (24 tools, 17 with a panel).
 Other tools remain implemented and tested, but are not registered in the MVP.
 The immediate goal is a reliable input → correct structure → usable export
@@ -140,7 +140,7 @@ a tested promise in `tests/test_server_taxonomy.py`:
 
 | Area | Tools | What belongs here |
 |---|---|---|
-| Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d · generate_protein | structures and reactions |
+| Draw | generate_molecule · compare_molecules · batch_generate · generate_reaction · generate_mechanism · generate_scope_table · generate_3d · generate_protein_or_antibody | structures and reactions |
 | Lab graphics | generate_spectrum · generate_tlc · generate_titration_curve · generate_species_distribution · generate_calibration_curve · generate_pk_curve · generate_dose_response | measured data as a diagram |
 | Look up | lookup · lookup_molecule_data · predict_spectrum | facts about a substance, from a database or derived from its structure |
 | Calculate | calculate_solution · calculate_content · calculate_ph · calculate_pharmacokinetics | a number **and** the working behind it |
@@ -158,7 +158,7 @@ selectable: any tool confusable with an existing one must carry a
 and the count has a ceiling that is only ever raised deliberately, with the
 reason written into the test (16 → 18 for the calculating area, → 19 for the
 calibration curve, → 20 for the spectrum prediction, → 21 for pharmacokinetics, → 23 for the pharmacology curves, → 24 for
-`generate_protein`, because Claude Desktop routes on tool names alone before its
+`generate_protein_or_antibody`, because Claude Desktop routes on tool names alone before its
 tool search: 0 of 8 protein requests reached the server without one).
 
 **Delimit in both directions.** The tool that fails to exclude a case is the

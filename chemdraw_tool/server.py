@@ -248,7 +248,7 @@ highlight, which prose cannot do.
 - Naming a substance while you explain it → generate_molecule, then keep
   explaining. A bare compound name ("caffeine") means exactly this.
 - A protein, enzyme or antibody name (lysozyme, trastuzumab) →
-  generate_protein draws its cartoon from the PDB; do not sketch your own.
+  generate_protein_or_antibody draws its cartoon from the PDB; do not sketch your own.
 - Walking through a reaction → generate_reaction; through its steps and
   electron flow → generate_mechanism.
 - Contrasting substances ("difference between ibuprofen and naproxen") →
@@ -260,7 +260,7 @@ highlight, which prose cannot do.
 
 The five areas: Draw (generate_molecule · batch_generate ·
 compare_molecules · generate_reaction · generate_mechanism ·
-generate_scope_table · generate_3d · generate_protein) · Lab graphic (generate_spectrum ·
+generate_scope_table · generate_3d · generate_protein_or_antibody) · Lab graphic (generate_spectrum ·
 generate_tlc · generate_titration_curve · generate_species_distribution ·
 generate_calibration_curve · generate_pk_curve · generate_dose_response) · Look up, for a named fact (lookup ·
 lookup_molecule_data · predict_spectrum) · Calculate, a number with its
@@ -300,7 +300,7 @@ MVP_TOOLS = frozenset({
     "calculate_ph",
     # 10.11.2026: Desktop routet vor der Tool-Suche nur über Toolnamen — ein
     # Protein braucht ein Tool, das „protein" heißt (0 von 8 ohne).
-    "generate_protein",
+    "generate_protein_or_antibody",
 })
 
 _MVP_INSTRUCTIONS = """\
@@ -310,7 +310,7 @@ interactive panel, and compute the numbers behind them.
 - A bare compound name ("caffeine") means generate_molecule. Use it also
   while explaining a compound when its structure helps.
 - A protein, enzyme or antibody name (lysozyme, trastuzumab):
-  generate_protein draws its cartoon from the PDB; do not sketch your own.
+  generate_protein_or_antibody draws its cartoon from the PDB; do not sketch your own.
 - A pH, buffer recipe or degree of ionisation asked as a number:
   calculate_ph, also when you could work it out yourself — it solves the
   exact charge balance and shows the approximation beside it.
@@ -361,7 +361,7 @@ value such as melting point, CAS number or GHS hazards (use lookup), the IR
 bands or ¹H signals to expect (use predict_spectrum), a spectrum drawing (use
 generate_spectrum), which species of an acid dominates at a given pH (use
 generate_species_distribution), a rotatable 3D model or the shape in space
-(use generate_3d), or a protein, enzyme or antibody (use generate_protein).
+(use generate_3d), or a protein, enzyme or antibody (use generate_protein_or_antibody).
 """,
     "batch_generate": """Draw several individual compounds as separate PNG/SVG files and panels.
 
@@ -1026,7 +1026,7 @@ def _protein_text(name: str, choice, backbone, view) -> str:
 def _protein_payload(name: str, label: str, exc: NameResolutionError, cls, fmts=("png", "svg")):
     """Rückgratspur als Erfolgsantwort; ohne Struktur bleibt es die Fehlermeldung.
 
-    fmts: welche Bilddateien entstehen (generate_protein reicht `formats` durch;
+    fmts: welche Bilddateien entstehen (generate_protein_or_antibody reicht `formats` durch;
     generate_molecule und generate_3d schreiben wie bisher PNG und SVG).
     """
     import logging
@@ -1114,7 +1114,7 @@ def _protein_payload(name: str, label: str, exc: NameResolutionError, cls, fmts=
 def _protein_for_too_large(name: str, exc: NameResolutionError | None) -> NameResolutionError | None:
     """Ein Name, den UniProt als Protein kennt → Proteinfehler mit Wahl, sonst None.
 
-    generate_molecule fragt so bei zu großen Namen, generate_protein bei jedem Namen.
+    generate_molecule fragt so bei zu großen Namen, generate_protein_or_antibody bei jedem Namen.
     """
     from chemdraw_tool import resolver as _resolver
 
@@ -1153,7 +1153,7 @@ def generate_molecule(
     batch_generate); differences between structures (use compare_molecules);
     an equation with an arrow (use generate_reaction); a named single value
     such as melting point, CAS number or GHS hazards (use lookup); a protein,
-    enzyme or antibody (use generate_protein).
+    enzyme or antibody (use generate_protein_or_antibody).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names — 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine' not 'Coffein'.
@@ -2190,7 +2190,7 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
     Not this tool for: a flat 2D structure drawing, a Fischer/Haworth
     projection or a chair drawing — use generate_molecule. Nor for a
-    protein, enzyme or antibody, also its 3D structure — use generate_protein
+    protein, enzyme or antibody, also its 3D structure — use generate_protein_or_antibody
     (its panel rotates); its function or EC number — use lookup, "biochem".
 
     IMPORTANT: Pass English/IUPAC names or SMILES; use label for the
@@ -2227,7 +2227,7 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
     )
 
 
-# --- generate_protein (10.11.2026) --------------------------------------------
+# --- generate_protein_or_antibody (10.11.2026) --------------------------------------------
 # Claude Desktop zeigt dem Modell vor der Tool-Suche nur die Toolnamen; Server-
 # `instructions` kommen dort nicht an. Mit Proteinen nur als Fähigkeit von
 # generate_molecule kamen 0 von 8 Protein- und Antikörperaufträgen hier an
@@ -2264,14 +2264,14 @@ def _not_a_protein(name: str, mol=None, structure: bool = False) -> ValueError:
         lead = (f"'{shown}' was read as the compound {rdMolDescriptors.CalcMolFormula(mol)}, "
                 f"and UniProt lists no protein under this name")
     return ValueError(
-        f"{lead}, so nothing was drawn. generate_protein draws proteins, enzymes and "
+        f"{lead}, so nothing was drawn. generate_protein_or_antibody draws proteins, enzymes and "
         f"antibodies only. Draw this compound with generate_molecule (or generate_3d for "
         f"a 3D model); for a protein, pass its full name, e.g. with the organism."
     )
 
 
 @_tool(structured_output=True, meta=_UI_META)
-def generate_protein(name: str, formats: list[str] | None = None) -> ProteinPayload:
+def generate_protein_or_antibody(name: str, formats: list[str] | None = None) -> ProteinPayload:
     """Draw a protein, enzyme or antibody as a cartoon (ribbon diagram).
 
     Fetches its structure from the PDB (AlphaFold model if there is none) and
@@ -3330,7 +3330,7 @@ def lookup(name: str, topic: LookupTopic = "properties") -> str:
     - "biochem": compound class and biological role (ChEBI), related
       enzymes and proteins (UniProt); for a protein, enzyme or antibody
       name, its UniProt data sheet (function, EC, length, PDB). Drawing
-      a protein is generate_protein, not this tool.
+      a protein is generate_protein_or_antibody, not this tool.
     - "pathway": metabolic pathways the compound appears in (KEGG).
 
     Not this tool for: a bare compound name with no named value asked for —
@@ -3847,7 +3847,7 @@ def _choice_sheet(name: str, choice) -> str:
         if chebi := chebi_lookup(name):
             desc = f" — {chebi['description']}" if chebi["description"] else ""
             lines.append(f"- **ChEBI:** {chebi['obo_id']} {chebi['label']}{desc}")
-    lines.append(f"- **Drawn structure:** {_drawn_structure(choice)} — generate_protein")
+    lines.append(f"- **Drawn structure:** {_drawn_structure(choice)} — generate_protein_or_antibody")
     if choice.alternatives:
         lines.append(f"- **Other common sources:** {choice.alternatives}")
     if choice.others:
@@ -4367,7 +4367,7 @@ def batch_generate(
                 failed.append(f"{name_or_smiles} (ambiguous: {labels})")
             elif exc.kind == "protein":
                 failed.append(
-                    f'{name_or_smiles} (protein: no skeletal formula — generate_protein draws its cartoon)'
+                    f'{name_or_smiles} (protein: no skeletal formula — generate_protein_or_antibody draws its cartoon)'
                 )
             else:
                 failed.append(name_or_smiles)

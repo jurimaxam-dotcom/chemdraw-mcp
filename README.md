@@ -125,7 +125,7 @@ explained under [Development](#development).
 | | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol"* | yes |
 | | `generate_mechanism` | *"Show me the SN2 mechanism step by step"* | yes |
 | | `generate_3d` | *"Show methane as a rotatable 3D model"* | yes |
-| | `generate_protein` | *"Draw lysozyme"*, *"Draw trastuzumab"* | yes |
+| | `generate_protein_or_antibody` | *"Draw lysozyme"*, *"Draw trastuzumab"* | yes |
 | **Lab graphics** | `generate_spectrum` | *"Draw the IR spectrum of aspirin"* | yes |
 | | `generate_tlc` | *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | yes |
 | | `generate_titration_curve` | *"Titrate phosphoric acid with NaOH and show the curve"* | yes |

@@ -25,10 +25,10 @@
     "required": [
       "name"
     ],
-    "title": "generate_proteinArguments",
+    "title": "generate_protein_or_antibodyArguments",
     "type": "object"
   },
-  "name": "generate_protein",
+  "name": "generate_protein_or_antibody",
   "outputSchema": {
     "$defs": {
       "AtomData": {

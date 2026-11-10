@@ -196,7 +196,7 @@ cases:
   - id: draw-3d-explicit
     prompt: "Zeig mir Methan als drehbares 3D-Modell"
     expect: generate_3d
-    forbidden: [generate_molecule, generate_protein]
+    forbidden: [generate_molecule, generate_protein_or_antibody]
     why: >
       Ausdruecklicher 3D-Wunsch. Seit 30.10.2026 im Standardprofil; das
       Molekuel-Panel hat keine 3D-Ansicht, also ist das der einzige Weg.
@@ -248,49 +248,58 @@ cases:
   # --- Proteine (E6/E8, eigenes Tool seit 10.11.2026) ------------------------
   # Desktop zeigt dem Modell vor der Tool-Suche nur Toolnamen; mit Proteinen nur
   # als Fähigkeit von generate_molecule kamen 0 von 8 Aufträgen hier an
-  # (docs/evidence/desktop-routing-2026-11-10.md). Erwartung jetzt generate_protein;
+  # (docs/evidence/desktop-routing-2026-11-10.md). Erwartung jetzt generate_protein_or_antibody;
   # generate_molecule und generate_3d zeichnen Proteinnamen weiterhin.
   - id: protein-bare-name
     prompt: "Show me trastuzumab"
-    expect: generate_protein
+    expect: generate_protein_or_antibody
     forbidden: [lookup_molecule_data, batch_generate]
     why: >
-      Ein blosser Proteinname: generate_protein zeigt den Antikörper (Fab-
+      Ein blosser Proteinname: generate_protein_or_antibody zeigt den Antikörper (Fab-
       Fragment 1N8Z plus IgG-Schema). Die Default-Regel „blosser Name heisst
       zeigen“ bleibt — nur das Tool mit dem passenden Namen nimmt ihn.
 
   - id: protein-draw-enzyme
     prompt: "Draw lysozyme"
-    expect: generate_protein
+    expect: generate_protein_or_antibody
     forbidden: [generate_molecule, lookup, lookup_molecule_data]
     why: >
-      Zeichenauftrag für ein Enzym: generate_protein liefert den Cartoon
+      Zeichenauftrag für ein Enzym: generate_protein_or_antibody liefert den Cartoon
       (PDB 1LYZ, Huhn) als PNG/SVG plus Panel. generate_molecule grenzt
-      Proteine zu generate_protein ab.
+      Proteine zu generate_protein_or_antibody ab.
 
   - id: protein-3d-structure
     prompt: "Show me the 3D structure of trypsin"
-    expect: generate_protein
+    expect: generate_protein_or_antibody
     forbidden: [generate_3d, generate_molecule, lookup]
     why: >
-      Entscheidung 10.11.2026: generate_protein, nicht generate_3d. Beide
+      Entscheidung 10.11.2026: generate_protein_or_antibody, nicht generate_3d. Beide
       liefern denselben Payload-Typ protein, und dessen Panel ist bereits
       drehbar (Mol*-Cartoon) — „3D“ verlangt also kein anderes Tool. Eine
-      Regel ohne Ausnahme (Proteinname → generate_protein) ist für das Modell
+      Regel ohne Ausnahme (Proteinname → generate_protein_or_antibody) ist für das Modell
       leichter als eine, die nach dem Wort „3D“ verzweigt; generate_3d grenzt
-      Proteine deshalb ebenfalls zu generate_protein ab.
+      Proteine deshalb ebenfalls zu generate_protein_or_antibody ab.
 
   - id: protein-draw-antibody
     prompt: "Draw an antibody"
-    expect: generate_protein
+    expect: generate_protein_or_antibody
     forbidden: [generate_molecule, lookup, lookup_molecule_data, generate_spectrum]
     why: >
       Ein Antikörper ohne Namen bekommt die Architektur eines intakten IgG
-      (1HZH) plus das IgG-Domänenschema — über generate_protein.
+      (1HZH) plus das IgG-Domänenschema — über generate_protein_or_antibody.
+
+  - id: protein-draw-igg-antibody
+    prompt: "Draw an IgG antibody"
+    expect: generate_protein_or_antibody
+    forbidden: [generate_molecule, lookup, lookup_molecule_data]
+    why: >
+      Allgemeiner Antikörper mit Klasse: Unter dem Toolnamen ohne „antibody“ kam
+      „Draw an antibody“ in Desktop nicht an (0 von 3, das Modell zeichnete
+      selbst); deshalb trägt der Toolname das Wort antibody.
 
   - id: protein-draw-antibody-german
     prompt: "Zeichne Trastuzumab"
-    expect: generate_protein
+    expect: generate_protein_or_antibody
     forbidden: [generate_molecule, lookup, lookup_molecule_data, batch_generate]
     why: >
       Deutscher Zeichenauftrag mit INN: dasselbe wie „Draw trastuzumab“ —
@@ -299,7 +308,7 @@ cases:
   - id: lookup-protein-function
     prompt: "Welche Funktion hat Lysozym und welche EC-Nummer?"
     expect: lookup
-    forbidden: [generate_protein, generate_molecule, lookup_molecule_data]
+    forbidden: [generate_protein_or_antibody, generate_molecule, lookup_molecule_data]
     why: >
       Benannte Fakten zu einem Protein (Funktion, EC-Nummer) sind das
       UniProt-Datenblatt von lookup topic biochem — kein Zeichenauftrag.

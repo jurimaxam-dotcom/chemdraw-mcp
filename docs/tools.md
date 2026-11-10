@@ -40,7 +40,7 @@ to the databases as before. "X zwitterion" resolves X and charges its
 α-amino and α-carboxyl group, keeping the stereo of X.
 
 **Proteins.** Enzymes, antibodies and large peptide hormones have no readable
-skeletal formula. `generate_protein` (image files + rotatable panel) draws
+skeletal formula. `generate_protein_or_antibody` (image files + rotatable panel) draws
 them as a **cartoon**; `generate_molecule` and `generate_3d` give the same
 answer for a protein name. A tool of its own because Claude Desktop shows the
 model only tool names before it loads any description — without "protein" in
@@ -124,7 +124,7 @@ SVG backbone trace and says so — never an empty area.
   CC0, cited with the PDB ID), AlphaFold DB (CC BY 4.0; Jumper et al. 2021,
   Varadi et al. 2024), UniProt (CC BY 4.0) — each image carries its line.
 - `batch_generate` and `compare_molecules` still draw no proteins; their
-  message points at `generate_protein`.
+  message points at `generate_protein_or_antibody`.
 
 Before E8 `generate_molecule` explained instead of drawing; these rules from
 E6 still decide for names outside the table:

@@ -8,12 +8,13 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **`generate_protein`.** A drawing tool of its own for proteins, enzymes and antibodies
+- **`generate_protein_or_antibody`.** A drawing tool of its own for proteins, enzymes and antibodies
   ("lysozyme", "trastuzumab", "antibody"): the same cartoon and panel as before, under a name
   the model can recognise. Claude Desktop shows the model only tool names before it loads any
   description; with proteins only a capability of `generate_molecule`, 0 of 8 protein and
-  antibody requests reached this server. `generate_molecule` and `generate_3d` still draw a
-  protein name; their descriptions and the server instructions now point at `generate_protein`.
+  antibody requests reached this server. The name carries "antibody" because under
+  a protein-only name, named antibodies arrived, but a plain "Draw an antibody" did not. `generate_molecule` and `generate_3d` still draw a
+  protein name; their descriptions and the server instructions now point at `generate_protein_or_antibody`.
   A name that is not a protein gets a message pointing at `generate_molecule`. Default profile
   17 tools (13 with a panel), full profile 24 (17).
 - **Proteins as cartoons.** Proteins are drawn as a ribbon diagram instead of a Cα trace:

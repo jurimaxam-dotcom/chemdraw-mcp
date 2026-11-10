@@ -106,16 +106,16 @@ try {
   // legt zusätzlich die Bildschau aller Laborfälle ab.
   const shots = process.env.PROTEIN_SHOTS || join(tmpdir(), "chemdraw-protein");
   mkdirSync(shots, { recursive: true });
-  // generate_protein (10.11.2026) ist der eigene Eingang; die beiden alten
+  // generate_protein_or_antibody (10.11.2026) ist der eigene Eingang; die beiden alten
   // bleiben mit je einem Fall drin, weil sie Proteinnamen weiter zeichnen.
   const proteinCases = [
-    ["generate_protein", "lysozyme", /Lysozyme C, Gallus gallus \(hen egg white\)/],
+    ["generate_protein_or_antibody", "lysozyme", /Lysozyme C, Gallus gallus \(hen egg white\)/],
     ["generate_3d", "trypsin", /Bos taurus/],
-    ["generate_protein", "trastuzumab", /Trastuzumab Fab fragment/],
+    ["generate_protein_or_antibody", "trastuzumab", /Trastuzumab Fab fragment/],
     // Genkürzel ohne PDB-Eintrag → AlphaFold-Modell (gemessen 10.11.: E. coli CsrD, P13518)
     ["generate_molecule", "CsrD", /RNase E specificity factor CsrD, Escherichia coli/],
     ["generate_molecule", "hemoglobin", /Hemoglobin/],
-    ["generate_protein", "antibody", /Architecture of an intact IgG/],
+    ["generate_protein_or_antibody", "antibody", /Architecture of an intact IgG/],
   ];
   if (process.env.PROTEIN_SHOTS) {
     proteinCases.push(
@@ -176,7 +176,7 @@ try {
     await page.setContent('<body style="margin:0"></body>');
     await page.addScriptTag({ path: out });
     await page.exposeFunction("__callTool", (req) => client.callTool(req));
-    const f = await mount(page, tool, tool === "generate_protein" ? { name } : { name_or_smiles: name });
+    const f = await mount(page, tool, tool === "generate_protein_or_antibody" ? { name } : { name_or_smiles: name });
     await f.locator("[data-protein-viewer]").waitFor({ timeout: 30000 });
     check(title.test(await f.locator(".panel-title").innerText()), `Protein ${tag}: Titel nennt Protein und Organismus`);
     // Antikörper: IgG-Schema im Panel (allgemein: Startansicht; Fab: Umschalter, ein Arm markiert)

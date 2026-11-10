@@ -134,11 +134,11 @@ def test_instructions_claim_proteins_and_antibodies_early(name):
     assert len(text.encode()) <= MAX_BYTES
     start = next((i for i, z in enumerate(text.splitlines())
                   if "protein" in z.lower() and "antibody" in z.lower()), None)
-    assert start is not None, "keine Zeile: Protein-/Antikörpername → generate_protein"
+    assert start is not None, "keine Zeile: Protein-/Antikörpername → generate_protein_or_antibody"
     rule = " ".join(text.splitlines()[start:start + 2])
     # Seit 10.11.2026 (Desktop routet vor der Suche nur über Toolnamen): das
     # eigene Tool, nicht mehr generate_molecule.
-    assert "generate_protein" in rule and "cartoon" in rule
+    assert "generate_protein_or_antibody" in rule and "cartoon" in rule
     assert "generate_molecule" not in rule
     assert "trastuzumab" in rule, "ein INN als Beispiel — der Fall aus dem Handtest"
     assert text.index(text.splitlines()[start]) < len(text) // 2, "Protein-Regel steht in der hinteren Hälfte"
