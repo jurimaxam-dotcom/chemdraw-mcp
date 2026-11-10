@@ -27,3 +27,12 @@ Ziehereignisse das Panel erreichen. Das ist **keine belegte Regression und kein 
 
 Die Screenshots liegen unter `/tmp/chemdraw-desktop-test/release-0-10-0/` und bleiben außerhalb des
 Repos (sie zeigen die Seitenleiste mit privaten Chat-Titeln).
+
+## Nachtrag 18:48 — Drehung bestätigt
+
+Zweiter Versuch von Codex (Faden `20261110-184651-bundle-abnahme-0-10`, Teil A) im selben Chat, diesmal
+mit einem Mauszug auf Ereignisebene (CGEvent: leftMouseDown, mehrere leftMouseDragged, leftMouseUp):
+**der Cartoon dreht sich.** Vom Owner im Bild verglichen: `03-before.png` (Faltblatt rechts, Helices
+links) gegen `bundle-0-10-0/A-drag.png` (Faltblatt links, Helices rechts). Laut Codex wirken auch
+Trace/Cartoon und ⌘+Scroll (`A-trace.png`, `A-cartoon.png`, `A-zoom.png`). Die drei wirkungslosen Züge
+davor lagen am Messweg (CUA-Zug), nicht am Panel. Stand: Repo-Start, nicht das Bundle.
