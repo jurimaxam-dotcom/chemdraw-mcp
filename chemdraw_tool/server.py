@@ -11,6 +11,7 @@ from typing import Literal
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from rdkit import Chem
+from rdkit.Chem import Descriptors, rdMolDescriptors
 from rdkit.Chem.inchi import MolToInchiKey
 
 from chemdraw_tool.cdxml_writer import write_cdxml
@@ -541,6 +542,14 @@ def _enrich_properties(smiles: str) -> dict[str, str]:
         properties["formula"] = v
     if (v := props_raw.get("MolecularWeight")) is not None:
         properties["mw"] = f"{v} g/mol"
+    # Kennt PubChem die Struktur nicht (frei gebautes Peptid, neue Verbindung),
+    # kommen Formel und Molmasse aus der Struktur selbst — beides ist reine
+    # Arithmetik. logP/TPSA/CAS bleiben leer: das sind PubChems Werte.
+    if "formula" not in properties or "mw" not in properties:
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is not None:
+            properties.setdefault("formula", rdMolDescriptors.CalcMolFormula(mol))
+            properties.setdefault("mw", f"{Descriptors.MolWt(mol):.2f} g/mol")
     if (v := props_raw.get("XLogP")) is not None:
         properties["logP"] = str(v)
     if (v := props_raw.get("TPSA")) is not None:
