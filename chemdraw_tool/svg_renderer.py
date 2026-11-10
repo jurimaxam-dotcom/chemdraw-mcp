@@ -237,6 +237,7 @@ def extract_atom_data(
 
 
 _KEIN_ACYL_N = "!$(N[#6]=[O,S]);!$(N[#16]=O)"
+_KEIN_ACYL_O = "!$(O[#6]=[O,S])"
 
 _FUNCTIONAL_GROUPS: list[tuple[str, str, str]] = [
     # (name, SMARTS, color)
@@ -250,6 +251,11 @@ _FUNCTIONAL_GROUPS: list[tuple[str, str, str]] = [
     ("Nitro", "[NX3+](=O)[O-]", "#922b21"),
     # Carbamat vor Ether und Amid: es belegt N, C=O, O und das O-Alkyl-C.
     ("Carbamat", "[NX3][CX3](=O)[OX2][#6]", "#a04000"),
+    # Halbacetal und Acetal vor Ether und Hydroxyl: O–C–O an einem sp3-C. Sonst
+    # trug der Ring-Sauerstoff jedes Zuckers „Ether“ (Befund 10.11.2026). Ketale
+    # laufen nach IUPAC als Acetale mit. Ein O am C=O zählt wie beim Ether nicht.
+    ("Halbacetal", f"[#6][OX2;{_KEIN_ACYL_O}][CX4][OX2H1]", "#b9770e"),
+    ("Acetal", f"[#6][OX2;{_KEIN_ACYL_O}][CX4][OX2;{_KEIN_ACYL_O}][#6]", "#9a7d0a"),
     # Ein O am C=O (Carbonat, Anhydrid) ist kein Ether.
     ("Ether", "[#6][OX2;!$(O[#6]=[O,S])][#6]", "#eb8c6f"),
     # --- Donor/Acceptor (purple) ---

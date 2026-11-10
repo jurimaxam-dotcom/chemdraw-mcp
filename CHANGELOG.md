@@ -9,6 +9,7 @@ this project uses [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - Molecule panel: for ring sugars the sentence explaining that the Fischer projection shows the open-chain form now appears under the Fischer view instead of under Haworth. Glycosides, which have no Fischer view, keep their explanation under Haworth.
+- Functional-group chips: the ring oxygen of a sugar is no longer labelled "Ether". Ring sugars show "Hemiacetal", glycosides and other O–C–O centres "Acetal"; the anomeric OH belongs to the hemiacetal and is not counted again as an alcohol. Under the Fischer view of a ring sugar the chips are hidden, because they describe the ring form.
 
 ## [0.10.0] — 2026-11-10
 

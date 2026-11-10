@@ -42,6 +42,8 @@ const GROUPS = {
   "Aldehyd": ["Aldehyde", "–CHO"],
   "Nitro": ["Nitro group", "–NO₂"],
   "Carbamat": ["Carbamate", "–O–CO–N<"],
+  "Halbacetal": ["Hemiacetal", "C–O–C–OH"],
+  "Acetal": ["Acetal", "C–O–C–O–C"],
   "Ether": ["Ether", "C–O–C"],
   "Amid": ["Amide", "–CO–N<"],
   "Sulfonamid": ["Sulfonamide", "–SO₂–N<"],

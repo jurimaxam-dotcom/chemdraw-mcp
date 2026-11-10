@@ -387,6 +387,21 @@ test("der Satz zur offenen Kette steht unter Fischer, nicht unter Haworth oder C
   unmount();
 });
 
+test("unter Fischer eines Ringzuckers stehen keine Gruppen der Ringform", async () => {
+  // Befund 10.11.2026: die Chips stammen aus der Ringform (Halbacetal), Fischer zeigt die
+  // offene Kette (Aldehyd). Unter Fischer wären sie falsch — dort aus, sonst wie gehabt.
+  const note = "The Fischer projection shows the open-chain form of this sugar.";
+  const data = { ...MOLECULE, views: ["all_h", "fischer", "haworth"], viewRequest: REQUEST, projectionNote: note };
+  const { container, unmount } = renderMolecule(data);
+  const gruppen = () => Boolean(container.querySelector('[aria-label="Functional groups"]'));
+  assert.equal(gruppen(), true, "Fixture ohne Gruppen");
+  await click(buttonByText(container, "Fischer"));
+  assert.equal(gruppen(), false, "Ringform-Gruppen unter der offenen Kette");
+  await click(buttonByText(container, "Haworth"));
+  assert.equal(gruppen(), true, "Gruppen fehlen unter Haworth");
+  unmount();
+});
+
 test("startet das Panel auf Fischer, steht der Satz zur offenen Kette sofort da", () => {
   const note = "The Fischer projection shows the open-chain form of this sugar.";
   const data = { ...MOLECULE, views: ["all_h", "fischer", "haworth", "chair"], viewRequest: REQUEST,

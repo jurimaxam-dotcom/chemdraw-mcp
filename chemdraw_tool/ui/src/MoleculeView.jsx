@@ -320,7 +320,10 @@ export default function MoleculeView({ data }) {
             <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
               variantsBusy={variantsLoading} />
             {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
-            {groups.length > 0 && <section className="group-section" aria-label="Functional groups">
+            {/* Fischer eines Ringzuckers zeigt die offene Kette; die Gruppen stammen aus der
+                Ringform (Halbacetal statt Aldehyd) und stünden dort falsch. */}
+            {groups.length > 0 && !(shown === "fischer" && data.projectionNote)
+              && <section className="group-section" aria-label="Functional groups">
               <h3 className="section-label">Functional groups</h3>
               <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
               <GroupNote groups={groups} hoveredGroup={hoveredGroup} />

@@ -299,3 +299,32 @@ def test_ring_amides_of_caffeine_are_found():
     assert _groups("O=c1cccc[nH]1").get("Amid") == 1  # 2-Pyridon
     assert "Amid" not in _groups("c1ccncc1")  # Pyridin
     assert _groups("CC(=O)NC").get("Amid") == 1
+
+
+# --- Halbacetal und Acetal: der Ring-Sauerstoff eines Zuckers ist kein Ether (10.11.2026) ---
+# Befund an sugar-views.gif: beta-D-Glucose trug „Ether 1“. Das Muster C–O–C trifft jeden
+# Ring-Sauerstoff; für O–C–O an einem sp3-C gab es keinen eigenen Eintrag.
+
+_BETA_GLCP = "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O"
+_METHYL_GLUCOSIDE = "CO[C@H]1O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]1O"
+_SUCROSE = "OC[C@H]1O[C@H](O[C@]2(CO)O[C@H](CO)[C@@H](O)[C@@H]2O)[C@H](O)[C@@H](O)[C@@H]1O"
+
+
+def test_ring_sugar_is_a_hemiacetal_not_an_ether():
+    # Das anomere OH gehört zum Halbacetal und zählt nicht noch einmal als Alkohol.
+    assert _groups(_BETA_GLCP) == {"Halbacetal": 1, "Hydroxyl": 4}
+
+
+def test_glycosides_are_acetals_not_ethers():
+    assert _groups(_METHYL_GLUCOSIDE) == {"Acetal": 1, "Hydroxyl": 4}
+    # Saccharose: zwei anomere Zentren, verbunden über denselben Sauerstoff.
+    assert _groups(_SUCROSE) == {"Acetal": 2, "Hydroxyl": 8}
+    assert _groups("COCOC") == {"Acetal": 1}  # Dimethoxymethan
+
+
+def test_plain_ethers_and_open_chain_sugars_are_unchanged():
+    assert _groups("COC") == {"Ether": 1}
+    assert _groups("C1COCCO1") == {"Ether": 2}  # 1,4-Dioxan: zwei O, kein gemeinsames C
+    assert _groups("C1CCOC1") == {"Ether": 1}  # THF
+    assert _groups("OC[C@@H](O)[C@@H](O)[C@H](O)[C@@H](O)C=O") == {"Aldehyd": 1, "Hydroxyl": 5}
+    assert _groups("CC(=O)OCOC(C)=O") == {"Ester": 2}  # Acylal: O am C=O ist kein Acetal-O
