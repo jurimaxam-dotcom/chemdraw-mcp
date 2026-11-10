@@ -248,9 +248,13 @@ _FUNCTIONAL_GROUPS: list[tuple[str, str, str]] = [
     ("Keton", "[#6][CX3](=O)[#6]", "#c0392b"),
     ("Aldehyd", "[CX3H1](=O)", "#e67e22"),
     ("Nitro", "[NX3+](=O)[O-]", "#922b21"),
-    ("Ether", "[#6][OX2][#6]", "#eb8c6f"),
+    # Carbamat vor Ether und Amid: es belegt N, C=O, O und das O-Alkyl-C.
+    ("Carbamat", "[NX3][CX3](=O)[OX2][#6]", "#a04000"),
+    # Ein O am C=O (Carbonat, Anhydrid) ist kein Ether.
+    ("Ether", "[#6][OX2;!$(O[#6]=[O,S])][#6]", "#eb8c6f"),
     # --- Donor/Acceptor (purple) ---
-    ("Amid", "[CX3](=O)[NX3]", "#8e44ad"),
+    # #6/#7 statt C/N: die Ring-Amide in Koffein oder Pyridon liest RDKit aromatisch.
+    ("Amid", "[#6X3](=O)[#7X3]", "#8e44ad"),
     ("Sulfonamid", "S(=O)(=O)[NX3]", "#7d3c98"),
     # --- Donors (green family) ---
     # Ein N an C=O, C=S oder S=O ist Amid/Thioamid/Sulfonamid, kein Amin —

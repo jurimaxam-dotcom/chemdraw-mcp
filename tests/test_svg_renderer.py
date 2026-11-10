@@ -269,3 +269,33 @@ def test_amide_nitrogen_is_not_an_amine(smiles, falsch):
 )
 def test_real_amines_keep_their_chip(smiles, erwartet):
     assert erwartet in _group_names(smiles)
+
+
+# --- Carbamat, Carbonat, Lactam im Aromaten (10.11.2026) -----------------------
+
+
+def _groups(smiles: str) -> dict[str, int]:
+    return {g["name"]: g["count"] for g in extract_functional_groups(Chem.MolFromSmiles(smiles))}
+
+
+def test_carbamate_is_neither_ether_nor_plain_amide():
+    # Methyl-N-methylcarbamat: der O am C=O ist kein Ether, das N–C(=O)–O kein Amid.
+    assert _groups("COC(=O)NC") == {"Carbamat": 1}
+    # Boc-Glycin: Carbamat und Säure, kein Ether.
+    g = _groups("CC(C)(C)OC(=O)NCC(=O)O")
+    assert g.get("Carbamat") == 1 and "Ether" not in g and "Amid" not in g
+
+
+def test_acyl_oxygen_is_not_an_ether():
+    assert "Ether" not in _groups("COC(=O)OC")  # Dimethylcarbonat
+    assert _groups("COC") == {"Ether": 1}
+    assert _groups("CC(=O)OC") == {"Ester": 1}
+    assert _groups("COCCOC(C)=O") == {"Ester": 1, "Ether": 1}
+
+
+def test_ring_amides_of_caffeine_are_found():
+    # RDKit liest die C(=O)–N im Xanthin aromatisch; sie bleiben Amide.
+    assert _groups("Cn1cnc2c1c(=O)n(C)c(=O)n2C").get("Amid") == 3
+    assert _groups("O=c1cccc[nH]1").get("Amid") == 1  # 2-Pyridon
+    assert "Amid" not in _groups("c1ccncc1")  # Pyridin
+    assert _groups("CC(=O)NC").get("Amid") == 1

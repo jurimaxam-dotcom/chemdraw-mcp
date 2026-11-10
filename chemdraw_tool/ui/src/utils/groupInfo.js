@@ -41,6 +41,7 @@ const GROUPS = {
   "Keton": ["Ketone", "C–CO–C"],
   "Aldehyd": ["Aldehyde", "–CHO"],
   "Nitro": ["Nitro group", "–NO₂"],
+  "Carbamat": ["Carbamate", "–O–CO–N<"],
   "Ether": ["Ether", "C–O–C"],
   "Amid": ["Amide", "–CO–N<"],
   "Sulfonamid": ["Sulfonamide", "–SO₂–N<"],
