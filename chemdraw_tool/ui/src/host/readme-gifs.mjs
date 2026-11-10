@@ -11,6 +11,9 @@
 // nicht im --video-Durchlauf ohne Szenennamen (zu kurz für die Shorts).
 // Ausgabe: assets/demo-<szene>-<theme>.gif (helle Fassung zusätzlich als demo-<szene>.gif) — die zwei Hero-Szenen (views, 3d) haben einen
 // festen Ausschnitt (HERO), damit sie im README nebeneinander auf gleicher Höhe enden.
+// Bluesky-Szenen (sugar-views, mechanism-steps, reaction-balance, antibody-scheme, lysozyme-zoom, anki): nur hell,
+// nur auf Ansage (nie im Lauf ohne Szenennamen), Ausgabe nach GIF_AUSGABE=<ordner> (sonst assets/), z. B.
+//   GIF_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/bluesky-0.10.0 npm run readme:gifs -- sugar-views
 // --video: dieselben Szenen und Klickfolgen als mp4 (H.264, yuv420p, 30 fps, 1080 px breit) für die
 // Remotion-Montage in chemdraw-vermarktung — aufgenommen mit deviceScaleFactor 2 (600 → 1200 px, auf
 // 1080 skaliert, damit die Schrift im 1080×1920-Short scharf bleibt), längere Haltezeiten, keine
@@ -57,7 +60,7 @@ for (let i = 2; i < process.argv.length; i++) {
 // der Szenen (ms); die GIF-Werte sind genau die bisherigen, Video hält länger (Klick-Pause 1,2 s,
 // Schlussstand 3 s), damit Einblendungen der Montage Platz haben.
 const MODI = {
-  gif: { scale: 1, ausgabe: assets, bild: "png", screenshot: {},
+  gif: { scale: 1, ausgabe: process.env.GIF_AUSGABE || assets, bild: "png", screenshot: {},
     takt: { vorKlick: 120, start: 800, startViews: 1000, nachAllH: 1000, nach2D: 800, nachS: 1500, hover: 800, vor3D: 1300, zwischenZügen: 0, schluss3d: 1500, schlussDaten: 2000 } },
   video: { scale: 2, fps: 30, bild: "jpg", screenshot: { type: "jpeg", quality: 95 }, ausgabe: join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "panel-clips"),
     breite: 1080, sekunden: [12, 25],
@@ -89,7 +92,7 @@ function filmuhr() {
 }
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
-  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128 }) {
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden }) {
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = { ...args, name_or_smiles: molecule };
   const farbe = THEMES[theme];
@@ -100,7 +103,12 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
 
   const context = await browser.newContext({ viewport: { width: BREITE, height: hoehe }, deviceScaleFactor: MODUS.scale, colorScheme: theme });
   const page = await context.newPage();
-  await page.exposeFunction("__callTool", async (p) => neutral(await client.callTool(p)));
+  // Nie Anki starten (wie host.e2e.mjs): der Knopf schickt deliver "open", der Server bekommt "apkg"
+  // und schreibt das Deck nur in den Wegwerf-HOME
+  await page.exposeFunction("__callTool", async (p) => {
+    if (p.name === "export_anki_deck") p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
+    return neutral(await client.callTool(p));
+  });
   await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
   await page.addScriptTag({ path: hostJs });
   await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult });
@@ -189,10 +197,10 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   await context.close();
   const quellFps = Number((bilder.length / (ende / 1000)).toFixed(1));
   if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }, BREITE) };
-  const werte = gifBauen(datei ?? `demo-${name}-${theme}`, bilder, ende, fps, dir, farben);
+  const werte = gifBauen(datei ?? `demo-${name}-${theme}`, bilder, ende, fps, dir, farben, sekunden);
   // Alte Namen ohne Theme bleiben als Kopie der hellen Fassung: PyPI und ältere
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
-  if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(assets, `demo-${name}.gif`));
+  if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(MODUS.ausgabe, `demo-${name}.gif`));
   return { szene: name, theme, ...werte };
 }
 
@@ -210,15 +218,16 @@ function concatListe(name, bilder, endeMs, dir) {
   return liste;
 }
 
-function gifBauen(name, bilder, endeMs, fps, dir, farben) {
+function gifBauen(name, bilder, endeMs, fps, dir, farben, sekunden) {
   const liste = concatListe(name, bilder, endeMs, dir);
-  const ziel = join(assets, `${name}.gif`);
+  const ziel = join(MODUS.ausgabe, `${name}.gif`);
   const filter = `fps=${fps},scale='min(${GRENZEN.breite},iw)':-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=${farben}:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`;
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", liste, "-vf", filter, "-loop", "0", ziel]);
-  return prüfen(ziel);
+  return prüfen(ziel, sekunden);
 }
 
-function prüfen(ziel) {
+// sekunden = [min, max] je Szene (Bluesky 6–12 s), sonst die README-Kappe
+function prüfen(ziel, [minS, maxS] = [0, GRENZEN.sekunden]) {
   const probe = JSON.parse(execFileSync(FFPROBE, ["-v", "error", "-count_frames", "-select_streams", "v:0",
     "-show_entries", "stream=width,height,nb_read_frames:format=duration", "-of", "json", ziel]).toString());
   const st = probe.streams[0];
@@ -226,7 +235,7 @@ function prüfen(ziel) {
     sekunden: Number(probe.format.duration), frames: Number(st.nb_read_frames) };
   const fehler = [];
   if (werte.breite > GRENZEN.breite) fehler.push(`Breite ${werte.breite} px > ${GRENZEN.breite}`);
-  if (!(werte.sekunden <= GRENZEN.sekunden)) fehler.push(`Dauer ${werte.sekunden} s > ${GRENZEN.sekunden}`);
+  if (!(werte.sekunden >= minS && werte.sekunden <= maxS)) fehler.push(`Dauer ${werte.sekunden} s außerhalb ${minS}–${maxS}`);
   if (werte.bytes > GRENZEN.bytes) fehler.push(`Größe ${(werte.bytes / 1048576).toFixed(2)} MB > 3 MB`);
   const fps = werte.frames / werte.sekunden;
   if (fps < 11.5 || fps > 15.5) fehler.push(`${fps.toFixed(1)} fps außerhalb 12–15`);
@@ -333,6 +342,28 @@ async function ziehen({ page, halten, zeiger, marke }, von, nach, ms, ziel) {
   }
   await page.mouse.up();
 }
+
+// Zoom wie im Panel-Hinweis „⌘/Ctrl+scroll“: Mausrad mit gedrückter Strg-Taste über der Fläche.
+// richtung -1 = hinein, +1 = heraus; feste Rastenzahl, damit „heraus“ genau „hinein“ aufhebt
+async function zoomen({ page, halten, zeiger, marke }, [x, y], richtung, rasten, ziel) {
+  await zeiger(x, y); await page.mouse.move(x, y, { steps: 4 }); await halten(260);
+  marke("klick", ziel);
+  await page.keyboard.down("Control");
+  for (let i = 0; i < rasten; i++) {
+    await page.mouse.wheel(0, richtung * 72);
+    await halten(20);
+  }
+  await page.keyboard.up("Control");
+}
+
+// Protein-Panel: warten, bis die Mol*-Engine steht und ihre Einblend-Drehung ausgelaufen ist
+async function proteinBereit({ frame, page }) {
+  await frame.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 60000 });
+  await page.waitForTimeout(1800);
+}
+
+// Bluesky-Folgeposts (0.10.0): nur hell, nur auf Ansage, 6–12 s, Ausgabe über GIF_AUSGABE
+const BLUESKY = { themes: ["light"], fps: 12, nurGif: true, aufAnsage: true, sekunden: [6, 12], breite: 600 };
 
 // README 0.10: eine zusammenhängende Interaktion je GIF, nur hell, Ausgabe unter eigenem Namen
 // (assets/<datei>.gif). Breite und Höhe so, dass das ganze Panel samt Export-Knopf im Bild ist —
@@ -470,11 +501,153 @@ const SZENEN = {
         throw new Error("ROT lysozyme-cartoon: am Ende kein Cartoon-Canvas (Rückfallspur?)");
     },
   },
+  // β-D-Glucose: Ansicht-Achse einmal durch — 2D → Fischer → Haworth → Chair → 3D
+  "sugar-views": {
+    ...BLUESKY, datei: "sugar-views", hoehe: 860,
+    tool: "generate_molecule", args: { name_or_smiles: "beta-D-glucose" },
+    async ablauf({ frame, halten, klick, imBild }) {
+      const achse = frame.locator("[data-view-axis]");
+      const knopf = (text) => achse.getByRole("button", { name: text, exact: true });
+      const gedrückt = (text) => achse.locator('button[aria-pressed="true"][aria-busy="false"]', { hasText: text });
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      for (const v of ["Fischer", "Haworth", "Chair", "3D"])
+        if (!(await knopf(v).count())) throw new Error(`sugar-views: kein Knopf ${v}`);
+      await imBild(achse, "Ansicht-Achse");
+      await halten(1300);
+      for (const v of ["Fischer", "Haworth", "Chair"]) {
+        await klick(knopf(v), () => gedrückt(v).waitFor({ timeout: 30000 }), v);
+        await halten(1400);
+      }
+      await klick(knopf("3D"), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
+      await imBild(frame.locator("[data-view-3d]"), "3D-Kuhle");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      await halten(2000); // Einblend-Drehung (1200 ms) läuft zu Ende
+    },
+  },
+  // SN2 mit (R)-2-Brombutan + Cyanid: Overview → Step by step → mit Next durch alle Schritte
+  "mechanism-steps": {
+    ...BLUESKY, datei: "mechanism-steps", hoehe: 560, panel: "button:has-text(\"Step by step\")",
+    tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] },
+    async ablauf({ frame, halten, klick }) {
+      await halten(1500);
+      await klick(frame.getByRole("button", { name: "Step by step", exact: true }), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
+      const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
+      await halten(1600);
+      for (let i = 2; i <= gesamt; i++) {
+        await klick(frame.getByRole("button", { name: "Next →" }), () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 }), "Next");
+        await halten(i === gesamt ? 2200 : 1600);
+      }
+    },
+  },
+  // H₂ + O₂ → H₂O, so gezeichnet nicht ausgeglichen: Badge zeigen, dann „Apply coefficients“
+  "reaction-balance": {
+    ...BLUESKY, datei: "reaction-balance", hoehe: 236, panel: ".reaction-panel",
+    tool: "generate_reaction", args: { reactants: ["hydrogen", "oxygen"], products: ["water"] },
+    async ablauf({ frame, page, halten, zeiger, klick }) {
+      // Zeiger knapp unter die Badges: mittig darauf verdeckte er genau den Text, um den es geht
+      const darunter = async (locator) => {
+        const b = await locator.boundingBox();
+        const x = b.x + b.width / 2, y = b.y + b.height + 12;
+        await zeiger(x, y); await page.mouse.move(x, y, { steps: 6 }); await halten(220);
+      };
+      const badge = frame.locator('[data-testid="balance-badge"]');
+      await badge.waitFor();
+      if (await badge.getAttribute("data-state") !== "unbalanced") throw new Error("reaction-balance: Badge nicht „not balanced“");
+      await halten(1300);
+      await darunter(badge);
+      await halten(1500);
+      await darunter(frame.locator('[data-testid="balance-suggestion"]'));
+      await halten(1300);
+      await klick(frame.getByRole("button", { name: "Apply coefficients" }),
+        () => frame.locator('[data-testid="balance-badge"][data-state="balanced"]').waitFor({ timeout: 30000 }), "Apply coefficients");
+      await halten(2500);
+    },
+  },
+  // Trastuzumab: Structure drehen, hinein- und herauszoomen, dann Scheme und zurück
+  "antibody-scheme": {
+    ...BLUESKY, datei: "antibody-scheme", hoehe: 912, farben: 96, eigenerBrowser: true,
+    tool: "generate_protein_or_antibody", args: { name: "trastuzumab" }, panel: "[data-protein-viewer]",
+    vorlauf: proteinBereit,
+    async ablauf(werkzeug) {
+      const { frame, halten, klick, mitte, imBild } = werkzeug;
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      const bühne = frame.locator("[data-protein-viewer]");
+      if (await reiter("Structure").getAttribute("aria-selected") !== "true") {
+        await halten(1200);
+        await klick(reiter("Structure"), () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: "Structure" }).waitFor(), "Structure");
+      }
+      await imBild(bühne, "Cartoon-Fläche");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      await halten(800);
+      const [cx, cy] = await mitte(bühne);
+      await ziehen(werkzeug, [cx - 110, cy + 10], [cx + 110, cy - 10], 1500, "drag");
+      await zoomen(werkzeug, [cx, cy], -1, 5, "zoom in");
+      await halten(500);
+      await zoomen(werkzeug, [cx, cy], 1, 7, "zoom out");
+      await halten(300);
+      await klick(reiter("Scheme"), () => frame.locator("svg[data-igg-scheme]").waitFor({ timeout: 5000 }), "Scheme");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile (Schema)");
+      await halten(1800);
+      await klick(reiter("Structure"), () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: "Structure" }).waitFor(), "Structure");
+      await halten(800);
+    },
+  },
+  // Lysozym: drehen, zoomen, Färbung Secondary → Rainbow N→C, Darstellung Cartoon → Trace → Cartoon
+  "lysozyme-zoom": {
+    ...BLUESKY, datei: "lysozyme-zoom", hoehe: 840, farben: 96, eigenerBrowser: true,
+    tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
+    vorlauf: proteinBereit,
+    async ablauf(werkzeug) {
+      const { frame, halten, klick, mitte, imBild } = werkzeug;
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      const gewählt = (text) => () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: text }).first().waitFor();
+      const bühne = frame.locator('[data-protein-viewer="ready"]');
+      await imBild(bühne, "Cartoon-Fläche");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      await halten(700);
+      const [cx, cy] = await mitte(bühne);
+      await ziehen(werkzeug, [cx - 110, cy + 10], [cx + 110, cy - 10], 1300, "drag");
+      await zoomen(werkzeug, [cx, cy], -1, 5, "zoom in");
+      await halten(500);
+      await zoomen(werkzeug, [cx, cy], 1, 7, "zoom out");
+      await halten(300);
+      await klick(reiter("Rainbow N→C"), gewählt("Rainbow"), "Rainbow");
+      await halten(800);
+      await klick(reiter("Trace"), gewählt("Trace"), "Trace");
+      await halten(900);
+      await klick(reiter("Cartoon"), gewählt("Cartoon"), "Cartoon");
+      await halten(1000);
+    },
+  },
+  // Aspirin: zwei Gruppen-Chips, dann „Add to Anki“ → „Saved“ (Testhost: deliver apkg, kein Anki)
+  anki: {
+    ...BLUESKY, datei: "anki", hoehe: 690,
+    tool: "generate_molecule", args: { name_or_smiles: "aspirin" },
+    async ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild }) {
+      const gruppen = frame.locator("button.functional-group");
+      await gruppen.first().waitFor();
+      const anki = frame.locator("button.add-to-anki");
+      await imBild(anki, "Anki-Knopf");
+      await halten(1200);
+      for (let i = 0; i < Math.min(2, await gruppen.count()); i++) {
+        await zeigeAuf(gruppen.nth(i), "group");
+        await halten(1100);
+      }
+      await zeigeAuf(anki, "Add to Anki");
+      await halten(700);
+      await klick(anki, () => frame.locator("button.add-to-anki", { hasText: "Saved" }).waitFor({ timeout: 30000 }), "Add to Anki");
+      // Zeiger vom Knopf weg, damit „Saved“ lesbar ist
+      const [ax, ay] = await mitte(anki);
+      await zeiger(ax - 40, ay - 46); await page.mouse.move(ax - 40, ay - 46, { steps: 4 });
+      await halten(1600); // „Saved“ steht 2,5 s ab dem Klick (Echtzeit), danach setzt der Knopf zurück
+      if (!(await anki.innerText()).includes("Saved")) throw new Error("ROT anki: am Ende kein „Saved“ mehr");
+    },
+  },
 };
 
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 const themes = optionen.theme ? [optionen.theme] : Object.keys(THEMES);
-const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !(optionen.video && SZENEN[n].nurGif));
+const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
 for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (${Object.keys(SZENEN).join(", ")})`);
 mkdirSync(MODUS.ausgabe, { recursive: true });
 const browser = await chromium.launch();
