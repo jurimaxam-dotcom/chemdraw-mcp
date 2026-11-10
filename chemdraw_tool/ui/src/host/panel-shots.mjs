@@ -32,6 +32,9 @@ const PORPHYRIN = {
 };
 // [Datei, Tool, Argumente, iframe-Breite]; 930 px ≈ Panelbreite in Claude Desktop (Stand 10.11.2026).
 const CASES = [
+  // Die zwei Panelbilder der Nutzerdoku (docs/images/panel-molecule.png, panel-peptide.png = helle Fassung).
+  ["doku-molekuel", "generate_molecule", { name_or_smiles: "thalidomide" }, 700],
+  ["doku-peptid", "generate_molecule", { name_or_smiles: "Ala-Trp-Lys-Ser-Gly" }, 700],
   ["boc-abgekuerzt", "generate_molecule", { name_or_smiles: BOC, abbreviate_groups: true }, 930],
   ["aspirin-abgekuerzt", "generate_molecule", { name_or_smiles: "aspirin", abbreviate_groups: true }, 930],
   ["porphyrin-abgekuerzt", "generate_reaction", { ...PORPHYRIN, abbreviate_groups: true }, 930],

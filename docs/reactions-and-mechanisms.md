@@ -111,5 +111,6 @@ balanced as drawn:
 - Curved-arrow mechanisms: SN1, SN2 and Fischer esterification only, each
   within the substrate limits above. Only the substitution is drawn when
   elimination competes.
-- Large species are drawn small in a scheme; the single-structure drawing is
-  easier to read.
+- Large species are drawn small in a scheme file; the single-structure
+  drawing is easier to read. The panel keeps the normal bond scale and stacks
+  the scheme when the row gets too small.

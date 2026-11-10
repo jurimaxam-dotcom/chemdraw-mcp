@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.0] — 2026-11-10
+
 ### Added
 
 - **`generate_protein_or_antibody`.** A drawing tool of its own for proteins, enzymes and antibodies
@@ -17,7 +19,7 @@ this project uses [Semantic Versioning](https://semver.org/).
   protein name; their descriptions and the server instructions now point at `generate_protein_or_antibody`.
   A name that is not a protein gets a message pointing at `generate_molecule`. Default profile
   17 tools (13 with a panel), full profile 24 (17).
-- **Proteins as cartoons.** Proteins are drawn as a ribbon diagram instead of a Cα trace:
+- **Proteins as cartoons.** Proteins are drawn as a ribbon diagram:
   helices as ribbons, strands as arrows, loops as a thin tube, from the backbone atoms N/Cα/C/O.
   Heme, metal ions and inhibitors near the protein are drawn and named (hemoglobin with its four
   hemes, carbonic anhydrase with its zinc); water, buffers and glycans are left out. Entries without
@@ -52,13 +54,12 @@ this project uses [Semantic Versioning](https://semver.org/).
   Ferriheme b on 10.11.2026; these names no longer follow.
 - "X zwitterion" keeps the stereo of X ("alanine zwitterion" was racemic, "Alanin Zwitterion" was not found, "Ala zwitterion" was Ala-Leu-Ala).
 - **Proteins.** A protein name no structure database knows ("Lysozym", "Trypsin", "hemoglobin")
-  now gets its UniProt entry (accession, organism, length, mass) instead of "not found", and
-  antibody names (-mab, "trastuzumab") a plain sentence. `lookup(topic="biochem")` returns a
-  compact UniProt data sheet for a protein name (function, EC number, up to three PDB IDs).
-- **Proteins as backbone traces.** `generate_molecule` and `generate_3d` draw enzymes and
-  antibodies: smoothed Cα trace from the PDB (or the AlphaFold model), principal-axis view,
-  PNG/SVG in `~/ChemDraw-Output/proteine/` and a rotatable panel (colour by secondary structure,
-  chain or AlphaFold confidence). A curated lab-standard table picks the usual entry (hen
+  is now drawn as a cartoon instead of "not found", and the message gives its UniProt entry
+  (accession, organism, length, mass). `lookup(topic="biochem")` returns a compact UniProt data
+  sheet for a protein name (function, EC number, up to three PDB IDs).
+- **Which protein is drawn.** The structure comes from the PDB (or the AlphaFold model), in a
+  principal-axis view, as PNG/SVG in `~/ChemDraw-Output/proteine/` and in the rotatable panel.
+  A curated lab-standard table picks the usual entry (hen
   lysozyme, bovine trypsin, BSA, GFP, Taq, human insulin, haemoglobin tetramer, testis ACE …);
   an organism in the name selects another ("Lysozym Huhn", "RecA Bacillus subtilis").
   Gene symbols (`RecA`, `LipA`) go to UniProt's gene field — "PabA" was 4-aminobenzoic
@@ -66,10 +67,10 @@ this project uses [Semantic Versioning](https://semver.org/).
   Fab structure, honestly labelled, plus an IgG domain scheme; an unknown antibody shows the
   architecture of an intact IgG (1HZH). `lookup(topic="biochem")` uses the same choice and adds
   the catalysed reaction (Rhea), cofactors and the drawn structure.
+- **Protein pictures fill the panel.** The cartoon, its backbone-trace fallback and the IgG scheme share one drawing area as tall as the molecule panel's 3D view (square, at most 720 px, full width), instead of the space left over in a fixed-height panel; the "antigen-binding site" label no longer touches the dashed Fab frame.
 
 ### Changed
 
-- **Larger protein pictures in the panel.** The cartoon, its backbone-trace fallback and the IgG scheme now share one drawing area as tall as the molecule panel's 3D view (square, at most 720 px, full width), instead of the space left over in a fixed-height panel; the "antigen-binding site" label no longer touches the dashed Fab frame.
 - **A structure you type is no longer sent to any database by default.** Until 0.9.1, when
   PubChem did not know a structure's InChIKey, `generate_molecule`, `batch_generate` and the
   panel's Data button (`lookup_molecule_data`) posted the SMILES itself to PubChem, and `lookup`
@@ -105,8 +106,9 @@ this project uses [Semantic Versioning](https://semver.org/).
   exports and comparisons; before, RDKit left a gap ("Siroh  m"). ASCII legends are unchanged.
 - "lysozyme" drew a 159-atom peptide fragment and "alcohol dehydrogenase" an acyl-CoA (PubChem
   files both under these titles); enzyme names are now checked against UniProt first.
-- A name that resolves to more than 200 heavy atoms (insulin, glucagon) is no longer drawn as an
-  unreadable tangle; the message says what it is and what helps. Supplied SMILES are still drawn.
+- A name that resolves to more than 200 heavy atoms (glucagon) is no longer drawn as an
+  unreadable tangle; the message says what it is and what helps, and a name UniProt lists as a
+  protein (insulin) gets the cartoon. Supplied SMILES are still drawn.
 - Panel: formula and molar mass are computed from the structure when PubChem has no record for
   it (a peptide built from its sequence showed neither).
 - "hydrogen" is drawn as H–H (two atoms and a bond); it showed the bare label "HH".

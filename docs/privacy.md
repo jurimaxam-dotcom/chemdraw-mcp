@@ -24,7 +24,7 @@ is.
 | `lookup` with a name | PubChem, ChEBI, UniProt or KEGG, depending on the topic, as typed. A bare run of up to five letters (`PC`, `NOS`, `RecA`) counts as a name here. |
 | `lookup` with a structure | Its InChIKey to PubChem; then PubChem's name for that record to the source of the topic (for `biochem` with the aspirin SMILES: "Aspirin" to UniProt and ChEBI). |
 | The panel's **Data** button | The InChIKey of the drawn structure to PubChem. |
-| Species of a reaction, substrates of a mechanism, the structure of `generate_3d`, `predict_spectrum` or an Anki card | A name is resolved as above (PubChem asked for the structure by name); a SMILES goes nowhere. A protein name in `generate_3d` fetches the structure as above. |
+| Species of a reaction, substrates of a mechanism, the structure of `generate_3d`, `predict_spectrum` or an Anki card | A name is resolved as above (PubChem asked for the structure by name); a SMILES itself is not sent. For the substrates of a mechanism, the InChIKey goes to PubChem to fetch the compound's name. A protein name in `generate_3d` fetches the structure as above. |
 | Spectra, TLC plates, titration curves, `calculate_ph` | Nothing. Computed and drawn locally. |
 | Anki delivery | The `.apkg` file stays on your computer. With AnkiConnect the deck goes to the Anki running on your own computer (`http://127.0.0.1:8765`), and only when you ask for it. |
 

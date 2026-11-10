@@ -61,7 +61,7 @@ connector menu, and type:
 
 > Draw thalidomide
 
-<img src="images/panel-molecule.png" alt="Thalidomide panel: drawing, 2D / All H / 3D buttons, formula C13H10N2O4, molar mass 258.23 g/mol, CAS 50-35-1, one unspecified stereocenter with a Show variants button, functional groups Amide, Tertiary amine, Aromatic ring" width="420">
+<img src="images/panel-molecule.png" alt="Thalidomide panel: drawing, 2D / All H / 3D buttons, formula C13H10N2O4, molar mass 258.23 g/mol, CAS 50-35-1, one unspecified stereocenter with a Show variants button, functional groups Amide and Aromatic ring" width="420">
 
 What the panel shows:
 

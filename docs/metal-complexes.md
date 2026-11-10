@@ -30,9 +30,8 @@ the metal in the centre, bonded to the four ring nitrogens.
 
 ## Without a metal
 
-*"Draw protoporphyrin IX"* gives the same undistorted ring, with two NH
-groups; metal-free phthalocyanine too. Metal-free porphine does not: it was
-drawn with a distorted macrocycle.
+*"Draw protoporphyrin IX"* gives the same undistorted, axis-aligned ring,
+with two NH groups; porphine and metal-free phthalocyanine too.
 
 <img src="images/protoporphyrin-ix.png" alt="Protoporphyrin IX: undistorted porphyrin ring with two NH groups, two vinyl and two propionic acid groups" width="300">
 

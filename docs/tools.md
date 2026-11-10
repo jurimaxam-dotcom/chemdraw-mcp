@@ -46,7 +46,7 @@ answer for a protein name. A tool of its own because Claude Desktop shows the
 model only tool names before it loads any description — without "protein" in
 a name, protein requests went to the host's own drawing tool. A name that is
 not a protein (caffeine, a SMILES) gets a message pointing at
-`generate_molecule` instead of a picture. The cartoon (ribbon diagram, since E13):
+`generate_molecule` instead of a picture. The cartoon (ribbon diagram):
 α-helices as ribbons, β-strands as flat arrows pointing to the C-terminus,
 loops as a thin tube, from the backbone atoms (N, Cα, C, O) of an
 experimental structure (PDB) or, without one, of the AlphaFold model. The
@@ -77,7 +77,7 @@ general antibody name opens on the scheme, an antibody with its own Fab
 structure opens on the structure and marks in the scheme which Fab arm it
 is. The panel follows the host's light/dark theme; the files stay light. Export
 PNG saves the cartoon as shown, at three times the panel resolution. The
-engine is about 2.4 MB of the panel file but only runs when a protein is
+engine is about 2.5 MB of the panel file but only runs when a protein is
 shown. If the host has no WebGL (or blocks the script), the panel keeps the
 SVG backbone trace and says so — never an empty area.
 
@@ -126,12 +126,11 @@ SVG backbone trace and says so — never an empty area.
 - `batch_generate` and `compare_molecules` still draw no proteins; their
   message points at `generate_protein_or_antibody`.
 
-Before E8 `generate_molecule` explained instead of drawing; these rules from
-E6 still decide for names outside the table:
+Which names count as a protein, for names outside the table:
 
 - A name that UniProt (Swiss-Prot) lists as a protein — "lysozyme",
   "Trypsin", "hemoglobin", German "Lysozym", "Katalase", "Kollagen" — is
-  answered with the entry: name, accession, organism, length and mass (marked
+  drawn as a cartoon, and the message gives the entry: name, accession, organism, length and mass (marked
   as precursor when a signal peptide or propeptide is cleaved off), and a
   pointer to `lookup` with topic `biochem` (data sheet: function, EC number,
   catalysed reaction with Rhea ID, cofactors, and which structure is drawn). Enzyme names (ending in -ase or
@@ -139,12 +138,14 @@ E6 still decide for names outside the table:
   peptide fragment under "lysozyme" and an acyl-CoA under "alcohol
   dehydrogenase". Other names ask UniProt only after every structure source
   answered "unknown" — never when they were unreachable.
-- Antibody names (INN stem -mab, "trastuzumab") get a plain sentence: a
-  monoclonal antibody, a protein of about 150 kDa as a full IgG. UniProt does
-  not list therapeutic antibodies under their INN, so no numbers are given.
-- A name that resolves to a structure with more than 200 heavy atoms
-  (insulin 404, glucagon 246, calcitonin 239) is not drawn; the message gives
-  formula, mass, heavy atoms and the number of residues. Palytoxin (186),
+- Antibody names (INN stem -mab, "trastuzumab") are drawn as described under
+  Antibodies. UniProt does not list therapeutic antibodies under their INN,
+  so the message gives no length or mass.
+- A name that resolves to a structure with more than 200 heavy atoms is not
+  drawn as a skeletal formula. If UniProt lists it as a protein (insulin,
+  calcitonin), it is drawn as a cartoon instead; otherwise (glucagon, 246
+  heavy atoms) the message gives formula, mass, heavy atoms and the number of
+  residues. Palytoxin (186),
   oxytocin and 20-residue peptides are still drawn. A SMILES or a peptide
   sequence you pass yourself is always drawn.
 
@@ -439,8 +440,8 @@ writes its setting to `server.log` at startup ("SMILES lookup: off" or "on").
   the primary outputs and the ones the pixel tests cover.
 - **Claude Desktop often answers knowledge questions without a tool.**
   "What is the solubility of paracetamol?", expected IR bands, a pH number or
-  "compare aspirin and paracetamol" were answered from memory in 0 of 3 chats
-  each (measured 2026-11-03), even though a tool fits. Drawing and figure
+  "compare aspirin and paracetamol" were answered from memory, without a tool call, in 3 of 3
+  chats each (measured 2026-11-03), even though a tool fits. Drawing and figure
   requests are not affected. Adding "use ChemDraw" to the prompt made Desktop
   call `calculate_ph`, `lookup` and `compare_molecules` (2 of 2 chats each).
 - **The extension targets macOS and Linux.** Windows is untested.

@@ -1,7 +1,7 @@
 {
   "name": "chemdraw-mcp",
   "description": "Claude draws the chemistry it talks about: structures, reactions, mechanisms and lab graphics, right in the chat.",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "author": {
     "name": "jurimaxam-dotcom"
   },

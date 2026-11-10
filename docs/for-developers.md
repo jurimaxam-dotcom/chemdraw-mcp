@@ -13,7 +13,7 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium && cd -
 ./test.sh
 ```
 
-`./test.sh` is the one green/red check: lint, about 9,800 Python tests, bundle
+`./test.sh` is the one green/red check: lint, about 10,000 Python tests, bundle
 freshness and the JavaScript unit and browser tests. Outside the gate, each
 needing network:
 

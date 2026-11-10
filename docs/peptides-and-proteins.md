@@ -65,7 +65,8 @@ there are several), and turned so that the longest extent lies horizontal.
 Bound groups near the protein (heme, metal ions, bound inhibitors) are drawn
 as sticks and spheres and named in the legend; water, buffer components,
 simple salts and glycans are left out. The panel rotates; `generate_molecule`
-and `generate_3d` give the same answer for a protein name. Title, subtitle and image always name
+and `generate_3d` give the same answer for a protein name. A protein
+cartoon has no CDXML: `formats` takes `png` and `svg` here. Title, subtitle and image always name
 protein, organism and source.
 
 The file in `~/ChemDraw-Output/proteine/` carries title, legend and the source
