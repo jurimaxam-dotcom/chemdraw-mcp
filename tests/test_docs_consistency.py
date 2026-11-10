@@ -30,7 +30,17 @@ from chemdraw_tool.render_style import STYLES
 from chemdraw_tool.server import create_server
 
 ROOT = Path(__file__).resolve().parents[1]
-USER_DOCS = ["README.md", "docs/tools.md", "docs/installation.md", "docs/development.md"]
+USER_DOCS = [
+    "README.md",
+    "docs/tools.md",
+    "docs/installation.md",
+    "docs/development.md",
+    *(f"docs/{n}.md" for n in (
+        "README", "getting-started", "drawing", "peptides-and-proteins",
+        "reactions-and-mechanisms", "metal-complexes", "lab-graphics",
+        "data-and-lookup", "anki", "privacy", "configuration", "faq", "for-developers",
+    )),
+]
 VAULT_TOOLS = {"search_vault", "read_vault_entry"}
 PANEL_URI = "ui://chem-app/index.html"
 

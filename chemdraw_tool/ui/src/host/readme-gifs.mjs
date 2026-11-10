@@ -4,9 +4,11 @@
 // Zeitstempeln; während das Panel auf den Server wartet (PubChem, 3D-Konformer), läuft die
 // Filmuhr nicht — Ladeframes kommen gar nicht erst ins Bild, statt nachträglich
 // herausgeschnitten zu werden. ffmpeg baut daraus GIFs mit eigener Palette.
-// usage: npm run readme:gifs [-- views 3d molecule] [--theme light|dark] [--molecule NAME]
+// usage: npm run readme:gifs [-- views 3d molecule hero-capsaicin hero-caffeine-3d lysozyme-cartoon] [--theme light|dark] [--molecule NAME]
 //        npm run panel:clips  (= --video: mp4-Rohmaterial für die Shorts, siehe unten)
 //        (Netz nötig: PubChem; ohne --theme entstehen beide Fassungen)
+// README-0.10-Szenen (hero-capsaicin, hero-caffeine-3d, lysozyme-cartoon): nur hell, Ausgabe assets/<szene>.gif,
+// nicht im --video-Durchlauf ohne Szenennamen (zu kurz für die Shorts).
 // Ausgabe: assets/demo-<szene>-<theme>.gif (helle Fassung zusätzlich als demo-<szene>.gif) — die zwei Hero-Szenen (views, 3d) haben einen
 // festen Ausschnitt (HERO), damit sie im README nebeneinander auf gleicher Höhe enden.
 // --video: dieselben Szenen und Klickfolgen als mp4 (H.264, yuv420p, 30 fps, 1080 px breit) für die
@@ -29,7 +31,7 @@ const repo = join(here, "..", "..", "..", "..");
 const assets = join(repo, "assets");
 const FFMPEG = existsSync("/opt/homebrew/bin/ffmpeg") ? "/opt/homebrew/bin/ffmpeg" : "ffmpeg";
 const FFPROBE = existsSync("/opt/homebrew/bin/ffprobe") ? "/opt/homebrew/bin/ffprobe" : "ffprobe";
-const BREITE = 600; // Panelbreite in Claude Desktop
+const BREITE_DESKTOP = 600; // Panelbreite in Claude Desktop (Vorgabe; README-0.10-Szenen setzen `breite` selbst)
 // Seitenhintergrund = Panel-Hintergrund des Themes (styles.css --bg; host.e2e prüft rgb(32, 39, 36))
 const THEMES = {
   light: { hintergrund: "#fafbf9", zeiger: "background:rgba(30,36,33,.28);border:2px solid #1e2421;box-shadow:0 1px 4px rgba(0,0,0,.25)" },
@@ -37,7 +39,7 @@ const THEMES = {
 };
 // Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 880 px = 3D-Panel
 // mit Kuhle, Achse, Kennwerten, Drag-Hinweis und Fußzeile (seit E3) plus 12 px Rand unten wie oben.
-const HERO = { breite: BREITE, hoehe: Number(process.env.HERO_HOEHE || 880) };
+const HERO = { breite: BREITE_DESKTOP, hoehe: Number(process.env.HERO_HOEHE || 880) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
 // Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert), --video
@@ -86,7 +88,8 @@ function filmuhr() {
   };
 }
 
-async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule }) {
+async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128 }) {
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = { ...args, name_or_smiles: molecule };
   const farbe = THEMES[theme];
@@ -105,7 +108,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   const frame = page.frames().find((f) => f !== page.mainFrame());
   // Desktop setzt das Theme als Host-Vorgabe; das Panel liest data-theme (auch "light"
   // ausdrücklich setzen: styles.css schaltet sonst per prefers-color-scheme)
-  await frame.locator(".molecule-panel").waitFor({ timeout: 30000 });
+  await frame.locator(panel).first().waitFor({ timeout: 30000 });
   await frame.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
   // Playwright-Screenshots zeigen keinen Mauszeiger: Kreis im Elternfenster über dem iframe
   await page.evaluate((stil) => {
@@ -115,6 +118,8 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
     document.body.appendChild(c);
   }, farbe.zeiger);
   await page.waitForTimeout(500); // Schriften und Theme-Übergang setzen sich, bevor die Uhr läuft
+  // Vorlauf ohne Aufnahme: z. B. bis die Protein-Engine steht und ihre Einblend-Drehung ausgelaufen ist
+  if (vorlauf) await vorlauf({ frame, page });
 
   const dir = mkdtempSync(join(tmpdir(), `readme-${name}-${theme}-`));
   const uhr = filmuhr();
@@ -183,11 +188,11 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   await schleife;
   await context.close();
   const quellFps = Number((bilder.length / (ende / 1000)).toFixed(1));
-  if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }) };
-  const werte = gifBauen(`${name}-${theme}`, bilder, ende, fps, dir);
+  if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }, BREITE) };
+  const werte = gifBauen(datei ?? `demo-${name}-${theme}`, bilder, ende, fps, dir, farben);
   // Alte Namen ohne Theme bleiben als Kopie der hellen Fassung: PyPI und ältere
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
-  if (theme === "light" && !molecule) copyFileSync(werte.datei, join(assets, `demo-${name}.gif`));
+  if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(assets, `demo-${name}.gif`));
   return { szene: name, theme, ...werte };
 }
 
@@ -205,10 +210,10 @@ function concatListe(name, bilder, endeMs, dir) {
   return liste;
 }
 
-function gifBauen(name, bilder, endeMs, fps, dir) {
+function gifBauen(name, bilder, endeMs, fps, dir, farben) {
   const liste = concatListe(name, bilder, endeMs, dir);
-  const ziel = join(assets, `demo-${name}.gif`);
-  const filter = `fps=${fps},scale='min(${GRENZEN.breite},iw)':-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`;
+  const ziel = join(assets, `${name}.gif`);
+  const filter = `fps=${fps},scale='min(${GRENZEN.breite},iw)':-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=${farben}:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`;
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", liste, "-vf", filter, "-loop", "0", ziel]);
   return prüfen(ziel);
 }
@@ -231,13 +236,13 @@ function prüfen(ziel) {
 }
 
 // Shorts-Rohmaterial: mp4 + Beats-Sidecar + Vorschau-Standbild bei 40 %
-function videoBauen(name, bilder, endeMs, dir, hoehe, beats, quelle) {
+function videoBauen(name, bilder, endeMs, dir, hoehe, beats, quelle, breite) {
   const liste = concatListe(name, bilder, endeMs, dir);
   const ziel = join(MODUS.ausgabe, `${name}.mp4`);
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", liste,
     "-vf", `fps=${MODUS.fps},scale=${MODUS.breite}:-2:flags=lanczos:out_range=tv,format=yuv420p`,
     "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", String(MODUS.fps), "-movflags", "+faststart", ziel]);
-  const werte = prüfenVideo(ziel, Math.round((hoehe * MODUS.breite) / BREITE / 2) * 2);
+  const werte = prüfenVideo(ziel, Math.round((hoehe * MODUS.breite) / breite / 2) * 2);
   const vorschau = ziel.replace(/\.mp4$/, ".png");
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-ss", (werte.sekunden * 0.4).toFixed(2), "-i", ziel,
     "-frames:v", "1", "-vf", "scale=360:-2:flags=lanczos", vorschau]);
@@ -312,6 +317,28 @@ async function datenblattMitCas({ frame, page, halten, zeiger, marke }, gesamtMs
   await halten(Math.max(800, gesamtMs - 600 - gewartet));
 }
 
+// Drehzug per Pointer-Drag, mit sichtbarem Zeiger
+async function ziehen({ page, halten, zeiger, marke }, von, nach, ms, ziel) {
+  await zeiger(...von); await page.mouse.move(...von, { steps: 6 }); await halten(320);
+  marke("klick", ziel);
+  await page.mouse.down();
+  // Nach Uhrzeit statt Schrittzahl: jeder Schritt kostet zwei Protokollrunden
+  const start = Date.now();
+  for (let a = 0; a < 1;) {
+    a = Math.min(1, (Date.now() - start) / ms);
+    const x = von[0] + (nach[0] - von[0]) * a, y = von[1] + (nach[1] - von[1]) * a;
+    await page.mouse.move(x, y);
+    await zeiger(x, y, false);
+    await halten(16);
+  }
+  await page.mouse.up();
+}
+
+// README 0.10: eine zusammenhängende Interaktion je GIF, nur hell, Ausgabe unter eigenem Namen
+// (assets/<datei>.gif). Breite und Höhe so, dass das ganze Panel samt Export-Knopf im Bild ist —
+// abgeschnitten wird nichts; flacher wird das Bild über die Breite, nicht über einen Ausschnitt.
+const README_010 = { themes: ["light"], fps: 15, nurGif: true };
+
 const SZENEN = {
   // Hero links, Thalidomid: 2D → All H → 2D → Show variants → (S) mit Keil → Datenblatt
   views: {
@@ -351,21 +378,7 @@ const SZENEN = {
       await imBild(frame.locator(".molecule-panel"), "Panel samt Drag-Hinweis");
       await halten(TAKT.vor3D); // Einblend-Drehung (1200 ms) läuft zu Ende
       const [cx, cy] = await mitte(frame.locator("[data-view-3d]"));
-      const zug = async (von, nach, ms, ziel) => {
-        await zeiger(...von); await page.mouse.move(...von, { steps: 6 }); await halten(320);
-        marke("klick", ziel);
-        await page.mouse.down();
-        // Nach Uhrzeit statt Schrittzahl: jeder Schritt kostet zwei Protokollrunden
-        const start = Date.now();
-        for (let a = 0; a < 1;) {
-          a = Math.min(1, (Date.now() - start) / ms);
-          const x = von[0] + (nach[0] - von[0]) * a, y = von[1] + (nach[1] - von[1]) * a;
-          await page.mouse.move(x, y);
-          await zeiger(x, y, false);
-          await halten(16);
-        }
-        await page.mouse.up();
-      };
+      const zug = (von, nach, ms, ziel) => ziehen({ page, halten, zeiger, marke }, von, nach, ms, ziel);
       await zug([cx - 150, cy], [cx + 150, cy + 20], 1800, "drag horizontal"); // waagerecht: um die senkrechte Achse
       if (TAKT.zwischenZügen) await halten(TAKT.zwischenZügen);
       await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1600, "drag vertical"); // senkrecht: um die waagerechte Achse
@@ -390,20 +403,96 @@ const SZENEN = {
       await datenblattMitCas(werkzeug, TAKT.schlussDaten);
     },
   },
+  // Hero A: Capsaicin — fertige Struktur, Maus über Ether und Amid (Atome leuchten), dann Export-Knopf.
+  // Die beiden Chips liegen nebeneinander: der Weg kreuzt keinen dritten Chip, der sonst kurz aufleuchtet.
+  "hero-capsaicin": {
+    ...README_010, datei: "hero-capsaicin", breite: 800, hoehe: 692,
+    tool: "generate_molecule", args: { name_or_smiles: "capsaicin" },
+    async ablauf({ frame, page, halten, zeigeAuf, zeiger, mitte, imBild }) {
+      // Chip-Text samt Zähler („Amide1“): Klasse + Teiltext, Eindeutigkeit wird unten geprüft
+      const gruppe = (name) => frame.locator("button.functional-group").filter({ hasText: name });
+      await gruppe("Amide").waitFor();
+      const exportKnopf = frame.locator("button", { hasText: "Export PNG" });
+      await imBild(exportKnopf, "Export-Knopf");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await halten(1400);
+      for (const name of ["Ether", "Amide"]) {
+        await zeigeAuf(gruppe(name), name);
+        if (await gruppe(name).count() !== 1) throw new Error(`hero-capsaicin: kein eindeutiger Chip ${name}`);
+        await halten(1700);
+      }
+      // erst senkrecht unter die Chip-Reihe, dann zum Export-Knopf: kein Chip auf dem Weg
+      const [ax, ay] = await mitte(gruppe("Amide"));
+      const hy = ay + 55; // Mitte des Hinweiskastens unter der Chip-Reihe
+      await zeiger(ax, hy); await page.mouse.move(ax, hy, { steps: 4 }); await halten(240);
+      await zeigeAuf(exportKnopf, "Export PNG");
+      await halten(1600);
+    },
+  },
+  // Hero B (Kandidat): Koffein — 2D, Klick auf 3D, ein Drehzug. 3D ist ein Quadrat über die volle
+  // Panelbreite (styles.css), flacher als hoch geht deshalb nur mit Abschneiden — also 600 breit.
+  "hero-caffeine-3d": {
+    ...README_010, datei: "hero-caffeine-3d", breite: 600, hoehe: 860, fps: 12,
+    tool: "generate_molecule", args: { name_or_smiles: "caffeine" },
+    async ablauf(werkzeug) {
+      const { frame, halten, klick, mitte, imBild } = werkzeug;
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      await halten(1300);
+      await klick(frame.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
+      await imBild(frame.locator("[data-view-3d]"), "3D-Kuhle");
+      await imBild(frame.locator(".molecule-panel"), "Panel samt Fußzeile");
+      await halten(1300); // Einblend-Drehung (1200 ms) läuft zu Ende
+      const [cx, cy] = await mitte(frame.locator("[data-view-3d]"));
+      await ziehen(werkzeug, [cx - 140, cy], [cx + 140, cy + 25], 2000, "drag");
+      await halten(1300);
+    },
+  },
+  // Lysozym als Cartoon (Mol*, WebGL): 2 s stehen, ein langsamer Drehzug, Endzustand.
+  // Kein Bild der SVG-Rückfallspur: die Aufnahme beginnt erst, wenn die Engine steht
+  // und ihre Einblend-Drehung ausgelaufen ist; steht am Ende nicht „ready“, ist die Szene rot.
+  "lysozyme-cartoon": {
+    ...README_010, datei: "lysozyme-cartoon", breite: 600, hoehe: 812, fps: 12, farben: 96, eigenerBrowser: true,
+    tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
+    async vorlauf({ frame, page }) {
+      await frame.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 60000 });
+      await page.waitForTimeout(1800); // Einblend-Drehung 1200 ms + Puffer
+    },
+    async ablauf(werkzeug) {
+      const { frame, halten, mitte, imBild } = werkzeug;
+      const bühne = frame.locator('[data-protein-viewer="ready"]');
+      await imBild(bühne, "Cartoon-Fläche");
+      await imBild(frame.locator("button", { hasText: "Export PNG" }), "Export-Knopf");
+      await halten(2000);
+      const [cx, cy] = await mitte(bühne);
+      await ziehen(werkzeug, [cx - 120, cy + 10], [cx + 120, cy - 10], 2600, "drag");
+      await halten(1500);
+      if (await frame.locator('[data-protein-viewer="ready"] [data-cartoon-host] canvas').count() !== 1)
+        throw new Error("ROT lysozyme-cartoon: am Ende kein Cartoon-Canvas (Rückfallspur?)");
+    },
+  },
 };
 
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 const themes = optionen.theme ? [optionen.theme] : Object.keys(THEMES);
-const szenen = gewählt.length ? gewählt : Object.keys(SZENEN);
-for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (views, 3d, molecule)`);
+const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !(optionen.video && SZENEN[n].nurGif));
+for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (${Object.keys(SZENEN).join(", ")})`);
 mkdirSync(MODUS.ausgabe, { recursive: true });
 const browser = await chromium.launch();
 const ergebnisse = [];
 try {
   for (const theme of themes) {
     for (const name of szenen) {
+      // README-0.10-Szenen gibt es nur hell (keine Hell/Dunkel-Dubletten im README)
+      if (SZENEN[name].themes && !SZENEN[name].themes.includes(theme)) continue;
       console.log(`▶ ${name} (${theme})`);
-      ergebnisse.push(await szene(browser, { name, theme, molecule: optionen.molecule, ...SZENEN[name] }));
+      // Große WebGL-Flächen in eigenem Browser: danach lieferte der gemeinsame Browser in
+      // host.e2e.mjs keine Screenshots mehr (Page.captureScreenshot, 10.11.)
+      const eigener = SZENEN[name].eigenerBrowser ? await chromium.launch() : null;
+      try {
+        ergebnisse.push(await szene(eigener ?? browser, { name, theme, molecule: optionen.molecule, ...SZENEN[name] }));
+      } finally {
+        await eigener?.close();
+      }
     }
   }
 } finally {

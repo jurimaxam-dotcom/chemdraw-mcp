@@ -31,7 +31,7 @@ cd chemdraw_tool/ui && npm install && npx playwright install chromium  # fronten
 ./test.sh                    # the gate: lint, pytest, bundle freshness, JS unit and browser tests
 ```
 
-About 8,400 Python tests plus JavaScript unit and headless-Chromium tests,
+About 9,800 Python tests plus JavaScript unit and headless-Chromium tests,
 written test-first. Frozen renderings guard the drawing output, a pinned
 identity list guards name resolution, and snapshots of every tool description
 guard which tool the model picks.

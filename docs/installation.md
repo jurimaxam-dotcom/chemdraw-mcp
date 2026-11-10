@@ -95,9 +95,10 @@ uv run chemdraw-doctor                     # in a clone
 uvx --from chemdraw-mcp chemdraw-doctor    # without installing anything
 ```
 
-It checks the six things that make the server look dead in the chat — RDKit
-rendering, the Java/OPSIN runtime, the `uv` path, the Claude Desktop entry, the
-name databases and the output directory — and prints the command that fixes
+It checks the seven things that make the server look dead in the chat or
+explain what it sends — RDKit rendering, the Java/OPSIN runtime, the `uv` path,
+the Claude Desktop entry, the name databases, the SMILES lookup setting and the
+output directory — and prints the command that fixes
 each problem. Results are `[OK]`, `[LIMITED]` (works, but restricted), `[FAIL]`
 or `[NOTE]` (does not apply). The exit code stays 0 while the server is usable.
 With the extension installed, the Claude Desktop check reports `[NOTE]`:

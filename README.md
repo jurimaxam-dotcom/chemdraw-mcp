@@ -7,19 +7,161 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/chemdraw-mcp)](https://pypi.org/project/chemdraw-mcp/)
 
-**Claude draws the chemistry it talks about: structures, reactions, mechanisms and lab graphics, right in the chat.**
+**Draw chemical structures in Claude Desktop, explore them in the chat, and export PNG or SVG.**
 
-Interactive molecule panels in the chat and PNG/SVG files on disk, rendered
-locally with RDKit. Free and open source (Apache-2.0). No API key, no
-sign-up, no ChemDraw licence.
+An MCP server for chemistry, with interactive panels in Claude Desktop.
+
+**Install in Claude Desktop (macOS, Linux):** download
+`chemdraw-mcp-<version>.mcpb` from the
+**[latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**,
+double-click it, confirm, and restart Claude Desktop once.
+**Or with [uv](https://docs.astral.sh/uv/)** (uv must be installed):
+
+```bash
+uv tool install chemdraw-mcp && chemdraw-install
+```
+
+No additional API key or ChemDraw licence. Structures are drawn locally with
+RDKit; names, data sheets and proteins are looked up online. Free and open
+source (Apache-2.0); unofficial, not affiliated with Revvity.
+
+<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D chip swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
+</p>
 
 ## Quick start
 
-1. **[Download the Claude Desktop extension](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest)**
-   (`chemdraw-mcp-<version>.mcpb`, macOS and Linux), double-click it, confirm in Claude Desktop
-   and restart Claude Desktop once.
-2. Open a **new chat** and say *"Use the ChemDraw MCP: draw thalidomide"*.
-3. Try one of the [prompts below](#prompts-to-try) or the [tool table](#tools).
+1. Install as above and restart Claude Desktop once.
+2. Open a **new chat** and ask *"Draw caffeine"*.
+3. In the panel, hover a functional group, click **3D** for a rotatable
+   model, **Data** for the PubChem data sheet, or **Export PNG** to save the
+   drawing to `~/ChemDraw-Output/png/`.
+
+Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
+rotatable in the panel:
+
+<!-- Aufnahme: `npm --prefix chemdraw_tool/ui run readme:gifs -- lysozyme-cartoon` (Mol*-Cartoon, WebGL) -->
+<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon.gif" alt="The lysozyme panel: hen egg-white lysozyme, PDB 1LYZ, as a cartoon with red helices, yellow strands and grey loops; after two seconds a drag turns it about the vertical axis" width="480"></p>
+<p align="center"><sub>Prompt: <i>"Draw lysozyme"</i>. Drag to rotate; colouring, Cartoon/Trace and Reset sit above the picture.</sub></p>
+
+## Gallery
+
+Each picture is real output of the tool the prompt goes to (a panel screenshot
+or the written file), not a drawing made for this page. More examples are on
+the linked pages.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Structure** · [Drawing structures](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/drawing.md)
+
+```text
+Draw the chair conformation of
+beta-D-glucose
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-chair.png" alt="Panel for beta-D-glucose in the Chair view: every OH group and CH2OH equatorial, buttons 2D, All H, Fischer, Haworth, Chair, 3D, formula C6H12O6 and molar mass 180.16 g/mol" width="400">
+
+</td>
+<td width="50%" valign="top">
+
+**Mechanism** · [Reactions and mechanisms](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/reactions-and-mechanisms.md)
+
+```text
+Show the SN2 mechanism of
+(R)-2-bromobutane with cyanide, step by step
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-mechanism-step1.png" alt="Mechanism panel, step 1 of 3: cyanide attacks (R)-2-bromobutane from the back, curved arrows to the carbon and to the leaving bromide" width="400">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Antibody** · [Peptides and proteins](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/peptides-and-proteins.md)
+
+```text
+Draw trastuzumab
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-igg-scheme.png" alt="Trastuzumab panel on the Scheme tab: IgG domain scheme with the left Fab arm marked as the shown structure (PDB 1N8Z), antigen-binding sites, hinge, N297 glycan and Fc" width="320">
+
+</td>
+<td width="50%" valign="top">
+
+**Reaction** · [Reactions and mechanisms](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/reactions-and-mechanisms.md)
+
+```text
+Draw hydrogen + oxygen → water
+as a reaction scheme
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-reaction.png" alt="Reaction panel: hydrogen plus oxygen to water, badge 'not balanced: left: +1 O', the suggestion 2 H2 + O2 → 2 H2O and the Apply coefficients button" width="400">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**Lab graphic** · [Lab graphics](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/lab-graphics.md)
+
+```text
+Titrate 25 mL of 0.1 M acetic acid with
+0.1 M NaOH, indicator phenolphthalein
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-titration-acetic.png" alt="Titration curve of acetic acid with NaOH: equivalence point at 25 mL, pH = pKa = 4.76 at half equivalence, phenolphthalein band from pH 8.2 to 10" width="400">
+
+</td>
+<td width="50%" valign="top">
+
+**Anki** · [Anki decks](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/anki.md)
+
+```text
+Make an Anki card for aspirin
+in a deck called NSAIDs
+```
+
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-card.png" alt="The card from the generated deck: aspirin structure on the front, its name on the back" width="400">
+
+</td>
+</tr>
+</table>
+
+## Installation
+
+Pick **one** route for Claude Desktop. The extension and `chemdraw-install`
+register the same connectors, and installing both makes the model see every
+tool twice. After installing, restart Claude Desktop once and ask
+*"draw caffeine"* in a new chat.
+
+1. **Claude Desktop extension (macOS, Linux):** download
+   `chemdraw-mcp-<version>.mcpb` from the
+   [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
+   double-click it and confirm in Claude Desktop. The first start downloads
+   the dependencies from PyPI, each file checked against hashes pinned at
+   release time; later starts are offline.
+2. **From PyPI** (needs [uv](https://docs.astral.sh/uv/)):
+
+   ```bash
+   uv tool install chemdraw-mcp && chemdraw-install
+   ```
+
+3. **From the repository** (to read or change the code):
+
+   ```bash
+   git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git && cd chemdraw-mcp && ./install.sh
+   ```
+
+Something not working? `uvx --from chemdraw-mcp chemdraw-doctor` checks the
+installation and prints the fix for each problem. Step-by-step instructions
+and the config by hand:
+[docs/getting-started.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/getting-started.md)
+and [docs/installation.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/installation.md).
 
 **Other clients** (need [uv](https://docs.astral.sh/uv/)):
 
@@ -32,177 +174,13 @@ sign-up, no ChemDraw licence.
   in the browser.
 - **Codex:** `codex mcp add chemdraw -- uvx chemdraw-mcp`
 
-Other ways in (PyPI, cloning the repository, editing the config by hand) are
-under [Installation](#installation).
-
-<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
-<p align="center">
-  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
-  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D chip swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
-</p>
-
-## What you get
-
-### A structure you can work with
-
-Ask for thalidomide and the panel shows the skeletal formula, molecular
-formula, molar mass and CAS number, plus the PubChem record those numbers
-belong to.
-
-- `All H` redraws the molecule with every hydrogen atom. Sugars also get
-  `Fischer` and `Haworth` chips where the projection applies.
-- Open stereochemistry is flagged, not guessed. Thalidomide's stereocentre
-  shows up as "1 unspecified stereocenter".
-- `Show variants` draws every stereoisomer (up to three open stereo
-  elements). Pick (S) and it is redrawn with wedges.
-- A name found under another spelling says so under the title ("Found as").
-
-### 3D in one click
-
-Every structure has a `3D` chip. For thalidomide, the two ring systems that
-lie flat on paper turn out to sit twisted against each other.
-
-- The server computes a conformer (RDKit ETKDG plus a force field) and swaps
-  the drawing for a ball-and-stick model with explicit hydrogens.
-- Drag to rotate. A second click returns to the drawing.
-- The conformer is cached, and the SDF file lands in `~/ChemDraw-Output/3d/`.
-
-### Data, flashcards and files
-
-- Hover a functional group of capsaicin (amide, phenol, ether) and its atoms
-  light up in the structure, with name and short formula below.
-- `Data` turns the panel into the PubChem data sheet with properties and GHS
-  hazards. It loads on the first click and then stays cached. This part
-  needs the internet.
-- `Export PNG` saves the drawing to `~/ChemDraw-Output/png/`; where the host
-  allows it, the image also goes to the clipboard.
-- `Add to Anki` adds a structure card to the deck "ChemDraw", or saves the
-  deck file if Anki cannot take it.
-- Every drawing tool also writes PNG and SVG files to `~/ChemDraw-Output/`.
-  ChemDraw CDXML on request.
-
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-molecule-light.gif" alt="The capsaicin panel: ether, amide, amine, phenol and aromatic ring light up in the structure on hover, then the PubChem data sheet" width="600"></picture></p>
-
-## Prompts to try
-
-- *"Draw thalidomide"*, then click **Show variants** and pick (S).
-- *"Show morphine as a rotatable 3D model"*, or draw it and click **3D**.
-- *"Draw capsaicin"*, then hover a functional group or click **Data**.
-- *"Draw lysozyme"* or *"Draw trastuzumab"*: proteins and antibodies as a cartoon (helices, strands, bound heme or inhibitors) from the PDB or AlphaFold, rotatable in the panel (Mol*; third-party notices in `THIRD_PARTY_LICENSES`).
-
-<details>
-<summary>More prompts: reactions, mechanisms and lab graphics</summary>
-
-| Prompt | What you get |
-|---|---|
-| *"Draw adrenaline with all hydrogen atoms"* | the structure opened in the All H view |
-| *"Give me a data sheet for lysergic acid diethylamide"* | PubChem properties and GHS hazards (`lookup_molecule_data`) |
-| *"What is the difference between testosterone and estradiol?"* | both structures side by side, differences highlighted (`compare_molecules`) |
-| *"Draw the nitration of benzene with nitric and sulfuric acid as a reaction scheme"* | reactants, products and conditions on the arrow (`generate_reaction`) |
-| *"Show the SN1 mechanism of tert-butyl bromide with water step by step"* | each step with curved electron-flow arrows (`generate_mechanism`) |
-| *"Draw a schematic IR spectrum of capsaicin"* | a spectrum from typical literature bands (`generate_spectrum`) |
-| *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | a TLC plate sketch (`generate_tlc`) |
-| *"Titrate 0.1 M acetic acid with 0.1 M NaOH and show the curve with phenolphthalein"* | equivalence point, buffer point and indicator band (`generate_titration_curve`) |
-| *"What is the pH of a buffer of 0.1 M acetic acid and 0.05 M sodium acetate?"* | the exact pH with the textbook approximation beside it (`calculate_ph`) |
-
-Curved-arrow mechanisms cover SN1, SN2 and Fischer esterification. For any
-other reaction, Claude draws the net scheme and says that the arrow mechanism
-is not drawn.
-
-</details>
-
-## Tools
-
-The default profile registers 17 tools, 13 of them with an interactive panel.
-Files go to `~/ChemDraw-Output/`. How the model picks the right tool is
-explained under [Development](#development).
-
-| Area | Tool | Example prompt | Panel |
-|---|---|---|---|
-| **Draw** | `generate_molecule` | *"Draw caffeine"* | yes |
-| | `batch_generate` | *"Draw adrenaline, noradrenaline and dopamine, each as its own file"* | yes |
-| | `compare_molecules` | *"What is the difference between morphine and codeine?"* | yes |
-| | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol"* | yes |
-| | `generate_mechanism` | *"Show me the SN2 mechanism step by step"* | yes |
-| | `generate_3d` | *"Show methane as a rotatable 3D model"* | yes |
-| | `generate_protein_or_antibody` | *"Draw lysozyme"*, *"Draw trastuzumab"* | yes |
-| **Lab graphics** | `generate_spectrum` | *"Draw the IR spectrum of aspirin"* | yes |
-| | `generate_tlc` | *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* | yes |
-| | `generate_titration_curve` | *"Titrate phosphoric acid with NaOH and show the curve"* | yes |
-| | `generate_species_distribution` | *"Species distribution of phosphoric acid over pH"* | yes |
-| **Look up** | `lookup` | *"What is the CAS number of paracetamol?"* | text |
-| | `lookup_molecule_data` | *"Give me a data sheet for capsaicin"* | yes |
-| | `predict_spectrum` | *"Which IR bands should capsaicin show?"* | text |
-| **Calculate** | `calculate_ph` | *"What is the pH of 0.1 M acetic acid, pKa 4.76?"* | text |
-| **Anki** | `export_anki_deck` | *"I have an exam on NSAIDs on Friday and need to know the structures"* | yes |
-
-The 17th tool, `save_png`, is the server half of the panel's export button. It
-runs when you click that button and is never called by the model on its own.
-
-What each tool does in detail, the options on the drawing tools (`formats`,
-`render_style`, `abbreviate_groups`, `annotate_stereo`) and the known limits:
-[docs/tools.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md).
-
-## Gallery
-
-Every picture below is the tool's own output, generated by
-`scripts/readme_bilder.py`.
-
-<details>
-<summary>Show the gallery</summary>
-
-<table>
-  <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/aspirin-ir.png" alt="Schematic aspirin IR spectrum with separate ester and acid carbonyl bands" width="400"><br><sub><code>generate_spectrum</code></sub></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave2-titration-acetic.png" alt="Titration curve of 0.1 M acetic acid with 0.1 M NaOH with equivalence point, buffer point and indicator band" width="400"><br><sub><code>generate_titration_curve</code></sub></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lookup-datasheet.png" alt="Caffeine data sheet: structure, PubChem properties and GHS signal word" width="400"><br><sub><code>lookup_molecule_data</code></sub></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/calculate-ph.png" alt="Two calculate_ph answers with the exact pH beside the textbook approximation" width="400"><br><sub><code>calculate_ph</code></sub></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/anki-card.png" alt="An Anki card with the aspirin structure on the front and its name on the back" width="400"><br><sub><code>export_anki_deck</code></sub></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-mechanisms.png" alt="Second step of SN1, SN2 and Fischer esterification with curved electron-flow arrows" width="400"><br><sub><code>generate_mechanism</code></sub></td>
-  </tr>
-  <tr>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/tlc-wave2.png" alt="TLC plate with starting material, product and co-spot lanes and Rf values" width="400"><br><sub><code>generate_tlc</code></sub></td>
-    <td align="center" width="50%"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/wave1-3d.png" alt="Ball-and-stick projection of a caffeine conformer" width="400"><br><sub><code>generate_3d</code></sub></td>
-  </tr>
-</table>
-
-</details>
-
-
-## Installation
-
-Pick **one** route. The extension and `chemdraw-install` register the same
-connectors, and installing both makes the model see every tool twice.
-Afterwards restart Claude Desktop and ask *"draw caffeine"*.
-
-- **Claude Desktop extension (macOS, Linux):** download `chemdraw-mcp-<version>.mcpb`
-  from the [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
-  double-click it, confirm, restart Claude Desktop once. The first start fetches
-  about 40 MB from PyPI, checked against pinned hashes; later starts are offline.
-  `chemdraw-mcp-pharma-<version>.mcpb` from the same release adds the second
-  connector (see [Profiles](#profiles)); it shares the installation.
-- **From PyPI** (needs [uv](https://docs.astral.sh/uv/)):
-
-  ```bash
-  uv tool install chemdraw-mcp
-  chemdraw-install
-  ```
-
-Cloning the repository, editing the config by hand and optional extras (Java
-for offline IUPAC names, AnkiConnect):
-[docs/installation.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/installation.md).
-
-Something not working? `uvx --from chemdraw-mcp chemdraw-doctor` checks the
-installation and prints the fix for each problem.
+The interactive panel appears in clients that render MCP Apps, such as Claude
+Desktop.
 
 ### Profiles
 
-Either route registers **two connectors** from one installation. They differ
-only in the profile the server starts with:
+Either Claude Desktop route registers **two connectors** from one
+installation. They differ only in the profile the server starts with:
 
 | Connector | Profile | Tools | Adds |
 |---|---|---|---|
@@ -211,13 +189,41 @@ only in the profile the server starts with:
 
 The extension route ships them as two bundles (`chemdraw-mcp-<version>.mcpb`,
 `chemdraw-mcp-pharma-<version>.mcpb`); `chemdraw-install` writes both entries
-into `claude_desktop_config.json` (and replaces the single `chemdraw-tool`
-entry of earlier versions). In a chat, **enable one connector at a time** in
-the connector menu: with both on, the model sees the default tools twice.
-Switching between them needs no restart. What the `full` profile adds in
-detail: [docs/tools.md#profiles](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md#profiles).
+into `claude_desktop_config.json`. In a chat, **enable one connector at a
+time** in the connector menu: with both on, the model sees the default tools
+twice. Switching between them needs no restart. Details:
+[docs/configuration.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/configuration.md).
 
-### What leaves your machine
+## Tools
+
+The default profile registers 17 tools, 13 of them with an interactive panel.
+Files go to `~/ChemDraw-Output/`.
+
+| Area | Tool | Example prompt |
+|---|---|---|
+| **Draw** | `generate_molecule` | *"Draw caffeine"* |
+| | `batch_generate` | *"Draw adrenaline, noradrenaline and dopamine, each as its own file"* |
+| | `compare_molecules` | *"What is the difference between morphine and codeine?"* |
+| | `generate_reaction` | *"Draw the esterification of acetic acid with ethanol"* |
+| | `generate_mechanism` | *"Show me the SN2 mechanism step by step"* |
+| | `generate_3d` | *"Show methane as a rotatable 3D model"* |
+| | `generate_protein_or_antibody` | *"Draw lysozyme"*, *"Draw trastuzumab"* |
+| **Lab graphics** | `generate_spectrum` | *"Draw the IR spectrum of aspirin"* |
+| | `generate_tlc` | *"TLC: educt Rf 0.3, product Rf 0.65, co-spot shows both"* |
+| | `generate_titration_curve` | *"Titrate phosphoric acid with NaOH and show the curve"* |
+| | `generate_species_distribution` | *"Species distribution of phosphoric acid over pH"* |
+| **Look up** | `lookup` | *"What is the CAS number of paracetamol?"* |
+| | `lookup_molecule_data` | *"Give me a data sheet for capsaicin"* |
+| | `predict_spectrum` | *"Which IR bands should capsaicin show?"* |
+| **Calculate** | `calculate_ph` | *"What is the pH of 0.1 M acetic acid, pKa 4.76?"* |
+| **Anki** | `export_anki_deck` | *"Make Anki cards with the structures of aspirin, ibuprofen and paracetamol"* |
+
+The 17th tool, `save_png`, is the server half of the panel's export button. It
+runs when you click that button and is never called by the model on its own.
+Every tool in detail, with its options and limits:
+[docs/tools.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md).
+
+## What leaves your machine
 
 Structures are drawn locally. A SMILES or InChI you type is **not sent to any
 database** by default; to fetch its name, CAS number and properties, the server
@@ -225,34 +231,73 @@ sends PubChem only the structure's InChIKey, a hash computed on your machine.
 The key does not contain the structure; it only matches a record PubChem
 already holds. If PubChem has no record for it, those fields stay empty.
 Common group abbreviations (`Ph`, `Boc`, `OMe` …) are expanded locally; a
-SMILES that still cannot be read is refused, not searched as a name. Compound names you type are sent to PubChem, NCI and,
-for enzyme and protein names, UniProt to resolve them; protein names and gene
-symbols go to UniProt, the UniProt accession to PDBe and the AlphaFold DB, the
-PDB ID to RCSB; a systematic IUPAC name
-reveals the structure as much as a SMILES does. To also search by the SMILES
-itself, turn on **Look up typed structures by SMILES** in the extension
-settings of Claude Desktop, or set `CHEMDRAW_SMILES_LOOKUP=1`. Details:
-[docs/tools.md#what-leaves-your-machine](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md#what-leaves-your-machine).
+SMILES that still cannot be read is refused, not searched as a name.
 
-## Development
+Compound names you type are sent to PubChem, NCI and, for enzyme and protein
+names, UniProt to resolve them; protein names and gene symbols go to UniProt,
+the UniProt accession to PDBe and the AlphaFold DB, the PDB ID to RCSB. A
+systematic IUPAC name reveals the structure as much as a SMILES does. To also
+search by the SMILES itself, turn on **Look up typed structures by SMILES** in
+the extension settings of Claude Desktop, or set `CHEMDRAW_SMILES_LOOKUP=1`.
 
-Architecture, setup and the test gate: [docs/development.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/development.md).
+This holds from version 0.10.0. **Version 0.9.1 and earlier** posted a typed
+SMILES to PubChem when PubChem did not know its InChIKey, and `lookup` passed a
+typed SMILES or InChI to PubChem, ChEBI, UniProt or KEGG. Details:
+[docs/privacy.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/privacy.md).
 
-## Feedback, bugs and wishes
+## Limits
 
-- **Something broke?** [Open a bug report](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=bug_report.yml).
-  The form asks for the output of `chemdraw-doctor`.
-- **Missing something in your course?** [Tell us what you would draw or calculate](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=feature_request.yml).
-  The subject and the exam question help more than a feature name.
-- **Wrong chemistry?** Use the bug form and name the compound and the figure.
-- **A question, or something you made with it?** [Discussions](https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions).
-- **It worked for you?** A star on the repository helps other students find it.
+- Lab graphics draw the numbers they are given. For a named compound Claude supplies literature values from memory; check them.
+- Curved-arrow mechanisms exist for SN1, SN2 and Fischer esterification only; other reactions get the net scheme.
+- Proteins: cartoon without side chains, up to 3000 residues; bound groups such as heme or an inhibitor are shown, water and buffer are not. Peptides from a sequence take up to 20 residues.
+- Names, data sheets and proteins need the internet; without Java, systematic IUPAC names do too.
+- Claude Desktop often answers knowledge questions from memory; add "use ChemDraw" to the prompt. The extension targets macOS and Linux; Windows is untested.
 
-## License
+## Documentation
+
+- [Getting started](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/getting-started.md): install, first prompt, the panel, where files land, troubleshooting
+- [Drawing structures](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/drawing.md) ·
+  [Peptides and proteins](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/peptides-and-proteins.md) ·
+  [Reactions and mechanisms](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/reactions-and-mechanisms.md) ·
+  [Metal complexes](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/metal-complexes.md)
+- [Lab graphics](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/lab-graphics.md) ·
+  [Data and lookup](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/data-and-lookup.md) ·
+  [Anki decks](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/anki.md)
+- [Privacy](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/privacy.md) ·
+  [Configuration](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/configuration.md) ·
+  [FAQ](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/faq.md)
+- Reference: [every tool in detail](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md) ·
+  [installation](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/installation.md) ·
+  [for developers](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/for-developers.md) ·
+  [development](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/development.md)
+
+## License and third-party data
 
 Apache-2.0, see [LICENSE](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/LICENSE). Copyright 2026 jurimaxam-dotcom.
+
+The server builds on and asks:
+
+- [RDKit](https://www.rdkit.org/) (BSD-3-Clause) for parsing, layout, rendering and 3D conformers.
+- [Mol*](https://molstar.org/) (MIT; Sehnal et al. 2021) for the protein cartoon in the panel; notices in [THIRD_PARTY_LICENSES](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/THIRD_PARTY_LICENSES).
+- [OPSIN](https://github.com/dan2097/opsin), shipped inside py2opsin, for offline IUPAC names when Java is installed.
+- [PubChem](https://pubchem.ncbi.nlm.nih.gov/) and NCI CIR for names, properties and GHS data; ChEBI and KEGG for `lookup`.
+- [UniProt](https://www.uniprot.org/) (CC BY 4.0) for protein entries.
+- [PDB](https://www.wwpdb.org/) structures (CC0), fetched through PDBe and the RCSB ModelServer, cited with their PDB ID.
+- [AlphaFold DB](https://alphafold.ebi.ac.uk/) models (CC BY 4.0; Jumper et al. 2021, Varadi et al. 2024).
+
+Each protein image carries the source line of its structure.
 
 > **Disclaimer:** This is an unofficial, independent project, not affiliated
 > with or endorsed by Revvity. *ChemDraw* is a trademark of Revvity Signals
 > Software, Inc. This tool does not include or require ChemDraw; it can
 > optionally export files in the open CDXML format.
+
+## Contributing
+
+- **Something broke?** [Open a bug report](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=bug_report.yml).
+  The form asks for the output of `chemdraw-doctor`.
+- **Wrong chemistry?** Use the bug form and name the compound and the figure.
+- **Missing something in your course?** [Tell us what you would draw or calculate](https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues/new?template=feature_request.yml).
+- **Questions and things you made with it:** [Discussions](https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions).
+- **Code:** [CONTRIBUTING.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/CONTRIBUTING.md)
+  and [docs/for-developers.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/for-developers.md).
