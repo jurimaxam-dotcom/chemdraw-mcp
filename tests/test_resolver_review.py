@@ -167,14 +167,19 @@ def test_route_cache_survives_concurrent_writers():
 
     def work(k):
         try:
-            with patch.object(resolver, "_opsin_lookup", return_value="CCO"):
-                for i in range(400):
-                    resolve_name(f"1-ethanol-{k}-{i}")
+            for i in range(400):
+                resolve_name(f"1-ethanol-{k}-{i}")
         except Exception as exc:  # noqa: BLE001
             errors.append(exc)
 
-    threads = [threading.Thread(target=work, args=(k,)) for k in range(6)]
-    [t.start() for t in threads]
-    [t.join() for t in threads]
+    # Einmal patchen, um alle Threads herum: patch.object je Thread ist ein
+    # Wettlauf um dasselbe Modulattribut — ein Thread stellt das Original wieder
+    # her, während die anderen noch laufen (die fallen in die echte Kaskade), und
+    # ein anderer setzt beim Verlassen die Attrappe eines Nachbarn als „Original“
+    # zurück, die dann in spätere Tests leckt (CI py3.11, 10.11.2026).
+    with patch.object(resolver, "_opsin_lookup", return_value="CCO"):
+        threads = [threading.Thread(target=work, args=(k,)) for k in range(6)]
+        [t.start() for t in threads]
+        [t.join() for t in threads]
     assert not errors
     assert len(resolver._ROUTE_CACHE) <= resolver._ROUTE_CACHE_MAX
