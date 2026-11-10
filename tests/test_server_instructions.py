@@ -120,3 +120,22 @@ def test_mvp_instructions_drop_the_seven_tool_wording():
     from chemdraw_tool.server import _MVP_INSTRUCTIONS as text
 
     assert "temporarily disabled" not in text and "MVP profile" not in text
+
+
+# Desktop-Handtest 10.11.2026 (Runde 5): „Draw trastuzumab“ ging an ein
+# hosteigenes Zeichenwerkzeug („explaining … as a domain schematic instead“).
+# Mit Tool-Suche sieht das Modell vorab nur Namen und diese Hinweise — steht
+# hier nichts von Proteinen, hält es einen Antikörper für nicht zeichenbar.
+@pytest.mark.parametrize("name", ["_MVP_INSTRUCTIONS", "_FULL_INSTRUCTIONS"])
+def test_instructions_claim_proteins_and_antibodies_early(name):
+    from chemdraw_tool import server
+
+    text = getattr(server, name)
+    assert len(text.encode()) <= MAX_BYTES
+    start = next((i for i, z in enumerate(text.splitlines())
+                  if "protein" in z.lower() and "antibody" in z.lower()), None)
+    assert start is not None, "keine Zeile: Protein-/Antikörpername → generate_molecule"
+    rule = " ".join(text.splitlines()[start:start + 2])
+    assert "generate_molecule" in rule and "cartoon" in rule
+    assert "trastuzumab" in rule, "ein INN als Beispiel — der Fall aus dem Handtest"
+    assert text.index(text.splitlines()[start]) < len(text) // 2, "Protein-Regel steht in der hinteren Hälfte"

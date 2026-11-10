@@ -247,6 +247,8 @@ highlight, which prose cannot do.
 
 - Naming a substance while you explain it → generate_molecule, then keep
   explaining. A bare compound name ("caffeine") means exactly this.
+- A protein, enzyme or antibody name (lysozyme, trastuzumab) →
+  generate_molecule draws its cartoon from the PDB; do not sketch your own.
 - Walking through a reaction → generate_reaction; through its steps and
   electron flow → generate_mechanism.
 - Contrasting substances ("difference between ibuprofen and naproxen") →
@@ -304,6 +306,8 @@ interactive panel, and compute the numbers behind them.
 
 - A bare compound name ("caffeine") means generate_molecule. Use it also
   while explaining a compound when its structure helps.
+- A protein, enzyme or antibody name (lysozyme, trastuzumab):
+  generate_molecule draws its cartoon from the PDB; do not sketch your own.
 - A pH, buffer recipe or degree of ionisation asked as a number:
   calculate_ph, also when you could work it out yourself — it solves the
   exact charge balance and shows the approximation beside it.
@@ -325,15 +329,13 @@ interactive panel, and compute the numbers behind them.
 - A TLC plate sketch from Rf values: generate_tlc.
 - pH against added titrant volume: generate_titration_curve. Fractions of
   each protonation species across pH 0–14: generate_species_distribution.
-- A compound's data sheet: lookup_molecule_data. The panel's Data
-  button also fetches it on demand.
+- A compound's data sheet: lookup_molecule_data.
 - The user has to learn or revise something → offer export_anki_deck and
-  write the cards yourself. The molecule panel's Add to Anki button adds
-  a single structure card.
+  write the cards yourself.
 
-Pass English or IUPAC compound names; SMILES are always safe. Labels may be
-localized. Drawing tools write their files themselves — never call save_png,
-that is the panel's export button.
+Pass English or IUPAC compound names; SMILES are always safe. Drawing tools
+write their files themselves — never call save_png, that is the panel's
+export button.
 """
 
 # Nur die Auswahlhinweise unterscheiden sich. Parameter und Schemata bleiben
