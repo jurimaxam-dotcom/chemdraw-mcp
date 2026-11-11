@@ -6,7 +6,7 @@
 
 Jay 11.11. abends: Desktop zeigt das Panel jetzt im Seitenpanel und im Vollbild; „komplett autonom Umbau, alles darauf anpassen“ — Bestandteile anklickbar, darüber chatten, Knöpfe zum Weitermachen (Mechanismus, Reaktion). Vermarktung ruht bis „Panel aufnahmebereit“ (Faden `20261111-194020-weitergeleitet-aus-chemdraw-mcp`, drüben `e559a78`). Doku-Auswertung: `docs/anthropic/abgleich.md` Abschnitt 6 (M10–M12). **Kein Release in dieser Runde.**
 
-- [ ] **U0 All H bei Käfigen** — Morphin zeichnet H übereinander (`server.py` `_view_drawing`, `AddHs(addCoords=True)` ohne Kollisionsprüfung); messbarer Test über Morphin, Campher, Adamantan, Steroid, Cuban. Läuft als Opus-Subagent, Python-Seite.
+- [x] **U0 All H bei Käfigen** (11.11., geprüft an Bildern und Tests; Morphin-Käfig bleibt eng, aber lesbar) — Morphin zeichnet H übereinander (`server.py` `_view_drawing`, `AddHs(addCoords=True)` ohne Kollisionsprüfung); messbarer Test über Morphin, Campher, Adamantan, Steroid, Cuban. Läuft als Opus-Subagent, Python-Seite.
 - [ ] **U1 Test-Host kann Host-Kontext** — `host-entry.js` schickt `hostContext`/Fähigkeiten, nimmt `ui/message`, `ui/update-model-context`, `ui/request-display-mode` an; vorher kann nichts Neues rot werden.
 - [ ] **U2 Layout nach gemeldeter Größe (M10)** — Höhe füllen nur bei gemeldeter `height`; Chat-Weg bleibt inhaltsgroß; Fälle 320 px breit und große feste Höhe in `test:host`; eigener Vergrößern-Knopf, wenn der Host `fullscreen` anbietet.
 - [ ] **U3 Knöpfe zum Weitermachen (M11)** — `sendMessage` aus Klick: Mechanismus, Reaktion, Vergleich, Spektrum; nur mit Host-Fähigkeit `message`.
