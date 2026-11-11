@@ -37,6 +37,19 @@ work package that touches both sides (GIFs, recordings, README header), read `~/
 claim it with `~/.claude/bin/schwester reserviere <name>`. Marketing status lives only in the sister
 plan; `plans/mcp-server.md` carries at most a pointer line.
 
+## Helpers: what differs from the global rule (11.11.2026)
+
+Who builds, who helps and when a second session is worth it follows the global helper-routing rule
+(`~/.claude/CLAUDE.md`, section Arbeitsweise); the three-session split of early November is gone. The owner
+session builds itself. Only this differs or adds here:
+
+- **Desktop hand tests and screen recordings stay with Codex** — one Tisch order per test run with all steps,
+  no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
+- **Review before a release** runs without a pane: `codex exec review --commit <sha> < /dev/null`. The reviewer
+  only reports; the owner checks every finding against the code before taking or rejecting it.
+- **A test report that found a bug is a result**, not an abort: `status: erledigt` with the finding under
+  `befunde:`; what to do about it is the owner's call.
+
 ## Build / Run
 
 ```bash
@@ -87,7 +100,7 @@ Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
 the two numbers the Python side predicts (default MVP: 17 tools, 13 with a panel;
 full profile: 24 tools, 17 with a panel).
-`test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): `tisch auftrag codex` with prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/`; Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. **Claude Desktop is one shared resource: one driver at a time** (Jay, 10.11.2026, after two helpers typed into the same window and spoiled a take). Before any GUI action on Desktop — `ax-claude`, typing, clicks, window or settings changes, restart — run `~/.claude/bin/tisch leases` in `~/Documents/projects/chemdraw-vermarktung` and reserve there: `tisch reserviere claude-desktop --minuten <n>`; a foreign lease on `claude-desktop` or on a recording folder under `out/` means hands off, ask through the Tisch instead. Check every helper session in both repos (`herdr agent list`), not only the own pane. Release with `tisch gib-frei` when done. In-process tests cannot see the two failure modes that have actually cost time
+`test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): one `tisch auftrag codex` per test run, carrying every step at once — prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/` (see "Helpers" below); Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. **Claude Desktop is one shared resource: one driver at a time** (Jay, 10.11.2026, after two helpers typed into the same window and spoiled a take). Before any GUI action on Desktop — `ax-claude`, typing, clicks, window or settings changes, restart — run `~/.claude/bin/tisch leases` in `~/Documents/projects/chemdraw-vermarktung` and reserve there: `tisch reserviere claude-desktop --minuten <n>`; a foreign lease on `claude-desktop` or on a recording folder under `out/` means hands off, ask through the Tisch instead. Check every helper session in both repos (`herdr agent list`), not only the own pane. Release with `tisch gib-frei` when done. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 
 The gate is built against two failure modes that cost more than a real test
