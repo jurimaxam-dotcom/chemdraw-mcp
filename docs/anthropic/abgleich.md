@@ -153,3 +153,25 @@ Insbesondere sind „stdio grundsätzlich nicht unterstützt“ und „Cowork ve
 `_meta.ui`“ nicht belegt. Nächste technische Abnahme: denselben Panel-Aufruf je Clientpfad
 mit `resources/read ui://…` im Serverlog und sichtbarem Panel prüfen; ein erfolgreicher
 Handshake oder Referenzhost allein beweist diese Desktop-Strecke nicht.
+
+## 6. Nachprüfung am 11.11.2026: Seitenpanel, Vollbild und vier neue Panel-Schnittstellen
+
+`--check` meldete 6 neue und 10 geänderte Seiten; ext-apps 2.1.0 (10.11.) bringt nur die WebMCP-Brücke. Gelesen:
+`display-modes`, `app-tools`, `send-messages`, `download-files`, `entry-points`, `instance-supersession`, dazu die
+Diffs von `design-guidelines` und `troubleshooting`. Anlass: Jays Desktop zeigt das Panel seit dem Update im Seitenpanel.
+
+| # | Was Anthropic sagt | Quelle | Unser Stand am 11.11. | Maßnahme |
+|---|---|---|---|---|
+| 13 | Drei Orte: Chat (`inline`), Seitenpanel und Vollbild (beide melden `fullscreen`). Ohne `availableDisplayModes` gilt ein Panel als „kann beides“, Claude zeigt dann selbst einen Vergrößern-Knopf | display-modes | Knopf erscheint, Layout wertet nichts aus: Zeichenfläche fest 320 px, Breite bei 1000 px gedeckelt | **M10:** Layout nach `containerDimensions`, nicht nach Modus; `availableDisplayModes` bleibt undeklariert |
+| 14 | `containerDimensions`: im Chat `width` + `maxHeight`, in `fullscreen` `width` + `height`; bei jedem `hostcontextchanged` neu auslegen. Seitenpanel öffnet mit halber Chatbreite, Minimum etwa 320 px; `safeAreaInsets` an der Chat-Kante | display-modes, design-guidelines | nicht gelesen | **M10:** Höhe füllen nur, wenn `height` gemeldet ist; der Chat-Weg bleibt inhaltsgroß (Auto-Resize) |
+| 15 | `requestDisplayMode("fullscreen")` nur aus Klick/Tastendruck mit Fokus; öffnet das Seitenpanel, wo es eines gibt. Ohne Seitenpanel soll das Panel einen eigenen Vollbild-Knopf behalten | display-modes | kein eigener Knopf | **M10:** Knopf nur, wenn der Host `fullscreen` anbietet und das Panel `inline` ist |
+| 16 | `_meta.ui.preferredDisplayMode: "fullscreen"` an der Ressource öffnet das Panel ohne Klick im Seitenpanel (Claude-Erweiterung, nicht Teil der Spezifikation) | display-modes | nicht gesetzt | **offen:** alle 13 Panel-Tools teilen eine Ressource, es träfe auch TLC und Anki. Erst nach dem Handtest entscheiden |
+| 17 | Ein neuer Tool-Aufruf desselben Konnektors ersetzt das Panel im Seitenpanel; das alte fällt in den Chat zurück (`inline`) und bleibt aktiv | display-modes, instance-supersession | Panels je Ergebnis, kein gemeinsamer Zustand | Modellkontext und Nachrichten nur aus einem Klick senden, dann gewinnt das zuletzt bediente Panel; keine `BroadcastChannel`-Wahl |
+| 18 | `app.sendMessage`: nur aus Klick, nur Text, höchstens 8000 Zeichen; der Nutzer bestätigt oder schickt selbst ab. Ein Ergebnis ohne Fehler belegt nicht, dass Claude gelesen hat | send-messages | nicht genutzt | **M11:** Knöpfe zum Weitermachen, nur wenn der Host `message` anbietet; Knopf bleibt wiederholbar |
+| 19 | `app.updateModelContext` legt Panel-Zustand in Claudes Kontext | SDK, instance-supersession | nicht genutzt | **M12:** Auswahl (Gruppe/Atom) und Ansicht melden, nur wenn der Host es anbietet |
+| 20 | App-Tools (`app.registerTool`): Claude verändert das offene Panel. **Nur bei Remote-Konnektoren** – „Claude doesn't call the tools of a view from a local server“ – und nur für einen Teil der Organisationen | app-tools | lokal (stdio) | **entfällt**, solange der Server lokal läuft; wird mit einem Remote-Konnektor (Abschnitt 5a) neu bewertet |
+| 21 | Einstiegspunkte auf der Artifacts-Seite: nur Remote-Konnektoren, verifiziert oder eigen | entry-points | lokal | entfällt |
+| 22 | `app.downloadFile`: Datei speichern über einen Claude-Dialog; `<a download>` und `blob:` gehen in der Sandbox nicht. Vorher `getHostCapabilities().downloadFile` prüfen | download-files | Export geht über `save_png` nach `~/ChemDraw-Output` | zurückgestellt: `save_png` funktioniert, kein Auftrag |
+
+Ungeprüft bleibt, was Jays Desktop tatsächlich anbietet (`getHostCapabilities()`, `hostContext` je Ort): das klärt der
+Desktop-Handtest. Bis dahin ist jede neue Schnittstelle hinter ihrer Fähigkeitsprüfung gebaut.
