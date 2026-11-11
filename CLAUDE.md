@@ -26,6 +26,17 @@ publication-style 2D structure drawings. PNG/SVG are the primary outputs
 (rendered offline via RDKit) — ChemDraw CDXML is an optional extra format,
 never a runtime requirement.
 
+## Scope: this repo builds, the sister repo markets (Jay, 11.11.2026)
+
+This repo owns server code, tools, panel, tests, releases and the files in this tree (README, `docs/`). Everything
+outward-facing — posts, profiles, directory listings, videos, clips, logo, channel research — belongs to the private
+sister repo `~/Documents/projects/chemdraw-vermarktung`; its `docs/zustaendigkeit.md` is the single ownership table.
+If Jay asks for marketing work here, do not do it and do not track it in this plan: hand it over at once with
+`~/.claude/bin/schwester weiter "<request verbatim + context>"` and tell Jay in one line where it went. Before a
+work package that touches both sides (GIFs, recordings, README header), read `~/.claude/bin/schwester stand` and
+reserve `arbeit/<name>` in the sister repo (`tisch reserviere … --repo`). Marketing status lives only in the sister
+plan; `plans/mcp-server.md` carries at most a pointer line.
+
 ## Build / Run
 
 ```bash
