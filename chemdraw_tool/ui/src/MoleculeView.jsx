@@ -11,7 +11,8 @@ import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import Ball3DCanvas from "./components/Ball3DCanvas";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
-import { useAppBridge } from "./AppContext";
+import { useAppBridge, useHostContext } from "./AppContext";
+import { canRequestFullscreen } from "./utils/useHostLayout";
 import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 import { extractToolData } from "./utils/toolData";
 
@@ -30,8 +31,9 @@ export const CONFORMER_LOAD_ERROR =
 // waeren 16+ Bilder, der Server lehnt ab — dann gar kein Knopf.
 const MAX_OPEN_STEREO = 3;
 
-export default function MoleculeView({ data }) {
+export default function MoleculeView({ data, expandable = true }) {
   const app = useAppBridge();
+  const hostContext = useHostContext();
   const uid = useId();
   const [hoveredGroup, setHoveredGroup] = useState(null);
   const [view, setView] = useState("structure");
@@ -276,8 +278,10 @@ export default function MoleculeView({ data }) {
           {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
           <FoundAs value={data.foundAs} />
         </div>
-        {query && <div className="panel-actions">
-          <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />
+        {(query || (expandable && canRequestFullscreen(hostContext))) && <div className="panel-actions">
+          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
+          {/* Im Stapel (batch) vergrößert man das Panel, nicht eine Karte: dort kein Knopf. */}
+          {expandable && <ExpandButton app={app} hostContext={hostContext} />}
         </div>}
       </header>
       {view === "structure" ? (
@@ -347,6 +351,19 @@ export default function MoleculeView({ data }) {
       </PanelFooter>
     </article>
   );
+}
+
+// Eigener Vergrößern-Knopf (U2, M10): nur wenn der Host `fullscreen` anbietet und
+// das Panel im Chat steht. requestDisplayMode direkt im Klick-Handler — Claude
+// lehnt die Anfrage ohne frische Nutzeraktion ab. Nach dem Wechsel meldet der Host
+// displayMode "fullscreen", der Knopf verschwindet von selbst.
+function ExpandButton({ app, hostContext }) {
+  if (!canRequestFullscreen(hostContext) || !app?.requestDisplayMode) return null;
+  const expand = () => {
+    app.requestDisplayMode({ mode: "fullscreen" }).catch(() => {});
+  };
+  return <button type="button" className="expand-button" onClick={expand}
+    title="Open in the side panel">Expand</button>;
 }
 
 const DRAWING_TOGGLES = [

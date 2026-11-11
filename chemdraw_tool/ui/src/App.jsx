@@ -80,7 +80,7 @@ export default function App({ data }) {
           {(data.molecules || []).map((mol, i) => (
             // Prefer a stable identity (SMILES/name) so per-molecule state
             // survives list changes; fall back to index when neither exists.
-            <MoleculeView key={mol.properties?.smiles || mol.name || i} data={mol} />
+            <MoleculeView key={mol.properties?.smiles || mol.name || i} data={mol} expandable={false} />
           ))}
           <BatchFailedList failed={data.failed || []} />
         </div>

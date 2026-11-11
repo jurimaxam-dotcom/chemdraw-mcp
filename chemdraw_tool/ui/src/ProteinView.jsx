@@ -209,6 +209,7 @@ export default function ProteinView({ data }) {
 
   return (
     <div
+      className="protein-panel"
       style={{
         // keine feste Höhe (E19): die Bildfläche bemisst sich selbst
         // (.protein-stage), der Host bemisst das iframe am Inhalt

@@ -395,3 +395,44 @@ button:active { filter: brightness(0.92); }
 .tool-error { padding: 16px; font-size: 13px; }
 .tool-error-title { font-weight: 600; margin-bottom: 6px; }
 .tool-error-message { margin: 0; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* U2 (M10): Layout nach gemeldeter Größe. Alles hier greift nur, wenn der Host eine
+   feste Höhe meldet (Seitenpanel, Vollbild: [data-host-height] an <html>, gesetzt von
+   utils/useHostLayout.js). Der Chat-Weg (maxHeight oder kein Kontext) bleibt unberührt:
+   inhaltsgroß, 320-px-Zeichenfläche, Auto-Resize. */
+.m3d-panel { height: 500px; }
+.expand-button { font-size: 12px; font-weight: 560; min-height: 40px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
+.expand-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.host-diagnostics { margin-top: 12px; padding: 8px 10px; border-top: 1px dashed var(--border); font-family: var(--font-mono); font-size: 10px; line-height: 1.4; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+:root[data-safe-area] body { padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left)); }
+/* Kette von oben bis zur Zeichenfläche: body (Höhe des Bereichs) → #root → .panel-root
+   → Panel → Strukturansicht → Grid. Jede Stufe wächst (flex: 1 0 auto), schrumpft nie
+   unter den Inhalt: ist der Inhalt höher als der Bereich, scrollt das Panel normal. */
+:root[data-host-height] { --canvas-min: 320px; }
+:root[data-host-height] body { min-height: var(--host-height); display: flex; flex-direction: column; }
+/* Breiter als 1000 px, soweit es der Zeichnung nützt; Obergrenze gegen überlange Zeilen. */
+:root[data-host-height] #root { flex: 1 0 auto; width: 100%; max-width: 1600px; display: flex; flex-direction: column; }
+:root[data-host-height] .panel-root { flex: 1 0 auto; display: flex; flex-direction: column; min-width: 0; }
+/* Gewähltes Isomer (AmbiguousView): dieselbe Molekül-Ansicht unter einer Zurück-Leiste. */
+:root[data-host-height] .panel-root > .ambiguous-chosen { flex: 1 0 auto; display: flex; flex-direction: column; }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel { flex: 1 0 auto; display: flex; flex-direction: column; }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel > [data-view="structure"] { flex: 1 0 auto; display: flex; flex-direction: column; }
+/* Nur die Zeichenfläche nimmt den Rest; Kopf, Achse, Kernwerte, Gruppen, Fußzeile behalten ihre Größe. */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-layout { flex: 1 0 auto; grid-template-rows: minmax(0, 1fr); }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-main { grid-template-rows: minmax(var(--canvas-min), 1fr) auto; }
+/* contain: size — die Fläche bemisst sich nur an der Grid-Zeile; das quadratische 3D-SVG
+   würde sonst über seine Breite die Höhe vorgeben (968 × 968 statt der Resthöhe). */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-canvas { height: auto; contain: size; }
+/* 3D hinter dem Knopf: statt Quadrat bis 720 px die ganze Fläche; Kernwerte als Reihe darunter. */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-layout[data-layout-3d] { grid-template-rows: minmax(0, 1fr) auto; }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-layout[data-layout-3d] .structure-canvas { aspect-ratio: auto; width: 100%; height: auto; }
+/* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
+:root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
+:root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
+:root[data-host-height] .panel-root > .protein-panel .protein-stage { flex: 1 0 auto; aspect-ratio: auto; max-height: none; min-height: 320px; }
+@media (max-width: 619px) {
+  :root[data-safe-area] body { padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left)); }
+  :root[data-host-height] { --canvas-min: 260px; }
+  /* Gestapelt: Zeichnung oben (wächst), Kernwerte darunter (natürliche Höhe). */
+  :root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-layout { grid-template-rows: minmax(0, 1fr) auto; }
+}

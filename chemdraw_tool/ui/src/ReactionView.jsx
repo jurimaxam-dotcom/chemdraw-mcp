@@ -264,14 +264,17 @@ function ScaledRow({ children, canStack = false }) {
     // Gestapelt wird nur gemessen, wenn die Zeile nebeneinander unter die Lesegrenze fiele —
     // die Zeilenbreite muss dafür im Zeilenmodus gemessen werden, egal wie gerade gezeigt.
     let stack = false;
-    if (canStack) {
+    // Kleine Reaktionen stapeln erst, wenn die Zeile sonst unter MIN_SCALE fiele und
+    // waagrecht scrollen müsste (U2: Seitenpanel bis ~320 px breit) — darüber nie.
+    const stackBelow = canStack ? READABLE_SCALE : MIN_SCALE;
+    {
       const prevDir = inner.style.flexDirection;
       inner.style.flexDirection = "row";
       // Beide Zustände entscheiden über dieselbe Zahl: die Zeilenbreite mit WAAGRECHTEM Pfeil.
       // Gestapelt ist der Pfeil senkrecht und ~116 px schmaler — mit ihm gemessen stimmte
       // jeder Zustand für den anderen, die Ansicht pendelte (Host-Test, Breitenband).
       const rowW = inner.scrollWidth + horizontalArrowExtra(inner);
-      if (rowW > 0 && containerW / rowW < READABLE_SCALE) {
+      if (rowW > 0 && containerW / rowW < stackBelow) {
         inner.style.flexDirection = "column";
         stack = true;
         naturalW = inner.scrollWidth;
@@ -286,7 +289,8 @@ function ScaledRow({ children, canStack = false }) {
     inner.style.width = prevWidth;
     if (naturalW <= 0) return;
     // Cap at 1: never blow small reactions up beyond their chemical scale —
-    // only shrink-to-fit. Below MIN_SCALE we fall back to scrolling.
+    // only shrink-to-fit. Below MIN_SCALE the row stacks (U2); only a stacked row
+    // still wider than that scrolls.
     setScale(Math.min(1, Math.max(MIN_SCALE, containerW / naturalW)));
     setNaturalH(naturalHeight);
     setStacked(stack);

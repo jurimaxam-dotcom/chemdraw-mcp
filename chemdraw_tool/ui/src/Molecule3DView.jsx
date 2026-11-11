@@ -14,8 +14,10 @@ export default function Molecule3DView({ data }) {
   const viewer = useRef(null);
   return (
     <div
+      className="m3d-panel"
       style={{
-        height: 500,  // intrinsisch — der Host bemisst das iframe am Inhalt
+        // Höhe 500 px steht in styles.css (.m3d-panel): intrinsisch — der Host
+        // bemisst das iframe am Inhalt; bei gemeldeter fester Höhe füllt sie den Bereich.
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",

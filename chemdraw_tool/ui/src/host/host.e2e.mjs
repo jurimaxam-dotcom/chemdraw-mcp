@@ -42,6 +42,231 @@ try {
     await iframe.evaluate((el) => { el.style.width = "510px"; el.style.height = "560px"; });
     return p.frames().at(-1);
   };
+  // U2 (M10, 11.11.2026): Layout nach dem Host-Kontext. Claude Desktop meldet im
+  // Seitenpanel/Vollbild `fullscreen` + {width, height}, im Chat `inline` + {width, maxHeight}.
+  // Nur eine feste Höhe lässt das Panel füllen; der Chat-Weg bleibt wie bisher.
+  // LAYOUT_ONLY=1 lässt nur diesen Block laufen; LAYOUT_SHOTS=<ordner> legt die Bilder ab.
+  {
+    const layoutShots = process.env.LAYOUT_SHOTS || join(tmpdir(), "chemdraw-layout");
+    mkdirSync(layoutShots, { recursive: true });
+    const MORPHIN = "CN1CC[C@]23c4c5ccc(O)c4O[C@H]2[C@@H](O)C=C[C@H]3[C@H]1C5";
+    const MODES = ["inline", "fullscreen"];
+    const full = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: MODES, platform: "desktop", containerDimensions: { width, height } });
+    const chat = (width) => ({ displayMode: "inline", availableDisplayModes: MODES, platform: "desktop", containerDimensions: { width, maxHeight: 6000 } });
+    const open = async (name, input, hostContext, { colorScheme = "light", viewport } = {}) => {
+      const page = await browser.newPage({ viewport: viewport || { width: hostContext.containerDimensions.width, height: 1300 }, colorScheme });
+      await page.setContent('<body style="margin:0"></body>');
+      await page.addScriptTag({ path: out });
+      await page.exposeFunction("__callTool", (req) => client.callTool(req));
+      const tool = tools.find((t) => t.name === name);
+      const result = await client.callTool({ name, arguments: input });
+      check(!result.isError, `U2 ${name}: echte Serverantwort`);
+      const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
+      await page.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result, hostContext });
+      return [page, page.frames().at(-1)];
+    };
+    // Im Chat übernimmt Desktop die gemeldete Höhe des Panels.
+    const fitChat = async (page) => {
+      await page.waitForTimeout(300);
+      const size = await page.evaluate(() => window.__panelSizes.at(-1));
+      if (size) await page.locator("iframe").last().evaluate((el, h) => { el.style.height = `${h}px`; }, size.height);
+      await page.waitForTimeout(150);
+    };
+    const geo = (f) => f.evaluate(() => {
+      const r = (sel) => { const el = document.querySelector(sel); if (!el) return null; const b = el.getBoundingClientRect(); return { top: Math.round(b.top), bottom: Math.round(b.bottom), w: Math.round(b.width), h: Math.round(b.height) }; };
+      const de = document.documentElement;
+      return { canvas: r('[data-view="structure"] .structure-canvas'), footer: r("[data-testid='panel-footer']"),
+        sh: de.scrollHeight, ih: innerHeight, sw: de.scrollWidth, iw: innerWidth, fixed: de.hasAttribute("data-host-height") };
+    });
+    const lage = (g) => `Fläche ${g.canvas?.w}×${g.canvas?.h}, Fußzeile bis ${g.footer?.bottom}, Dokument ${g.sw}×${g.sh} in ${g.iw}×${g.ih}`;
+    const settle = async (f) => { await f.getByRole("button", { name: "Export as PNG" }).waitFor(); await f.page().waitForTimeout(300); };
+    const messwerte = {};
+
+    // (a) Morphin im Vollbild 1000×1200, hell und dunkel
+    for (const colorScheme of ["light", "dark"]) {
+      const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });
+      await settle(f);
+      const g = await geo(f);
+      messwerte[`a-${colorScheme}`] = lage(g);
+      check(g.fixed && g.ih === 1200, `U2 (a) ${colorScheme}: Panel kennt die feste Höhe (${g.ih} px)`);
+      check(g.canvas.h > 600, `U2 (a) ${colorScheme}: Zeichenfläche deutlich höher als 320 px (${g.canvas.h})`);
+      check(g.footer.bottom >= 1200 - 40 && g.footer.bottom <= 1200, `U2 (a) ${colorScheme}: Fußzeile unten am Bereich (${g.footer.bottom} von 1200)`);
+      check(g.sh <= g.ih && g.sw <= g.iw, `U2 (a) ${colorScheme}: keine Scrollleiste (${lage(g)})`);
+      check(await f.getByRole("button", { name: "Expand" }).count() === 0, `U2 (a) ${colorScheme}: im Vollbild kein Expand-Knopf`);
+      await page.screenshot({ path: join(layoutShots, `a-morphin-fullscreen-1000x1200-${colorScheme}.png`) });
+      if (colorScheme === "light") {
+        // 3D hinter dem Knopf nutzt die Höhe ebenfalls statt des 720-px-Quadrats
+        await f.getByRole("button", { name: "3D", exact: true }).click();
+        await f.locator("[data-view-3d] svg").waitFor({ timeout: 30000 });
+        await page.waitForTimeout(300);
+        const g3 = await geo(f);
+        messwerte["a-3d"] = lage(g3);
+        check(g3.canvas.h > 700 && g3.sh <= g3.ih, `U2 (a) 3D: Kuhle füllt die Höhe, nichts scrollt (${lage(g3)})`);
+        await page.screenshot({ path: join(layoutShots, "a-morphin-fullscreen-3d-light.png") });
+      }
+      await page.close();
+    }
+    // Chat-Einstieg 3D (generate_3d) im Seitenpanel: Bildfläche füllt die Höhe statt 500 px
+    {
+      const [page, f] = await open("generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }, full(600, 1000));
+      await f.locator(".m3d-panel svg").first().waitFor();
+      await page.waitForTimeout(300);
+      const m = await f.evaluate(() => ({ h: Math.round(document.querySelector(".m3d-panel").getBoundingClientRect().height),
+        sh: document.documentElement.scrollHeight, ih: innerHeight }));
+      messwerte["3d-view"] = JSON.stringify(m);
+      check(m.h > 900 && m.sh <= m.ih, `U2 generate_3d fullscreen: Panel füllt die Höhe (${JSON.stringify(m)})`);
+      await page.close();
+    }
+    // (b) derselbe Fall im Chat: 320 px wie bisher
+    {
+      const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, chat(1000));
+      await settle(f);
+      await fitChat(page);
+      const g = await geo(f);
+      messwerte.b = lage(g);
+      check(!g.fixed && g.canvas.h === 320, `U2 (b): im Chat bleibt die Zeichenfläche 320 px (${g.canvas.h})`);
+      check(g.sh <= g.ih + 1, `U2 (b): Chat-Panel inhaltsgroß, gemeldete Höhe reicht (${g.sh} in ${g.ih})`);
+      await page.screenshot({ path: join(layoutShots, "b-morphin-inline-1000.png"), fullPage: true });
+      // (e) Expand: Anfrage landet beim Host, danach Vollbild ohne Knopf
+      const expand = f.getByRole("button", { name: "Expand" });
+      check(await expand.count() === 1, "U2 (e): im Chat mit angebotenem fullscreen steht ein Expand-Knopf");
+      await page.evaluate(() => { window.__fullscreenHeight = 1100; });
+      await expand.click();
+      await expand.waitFor({ state: "detached" });
+      await page.waitForTimeout(300);
+      const req = await page.evaluate(() => window.__displayModeRequests);
+      const ge = await geo(f);
+      messwerte.e = `Anfragen ${JSON.stringify(req)}; danach ${lage(ge)}`;
+      check(req.length === 1 && req[0].mode === "fullscreen", `U2 (e): Klick landet als Anfrage beim Host (${JSON.stringify(req)})`);
+      check(ge.fixed && ge.canvas.h > 500, `U2 (e): nach dem Wechsel füllt das Panel die Höhe, Knopf weg (${ge.canvas.h})`);
+      await page.close();
+    }
+    // (c) inline → fullscreen → inline ohne Neuladen
+    {
+      const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, chat(1000));
+      await settle(f);
+      await f.evaluate(() => { window.__ohneNeuladen = 1; });
+      const h0 = (await geo(f)).canvas.h;
+      await page.evaluate((c) => window.__setHostContext(c), full(1000, 1200));
+      await page.waitForTimeout(300);
+      const h1 = (await geo(f)).canvas.h;
+      await page.evaluate((c) => window.__setHostContext(c), chat(1000));
+      await page.waitForTimeout(300);
+      const h2 = (await geo(f)).canvas.h;
+      const same = await f.evaluate(() => window.__ohneNeuladen === 1);
+      messwerte.c = `${h0} → ${h1} → ${h2}`;
+      check(h0 === 320 && h1 > 600 && h2 === 320 && same, `U2 (c): Wechsel ändert die Fläche ohne Neuladen (${h0} → ${h1} → ${h2})`);
+      await page.close();
+    }
+    // (d) 320 px breit, feste Höhe: nichts scrollt waagrecht, kein Knopf abgeschnitten
+    const schmal = async (f) => f.evaluate(() => {
+      const de = document.documentElement;
+      const iw = de.clientWidth;
+      const raus = [...document.querySelectorAll("button")].filter((b) => b.getClientRects().length > 0)
+        .map((b) => [b.textContent.trim().slice(0, 20), b.getBoundingClientRect()])
+        .filter(([, r]) => r.left < -0.5 || r.right > iw + 0.5).map(([t, r]) => `${t}@${Math.round(r.left)}–${Math.round(r.right)}`);
+      // Scroll-Container (auto/scroll): Inhalt breiter als die Box heißt waagrecht scrollen.
+      // Abschneidende Boxen (hidden): ein sichtbarer Nachfahre ragt über die Kante hinaus.
+      // scrollWidth allein taugt dort nicht — skalierte Zeilen (transform) runden um 1–3 px.
+      const scroller = [];
+      for (const el of document.querySelectorAll("body *")) {
+        if (el instanceof SVGElement && !(el instanceof SVGSVGElement)) continue;
+        const cs = getComputedStyle(el);
+        if (cs.textOverflow === "ellipsis" || el.clientWidth === 0) continue;
+        if (/auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1) scroller.push(`${el.tagName} ${el.className} ${el.scrollWidth}>${el.clientWidth}`);
+        if (cs.overflowX === "hidden") {
+          const box = el.getBoundingClientRect();
+          const out = [...el.querySelectorAll("*")].filter((c) => (!(c instanceof SVGElement) || c instanceof SVGSVGElement)
+            && c.getClientRects().length > 0 && getComputedStyle(c).textOverflow !== "ellipsis"
+            && (c.getBoundingClientRect().right > box.right + 1 || c.getBoundingClientRect().left < box.left - 1));
+          if (out.length) scroller.push(`${el.tagName} ${el.className} schneidet ${out.slice(0, 3).map((c) => c.tagName + "." + (c.className?.baseVal ?? c.className)).join(", ")}`);
+        }
+      }
+      return { sw: de.scrollWidth, cw: de.clientWidth, raus, scroller };
+    });
+    for (const [tag, name, input, ready] of [
+      ["molecule", "generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, (f) => f.getByRole("button", { name: "Export as PNG" }).waitFor()],
+      ["reaction", "generate_reaction", { reactants: ["CC(=O)O", "CCO"], products: ["CC(=O)OCC", "O"], conditions: "H2SO4", name: "Fischer esterification" },
+        (f) => f.locator('[data-testid="balance-badge"]').waitFor()],
+      ["mechanism", "generate_mechanism", { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] },
+        (f) => f.getByRole("button", { name: "Overview", exact: true }).waitFor()],
+      ["protein", "generate_protein_or_antibody", { name: "trastuzumab" }, (f) => f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 })],
+    ]) {
+      const [page, f] = await open(name, input, full(320, 900));
+      await ready(f);
+      await page.waitForTimeout(500);
+      const views = tag === "mechanism" ? ["Overview", "Step by step"] : tag === "protein" ? ["Structure", "Scheme"] : [null];
+      for (const v of views) {
+        if (v) await f.getByRole(tag === "protein" ? "tab" : "button", { name: v, exact: true }).click();
+        await page.waitForTimeout(300);
+        const s = await schmal(f);
+        messwerte[`d-${tag}${v ? `-${v}` : ""}`] = `${s.sw}≤${s.cw}`;
+        await page.screenshot({ path: join(layoutShots, `d-${tag}${v ? `-${v.replace(/\s+/g, "-").toLowerCase()}` : ""}-320.png`), fullPage: true });
+        check(s.sw <= s.cw && s.raus.length === 0 && s.scroller.length === 0,
+          `U2 (d) ${tag}${v ? ` ${v}` : ""} 320 px: kein waagrechtes Scrollen, kein Knopf abgeschnitten (${JSON.stringify(s)})`);
+      }
+      await page.close();
+    }
+    // Übrige Views bei fester Höhe und breitem Bereich (1400 px, #root bis 1600):
+    // nichts ragt seitlich heraus; Stapel bleibt inhaltsgroß, je Karte 320 px, ohne Expand.
+    for (const [tag, name, input, ready] of [
+      ["spectrum", "generate_spectrum", { spectrum_type: "ir", title: "Aspirin IR", peaks: [{ position: 1750, intensity: 1, label: "Ester C=O" }] }, (f) => f.locator(".spectrum-svg svg").waitFor()],
+      ["tlc", "generate_tlc", { title: "Three lanes", lanes: [{ name: "A", spots: [{ rf: 0.2 }] }, { name: "B", spots: [{ rf: 0.6 }] }] }, (f) => f.locator("svg").first().waitFor()],
+      ["titration", "generate_titration_curve", { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1, v_acid_ml: 25, c_titrant: 0.1 }, (f) => f.locator("svg").first().waitFor()],
+      ["compare", "compare_molecules", { structures: ["ibuprofen", "naproxen", "ketoprofen"] }, (f) => f.locator("svg").first().waitFor()],
+      ["batch", "batch_generate", { molecules: ["benzene", "toluene", "phenol"] }, (f) => f.locator(".panel-title").nth(2).waitFor()],
+    ]) {
+      const [page, f] = await open(name, input, full(1400, 900), { viewport: { width: 1400, height: 900 } });
+      await ready(f);
+      await page.waitForTimeout(500);
+      const s = await schmal(f);
+      await page.screenshot({ path: join(layoutShots, `w-${tag}-1400x900.png`), fullPage: true });
+      messwerte[`w-${tag}`] = `${s.sw}≤${s.cw}`;
+      check(s.sw <= s.cw && s.raus.length === 0 && s.scroller.length === 0, `U2 breit ${tag} 1400 px: nichts ragt heraus (${JSON.stringify(s)})`);
+      if (tag === "batch") {
+        const hs = await f.locator(".structure-canvas").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+        messwerte["w-batch-flächen"] = hs.join(",");
+        check(hs.length === 3 && hs.every((h) => h === 320), `U2 batch: Stapel bleibt inhaltsgroß, je Karte 320 px (${hs.join(", ")})`);
+      }
+      await page.close();
+    }
+    // Isomer-Auswahl (Glucose): das gewählte Molekül füllt die Höhe wie die direkte Ansicht.
+    {
+      const [page, f] = await open("generate_molecule", { name_or_smiles: "glucose" }, full(1000, 1100));
+      const first = f.locator("button.candidate").first();
+      await first.waitFor({ timeout: 30000 });
+      await first.click();
+      await settle(f);
+      const g = await geo(f);
+      messwerte.isomer = lage(g);
+      check(g.canvas.h > 500 && g.sh <= g.ih, `U2 Isomer-Auswahl: gewähltes Molekül füllt die Höhe (${lage(g)})`);
+      await page.close();
+    }
+    // Diagnose im echten Chromium: Dreifachklick auf den Titel blendet den Block ein und aus.
+    {
+      const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, chat(700));
+      await settle(f);
+      await f.locator(".panel-title").click({ clickCount: 3 });
+      const block = f.locator("[data-testid='host-diagnostics']");
+      await block.waitFor();
+      const text = await block.innerText();
+      check(/"serverTools"/.test(text) && /"displayMode": "inline"/.test(text) && /"maxHeight": 6000/.test(text) && /"platform": "desktop"/.test(text),
+        "U2 Diagnose: Dreifachklick zeigt Fähigkeiten und Kontext");
+      await page.screenshot({ path: join(layoutShots, "diagnose-inline-700.png"), fullPage: true });
+      await f.locator(".panel-title").click({ clickCount: 3 });
+      await block.waitFor({ state: "detached" });
+      check(true, "U2 Diagnose: zweiter Dreifachklick blendet aus");
+      await page.close();
+    }
+    console.log("U2 Messwerte:", JSON.stringify(messwerte, null, 1));
+  }
+  if (process.env.LAYOUT_ONLY) {
+    console.log("LAYOUT_ONLY: übrige Fälle übersprungen");
+    await browser.close();
+    await client.close();
+    process.exit(0);
+  }
+
   const gallery = await browser.newPage({ viewport: { width: 1530, height: 560 } });
   await gallery.setContent('<body style="margin:0;display:flex"></body>');
   await gallery.addScriptTag({ path: out });

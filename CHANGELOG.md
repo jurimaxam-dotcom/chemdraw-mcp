@@ -6,6 +6,11 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Panel layout follows the size Claude reports. In the side panel and in full screen the drawing area grows to fill the height (2D, All H, 3D, protein stage) instead of staying 320 px tall, and the panel may use up to 1600 px of width. In the conversation nothing changes. Down to 320 px width no view scrolls sideways; a reaction scheme that would become too small stacks instead.
+- Molecule panel: an Expand button appears where the host offers a larger display and the panel sits in the conversation.
+
 ### Fixed
 
 - All H view: hydrogens in bridged ring systems (morphine, camphor, adamantane, steroids) no longer land on top of each other or on a heavy atom. Crowded hydrogens are placed again around their atom; the heavy-atom skeleton stays where the skeletal formula has it, and drawings that were already clean do not change.
