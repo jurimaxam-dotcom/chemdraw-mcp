@@ -34,7 +34,7 @@ sister repo `~/Documents/projects/chemdraw-vermarktung`; its `docs/zustaendigkei
 If Jay asks for marketing work here, do not do it and do not track it in this plan: hand it over at once with
 `~/.claude/bin/schwester weiter "<request verbatim + context>"` and tell Jay in one line where it went. Before a
 work package that touches both sides (GIFs, recordings, README header), read `~/.claude/bin/schwester stand` and
-reserve `arbeit/<name>` in the sister repo (`tisch reserviere … --repo`). Marketing status lives only in the sister
+claim it with `~/.claude/bin/schwester reserviere <name>`. Marketing status lives only in the sister
 plan; `plans/mcp-server.md` carries at most a pointer line.
 
 ## Build / Run
