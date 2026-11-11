@@ -840,12 +840,14 @@ def _view_drawing(
 ) -> tuple[str, list]:
     """Zeichnung und Atomliste einer Zusatzansicht (all_h, fischer, haworth, chair)."""
     from chemdraw_tool import projection
+    from chemdraw_tool.hydrogens import add_hydrogens_2d
     from chemdraw_tool.svg_renderer import extract_atom_data, render_svg
 
     if view == "all_h":
-        # addCoords hält das Schweratom-Gerüst fest: der Umschalter ordnet das
-        # Molekül nicht neu an, die Highlights landen an derselben Stelle.
-        mol_h = Chem.AddHs(mol, addCoords=True)
+        # Das Schweratom-Gerüst bleibt fest: der Umschalter ordnet das Molekül
+        # nicht neu an, die Highlights landen an derselben Stelle. H in Käfigen
+        # (Morphin, Adamantan) werden dort neu gesetzt, wo AddHs sie stapelt.
+        mol_h = add_hydrogens_2d(mol)
         svg = render_svg(
             mol_h,
             fill_container=True,
