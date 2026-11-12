@@ -132,7 +132,11 @@ test("Varianten-Ansicht: die verdeckte Ausgangsstruktur meldet keinen Kontext me
     React.createElement(ModelContextProvider, { app, delay: 1 }, React.createElement(MoleculeView, { data }))));
   await click(v.container.querySelector("button.functional-group"));
   await click(buttonByText(v.container, "Show variants"));
-  await act(async () => { await new Promise((r) => setTimeout(r, 30)); });
+  // Entprellt gesendet: warten, bis die Varianten-Ansicht ihren Text gemeldet hat.
+  for (let i = 0; i < 50 && !/stereoisomers/.test(sent.at(-1) || ""); i++) {
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+  }
+  assert.equal(/stereoisomers/.test(sent.at(-1) || ""), true, sent.at(-1));
   assert.equal(Boolean(sent.at(-1)?.includes("Pinned selection")), false, sent.at(-1));
   assert.equal(Boolean(sent.at(-1)?.includes("parent compound (formula")), false, sent.at(-1));
   v.unmount();

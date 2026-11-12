@@ -24,9 +24,10 @@ export default function AmbiguousView({ data, subtitle, backBar }) {
   const [drawn, setDrawn] = useState(null); // gezeichnetes MoleculePayload
   const [pending, setPending] = useState(""); // Label des laufenden Aufrufs
   const [failed, setFailed] = useState("");
-  // Nur die Auswahl selbst meldet sich; ist ein Kandidat gezeichnet (oder ist dies
-  // die Varianten-Liste einer MoleculeView), spricht die MoleculeView.
-  useModelContextReport(!drawn && !backBar ? genericContext("ambiguous", data) : "", data.name || "isomers");
+  // Die Auswahl meldet sich selbst; ist ein Kandidat gezeichnet, spricht dessen MoleculeView.
+  // Auch unter einer Zurück-Leiste (Stereo-Varianten): die Elternansicht schweigt
+  // dort, und ohne eigene Meldung bliebe beim Host ihr letzter Text stehen.
+  useModelContextReport(!drawn ? genericContext("ambiguous", data) : "", data.name || "isomers");
   const inFlight = useRef(false); // blockiert den re-entranten Doppelklick
 
   async function choose(candidate) {
