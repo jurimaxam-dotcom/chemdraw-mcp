@@ -13,6 +13,7 @@ kommagetrennt.
 from __future__ import annotations
 
 import json
+import re
 from typing import Annotated
 
 from mcp.server.mcpserver import MCPServer
@@ -27,9 +28,20 @@ MECHANISMS = {
 }
 
 
+# Komma zwischen zwei Stoffen, nicht in einem Namen: ein Lokanten-Komma steht
+# ohne Leerzeichen zwischen Ziffern, Strichen oder N/O-Lokanten („2,3-“, „N,N-“).
+_LOCANT_COMMA = re.compile(r"(?<=[0-9NOS'])\s*,(?=[0-9NOS][0-9']*[,\-])")
+
+
 def _items(text: str) -> list[str]:
-    """„a, b; c“ → ["a", "b", "c"] — Kommas oder Semikolons, Leeres fällt weg."""
-    return [part.strip() for part in text.replace(";", ",").split(",") if part.strip()]
+    """Liste aus einem Textargument. Semikolons trennen immer; ohne Semikolon
+    trennen Kommas — außer dem Lokanten-Komma in einem IUPAC-Namen
+    („2-bromo-2,3-dimethylbutane“ bleibt ein Stoff). Leeres fällt weg."""
+    if ";" in text:
+        parts = text.split(";")
+    else:
+        parts = _LOCANT_COMMA.sub("\x00", text).split(",")
+    return [p.replace("\x00", ",").strip(" ,") for p in parts if p.replace("\x00", ",").strip(" ,")]
 
 
 def _listing(items: list[str]) -> str:
@@ -58,7 +70,7 @@ def practice_mechanism(
     substrates: Annotated[
         str,
         Field(
-            description="Optional, comma-separated: halide and nucleophile, or acid "
+            description="Optional, separated by semicolons or commas: halide and nucleophile, or acid "
             "and alcohol. Empty = the textbook example."
         ),
     ] = "",
@@ -92,7 +104,7 @@ def practice_mechanism(
 
 def exam_flashcards(
     compounds: Annotated[
-        str, Field(description="Comma-separated compound names or SMILES for the deck.")
+        str, Field(description="Compound names or SMILES for the deck, separated by semicolons or commas.")
     ],
     deck_name: Annotated[
         str, Field(description="Deck name, also the file name. Re-use it to update the deck.")
@@ -112,7 +124,7 @@ def exam_flashcards(
 
 def compare_compounds(
     compounds: Annotated[
-        str, Field(description="Comma-separated names or SMILES, two or more.")
+        str, Field(description="Names or SMILES, two or more, separated by semicolons or commas.")
     ],
 ) -> str:
     return (

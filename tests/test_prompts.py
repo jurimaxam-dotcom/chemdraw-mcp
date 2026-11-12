@@ -79,3 +79,15 @@ def test_practice_mechanism_refuses_an_unknown_mechanism():
 
 def test_exam_flashcards_point_at_the_anki_export():
     assert "export_anki_deck" in _render("mvp", "exam_flashcards", EXAMPLES["exam_flashcards"])
+
+
+def test_locant_commas_stay_inside_a_name():
+    """Codex-Review 12.11.: „2-bromo-2,3-dimethylbutane“ ist EIN Stoff. Getrennt wird
+    an Semikolons, sonst nur an Komma mit Leerzeichen — nie am Lokanten-Komma."""
+    from chemdraw_tool.prompts import _items
+
+    assert _items("2-bromo-2,3-dimethylbutane; water") == ["2-bromo-2,3-dimethylbutane", "water"]
+    assert _items("2-bromo-2,3-dimethylbutane, water") == ["2-bromo-2,3-dimethylbutane", "water"]
+    assert _items("aspirin, paracetamol,ibuprofen") == ["aspirin", "paracetamol", "ibuprofen"]
+    assert _items("N,N-dimethylaniline; 1,2-dichloroethane") == ["N,N-dimethylaniline", "1,2-dichloroethane"]
+    assert _items(" ; ,") == []
