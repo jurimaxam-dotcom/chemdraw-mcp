@@ -1,4 +1,10 @@
 {
+  "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": true,
+    "readOnlyHint": false
+  },
   "description": "Draw a protein, enzyme or antibody as a cartoon (ribbon diagram).\n\nFetches its structure from the PDB (AlphaFold model if there is none) and\nwrites PNG/SVG files plus a rotatable panel: helices as spirals, strands as\narrows, bound groups such as heme or zinc as sticks. Works for enzyme and\nprotein names (lysozyme, trypsin, hemoglobin, insulin), gene symbols\n(RecA), antibody INNs (trastuzumab) and a plain \"antibody\" or \"IgG\".\nAntibodies come with the IgG domain scheme; an antibody without a known\nstructure shows the architecture of an intact IgG. A protein's 3D\nstructure is this tool too — the panel rotates.\n\nNot this tool for: a small molecule, a peptide sequence or any skeletal\nformula (use generate_molecule); a small molecule as a 3D model (use\ngenerate_3d); a protein's function, EC number or cofactors as text (use\nlookup, topic \"biochem\").\n\nArgs:\n    name: English protein, enzyme, gene or antibody name (\"lysozyme\",\n        \"trastuzumab\", \"antibody\"); an organism may follow (\"human\n        lysozyme\").\n    formats: \"png\", \"svg\" (default both). A cartoon has no CDXML.",
   "inputSchema": {
     "properties": {
@@ -460,5 +466,6 @@
     },
     "title": "ProteinPayload",
     "type": "object"
-  }
+  },
+  "title": "Show a protein or antibody"
 }

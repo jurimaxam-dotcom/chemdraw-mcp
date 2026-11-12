@@ -10,6 +10,7 @@ from typing import Literal
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
+from mcp.types import ToolAnnotations
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
 from rdkit.Chem.inchi import MolToInchiKey
@@ -84,6 +85,7 @@ from chemdraw_tool.payloads import (
     TlcPayload,
 )
 from chemdraw_tool.privacy import HOW_TO_ENABLE, smiles_lookup_enabled
+from chemdraw_tool.prompts import register_prompts
 from chemdraw_tool.render_style import condense_groups, get_style
 from chemdraw_tool.resolver import (
     NOTATION_HINTS,
@@ -498,6 +500,78 @@ _RESOURCE_URI = "ui://chem-app/index.html"
 
 
 _UI_META = {"ui": {"resourceUri": _RESOURCE_URI}}
+# save_png ist die Server-Hälfte des Export-Knopfs: nur das Panel ruft es auf
+# (ext-apps `McpUiToolMeta.visibility`). Bewusst OHNE resourceUri — sonst
+# zählte es als Panel-Tool und öffnete beim Aufruf ein leeres Panel.
+_APP_ONLY_META = {"ui": {"visibility": ["app"]}}
+
+
+# --- Titel und Annotationen je Tool (Stand 12.11.2026, am Code geprüft) -------
+# Claude macht an readOnlyHint fest, ob ein Tool ohne Freigabe-Klick läuft.
+# Deshalb ehrlich:
+# - Schreibend sind alle Tools, die unter ~/ChemDraw-Output Dateien anlegen.
+#   Sie überschreiben dabei ihre EIGENE frühere Ausgabe unter demselben Namen
+#   (image_export.write_files: „Regenerieren = Update“) — nichts Fremdes, und
+#   gleiche Argumente ergeben dieselbe Datei: destructive=False, idempotent=True.
+# - save_png hängt -2, -3 … an, legt also bei jedem Aufruf eine neue Datei an:
+#   nicht idempotent.
+# - export_anki_deck: ein Re-Export unter demselben Decknamen aktualisiert
+#   vorhandene Karten; mit deliver="open"/"ankiconnect" importiert Anki das Deck
+#   in die Sammlung des Nutzers und aktualisiert Notizen gleicher GUID
+#   (anki_export.push_via_ankiconnect). Das ändert Nutzerdaten: destructive=True.
+# - openWorld=True, sobald ein Tool resolve() auf einen Namen ruft (OPSIN →
+#   PubChem → NCI) oder eine Datenbank fragt; reine Rechen-/Plot-Tools nicht.
+# - generate_mechanism schreibt keine Datei (nur Panel-Payload): lesend.
+def _hints(*, writes: bool, online: bool, destructive: bool = False,
+           idempotent: bool | None = True) -> ToolAnnotations:
+    if not writes:
+        return ToolAnnotations(read_only_hint=True, open_world_hint=online)
+    return ToolAnnotations(
+        read_only_hint=False,
+        destructive_hint=destructive,
+        idempotent_hint=idempotent,
+        open_world_hint=online,
+    )
+
+
+_TOOL_LABELS: dict[str, tuple[str, ToolAnnotations]] = {
+    # Zeichnen
+    "generate_molecule": ("Draw a structure", _hints(writes=True, online=True)),
+    "compare_molecules": ("Compare structures", _hints(writes=True, online=True)),
+    "batch_generate": ("Draw several structures", _hints(writes=True, online=True)),
+    "generate_reaction": ("Draw a reaction scheme", _hints(writes=True, online=True)),
+    "generate_mechanism": ("Show a reaction mechanism", _hints(writes=False, online=True)),
+    "generate_scope_table": ("Draw a substrate scope table", _hints(writes=True, online=True)),
+    "generate_3d": ("Show a 3D structure", _hints(writes=True, online=True)),
+    "generate_protein_or_antibody": ("Show a protein or antibody", _hints(writes=True, online=True)),
+    # Laborgrafik
+    "generate_spectrum": ("Draw a spectrum", _hints(writes=True, online=False)),
+    "generate_tlc": ("Draw a TLC plate", _hints(writes=True, online=False)),
+    "generate_titration_curve": ("Plot a titration curve", _hints(writes=True, online=False)),
+    "generate_species_distribution": ("Plot a species distribution", _hints(writes=True, online=False)),
+    "generate_calibration_curve": ("Plot a calibration curve", _hints(writes=True, online=False)),
+    "generate_pk_curve": ("Plot a concentration-time curve", _hints(writes=True, online=False)),
+    "generate_dose_response": ("Plot a dose-response curve", _hints(writes=True, online=False)),
+    # Nachschlagen
+    "lookup": ("Look up compound facts", _hints(writes=False, online=True)),
+    "lookup_molecule_data": ("Show a compound data sheet", _hints(writes=False, online=True)),
+    "predict_spectrum": ("Predict IR bands and NMR signals", _hints(writes=False, online=True)),
+    # Rechnen
+    "calculate_solution": ("Calculate a solution", _hints(writes=False, online=False)),
+    "calculate_content": ("Calculate a content determination", _hints(writes=False, online=False)),
+    "calculate_ph": ("Calculate a pH", _hints(writes=False, online=False)),
+    "calculate_pharmacokinetics": ("Calculate pharmacokinetics", _hints(writes=False, online=False)),
+    # Anki
+    "export_anki_deck": (
+        "Export an Anki deck",
+        _hints(writes=True, online=True, destructive=True, idempotent=None),
+    ),
+    # Intern (Export-Knopf des Panels)
+    "save_png": ("Save panel image", _hints(writes=True, online=False, idempotent=False)),
+    # Optional, nur mit CHEMDRAW_VAULT_PATH
+    "search_vault": ("Search the notes vault", _hints(writes=False, online=False)),
+    "read_vault_entry": ("Read a notes vault entry", _hints(writes=False, online=False)),
+}
 
 
 def chem_app_ui() -> str:
@@ -4687,7 +4761,7 @@ def generate_mechanism(
     )
 
 
-@_tool()
+@_tool(meta=_APP_ONLY_META)
 def save_png(png_base64: str, filename: str) -> str:
     """Internal helper for the panel UI — never call this directly.
 
@@ -4804,6 +4878,7 @@ def create_server(profile: str | None = None) -> MCPServer:
         if selected == "mvp" and fn.__name__ not in MVP_TOOLS:
             continue
         registration = dict(options)
+        registration["title"], registration["annotations"] = _TOOL_LABELS[fn.__name__]
         if selected == "mvp" and fn.__name__ in _MVP_SUMMARIES:
             summary = _MVP_SUMMARIES[fn.__name__].strip()
             _, separator, args = (fn.__doc__ or "").partition("Args:")
@@ -4814,6 +4889,7 @@ def create_server(profile: str | None = None) -> MCPServer:
         mime_type="text/html;profile=mcp-app",
         meta={"ui": {"permissions": {"clipboardWrite": {}}}},
     )(chem_app_ui)
+    register_prompts(instance)
     return instance
 
 

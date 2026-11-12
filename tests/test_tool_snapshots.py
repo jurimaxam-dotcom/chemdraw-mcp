@@ -18,10 +18,14 @@ Das schreibt die Snapshots neu UND loescht verwaiste Dateien entfernter Tools.
 Ein fehlender Snapshot wird NICHT still angelegt — sonst waere ein neues Tool
 genau der Fall, den dieser Test verhindern soll: unbemerkt hinzugekommen.
 
-Aufgenommen werden nur die vier Felder, die die Toolauswahl steuern: name,
-description, inputSchema, outputSchema. `_meta` bleibt draussen — dass die
-Panel-Tools ihr UI-Meta tragen, prueft test_server_ui.py, und der echte
-stdio-Handshake (scripts/handshake.sh) zaehlt es beim laufenden Server nach.
+Aufgenommen werden die vier Felder, die die Toolauswahl steuern: name,
+description, inputSchema, outputSchema — dazu seit 12.11.2026 `title` und
+`annotations`, weil der Host daran Anzeige und Freigabe-Abfrage festmacht
+(ein umgekipptes `readOnlyHint` soll im Review auffallen wie eine Beschreibung).
+`_meta` bleibt draussen — dass die Panel-Tools ihr UI-Meta tragen, prueft
+test_server_ui.py, die Panel-only-Sichtbarkeit von save_png prueft
+test_tool_annotations.py, und der echte stdio-Handshake (scripts/handshake.sh)
+zaehlt es beim laufenden Server nach.
 """
 
 import asyncio
@@ -58,6 +62,12 @@ def _registered_tools() -> dict[str, dict]:
     return {
         tool.name: {
             "name": tool.name,
+            "title": tool.title,
+            "annotations": (
+                tool.annotations.model_dump(mode="json", by_alias=True, exclude_none=True)
+                if tool.annotations
+                else None
+            ),
             "description": tool.description or "",
             "inputSchema": tool.input_schema,
             "outputSchema": tool.output_schema,
