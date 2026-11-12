@@ -1,6 +1,8 @@
 import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import PanelFooter from "./components/PanelFooter";
+import { useModelContextReport } from "./ModelContext";
+import { genericContext } from "./utils/modelContext.js";
 
 const MAX_FRONTS = 10;
 
@@ -14,6 +16,7 @@ export function frontText(front) {
 }
 
 export default function AnkiDeckView({ data }) {
+  useModelContextReport(genericContext("anki_deck", data), data.name || "anki_deck");
   const fronts = data.fronts || [];
   const shown = fronts.slice(0, MAX_FRONTS);
   const hidden = fronts.length - shown.length;

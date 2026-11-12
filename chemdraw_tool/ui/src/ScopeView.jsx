@@ -2,6 +2,8 @@ import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { useModelContextReport } from "./ModelContext";
+import { genericContext } from "./utils/modelContext.js";
 
 // Der Bezeichner ist die Angabe, nach der in einer Scope-Figur gesucht wird —
 // er steht deshalb auch in der Liste vorn und fett.
@@ -10,6 +12,7 @@ function entrySummary(entry) {
 }
 
 export default function ScopeView({ data }) {
+  useModelContextReport(genericContext("scope", data), data.name || "scope");
   const entries = data.entries || [];
   const failed = data.failed || [];
 

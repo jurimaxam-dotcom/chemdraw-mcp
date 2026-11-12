@@ -13,7 +13,8 @@ import React from "react";
 // Er kommt von aussen, weil das Panel-Element dem aufrufenden View gehoert —
 // und weil `batch_generate` mehrere Molekuel-Panels nebeneinander rendert,
 // muss er pro Panel eindeutig sein (React `useId`).
-export default function ViewToggle({ view, onChange, loading = false, idPrefix }) {
+// `study` (opt-in, U4b): dritter Reiter „Study“ — nur MoleculeView setzt ihn.
+export default function ViewToggle({ view, onChange, loading = false, idPrefix, study = false }) {
   const tabId = (name) => (idPrefix ? `${idPrefix}-tab-${name}` : undefined);
   const panelId = (name) => (idPrefix ? `${idPrefix}-${name}` : undefined);
 
@@ -41,6 +42,18 @@ export default function ViewToggle({ view, onChange, loading = false, idPrefix }
         {loading && <span className="seg-spinner" aria-hidden="true" />}
         Data
       </button>
+      {study && (
+        <button
+          type="button"
+          role="tab"
+          id={tabId("study")}
+          aria-controls={panelId("study")}
+          aria-selected={view === "study"}
+          onClick={() => onChange("study")}
+        >
+          Study
+        </button>
+      )}
     </div>
   );
 }

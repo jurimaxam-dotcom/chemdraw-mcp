@@ -2,6 +2,10 @@ import React, { useRef, useState, useLayoutEffect, useCallback } from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { useModelContextReport } from "./ModelContext";
+import { reactionFollowUps } from "./utils/followUps.js";
+import { reactionContext } from "./utils/modelContext.js";
 import { composeSvg } from "./utils/composeSvg";
 import { useAppBridge } from "./AppContext";
 import { extractToolData } from "./utils/toolData";
@@ -393,6 +397,7 @@ export default function ReactionView({ data: initial }) {
   const [applying, setApplying] = useState(false);
   const [failed, setFailed] = useState(false);
   const data = applied || initial;
+  const { flush } = useModelContextReport(reactionContext(data), data.name || "reaction");
 
   const handleApply = useCallback(async () => {
     const coefficients = data.balance?.suggestedCoefficients;
@@ -445,6 +450,7 @@ export default function ReactionView({ data: initial }) {
       <BalanceBadge balance={data.balance} onApply={data.request ? handleApply : null}
         applying={applying} failed={failed} />
       {/* Fußzeile (E3): Dateien und Export folgen der gezeigten Gleichung (nach Apply die neue). */}
+      <ContinueRow actions={reactionFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         {(reactants.length > 0 || products.length > 0) &&
           <ExportPngButton size="sm" getSvg={() => reactionSvg(data)} filename={name || "reaction"} />}

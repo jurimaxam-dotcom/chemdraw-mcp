@@ -3,6 +3,8 @@ import Ball3DCanvas from "./components/Ball3DCanvas";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { useModelContextReport } from "./ModelContext";
+import { genericContext } from "./utils/modelContext.js";
 import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 
 // Chat-Einstieg für generate_3d: Kopfzeile + Viewer + SDF-Pfad. Der Viewer
@@ -11,6 +13,7 @@ import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 // das Modell skaliert proportional in die verfügbare Fläche.
 
 export default function Molecule3DView({ data }) {
+  useModelContextReport(genericContext("molecule3d", data), data.name || "molecule3d");
   const viewer = useRef(null);
   return (
     <div

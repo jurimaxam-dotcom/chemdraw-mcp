@@ -2,8 +2,13 @@ import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { useModelContextReport } from "./ModelContext";
+import { plotFollowUps } from "./utils/followUps.js";
+import { genericContext } from "./utils/modelContext.js";
 
 export default function PlotView({ data }) {
+  const { flush } = useModelContextReport(genericContext("plot", data), data.name || "plot");
   if (!data.svg) {
     return (
       <div style={{ color: "var(--fg-muted)", padding: 16 }}>
@@ -56,6 +61,7 @@ export default function PlotView({ data }) {
           ))}
         </ul>
       )}
+      <ContinueRow actions={plotFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "plot"} size="sm" />
       </PanelFooter>

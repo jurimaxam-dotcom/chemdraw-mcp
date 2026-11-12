@@ -30,49 +30,66 @@ export default function StructureCanvas({
   onHoverGroup,
   // Explizite Atomliste (Stereo-Hinweis) — schlaegt die gehoverte Gruppe.
   highlightAtoms,
+  // Festgehaltenes Einzelatom (Index) und Klick-Rückruf (U4).
+  pinnedAtom,
+  onPickAtom,
   style,
 }) {
   const [hoveredAtom, setHoveredAtom] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const svgContainerRef = useRef(null);
 
-  const handleMouseMove = useCallback(
-    (e) => {
-      if (!atoms || atoms.length === 0) return;
+  // Nächstes Atom unter dem Zeiger (15 px Fangradius) — Hover und Klick teilen
+  // dieselbe Rechnung; der Klick trifft per eigener Koordinate, nicht über den Hover-Zustand.
+  const atomAt = useCallback(
+    (clientX, clientY) => {
+      if (!atoms || atoms.length === 0) return null;
       const t = getSvgTransform(svgContainerRef);
-      if (!t) return;
-
-      const point = clientToViewBox(t, e.clientX, e.clientY);
-
+      if (!t) return null;
+      const point = clientToViewBox(t, clientX, clientY);
       let closest = null;
       let closestDist = Infinity;
-      const THRESHOLD_SVG = 15 / t.scale;
-
       for (const atom of atoms) {
-        const dx = atom.x - point.x;
-        const dy = atom.y - point.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.hypot(atom.x - point.x, atom.y - point.y);
         if (dist < closestDist) {
           closestDist = dist;
           closest = atom;
         }
       }
+      return closest && closestDist <= 15 / t.scale ? { atom: closest, t } : null;
+    },
+    [atoms]
+  );
 
-      if (closest && closestDist <= THRESHOLD_SVG) {
-        const screen = viewBoxToScreen(t, closest.x, closest.y);
-        setHoveredAtom(closest);
-        setTooltipPos(screen);
-
+  const handleMouseMove = useCallback(
+    (e) => {
+      const hit = atomAt(e.clientX, e.clientY);
+      if (hit) {
+        setHoveredAtom(hit.atom);
+        setTooltipPos(viewBoxToScreen(hit.t, hit.atom.x, hit.atom.y));
         if (groups) {
-          const group = groups.find((g) => g.atomIndices.includes(closest.idx));
+          const group = groups.find((g) => g.atomIndices.includes(hit.atom.idx));
           onHoverGroup?.(group ? group.name : null);
         }
       } else {
         setHoveredAtom(null);
+        // Nur die Vorschau: eine festgehaltene Auswahl (pinned) bleibt davon unberührt.
         onHoverGroup?.(null);
       }
     },
-    [atoms, groups, onHoverGroup]
+    [atomAt, groups, onHoverGroup]
+  );
+
+  // U4: Klick auf ein Atom hält seine Gruppe fest (oder das Atom selbst).
+  const handleClick = useCallback(
+    (e) => {
+      if (!onPickAtom) return;
+      const hit = atomAt(e.clientX, e.clientY);
+      if (!hit) return;
+      const group = groups?.find((g) => g.atomIndices.includes(hit.atom.idx));
+      onPickAtom(hit.atom, group || null);
+    },
+    [atomAt, groups, onPickAtom]
   );
 
   // Bewusst NUR das Atom: die Gruppe kann auch von der Seitenspalte gesetzt
@@ -87,7 +104,9 @@ export default function StructureCanvas({
       ref={svgContainerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={style ? { ...BASE_STYLE, ...style } : BASE_STYLE}
+      onClick={handleClick}
+      data-pickable={onPickAtom ? "" : undefined}
+      style={{ ...BASE_STYLE, ...style, ...(onPickAtom && hoveredAtom ? { cursor: "pointer" } : null) }}
     >
       {svg ? (
         <div
@@ -103,7 +122,7 @@ export default function StructureCanvas({
       )}
       <AtomHighlights
         atoms={atoms}
-        highlight={resolveHighlight({ groups, hoveredGroup, atomIndices: highlightAtoms })}
+        highlight={resolveHighlight({ groups, hoveredGroup, atomIndices: highlightAtoms, pinnedAtom })}
         svgContainerRef={svgContainerRef}
       />
       <AtomTooltip atom={hoveredAtom} position={tooltipPos} />

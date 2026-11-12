@@ -53,7 +53,8 @@ try {
     const MODES = ["inline", "fullscreen"];
     const full = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: MODES, platform: "desktop", containerDimensions: { width, height } });
     const chat = (width) => ({ displayMode: "inline", availableDisplayModes: MODES, platform: "desktop", containerDimensions: { width, maxHeight: 6000 } });
-    const open = async (name, input, hostContext, { colorScheme = "light", viewport } = {}) => {
+    // `host`: weitere Optionen für __startHost (Fähigkeiten, messageMode, holdResult …)
+    const open = async (name, input, hostContext, { colorScheme = "light", viewport, host = {} } = {}) => {
       const page = await browser.newPage({ viewport: viewport || { width: hostContext.containerDimensions.width, height: 1300 }, colorScheme });
       await page.setContent('<body style="margin:0"></body>');
       await page.addScriptTag({ path: out });
@@ -62,8 +63,8 @@ try {
       const result = await client.callTool({ name, arguments: input });
       check(!result.isError, `U2 ${name}: echte Serverantwort`);
       const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
-      await page.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result, hostContext });
-      return [page, page.frames().at(-1)];
+      await page.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: input, toolResult: result, hostContext, ...host });
+      return [page, page.frames().at(-1), result];
     };
     // Im Chat übernimmt Desktop die gemeldete Höhe des Panels.
     const fitChat = async (page) => {
@@ -257,6 +258,164 @@ try {
       await block.waitFor({ state: "detached" });
       check(true, "U2 Diagnose: zweiter Dreifachklick blendet aus");
       await page.close();
+    }
+
+    // U3/U4/U4b (11.11.2026): Arbeitsplatz-Panel — Weiter-Zeile (ui/message), Auswahl
+    // per Klick (ui/update-model-context), Lernmodus, Platzhalter aus toolinput.
+    // UI_SHOTS=<ordner> legt die Bilder ab.
+    {
+      const uiShots = process.env.UI_SHOTS || join(tmpdir(), "chemdraw-ui-etappe");
+      mkdirSync(uiShots, { recursive: true });
+      const NO_MESSAGE = { serverTools: {}, updateModelContext: { text: {} } };
+      const log = (page) => page.evaluate(() => window.__bridgeLog || []);
+      const lastContext = async (page) => (await log(page)).filter(([k]) => k === "context").at(-1)?.[1] ?? "";
+      const row = (f) => f.locator("[data-testid='continue-row']");
+      const morphine = { name_or_smiles: MORPHIN, label: "Morphine" };
+
+      // Ohne Host-Fähigkeit `message` keine Zeile, auch kein leerer Kasten
+      {
+        const [page, f] = await open("generate_molecule", morphine, full(1000, 1200), { host: { hostCapabilities: NO_MESSAGE } });
+        await settle(f);
+        check(await row(f).count() === 0 && !/Continue in chat/.test(await f.locator("body").innerText()),
+          "U3: ohne `message` keine Weiter-Zeile");
+        await page.close();
+      }
+      // Vollbild 1000×1200 hell und dunkel, Gruppe festgehalten: Kontext nennt sie, Knopf → ui/message
+      for (const colorScheme of ["light", "dark"]) {
+        const [page, f] = await open("generate_molecule", morphine, full(1000, 1200), { colorScheme });
+        await settle(f);
+        const chip = f.locator("button.functional-group").first();
+        const label = (await chip.locator("span").nth(1).innerText()).trim();
+        await chip.click();
+        await f.page().waitForTimeout(700);
+        const ctx = await lastContext(page);
+        check(await chip.getAttribute("aria-pressed") === "true", `U4 ${colorScheme}: Klick hält die Gruppe fest (${label})`);
+        check(ctx.includes(`Pinned selection: the ${label} group`) && ctx.includes("Morphine"),
+          `U4 ${colorScheme}: ui/update-model-context enthält die Gruppe (${ctx.split("\n").find((l) => l.startsWith("Pinned")) || ctx.slice(0, 120)})`);
+        // Maus über die Zeichnung und wieder weg: Auswahl bleibt
+        await f.locator(".structure-canvas").first().hover();
+        await page.mouse.move(5, 5);
+        check(await chip.getAttribute("aria-pressed") === "true", `U4 ${colorScheme}: Hover löscht die Auswahl nicht`);
+        const g = await geo(f);
+        check(g.sh <= g.ih && g.sw <= g.iw && g.canvas.h > 500, `U3 ${colorScheme}: Vollbild mit Weiter-Zeile ohne Scrollleiste (${lage(g)})`);
+        await page.screenshot({ path: join(uiShots, `molecule-fullscreen-1000x1200-pinned-${colorScheme}.png`) });
+        if (colorScheme === "light") {
+          const want = `Explain the ${label.toLowerCase()} group in Morphine`;
+          await row(f).getByRole("button", { name: `Explain this ${label.toLowerCase()}` }).click();
+          await f.page().waitForTimeout(400);
+          const entries = await log(page);
+          const msgAt = entries.findIndex(([k]) => k === "message");
+          check(msgAt > 0 && entries[msgAt][1].startsWith(want), `U3: Klick kommt als ui/message an (${entries[msgAt]?.[1]})`);
+          check(entries[msgAt - 1][0] === "context" && entries[msgAt - 1][1].includes(`the ${label} group`),
+            "U3: direkt vor der Nachricht ging der aktuelle Kontext raus");
+        }
+        await page.close();
+      }
+      // Host lehnt ab: ruhiger Hinweis in der Zeile, Knopf bleibt bedienbar
+      {
+        const [page, f] = await open("generate_molecule", morphine, full(1000, 1200), { host: { messageMode: "isError" } });
+        await settle(f);
+        const b = row(f).getByRole("button", { name: "Predict the IR bands" });
+        await b.click();
+        await row(f).getByText("did not take the message").waitFor();
+        check(await b.isEnabled(), "U3: Ablehnung zeigt Hinweis, Knopf bleibt bedienbar");
+        await page.close();
+      }
+      // Lernmodus: Name nirgends im DOM (Text und Attribute), auch nicht im gesendeten Satz
+      {
+        const [page, f] = await open("generate_molecule", { name_or_smiles: "aspirin" }, full(1000, 1200));
+        await settle(f);
+        await f.getByRole("tab", { name: "Study" }).click();
+        await f.locator("[data-view='study']").waitFor();
+        await page.waitForTimeout(300);
+        const leak = await f.evaluate(() => {
+          const attrs = [...document.querySelectorAll("*")].flatMap((el) => [...el.attributes].map((a) => a.value));
+          const all = `${document.body.innerText} ${document.body.textContent} ${attrs.join(" ")} ${document.title}`;
+          return ["aspirin", "acetylsalicyl", "50-78-2", "ChemDraw-Output"].filter((w) => all.toLowerCase().includes(w.toLowerCase()));
+        });
+        check(leak.length === 0, `U4b: Lernmodus verrät nichts im DOM (${leak.join(", ") || "keine Treffer"})`);
+        await page.screenshot({ path: join(uiShots, "study-covered-1000x1200.png") });
+        await row(f).getByRole("button", { name: "Give me a hint" }).click();
+        await page.waitForTimeout(400);
+        const msg = (await log(page)).filter(([k]) => k === "message").at(-1)?.[1] ?? "";
+        const ctx = await lastContext(page);
+        check(msg && !/aspirin/i.test(msg) && /SMILES/.test(msg), `U4b: Hinweis-Satz nennt SMILES statt Namen (${msg})`);
+        check(/Study mode/.test(ctx) && /aspirin/i.test(ctx) && /Still covered/.test(ctx), "U4b: Kontext nennt Stoff und Verdecktes für Claude");
+        await f.getByRole("button", { name: "Reveal all" }).click();
+        await page.waitForTimeout(300);
+        const text = await f.locator("body").innerText();
+        check(/aspirin/i.test(text) && /Everything revealed/.test(text), "U4b: Reveal all deckt Name und Werte auf");
+        await page.screenshot({ path: join(uiShots, "study-revealed-1000x1200.png") });
+        await page.close();
+      }
+      // 320×900: Weiter-Zeile untereinander, nichts waagrecht; Fußzeile per senkrechtem Scrollen erreichbar
+      {
+        const [page, f] = await open("generate_molecule", morphine, full(320, 900));
+        await settle(f);
+        await f.locator("button.functional-group").first().click();
+        await page.waitForTimeout(300);
+        const s = await schmal(f);
+        const inRow = await row(f).locator("button").evaluateAll((bs) => bs.map((b) => {
+          const r = b.getBoundingClientRect();
+          return { t: b.textContent.trim(), l: Math.round(r.left), r: Math.round(r.right), h: Math.round(r.height) };
+        }));
+        const iw = await f.evaluate(() => document.documentElement.clientWidth);
+        check(s.sw <= s.cw && s.raus.length === 0 && s.scroller.length === 0, `U3 320: kein waagrechtes Scrollen (${JSON.stringify(s)})`);
+        check(inRow.length >= 3 && inRow.every((b) => b.l >= 0 && b.r <= iw && b.h >= 40), `U3 320: alle Weiter-Knöpfe innerhalb der Breite, ≥ 40 px hoch (${JSON.stringify(inRow)})`);
+        await page.screenshot({ path: join(uiShots, "molecule-320x900-continue.png") });
+        const reach = await f.evaluate(() => {
+          const de = document.scrollingElement || document.documentElement;
+          const out = {};
+          for (const name of ["Export as PNG", "Add to Anki"]) {
+            const b = [...document.querySelectorAll("button")].find((x) => `${x.getAttribute("aria-label") || ""} ${x.textContent}`.includes(name));
+            if (!b) { out[name] = "fehlt"; continue; }
+            b.scrollIntoView({ block: "center" });
+            const r = b.getBoundingClientRect();
+            const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            out[name] = { top: Math.round(r.top), bottom: Math.round(r.bottom), scrolled: Math.round(de.scrollTop), sh: de.scrollHeight, ih: innerHeight, hit: Boolean(hit && b.contains(hit)) };
+          }
+          return out;
+        });
+        const ok = Object.values(reach).every((v) => typeof v === "object" && v.hit && v.top >= 0 && v.bottom <= v.ih);
+        check(ok, `U3 320×900: Export PNG/Add to Anki per senkrechtem Scrollen erreichbar, nicht abgeschnitten (${JSON.stringify(reach)})`);
+        await page.screenshot({ path: join(uiShots, "molecule-320x900-scrolled-footer.png") });
+        await page.close();
+      }
+      // Chat-Weg (inline) mit Weiter-Zeile
+      {
+        const [page, f] = await open("generate_molecule", morphine, chat(700));
+        await settle(f);
+        await fitChat(page);
+        const g = await geo(f);
+        check(await row(f).count() === 1 && g.sh <= g.ih + 1, `U3 inline: Weiter-Zeile im Chat, gemeldete Höhe reicht (${lage(g)})`);
+        await page.screenshot({ path: join(uiShots, "molecule-inline-700-continue.png"), fullPage: true });
+        await page.close();
+      }
+      // Platzhalter aus toolinput (Stapel), dann das Ergebnis; Abbruch beendet den Ladezustand
+      {
+        const input = { molecules: ["benzene", "toluene", "phenol"] };
+        const [page, f, result] = await open("batch_generate", input, full(1000, 900), { host: { holdResult: true } });
+        const ph = f.locator("[data-testid='tool-placeholder']");
+        await ph.waitFor();
+        const labels = await f.locator(".placeholder-card").allInnerTexts();
+        check(labels.join(",") === "benzene,toluene,phenol" && !/Waiting for data/.test(await f.locator("body").innerText()),
+          `toolinput: beschriftete Platzhalter statt „Waiting for data…“ (${labels.join(", ")})`);
+        await page.screenshot({ path: join(uiShots, "placeholder-toolinput-batch.png") });
+        await page.evaluate((r) => window.__sendToolResult(r), result);
+        await f.locator(".panel-title").nth(2).waitFor();
+        check(await ph.count() === 0, "toolinput: das Ergebnis ersetzt den Platzhalter");
+        await page.close();
+      }
+      {
+        const [page, f] = await open("generate_molecule", { name_or_smiles: "caffeine" }, full(1000, 900), { host: { holdResult: true } });
+        await f.locator("[data-testid='tool-placeholder']").waitFor();
+        check(/caffeine/.test(await f.locator("body").innerText()), "toolinput: Platzhalter nennt den Stoff");
+        await page.screenshot({ path: join(uiShots, "placeholder-toolinput-molecule.png") });
+        await page.evaluate(() => window.__cancelTool("user action"));
+        await f.getByText("The request was cancelled").waitFor();
+        check(await f.locator("[aria-busy='true']").count() === 0, "toolcancelled: ein Satz, kein Ladezustand");
+        await page.close();
+      }
     }
     console.log("U2 Messwerte:", JSON.stringify(messwerte, null, 1));
   }
@@ -1097,7 +1256,7 @@ try {
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
 
   // 3e. Fischer/Haworth (Etappe 4): Knopf nur bei passenden Stoffen, Zeichnung per Klick
-  prüfe(!(await frame.getByRole("button", { name: "Fischer" }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
+  prüfe(!(await frame.getByRole("button", { name: "Fischer", exact: true }).count()) && !(await frame.getByRole("button", { name: "Haworth" }).count()),
     "Methylphenidate hat keinen Projektionsknopf");
   // Seit 41da7c4 (OPSIN-Treffer gegen PubChem geprüft) liefert "D-glucose" den PubChem-Record,
   // also den Pyranosering → Haworth; die offene Kette (Fischer) heißt jetzt "aldehydo-D-glucose".
@@ -1113,16 +1272,16 @@ try {
     await p.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result });
     await p.locator("iframe").evaluate((el) => { el.style.width = "680px"; el.style.height = "660px"; });
     const f = p.frames().find((x) => x !== p.mainFrame());
-    await f.getByRole("button", { name: knopf }).click();
+    await f.getByRole("button", { name: knopf, exact: true }).click();
     await f.locator(".structure-drawing svg text").first().waitFor({ timeout: 5000 });
     const labels = await f.locator(".structure-drawing svg text").allTextContents();
-    prüfe(labels.includes(soll) && (fehlt === null || !(await f.getByRole("button", { name: fehlt }).count())),
+    prüfe(labels.includes(soll) && (fehlt === null || !(await f.getByRole("button", { name: fehlt, exact: true }).count())),
       `${stoff}: ${knopf} zeigt ${labels.length} Beschriftungen (${soll} dabei)${fehlt ? `, kein ${fehlt}-Knopf` : ""}`);
     if (knopf === "Haworth") {
       // Befund 10.11.2026: der Satz zur offenen Kette gehört unter Fischer, nicht unter Haworth.
       // „anomeric configuration“ steht nur im Satz, nicht in der Unterschrift der Zeichnung.
       prüfe(!(await f.locator("body").innerText()).includes("anomeric configuration"), `${stoff}: unter Haworth kein Fischer-Satz`);
-      await f.getByRole("button", { name: "Fischer" }).click();
+      await f.getByRole("button", { name: "Fischer", exact: true }).click();
       await f.locator(".structure-drawing svg text", { hasText: "open-chain form" }).waitFor({ timeout: 5000 });
       const offen = await f.locator(".structure-drawing svg text").allTextContents();
       prüfe(offen.includes("CHO") && offen.includes("open-chain form"), `${stoff}: Fischer zeigt die offene Form (CHO, Unterschrift)`);
@@ -1152,7 +1311,7 @@ try {
     await f.locator('button[aria-pressed="true"]', { hasText: "Haworth" }).waitFor({ timeout: 10000 });
     const body = await f.locator("body").innerText();
     prüfe(body.includes("β-D-Glucopyranose") && !body.includes("anomeric configuration")
-      && await f.getByRole("button", { name: "All H" }).count() === 1 && await f.getByRole("button", { name: "Fischer" }).count() === 1,
+      && await f.getByRole("button", { name: "All H" }).count() === 1 && await f.getByRole("button", { name: "Fischer", exact: true }).count() === 1,
       "view=haworth vom Modell: Panel startet auf Haworth, mit Titel, All-H- und Fischer-Knopf, ohne Fischer-Satz");
     await p.screenshot({ path: join(tmpdir(), "panel-host-model-view.png") });
     await p.close();

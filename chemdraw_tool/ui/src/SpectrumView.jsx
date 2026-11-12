@@ -2,6 +2,10 @@ import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { useModelContextReport } from "./ModelContext";
+import { spectrumFollowUps } from "./utils/followUps.js";
+import { genericContext } from "./utils/modelContext.js";
 
 const TYPE_LABELS = {
   ir: "IR",
@@ -17,6 +21,7 @@ const TYPE_LABELS = {
 };
 
 export default function SpectrumView({ data }) {
+  const { flush } = useModelContextReport(genericContext("spectrum", data), data.name || "spectrum");
   const typeLabel = TYPE_LABELS[data.spectrum_type] || data.spectrum_type;
   const pngPath = data.files?.png;
 
@@ -61,6 +66,7 @@ export default function SpectrumView({ data }) {
       />
       {/* matplotlib emits fixed pt dimensions — scale to the panel width */}
       <style>{`.spectrum-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
+      <ContinueRow actions={spectrumFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "spectrum"} size="sm" />
       </PanelFooter>

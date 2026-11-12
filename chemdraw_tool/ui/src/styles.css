@@ -289,8 +289,9 @@ button:active { filter: brightness(0.92); }
 .group-formula { font-family: var(--font-mono); font-size: 12px; padding: 2px 6px; border-radius: 4px; color: var(--fg); background: color-mix(in srgb, var(--group-color) 14%, transparent); }
 @media (prefers-reduced-motion: reduce) { .group-note { transition: none; } }
 .functional-groups { display: flex; flex-wrap: wrap; gap: 8px; }
-.functional-group { display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 36px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--fg); font-size: 13px; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; }
-.functional-group[aria-pressed="true"] { border-color: var(--group-color); background: color-mix(in srgb, var(--group-color) 14%, var(--bg)); }
+.functional-group { display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 40px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--fg); font-size: 13px; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; }
+/* Festgehalten (U4): kräftigerer Rand in Gruppenfarbe — als Schatten, damit die Breite nicht springt. */
+.functional-group[aria-pressed="true"] { border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color); background: color-mix(in srgb, var(--group-color) 14%, var(--bg)); font-weight: 600; }
 .group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--group-color); }
 .group-count { color: var(--fg-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .data-panel { padding-top: 16px; }
@@ -436,3 +437,48 @@ button:active { filter: brightness(0.92); }
   /* Gestapelt: Zeichnung oben (wächst), Kernwerte darunter (natürliche Höhe). */
   :root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel .structure-layout { grid-template-rows: minmax(0, 1fr) auto; }
 }
+
+/* U4: Hinweis-Karte mit festgehaltener Auswahl — Satz links, „Clear“ rechts. */
+.group-note-pin { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
+.group-note-pin .group-note-hint { font-size: 12px; min-width: 0; }
+.group-note-clear, .study-button, .continue-button { font: inherit; font-size: 12px; font-weight: 600; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; }
+.group-note-clear:focus-visible, .study-button:focus-visible, .continue-button:focus-visible, .study-cover:focus-visible, .study-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* U3: Zeile „Continue in chat“ über der Fußzeile. Wächst nie mit (feste Höhe im Seitenpanel). */
+.continue-row { flex: none; display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-alt); }
+.continue-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.continue-head .section-label { margin-bottom: 0; }
+.continue-hint { font-size: 11px; color: var(--fg-muted); }
+.continue-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.continue-button { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg); background: var(--bg); text-align: left; max-width: 100%; }
+.continue-button > span { min-width: 0; overflow-wrap: anywhere; }
+.continue-button svg { flex: none; color: var(--fg-muted); }
+.continue-button.is-about { border-color: var(--group-color); }
+.continue-button[aria-busy="true"] { cursor: progress; color: var(--fg-muted); }
+.continue-note { font-size: 12px; color: var(--fg-muted); margin: 0; }
+/* Schmal (320 px, Narrow-Entwurf): Knöpfe untereinander, volle Breite. */
+@media (max-width: 419px) {
+  .continue-actions { flex-direction: column; }
+  .continue-button { width: 100%; justify-content: space-between; }
+}
+
+/* U4b: Lernmodus. Verdecktes ist gestrichelt, Aufgedecktes sieht aus wie sonst. */
+.study-name { align-self: flex-start; min-height: 40px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 600; text-align: left; border: 1px dashed var(--fg-muted); border-radius: 8px; background: var(--bg-alt); color: var(--fg); cursor: pointer; }
+.study-counter { margin-top: 6px; }
+.study-cover { font: inherit; font-size: 13px; font-weight: 400; min-height: 40px; width: 100%; padding: 0 12px; text-align: left; border: 1px dashed var(--fg-muted); border-radius: 8px; background: var(--bg-alt); color: var(--fg-muted); cursor: pointer; }
+.functional-group.is-covered { border-style: dashed; border-color: var(--fg-muted); background: var(--bg-alt); color: var(--fg-muted); }
+.functional-group.is-covered .group-dot { background: var(--fg-muted); }
+.study-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; }
+.study-button { font-size: 13px; color: var(--fg); }
+.study-button.is-primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen) > .molecule-panel > [data-view="study"] { flex: 1 0 auto; display: flex; flex-direction: column; }
+
+/* Platzhalter aus toolinput: ruhig, ohne Animation. */
+.tool-placeholder { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.placeholder-title { font-size: 19px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.placeholder-line { font-size: 12px; color: var(--fg-muted); }
+.placeholder-canvas { height: 320px; border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-alt); }
+.placeholder-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.placeholder-card { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.placeholder-box { display: block; height: 110px; border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-alt); }
+.placeholder-label { font-size: 12px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

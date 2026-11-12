@@ -184,12 +184,15 @@ test("Hover auf eine Gruppe nennt sie unter den Gruppen, ohne Erklaersatz", asyn
   unmount();
 });
 
+// U4 (11.11.2026), bewusst geändert: aria-pressed meint jetzt die festgehaltene
+// Auswahl. Fokus ist nur Vorschau (Note zeigt die Gruppe), erst der Klick hält fest.
 test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Struktur", async () => {
   const { container, unmount } = setup();
   const group = [...container.querySelectorAll('button')].find((b) => b.textContent.includes("Ester"));
   assert.ok(group, "Gruppe muss ein bedienbarer Knopf sein");
   await act(async () => group.focus());
-  assert.equal(group.getAttribute("aria-pressed"), "true");
+  assert.equal(group.getAttribute("aria-pressed"), "false");
+  assert.match(textOf(container.querySelector(".group-note")), /Ester/, "Fokus zeigt keine Vorschau");
   await click(group);
   assert.equal(group.getAttribute("aria-pressed"), "true");
   unmount();

@@ -1,37 +1,67 @@
 import React from "react";
 import { groupInfo } from "../utils/groupInfo";
+import { elementName } from "../utils/modelContext.js";
 
-// Chips statt Liste: Hover/Fokus leuchtet die Gruppe in der Struktur an,
-// GroupNote darunter nennt Name und Kurzformel. Die Zahl ist die Zahl der Gruppen.
-export default function FunctionalGroupList({ groups, hoveredGroup, onHoverGroup }) {
+// Chips statt Liste. Zwei getrennte Zustände (U4): Hover/Fokus ist nur Vorschau
+// (onHoverGroup), ein Klick hält die Gruppe fest (onPin) — zweiter Klick löst.
+// aria-pressed meint die festgehaltene Auswahl, nicht den Hover.
+export default function FunctionalGroupList({ groups, pinnedGroup, onHoverGroup, onPin }) {
   if (!groups?.length) return null;
+  const pick = onPin || onHoverGroup;
   return <div className="functional-groups">
     {groups.map((g, i) => <button key={i} type="button" className="functional-group"
       style={{ "--group-color": g.color }}
-      aria-pressed={hoveredGroup === g.name}
-      onMouseEnter={() => onHoverGroup(g.name)} onMouseLeave={() => onHoverGroup(null)}
-      onFocus={() => onHoverGroup(g.name)} onBlur={() => onHoverGroup(null)}
-      onClick={() => onHoverGroup(g.name)}>
+      aria-pressed={pinnedGroup === g.name}
+      onMouseEnter={() => onHoverGroup?.(g.name)} onMouseLeave={() => onHoverGroup?.(null)}
+      onFocus={() => onHoverGroup?.(g.name)} onBlur={() => onHoverGroup?.(null)}
+      onClick={() => pick?.(g.name)}>
       <span className="group-dot" aria-hidden="true" />
       <span>{groupInfo(g.name).label}</span><span className="group-count">{g.count}</span>
     </button>)}
   </div>;
 }
 
-/** Name und Kurzformel der gerade markierten Gruppe — oder ein Hinweis im Ruhezustand. */
-export function GroupNote({ groups, hoveredGroup }) {
-  const group = groups?.find((g) => g.name === hoveredGroup);
+const HINT_PIN = "Click a group to pin it. Claude then knows which part you mean.";
+const HINT_HOVER = "Hover a group to see where it sits in the structure.";
+const PINNED_CONTEXT = "Pinned. Claude sees this selection with your next message.";
+
+/**
+ * Hinweis-Karte unter den Chips: angezeigt wird die Hover-Vorschau, sonst die
+ * festgehaltene Auswahl (Gruppe oder Einzelatom). Ohne Host-Fähigkeit
+ * `updateModelContext` (canContext) kein Satz über Claude.
+ */
+export function GroupNote({ groups, hoveredGroup, pinned, canContext = false, onClear }) {
+  const pinnedName = pinned?.kind === "group" ? pinned.name : null;
+  const group = groups?.find((g) => g.name === (hoveredGroup || pinnedName));
+  const pinLine = (
+    <div className="group-note-pin">
+      <span className="group-note-hint">{canContext ? PINNED_CONTEXT : "Pinned."}</span>
+      {onClear && <button type="button" className="group-note-clear" onClick={onClear}>Clear</button>}
+    </div>
+  );
+  if (!group && pinned?.kind === "atom") {
+    return <div className="group-note is-active is-pinned" role="status" style={{ "--group-color": "var(--accent)" }}>
+      <div className="group-note-head">
+        <span className="group-dot" aria-hidden="true" />
+        <strong>{elementName(pinned.el).replace(/^./, (c) => c.toUpperCase())} atom</strong>
+        <span className="group-formula">{pinned.el}</span>
+      </div>
+      {pinLine}
+    </div>;
+  }
   if (!group) {
     return <div className="group-note" role="status">
-      <span className="group-note-hint">Hover a group to see where it sits in the structure.</span>
+      <span className="group-note-hint">{canContext ? HINT_PIN : HINT_HOVER}</span>
     </div>;
   }
   const info = groupInfo(group.name);
-  return <div className="group-note is-active" role="status" style={{ "--group-color": group.color }}>
+  const isPinned = group.name === pinnedName;
+  return <div className={`group-note is-active${isPinned ? " is-pinned" : ""}`} role="status" style={{ "--group-color": group.color }}>
     <div className="group-note-head">
       <span className="group-dot" aria-hidden="true" />
       <strong>{info.label}</strong>
       {info.formula && <span className="group-formula">{info.formula}</span>}
     </div>
+    {isPinned && pinLine}
   </div>;
 }

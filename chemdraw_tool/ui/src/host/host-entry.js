@@ -34,7 +34,13 @@ function sizeFrame(iframe, ctx) {
   if (typeof dims.height === "number") iframe.style.height = `${dims.height}px`;
 }
 
-window.__startHost = async ({ html, toolInput, toolResult, prelude = "", hostContext, hostCapabilities }) => {
+// U3/U4 (11.11.2026): `hostCapabilities` schaltet `message`/`updateModelContext` an und ab;
+// `messageMode` lässt ui/message gelingen ("ok"), ablehnen ("isError") oder scheitern ("reject");
+// `holdResult` schickt nur toolinput — das Ergebnis kommt später per __sendToolResult,
+// ein Abbruch per __cancelTool; `skipInput` lässt toolinput ganz weg.
+// window.__bridgeLog hält Kontext-Updates und Nachrichten in ihrer Reihenfolge.
+window.__startHost = async ({ html, toolInput, toolResult, prelude = "", hostContext, hostCapabilities,
+  messageMode = "ok", holdResult = false, skipInput = false }) => {
   const iframe = document.createElement("iframe");
   iframe.setAttribute("sandbox", "allow-scripts");
   iframe.style.cssText = "width:640px;height:640px;border:0";
@@ -57,9 +63,21 @@ window.__startHost = async ({ html, toolInput, toolResult, prelude = "", hostCon
   bridge.onsizechange = (size) => { window.__panelSizes.push(size); };
   // Nachrichten und Modellkontext aus dem Panel: annehmen und mitschreiben.
   window.__messages = window.__messages || [];
-  bridge.onmessage = async (params) => { window.__messages.push(params); return {}; };
+  window.__bridgeLog = window.__bridgeLog || [];
+  const textOf = (params) => (params?.content || []).map((c) => c.text || "").join("");
+  bridge.onmessage = async (params) => {
+    window.__messages.push(params);
+    window.__bridgeLog.push(["message", textOf(params)]);
+    if (messageMode === "isError") return { isError: true };
+    if (messageMode === "reject") throw new Error("host refuses messages");
+    return {};
+  };
   window.__modelContexts = window.__modelContexts || [];
-  bridge.onupdatemodelcontext = async (params) => { window.__modelContexts.push(params); return {}; };
+  bridge.onupdatemodelcontext = async (params) => {
+    window.__modelContexts.push(params);
+    window.__bridgeLog.push(["context", textOf(params)]);
+    return {};
+  };
   // Anzeigemodus: der Test-Host gewährt jede Anfrage und meldet danach den
   // neuen Modus mit passenden Maßen — wie Desktop beim Wechsel ins Seitenpanel.
   window.__displayModeRequests = window.__displayModeRequests || [];
@@ -84,10 +102,11 @@ window.__startHost = async ({ html, toolInput, toolResult, prelude = "", hostCon
   // Folge-Ergebnisse im selben Panel (Chat ruft das Tool erneut): Fund b prüft so,
   // dass ein Fehler das alte Ergebnis ersetzt und ein Erfolg den Fehler.
   window.__sendToolResult = (result) => bridge.sendToolResult(result);
+  window.__cancelTool = (reason) => bridge.sendToolCancelled({ reason });
   const ready = new Promise((resolve) => {
     bridge.oninitialized = async () => {
-      await bridge.sendToolInput({ arguments: toolInput });
-      await bridge.sendToolResult(toolResult);
+      if (!skipInput) await bridge.sendToolInput({ arguments: toolInput });
+      if (!holdResult) await bridge.sendToolResult(toolResult);
       resolve();
     };
   });

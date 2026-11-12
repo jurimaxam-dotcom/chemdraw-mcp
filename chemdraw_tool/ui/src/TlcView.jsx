@@ -2,6 +2,10 @@ import React from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { useModelContextReport } from "./ModelContext";
+import { tlcFollowUps } from "./utils/followUps.js";
+import { genericContext } from "./utils/modelContext.js";
 
 // Rf ist ein Verhältnis — im Protokoll immer zweistellig notiert.
 const fmtRf = (rf) => (typeof rf === "number" ? rf.toFixed(2) : String(rf ?? ""));
@@ -15,6 +19,7 @@ function laneSummary(lane) {
 }
 
 export default function TlcView({ data }) {
+  const { flush } = useModelContextReport(genericContext("tlc", data), data.name || "tlc");
   const conditions = [
     data.solvent && `Mobile phase: ${data.solvent}`,
     data.detection && `Detection: ${data.detection}`,
@@ -90,6 +95,7 @@ export default function TlcView({ data }) {
           ))}
         </div>
       )}
+      <ContinueRow actions={tlcFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "tlc"} size="sm" />
       </PanelFooter>

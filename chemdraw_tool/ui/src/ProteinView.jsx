@@ -4,6 +4,10 @@ import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import IgGScheme, { SCHEME_LEGEND } from "./components/IgGScheme";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { useModelContextReport } from "./ModelContext";
+import { proteinFollowUps } from "./utils/followUps.js";
+import { genericContext } from "./utils/modelContext.js";
 import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
 import { loadEngine } from "./protein/loadEngine";
 import { layout, ligandMmcif, proteinMmcif, decodeLigands } from "./protein/proteinData";
@@ -91,6 +95,7 @@ function sceneColors(segs, mode) {
 }
 
 export default function ProteinView({ data }) {
+  const { flush } = useModelContextReport(genericContext("protein", data), data.name || "protein");
   const protein = data.protein || { chains: [] };
   const viewer = useRef(null);
   const host = useRef(null);
@@ -291,6 +296,7 @@ export default function ProteinView({ data }) {
       {protein.citation && (
         <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>{protein.citation}</div>
       )}
+      <ContinueRow actions={proteinFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton size="sm" filename={`${data.name || "protein"}-cartoon`}
           getSvg={exportSource}

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { STEREO_COLOR, resolveHighlight } from "./highlight.js";
+import { PIN_COLOR, STEREO_COLOR, resolveHighlight } from "./highlight.js";
 
 const GROUPS = [{ name: "Ester", atomIndices: [0, 1, 2], color: "#d35400" }];
 
@@ -25,4 +25,10 @@ test("eine Atomliste (Stereo-Hinweis) schlaegt die Gruppe", () => {
 
 test("eine leere Atomliste faellt auf die Gruppe zurueck", () => {
   assert.equal(resolveHighlight({ groups: GROUPS, hoveredGroup: "Ester", atomIndices: [] }).color, "#d35400");
+});
+
+test("festgehaltenes Atom ohne Gruppe leuchtet allein, eine Gruppe schlägt es", () => {
+  const groups = [{ name: "Ester", atomIndices: [1, 2], color: "#d35400" }];
+  assert.deepEqual(resolveHighlight({ groups, pinnedAtom: 5 }), { atomIndices: [5], color: PIN_COLOR });
+  assert.deepEqual(resolveHighlight({ groups, hoveredGroup: "Ester", pinnedAtom: 5 }), { atomIndices: [1, 2], color: "#d35400" });
 });

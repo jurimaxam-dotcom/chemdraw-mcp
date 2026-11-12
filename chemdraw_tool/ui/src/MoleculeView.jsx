@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import AmbiguousView from "./AmbiguousView";
 import CopyButton from "./components/CopyButton";
 import FoundAs from "./components/FoundAs";
@@ -11,6 +11,11 @@ import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import Ball3DCanvas from "./components/Ball3DCanvas";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
+import ContinueRow from "./components/ContinueRow";
+import StudyPanel from "./components/StudyPanel";
+import { useModelContextReport } from "./ModelContext";
+import { moleculeFollowUps, studyFollowUps } from "./utils/followUps.js";
+import { moleculeContext, moleculeSummary, studyItems } from "./utils/modelContext.js";
 import { useAppBridge, useHostContext } from "./AppContext";
 import { canRequestFullscreen } from "./utils/useHostLayout";
 import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
@@ -35,8 +40,16 @@ export default function MoleculeView({ data, expandable = true }) {
   const app = useAppBridge();
   const hostContext = useHostContext();
   const uid = useId();
+  // Hover = Vorschau, pinned = festgehaltene Auswahl (U4): getrennt, damit das
+  // Verlassen eines Atoms oder Chips die Auswahl nie löscht. Angezeigt wird der
+  // Hover, sonst die Auswahl. pinned: {kind:"group",name} | {kind:"atom",idx,el} | null.
   const [hoveredGroup, setHoveredGroup] = useState(null);
+  const [pinned, setPinned] = useState(null);
   const [view, setView] = useState("structure");
+  // Lernmodus (U4b): Schlüssel der aufgedeckten Stücke ("name", "formula",
+  // "mass", "cas", "group:<Name>") und die Gruppe, die gerade leuchtet.
+  const [revealed, setRevealed] = useState([]);
+  const [studyFocus, setStudyFocus] = useState(null);
   // Skelettformel ⇄ alle H ⇄ Fischer ⇄ Haworth — eine eigene Achse neben
   // Struktur/Daten. Das Payload sagt nur, welche Ansichten es gibt; der erste
   // Klick holt die Zeichnung, danach Cache wie beim Datenblatt (Jay 26.10.:
@@ -190,8 +203,9 @@ export default function MoleculeView({ data, expandable = true }) {
   const handleView = useCallback(
     async (next) => {
       wanted.current = next;
-      if (next === "structure") {
-        setView("structure");
+      // Struktur und Lernmodus sind lokal — kein Toolaufruf.
+      if (next === "structure" || next === "study") {
+        setView(next);
         return;
       }
       if (sheet) {
@@ -260,6 +274,38 @@ export default function MoleculeView({ data, expandable = true }) {
     }
   }
 
+  // Ein Atom-Index gilt nur für die Zeichnung, in der er angeklickt wurde.
+  useEffect(() => {
+    setPinned((p) => (p?.kind === "atom" ? null : p));
+  }, [shown, show3d]);
+
+  function pinGroup(name) {
+    setPinned((p) => (p?.kind === "group" && p.name === name ? null : { kind: "group", name }));
+  }
+  function pickAtom(atom, group) {
+    if (group) return pinGroup(group.name);
+    setPinned((p) => (p?.kind === "atom" && p.idx === atom.idx ? null : { kind: "atom", idx: atom.idx, el: atom.el }));
+  }
+  const clearPin = () => setPinned(null);
+
+  const items = studyItems(data);
+  const reveal = (key) => {
+    setRevealed((r) => (r.includes(key) ? r : [...r, key]));
+    if (key.startsWith("group:")) setStudyFocus(key.slice(6));
+  };
+  const nameOpen = revealed.includes("name") || !data.name;
+  const left = items.filter((i) => !revealed.includes(i.key)).length;
+  const counter = left === 0 ? "Everything revealed" : `${left} of ${items.length} still covered`;
+
+  const { flush, canContext } = useModelContextReport(
+    moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed }),
+    moleculeSummary(data),
+  );
+  const followUps = view === "study"
+    ? studyFollowUps({ name: data.name, smiles, nameRevealed: nameOpen })
+    : moleculeFollowUps({ name: data.name, smiles, groups, atoms: data.atoms, pinned });
+  const studyHint = canContext ? "Claude sees what is still covered and does not give it away" : undefined;
+
   if (showVariants && variants) {
     return (
       <AmbiguousView data={variants}
@@ -274,17 +320,32 @@ export default function MoleculeView({ data, expandable = true }) {
     <article className="molecule-panel">
       <header className="panel-header">
         <div className="panel-heading">
-          <h2 className="panel-title">{data.name || "Molecule"}</h2>
-          {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
-          <FoundAs value={data.foundAs} />
+          {view === "study" && !nameOpen
+            ? <button type="button" className="study-name" onClick={() => reveal("name")}>Which compound is this? Show name</button>
+            : <>
+              <h2 className="panel-title">{data.name || "Molecule"}</h2>
+              {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
+              <FoundAs value={data.foundAs} />
+            </>}
+          {view === "study" && <p className="panel-record study-counter" role="status">{counter}</p>}
         </div>
         {(query || (expandable && canRequestFullscreen(hostContext))) && <div className="panel-actions">
-          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} />}
+          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study />}
           {/* Im Stapel (batch) vergrößert man das Panel, nicht eine Karte: dort kein Knopf. */}
           {expandable && <ExpandButton app={app} hostContext={hostContext} />}
         </div>}
       </header>
-      {view === "structure" ? (
+      {view === "study" ? (
+        <StudyPanel uid={uid} svg={data.svg} atoms={data.atoms} groups={groups} revealed={revealed}
+          focusGroup={studyFocus} onReveal={reveal} onFocusGroup={setStudyFocus}
+          facts={[
+            formula && { key: "formula", label: "Formula", value: <Formula text={formula} /> },
+            props.mw && { key: "mass", label: "Molar mass", value: molarMass(props.mw) },
+            props.cas && { key: "cas", label: "CAS", value: props.cas },
+          ].filter(Boolean)}
+          onRevealAll={() => setRevealed(items.map((i) => i.key))}
+          onCover={() => { setRevealed([]); setStudyFocus(null); }} />
+      ) : view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
           <div className="structure-layout" data-layout-3d={is3d ? "" : undefined}>
             {/* Zeichenfläche und Ansicht-Achse als eine Spalte: die Achse sitzt direkt
@@ -294,7 +355,10 @@ export default function MoleculeView({ data, expandable = true }) {
                 ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
                     <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
                   </div>
-                : <StructureCanvas svg={svg} atoms={atoms} groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} highlightAtoms={stereo.highlightAtoms} />}
+                : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
+                    hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
+                    pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
+                    onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
               {(views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
                 <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
                   title="Skeletal formula">2D</AxisButton>
@@ -329,8 +393,9 @@ export default function MoleculeView({ data, expandable = true }) {
             {groups.length > 0 && !(shown === "fischer" && data.projectionNote)
               && <section className="group-section" aria-label="Functional groups">
               <h3 className="section-label">Functional groups</h3>
-              <FunctionalGroupList groups={groups} hoveredGroup={hoveredGroup} onHoverGroup={setHoveredGroup} />
-              <GroupNote groups={groups} hoveredGroup={hoveredGroup} />
+              <FunctionalGroupList groups={groups} pinnedGroup={pinned?.kind === "group" ? pinned.name : null}
+                onHoverGroup={setHoveredGroup} onPin={pinGroup} />
+              <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canContext={canContext} onClear={clearPin} />
             </section>}
           </>}
         </div>
@@ -339,10 +404,12 @@ export default function MoleculeView({ data, expandable = true }) {
           {sheet ? <SourceList sources={sheet.sources} moleculeSvg={sheet.molecule_svg || data.svg} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
         </div>
       )}
+      <ContinueRow actions={followUps} flush={flush} hint={view === "study" ? studyHint : undefined} />
       {/* Fußzeile (E3): Dateien links, Aktionen rechts. In 3D die SDF-Datei des
-          Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG. */}
-      <PanelFooter files={footer3d ? fileEntries(conformer.files) : fileEntries(data.files)}>
-        {footer3d
+          Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG.
+          Im Lernmodus ohne Pfade und ohne Export: beide tragen den Namen. */}
+      <PanelFooter files={view === "study" ? [] : footer3d ? fileEntries(conformer.files) : fileEntries(data.files)}>
+        {view === "study" ? null : footer3d
           ? <ExportPngButton size="sm" filename={`${data.name || "molecule"}-3d`}
               getSvg={() => serializeLiveSvg(viewer3d.current?.querySelector("svg"))}
               background={() => panelBackground(viewer3d.current)} />

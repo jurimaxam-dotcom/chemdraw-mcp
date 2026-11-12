@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import MoleculeView from "./MoleculeView";
 import { useAppBridge } from "./AppContext";
+import { useModelContextReport } from "./ModelContext";
+import { genericContext } from "./utils/modelContext.js";
 import { extractToolData } from "./utils/toolData";
 
 // Ein ruhiger Satz statt eines Stacktrace — wie beim Daten-Knopf.
@@ -22,6 +24,9 @@ export default function AmbiguousView({ data, subtitle, backBar }) {
   const [drawn, setDrawn] = useState(null); // gezeichnetes MoleculePayload
   const [pending, setPending] = useState(""); // Label des laufenden Aufrufs
   const [failed, setFailed] = useState("");
+  // Nur die Auswahl selbst meldet sich; ist ein Kandidat gezeichnet (oder ist dies
+  // die Varianten-Liste einer MoleculeView), spricht die MoleculeView.
+  useModelContextReport(!drawn && !backBar ? genericContext("ambiguous", data) : "", data.name || "isomers");
   const inFlight = useRef(false); // blockiert den re-entranten Doppelklick
 
   async function choose(candidate) {

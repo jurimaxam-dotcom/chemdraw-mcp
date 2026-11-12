@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter from "./components/PanelFooter";
+import ContinueRow from "./components/ContinueRow";
+import { hostCan, useModelContextReport } from "./ModelContext";
+import { useAppBridge } from "./AppContext";
+import { mechanismFollowUps } from "./utils/followUps.js";
+import { mechanismContext } from "./utils/modelContext.js";
 import { composeSvg } from "./utils/composeSvg";
 import { naturalWidth } from "./utils/svgSize";
 
@@ -247,6 +252,10 @@ export default function MechanismView({ data }) {
   const [currentStep, setCurrentStep] = useState(
     data.current_step > 0 ? data.current_step - 1 : 0
   );
+  const { flush } = useModelContextReport(mechanismContext(data, { mode, step: currentStep }), data.name || "mechanism");
+  // Die Weiter-Zeile (U3) sitzt in der festen Höhe: um sie wächst das Panel,
+  // damit die Schrittkarte nicht schrumpft.
+  const withRow = hostCan(useAppBridge(), "message");
 
   if (steps.length === 0) {
     return (
@@ -259,7 +268,7 @@ export default function MechanismView({ data }) {
   return (
     <div
       style={{
-        height: 540,  // intrinsisch — der Host bemisst das iframe am Inhalt
+        height: withRow ? 680 : 540,  // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -347,6 +356,7 @@ export default function MechanismView({ data }) {
           />
         )}
       </div>
+      <ContinueRow actions={mechanismFollowUps(data, { mode, step: currentStep })} flush={flush} />
       {/* Fußzeile (E3): der Server schreibt für Mechanismen keine Datei — nur die Aktion. */}
       <PanelFooter>
         <ExportPngButton size="sm" filename={data.name || "mechanism"}
