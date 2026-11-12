@@ -50,7 +50,7 @@
 - **Grenzen laut Anthropic (lokale Kopie in `.cache/anthropic/`):** ab rund 150.000 Zeichen legt Desktop das Ergebnis bei aktiver Code-Sandbox als Datei ab, das Panel lädt dann gar nicht (troubleshooting, „App doesn't render when tool results are large“); Claude liest höchstens 100.000 Zeichen Text (app-tools, „Limits“).
 - **Ursache:** Das SDK legt die Nutzlast doppelt ab — als `structuredContent` und noch einmal als eingerücktes JSON im `content`-Textblock (Vancomycin: 98.352 + 104.348). Der Textblock ist heute zugleich der Rückfallweg des Panels (`ui/src/utils/toolData.js`: eine Desktop-Fassung reichte `structuredContent` nicht ans iframe weiter). Ob das heutige Desktop es weiterreicht, ist ungemessen. Nebenwirkung: das Modell liest das ganze SVG als Text.
 - **Nächster Schritt:** läuft als Auftrags-Session `5441a834-51fd-4db2-8f91-b1c29ccf8416` (Tisch-Faden `20261112-190420-m2-ergebnisgroesse`); die Owner-Session baut daran nicht, sie prüft den Bericht (Diff, Gate). Erst ein Größen-Test (rot bei Vancomycin und beim großen Stapel), dann die Nutzlast verkleinern, ohne den Rückfallweg zu brechen. Kein Desktop-Lauf, kein Release.
-- **Danach offen, eigenes kleines Thema:** der Bundle-Budget-Haken („≤ 650 kB“) stammt aus der Zeit vor Mol* (heute 2,96 MB) — neu ansetzen oder streichen.
+- **Bundle-Budget erledigt (Owner, 12.11. abends):** `tests/test_bundle_budget.py` misst zwei Lasten getrennt — Start-Teil des Panels ≤ 650.000 B (heute 519.911) und 3D-Engine ≤ 2.700.000 B (heute 2.476.772, nur bei Proteinen ausgeführt). Einmal rot gesehen mit gesenkten Grenzen.
 
 ## Weiter bei — U5-Befunde abgeschlossen (Do 12.11.2026, 17:40)
 
@@ -755,7 +755,7 @@ Jay: erst das Layout im Chat, Ansichten ohne Nachfragen umschaltbar, **allgemein
 - [ ] Ausgangsbilder: `tests/gallery_ui.py` als Vorher-Stand ablegen (`docs/produkt/panel-vorher/`) (offen: Ordner fehlt; `docs/produkt/panel-mvp/` ist der Stand 14.10.)
 - [ ] Versuch 1: Kann das Panel dem Chat eine Nachricht schicken (`ui/message` der AppBridge)? Im Host-Test prüfen, dann **einmal in Desktop von Hand** — davon hängt D (Folge-Vorschläge) ab
 - [ ] Versuch 2: Panelhöhe in Desktop messen (wie viel Platz bleibt unter dem Chat-Text?) — davon hängt das Layout in C ab
-- [ ] Bundle-Budget als Test: `dist/index.html` ≤ 650 kB, rot sonst (offen: kein Test; `dist/index.html` am 07.11. 447.645 B)
+- [x] Bundle-Budget als Test: `tests/test_bundle_budget.py` (12.11.2026) — Start-Teil ≤ 650 kB, 3D-Engine getrennt ≤ 2,7 MB; die alte Gesamtgrenze stammte aus der Zeit vor Mol*
 
 #### Phase 1 — Ansichtsumschalter (A) → Release 0.5.0
 - [~] Payload: `MoleculePayload` bekommt `svg_stereo` und `mol3d` — für Stereo überholt durch Lazy-Entscheid in `fd709cc` („Show variants" lädt nach); `mol3d` bleibt Teil des 3D-Knopfs (Welle 1)
