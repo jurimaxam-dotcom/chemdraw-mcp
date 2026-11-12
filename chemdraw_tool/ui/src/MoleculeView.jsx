@@ -297,9 +297,12 @@ export default function MoleculeView({ data, expandable = true }) {
   const left = items.filter((i) => !revealed.includes(i.key)).length;
   const counter = left === 0 ? "Everything revealed" : `${left} of ${items.length} still covered`;
 
+  // Zeigt das Panel die Stereo-Varianten, ist diese Struktur verdeckt: dann meldet
+  // sie nichts — sonst läse Claude die Ausgangsstruktur samt alter Auswahl.
+  const hiddenByVariants = showVariants && Boolean(variants);
   const { flush, canContext } = useModelContextReport(
-    moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed }),
-    moleculeSummary(data),
+    hiddenByVariants ? "" : moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed }),
+    hiddenByVariants ? "" : moleculeSummary(data),
   );
   const followUps = view === "study"
     ? studyFollowUps({ name: data.name, smiles, nameRevealed: nameOpen })

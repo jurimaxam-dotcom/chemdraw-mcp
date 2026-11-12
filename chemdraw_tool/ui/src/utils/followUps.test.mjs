@@ -22,6 +22,15 @@ const chain = (third, hOfMiddle) => [
   { idx: 2, el: third, x: 20, y: 0, hCount: third === "O" ? 1 : 0 },
 ];
 
+// tert-Butylchlorid: C1 trägt drei Methylgruppen und das Chlor
+const TERT_BUTYL_CL = [
+  { idx: 0, el: "C", x: 0, y: 0, hCount: 3 },
+  { idx: 1, el: "C", x: 10, y: 0, hCount: 0 },
+  { idx: 2, el: "Cl", x: 20, y: 0, hCount: 0 },
+  { idx: 3, el: "C", x: 10, y: 10, hCount: 3 },
+  { idx: 4, el: "C", x: 10, y: -10, hCount: 3 },
+];
+
 const ASPIRIN_GROUPS = [
   { name: "Ester", atomIndices: [0, 1, 2], count: 1, color: "#d35400" },
   { name: "Carbonsäure", atomIndices: [3, 4, 5], count: 1, color: "#e74c3c" },
@@ -45,7 +54,26 @@ test("Mechanismus: Phenol ist kein Alkohol für die Fischer-Veresterung", () => 
 test("Mechanismus: Alkylhalogenid → SN2 (C mit H) bzw. SN1 (tertiär)", () => {
   const halide = [{ name: "Halogenid", atomIndices: [1, 2], count: 1 }];
   assert.equal(mechanismFor(halide, chain("Br", 2))?.type, "sn2");
-  assert.equal(mechanismFor(halide, chain("Cl", 0))?.type, "sn1");
+  assert.equal(mechanismFor(halide, TERT_BUTYL_CL)?.type, "sn1");
+});
+
+test("Mechanismus: Halogen an sp2-Kohlenstoff (Vinyl-, Säurechlorid) — kein Knopf", () => {
+  // Codex-Review 12.11.: der Server verlangt sp3 (mechanism_substrate.build_steps);
+  // vier Bindungspartner (schwere Nachbarn + H) sind das Kriterium.
+  const halide = [{ name: "Halogenid", atomIndices: [1, 2], count: 1 }];
+  const vinyl = [ // C=C–Cl: C1 hat zwei schwere Nachbarn und ein H
+    { idx: 0, el: "C", x: 0, y: 0, hCount: 2 },
+    { idx: 1, el: "C", x: 10, y: 0, hCount: 1 },
+    { idx: 2, el: "Cl", x: 20, y: 0, hCount: 0 },
+  ];
+  assert.equal(mechanismFor(halide, vinyl), null);
+  const acyl = [ // CC(=O)Cl: C1 hat drei schwere Nachbarn, kein H
+    { idx: 0, el: "C", x: 0, y: 0, hCount: 3 },
+    { idx: 1, el: "C", x: 10, y: 0, hCount: 0 },
+    { idx: 2, el: "Cl", x: 20, y: 0, hCount: 0 },
+    { idx: 3, el: "O", x: 10, y: 10, hCount: 0 },
+  ];
+  assert.equal(mechanismFor(halide, acyl), null);
 });
 
 test("Mechanismus: Fluorid und Arylhalogenid kann der Server nicht — kein Knopf", () => {

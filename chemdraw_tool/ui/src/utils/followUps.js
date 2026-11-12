@@ -44,6 +44,19 @@ function partnerCarbon(atom, members) {
   return best;
 }
 
+/**
+ * sp3 = vier Bindungspartner. Das Payload trägt keine Bindungen, aber die
+ * 2D-Zeichnung hat einheitliche Bindungslängen: schwere Nachbarn sind die Atome
+ * im Abstand der C–X-Bindung (25 % Toleranz), dazu die impliziten H.
+ */
+function isSp3Carbon(c, x, atoms) {
+  const bond = Math.hypot(x.x - c.x, x.y - c.y);
+  if (!(bond > 0)) return false;
+  const heavy = (atoms || []).filter((a) => a.idx !== c.idx && a.el !== "H"
+    && Math.hypot(a.x - c.x, a.y - c.y) <= bond * 1.25).length;
+  return heavy + (c.hCount ?? 0) === 4;
+}
+
 function halideMechanism(group, atoms, aromatic) {
   const map = byIdx(atoms);
   const members = group.atomIndices.map((i) => map.get(i)).filter(Boolean);
@@ -51,6 +64,9 @@ function halideMechanism(group, atoms, aromatic) {
     if (!LEAVING.has(x.el)) continue;
     const c = partnerCarbon(x, members);
     if (!c || aromatic.has(c.idx)) continue;
+    // Der Server verlangt ein Halogen an sp3-Kohlenstoff (mechanism_substrate):
+    // Vinyl- und Säurechloride lehnt er ab. Lässt sich sp3 nicht belegen, kein Knopf.
+    if (!isSp3Carbon(c, x, atoms)) continue;
     return (c.hCount ?? 0) >= 1 ? "sn2" : "sn1";
   }
   return null;

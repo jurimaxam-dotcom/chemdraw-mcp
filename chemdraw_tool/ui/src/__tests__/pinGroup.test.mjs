@@ -9,7 +9,7 @@ import { AppContext } from "../AppContext";
 import { ModelContextProvider } from "../ModelContext";
 import DatabaseView from "../DatabaseView";
 import MoleculeView from "../MoleculeView";
-import { ATOMS, DATABASE, MOLECULE } from "./fixtures.mjs";
+import { ATOMS, DATABASE, MOLECULE, lookupSuccess } from "./fixtures.mjs";
 import { buttonByText, click, render, textOf } from "./harness.mjs";
 
 let original;
@@ -116,4 +116,24 @@ test("DatabaseView: dieselbe Auswahl mit Hinweis-Karte", async () => {
   assert.equal(ester.getAttribute("aria-pressed"), "true");
   assert.match(note(container), /Pinned\. Claude sees this selection/);
   unmount();
+});
+
+test("Varianten-Ansicht: die verdeckte Ausgangsstruktur meldet keinen Kontext mehr", async () => {
+  // Codex-Review 12.11.: nach „Show variants“ blieb die Elternansicht mit ihrer
+  // festgehaltenen Gruppe im Fokus — Claude las die verdeckte Struktur.
+  const sent = [];
+  const variants = { type: "ambiguous", name: "stereoisomers",
+    candidates: [{ label: "R candidate", smiles: "C[C@H](O)C(=O)O", svg: MOLECULE.svg }] };
+  const app = { getHostCapabilities: () => CAPS, sendMessage: async () => ({}),
+    updateModelContext: async (p) => { sent.push(p.content[0].text); return {}; },
+    callServerTool: async () => lookupSuccess(variants) };
+  const data = { ...MOLECULE, name: "parent compound", stereoWarnings: [{ kind: "atom", atomIndices: [0], label: "undefined" }] };
+  const v = render(React.createElement(AppContext.Provider, { value: app },
+    React.createElement(ModelContextProvider, { app, delay: 1 }, React.createElement(MoleculeView, { data }))));
+  await click(v.container.querySelector("button.functional-group"));
+  await click(buttonByText(v.container, "Show variants"));
+  await act(async () => { await new Promise((r) => setTimeout(r, 30)); });
+  assert.equal(Boolean(sent.at(-1)?.includes("Pinned selection")), false, sent.at(-1));
+  assert.equal(Boolean(sent.at(-1)?.includes("parent compound (formula")), false, sent.at(-1));
+  v.unmount();
 });
