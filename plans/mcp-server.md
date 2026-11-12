@@ -7,7 +7,7 @@
 - **Belegt per Handstart:** Lauf 43242233899 → Kommentar an PR #9, stimmt mit dem Diff (nur `uv.lock`, ruff 0.17.3 → 0.17.4, Lock-`revision` 3 → 5); Tool-Liste im Log genau `Read, Grep, Glob, Write`. Lauf 43242487277 → „schon eingeordnet“, kein zweiter Kommentar. Lauf 43242493607 → Issue #10 „Zustandsbericht 12.11.2026“.
 - **Bewusst nicht gebaut:** öffentliche Bot-Antworten auf fremde Issues — fremder Text soll Claude keine Antwort in Jays Namen entlocken (Entscheidung aus `claude.yml`); fremde Issues stehen stattdessen im Montagsbericht. Dieselbe Einrichtung in anderen Repos: nicht Sache dieser Session.
 - **Auto-Push durch den main-Schutz:** belegt (`c5c08c8`, `04bf702` liegen auf origin).
-- **Offen, Jays Hand:** PR #9 mergen (`gh pr merge 9 --squash --delete-branch`; der Session wurde der Merge verweigert). Lokal geprüft: uv 0.11.11 liest die Lock-Revision 5 (`uv lock --check` rc=0), `ruff check .` mit 0.17.4 grün, CI am PR grün.
+- **PR #9 gemergt (Jay, 12.11.):** per `--rebase` — das Repo erlaubt nur Rebase-Merges, Squash und Merge-Commit sind abgeschaltet. Vorher lokal geprüft: uv 0.11.11 liest die Lock-Revision 5 (`uv lock --check` rc=0), `ruff check .` mit 0.17.4 grün, CI am PR grün.
 - **Restpunkte, blockieren nichts:** erster echter Cron-Lauf beider Workflows (13.11. morgens bzw. Mo 16.11.) und der Wächter-Zweig „Änderung → Issue → Claude ordnet ein“ sind noch nie von selbst gelaufen — beim ersten Mal Lauf und Text ansehen. Der Wächter-Schritt hat `WebFetch` und Schreib-Token im selben Job (schwächer als das neue Muster; Quellen sind feste Anthropic-Seiten) — bei Gelegenheit auf zwei Jobs umbauen.
 
 ## Vorher — GitHub-Einrichtung abschließen, eine Sache auf einmal (Do 12.11.2026, 16:05)
