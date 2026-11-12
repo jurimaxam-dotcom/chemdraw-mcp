@@ -1,5 +1,14 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Nachtest U5b (Kontext kommt an?), dann „Panel aufnahmebereit“ melden (Do 12.11.2026, 11:45)
+
+- **Nächster Schritt:** Bericht im Tisch-Faden `20261112-074607-u5b-nachtest-kontext` abholen (`~/.claude/bin/tisch lies --faden …`). Der Auftrag von 07:46 kam nie an (Codex-Session hatte sich 07:36 beendet), um 11:45 neu zugestellt. Codex steht bei 6 % Wochenkontingent: reißt der Lauf ab, bleibt als Kernfrage nur Schritt 1–2 (festgehaltene Gruppe: Amide, dann Aromatic ring — nennt Claude sie auf die wörtliche Frage?). Bilder: `/tmp/chemdraw-desktop-test/u5b/`.
+- **Warum das vor der Meldung zählt:** Das Panel verspricht „Claude sees this selection“. Desktop meldet `updateModelContext`, aber in U5 schrieb Claude „I'm assuming you mean…“ — ob der Text beim Modell ankommt, ist unbewiesen. Kommt er nicht an: Hinweistexte im Panel entschärfen (Karte „Pinned“, Study-Hinweis), nicht aufnehmen lassen, was nicht stimmt.
+- **Danach:** U5 und U6 abhaken, `~/.claude/bin/schwester weiter "Panel aufnahmebereit …"` (dortiger Faden `20261112-014029-nachtauftrag-shorts-und-gifs` wartet).
+- **Erledigt 12.11. vormittags (Gate rc=0, `test:host` 467 grün, Handshake grün, Desktop 07:46 neu gestartet):** `026fe8b` Morphin-Fischer-Mechanismus zeichnet die eigenen Substrate (Renderer griff bei Käfig-Stereozentren ins Leere) · `99b0ec5` Diagramm/Strukturvergleich füllen Seitenpanel und Vollbild (620 statt 232 px), Knopf „Explain the differences“ · `40d12c4` `preferredDisplayMode` bleibt ungesetzt (abgleich Nr. 16).
+- **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
+- **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
+
 ## Weiter bei — Codex-Handtest abgeschlossen (12.11.2026, 07:33)
 
 - [x] Codex: alle elf U5-Desktop-Testfälle gefahren, Bericht im Tisch-Faden `20261112-023029-u5-desktop-handtest` Nachricht **006** gesendet; Lease `claude-desktop` freigegeben. Keine Codeänderung durch den Tester.
@@ -10,7 +19,7 @@
 
 > **Zuständigkeit (Jay 11.11.2026):** Dieses Repo baut, `chemdraw-vermarktung` vermarktet (Tabelle dort: `docs/zustaendigkeit.md`). Die Vermarktungspunkte aus den Blöcken darunter — Bluesky-Folge-Posts `reaction-balance`/`antibody-scheme`, Anki-GIF-Post 12.11., Show HN, ChemAI Atlas, Clips — führt ab jetzt nur noch `chemdraw-vermarktung/plans/vermarktung.md`; hier nicht weiterführen, sondern `~/.claude/bin/schwester weiter "…"`. Hier offen bleibt nur Bau: Codex-Läufe 2–4 abholen, Paket-Umbenennung chempane als eigenes Release.
 
-## Weiter bei — U5-Bericht von Codex abholen, Befunde fixen, „Panel aufnahmebereit“ melden (Do 12.11.2026, 07:30)
+## Weiter bei — U5-Bericht von Codex abholen, Befunde fixen, „Panel aufnahmebereit“ melden (Do 12.11.2026, 07:30) — überholt, siehe ganz oben
 
 - **Nächster Schritt:** `~/.claude/bin/tisch lies --faden 20261112-023029-u5-desktop-handtest` — Codex (Pane `w5W:p4`) fährt seit 07:20 den Desktop-Handtest U5 (elf Schritte in Nachricht 001, Ergänzung 004, Neustart-Auftrag 005), Lease `claude-desktop` bei Codex bis 08:19, Bilder nach `/tmp/chemdraw-desktop-test/u5/`. Jay hat den Lauf um 07:15 für jetzt freigegeben und lässt Desktop solange in Ruhe. Liegt noch kein Bericht vor: warten, nicht selbst Desktop bedienen (ein Fahrer). Reißt Codex ab (Wochenkontingent stand nachts bei 90 %): Stand aus dem Faden und den Bildern nehmen, Rest neu beauftragen.
 - **Danach:** jeden Befund aus dem Bericht am Code prüfen (Berichte sind Behauptungen), fixen mit Test (einmal rot), `./test.sh > /tmp/gate.log 2>&1; echo rc=$?`, `npm --prefix chemdraw_tool/ui run test:host`, bei Server-/Panel-Änderung Desktop neu starten. Dann U5 und U6 abhaken und per `~/.claude/bin/schwester weiter "Panel aufnahmebereit …"` an die Vermarktung melden (dortiger Faden `20261112-014029-nachtauftrag-shorts-und-gifs` wartet darauf). Entscheidung `preferredDisplayMode` (abgleich Nr. 16) aus dem Diagnosetext von Schritt 2 ableiten.
