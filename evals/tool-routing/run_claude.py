@@ -12,7 +12,16 @@ Modell statt eines Tools Bash.
     uv run python evals/tool-routing/run_claude.py bare-name-de # einzelne Fälle
     MODEL=sonnet uv run python evals/tool-routing/run_claude.py # anderes Modell
 
-Exit 0 = alle Fälle grün, 1 = mindestens ein Fall rot.
+`--echt` fährt stattdessen den ECHTEN Server: je Panel-Tool ein Prompt aus
+`evals/panel-beispiele.json`. Grün heißt dort: das Tool wurde gerufen, der Server hat
+ohne Fehler geantwortet, und kein Aufruf wurde verweigert. Das ist der Teil des
+Desktop-Handtests, der ohne Bildschirm geht (Prompt → Aufruf → Ergebnis). Er sagt NICHT
+voraus, ob Desktop das Tool ruft: die drei Desktop-Ausfälle vom 07.11.2026 sind hier grün.
+
+    uv run python evals/tool-routing/run_claude.py --echt                 # alle Panel-Tools
+    uv run python evals/tool-routing/run_claude.py --echt generate_3d
+
+Exit 0 = alle Fälle grün, 1 = mindestens ein Fall rot, 3 = nur gelb (Quelle nicht erreichbar).
 """
 
 from __future__ import annotations
@@ -35,19 +44,28 @@ PREFIX = "mcp__chemdraw__"
 
 
 def gerufene_tools(prompt: str, config: str, modell: str | None, cwd: str) -> tuple[list[str], str]:
+    namen, text, _ = _lauf(prompt, config, modell, cwd, [])
+    return namen, text
+
+
+def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[str]) -> tuple[list[str], str, dict]:
+    """Ein `claude -p`-Lauf. `erlaubt` (nur --echt): Tools, die ohne Rückfrage laufen dürfen."""
     cmd = [
         "claude", "-p", prompt,
         "--mcp-config", config, "--strict-mcp-config", "--tools", os.environ.get("BUILTIN_TOOLS", ""),
         # Ohne Isolation leaken Jays Hooks und CLAUDE.md (CWD-Wächter, Antwortstil) in die Wahl
         "--setting-sources", "project", "--disable-slash-commands",
         "--output-format", "stream-json", "--verbose",
-        "--max-turns", "2", "--no-session-persistence",
+        "--max-turns", "3" if erlaubt else "2", "--no-session-persistence",
     ]
+    if erlaubt:
+        cmd += ["--allowedTools", ",".join(PREFIX + name for name in erlaubt)]
     if modell:
         cmd += ["--model", modell]
     out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=cwd).stdout
     namen: list[str] = []
     text = ""
+    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}}
     for zeile in out.splitlines():
         try:
             e = json.loads(zeile)
@@ -57,12 +75,95 @@ def gerufene_tools(prompt: str, config: str, modell: str | None, cwd: str) -> tu
             for b in e["message"]["content"]:
                 if b.get("type") == "tool_use":
                     namen.append(b["name"].removeprefix(PREFIX))
+                    echt["ids"][b.get("id")] = namen[-1]
                 elif b.get("type") == "text" and not text:
                     text = b["text"]
+        elif e.get("type") == "user" and isinstance(e["message"].get("content"), list):
+            for b in e["message"]["content"]:
+                if b.get("type") == "tool_result":
+                    inhalt = b.get("content")
+                    if isinstance(inhalt, list):
+                        inhalt = " ".join(str(t.get("text", "")) for t in inhalt if isinstance(t, dict))
+                    name = echt["ids"].get(b.get("tool_use_id"), "?")
+                    echt["ergebnisse"][name] = (bool(b.get("is_error")), str(inhalt or ""))
+        elif e.get("type") == "result":
+            echt["verweigert"] = [d.get("tool_name", "?").removeprefix(PREFIX) for d in e.get("permission_denials") or []]
     if text.startswith("Failed to authenticate"):
         # Kein Messwert: ein abgelaufener Login darf nicht als „Modell wählt kein Tool" erscheinen
         raise SystemExit(f"ABBRUCH (kein Ergebnis, kein roter Fall): {text}\nAnmelden: `claude` im Terminal starten und /login ausführen.")
-    return namen, text
+    return namen, text, echt
+
+
+# Fehlerarten des Servers, die eine Quelle meinen und keinen Fehler im Code (wie identitaet.py: gelb)
+_GELB = ("offline", "sources_down", "could not be reached", "timed out", "temporarily")
+
+
+def bewerte_echt(tool: str, namen: list[str], echt: dict) -> tuple[str, str]:
+    """('grün'|'gelb'|'rot', Grund) für einen Lauf gegen den echten Server."""
+    if echt["verweigert"]:
+        return "rot", f"Aufruf verweigert: {echt['verweigert']}"
+    if tool not in namen:
+        return "rot", f"nicht gerufen (gerufen: {namen or '—'})"
+    if tool not in echt["ergebnisse"]:
+        return "rot", "gerufen, aber kein tool_result im Lauf"
+    fehler, inhalt = echt["ergebnisse"][tool]
+    if fehler or '"error"' in inhalt[:400]:
+        kurz = " ".join(inhalt.split())[:200]
+        return ("gelb" if any(w in inhalt.lower() for w in _GELB) else "rot"), f"Server meldet Fehler: {kurz}"
+    return "grün", ""
+
+
+def _ordner_stand(pfad: Path) -> int:
+    return sum(1 for _ in pfad.rglob("*")) if pfad.exists() else 0
+
+
+def main_echt(auswahl: list[str]) -> int:
+    from chemdraw_tool.server import mcp
+
+    beispiele = json.loads((REPO / "evals" / "panel-beispiele.json").read_text(encoding="utf-8"))
+    offen = {n: b for n, b in beispiele.items() if "auslassen" not in b}
+    fremd = set(auswahl) - offen.keys()
+    if fremd:
+        print(f"ABBRUCH: kein Beispiel für {', '.join(sorted(fremd))}", file=sys.stderr)
+        return 2
+    fälle = [(n, b) for n, b in offen.items() if not auswahl or n in auswahl]
+    # Alles erlauben, was angeboten und nicht ausgelassen ist: ein falsch gewähltes Tool soll
+    # als falsche Wahl erscheinen, nicht als Rechtefrage. export_anki_deck bleibt verweigert.
+    erlaubt = sorted({t.name for t in asyncio.run(mcp.list_tools())} - (beispiele.keys() - offen.keys()))
+    arbeit = tempfile.mkdtemp(prefix="tool-echt-")
+    echtes_output = Path.home() / "ChemDraw-Output"
+    vorher = _ordner_stand(echtes_output)
+    try:
+        heim = Path(arbeit) / "home"
+        heim.mkdir()
+        config_pfad = Path(arbeit) / "mcp.json"
+        # venv-Binärdatei direkt (uv bräuchte das echte HOME); HOME des Servers = Wegwerf-Ordner
+        config_pfad.write_text(json.dumps({"mcpServers": {"chemdraw": {
+            "command": str(REPO / ".venv" / "bin" / "chemdraw-tool-server"),
+            "env": {"CHEMDRAW_PROFILE": os.environ.get("CHEMDRAW_PROFILE", "mvp"), "HOME": str(heim)},
+        }}}))
+        modell = os.environ.get("MODEL")
+
+        def lauf(fall: tuple[str, dict]) -> tuple[str, list[str], str, dict]:
+            return (fall[0], *_lauf(fall[1]["prompt"], str(config_pfad), modell, arbeit, erlaubt))
+
+        zahl = {"grün": 0, "gelb": 0, "rot": 0}
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            for tool, namen, text, echt in pool.map(lauf, fälle):
+                urteil, grund = bewerte_echt(tool, namen, echt)
+                zahl[urteil] += 1
+                print(f"{ {'grün': '✔', 'gelb': '●', 'rot': '✘'}[urteil]} {tool:<32} gerufen: {namen or '—'}")
+                if grund:
+                    print(f"    {grund}")
+                if not namen:
+                    print(f"    Modell schrieb stattdessen: {' '.join(text.split())[:200]}")
+    finally:
+        shutil.rmtree(arbeit, ignore_errors=True)
+    if _ordner_stand(echtes_output) != vorher:
+        print("✘ ~/ChemDraw-Output hat sich verändert: der Wegwerf-HOME greift nicht")
+        zahl["rot"] += 1
+    print(f"\n{zahl['grün']}/{len(fälle)} grün · {zahl['gelb']} gelb (Quelle) · {zahl['rot']} rot")
+    return 1 if zahl["rot"] else 3 if zahl["gelb"] else 0
 
 
 def select_cases(cases: list[dict], offered: set[str], selection: set[str]) -> list[dict]:
@@ -84,6 +185,8 @@ def select_cases(cases: list[dict], offered: set[str], selection: set[str]) -> l
 
 
 def main() -> int:
+    if "--echt" in sys.argv[1:]:
+        return main_echt([a for a in sys.argv[1:] if a != "--echt"])
     from chemdraw_tool.server import mcp
 
     fälle = yaml.safe_load((HIER / "cases.yaml").read_text())["cases"]

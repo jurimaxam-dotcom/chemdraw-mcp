@@ -61,3 +61,34 @@ def test_promptfoo_rejects_empty_matching_suite(tmp_path, monkeypatch):
     with pytest.raises(SystemExit):
         builder.main()
     assert not (tmp_path / "promptfooconfig.yaml").exists()
+
+
+# --- `--echt`: Lauf gegen den echten Server -------------------------------------------
+
+def _echt(ergebnisse=None, verweigert=None):
+    return {"ergebnisse": ergebnisse or {}, "verweigert": verweigert or [], "ids": {}}
+
+
+def test_echt_gruen_braucht_aufruf_und_fehlerfreies_ergebnis():
+    runner = _load("run_claude")
+    assert runner.bewerte_echt("generate_3d", ["generate_3d"], _echt({"generate_3d": (False, '{"type": "structure3d"}')}))[0] == "grün"
+
+
+def test_echt_rot_wenn_das_tool_nicht_gerufen_wurde():
+    runner = _load("run_claude")
+    assert runner.bewerte_echt("generate_3d", ["generate_molecule"], _echt({"generate_molecule": (False, "{}")}))[0] == "rot"
+    assert runner.bewerte_echt("generate_3d", [], _echt())[0] == "rot"
+
+
+def test_echt_rot_bei_verweigertem_aufruf_und_bei_fehlendem_ergebnis():
+    runner = _load("run_claude")
+    assert runner.bewerte_echt("generate_3d", ["generate_3d"], _echt(verweigert=["generate_3d"]))[0] == "rot"
+    assert runner.bewerte_echt("generate_3d", ["generate_3d"], _echt())[0] == "rot"
+
+
+def test_echt_serverfehler_ist_rot_quellenausfall_nur_gelb():
+    runner = _load("run_claude")
+    kaputt = _echt({"generate_molecule": (True, "invalid_smiles: could not parse")})
+    assert runner.bewerte_echt("generate_molecule", ["generate_molecule"], kaputt)[0] == "rot"
+    quelle = _echt({"generate_molecule": (True, "sources_down: PubChem could not be reached")})
+    assert runner.bewerte_echt("generate_molecule", ["generate_molecule"], quelle)[0] == "gelb"
