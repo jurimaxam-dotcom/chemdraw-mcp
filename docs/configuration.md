@@ -7,8 +7,8 @@ the Claude Desktop extension, and where the server keeps files.
 
 | Profile | Connector in Claude Desktop | Tools | Contents |
 |---|---|---|---|
-| `mvp` (default) | `chemdraw` | 17, 13 with a panel | drawing, lab graphics, lookup, `calculate_ph`, Anki |
-| `full` | `chemdraw-pharma` | 24, 17 with a panel | adds the substrate-scope figure, calibration curve, pharmacokinetic and dose-response curves, and calculators for solutions, content determination and pharmacokinetics |
+| `mvp` (default) | `chemdraw` | 18, 13 with a panel | drawing, lab graphics, lookup, `calculate_ph`, Anki |
+| `full` | `chemdraw-pharma` | 25, 17 with a panel | adds the substrate-scope figure, calibration curve, pharmacokinetic and dose-response curves, and calculators for solutions, content determination and pharmacokinetics |
 
 Both connectors come from one installation: the extension route ships two
 bundles (`chemdraw-mcp-<version>.mcpb` and `chemdraw-mcp-pharma-<version>.mcpb`),
@@ -22,7 +22,7 @@ environment variable `CHEMDRAW_PROFILE`:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 24 tools
+CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
 ```
 
 An unknown profile name stops the server at start-up with an error.

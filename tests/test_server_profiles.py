@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MVP = {
     "generate_molecule", "batch_generate", "compare_molecules",
     "generate_reaction", "lookup_molecule_data", "save_png",
+    # M2 (12.11.2026): das Panel lädt Bilder großer Ergebnisse nach.
+    "load_panel_part",
     # Seit 21.10.2026: Lernweg Molekül → Anki (Panel-Knopf und Chat).
     "export_anki_deck",
     # Basis-Ausbau Welle 1 (30.10.2026): Lehrbuch-Mechanismen.
@@ -131,7 +133,7 @@ def test_mvp_keeps_the_panel_resource_and_metadata():
     assert uri in data["resources"]
     panel = {t["name"] for t in data["tools"] if ((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") == uri}
     # lookup, predict_spectrum und calculate_ph antworten als Text
-    assert panel == MVP - {"save_png", "lookup", "predict_spectrum", "calculate_ph"}
+    assert panel == MVP - {"save_png", "load_panel_part", "lookup", "predict_spectrum", "calculate_ph"}
 
 
 def _summary(tool):

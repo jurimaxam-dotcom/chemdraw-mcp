@@ -68,15 +68,16 @@ def _table_tools() -> set[str]:
 
 
 def test_tooltabelle_nennt_genau_die_mvp_tools():
-    erwartet = set(_tools("mvp")) - {"save_png"}
+    erwartet = set(_tools("mvp")) - {"save_png", "load_panel_part"}
     tabelle = _table_tools()
     assert not erwartet - tabelle, f"registriert, aber ohne README-Zeile: {sorted(erwartet - tabelle)}"
     assert not tabelle - erwartet, f"README-Zeile ohne MVP-Tool: {sorted(tabelle - erwartet)}"
 
 
-def test_save_png_ist_im_toolabschnitt_erklaert():
-    assert "save_png" in _tools("mvp")
-    assert "`save_png`" in _section("## Tools", "\n## ")
+def test_panel_tools_sind_im_toolabschnitt_erklaert():
+    for tool in ("save_png", "load_panel_part"):
+        assert tool in _tools("mvp")
+        assert f"`{tool}`" in _section("## Tools", "\n## ")
 
 
 def test_profilabschnitt_nennt_genau_die_zusatztools_des_vollprofils():
@@ -89,7 +90,6 @@ def test_profilabschnitt_nennt_genau_die_zusatztools_des_vollprofils():
 def test_toolzahlen_stimmen_mit_den_profilen():
     mvp, full = len(_tools("mvp")), len(_tools("full"))
     assert f"registers {mvp} tools" in README
-    assert f"The {mvp}th tool, `save_png`" in README
     profile = _section("## Profiles", "The `full` profile adds", TOOLS_DOC)
     assert f"| `mvp` (default) | {mvp}," in profile
     assert f"| `full` | {full}," in profile

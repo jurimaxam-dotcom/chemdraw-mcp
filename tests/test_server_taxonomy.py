@@ -16,10 +16,12 @@ danebenzufallen:
 * Rechnen         — Zahl plus Rechenweg
 * Anki            — Kartendecks
 
-Außerhalb der Bereiche steht genau ein Tool: `save_png`, der Server-Teil des
-Export-Knopfes im Panel. Es MUSS registriert bleiben (sonst kann die UI es nicht
-aufrufen), darf aber nie vom Modell von sich aus benutzt werden — deshalb wird
-hier auch geprüft, dass seine Beschreibung es als intern ausweist.
+Außerhalb der Bereiche stehen genau zwei Tools des Panels: `save_png`, der
+Server-Teil des Export-Knopfes, und seit 12.11.2026 `load_panel_part`, über das
+das Panel die zurückgehaltenen Bilder eines großen Ergebnisses nachlädt
+(result_budget.py). Beide MÜSSEN registriert bleiben (sonst kann die UI sie
+nicht aufrufen), dürfen aber nie vom Modell von sich aus benutzt werden —
+deshalb wird hier auch geprüft, dass ihre Beschreibung sie als intern ausweist.
 """
 
 import inspect
@@ -70,7 +72,7 @@ RECHNEN = {
 ANKI = {"export_anki_deck"}
 
 # Kein Bereich, sondern Infrastruktur des Panels.
-INTERN = {"save_png"}
+INTERN = {"save_png", "load_panel_part"}
 
 FAMILIES = {
     "Zeichnen": ZEICHNEN,
@@ -93,7 +95,7 @@ def _registered() -> dict[str, str]:
     }
 
 
-def test_registered_tools_are_exactly_the_families_plus_save_png():
+def test_registered_tools_are_exactly_the_families_plus_the_panel_tools():
     """Ein neues Tool muss hier eingetragen werden — genau das ist der Zweck."""
     expected = ZEICHNEN | LABORGRAFIK | NACHSCHLAGEN | RECHNEN | ANKI | INTERN
     actual = set(_registered())
@@ -132,8 +134,12 @@ def test_tool_count_stays_reviewable():
     Faehigkeit von generate_molecule kamen 0 von 8 Protein- und
     Antikoerper-Auftraegen hier an (docs/evidence/desktop-routing-2026-11-10.md)
     — ein Parameter hilft dort nicht, nur ein Name.
+    Am 12.11.2026 auf 25 fuer `load_panel_part` (M2): kein Kandidat fuer eine
+    Anfrage, sondern Infrastruktur des Panels wie save_png (visibility app,
+    Beschreibung „Internal“) — es laedt die Bilder grosser Ergebnisse nach,
+    damit kein Ergebnis Claude Desktops Groessengrenze reisst.
     """
-    assert len(_registered()) <= 24
+    assert len(_registered()) <= 25
 
 
 # --- Entfernte Tools --------------------------------------------------------
@@ -298,9 +304,10 @@ def test_description_is_dedented_on_every_python(tool):
     )
 
 
-def test_save_png_is_declared_internal():
-    """Der Export-Knopf ruft es auf — das Modell nie von sich aus."""
-    desc = _registered()["save_png"]
+@pytest.mark.parametrize("tool", sorted(INTERN))
+def test_panel_tools_are_declared_internal(tool):
+    """Das Panel ruft sie auf — das Modell nie von sich aus."""
+    desc = _registered()[tool]
     assert "Internal" in desc
     assert "never call this directly" in desc
 

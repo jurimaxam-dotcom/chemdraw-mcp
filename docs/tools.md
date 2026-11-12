@@ -299,8 +299,8 @@ structure card.
 
 | Profile | Tools | Contents |
 |---|---|---|
-| `mvp` (default) | 17, 13 with a panel | the five areas above |
-| `full` | 24, 17 with a panel | adds a substrate-scope figure, a calibration curve, pharmacology curves and three more calculators |
+| `mvp` (default) | 18, 13 with a panel | the five areas above |
+| `full` | 25, 17 with a panel | adds a substrate-scope figure, a calibration curve, pharmacology curves and three more calculators |
 
 The `full` profile adds:
 
@@ -327,7 +327,7 @@ To switch, set `CHEMDRAW_PROFILE` and restart the server:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 24 tools
+CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
 ```
 
 In Claude Desktop the two profiles are two connectors from one installation:

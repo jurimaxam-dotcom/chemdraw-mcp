@@ -189,8 +189,8 @@ installation. They differ only in the profile the server starts with:
 
 | Connector | Profile | Tools | Adds |
 |---|---|---|---|
-| `chemdraw` | `mvp` (default) | 17, 13 with a panel | the five areas in the [tool table](#tools) |
-| `chemdraw-pharma` | `full` | 24, 17 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics |
+| `chemdraw` | `mvp` (default) | 18, 13 with a panel | the five areas in the [tool table](#tools) |
+| `chemdraw-pharma` | `full` | 25, 17 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics |
 
 The extension route ships them as two bundles (`chemdraw-mcp-<version>.mcpb`,
 `chemdraw-mcp-pharma-<version>.mcpb`); `chemdraw-install` writes both entries
@@ -201,7 +201,7 @@ twice. Switching between them needs no restart. Details:
 
 ## Tools
 
-The default profile registers 17 tools, 13 of them with an interactive panel.
+The default profile registers 18 tools, 13 of them with an interactive panel.
 Files go to `~/ChemDraw-Output/`.
 
 | Area | Tool | Example prompt |
@@ -223,8 +223,11 @@ Files go to `~/ChemDraw-Output/`.
 | **Calculate** | `calculate_ph` | *"What is the pH of 0.1 M acetic acid, pKa 4.76?"* |
 | **Anki** | `export_anki_deck` | *"Make Anki cards with the structures of aspirin, ibuprofen and paracetamol"* |
 
-The 17th tool, `save_png`, is the server half of the panel's export button. It
-runs when you click that button and is never called by the model on its own.
+The other two tools belong to the panel and are never called by the model on
+its own: `save_png` is the server half of the export button, and
+`load_panel_part` fetches the images of a large result (a big molecule, a long
+batch) piece by piece, so that the result stays small enough for Claude Desktop
+to display.
 Every tool in detail, with its options and limits:
 [docs/tools.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/tools.md).
 

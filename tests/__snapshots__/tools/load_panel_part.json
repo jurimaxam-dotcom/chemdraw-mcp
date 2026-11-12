@@ -1,0 +1,28 @@
+{
+  "annotations": {
+    "openWorldHint": false,
+    "readOnlyHint": true
+  },
+  "description": "Internal helper for the panel UI — never call this directly.\n\nA large drawing result keeps its biggest pieces (images) back so that it\nstays small enough to display; the panel fetches them here, piece by\npiece. Returns JSON: {\"text\": <piece>, \"next\": <offset of the next piece\nor null>}.",
+  "inputSchema": {
+    "properties": {
+      "offset": {
+        "default": 0,
+        "title": "Offset",
+        "type": "integer"
+      },
+      "token": {
+        "title": "Token",
+        "type": "string"
+      }
+    },
+    "required": [
+      "token"
+    ],
+    "title": "load_panel_partArguments",
+    "type": "object"
+  },
+  "name": "load_panel_part",
+  "outputSchema": null,
+  "title": "Load panel content"
+}

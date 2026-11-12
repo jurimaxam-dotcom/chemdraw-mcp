@@ -7,9 +7,10 @@ Rechteausweitung. Deshalb steht die Liste der schreibenden Tools hier
 ausdrücklich — ein neues Tool oder eine umgedeutete Markierung fällt im Review
 auf, statt aus einer Ableitung zu rutschen.
 
-`save_png` ist nur fürs Panel: `_meta.ui.visibility = ["app"]` (ext-apps
-`McpUiToolMeta.visibility`). Es bleibt in `tools/list` — filtern muss der Host —
-und zählt nicht als Panel-Tool, weil es keine `resourceUri` trägt.
+`save_png` und `load_panel_part` sind nur fürs Panel: `_meta.ui.visibility =
+["app"]` (ext-apps `McpUiToolMeta.visibility`). Sie bleiben in `tools/list` —
+filtern muss der Host — und zählen nicht als Panel-Tool, weil sie keine
+`resourceUri` tragen.
 """
 
 import asyncio
@@ -37,6 +38,8 @@ OFFLINE = {
     "generate_pk_curve", "generate_dose_response",
     "calculate_solution", "calculate_content", "calculate_ph",
     "calculate_pharmacokinetics", "save_png",
+    # liest nur den Zwischenspeicher des Servers (result_budget.py)
+    "load_panel_part",
 }
 # Ändert beim Wiederholen Fremdes: ein Re-Export aktualisiert vorhandene Karten
 # (per „open“/AnkiConnect auch in der Anki-Sammlung des Nutzers).
@@ -110,21 +113,26 @@ def test_vault_tools_are_annotated_too():
         assert hints == {"readOnlyHint": True, "openWorldHint": False}, name
 
 
+APP_ONLY = {"save_png", "load_panel_part"}
+
+
 @pytest.mark.parametrize("profile", ["mvp", "full"])
-def test_save_png_is_visible_to_the_panel_only(profile):
-    tool = _tools(create_server(profile))["save_png"]
+@pytest.mark.parametrize("name", sorted(APP_ONLY))
+def test_panel_helpers_are_visible_to_the_panel_only(profile, name):
+    tool = _tools(create_server(profile))[name]
     assert tool.meta == {"ui": {"visibility": ["app"]}}
 
 
 @pytest.mark.parametrize("profile", ["mvp", "full"])
-def test_only_save_png_hides_from_the_model(profile):
+def test_only_the_panel_helpers_hide_from_the_model(profile):
     hidden = {
         n for n, t in _tools(create_server(profile)).items()
         if "model" not in ((t.meta or {}).get("ui") or {}).get("visibility", ["model"])
     }
-    assert hidden == {"save_png"}
+    assert hidden == APP_ONLY
 
 
-def test_save_png_is_no_panel_tool():
-    tool = _tools()["save_png"]
+@pytest.mark.parametrize("name", sorted(APP_ONLY))
+def test_panel_helpers_are_no_panel_tools(name):
+    tool = _tools()[name]
     assert ((tool.meta or {}).get("ui") or {}).get("resourceUri") != _RESOURCE_URI

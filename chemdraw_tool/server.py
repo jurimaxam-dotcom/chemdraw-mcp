@@ -278,6 +278,8 @@ themselves — never call save_png, that is the panel's export button.
 MVP_TOOLS = frozenset({
     "generate_molecule", "batch_generate", "compare_molecules",
     "generate_reaction", "lookup_molecule_data", "save_png",
+    # M2 (12.11.2026): das Panel lädt zurückgehaltene große Teile nach (result_budget.py).
+    "load_panel_part",
     # Lernweg Molekül → Anki (21.10.2026): der Panel-Knopf „Add to Anki" und
     # der Chat-Weg „mach mir Karten zu …" brauchen dasselbe Tool.
     "export_anki_deck",
@@ -568,6 +570,7 @@ _TOOL_LABELS: dict[str, tuple[str, ToolAnnotations]] = {
     ),
     # Intern (Export-Knopf des Panels)
     "save_png": ("Save panel image", _hints(writes=True, online=False, idempotent=False)),
+    "load_panel_part": ("Load panel content", _hints(writes=False, online=False, idempotent=True)),
     # Optional, nur mit CHEMDRAW_VAULT_PATH
     "search_vault": ("Search the notes vault", _hints(writes=False, online=False)),
     "read_vault_entry": ("Read a notes vault entry", _hints(writes=False, online=False)),
@@ -4782,6 +4785,21 @@ def save_png(png_base64: str, filename: str) -> str:
     return str(path)
 
 
+# Ohne structured_output: sonst schickte das SDK jedes Stück zweimal.
+@_tool(meta=_APP_ONLY_META, structured_output=False)
+def load_panel_part(token: str, offset: int = 0) -> str:
+    """Internal helper for the panel UI — never call this directly.
+
+    A large drawing result keeps its biggest pieces (images) back so that it
+    stays small enough to display; the panel fetches them here, piece by
+    piece. Returns JSON: {"text": <piece>, "next": <offset of the next piece
+    or null>}.
+    """
+    from chemdraw_tool.result_budget import load_part
+
+    return json.dumps(load_part(token, offset), ensure_ascii=False)
+
+
 if vault_enabled():
 
     @_tool()
@@ -4861,6 +4879,23 @@ def _user_facing_errors(fn):
     return wrapper
 
 
+def _within_budget(fn):
+    """Panel-Ergebnisse unter Desktops Größengrenze halten (M2, result_budget.py).
+
+    Liefert ein fertiges CallToolResult: kompaktes JSON im Textblock statt
+    eingerücktem, und über dem Budget Platzhalter für die größten Teile, die das
+    Panel per `load_panel_part` nachlädt. `functools.wraps` hält die Annotation
+    und damit das outputSchema gleich.
+    """
+    from chemdraw_tool.result_budget import tool_result
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        return tool_result(fn(*args, **kwargs))
+
+    return wrapper
+
+
 def create_server(profile: str | None = None) -> MCPServer:
     """Build a server with only the tools enabled by its startup profile."""
     selected = os.environ.get("CHEMDRAW_PROFILE", "mvp") if profile is None else profile
@@ -4883,7 +4918,10 @@ def create_server(profile: str | None = None) -> MCPServer:
             summary = _MVP_SUMMARIES[fn.__name__].strip()
             _, separator, args = (fn.__doc__ or "").partition("Args:")
             registration["description"] = summary + ("\n\nArgs:" + args if separator else "")
-        instance.tool(**registration)(_user_facing_errors(fn))
+        tool_fn = _user_facing_errors(fn)
+        if options.get("meta") is _UI_META:
+            tool_fn = _within_budget(tool_fn)
+        instance.tool(**registration)(tool_fn)
     instance.resource(
         _RESOURCE_URI,
         mime_type="text/html;profile=mcp-app",
