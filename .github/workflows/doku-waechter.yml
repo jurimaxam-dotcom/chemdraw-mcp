@@ -1,0 +1,70 @@
+name: Doku-Wächter
+
+# Täglich: Hat sich an den Anthropic-Seiten etwas geändert, die für dieses Projekt zählen
+# (MCP-Apps, Konnektoren, MCP-Spezifikation, Desktop-Changelog, Modellübersicht)? Dann ein Issue —
+# GitHub benachrichtigt von selbst. Ein Issue je offenem Stand, kein neues pro Tag; es schließt sich,
+# sobald `docs/anthropic/stand.json` nachgezogen ist (`scripts/anthropic_sync.py --update`).
+# Im Issue stehen nur Links und Paketversionen, keine Seitentexte.
+
+on:
+  schedule:
+    - cron: "17 5 * * *" # 06:17 MEZ / 07:17 MESZ
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: doku-waechter
+  cancel-in-progress: false
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TITEL: "Anthropic-Doku: Änderung für chemdraw-mcp"
+      LABEL: doku-waechter
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Seiten und Paketversionen vergleichen
+        id: check
+        run: |
+          set +e
+          python3 scripts/anthropic_sync.py --check --exit-code > bericht.txt 2> fehler.txt
+          rc=$?
+          cat bericht.txt fehler.txt
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          # 0 = ruhig, 3 = melden; alles andere ist ein echter Fehler (Index nicht erreichbar)
+          if [ "$rc" != 0 ] && [ "$rc" != 3 ]; then exit "$rc"; fi
+
+      - name: Issue anlegen, nachführen oder schließen
+        run: |
+          gh label create "$LABEL" --color 5319e7 --description "Täglicher Abgleich der Anthropic-Doku" 2>/dev/null || true
+          nr=$(gh issue list --label "$LABEL" --state open --json number --jq '.[0].number // empty')
+          if [ "${{ steps.check.outputs.rc }}" = 3 ]; then
+            # Fingerabdruck des Berichts im Issue: gleicher Stand = kein neuer Kommentar
+            marke="stand-$(sha256sum bericht.txt | cut -c1-16)"
+            {
+              echo "<!-- $marke -->"
+              echo "Der tägliche Abgleich meldet eine Änderung an Seiten oder Paketen, auf die sich dieses Projekt stützt."
+              echo
+              echo '```'
+              cat bericht.txt
+              echo '```'
+              echo
+              echo "Nachziehen: Seiten lesen (\`uv run python scripts/anthropic_sync.py --diff URL\`), \`docs/anthropic/abgleich.md\` anpassen, dann \`--update\` und pushen. Das Issue schließt sich beim nächsten ruhigen Lauf."
+            } > body.md
+            if [ -z "$nr" ]; then
+              gh issue create --title "$TITEL" --label "$LABEL" --body-file body.md
+            elif ! gh issue view "$nr" --json body --jq .body | grep -q "$marke"; then
+              gh issue edit "$nr" --body-file body.md
+              gh issue comment "$nr" --body "Der Stand hat sich seit der letzten Meldung weiter geändert — Beschreibung oben ist aktualisiert."
+            fi
+          elif [ -n "$nr" ]; then
+            gh issue close "$nr" --comment "Stand nachgezogen — der Abgleich ist wieder ruhig."
+          fi

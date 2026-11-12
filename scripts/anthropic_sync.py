@@ -18,6 +18,7 @@ Fingerabdrücke, Titel und Links (`docs/anthropic/stand.json`) und die eigene Au
     uv run python scripts/anthropic_sync.py --diff URL      # Textunterschied einer Seite
     uv run python scripts/anthropic_sync.py --update        # Stand übernehmen (nach dem Lesen!)
     uv run python scripts/anthropic_sync.py --alter         # nur Altersmeldung, ohne Netz (für den Sitzungsstart)
+    python scripts/anthropic_sync.py --check --exit-code    # täglicher Wächter (.github/workflows/doku-waechter.yml): Exit 3 = melden
 """
 
 from __future__ import annotations
@@ -39,7 +40,7 @@ CACHE = ROOT / ".cache" / "anthropic"
 TAGE_BIS_VERALTET = 7
 USER_AGENT = "chemdraw-mcp-doc-watch (+https://github.com/jurimaxam-dotcom/chemdraw-mcp)"
 
-_LINK = re.compile(r"^- \[(?P<titel>[^\]]+)\]\((?P<url>https?://[^)\s]+)\)(?::\s*(?P<beschreibung>.*))?$")
+_LINK = re.compile(r"^- \[(?P<titel>[^\]]+)\]\((?P<url>https?://[^)\s]+)\)(?:(?::| -)\s*(?P<beschreibung>.*))?$")
 
 
 # --- reine Funktionen (getestet ohne Netz) -------------------------------------------------------
@@ -113,6 +114,16 @@ def versionsbericht(unsere: dict, neueste: dict) -> list[dict]:
     return zeilen
 
 
+def meldepflichtig(ergebnis: dict, versionen: list[dict]) -> bool:
+    """Lohnt eine Meldung? Seiten neu/geändert/weg oder eine neue Hauptversion — Nebenversionen nicht."""
+    return bool(
+        ergebnis["neu"]
+        or ergebnis["geaendert"]
+        or ergebnis["weg"]
+        or any(z["status"] == "NEUE HAUPTVERSION" for z in versionen)
+    )
+
+
 def lese_pins(root: Path) -> dict:
     pins = {}
     paket = json.loads((root / "chemdraw_tool" / "ui" / "package.json").read_text())
@@ -146,15 +157,17 @@ def hole(url: str) -> str:
         return antwort.read().decode("utf-8", "replace")
 
 
-def sammle(quellen: dict, abruf=hole) -> dict[str, dict]:
-    """url → {titel, beschreibung, hash, text} für alle gewählten Seiten."""
+def sammle(quellen: dict, abruf=hole, fehler: list | None = None) -> dict[str, dict]:
+    """url → {titel, beschreibung, hash, text} für alle gewählten Seiten. Nicht abrufbare URLs landen in `fehler`."""
     seiten = {}
     for index in quellen["indizes"]:
         for e in waehle(parse_index(abruf(index["url"])), index["einschliessen"]):
             try:
                 text = abruf(e["url"])
-            except Exception as fehler:  # noqa: BLE001 — eine tote Seite darf den Rest nicht stoppen
-                print(f"  ! {e['url']}: {fehler}", file=sys.stderr)
+            except Exception as fehler_:  # noqa: BLE001 — eine tote Seite darf den Rest nicht stoppen
+                print(f"  ! {e['url']}: {fehler_}", file=sys.stderr)
+                if fehler is not None:
+                    fehler.append(e["url"])
                 continue
             seiten[e["url"]] = {**e, "quelle": index["name"], "hash": fingerabdruck(text), "text": text}
     return seiten
@@ -162,8 +175,12 @@ def sammle(quellen: dict, abruf=hole) -> dict[str, dict]:
 
 def pruefe(quellen: dict, stand_datei: Path, cache: Path, abruf=hole, aktualisieren: bool = False) -> dict:
     alt = json.loads(stand_datei.read_text())["seiten"] if stand_datei.exists() else {}
-    neu = sammle(quellen, abruf)
+    abruf_fehler: list[str] = []
+    neu = sammle(quellen, abruf, abruf_fehler)
     ergebnis = vergleiche(alt, neu)
+    # Ein Netzfehler ist keine gelöschte Seite — sonst meldet der tägliche Lauf falsch „WEG“.
+    ergebnis["weg"] = [u for u in ergebnis["weg"] if u not in abruf_fehler]
+    ergebnis["abruf_fehler"] = abruf_fehler
     ergebnis["texte"] = {u: neu[u]["text"] for u in ergebnis["geaendert"] + ergebnis["neu"]}
     ergebnis["vorher"] = {}
     for u in ergebnis["geaendert"]:
@@ -216,6 +233,7 @@ def main() -> int:
     ap.add_argument("--update", action="store_true", help="Stand und lokalen Cache übernehmen")
     ap.add_argument("--diff", metavar="URL", help="Textunterschied einer Seite gegen den lokalen Cache")
     ap.add_argument("--alter", action="store_true", help="nur Altersmeldung (ohne Netz)")
+    ap.add_argument("--exit-code", action="store_true", help="Exit 3, wenn es etwas zu melden gibt (täglicher Wächter)")
     a = ap.parse_args()
 
     if a.alter:
@@ -240,7 +258,8 @@ def main() -> int:
     for u in r["weg"]:
         print(f"  WEG        {u}")
     print("\nPakete (unser Stand → neueste Version):")
-    for z in versionsbericht(lese_pins(ROOT), neueste_versionen()):
+    versionen = versionsbericht(lese_pins(ROOT), neueste_versionen())
+    for z in versionen:
         marke = "!!" if z["status"] == "NEUE HAUPTVERSION" else "  "
         print(f"  {marke} {z['name']:9} {z['unsere']:14} → {z['neueste']:8} {z['status']}")
     print("\nLetzte ext-apps-Releases:")
@@ -250,6 +269,10 @@ def main() -> int:
         print(f"\nStand übernommen: {STAND.relative_to(ROOT)} (Texte lokal in .cache/anthropic/)")
     elif r["neu"] or r["geaendert"] or r["weg"]:
         print("\nNächster Schritt: Seiten lesen (`--diff URL`), `docs/anthropic/abgleich.md` anpassen, dann `--update`.")
+    if r["abruf_fehler"]:
+        print(f"\n{len(r['abruf_fehler'])} Seite(n) nicht abrufbar (kein Befund): " + ", ".join(r["abruf_fehler"]))
+    if a.exit_code and meldepflichtig(r, versionen):
+        return 3
     return 0
 
 

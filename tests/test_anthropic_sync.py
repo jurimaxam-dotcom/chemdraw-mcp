@@ -128,3 +128,63 @@ def test_gleiche_version_mit_weniger_stellen_ist_aktuell():
     zeile = sync.versionsbericht({"mcp": ">=2.3,<3"}, {"mcp": "2.3.0"})[0]
     assert zeile["status"] == "aktuell"
     assert sync.versionsbericht({"mcp": ">=2.3,<3"}, {"mcp": "2.3.1"})[0]["status"] == "neuere Nebenversion"
+
+
+# --- Täglicher Wächter (12.11.2026): Meldung nur, wenn sich für uns etwas ändert ---
+
+
+def test_index_mit_bindestrich_beschreibung_wird_gelesen():
+    # platform.claude.com/llms.txt trennt Titel und Beschreibung mit „ - “ statt „: “
+    e = sync.parse_index(
+        "- [Overview](https://platform.claude.com/docs/en/release-notes/overview.md) - Claude Platform release notes\n"
+        "- [Models overview](https://platform.claude.com/docs/en/models/overview.md)\n"
+    )
+    assert [x["url"] for x in e] == [
+        "https://platform.claude.com/docs/en/release-notes/overview.md",
+        "https://platform.claude.com/docs/en/models/overview.md",
+    ]
+    assert e[0]["beschreibung"] == "Claude Platform release notes"
+
+
+def test_meldepflichtig_bei_seitenaenderung_und_hauptversion_nicht_bei_nebenversion():
+    ruhig = {"neu": [], "geaendert": [], "weg": []}
+    neben = [{"name": "ext-apps", "status": "neuere Nebenversion"}]
+    haupt = [{"name": "mcp", "status": "NEUE HAUPTVERSION"}]
+    assert sync.meldepflichtig(ruhig, neben) is False
+    assert sync.meldepflichtig(ruhig, haupt) is True
+    assert sync.meldepflichtig({**ruhig, "geaendert": ["u"]}, neben) is True
+    assert sync.meldepflichtig({**ruhig, "neu": ["u"]}, []) is True
+    assert sync.meldepflichtig({**ruhig, "weg": ["u"]}, []) is True
+
+
+def test_nicht_abrufbare_seite_gilt_nicht_als_weg(tmp_path):
+    # Ein Netzfehler bei einer Seite darf den täglichen Lauf nicht „WEG“ melden lassen.
+    index = "- [A](https://x.test/docs/build/a.md): a\n- [B](https://x.test/docs/build/b.md): b\n"
+    quellen = {"indizes": [{"name": "t", "url": "https://x.test/llms.txt", "einschliessen": ["/docs/build/"]}]}
+    stand = tmp_path / "stand.json"
+
+    def abruf_ok(url):
+        return index if url.endswith("llms.txt") else "text " + url
+
+    sync.pruefe(quellen, stand, tmp_path / "cache", abruf=abruf_ok, aktualisieren=True)
+
+    def abruf_b_tot(url):
+        if url.endswith("b.md"):
+            raise OSError("timeout")
+        return abruf_ok(url)
+
+    r = sync.pruefe(quellen, stand, tmp_path / "cache", abruf=abruf_b_tot)
+    assert r["weg"] == []
+    assert r["abruf_fehler"] == ["https://x.test/docs/build/b.md"]
+
+
+def test_quellen_decken_desktop_changelog_und_modellseiten_ab():
+    quellen = json.loads((SKRIPT.parent.parent / "docs" / "anthropic" / "quellen.json").read_text())
+    muster = [m for i in quellen["indizes"] for m in i["einschliessen"]]
+    for url in (
+        "https://claude.com/docs/cowork/changelog.md",
+        "https://platform.claude.com/docs/en/models/overview.md",
+        "https://platform.claude.com/docs/en/about-claude/model-deprecations.md",
+        "https://platform.claude.com/docs/en/release-notes/overview.md",
+    ):
+        assert any(re.search(m, url) for m in muster), url

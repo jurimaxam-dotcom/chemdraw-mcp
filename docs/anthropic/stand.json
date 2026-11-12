@@ -200,6 +200,12 @@
    "quelle": "claude-docs",
    "hash": "c2a026363d8cb442"
   },
+  "https://claude.com/docs/cowork/changelog.md": {
+   "titel": "Changelog",
+   "beschreibung": "Release notes for Claude Desktop",
+   "quelle": "claude-docs",
+   "hash": "ed139370b2d9b39e"
+  },
   "https://claude.com/docs/directory/publish.md": {
    "titel": "Publish to the directory",
    "beschreibung": "Submit a plugin or MCP connector to Anthropic's directory: the two submission kinds, who can submit, what review involves, and where to start.",
@@ -385,6 +391,24 @@
    "beschreibung": "",
    "quelle": "mcp-standard",
    "hash": "80bdcb99cce99f8a"
+  },
+  "https://platform.claude.com/docs/en/about-claude/model-deprecations.md": {
+   "titel": "Model deprecations",
+   "beschreibung": "",
+   "quelle": "claude-plattform",
+   "hash": "91cf99cfc3b7908a"
+  },
+  "https://platform.claude.com/docs/en/models/overview.md": {
+   "titel": "Models overview",
+   "beschreibung": "",
+   "quelle": "claude-plattform",
+   "hash": "6b4249e3a1496ce3"
+  },
+  "https://platform.claude.com/docs/en/release-notes/overview.md": {
+   "titel": "Overview",
+   "beschreibung": "Claude Platform release notes",
+   "quelle": "claude-plattform",
+   "hash": "844de807d78ad1e5"
   }
  }
 }

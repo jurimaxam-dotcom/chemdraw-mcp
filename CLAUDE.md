@@ -82,6 +82,11 @@ MCP-Fassung, neue Leitfaden-Seiten). Deshalb: **vor Panel-, Manifest- oder Archi
 Änderungen die Seiten lesen (`--diff URL`), `docs/anthropic/abgleich.md` anpassen, **dann** bauen, dann `--update`.
 Die Textkopien liegen nur lokal (`.cache/`, Anthropics Urheberrecht); im Repo stehen Fingerabdrücke und unsere
 Auswertung. Ein Sitzungsstart-Hook meldet, wenn der Stand älter als 7 Tage ist.
+Seit 12.11.2026 läuft derselbe Check täglich auf GitHub (`.github/workflows/doku-waechter.yml`, `--check --exit-code`): bei
+einer Änderung öffnet er ein Issue mit dem Label `doku-waechter` (ein Issue je offenem Stand, schließt sich nach
+`--update` + Push von selbst). Beobachtet werden auch das Desktop-Changelog, die Modellübersicht, die
+Modell-Abkündigungen und die Plattform-Release-Notes (`docs/anthropic/quellen.json`); Nebenversionen von Paketen
+lösen keine Meldung aus, eine neue Hauptversion schon.
 
 ## Auto-Gate (the project's green/red)
 

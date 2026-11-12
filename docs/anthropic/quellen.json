@@ -12,7 +12,8 @@
         "/docs/connectors/getting-started",
         "/docs/directory/",
         "/docs/build/",
-        "/docs/plugins/"
+        "/docs/plugins/",
+        "/docs/cowork/changelog\\.md$"
       ]
     },
     {
@@ -21,6 +22,15 @@
       "einschliessen": [
         "/extensions/apps/",
         "/specification/[0-9-]+/(changelog|deprecated|server/tools|server/resources|basic/transports/stdio)\\.md"
+      ]
+    },
+    {
+      "name": "claude-plattform",
+      "url": "https://platform.claude.com/llms.txt",
+      "einschliessen": [
+        "/docs/en/models/overview\\.md$",
+        "/docs/en/about-claude/model-deprecations\\.md$",
+        "/docs/en/release-notes/overview\\.md$"
       ]
     }
   ]
