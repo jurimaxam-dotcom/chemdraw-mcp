@@ -301,6 +301,11 @@ def _draw(mols: list[Chem.Mol], width: int = STEP_WIDTH, height: int = STEP_HEIG
 
     svg = drawer.GetDrawingText()
     raw_boxes, notes = _label_boxes(svg)
+    # RDKit hängt beim Zeichnen H an Ringverknüpfungs-Stereozentren (Morphin): ihre Indizes liegen
+    # hinter dem letzten Atom von `mol`. Sie bleiben Hindernisse, sind aber keine Atome des Schritts.
+    n_atoms = mol.GetNumAtoms()
+    notes = notes + [b for i, b in raw_boxes.items() if i >= n_atoms]
+    raw_boxes = {i: b for i, b in raw_boxes.items() if i < n_atoms}
     boxes = {idx_to_map[i]: b for i, b in raw_boxes.items() if i in idx_to_map}
     labelled_carbons = sorted(
         idx_to_map.get(i, 0)

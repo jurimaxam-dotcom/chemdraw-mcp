@@ -238,3 +238,19 @@ def test_primaeres_zentrum_im_uebergangszustand_ist_beschriftet():
 
     ts = generate_mechanism("sn2", ["CCBr", "[I-]"]).steps[1]
     assert "1" in geometry_of(ts.svg)["boxes"], "Zentrum C (Map 1) ohne Beschriftung"
+
+
+def test_kaefig_stereozentren_zeichnen_ohne_range_error():
+    """Morphin als Alkohol der Fischer-Veresterung: RDKit hängt beim Zeichnen H an die
+    Ringverknüpfungs-Stereozentren, deren Indizes hinter dem letzten Atom liegen. Der Renderer
+    griff damit ins Leere (Range Error), der Server fiel aufs Lehrbuchbeispiel zurück (12.11.2026).
+    """
+    from chemdraw_tool import mechanism_coords
+    from chemdraw_tool.mechanism_renderer import render_step_svg
+    from chemdraw_tool.mechanism_substrate import build_steps
+
+    morphin = "C1=CC(O)=C2C=3[C@@]45[C@@H](O2)[C@@H](O)C=C[C@H]4[C@@H](CC13)N(C)CC5"
+    steps = build_steps("fischer_ester", ["CC(=O)O", morphin])
+    mols = mechanism_coords.layout_anchored(steps)
+    svgs = [render_step_svg(step, m) for step, m in zip(steps, mols)]
+    assert len(svgs) == len(steps) and all("<svg" in s for s in svgs)
