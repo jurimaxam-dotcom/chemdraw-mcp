@@ -76,6 +76,12 @@ Das Entwicklermenü bietet außerdem „MCP-Protokolldatei öffnen“ und
 JSON-Einstellungen erhalten und vorher sichern. Console und Network
 helfen bei Host-/iframe-Fehlern, ersetzen aber keine Testassertionen.
 
+Fernsteuerung über CDP geht nicht (gemessen 12.11.2026): `Claude --remote-debugging-port=9222`
+beendet sich mit „refusing to start — a debugging or network-override switch is present on the
+command line“. Playwright kann sich also nicht an Desktop hängen; der Handtest bleibt bei
+`scripts/ax-claude.sh` und ist nur vor einem Release und nach Host-spezifischen Änderungen fällig
+(Regel in `CLAUDE.md`, Abschnitt Helpers).
+
 Quellen: [MCP-Debugging](https://modelcontextprotocol.io/docs/tools/debugging),
 [Claude Desktop: lokale MCP-Server](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop).
 Der [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) bietet

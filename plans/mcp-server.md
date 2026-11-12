@@ -663,6 +663,9 @@ Paket-Nebenversionen separat gemeldet, keine Abhängigkeit hier verändert.
 - [x] Anschließend auf Jays ausdrücklichen Auftrag DevTools aktiviert; neuer
   Entwickler-Menüpunkt und geöffnetes DevTools-Fenster mit Console/Network selbst
   sichtbar geprüft. Die Konfiguration liegt lokal außerhalb des Repositories.
+- [x] Workflow 12.11.: Handtest nur noch vor Release und nach Host-spezifischer Änderung (`CLAUDE.md`,
+  Helpers). CDP-Fernsteuerung gemessen: Desktop verweigert den Start mit `--remote-debugging-port`
+  („refusing to start“), AX-Klicks bleiben der einzige Fahrer (`docs/ui-pruefung.md`).
 
 - [ ] **Routing-Befund MVP (Claude, 14.10., `run_claude.py`, 11/13 grün):** (offen, braucht API; Fall `evals/tool-routing/cases.yaml:232-235`) zwei Fälle
   3 von 3 stabil rot — `lookup-data-sheet` ruft nach `lookup_molecule_data` zusätzlich

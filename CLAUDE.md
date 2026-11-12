@@ -45,6 +45,15 @@ session builds itself. Only this differs or adds here:
 
 - **Desktop hand tests and screen recordings stay with Codex** — one Tisch order per test run with all steps,
   no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
+- **A hand test is due only before a release and after a host-specific change** (Jay, 12.11.2026) — not per
+  tool or feature. Host-specific means: manifest/bundle/install path, `_meta.ui`, host capabilities, CSP, ext-apps
+  SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on `./test.sh`,
+  `test:host`, `handshake.sh` and `evals/tool-routing`. What the hand tests of 07.11. found were routing and
+  permission cases (model called no tool in 3 of 9, missing "Always allow"), not panel bugs.
+- **Desktop cannot be driven over CDP** (measured 12.11.2026): started with `--remote-debugging-port=9222` it
+  exits with "refusing to start — a debugging or network-override switch is present on the command line". So
+  Playwright cannot attach; AX clicks via `scripts/ax-claude.sh` remain the only driver. DevTools (`⌘⌥I`,
+  `allowDevTools` is on) is for diagnosis of a failing panel, never an acceptance step.
 - **Review before a release** runs without a pane: `codex exec review --commit <sha> < /dev/null`. The reviewer
   only reports; the owner checks every finding against the code before taking or rejecting it.
 - **A test report that found a bug is a result**, not an abort: `status: erledigt` with the finding under
