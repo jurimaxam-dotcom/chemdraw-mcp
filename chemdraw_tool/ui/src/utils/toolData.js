@@ -85,3 +85,15 @@ export async function loadToolData(app, params) {
   }
   return full;
 }
+
+// Alle Dateipfade eines Ergebnisses, auch aus den Karten eines Stapels: scheitert
+// das Nachladen, nennt das Panel sie statt eine leere Fläche zu zeigen.
+export function writtenFiles(node) {
+  if (Array.isArray(node)) return node.flatMap(writtenFiles);
+  if (!node || typeof node !== "object") return [];
+  return Object.entries(node).flatMap(([key, value]) =>
+    key === "files" && value && typeof value === "object" && !Array.isArray(value)
+      ? Object.values(value).filter((v) => typeof v === "string")
+      : writtenFiles(value),
+  );
+}

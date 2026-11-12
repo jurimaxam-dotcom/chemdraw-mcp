@@ -7,7 +7,7 @@ import HostDiagnostics from "./components/HostDiagnostics";
 import ToolError from "./components/ToolError";
 import ToolPlaceholder from "./components/ToolPlaceholder";
 import { ModelContextProvider } from "./ModelContext";
-import { extractToolData, extractToolError, loadToolData } from "./utils/toolData";
+import { extractToolData, extractToolError, loadToolData, writtenFiles } from "./utils/toolData";
 import { useHostLayout } from "./utils/useHostLayout";
 import "./styles.css";
 
@@ -64,7 +64,7 @@ function Root() {
         setData(null);
         loadToolData(app, params).then(shown, (err) => {
           if (mine !== latest.current) return;
-          const files = Object.values(payload.files || {});
+          const files = writtenFiles(payload);
           setToolError([err.message, ...(files.length ? ["Files:", ...files] : [])].join("\n"));
         });
       });

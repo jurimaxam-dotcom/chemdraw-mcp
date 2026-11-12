@@ -141,3 +141,15 @@ test("loadToolData: Nachladen scheitert → Fehler mit Meldung statt halber Date
     return true;
   });
 });
+
+import { writtenFiles } from "./toolData.js";
+
+test("writtenFiles sammelt Dateipfade auch aus verschachtelten Karten (Stapel)", () => {
+  const payload = {
+    type: "batch",
+    molecules: [{ files: { png: "/o/a.png", svg: "/o/a.svg" } }, { files: { png: "/o/b.png" } }],
+    files: { cdxml: "/o/x.cdxml" },
+  };
+  assert.deepEqual(writtenFiles(payload).sort(), ["/o/a.png", "/o/a.svg", "/o/b.png", "/o/x.cdxml"]);
+  assert.deepEqual(writtenFiles({ type: "molecule" }), []);
+});

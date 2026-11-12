@@ -406,7 +406,10 @@ tools.
 `result_budget.py` (wrapped in `create_server`): compact JSON instead of indented, and above 55,000 characters
 per copy the biggest strings (SVGs), then lists, are replaced by `""`/`[]` and noted under `_deferred`; the panel
 fetches them as one block in pieces via `load_panel_part` (`loadToolData`, used by `main.jsx` and every
-`callServerTool` site). `tests/test_result_size.py` holds every panel tool plus large cases under 120,000 and
+`callServerTool` site). The block lives in memory and on disk (`~/Library/Caches/chemdraw-mcp/panel-parts/`,
+last 200, token = content hash), because Desktop may hand old results to a fresh panel when a chat is reopened (unmeasured),
+also after a server restart; if the block is gone the panel names the written files instead of an empty area.
+Tests redirect `result_budget.STORE_DIR` (autouse fixture in `tests/conftest.py`). `tests/test_result_size.py` holds every panel tool plus large cases under 120,000 and
 proves the reassembled payload equals the original; `test:host` runs a 20-molecule batch without
 `structuredContent` and Vancomycin through the real server. A view that calls a panel tool must use
 `loadToolData`, never `extractToolData` alone. `chemdraw_tool/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile

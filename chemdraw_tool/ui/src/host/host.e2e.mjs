@@ -1541,6 +1541,29 @@ try {
       await p.screenshot({ path: join(tmpdir(), `panel-host-m2-${fall.tool}.png`) });
       await p.close();
     }
+    // Block nicht mehr beim Server (gelöscht, fremder Rechner): Meldung mit den
+    // geschriebenen Dateien, nie eine leere Fläche.
+    {
+      const p = await browser.newPage({ viewport: { width: 720, height: 600 } });
+      await p.setContent('<body style="margin:0"></body>');
+      await p.addScriptTag({ path: out });
+      await p.exposeFunction("__callTool", (req) => client.callTool(req));
+      const result = await client.callTool({ name: "batch_generate", arguments: { molecules: ARZNEISTOFFE } });
+      const text = JSON.parse(result.content[0].text);
+      text._deferred.token = "f".repeat(32);
+      const toolResult = { content: [{ type: "text", text: JSON.stringify(text) }], isError: false };
+      const tool = tools.find((t) => t.name === "batch_generate");
+      const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
+      await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: {}, toolResult });
+      const f = p.frames().at(-1);
+      await f.getByRole("alert").waitFor({ timeout: 15000 }).catch(() => {});
+      const shown = await f.locator("body").innerText();
+      check(await f.getByRole("alert").count() === 1 && shown.includes("could not be loaded")
+        && shown.includes("Run the tool again") && /\.png/.test(shown) && await f.locator(".panel-title").count() === 0,
+        `Nachladen scheitert: Meldung mit Dateipfaden statt leerer Fläche („${shown.replace(/\s+/g, " ").slice(0, 90)}…“)`);
+      await p.screenshot({ path: join(tmpdir(), "panel-host-m2-fehlt.png") });
+      await p.close();
+    }
   }
 
   const batchPage = await browser.newPage({ viewport: { width: 720, height: 900 } });
