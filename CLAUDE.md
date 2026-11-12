@@ -89,6 +89,13 @@ Modell-Abkündigungen und die Plattform-Release-Notes (`docs/anthropic/quellen.j
 lösen keine Meldung aus, eine neue Hauptversion schon. Der Wächter lässt Claude die Änderung gleich im Issue einordnen
 (`anthropics/claude-code-action`, Geheimnis `CLAUDE_CODE_OAUTH_TOKEN`, nur lesen und kommentieren). `.github/workflows/claude.yml`
 beantwortet `@claude` in Issues und PRs — nur vom Eigentümer; ein automatisches Review fremder PRs gibt es bewusst nicht.
+Zwei weitere Workflows nutzen denselben Zugang nach Zeitplan (12.11.2026): `abhaengigkeiten.yml` kommentiert täglich jeden
+offenen Dependabot-PR einmal je Stand (was ändert sich, trifft es einen Pin, mergen ja/nein — der Merge bleibt Handarbeit),
+`zustandsbericht.yml` legt montags ein Issue mit dem Label `zustandsbericht` an, wenn etwas offen ist (rote CI, PRs, Issues;
+fremde Issues werden dort eingeordnet, nie öffentlich beantwortet). **Muster für jeden weiteren Claude-Workflow:** zwei Jobs —
+der mit `CLAUDE_CODE_OAUTH_TOKEN` hat nur Leserechte, Tools `Read,Grep,Glob,Write`, und schreibt eine Datei; der mit
+Schreibrecht hat kein Modell, prüft die Datei (Länge, `@` entschärft, Stand unverändert) und postet. Kein
+`pull_request_target`, eine Shell-Vorprüfung entscheidet, ob das Modell überhaupt startet.
 
 ## Auto-Gate (the project's green/red)
 

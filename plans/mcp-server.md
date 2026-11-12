@@ -1,6 +1,16 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — GitHub-Einrichtung abschließen, eine Sache auf einmal (Do 12.11.2026, 16:05)
+## GitHub-Einrichtung abgeschlossen (Do 12.11.2026, 16:15)
+
+- **Jays Antwort auf „wofür den Bot noch?“ (12.11.):** „alles, was für uns einen Nutzen stiftet, einrichten und danach schließen wir das Thema ab“ — Kontingent ist ihm egal (Max-Abo).
+- **Gebaut (`04bf702`):** `abhaengigkeiten.yml` (täglich 06:47: ein Kommentar je Dependabot-PR und Stand) und `zustandsbericht.yml` (montags 07:07: ein Issue, nur wenn etwas offen ist). Zwei Jobs je Workflow: Modell mit Leserechten schreibt eine Datei, Job ohne Modell prüft und postet. Muster steht in `CLAUDE.md`.
+- **Belegt per Handstart:** Lauf 43242233899 → Kommentar an PR #9, stimmt mit dem Diff (nur `uv.lock`, ruff 0.17.3 → 0.17.4, Lock-`revision` 3 → 5); Tool-Liste im Log genau `Read, Grep, Glob, Write`. Lauf 43242487277 → „schon eingeordnet“, kein zweiter Kommentar. Lauf 43242493607 → Issue #10 „Zustandsbericht 12.11.2026“.
+- **Bewusst nicht gebaut:** öffentliche Bot-Antworten auf fremde Issues — fremder Text soll Claude keine Antwort in Jays Namen entlocken (Entscheidung aus `claude.yml`); fremde Issues stehen stattdessen im Montagsbericht. Dieselbe Einrichtung in anderen Repos: nicht Sache dieser Session.
+- **Auto-Push durch den main-Schutz:** belegt (`c5c08c8`, `04bf702` liegen auf origin).
+- **Offen, Jays Hand:** PR #9 mergen (`gh pr merge 9 --squash --delete-branch`; der Session wurde der Merge verweigert). Lokal geprüft: uv 0.11.11 liest die Lock-Revision 5 (`uv lock --check` rc=0), `ruff check .` mit 0.17.4 grün, CI am PR grün.
+- **Restpunkte, blockieren nichts:** erster echter Cron-Lauf beider Workflows (13.11. morgens bzw. Mo 16.11.) und der Wächter-Zweig „Änderung → Issue → Claude ordnet ein“ sind noch nie von selbst gelaufen — beim ersten Mal Lauf und Text ansehen. Der Wächter-Schritt hat `WebFetch` und Schreib-Token im selben Job (schwächer als das neue Muster; Quellen sind feste Anthropic-Seiten) — bei Gelegenheit auf zwei Jobs umbauen.
+
+## Vorher — GitHub-Einrichtung abschließen, eine Sache auf einmal (Do 12.11.2026, 16:05)
 
 - **Jay will genau ein Thema zur Zeit** (12.11., 16:00: „eine Sache auf einmal“). Aktuelles Thema: GitHub. Clips und anderes erst ansprechen, wenn er dorthin wechselt.
 - **Fertig:** Doku-Wächter täglich 06:17 (`31d4226`), `@claude` im Repo nur für den Eigentümer und nie auf Fork-PRs (`5db4ba4`, `f722b6a`), zwei Probeläufe im PR #9 beantwortet, läuft über Jays Abo (`CLAUDE_CODE_OAUTH_TOKEN`). CI für `f722b6a` und `a991f16` lief 16:00 noch — beim Wiedereinstieg prüfen: `gh run list --workflow ci.yml --limit 3`.
