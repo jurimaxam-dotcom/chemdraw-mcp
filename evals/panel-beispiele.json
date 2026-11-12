@@ -1,0 +1,145 @@
+{
+  "generate_molecule": {
+    "prompt": "Zeichne Koffein.",
+    "args": {
+      "name_or_smiles": "caffeine"
+    },
+    "bereit": "svg"
+  },
+  "compare_molecules": {
+    "prompt": "Vergleiche Ibuprofen und Naproxen als Strukturen nebeneinander.",
+    "args": {
+      "structures": [
+        "ibuprofen",
+        "naproxen"
+      ]
+    },
+    "bereit": "svg"
+  },
+  "batch_generate": {
+    "prompt": "Zeichne Benzol, Toluol und Phenol als drei einzelne Strukturen.",
+    "args": {
+      "molecules": [
+        "benzene",
+        "toluene",
+        "phenol"
+      ]
+    },
+    "bereit": "svg"
+  },
+  "generate_reaction": {
+    "prompt": "Zeichne das Reaktionsschema der Fischer-Veresterung von Essigsäure mit Ethanol zu Ethylacetat und Wasser.",
+    "args": {
+      "reactants": [
+        "CC(=O)O",
+        "CCO"
+      ],
+      "products": [
+        "CC(=O)OCC",
+        "O"
+      ],
+      "conditions": "H2SO4",
+      "name": "Fischer esterification"
+    },
+    "bereit": "svg"
+  },
+  "generate_mechanism": {
+    "prompt": "Zeig mir den SN2-Mechanismus von 2-Brombutan mit Cyanid, Schritt für Schritt mit Elektronenpfeilen.",
+    "args": {
+      "reaction_type": "sn2",
+      "substrates": [
+        "C[C@@H](Br)CC",
+        "[C-]#N"
+      ]
+    },
+    "bereit": "svg"
+  },
+  "generate_3d": {
+    "prompt": "Zeig mir Koffein als drehbares 3D-Modell.",
+    "args": {
+      "name_or_smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+      "label": "Caffeine"
+    },
+    "bereit": "svg, canvas"
+  },
+  "generate_protein_or_antibody": {
+    "prompt": "Zeig mir die Struktur des Antikörpers Trastuzumab.",
+    "args": {
+      "name": "trastuzumab"
+    },
+    "bereit": "[data-protein-viewer=\"ready\"], svg"
+  },
+  "lookup_molecule_data": {
+    "prompt": "Gib mir das Datenblatt zu Paracetamol mit CAS-Nummer und Molmasse im Panel.",
+    "args": {
+      "name": "paracetamol"
+    },
+    "bereit": "svg"
+  },
+  "generate_spectrum": {
+    "prompt": "Zeichne ein IR-Spektrum mit meinen gemessenen Banden: 1750 cm⁻¹ (stark, Ester-C=O) und 1690 cm⁻¹ (stark, Säure-C=O).",
+    "args": {
+      "spectrum_type": "ir",
+      "title": "Aspirin IR",
+      "peaks": [
+        {
+          "position": 1750,
+          "intensity": 1,
+          "label": "Ester C=O"
+        }
+      ]
+    },
+    "bereit": "svg"
+  },
+  "generate_tlc": {
+    "prompt": "Zeichne meine DC-Platte: Bahn Edukt mit Rf 0,3, Bahn Produkt mit Rf 0,65.",
+    "args": {
+      "title": "Two lanes",
+      "lanes": [
+        {
+          "name": "A",
+          "spots": [
+            {
+              "rf": 0.3
+            }
+          ]
+        },
+        {
+          "name": "B",
+          "spots": [
+            {
+              "rf": 0.65
+            }
+          ]
+        }
+      ]
+    },
+    "bereit": "svg"
+  },
+  "generate_titration_curve": {
+    "prompt": "Zeichne die Titrationskurve von 25 mL 0,1 M Essigsäure (pKa 4,76) mit 0,1 M NaOH.",
+    "args": {
+      "substance": "Acetic acid",
+      "pka_values": [
+        4.76
+      ],
+      "c_acid": 0.1,
+      "v_acid_ml": 25,
+      "c_titrant": 0.1
+    },
+    "bereit": "svg"
+  },
+  "generate_species_distribution": {
+    "prompt": "Zeichne das Speziesverteilungsdiagramm von Ibuprofen (pKa 4,4) über den pH.",
+    "args": {
+      "substance": "Ibuprofen",
+      "pka_values": [
+        4.4
+      ]
+    },
+    "bereit": "svg"
+  },
+  "export_anki_deck": {
+    "auslassen": "Ändert Notizen in einem laufenden Anki (destruktiv, _TOOL_LABELS); der Knopfweg ist in test:host mit umgeschriebenem deliver abgedeckt."
+  }
+}
