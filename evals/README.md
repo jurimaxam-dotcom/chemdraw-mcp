@@ -53,7 +53,7 @@ Je Panel-Tool ein Prompt aus `evals/panel-beispiele.json`, diesmal mit dem echte
 (Wegwerf-HOME, `export_anki_deck` bleibt verweigert). Grün = Tool gerufen, Ergebnis ohne Fehler,
 kein verweigerter Aufruf; gelb = eine Quelle war nicht erreichbar (Exit 3); rot = Exit 1.
 Das ist der Teil des Desktop-Handtests, der ohne Bildschirm geht. Er sagt nicht voraus, ob
-Desktop das Tool ruft: die `desktop-*`-Fälle sind hier grün und waren in Desktop rot.
+Desktop das Tool ruft: die `desktop-*`-Fälle waren im Stub-Lauf grün (ein Lauf, Opus, 12.11.2026) und in Desktop rot.
 
 ## Lauf mit promptfoo
 

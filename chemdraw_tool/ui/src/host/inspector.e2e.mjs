@@ -10,7 +10,7 @@
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { mkdtempSync, readFileSync, existsSync, readdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,8 +28,10 @@ const token = randomBytes(24).toString("hex");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "inspector-home-"));
 const shots = mkdtempSync(join(tmpdir(), "inspector-shots-"));
 const echtesOutput = join(homedir(), "ChemDraw-Output");
-const zaehle = (d) => (existsSync(d) ? readdirSync(d, { recursive: true }).length : 0);
-const vorher = zaehle(echtesOutput);
+// Dateien, die seit Laufbeginn im echten Ordner geändert wurden (mtime, damit auch Überschreiben auffällt)
+const beginn = Date.now();
+const neuSeitBeginn = () => (existsSync(echtesOutput) ? readdirSync(echtesOutput, { recursive: true }) : [])
+  .filter((f) => { try { const s = statSync(join(echtesOutput, f)); return s.isFile() && s.mtimeMs >= beginn; } catch { return false; } });
 
 const kinder = [];
 const start = (cmd, args, env) => {
@@ -46,6 +48,12 @@ const wartePort = async (url, name, log) => {
   }
   console.error(`ABBRUCH: ${name} antwortet nicht auf ${url}\n${log().slice(-800)}`); ende(2);
 };
+
+// Ein schon belegter Port hieße: wir testen still einen fremden, womöglich veralteten Prozess.
+for (const [port, name] of [[SERVER, "Server"], [WEB, "Inspector"], [SANDBOX, "Inspector-Sandbox"]]) {
+  const belegt = await fetch(`http://127.0.0.1:${port}/`).then(() => true, () => false);
+  if (belegt) { console.error(`ABBRUCH: Port ${port} (${name}) ist schon belegt — laufenden Prozess beenden, dann neu starten.`); process.exit(2); }
+}
 
 // venv-Binärdatei direkt (uv bräuchte das echte HOME); HOME = Wegwerf-Ordner wie in host.e2e.mjs
 const serverLog = start(join(repo, ".venv/bin/python"), ["scripts/dev_http.py"], { HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp", PORT: String(SERVER) });
@@ -71,10 +79,11 @@ for (const [name, b] of tools) {
     await page.waitForSelector('[data-testid="connection-status"][data-status="connected"]', { timeout: 20000 });
     await page.waitForSelector('[data-app-status="ready"]', { timeout: 40000 });
     const panel = page.frameLocator('iframe').frameLocator('iframe');
-    await panel.locator(b.bereit).first().waitFor({ timeout: 60000 });
+    const toolFehler = panel.locator('[data-testid="tool-error"]');
+    await panel.locator(b.bereit).or(toolFehler).first().waitFor({ timeout: 60000 });
     const text = await panel.locator("body").innerText();
     if (/Waiting for data/i.test(text)) grund = "Panel wartet noch auf Daten";
-    else if (await panel.locator('[data-testid="tool-error"]').count()) grund = `Panel zeigt einen Fehler: ${text.replace(/\s+/g, " ").slice(0, 160)}`;
+    else if (await toolFehler.count()) grund = `Panel zeigt einen Fehler: ${text.replace(/\s+/g, " ").slice(0, 160)}`;
     else if (fehler.length) grund = `JS-Fehler: ${fehler[0]}`;
   } catch (e) {
     const status = await page.locator('[data-testid="connection-status"]').first().getAttribute("data-error-message").catch(() => null);
@@ -87,7 +96,8 @@ for (const [name, b] of tools) {
 }
 await browser.close();
 
-const nachher = zaehle(echtesOutput);
-if (nachher !== vorher) { console.log(`✘ ~/ChemDraw-Output hat sich verändert (${vorher} → ${nachher} Einträge): der Wegwerf-HOME greift nicht`); rot += 1; }
+// Nur Hinweis, kein Rot: ein parallel benutztes Claude Desktop schreibt in denselben Ordner (gesehen 12.11.2026).
+const neu = neuSeitBeginn();
+if (neu.length) console.log(`⚠ ~/ChemDraw-Output: ${neu.length} Datei(en) seit Laufbeginn geändert (${neu.slice(0, 3).join(", ")}). Von diesem Lauf dürfen sie nicht stammen (Wegwerf-HOME) — prüfen, ob Desktop parallel lief.`);
 console.log(`\n${tools.length - Math.min(rot, tools.length)}/${tools.length} Panels grün · Screenshots: ${shots}`);
 ende(rot ? 1 : 0);

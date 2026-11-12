@@ -16,7 +16,7 @@ Modell statt eines Tools Bash.
 `evals/panel-beispiele.json`. Grün heißt dort: das Tool wurde gerufen, der Server hat
 ohne Fehler geantwortet, und kein Aufruf wurde verweigert. Das ist der Teil des
 Desktop-Handtests, der ohne Bildschirm geht (Prompt → Aufruf → Ergebnis). Er sagt NICHT
-voraus, ob Desktop das Tool ruft: die drei Desktop-Ausfälle vom 07.11.2026 sind hier grün.
+voraus, ob Desktop das Tool ruft: die `desktop-*`-Fälle (in Desktop rot) waren im Stub-Lauf grün.
 
     uv run python evals/tool-routing/run_claude.py --echt                 # alle Panel-Tools
     uv run python evals/tool-routing/run_claude.py --echt generate_3d
@@ -33,6 +33,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -113,8 +114,11 @@ def bewerte_echt(tool: str, namen: list[str], echt: dict) -> tuple[str, str]:
     return "grün", ""
 
 
-def _ordner_stand(pfad: Path) -> int:
-    return sum(1 for _ in pfad.rglob("*")) if pfad.exists() else 0
+def _neu_seit(pfad: Path, beginn: float) -> list[str]:
+    """Dateien, die seit `beginn` geändert wurden — mtime, damit auch Überschreiben auffällt."""
+    if not pfad.exists():
+        return []
+    return sorted(str(f.relative_to(pfad)) for f in pfad.rglob("*") if f.is_file() and f.stat().st_mtime >= beginn)
 
 
 def main_echt(auswahl: list[str]) -> int:
@@ -132,7 +136,7 @@ def main_echt(auswahl: list[str]) -> int:
     erlaubt = sorted({t.name for t in asyncio.run(mcp.list_tools())} - (beispiele.keys() - offen.keys()))
     arbeit = tempfile.mkdtemp(prefix="tool-echt-")
     echtes_output = Path.home() / "ChemDraw-Output"
-    vorher = _ordner_stand(echtes_output)
+    beginn = time.time()
     try:
         heim = Path(arbeit) / "home"
         heim.mkdir()
@@ -159,9 +163,11 @@ def main_echt(auswahl: list[str]) -> int:
                     print(f"    Modell schrieb stattdessen: {' '.join(text.split())[:200]}")
     finally:
         shutil.rmtree(arbeit, ignore_errors=True)
-    if _ordner_stand(echtes_output) != vorher:
-        print("✘ ~/ChemDraw-Output hat sich verändert: der Wegwerf-HOME greift nicht")
-        zahl["rot"] += 1
+    # Nur Hinweis, kein Rot: ein parallel benutztes Claude Desktop schreibt in denselben Ordner (gesehen 12.11.2026)
+    neu = _neu_seit(echtes_output, beginn)
+    if neu:
+        print(f"⚠ ~/ChemDraw-Output: {len(neu)} Datei(en) seit Laufbeginn geändert ({', '.join(neu[:3])}). "
+              "Von diesem Lauf dürfen sie nicht stammen (Wegwerf-HOME) — prüfen, ob Desktop parallel lief.")
     print(f"\n{zahl['grün']}/{len(fälle)} grün · {zahl['gelb']} gelb (Quelle) · {zahl['rot']} rot")
     return 1 if zahl["rot"] else 3 if zahl["gelb"] else 0
 

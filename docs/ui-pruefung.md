@@ -96,8 +96,11 @@ Inspector, öffnet je Panel-Tool den Deep-Link und wartet auf `data-app-status="
 Screenshots im ausgegebenen Temp-Ordner. `--echt` prüft je Panel-Tool Aufruf, fehlerfreies Ergebnis und
 leere `permission_denials` (12/12 grün). Beide laufen außerhalb des Gates (Netz, Modellaufruf).
 
-Grenze: Keiner der Läufe sagt voraus, ob das Modell in Desktop das Tool ruft. Die drei Desktop-Ausfälle vom
-07.11. (`desktop-loeslichkeit`, `desktop-ir-banden`, `desktop-ph-essig`) sind im Stub-Lauf mit Opus grün.
+Grenze: `run_claude.py` sagt nicht voraus, ob das Modell in Desktop das Tool ruft. Die Fälle
+`desktop-loeslichkeit`, `desktop-ir-banden`, `desktop-ph-essig` (Wortlaut der Abnahme vom 02.11., dieselben
+Fragen am 07.11. in Desktop wieder ohne Werkzeug) waren am 12.11. in einem Stub-Lauf mit Opus grün.
+Rot-Proben: unbekannter Stoffname → Panel zeigt den Tool-Fehler, Lauf rot; Prompt, der `export_anki_deck`
+verlangt → „Aufruf verweigert“, Lauf rot.
 Offen, nicht gebaut: `mcpjam apps conformance` als Konformitäts-Check der Panel-Metadaten.
 
 Quellen: [MCP-Debugging](https://modelcontextprotocol.io/docs/tools/debugging),

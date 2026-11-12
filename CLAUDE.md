@@ -49,9 +49,9 @@ session builds itself. Only this differs or adds here:
   tool or feature. Host-specific means: manifest/bundle/install path, `_meta.ui`, host capabilities, CSP, ext-apps
   SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on the fixed
   workflow below (stages 1–4). What the hand tests of 07.11. found were routing and permission cases (model
-  called no tool in 3 of 9, missing "Always allow"), not panel bugs — and **no scripted run predicts those**:
-  the same three prompts are green in `run_claude.py` with Opus (measured 12.11.2026). Whether Desktop's model
-  calls the tool stays a hand-test question.
+  called no tool in 3 of 9, missing "Always allow"), not panel bugs — and **`run_claude.py` does not predict those**:
+  the `desktop-*` cases (same questions, wording of the 02.11. acceptance) were green in one stub run with Opus
+  on 12.11.2026. Whether Desktop's model calls the tool stays a hand-test question.
 - **Desktop cannot be driven over CDP** (measured 12.11.2026): started with `--remote-debugging-port=9222` it
   exits with "refusing to start — a debugging or network-override switch is present on the command line". So
   Playwright cannot attach; AX clicks via `scripts/ax-claude.sh` remain the only driver. DevTools (`⌘⌥I`,
@@ -116,7 +116,8 @@ guidance ends in a manual check in the real client.
 
 1. **While editing:** `npm --prefix chemdraw_tool/ui run test:ui:watch`, and for the panel
    `npm --prefix chemdraw_tool/ui run build:watch` — `chem_app_ui()` reads `dist/` on every `resources/read`,
-   so the next tool call shows the new panel without a server restart. A watch rebuild is **not** byte-identical
+   so a host that re-reads the resource gets the new panel without a server restart (whether Desktop re-reads
+   or caches is unmeasured). A watch rebuild is **not** byte-identical
    to a clean build (measured: 3,000.67 vs 2,996.67 kB for the same source): stop the watch and run
    `npm --prefix chemdraw_tool/ui run build` before committing, or the gate goes red on the bundle.
 2. **Before every commit:** `./test.sh`.
