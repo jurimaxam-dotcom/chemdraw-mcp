@@ -37,7 +37,25 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Pull Requests aus fremden Forks nie mit Claude bearbeiten, auch nicht auf Zuruf des Eigentümers:
+      # die Action arbeitet im PR-Stand, und der Sitzungsstart-Hook dieses Repos (.claude/settings.json)
+      # startet ein Skript aus dem Arbeitsbaum — bei einem fremden PR wäre das fremder Code neben dem
+      # Zugangsschlüssel (docs/security.md der Action, „Which files come from the base branch“).
+      - name: Herkunft des Pull Requests prüfen
+        id: herkunft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NR: ${{ github.event.pull_request.number || (github.event.issue.pull_request && github.event.issue.number) || '' }}
+        run: |
+          fremd=false
+          if [ -n "$NR" ]; then
+            fremd=$(gh pr view "$NR" --repo "${{ github.repository }}" --json isCrossRepository --jq .isCrossRepository)
+          fi
+          echo "fremd=$fremd" >> "$GITHUB_OUTPUT"
+          if [ "$fremd" != false ]; then echo "::notice::Pull Request aus einem Fork — Claude läuft hier nicht."; fi
+
       - uses: anthropics/claude-code-action@4fa93a88de49bbef68b10eb15aabedf28ca0e1ed # v1
+        if: steps.herkunft.outputs.fremd == 'false'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           additional_permissions: |
