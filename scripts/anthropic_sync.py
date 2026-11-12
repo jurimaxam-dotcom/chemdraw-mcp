@@ -88,7 +88,9 @@ def _hauptversion(v: str) -> int | None:
 
 
 def _zahlen(v: str) -> tuple[int, ...]:
-    return tuple(int(x) for x in re.findall(r"\d+", v)[:3])
+    # Auf drei Stellen auffüllen: „2.3“ und „2.3.0“ sind derselbe Stand.
+    teile = [int(x) for x in re.findall(r"\d+", v)[:3]]
+    return tuple(teile + [0] * (3 - len(teile)))
 
 
 def versionsbericht(unsere: dict, neueste: dict) -> list[dict]:

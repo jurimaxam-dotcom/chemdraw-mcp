@@ -121,3 +121,10 @@ def test_veralteter_stand_wird_gemeldet(tmp_path):
     assert "veraltet" in sync.alterswarnung(stand, heute="2026-10-03", tage=7)
     assert sync.alterswarnung(stand, heute="2026-09-03", tage=7) == ""
     assert "noch nie" in sync.alterswarnung(tmp_path / "fehlt.json", heute="2026-10-03", tage=7)
+
+
+def test_gleiche_version_mit_weniger_stellen_ist_aktuell():
+    """„>=2.3,<3“ gegen 2.3.0 ist derselbe Stand — (2, 3) < (2, 3, 0) war ein Fehlalarm."""
+    zeile = sync.versionsbericht({"mcp": ">=2.3,<3"}, {"mcp": "2.3.0"})[0]
+    assert zeile["status"] == "aktuell"
+    assert sync.versionsbericht({"mcp": ">=2.3,<3"}, {"mcp": "2.3.1"})[0]["status"] == "neuere Nebenversion"
