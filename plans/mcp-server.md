@@ -43,6 +43,13 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
+## Weiter bei — U5-Befunde abgeschlossen (Do 12.11.2026, 17:40)
+
+- **(1) Study verrät Namen:** nicht im Panel lösbar. Beleg: Nutzer fragte wörtlich „What is the name of this compound?“ (`/tmp/chemdraw-desktop-test/u5/07-name-leaked-ax.txt` Z. 330), der Name stand schon im eigenen Prompt („draw aspirin“) und im Tool-Ergebnis; U5b zeigte zudem, dass Desktop den `updateModelContext`-Text dem Modell nicht zeigt (Plan-Block „U5b gefahren“).
+- **(2) Continue füllt nur den Composer:** Host-Verhalten laut Anthropic send-messages („Places the text in your message box, ready to send“; Caution-Hinweis dokumentiert). Dabei gefunden und behoben: `MESSAGE_FAILED` behauptete nach Promise-Timeout „could not be sent“, was dieselbe Seite verbietet — Test rot → Fix → grün, landete in `4b1a528` (von der Auftraggeber-Session mitcommittet).
+- **(3) Vergleich im Vollbild:** war schon erledigt (`99b0ec5`); `test:host` misst jetzt box 620 / svg 602 px bei 1400×900.
+- **Abnahme:** `./test.sh` rc=0, `test:host` rc=0 (467 ✔), `test:inspector` 12/12, Bundle sauber neu gebaut.
+
 ## Weiter bei — drei U5-Befunde prüfen und beheben, Abnahme über den neuen Workflow (Thu 12.11.2026, 17:00)
 
 - **Stand Thu 12.11.2026, 17:04 (Owner-Session Workflow, vor Kontext-Neustart) — nichts halbfertig, Arbeitsbaum sauber.** Das Workflow-Thema ist abgeschlossen. **Die drei U5-Befunde bearbeitet NICHT diese Session, sondern die Auftrags-Session `e7360aa8-d2f7-4384-8387-9affb9ec2c9b`** (Split rechts, Tisch-Faden `20261112-170026-owner-auftrag-chemdraw-mcp`, Auftrag lag beim Start „nicht geweckt“ im Briefkasten — ob sie läuft, ist ungeprüft). Nach dem Neustart hier: nicht selbst an U5 bauen (Doppelarbeit); erst `~/.claude/bin/tisch lies --faden 20261112-170026-owner-auftrag-chemdraw-mcp` und `herdr agent list`, dann den Bericht der Auftrags-Session prüfen (Diff, Gate) oder auf Jays nächstes Thema warten. Keine unbeantwortete Frage an Jay, keine Wartefrist. Global neu (`~/.claude` `07bd69b`): eine Session = ein Plan-Thema, entschieden nach Thema, nicht nach Tokens.
