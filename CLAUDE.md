@@ -5,8 +5,8 @@
 The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
 `compare_molecules`, `generate_reaction`, `export_anki_deck` (since 21.10.2026,
 for the panel's Add to Anki button and the chat route), plus
-`lookup_molecule_data` and `save_png` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein_or_antibody` (17 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
-and restart to restore the full catalog (24 tools, 17 with a panel).
+`lookup_molecule_data`, `save_png` and (since 12.11.2026) `load_panel_part` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein_or_antibody` (18 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
+and restart to restore the full catalog (25 tools, 17 with a panel).
 Other tools remain implemented and tested, but are not registered in the MVP.
 The immediate goal is a reliable input → correct structure → usable export
 workflow for general chemistry. Specialized pharmacy, trainer, quiz and payment
@@ -150,8 +150,8 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (default MVP: 17 tools, 13 with a panel;
-full profile: 24 tools, 17 with a panel).
+the two numbers the Python side predicts (default MVP: 18 tools, 13 with a panel;
+full profile: 25 tools, 17 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): one `tisch auftrag codex` per test run, carrying every step at once — prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/` (see "Helpers" below); Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. **Claude Desktop is one shared resource: one driver at a time** (Jay, 10.11.2026, after two helpers typed into the same window and spoiled a take). Before any GUI action on Desktop — `ax-claude`, typing, clicks, window or settings changes, restart — run `~/.claude/bin/tisch leases` in `~/Documents/projects/chemdraw-vermarktung` and reserve there: `tisch reserviere claude-desktop --minuten <n>`; a foreign lease on `claude-desktop` or on a recording folder under `out/` means hands off, ask through the Tisch instead. Check every helper session in both repos (`herdr agent list`), not only the own pane. Release with `tisch gib-frei` when done. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.
 
@@ -222,10 +222,11 @@ a tested promise in `tests/test_server_taxonomy.py`:
 | Calculate | calculate_solution · calculate_content · calculate_ph · calculate_pharmacokinetics | a number **and** the working behind it |
 | Anki | export_anki_deck | flashcard decks |
 
-Outside the areas sits exactly one tool: `save_png`, the server half of the
-panel's export button. It stays registered because the UI calls it by name
-(`ExportPngButton.jsx`), and its description marks it internal so the model
-never calls it on its own — saving a picture is the user's click.
+Outside the areas sit exactly two panel tools: `save_png`, the server half of the
+panel's export button, and `load_panel_part` (12.11.2026), which fetches the parts a
+large result held back (see "Result size" below). They stay registered because the UI
+calls them by name, and their descriptions mark them internal so the model never calls
+them on its own — saving a picture is the user's click.
 
 **Adding a tool means picking an area and entering it in the taxonomy test.**
 The test fails on an unlisted tool by design. Two more rules keep the set
@@ -235,7 +236,8 @@ and the count has a ceiling that is only ever raised deliberately, with the
 reason written into the test (16 → 18 for the calculating area, → 19 for the
 calibration curve, → 20 for the spectrum prediction, → 21 for pharmacokinetics, → 23 for the pharmacology curves, → 24 for
 `generate_protein_or_antibody`, because Claude Desktop routes on tool names alone before its
-tool search: 0 of 8 protein requests reached the server without one).
+tool search: 0 of 8 protein requests reached the server without one, → 25 for the internal
+`load_panel_part`, panel infrastructure like `save_png` rather than a candidate for requests).
 
 **Delimit in both directions.** The tool that fails to exclude a case is the
 one that wins it. `generate_titration_curve` therefore points at
@@ -393,9 +395,21 @@ only, opt-in) covers name, key facts and groups — nothing in that mode may lea
 **Tool titles, annotations and prompts live next to the registration.** `_TOOL_LABELS` in `server.py` gives
 every tool a human `title` and honest `ToolAnnotations` (a tool that writes under `~/ChemDraw-Output` is not
 read-only; `export_anki_deck` is destructive because it updates notes in Anki); a new tool needs an entry, and
-`tests/test_tool_annotations.py` lists the writing tools explicitly. `save_png` carries
-`_meta.ui.visibility: ["app"]` without a `resourceUri`, so it stays registered and counted but is not a panel
-tool. `chemdraw_tool/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile
+`tests/test_tool_annotations.py` lists the writing tools explicitly. `save_png` and `load_panel_part` carry
+`_meta.ui.visibility: ["app"]` without a `resourceUri`, so they stay registered and counted but are not panel
+tools.
+
+**Result size (M2, 12.11.2026).** Claude Desktop shows no panel once a tool result passes ~150,000 characters
+(Anthropic troubleshooting, "App doesn't render when tool results are large"), and the payload travels twice —
+`structuredContent` plus its JSON in the text block, which must stay because a Desktop version dropped
+`structuredContent` before the iframe (`ui/src/utils/toolData.js`). So every panel tool result goes through
+`result_budget.py` (wrapped in `create_server`): compact JSON instead of indented, and above 55,000 characters
+per copy the biggest strings (SVGs), then lists, are replaced by `""`/`[]` and noted under `_deferred`; the panel
+fetches them as one block in pieces via `load_panel_part` (`loadToolData`, used by `main.jsx` and every
+`callServerTool` site). `tests/test_result_size.py` holds every panel tool plus large cases under 120,000 and
+proves the reassembled payload equals the original; `test:host` runs a 20-molecule batch without
+`structuredContent` and Vancomycin through the real server. A view that calls a panel tool must use
+`loadToolData`, never `extractToolData` alone. `chemdraw_tool/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile
 (`tests/test_prompts.py`).
 
 A component test for an async panel path is worthless outside `act()`: the

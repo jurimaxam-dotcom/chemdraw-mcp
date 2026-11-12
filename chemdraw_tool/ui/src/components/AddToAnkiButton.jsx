@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAppBridge } from "../AppContext";
-import { extractToolData } from "../utils/toolData";
+import { loadToolData } from "../utils/toolData";
 
 // Fester Deckname: gleicher Name aktualisiert statt dupliziert (GUID = Deck +
 // Vorderseite), so sammeln sich alle Klicks in einem Anki-Deck.
@@ -51,7 +51,7 @@ export default function AddToAnkiButton({ smiles, name, formula, cas, size }) {
           deliver: "open",
         },
       });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (payload?.type !== "anki_deck") throw new Error("kein Anki-Payload");
       setFile(payload.file || "");
       // "open" heißt: Anki hat die Datei bekommen. Sonst liegt sie nur auf der Platte.

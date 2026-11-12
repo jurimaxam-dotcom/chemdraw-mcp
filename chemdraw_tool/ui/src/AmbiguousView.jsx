@@ -3,7 +3,7 @@ import MoleculeView from "./MoleculeView";
 import { useAppBridge } from "./AppContext";
 import { useModelContextReport } from "./ModelContext";
 import { genericContext } from "./utils/modelContext.js";
-import { extractToolData } from "./utils/toolData";
+import { loadToolData } from "./utils/toolData";
 
 // Ein ruhiger Satz statt eines Stacktrace — wie beim Daten-Knopf.
 export const CANDIDATE_LOAD_ERROR =
@@ -41,7 +41,7 @@ export default function AmbiguousView({ data, subtitle, backBar }) {
         name: "generate_molecule",
         arguments: { name_or_smiles: candidate.smiles, label: candidate.label },
       });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (!payload || payload.type !== "molecule") throw new Error("kein Molekuel-Payload");
       setDrawn(payload);
     } catch {

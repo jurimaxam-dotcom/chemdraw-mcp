@@ -8,7 +8,7 @@ import { reactionFollowUps } from "./utils/followUps.js";
 import { reactionContext } from "./utils/modelContext.js";
 import { composeSvg } from "./utils/composeSvg";
 import { useAppBridge } from "./AppContext";
-import { extractToolData } from "./utils/toolData";
+import { loadToolData } from "./utils/toolData";
 import { naturalHeight, naturalWidth } from "./utils/svgSize";
 
 export const APPLY_ERROR = "The coefficients could not be applied. Click again to retry.";
@@ -410,7 +410,7 @@ export default function ReactionView({ data: initial }) {
         name: "generate_reaction",
         arguments: { ...data.request, coefficients },
       });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (!payload || payload.type !== "reaction") throw new Error("kein Reaktions-Payload");
       setApplied(payload);
     } catch {

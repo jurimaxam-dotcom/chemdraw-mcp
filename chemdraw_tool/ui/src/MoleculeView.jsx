@@ -19,7 +19,7 @@ import { moleculeContext, moleculeSummary, studyItems } from "./utils/modelConte
 import { useAppBridge, useHostContext } from "./AppContext";
 import { canRequestFullscreen } from "./utils/useHostLayout";
 import { panelBackground, serializeLiveSvg } from "./utils/serializeSvg";
-import { extractToolData } from "./utils/toolData";
+import { loadToolData } from "./utils/toolData";
 
 // Ein ruhiger Satz statt eines Stacktrace: der Klick muss sichtbar landen,
 // sonst sieht ein Fehlschlag aus wie ein toter Knopf.
@@ -153,7 +153,7 @@ export default function MoleculeView({ data, expandable = true }) {
         name: "generate_molecule",
         arguments: { ...data.viewRequest, view: next },
       });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (!payload?.viewSvg) throw new Error("keine Zeichnung");
       setDrawingCache((c) => ({ ...c, [next]: { svg: payload.viewSvg, atoms: payload.viewAtoms || [] } }));
       // Wer inzwischen anderswohin geklickt hat, behält seine Ansicht.
@@ -188,7 +188,7 @@ export default function MoleculeView({ data, expandable = true }) {
       const args = { name_or_smiles: query };
       if (data.name && data.name !== smiles) args.label = data.name;
       const result = await app.callServerTool({ name: "generate_3d", arguments: args });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (!payload?.atoms?.length) throw new Error("kein Konformer");
       setConformer(payload);
       if (wanted3d.current) setShow3d(true);
@@ -223,9 +223,10 @@ export default function MoleculeView({ data, expandable = true }) {
           name: "lookup_molecule_data",
           arguments: { name: query },
         });
-        // extractToolData deckt beides ab: die harte isError-Flagge des SDK
-        // und Claude Desktops gestripptes structuredContent.
-        const payload = extractToolData(result);
+        // loadToolData deckt alles ab: die harte isError-Flagge des SDK,
+        // Claude Desktops gestripptes structuredContent und (M2) die
+        // zurückgehaltenen Bilder eines großen Datenblatts.
+        const payload = await loadToolData(app, result);
         if (!payload) throw new Error("kein verwertbares Payload");
         setSheet(payload);
       } catch {
@@ -262,7 +263,7 @@ export default function MoleculeView({ data, expandable = true }) {
       // Ein SMILES als Name vor „(S)-“ waere unlesbar — dann nur der Deskriptor.
       if (data.name && data.name !== smiles) args.label = data.name;
       const result = await app.callServerTool({ name: "generate_molecule", arguments: args });
-      const payload = extractToolData(result);
+      const payload = await loadToolData(app, result);
       if (!payload || payload.type !== "ambiguous") throw new Error("keine Varianten");
       setVariants(payload);
       setShowVariants(true);

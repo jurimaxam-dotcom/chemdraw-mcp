@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { useApp, useHostStyleVariables } from "@modelcontextprotocol/ext-apps/react";
 import App from "./App";
@@ -7,7 +7,7 @@ import HostDiagnostics from "./components/HostDiagnostics";
 import ToolError from "./components/ToolError";
 import ToolPlaceholder from "./components/ToolPlaceholder";
 import { ModelContextProvider } from "./ModelContext";
-import { extractToolData, extractToolError } from "./utils/toolData";
+import { extractToolData, extractToolError, loadToolData } from "./utils/toolData";
 import { useHostLayout } from "./utils/useHostLayout";
 import "./styles.css";
 
@@ -22,6 +22,9 @@ function Root() {
   const [cancelled, setCancelled] = useState(null);
   // Host-Kontext (U2): Größe und Modus → Attribute/Variablen an <html>.
   const { hostContext, attach, sync } = useHostLayout();
+  // Nummer des jüngsten Ergebnisses: lädt ein großes Ergebnis noch nach (M2),
+  // darf es ein danach eingetroffenes nicht überschreiben.
+  const latest = useRef(0);
 
   const { app, isConnected, error } = useApp({
     appInfo: { name: "Chem-MCP", version: "0.1.0" },
@@ -37,6 +40,7 @@ function Root() {
         setCancelled({ reason: params?.reason });
       });
       app.addEventListener("toolresult", (params) => {
+        const mine = ++latest.current;
         setCancelled(null);
         const message = extractToolError(params);
         if (message) {
@@ -44,11 +48,25 @@ function Root() {
           setToolError(message);
           return;
         }
-        const payload = extractToolData(params);
-        if (payload) {
+        const shown = (payload) => {
+          if (mine !== latest.current || !payload) return;
           setToolError(null);
           setData(payload);
+        };
+        const payload = extractToolData(params);
+        if (!payload?._deferred) {
+          shown(payload);
+          return;
         }
+        // Großes Ergebnis: Bilder nachladen, bis dahin bleibt der Platzhalter.
+        // Scheitert das, nennt die Meldung die schon geschriebenen Dateien —
+        // nie eine leere Fläche.
+        setData(null);
+        loadToolData(app, params).then(shown, (err) => {
+          if (mine !== latest.current) return;
+          const files = Object.values(payload.files || {});
+          setToolError([err.message, ...(files.length ? ["Files:", ...files] : [])].join("\n"));
+        });
       });
     },
   });

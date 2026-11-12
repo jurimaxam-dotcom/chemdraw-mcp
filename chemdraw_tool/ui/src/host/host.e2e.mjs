@@ -1492,6 +1492,57 @@ try {
   await rxnPage.screenshot({ path: join(tmpdir(), "panel-host-reaction-export.png") });
   await rxnPage.close();
 
+  // M2 (12.11.2026): Claude Desktop zeigt kein Panel, wenn ein Ergebnis rund
+  // 150.000 Zeichen überschreitet. Der Server hält bei großen Ergebnissen die
+  // Bilder zurück (result_budget.py), das Panel lädt sie per load_panel_part nach —
+  // auch dann, wenn der Host structuredContent weglässt (Desktop, Juli 2026).
+  {
+    const ARZNEISTOFFE = [
+      "CC(=O)Oc1ccccc1C(=O)O", "Cn1c(=O)c2c(ncn2C)n(C)c1=O", "CC(C)Cc1ccc(cc1)C(C)C(=O)O",
+      "COc1ccc2cc(ccc2c1)C(C)C(=O)O", "CC(=O)Nc1ccc(O)cc1", "CN1CCC[C@H]1c1cccnc1",
+      "CN1C2CCC1C(C(=O)OC)C(OC(=O)c1ccccc1)C2", "CC(C)NCC(O)COc1cccc2ccccc12",
+      "CN1CCC23C4C1CC5=C2C(=C(C=C5)OC)OC3C(C=C4)O", "CN(C)CCCN1c2ccccc2CCc2ccccc21",
+      "OC(=O)Cc1ccccc1Nc1c(Cl)cccc1Cl", "CN1C(=O)CN=C(c2ccccc2)c2cc(Cl)ccc21",
+      "NC(=O)N1c2ccccc2C=Cc2ccccc21", "CC12CCC3C(CCC4=CC(=O)CCC34C)C1CCC2O",
+      "CC(C)(C)NCC(O)c1ccc(O)c(CO)c1", "COc1ccc(cc1)C(=O)c1ccccc1", "Clc1ccc(cc1)C(c1ccccc1)N1CCN(CC1)CCOCC(=O)O",
+      "CC1(C)SC2C(NC(=O)Cc3ccccc3)C(=O)N2C1C(=O)O", "CN1CCN(CC1)C1=Nc2ccccc2Nc2ccc(C)cc21",
+      "OCC(O)C1OC(=O)C(O)=C1O",
+    ];
+    const VANCOMYCIN = "C[C@H]1[C@H]([C@@](C[C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H](O[C@H]2OC3=C4C=C5C=C3OC6=C(C=C(C=C6)"
+      + "[C@H]([C@H](C(=O)N[C@H](C(=O)N[C@H]5C(=O)N[C@@H]7C8=CC(=C(C=C8)O)C9=C(C=C(C=C9O)O)[C@H]"
+      + "(NC(=O)[C@H]([C@@H](C1=CC(=C(O4)C=C1)Cl)O)NC7=O)C(=O)O)CC(=O)N)NC(=O)[C@@H](CC(C)C)NC)O)Cl)"
+      + "CO)O)O)(C)N)O";
+    const faelle = [
+      { label: "Stapel mit 20 Arzneistoffen, ohne structuredContent", tool: "batch_generate",
+        input: { molecules: ARZNEISTOFFE }, strip: true, karten: 20 },
+      { label: "Vancomycin", tool: "generate_molecule", input: { name_or_smiles: VANCOMYCIN }, strip: false, karten: 1 },
+    ];
+    for (const fall of faelle) {
+      const p = await browser.newPage({ viewport: { width: 720, height: 900 } });
+      await p.setContent('<body style="margin:0"></body>');
+      await p.addScriptTag({ path: out });
+      const calls = [];
+      await p.exposeFunction("__callTool", (req) => { calls.push(req.name); return client.callTool(req); });
+      const result = await client.callTool({ name: fall.tool, arguments: fall.input });
+      const groesse = JSON.stringify(result).length;
+      check(!result.isError && result.structuredContent?._deferred && groesse <= 120000,
+        `${fall.label}: Ergebnis hält Bilder zurück und bleibt bei ${groesse.toLocaleString("de-DE")} Zeichen`);
+      const toolResult = fall.strip ? { content: result.content, isError: result.isError } : result;
+      const tool = tools.find((t) => t.name === fall.tool);
+      const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
+      await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: fall.input, toolResult });
+      const f = p.frames().at(-1);
+      await f.locator(".panel-title").nth(fall.karten - 1).waitFor({ timeout: 30000 }).catch(() => {});
+      const bilder = await f.locator(".panel-title").count();
+      const pfade = await f.locator("svg path").count();
+      check(bilder === fall.karten && pfade > 50 * fall.karten && calls.includes("load_panel_part")
+        && calls.every((n) => n === "load_panel_part"),
+        `${fall.label}: Panel lädt ${calls.length}× nach und zeigt ${bilder} Karte(n) mit ${pfade} Pfaden`);
+      await p.screenshot({ path: join(tmpdir(), `panel-host-m2-${fall.tool}.png`) });
+      await p.close();
+    }
+  }
+
   const batchPage = await browser.newPage({ viewport: { width: 720, height: 900 } });
   await batchPage.setContent('<body style="margin:0"></body>');
   await batchPage.addScriptTag({ path: out });
