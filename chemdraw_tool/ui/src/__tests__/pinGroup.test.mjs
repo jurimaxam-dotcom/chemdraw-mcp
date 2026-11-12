@@ -39,7 +39,7 @@ const fire = (el, type, init = {}) => act(async () => {
 
 test("Klick hält die Gruppe fest, zweiter Klick löst; aria-pressed meint die Auswahl", async () => {
   const { container, unmount } = mount(React.createElement(MoleculeView, { data: MOLECULE }));
-  assert.match(note(container), /Click a group to pin it\. Claude then knows which part you mean\./);
+  assert.match(note(container), /Click a group to pin it\. The buttons below then ask Claude about it\./);
   const ester = chip(container, "Ester");
   await act(async () => ester.focus());
   assert.equal(ester.getAttribute("aria-pressed"), "false", "Fokus allein hält nichts fest");
@@ -47,7 +47,7 @@ test("Klick hält die Gruppe fest, zweiter Klick löst; aria-pressed meint die A
   assert.equal(ester.getAttribute("aria-pressed"), "true");
   assert.match(note(container), /Ester/);
   assert.match(note(container), /–COO–/);
-  assert.match(note(container), /Pinned\. Claude sees this selection with your next message\./);
+  assert.match(note(container), /Pinned\. The buttons below now ask about this group\./);
   await click(ester);
   assert.equal(ester.getAttribute("aria-pressed"), "false");
   unmount();
@@ -99,12 +99,30 @@ test("Klick auf ein Atom ohne Gruppe hält das Atom selbst fest", async () => {
   unmount();
 });
 
-test("ohne updateModelContext: Ruhezustand nennt den Hover-Hinweis, Auswahl ohne Claude-Satz", async () => {
+// U5b (12.11.2026): Desktop meldet updateModelContext, reicht den Text aber nicht ans Modell weiter.
+// Die Hinweise versprechen deshalb nur, was die Knöpfe selbst leisten (Gruppe steht im Satz).
+test("nur message, kein updateModelContext: Hinweise nennen die Knöpfe, nie 'Claude sees'", async () => {
   const { container, unmount } = mount(React.createElement(MoleculeView, { data: MOLECULE }), { message: { text: {} } });
+  assert.match(note(container), /The buttons below then ask Claude about it\./);
+  await click(chip(container, "Ester"));
+  assert.match(note(container), /Pinned\. The buttons below now ask about this group\./);
+  assert.doesNotMatch(container.textContent, /Claude sees/);
+  unmount();
+});
+
+test("ohne message: Ruhezustand nennt den Hover-Hinweis, Auswahl ohne Claude-Satz", async () => {
+  const { container, unmount } = mount(React.createElement(MoleculeView, { data: MOLECULE }), { updateModelContext: { text: {} } });
   assert.match(note(container), /Hover a group to see where it sits in the structure\./);
   await click(chip(container, "Ester"));
   assert.match(note(container), /Pinned\./);
-  assert.doesNotMatch(note(container), /Claude sees/);
+  assert.doesNotMatch(note(container), /buttons below|Claude/);
+  unmount();
+});
+
+test("Study: kein Versprechen, dass Claude das Verdeckte sieht", async () => {
+  const { container, unmount } = mount(React.createElement(MoleculeView, { data: MOLECULE }));
+  await click(buttonByText(container, "Study"));
+  assert.doesNotMatch(container.textContent, /Claude sees/);
   unmount();
 });
 
@@ -114,7 +132,7 @@ test("DatabaseView: dieselbe Auswahl mit Hinweis-Karte", async () => {
   const ester = chip(container, "Ester");
   await click(ester);
   assert.equal(ester.getAttribute("aria-pressed"), "true");
-  assert.match(note(container), /Pinned\. Claude sees this selection/);
+  assert.match(note(container), /Pinned\. The buttons below now ask about this group\./);
   unmount();
 });
 

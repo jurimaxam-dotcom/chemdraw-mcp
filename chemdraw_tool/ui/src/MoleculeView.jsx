@@ -300,14 +300,13 @@ export default function MoleculeView({ data, expandable = true }) {
   // Zeigt das Panel die Stereo-Varianten, ist diese Struktur verdeckt: dann meldet
   // sie nichts — sonst läse Claude die Ausgangsstruktur samt alter Auswahl.
   const hiddenByVariants = showVariants && Boolean(variants);
-  const { flush, canContext } = useModelContextReport(
+  const { flush, canAsk } = useModelContextReport(
     hiddenByVariants ? "" : moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed }),
     hiddenByVariants ? "" : moleculeSummary(data),
   );
   const followUps = view === "study"
     ? studyFollowUps({ name: data.name, smiles, nameRevealed: nameOpen })
     : moleculeFollowUps({ name: data.name, smiles, groups, atoms: data.atoms, pinned });
-  const studyHint = canContext ? "Claude sees what is still covered and does not give it away" : undefined;
 
   if (showVariants && variants) {
     return (
@@ -398,7 +397,7 @@ export default function MoleculeView({ data, expandable = true }) {
               <h3 className="section-label">Functional groups</h3>
               <FunctionalGroupList groups={groups} pinnedGroup={pinned?.kind === "group" ? pinned.name : null}
                 onHoverGroup={setHoveredGroup} onPin={pinGroup} />
-              <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canContext={canContext} onClear={clearPin} />
+              <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canAsk={canAsk} onClear={clearPin} />
             </section>}
           </>}
         </div>
@@ -407,7 +406,7 @@ export default function MoleculeView({ data, expandable = true }) {
           {sheet ? <SourceList sources={sheet.sources} moleculeSvg={sheet.molecule_svg || data.svg} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
         </div>
       )}
-      <ContinueRow actions={followUps} flush={flush} hint={view === "study" ? studyHint : undefined} />
+      <ContinueRow actions={followUps} flush={flush} />
       {/* Fußzeile (E3): Dateien links, Aktionen rechts. In 3D die SDF-Datei des
           Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG.
           Im Lernmodus ohne Pfade und ohne Export: beide tragen den Namen. */}

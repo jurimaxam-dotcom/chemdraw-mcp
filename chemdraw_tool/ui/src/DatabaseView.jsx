@@ -29,7 +29,7 @@ export default function DatabaseView({ data }) {
   const pinGroup = (name) => setPinned((p) => (p?.kind === "group" && p.name === name ? null : { kind: "group", name }));
   const pickAtom = (atom, group) => (group ? pinGroup(group.name)
     : setPinned((p) => (p?.kind === "atom" && p.idx === atom.idx ? null : { kind: "atom", idx: atom.idx, el: atom.el })));
-  const { flush, canContext } = useModelContextReport(
+  const { flush, canAsk } = useModelContextReport(
     databaseContext(data, { view: view === "structure" && hasStructure ? "structure" : "data", pinned }),
     data.name || data.smiles || "data sheet",
   );
@@ -82,7 +82,7 @@ export default function DatabaseView({ data }) {
                   onPin={pinGroup}
                 />
                 <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned}
-                  canContext={canContext} onClear={() => setPinned(null)} />
+                  canAsk={canAsk} onClear={() => setPinned(null)} />
               </>}
             </aside>
           )}

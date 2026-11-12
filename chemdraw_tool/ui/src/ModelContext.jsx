@@ -46,6 +46,9 @@ export function ModelContextProvider({ app, delay = 300, children }) {
     };
     return {
       canContext: hostCan(app, "updateModelContext"),
+      // Für Hinweistexte: Knöpfe gibt es nur mit `message`. Der Kontext ist kein Versprechen —
+      // Desktop meldet die Fähigkeit, das Modell sah den Text im Handtest U5b (12.11.2026) nicht.
+      canAsk: hostCan(app, "message") && typeof app?.sendMessage === "function",
       report(id, entry, interacted) {
         if (!entry) {
           if (reports.current.delete(id)) schedule();
@@ -76,7 +79,7 @@ export function ModelContextProvider({ app, delay = 300, children }) {
 /**
  * Eine View meldet ihren Zustandstext. `text` = voller Text, `summary` = eine
  * Zeile für den Stapel-Überblick. Rückgabe: `flush` (vor sendMessage aufrufen)
- * und ob der Host Kontext annimmt (`canContext`, für Hinweistexte).
+ * ob der Host Kontext annimmt (`canContext`) und ob es Chat-Knöpfe gibt (`canAsk`, für Hinweistexte).
  */
 export function useModelContextReport(text, summary = "") {
   const ctx = useContext(Ctx);
@@ -91,5 +94,5 @@ export function useModelContextReport(text, summary = "") {
   }, [ctx, id, text, summary]);
   useEffect(() => () => ctx?.remove(id), [ctx, id]);
   const flush = useCallback(() => ctx?.flush(id), [ctx, id]);
-  return { flush, canContext: Boolean(ctx?.canContext) };
+  return { flush, canContext: Boolean(ctx?.canContext), canAsk: Boolean(ctx?.canAsk) };
 }

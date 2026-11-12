@@ -21,21 +21,22 @@ export default function FunctionalGroupList({ groups, pinnedGroup, onHoverGroup,
   </div>;
 }
 
-const HINT_PIN = "Click a group to pin it. Claude then knows which part you mean.";
+const HINT_PIN = "Click a group to pin it. The buttons below then ask Claude about it.";
 const HINT_HOVER = "Hover a group to see where it sits in the structure.";
-const PINNED_CONTEXT = "Pinned. Claude sees this selection with your next message.";
+const PINNED_ASK = "Pinned. The buttons below now ask about this group.";
 
 /**
  * Hinweis-Karte unter den Chips: angezeigt wird die Hover-Vorschau, sonst die
- * festgehaltene Auswahl (Gruppe oder Einzelatom). Ohne Host-Fähigkeit
- * `updateModelContext` (canContext) kein Satz über Claude.
+ * festgehaltene Auswahl (Gruppe oder Einzelatom). Die Sätze versprechen nur, was die
+ * Chat-Knöpfe leisten (die Gruppe steht im gesendeten Satz) — ohne Knöpfe (canAsk) kein
+ * Satz über Claude, für ein Einzelatom auch nicht (dafür gibt es keinen Knopf).
  */
-export function GroupNote({ groups, hoveredGroup, pinned, canContext = false, onClear }) {
+export function GroupNote({ groups, hoveredGroup, pinned, canAsk = false, onClear }) {
   const pinnedName = pinned?.kind === "group" ? pinned.name : null;
   const group = groups?.find((g) => g.name === (hoveredGroup || pinnedName));
   const pinLine = (
     <div className="group-note-pin">
-      <span className="group-note-hint">{canContext ? PINNED_CONTEXT : "Pinned."}</span>
+      <span className="group-note-hint">{canAsk && pinnedName ? PINNED_ASK : "Pinned."}</span>
       {onClear && <button type="button" className="group-note-clear" onClick={onClear}>Clear</button>}
     </div>
   );
@@ -51,7 +52,7 @@ export function GroupNote({ groups, hoveredGroup, pinned, canContext = false, on
   }
   if (!group) {
     return <div className="group-note" role="status">
-      <span className="group-note-hint">{canContext ? HINT_PIN : HINT_HOVER}</span>
+      <span className="group-note-hint">{canAsk ? HINT_PIN : HINT_HOVER}</span>
     </div>;
   }
   const info = groupInfo(group.name);
