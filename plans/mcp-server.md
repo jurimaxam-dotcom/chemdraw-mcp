@@ -43,6 +43,15 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
+## Weiter bei — M2: Tool-Ergebnisse sprengen Desktops Größengrenze (Do. 12.11.2026, 19:03)
+
+- **Jay 12.11. abends: „mache autom weiter am mcp“.** Thema gewählt nach Messung am Code, nicht nach der Hakenliste (die ist teils überholt: Elementnamen `oxygen` → `O=O` sind seit 09.11. behoben und in `stoffe.json` gepinnt; E10 steht offen, obwohl `v0.10.0` getaggt ist).
+- **Gemessen (in-process, `create_server("full")`, `mcp.call_tool`, Länge des JSON des ganzen Ergebnisses):** Koffein 27.809 · Vergleich Ibuprofen/Naproxen 53.441 · Stapel mit 3 Molekülen 36.506 · Paclitaxel 110.359 · **Vancomycin 206.913** · **Stapel mit 20 Molekülen 790.122**. Alle zwölf Fälle aus `evals/panel-beispiele.json` liegen unter 55.000.
+- **Grenzen laut Anthropic (lokale Kopie in `.cache/anthropic/`):** ab rund 150.000 Zeichen legt Desktop das Ergebnis bei aktiver Code-Sandbox als Datei ab, das Panel lädt dann gar nicht (troubleshooting, „App doesn't render when tool results are large“); Claude liest höchstens 100.000 Zeichen Text (app-tools, „Limits“).
+- **Ursache:** Das SDK legt die Nutzlast doppelt ab — als `structuredContent` und noch einmal als eingerücktes JSON im `content`-Textblock (Vancomycin: 98.352 + 104.348). Der Textblock ist heute zugleich der Rückfallweg des Panels (`ui/src/utils/toolData.js`: eine Desktop-Fassung reichte `structuredContent` nicht ans iframe weiter). Ob das heutige Desktop es weiterreicht, ist ungemessen. Nebenwirkung: das Modell liest das ganze SVG als Text.
+- **Nächster Schritt:** läuft als Auftrags-Session (Tisch-Faden siehe Folgezeile). Erst ein Größen-Test (rot bei Vancomycin und beim großen Stapel), dann die Nutzlast verkleinern, ohne den Rückfallweg zu brechen. Kein Desktop-Lauf, kein Release.
+- **Danach offen, eigenes kleines Thema:** der Bundle-Budget-Haken („≤ 650 kB“) stammt aus der Zeit vor Mol* (heute 2,96 MB) — neu ansetzen oder streichen.
+
 ## Weiter bei — U5-Befunde abgeschlossen (Do 12.11.2026, 17:40)
 
 - **(1) Study verrät Namen:** nicht im Panel lösbar. Beleg: Nutzer fragte wörtlich „What is the name of this compound?“ (`/tmp/chemdraw-desktop-test/u5/07-name-leaked-ax.txt` Z. 330), der Name stand schon im eigenen Prompt („draw aspirin“) und im Tool-Ergebnis; U5b zeigte zudem, dass Desktop den `updateModelContext`-Text dem Modell nicht zeigt (Plan-Block „U5b gefahren“).
