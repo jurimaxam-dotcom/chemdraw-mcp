@@ -1,5 +1,5 @@
 {
- "geprueft": "2026-11-06",
+ "geprueft": "2026-11-12",
  "hinweis": "Fingerabdrücke und Titel — die Texte liegen lokal in .cache/anthropic/ und gehören Anthropic.",
  "seiten": {
   "https://claude.com/docs/build/overview.md": {
@@ -24,13 +24,13 @@
    "titel": "Directory connectors vs custom connectors",
    "beschreibung": "Compare directory-listed and custom connectors: Anthropic review, in-product discovery, install links, Suggested Connectors, and per-tenant URL listings.",
    "quelle": "claude-docs",
-   "hash": "0bffb3e5c98b7914"
+   "hash": "16bb2c096e2ef800"
   },
   "https://claude.com/docs/connectors/building/enterprise-managed-auth.md": {
    "titel": "Enterprise Managed Auth for connectors",
    "beschreibung": "Support auto-connect in Claude by accepting identity assertions from a customer's identity provider or from Claude, so users skip the OAuth consent step.",
    "quelle": "claude-docs",
-   "hash": "a57d672e9df9266a"
+   "hash": "dd2b79f3b4c5e448"
   },
   "https://claude.com/docs/connectors/building/index.md": {
    "titel": "Build an MCP server for Claude",
@@ -50,11 +50,41 @@
    "quelle": "claude-docs",
    "hash": "f947b716119c0803"
   },
+  "https://claude.com/docs/connectors/building/mcp-apps/app-tools.md": {
+   "titel": "Let Claude call tools in your MCP App",
+   "beschreibung": "Register tools in your MCP App so that Claude can change what's on screen. Test a tool and fix SDK errors.",
+   "quelle": "claude-docs",
+   "hash": "74e25cbbde9c1a62"
+  },
   "https://claude.com/docs/connectors/building/mcp-apps/design-guidelines.md": {
    "titel": "Design guidelines",
    "beschreibung": "Design MCP Apps that feel native to Claude: display modes, mobile layout, visual style, interaction patterns, and the host's style variables.",
    "quelle": "claude-docs",
-   "hash": "ad6c235bda4837b2"
+   "hash": "0e7ddb0014f8f5d0"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/display-modes.md": {
+   "titel": "Show your MCP App in the side panel or full screen",
+   "beschreibung": "Move your MCP App from the conversation to the side panel or full screen. Declare display modes, request a mode, and lay out by the size Claude reports.",
+   "quelle": "claude-docs",
+   "hash": "54125363ea6ac92b"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/download-files.md": {
+   "titel": "Download files from your MCP App",
+   "beschreibung": "Save a file from your MCP App to the user's device with app.downloadFile. Handle the result, fix rejected requests, and avoid refused file types.",
+   "quelle": "claude-docs",
+   "hash": "0245799df677b4a3"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/embedded-sites.md": {
+   "titel": "Embed a website in an MCP App",
+   "beschreibung": "Embed your own website in an MCP App. Declare its origin in frameDomains, check whether it loads for your connector, and set your site's frame-ancestors header.",
+   "quelle": "claude-docs",
+   "hash": "358e2f984e59baa5"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/entry-points.md": {
+   "titel": "Let people open your MCP App without asking Claude",
+   "beschreibung": "Mark a tool as a global entry point so people can open your MCP App from the Artifacts page in Claude, and check why it might not appear.",
+   "quelle": "claude-docs",
+   "hash": "ebf63879d93394d1"
   },
   "https://claude.com/docs/connectors/building/mcp-apps/external-links.md": {
    "titel": "Open external links from MCP Apps",
@@ -64,9 +94,9 @@
   },
   "https://claude.com/docs/connectors/building/mcp-apps/getting-started.md": {
    "titel": "Get started with MCP Apps",
-   "beschreibung": "Try example MCP Apps in Claude Desktop, then use the MCP Apps SDK, examples, and agent skills to add interactive UI to your own MCP server.",
+   "beschreibung": "See what an MCP App can do in Claude, such as the side panel, app tools, and embedded websites, then try an example and build your own with the SDK.",
    "quelle": "claude-docs",
-   "hash": "fe1badf60baafaa2"
+   "hash": "59452b1d7ce009cf"
   },
   "https://claude.com/docs/connectors/building/mcp-apps/instance-supersession.md": {
    "titel": "Supersede older widget instances",
@@ -78,7 +108,13 @@
    "titel": "Add an interactive UI to your MCP server",
    "beschreibung": "Add an MCP App to the quickstart MCP server: register a ui:// resource with the MCP Apps SDK, link it to a tool, and check that the server advertises the UI.",
    "quelle": "claude-docs",
-   "hash": "7ba7ecfafd9516f8"
+   "hash": "360c51ec52ec66c3"
+  },
+  "https://claude.com/docs/connectors/building/mcp-apps/send-messages.md": {
+   "titel": "Send messages to Claude from your MCP App",
+   "beschreibung": "Send a message from your MCP App's view to Claude with app.sendMessage. Handle each result, and keep messages within what Claude accepts.",
+   "quelle": "claude-docs",
+   "hash": "800f88c3408c00f7"
   },
   "https://claude.com/docs/connectors/building/mcp-apps/transparent-theming.md": {
    "titel": "Blend your MCP App with Claude's theme",
@@ -90,7 +126,7 @@
    "titel": "Troubleshoot MCP Apps",
    "beschreibung": "Debug MCP Apps in Claude with developer tools on desktop and iOS, and fix invisible apps, large tool results, iOS-only request failures, and ui.domain errors.",
    "quelle": "claude-docs",
-   "hash": "bc23d0cf8a65aa75"
+   "hash": "a31194e7b29a4897"
   },
   "https://claude.com/docs/connectors/building/mcp.md": {
    "titel": "Model Context Protocol (MCP)",
@@ -114,7 +150,7 @@
    "titel": "Connector pre-submission checklist",
    "beschreibung": "Check your MCP connector against what Anthropic reviewers test, including tool design, prompt-injection patterns, and functional quality, before you submit.",
    "quelle": "claude-docs",
-   "hash": "0b8f3952f6ac777f"
+   "hash": "41d6a8a79c32d110"
   },
   "https://claude.com/docs/connectors/building/submission.md": {
    "titel": "Submit a connector to the directory",
@@ -126,7 +162,7 @@
    "titel": "Test your connector",
    "beschreibung": "Test your MCP server against Claude as a custom connector before you submit it to the directory, including a local server exposed through a tunnel.",
    "quelle": "claude-docs",
-   "hash": "8d48c37ee03a32ad"
+   "hash": "5cc2fdf01b933ab9"
   },
   "https://claude.com/docs/connectors/building/troubleshooting.md": {
    "titel": "Troubleshoot your connector",
@@ -144,7 +180,7 @@
    "titel": "Add a connector that isn't in the directory",
    "beschreibung": "Connect Claude to an MCP server that isn't in the Connectors Directory, by its URL or as a local desktop extension.",
    "quelle": "claude-docs",
-   "hash": "6dc3fd18f69dcb3f"
+   "hash": "09045899b0405cdc"
   },
   "https://claude.com/docs/connectors/directory.md": {
    "titel": "Connectors directory",
@@ -162,7 +198,7 @@
    "titel": "Connector verification",
    "beschreibung": "How Anthropic reviews connectors in the directory, what the Verified, Community, and Custom labels mean, and how to stay safe with third-party connectors.",
    "quelle": "claude-docs",
-   "hash": "160926fa96d451d1"
+   "hash": "c2a026363d8cb442"
   },
   "https://claude.com/docs/directory/publish.md": {
    "titel": "Publish to the directory",

@@ -98,7 +98,7 @@ PS plugins/platform-support · SDK ext-apps-Typen · SPEC MCP 2026-07-28 · PY P
 | `requestDisplayMode` | Eigener Vergrößern-Knopf | DM | ja (Doku), nur aus Klick mit Fokus | nein | Knopf nur, wenn `availableDisplayModes` `fullscreen` enthält | 2 h | eigenes Chat-Fenster bietet nur `inline` |
 | `availableDisplayModes` (App) | Was das Panel kann | DM | ja (Doku) | nein, bewusst undeklariert | `["fullscreen"]` allein → Karte im Chat statt Panel | 1 h | gilt für alle 13 Panel-Tools zugleich |
 | `preferredDisplayMode` | Öffnet ohne Klick im Seitenpanel | DM (Claude-Erweiterung) | ja (Doku), unser `instance.resource(meta=…)` landet laut PY auch am `resources/read`-Inhalt | nein (abgleich Nr. 16 offen) | Nur für Mechanismus/Protein sinnvoll | 2 h + 2. Ressource | eine gemeinsame Ressource → träfe auch TLC und Anki |
-| `pip` | Bild-im-Bild | SDK | **nein**: DG „Claude offers `inline` and `fullscreen`“ | nein | — | — | abgleich Nr. 8 nennt `pip` noch |
+| `pip` | Bild-im-Bild | SDK | **nein**: DG „Claude offers `inline` and `fullscreen`“ | nein | — | — | abgleich Nr. 8 seit 12.11. korrigiert |
 | Ablösung im Seitenpanel | Neuer Aufruf ersetzt das Panel, altes fällt in den Chat | DM, IS | ja (Doku) | n/a | Alte Panels zeigen „ältere Ansicht“ statt still weiterzusenden | 0,5 Tag | 15-s-Frist für `initialized` beim Ersetzen im Vollbild |
 | `safeAreaInsets`, `platform`, `deviceCapabilities` | Ränder, Gerät, Touch/Hover | SDK, DG | ungeprüft (Werte am Gerät) | nein | Hover-Erklärungen auf Touch als Antippen | 2 h | — |
 | `locale`, `timeZone` | Sprache des Nutzers | SDK | ungeprüft | nein | Panel-Beschriftung deutsch für deutschsprachige Studierende | 1 Tag | Tool-Texte bleiben Englisch (Konvention) |
@@ -119,7 +119,7 @@ PS plugins/platform-support · SDK ext-apps-Typen · SPEC MCP 2026-07-28 · PY P
 | Plugin mit lokalem Server | Server + Skills als Paket | WB, PS | **nein im Chat**: lokal „runs in Claude Code and in a Cowork session …, not in chat“ | nein | — | — | Panel lebt im Chat |
 | Custom Connector (Remote, Tunnel) | HTTPS-URL in Claude eintragen | GS, TS, abgleich §5 | — (Remote) | nein | Voraussetzung für App-Tools, Einstiegspunkte, Web/iOS | 2–3 Tage + Betrieb | Hosting, ohne Anmeldung offen für alle mit URL |
 | Einstiegspunkte (Artifacts-Seite) | App ohne Claude-Frage öffnen, anheften | EP | **nein**: „the connector is remote, not a local server“ | nein | „Chemie-Zeichenbrett“ direkt öffnen | 1 Tag + Remote | verifiziert oder eigen, Teil der Organisationen |
-| WebMCP-Brücke (ext-apps 2.1.0) | laut abgleich §6 neu am 10.11. | abgleich §6 | ungeprüft | nein | — | — | nicht gelesen; vor Nutzung Release-Notizen prüfen |
+| WebMCP-Brücke (ext-apps 2.1.0) | spiegelt `App.registerTool` nach `document.modelContext` und zurück, ohne neue Nachrichten (Release-Notizen, 12.11. gelesen) | abgleich §1 | hängt an App-Tools, also **nein** lokal | nein | — | — | nur mit Remote-Konnektor sinnvoll |
 
 ## 2. Rangliste: größter Nutzen je Aufwand
 
@@ -153,6 +153,6 @@ Das trennt, was der Host meldet, von dem, was er tut (abgleich §5: beide Verbin
 ## 4. Widersprüche zum bisherigen Stand
 
 - Beobachtung zu `abgleich.md` §1 („zustandslos, kein `initialize` mehr“): Desktop schickt weiter `initialize` (LOG 2026-11-11T08:21:04Z); welche Fassung es aushandelt, steht nicht im Log.
-- `abgleich.md` Nr. 8 nennt `pip` als Modus; DG sagt jetzt „Claude offers `inline` and `fullscreen`“.
+- ~~`abgleich.md` Nr. 8 nennt `pip`~~ — 12.11. korrigiert.
 - `abgleich.md` Nr. 3 zählt 23 Tools ohne Annotationen; heute sind es 24 (voll) bzw. 17 (MVP), weiterhin ohne `title`/Annotationen.
-- `abgleich.md` §1 nennt ext-apps 2.0.3 als neueste; `--check` meldet 2.0.4 und 2.1.0 (10.11.). Die neuen Seiten sind lokal noch nicht per `--update` übernommen.
+- ~~`abgleich.md` §1 nennt ext-apps 2.0.3 als neueste~~ — 12.11. auf 2.1.0 korrigiert, Seiten per `--update` übernommen.

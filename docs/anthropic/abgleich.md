@@ -1,6 +1,8 @@
 # Abgleich: was Anthropic veröffentlicht — und wo wir stehen
 
-Stand 06.11.2026 (Etappe E2, Mechanismus-Panel): `--check` 0 neu, 19 geändert, 0 weg — gelesen:
+Stand 12.11.2026: `--check` 6 neu (ausgewertet in Abschnitt 6), 10 geändert — ausgewertet in Abschnitt 7;
+ext-apps 2.0.4 und 2.1.0 gelesen, kein Bump nötig (Abschnitt 1).
+Davor: Stand 06.11.2026 (Etappe E2, Mechanismus-Panel): `--check` 0 neu, 19 geändert, 0 weg — gelesen:
 MCP-Apps-Schnellstart und `apps/build` nur Formatierung bzw. Node ≥ 20 im Beispiel (unser Panel baut
 schon mit Node ≥ 20), Spezifikation `server/tools` nur ein verschobenes `annotations`-Beispiel;
 ext-apps 2.0.4 ist ein Beispiel-Patch. Keine Folge für Hinweiszeile und ⇌ im Mechanismus-Panel.
@@ -19,7 +21,7 @@ Pflege-Regel: Ändert sich eine Quelle, wird **hier** die Zeile angepasst, dann 
 
 | Baustein | unser Stand | neueste | Folge |
 |---|---|---|---|
-| `@modelcontextprotocol/ext-apps` | **^2.0.3** (migriert 03.10.2026) | 2.0.3 | **M0 erledigt:** Protokoll auf dem Draht unverändert (2.x-Panels laufen in 1.x-Hosts und umgekehrt, vom Hersteller getestet). Gebrochen waren nur Abhängigkeiten (`client` ^2 statt `sdk` ^1, `zod` ^4.2, Node ≥ 20); unser Panel braucht dafür **keine Codeänderung** (nutzt ext-apps an einer Stelle: `useApp`). Bundle 524 → 399 kB. 2.0.1 bis 2.0.3 sind Beispiel-Patches, an der Bibliothek ändert sich nichts. |
+| `@modelcontextprotocol/ext-apps` | **^2.0.3** (migriert 03.10.2026; installiert 2.0.3) | **2.1.0** (10.11.2026) | **12.11.: kein Bump nötig.** 2.0.4 ändert nur Beispiele und Abhängigkeiten der Beispiele, keine Bibliotheks-API. 2.1.0 bringt die WebMCP-Brücke (Panel-Tools aus `App.registerTool` ↔ `document.modelContext`, ohne neue Nachrichten auf dem Draht, abschaltbar mit `webMcpBridge: false`) und lockert im Spezifikationsentwurf die Pflicht zum doppelten Sandbox-iframe. Wir registrieren keine App-Tools (lokal ohnehin wirkungslos, Nr. 20); `^2.0.3` würde 2.1.0 beim nächsten `npm install` ohne Lockfile-Pin zulassen, das Lockfile hält 2.0.3. **M0 erledigt:** Protokoll auf dem Draht unverändert (2.x-Panels laufen in 1.x-Hosts und umgekehrt, vom Hersteller getestet). Gebrochen waren nur Abhängigkeiten (`client` ^2 statt `sdk` ^1, `zod` ^4.2, Node ≥ 20); unser Panel braucht dafür **keine Codeänderung** (nutzt ext-apps an einer Stelle: `useApp`). Bundle 524 → 399 kB. 2.0.1 bis 2.0.3 sind Beispiel-Patches, an der Bibliothek ändert sich nichts. |
 | MCP-Spezifikation | – | Fassung **2026-07-28** | **M0b erledigt:** zustandslos (kein `initialize` mehr), `server/discover`, Pflichtfeld `resultType`, Cache-Hinweise `ttlMs`/`cacheScope`, Roots/Sampling/Logging als veraltet markiert. Das setzt das Python-`mcp` 2.x für uns um (Plan mcp-2-migration, geparkt); ältere Server bleiben nutzbar (Clients behandeln fehlendes `resultType` als vollständig). Für uns jetzt nichts zu tun; Sampling nutzen wir nicht. |
 | Python `mcp` | `>=2.3,<3`; installiert 2.3.0 | 2.3.0 | Arbeitsbaum und installierte Umgebung am 24.10. geprüft; die Release-Dateien sind fremde, uncommittete Arbeit. Die Meldung „neuere Nebenversion“ des Prüfers vergleicht `2.3` mit `2.3.0` und belegt hier kein Update. |
 | `@anthropic-ai/mcpb` (Bau) | 2.1.2 | 2.1.2 | aktuell |
@@ -37,7 +39,7 @@ Status: ✓ erfüllt · ◐ teilweise · ✗ fehlt · ? ungeprüft · ⚠ Spannu
 | 5 | Für lokale stdio-Server gibt es kein `ui.domain` — das Feld darf nicht gesetzt sein | troubleshooting | ✓ nicht gesetzt | — |
 | 6 | Jeder Aufruf öffnet ein eigenes Panel, alte bleiben aktiv und können weiter an Claude schicken; Ablösung über Schlüssel `{createdAt, seq}` aus dem Server + `BroadcastChannel` | instance-supersession | n/a (Panels ohne Zustand) | **M5** erst beim Quiz-/Prüfmodus |
 | 7 | `ui/open-link` zeigt **immer** ein Bestätigungsfenster; die Ausnahmeliste gilt nur für Verzeichnis-Connectors | external-links | ? Links im Panel prüfen | Hinweis im README; Ziel-URL im Panel klar anzeigen |
-| 8 | Vollbild (`ui/request-display-mode`), Karussell (3–8 Karten), Skelett statt Spinner, 44-pt-Tippflächen, Sicherheitsränder | design-guidelines | ✗ | **M6** (Plan Phase 2–4) |
+| 8 | Vollbild (`ui/request-display-mode`), Karussell (3–8 Karten), Skelett statt Spinner, 44-pt-Tippflächen, Sicherheitsränder. Claude bietet nur `inline` und `fullscreen` (Seitenpanel meldet ebenfalls `fullscreen`); `pip` nennt die Seite seit 12.11. nicht mehr | design-guidelines, display-modes | ◐ eigener Vergrößern-Knopf und Layout nach gemeldeter Größe gebaut (bis `c45fdff`), Platzhalter aus `toolinput`; Karussell, Tippflächen, Sicherheitsränder offen | **M6** (Plan Phase 2–4) |
 | 9 | Claude baut eigene Inline-Grafiken und Auswahlfragen (Quiz mit Antippen) | Blog „interactive visuals" | wir regen es nicht an | **M9:** ein Satz in den `instructions`, im Eval messen |
 | 10 | Desktop-Extension (.mcpb): Node.js wird empfohlen, Plattformen `darwin`/`win32`, Icon 512 px (mind. 256), `user_config` für Einstellungen | mcpb | ◐ Python-Server; Plattformen `darwin`, `linux`; **kein Icon**; kein Windows | **M7:** Icon, Windows-Test oder Windows ausdrücklich ausschließen |
 | 11 | Organisationen können Extensions sperren oder auf eine Liste beschränken | add-unlisted | nicht im README | **M8:** ein Satz im README |
@@ -111,9 +113,9 @@ ext-apps 2.0.3, mcpb 2.1.2 und Python mcp 2.3.0.
 sagt ausdrücklich: „[Claude](https://claude.ai) (web) and [Claude Desktop](https://claude.ai/download) support MCP Apps.“
 Sie führt anschließend über eine öffentliche Tunnel-URL zu **Add custom connector**;
 ihr HTTP-Beispiel implementiert keine Authentifizierung.
-Anthropics [Testanleitung](https://claude.com/docs/connectors/building/testing.md) bestätigt:
-„Custom connectors use the exact same runtime as directory connectors“ und empfiehlt
-den Tunnelweg auch für MCP Apps. Ein Directory-Listing ist somit keine Voraussetzung.
+Anthropics [Testanleitung](https://claude.com/docs/connectors/building/testing.md) bestätigt
+dieselbe Laufzeit für Custom- und Verzeichnis-Connectors — seit 12.11. „with an exception for MCP Apps“
+(eingebettete Seiten, Einstiegspunkte; Abschnitt 7) — und empfiehlt den Tunnelweg auch für MCP Apps. Ein Directory-Listing ist somit keine Voraussetzung.
 
 Die [Custom-Connector-Anleitung, „Choose authentication settings“](https://claude.com/docs/connectors/custom/add-unlisted.md#choose-authentication-settings)
 nennt eine HTTPS-MCP-Adresse und die Option **No sign-in**: „anyone with access to the server URL can use the connector“.
@@ -154,6 +156,12 @@ Insbesondere sind „stdio grundsätzlich nicht unterstützt“ und „Cowork ve
 mit `resources/read ui://…` im Serverlog und sichtbarem Panel prüfen; ein erfolgreicher
 Handshake oder Referenzhost allein beweist diese Desktop-Strecke nicht.
 
+**Nachtrag 12.11.:** Die Panel-Fehlersuche empfiehlt jetzt selbst genau diesen Vergleich („App stays invisible
+with no cause found“): lokalen Server zusätzlich per Streamable HTTP als Custom Connector anbinden und denselben
+Aufruf auf beiden Verbindungen vergleichen, Tunnel ohne Anmeldung sofort wieder schließen. Unser Server spricht
+nur stdio (`mcp.run(transport="stdio")`); der Vergleich bräuchte einen HTTP-Startmodus — erst, wenn der Handtest
+U5 ein unsichtbares Panel ohne Ursache zeigt.
+
 ## 6. Nachprüfung am 11.11.2026: Seitenpanel, Vollbild und vier neue Panel-Schnittstellen
 
 `--check` meldete 6 neue und 10 geänderte Seiten; ext-apps 2.1.0 (10.11.) bringt nur die WebMCP-Brücke. Gelesen:
@@ -175,3 +183,22 @@ Diffs von `design-guidelines` und `troubleshooting`. Anlass: Jays Desktop zeigt 
 
 Ungeprüft bleibt, was Jays Desktop tatsächlich anbietet (`getHostCapabilities()`, `hostContext` je Ort): das klärt der
 Desktop-Handtest. Bis dahin ist jede neue Schnittstelle hinter ihrer Fähigkeitsprüfung gebaut.
+
+## 7. Nachprüfung am 12.11.2026: zehn geänderte Seiten
+
+Alle zehn per `--diff` gelesen. Gemeinsamer Kern: Seitenpanel, App-Tools, Einstiegspunkte und eingebettete Seiten
+sind in die Bestandsseiten eingearbeitet; Einstiegspunkte und eingebettete Seiten gibt es bei Verzeichnis-Connectors
+nur noch mit Verified-Label. Für einen lokalen, nicht gelisteten Server folgt daraus wenig.
+
+| Seite | Was sich geändert hat | Folge für uns |
+|---|---|---|
+| mcp-apps/getting-started | Neue Übersicht „What an MCP App can do“; Remote-Pflicht für App-Tools, Einstiegspunkte, eingebettete Seiten. Freigabe heißt jetzt **Allow once** / **Always allow**; steht die Berechtigung im Eingabefeld auf **Auto**, zeigt Claude das Panel ohne Rückfrage | **Handtest U5:** Freigabe-Dialog mit den neuen Namen beschreiben und die Einstellung **Auto** notieren, sonst ist die Wirkung der Annotationen (Nr. 3) nicht von „Auto“ zu trennen |
+| mcp-apps/troubleshooting | Neuer Abschnitt: unsichtbares Panel ohne Ursache → lokalen Server zusätzlich per HTTP als Custom Connector vergleichen | in §5b nachgetragen; HTTP-Startmodus erst bei Bedarf |
+| mcp-apps/design-guidelines | Seitenpanel-Abschnitt (≈ halbe Chatbreite, min. ≈ 320 px, meldet `fullscreen`); Modi nur noch `inline`/`fullscreen`, kein `pip`; CSP-Felder erklärt, `baseUriDomains` wird ignoriert, `frameDomains` nur mit Freigabe | Nr. 8 korrigiert; Seitenpanel deckt §6 (Nr. 13–15) schon ab. Wir setzen keine CSP-Felder — ohne Folge |
+| testing | „exact same runtime“ → Ausnahme für MCP Apps (eingebettete Seiten, Einstiegspunkte); bei Team/Enterprise trägt ein Owner den Custom Connector ein | §5a korrigiert; sonst ohne Folge |
+| directory-vs-custom | Zwei Zeilen: eingebettete Seiten und Einstiegspunkte im Verzeichnis nur mit Verified-Label, als Custom ohne Listing | gelesen, ohne Folge (lokal, kein Listing) |
+| review-criteria | Label ändert jetzt, ob eingebettete Seiten und Einstiegspunkte verfügbar sind | gelesen, ohne Folge |
+| verification | gleiche Aussage wie review-criteria: das Label wirkt auch auf Funktionen, nicht nur auf die Anzeige | gelesen, ohne Folge |
+| custom/add-unlisted | Dialog neu: Name + URL, dann Anmeldeart (Vorschläge als **Detected** markiert), danach **Connect**; Option „No sign-in“ und Free-Tarif bleiben | gelesen, ohne Folge; §5a bleibt richtig (wichtig erst für einen Remote-Test) |
+| enterprise-managed-auth | Test eines gelisteten Servers unter anderer URL bzw. per Mail-Freischaltung | gelesen, ohne Folge (keine Anmeldung, kein Listing) |
+| mcp-apps/quickstart | ein neuer Link unter „Next steps“ | gelesen, ohne Folge |
