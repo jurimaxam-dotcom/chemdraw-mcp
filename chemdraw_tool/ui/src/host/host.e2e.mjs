@@ -224,6 +224,16 @@ try {
       await page.screenshot({ path: join(layoutShots, `w-${tag}-1400x900.png`), fullPage: true });
       messwerte[`w-${tag}`] = `${s.sw}≤${s.cw}`;
       check(s.sw <= s.cw && s.raus.length === 0 && s.scroller.length === 0, `U2 breit ${tag} 1400 px: nichts ragt heraus (${JSON.stringify(s)})`);
+      if (tag === "titration" || tag === "compare") {
+        // U5-Befund 12.11.2026: das Diagramm blieb im Vollbild 480 px hoch, darunter leere Fläche.
+        const p = await f.evaluate(() => {
+          const box = document.querySelector(".plot-svg").getBoundingClientRect();
+          const svg = document.querySelector(".plot-svg svg").getBoundingClientRect();
+          return { box: Math.round(box.height), svg: Math.round(svg.height), sh: document.documentElement.scrollHeight, ih: innerHeight };
+        });
+        messwerte[`w-${tag}-höhe`] = JSON.stringify(p);
+        check(p.box > 600 && p.svg > 0.6 * p.box && p.sh <= p.ih, `U5 ${tag} 1400×900: Diagramm füllt die Höhe (${JSON.stringify(p)})`);
+      }
       if (tag === "batch") {
         const hs = await f.locator(".structure-canvas").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
         messwerte["w-batch-flächen"] = hs.join(",");

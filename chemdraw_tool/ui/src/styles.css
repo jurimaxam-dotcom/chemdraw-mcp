@@ -402,6 +402,10 @@ button:active { filter: brightness(0.92); }
    utils/useHostLayout.js). Der Chat-Weg (maxHeight oder kein Kontext) bleibt unberührt:
    inhaltsgroß, 320-px-Zeichenfläche, Auto-Resize. */
 .m3d-panel { height: 500px; }
+/* Diagramm-Ansicht (PlotView): im Chat 480 px — intrinsisch, der Host bemisst das iframe am Inhalt. */
+.plot-panel { height: 480px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; padding: 12px 16px; }
+.plot-svg { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; padding: 8px; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.plot-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
 .expand-button { font-size: 12px; font-weight: 560; min-height: 40px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
 .expand-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .host-diagnostics { margin-top: 12px; padding: 8px 10px; border-top: 1px dashed var(--border); font-family: var(--font-mono); font-size: 10px; line-height: 1.4; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -430,6 +434,11 @@ button:active { filter: brightness(0.92); }
 /* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
 :root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
 :root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
+/* Diagramm und Strukturvergleich (U5, 12.11.2026): die Bildfläche nimmt die Resthöhe, das SVG
+   skaliert über seine viewBox hinein — absolut gesetzt, damit seine Eigenmaße die Höhe nicht vorgeben. */
+:root[data-host-height] .panel-root > .plot-panel { flex: 1 0 auto; height: auto; min-height: 480px; }
+:root[data-host-height] .panel-root > .plot-panel .plot-svg { position: relative; flex: 1 0 260px; }
+:root[data-host-height] .panel-root > .plot-panel .plot-svg svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); max-width: none; max-height: none; }
 :root[data-host-height] .panel-root > .protein-panel .protein-stage { flex: 1 0 auto; aspect-ratio: auto; max-height: none; min-height: 320px; }
 @media (max-width: 619px) {
   :root[data-safe-area] body { padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left)); }

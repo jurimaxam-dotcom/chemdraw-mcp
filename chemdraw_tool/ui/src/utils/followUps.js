@@ -234,6 +234,11 @@ export function tlcFollowUps(data) {
 
 export function plotFollowUps(data) {
   if (!data.name) return [];
+  // compare_molecules kommt als „plot“-Payload; sein Untertitel ist fest (server.py).
+  if (/^Structure comparison/i.test(data.subtitle || "")) {
+    return [{ id: "explain", label: "Explain the differences",
+      text: `Explain the structure comparison ${data.name}: what do the highlighted differences mean for the properties of the compounds?` }];
+  }
   return [{ id: "explain", label: "Explain this plot", text: `Explain the plot "${data.name}" and what it shows.` }];
 }
 

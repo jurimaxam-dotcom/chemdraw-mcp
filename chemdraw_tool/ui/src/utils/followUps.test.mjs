@@ -168,5 +168,10 @@ test("Spektrum, DC, Diagramm, Protein: je ein schlichter Knopf", () => {
   assert.match(tlcFollowUps({ name: "Reaction control", lanes: [{ name: "SM" }, { name: "P" }] })[0].text, /TLC/);
   assert.match(plotFollowUps({ name: "Titration of acetic acid" })[0].text, /Titration of acetic acid/);
   assert.match(proteinFollowUps({ name: "Trastuzumab" })[0].text, /Trastuzumab/);
+  // U5-Befund 12.11.2026: der Strukturvergleich ist kein „plot“
+  const cmp = plotFollowUps({ name: "Ibuprofen vs. naproxen", subtitle: "Structure comparison — differences highlighted, shared scaffold neutral" })[0];
+  assert.equal(cmp.label, "Explain the differences");
+  assert.match(cmp.text, /Ibuprofen vs\. naproxen/);
+  assert.doesNotMatch(cmp.text, /plot/);
   assert.deepEqual(proteinFollowUps({ name: "" }), []);
 });

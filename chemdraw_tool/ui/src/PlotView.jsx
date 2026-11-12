@@ -18,34 +18,9 @@ export default function PlotView({ data }) {
   }
 
   return (
-    <div
-      style={{
-        height: 480,  // intrinsisch — der Host bemisst das iframe am Inhalt
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "12px 16px",
-      }}
-    >
+    <div className="plot-panel">
       <SectionHeader title={data.name} subtitle={data.subtitle} />
-      <div
-        className="plot-svg"
-        style={{
-          background: "#ffffff",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-md)",
-          overflow: "hidden",
-          padding: 8,
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        dangerouslySetInnerHTML={{ __html: data.svg }}
-      />
-      <style>{`.plot-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
+      <div className="plot-svg" dangerouslySetInnerHTML={{ __html: data.svg }} />
       {data.notes?.length > 0 && (
         <ul
           style={{
