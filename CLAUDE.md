@@ -86,7 +86,9 @@ Seit 12.11.2026 läuft derselbe Check täglich auf GitHub (`.github/workflows/do
 einer Änderung öffnet er ein Issue mit dem Label `doku-waechter` (ein Issue je offenem Stand, schließt sich nach
 `--update` + Push von selbst). Beobachtet werden auch das Desktop-Changelog, die Modellübersicht, die
 Modell-Abkündigungen und die Plattform-Release-Notes (`docs/anthropic/quellen.json`); Nebenversionen von Paketen
-lösen keine Meldung aus, eine neue Hauptversion schon.
+lösen keine Meldung aus, eine neue Hauptversion schon. Der Wächter lässt Claude die Änderung gleich im Issue einordnen
+(`anthropics/claude-code-action`, Geheimnis `CLAUDE_CODE_OAUTH_TOKEN`, nur lesen und kommentieren). `.github/workflows/claude.yml`
+beantwortet `@claude` in Issues und PRs — nur vom Eigentümer; ein automatisches Review fremder PRs gibt es bewusst nicht.
 
 ## Auto-Gate (the project's green/red)
 
