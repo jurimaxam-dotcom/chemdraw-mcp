@@ -666,6 +666,12 @@ Paket-Nebenversionen separat gemeldet, keine Abhängigkeit hier verändert.
 - [x] Workflow 12.11.: Handtest nur noch vor Release und nach Host-spezifischer Änderung (`CLAUDE.md`,
   Helpers). CDP-Fernsteuerung gemessen: Desktop verweigert den Start mit `--remote-debugging-port`
   („refusing to start“), AX-Klicks bleiben der einzige Fahrer (`docs/ui-pruefung.md`).
+- [x] Fester Fünf-Stufen-Workflow 12.11. (`CLAUDE.md`, „Fixed workflow“): `test:inspector` (12/12 Panels im
+  MCP Inspector 2.15.0, Rot-Probe rot), `run_claude.py --echt` (12/12 gegen den echten Server), `build:watch`.
+  Gate danach grün (10116 passed). Befund: `claude -p` sagt Desktops Tool-Wahl nicht voraus (drei
+  Desktop-Ausfälle vom 07.11. mit Opus grün) — das bleibt Handtest.
+- [ ] Offen aus der Recherche, nicht entschieden: `mcpjam apps conformance` als Metadaten-Check; Git- und
+  Bundle-Hash beim Serverstart ins Log, damit der Handtest einen veralteten Prozess am Hash erkennt.
 
 - [ ] **Routing-Befund MVP (Claude, 14.10., `run_claude.py`, 11/13 grün):** (offen, braucht API; Fall `evals/tool-routing/cases.yaml:232-235`) zwei Fälle
   3 von 3 stabil rot — `lookup-data-sheet` ruft nach `lookup_molecule_data` zusätzlich

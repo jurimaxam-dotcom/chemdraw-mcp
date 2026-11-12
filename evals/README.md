@@ -1,7 +1,7 @@
 # Evals: Prompt → Tool
 
-Der Server bietet standardmäßig das Standardprofil (mvp) mit 16 Tools an;
-`CHEMDRAW_PROFILE=full` schaltet alle 23 Tools frei. Welches davon das Modell
+Der Server bietet standardmäßig das Standardprofil (mvp) mit 17 Tools an;
+`CHEMDRAW_PROFILE=full` schaltet alle 24 Tools frei. Welches davon das Modell
 bei welcher Frage wählt, war
 bisher Anekdote: „Zeichne Aspirin" landete einmal bei `generate_scope_table`,
 ein blankes „Coffein" bei `lookup`. Hier wird daraus ein Testfall.
@@ -42,6 +42,18 @@ historische Fallsammlung bleibt in `cases.yaml` erhalten:
 ```bash
 CHEMDRAW_PROFILE=full uv run python evals/tool-routing/run_claude.py
 ```
+
+## Lauf gegen den echten Server: `--echt`
+
+```bash
+uv run python evals/tool-routing/run_claude.py --echt [tool …]
+```
+
+Je Panel-Tool ein Prompt aus `evals/panel-beispiele.json`, diesmal mit dem echten Server
+(Wegwerf-HOME, `export_anki_deck` bleibt verweigert). Grün = Tool gerufen, Ergebnis ohne Fehler,
+kein verweigerter Aufruf; gelb = eine Quelle war nicht erreichbar (Exit 3); rot = Exit 1.
+Das ist der Teil des Desktop-Handtests, der ohne Bildschirm geht. Er sagt nicht voraus, ob
+Desktop das Tool ruft: die `desktop-*`-Fälle sind hier grün und waren in Desktop rot.
 
 ## Lauf mit promptfoo
 

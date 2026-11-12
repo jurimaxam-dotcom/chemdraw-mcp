@@ -82,6 +82,24 @@ command line“. Playwright kann sich also nicht an Desktop hängen; der Handtes
 `scripts/ax-claude.sh` und ist nur vor einem Release und nach Host-spezifischen Änderungen fällig
 (Regel in `CLAUDE.md`, Abschnitt Helpers).
 
+## Ohne Maus: zweiter Host und echter Server (12.11.2026)
+
+```bash
+npm --prefix chemdraw_tool/ui run test:inspector          # jedes Panel-Tool im MCP Inspector 2.15.0
+uv run python evals/tool-routing/run_claude.py --echt     # Claude Code ruft den echten Server
+npm --prefix chemdraw_tool/ui run build:watch             # Bundle baut bei jeder Änderung neu
+```
+
+`test:inspector` startet `scripts/dev_http.py` (Streamable HTTP, nur 127.0.0.1, Wegwerf-HOME) und den
+Inspector, öffnet je Panel-Tool den Deep-Link und wartet auf `data-app-status="ready"` und den Selektor
+`bereit` aus `evals/panel-beispiele.json`. Erster Lauf 12/12 grün, Rot-Probe mit unbekanntem Stoffnamen rot;
+Screenshots im ausgegebenen Temp-Ordner. `--echt` prüft je Panel-Tool Aufruf, fehlerfreies Ergebnis und
+leere `permission_denials` (12/12 grün). Beide laufen außerhalb des Gates (Netz, Modellaufruf).
+
+Grenze: Keiner der Läufe sagt voraus, ob das Modell in Desktop das Tool ruft. Die drei Desktop-Ausfälle vom
+07.11. (`desktop-loeslichkeit`, `desktop-ir-banden`, `desktop-ph-essig`) sind im Stub-Lauf mit Opus grün.
+Offen, nicht gebaut: `mcpjam apps conformance` als Konformitäts-Check der Panel-Metadaten.
+
 Quellen: [MCP-Debugging](https://modelcontextprotocol.io/docs/tools/debugging),
 [Claude Desktop: lokale MCP-Server](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop).
 Der [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) bietet

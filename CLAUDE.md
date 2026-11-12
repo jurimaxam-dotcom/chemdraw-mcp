@@ -47,9 +47,11 @@ session builds itself. Only this differs or adds here:
   no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
 - **A hand test is due only before a release and after a host-specific change** (Jay, 12.11.2026) — not per
   tool or feature. Host-specific means: manifest/bundle/install path, `_meta.ui`, host capabilities, CSP, ext-apps
-  SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on `./test.sh`,
-  `test:host`, `handshake.sh` and `evals/tool-routing`. What the hand tests of 07.11. found were routing and
-  permission cases (model called no tool in 3 of 9, missing "Always allow"), not panel bugs.
+  SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on the fixed
+  workflow below (stages 1–4). What the hand tests of 07.11. found were routing and permission cases (model
+  called no tool in 3 of 9, missing "Always allow"), not panel bugs — and **no scripted run predicts those**:
+  the same three prompts are green in `run_claude.py` with Opus (measured 12.11.2026). Whether Desktop's model
+  calls the tool stays a hand-test question.
 - **Desktop cannot be driven over CDP** (measured 12.11.2026): started with `--remote-debugging-port=9222` it
   exits with "refusing to start — a debugging or network-override switch is present on the command line". So
   Playwright cannot attach; AX clicks via `scripts/ax-claude.sh` remain the only driver. DevTools (`⌘⌥I`,
@@ -105,6 +107,32 @@ fremde Issues werden dort eingeordnet, nie öffentlich beantwortet). **Muster f�
 der mit `CLAUDE_CODE_OAUTH_TOKEN` hat nur Leserechte, Tools `Read,Grep,Glob,Write`, und schreibt eine Datei; der mit
 Schreibrecht hat kein Modell, prüft die Datei (Länge, `@` entschärft, Stand unverändert) und postet. Kein
 `pull_request_target`, eine Shell-Vorprüfung entscheidet, ob das Modell überhaupt startet.
+
+## Fixed workflow: which check when (Jay, 12.11.2026)
+
+No mouse until stage 5. Research behind it (12.11.2026): the ext-apps repo itself tests panels with Playwright
+behind a reference host, none of five surveyed server repos tests against a real client, and Anthropic's own
+guidance ends in a manual check in the real client.
+
+1. **While editing:** `npm --prefix chemdraw_tool/ui run test:ui:watch`, and for the panel
+   `npm --prefix chemdraw_tool/ui run build:watch` — `chem_app_ui()` reads `dist/` on every `resources/read`,
+   so the next tool call shows the new panel without a server restart. A watch rebuild is **not** byte-identical
+   to a clean build (measured: 3,000.67 vs 2,996.67 kB for the same source): stop the watch and run
+   `npm --prefix chemdraw_tool/ui run build` before committing, or the gate goes red on the bundle.
+2. **Before every commit:** `./test.sh`.
+3. **After a panel or tool change:** `test:host`, `./scripts/handshake.sh`, and
+   `npm --prefix chemdraw_tool/ui run test:inspector` — every panel tool rendered by a host we did not write
+   (MCP Inspector 2.15.0 web, deep link, real server over HTTP via `scripts/dev_http.py`).
+4. **Before a release, scripted:** `uv run python evals/tool-routing/run_claude.py --echt` (Claude Code calls
+   the real server once per panel tool: tool call, error-free result, no denied call) and the stub run of the
+   routing cases.
+5. **Before a release and after a host-specific change, by hand:** one Codex run in Desktop (see Helpers) for
+   what only Desktop shows — the panel is visible, the permission dialog, and whether the model calls the tool.
+
+`evals/panel-beispiele.json` feeds stages 3 and 4 (arguments, prompt and a ready selector per panel tool);
+`tests/test_panel_beispiele.py` keeps it in sync with the registration, so a new panel tool needs an entry.
+`scripts/dev_http.py` is a development launcher bound to 127.0.0.1 and deliberately no wheel entry point: the
+server writes files and has a destructive tool, so HTTP without auth is not a product feature.
 
 ## Auto-Gate (the project's green/red)
 
