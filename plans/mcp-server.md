@@ -49,6 +49,7 @@
 - **(2) Continue füllt nur den Composer:** Host-Verhalten laut Anthropic send-messages („Places the text in your message box, ready to send“; Caution-Hinweis dokumentiert). Dabei gefunden und behoben: `MESSAGE_FAILED` behauptete nach Promise-Timeout „could not be sent“, was dieselbe Seite verbietet — Test rot → Fix → grün, landete in `4b1a528` (von der Auftraggeber-Session mitcommittet).
 - **(3) Vergleich im Vollbild:** war schon erledigt (`99b0ec5`); `test:host` misst jetzt box 620 / svg 602 px bei 1400×900.
 - **Abnahme:** `./test.sh` rc=0, `test:host` rc=0 (467 ✔), `test:inspector` 12/12, Bundle sauber neu gebaut.
+- **Vom Owner nachgeprüft (Do 12.11.2026, 18:10):** Diff gelesen, `./test.sh` rc=0, `test:host` rc=0 (U5 compare box 620 / svg 602), `test:inspector` 12/12 selbst gefahren; Zitat zu (2) in der lokalen Doku-Kopie gefunden, Beleg zu (1) in der AX-Datei gelesen. Tisch-Faden `20261112-170026-…` geschlossen. U5 ist damit zu; ein Desktop-Nachtest ist erst vor dem nächsten Release fällig. Getrennt davon läuft im globalen Setup der Auftrag „Kontingent-Weiter“ (Faden `20261112-180231-kontingent-weiter`), kein Thema dieses Plans.
 
 ## Weiter bei — drei U5-Befunde prüfen und beheben, Abnahme über den neuen Workflow (Thu 12.11.2026, 17:00)
 
