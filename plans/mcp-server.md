@@ -1,5 +1,13 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex-Handtest abgeschlossen (12.11.2026, 07:33)
+
+- [x] Codex: alle elf U5-Desktop-Testfälle gefahren, Bericht im Tisch-Faden `20261112-023029-u5-desktop-handtest` Nachricht **006** gesendet; Lease `claude-desktop` freigegeben. Keine Codeänderung durch den Tester.
+- **Nächster Schritt für den Owner Claude:** Bericht und Belege prüfen, dann über Fixes und gezielte Nachtests entscheiden. Codex startet nach Kontext-Neustart keinen neuen Bau und keinen zweiten Desktop-Lauf ohne Folgeauftrag. U5-Abnahme bleibt wegen Befunden offen.
+- **Dateien/Beweise:** `/tmp/chemdraw-desktop-test/u5/bericht.md` (elf Abnahmepunkte, wörtliche Hostdiagnose, Screenshot-Namen); dauerhafter Bericht `~/.claude/tisch/20261112-023029-u5-desktop-handtest/006-codex-bericht.md`. Lauf in neuer Desktop-Unterhaltung `64d261a9-48a6-4ac6-b428-914367fc1abd`; laufende Instanz laut Startauftrag bei `3dfc4d1`, späteren HEAD nicht mitgetestet.
+- **Befunde:** Study verrät verdeckten Namen im Chat; Continue-in-chat füllt nur den Composer (Enter erforderlich, kein Fehlerdialog); Vergleichsvollbild lässt viel Höhe leer. Host meldet `message` und `updateModelContext`, Seitenpanel und Vollbild beide als `fullscreen`. Datenblatt, PNG-Export, vier MCP-Prompts und SN2 funktionieren; `save_png` fehlt in der Modellsicht.
+- **Offene Messungen:** Ladeplatzhalter nicht eingefangen; exakte CAS-Frage löste kein Tool aus, daher Annotation/Freigabe unentschieden; Gruppen-Kontext nicht isoliert bewiesen (Ester bereits im Gespräch). Keine unbeantwortete Frage an Jay, keine Wartefrist und kein eigener Hintergrundjob. Folgeprüfung: Owner prüft Codeursache, Regression einmal rot, Gate/Hosttests; Desktop-Nachtest nur mit neuer Lease.
+
 > **Zuständigkeit (Jay 11.11.2026):** Dieses Repo baut, `chemdraw-vermarktung` vermarktet (Tabelle dort: `docs/zustaendigkeit.md`). Die Vermarktungspunkte aus den Blöcken darunter — Bluesky-Folge-Posts `reaction-balance`/`antibody-scheme`, Anki-GIF-Post 12.11., Show HN, ChemAI Atlas, Clips — führt ab jetzt nur noch `chemdraw-vermarktung/plans/vermarktung.md`; hier nicht weiterführen, sondern `~/.claude/bin/schwester weiter "…"`. Hier offen bleibt nur Bau: Codex-Läufe 2–4 abholen, Paket-Umbenennung chempane als eigenes Release.
 
 ## Weiter bei — U5-Bericht von Codex abholen, Befunde fixen, „Panel aufnahmebereit“ melden (Do 12.11.2026, 07:30)
