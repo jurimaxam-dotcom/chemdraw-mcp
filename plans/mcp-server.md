@@ -1,6 +1,15 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## Weiter bei — U5/U6 fertig, Panel aufnahmebereit gemeldet; zwei Entscheidungen bei Jay (Do 12.11.2026, 14:00)
+## Weiter bei — GitHub-Einrichtung abschließen, eine Sache auf einmal (Do 12.11.2026, 16:05)
+
+- **Jay will genau ein Thema zur Zeit** (12.11., 16:00: „eine Sache auf einmal“). Aktuelles Thema: GitHub. Clips und anderes erst ansprechen, wenn er dorthin wechselt.
+- **Fertig:** Doku-Wächter täglich 06:17 (`31d4226`), `@claude` im Repo nur für den Eigentümer und nie auf Fork-PRs (`5db4ba4`, `f722b6a`), zwei Probeläufe im PR #9 beantwortet, läuft über Jays Abo (`CLAUDE_CODE_OAUTH_TOKEN`). CI für `f722b6a` und `a991f16` lief 16:00 noch — beim Wiedereinstieg prüfen: `gh run list --workflow ci.yml --limit 3`.
+- **Noch nie echt gelaufen:** Zweig „Änderung → Issue → Claude ordnet ein“ im Wächter; beim ersten echten Issue den Lauf und Claudes Kommentar ansehen.
+- **Offene Fragen an Jay (unbeantwortet — nicht bauen):** (1) „schütz main“ oder „main bleibt offen“? (Rechteänderung am Repo, braucht sein klares Ja.) (2) Rest-Branch `add-claude-github-actions-1794494240374` löschen — sein Befehl: `! git push origin --delete add-claude-github-actions-1794494240374` (der Session wurde das Löschen verweigert).
+- **Nächster Schritt:** Jays Antwort zu (1) abwarten; bei „schütz main“ Schutzregel so setzen, dass Direkt-Push möglich bleibt und Releases nur von grünem Stand gehen, danach mit einem Push prüfen.
+- **Ruht, bis Jay das Thema wechselt:** Clip-Aufnahme liegt bei der Vermarktung (Fäden `20261112-151242-panel-clips-aufnehmen`, `20261112-151343-aufnahme-neue-panel-clips`, `20261112-154448-desktop-uebernahme-fuer-aufnahme`): Codex brach ab, weil Computer Use Recordly nicht bedienen darf — Jays Freigabe nötig; drüben war 16:00 keine Session mehr aktiv. Offene Punkte aus dem Block darunter (Mechanismus-Knopf bei Morphin, Kontext-Kanal, Bildfragen) bleiben; die Darstellungsfrage H/(R)/(S) kläre ich an Papers/IUPAC statt sie Jay zu stellen.
+
+## Vorher — U5/U6 fertig, Panel aufnahmebereit gemeldet; zwei Entscheidungen bei Jay (Do 12.11.2026, 14:00)
 
 - **U5b gefahren (Claude selbst, Jay: „mach du das selber“), Bilder `/tmp/chemdraw-desktop-test/u5b/`:**
   1.–3. Kontext kommt **nicht** an: Amide gepinnt → „NONE VISIBLE“; Aromatic ring im Seitenpanel → „NONE VISIBLE“; Study-Ansicht (Zähler „7 of 7 still covered“) → „NOT VISIBLE“. Desktop meldet die Fähigkeit `updateModelContext`, das Modell sieht den Text nicht. Stattdessen ruft Claude ein Host-Werkzeug „Check the app on screen“; Antwort „No widget in this chat can be read right now“ — das ist die Abfrage von App-Tools (`app.registerTool`), die laut Doku nur für Remote-Konnektoren und ausgewählte Organisationen gilt, nicht für lokale Server.
