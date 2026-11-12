@@ -43,6 +43,12 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
+## Weiter bei — drei U5-Befunde prüfen und beheben, Abnahme über den neuen Workflow (Thu 12.11.2026, 17:00)
+
+- **Stand:** Fester Fünf-Stufen-Workflow steht (`CLAUDE.md`, „Fixed workflow“; Commits `f3037e3`, `b9bcfe2`, `0fab357`, `721f8ac`), Gate grün, Arbeitsbaum sauber. Frische Owner-Session per Auftrag gestartet.
+- **Nächster Schritt:** die drei Befunde aus dem U5-Bericht (`~/.claude/tisch/20261112-023029-u5-desktop-handtest/006-codex-bericht.md`) erst am Code prüfen (ist der Punkt noch offen?), dann je Befund Test rot → Fix → grün: (1) Study verrät den verdeckten Namen im Chat, (2) „Continue in chat“ füllt nur den Composer, (3) Vergleichs-Vollbild lässt Höhe leer (dazu gibt es schon eine Prüfung in `host.e2e.mjs`, evtl. erledigt).
+- **Abnahme ohne Maus:** `./test.sh`, `test:host`, `test:inspector`; kein Desktop-Handtest je Fix (Regel 12.11.), kein Release, keine Posts.
+
 ## Weiter bei — Codex-Handtest abgeschlossen (12.11.2026, 07:33)
 
 - [x] Codex: alle elf U5-Desktop-Testfälle gefahren, Bericht im Tisch-Faden `20261112-023029-u5-desktop-handtest` Nachricht **006** gesendet; Lease `claude-desktop` freigegeben. Keine Codeänderung durch den Tester.
