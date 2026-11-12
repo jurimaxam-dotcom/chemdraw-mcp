@@ -1,6 +1,6 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
-## GitHub-Einrichtung abgeschlossen (Do 12.11.2026, 16:15)
+## GitHub-Einrichtung abgeschlossen (Do 12.11.2026, 15:58 laut `date`; die Uhrzeiten im Block darunter gehen rund 20 min vor)
 
 - **Jays Antwort auf „wofür den Bot noch?“ (12.11.):** „alles, was für uns einen Nutzen stiftet, einrichten und danach schließen wir das Thema ab“ — Kontingent ist ihm egal (Max-Abo).
 - **Gebaut (`04bf702`):** `abhaengigkeiten.yml` (täglich 06:47: ein Kommentar je Dependabot-PR und Stand) und `zustandsbericht.yml` (montags 07:07: ein Issue, nur wenn etwas offen ist). Zwei Jobs je Workflow: Modell mit Leserechten schreibt eine Datei, Job ohne Modell prüft und postet. Muster steht in `CLAUDE.md`.
