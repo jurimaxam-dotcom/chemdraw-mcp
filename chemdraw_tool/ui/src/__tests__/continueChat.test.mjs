@@ -89,7 +89,11 @@ test("isError oder Ablehnung: ruhiger Hinweis in der Zeile, Knopf bleibt bedienb
   assert.equal(button().disabled, false);
   mode = "reject";
   await click(button());
-  assert.match(textOf(row(view.container)), /could not be sent/);
+  // Anthropic send-messages: eine abgelehnte Promise (SDK-Timeout nach 60 s) heißt nicht
+  // „nicht gesendet“ — Claude kann die Nachricht trotzdem haben. Kein solcher Satz.
+  const after = textOf(row(view.container));
+  assert.doesNotMatch(after, /not be sent|wasn't sent|was not sent|failed/i);
+  assert.match(after, /message box/);
   assert.equal(app.log.filter(([k]) => k === "message").length, 2, "Knopf war nach dem Fehler tot");
   view.unmount();
 });

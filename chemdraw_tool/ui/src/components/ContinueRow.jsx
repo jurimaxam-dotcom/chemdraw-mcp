@@ -8,7 +8,9 @@ import { hostCan } from "../ModelContext";
 // Ohne Host-Fähigkeit `message` gibt es die Zeile gar nicht, auch keinen leeren Kasten.
 
 export const MESSAGE_REJECTED = "Claude did not take the message. You can type it in the chat instead.";
-export const MESSAGE_FAILED = "The message could not be sent. Try again or type it in the chat.";
+// Abgelehnte Promise = das SDK hat aufgehört zu warten (Standard 60 s). Laut Anthropic
+// (send-messages) kann Claude die Nachricht trotzdem haben: nie „nicht gesendet“ behaupten.
+export const MESSAGE_FAILED = "No reply from Claude yet. If the text is not in your message box, try again or type it there.";
 // Desktop kann die Nachricht bis zur Bestätigung zurückhalten: die Sperre gegen
 // Doppelklick fällt spätestens dann, damit kein Knopf dauerhaft blockiert bleibt.
 const RELEASE_MS = 8000;
