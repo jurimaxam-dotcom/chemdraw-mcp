@@ -17,10 +17,13 @@ statt eines riesigen SVGs den Vermerk `_deferred`.
 
 from __future__ import annotations
 
+import hashlib
 import json
-import secrets
+import os
+import sys
 from collections import OrderedDict
 from copy import deepcopy
+from pathlib import Path
 from typing import Any
 
 from mcp.types import CallToolResult, TextContent
@@ -36,9 +39,21 @@ PART_SIZE = 50_000
 # Ergebnisses ohnehin in einem Block nachgeladen werden.
 _MIN_STRING = 2_000
 _MIN_LIST = 500
-# Ergebnisse, deren Teile noch abrufbar sind. Ein Panel lädt sofort nach; ältere
-# Einträge fallen heraus, nach einem Server-Neustart sind alle weg (das Panel
-# zeigt dann einen Hinweis statt einer leeren Fläche).
+# Wo die Blöcke liegen. Auf Platte, weil Desktop alte Ergebnisse beim
+# Wiederöffnen eines Chats erneut ans Panel gibt — auch nach einem Neustart des
+# Servers. Der Token ist ein Inhaltsschlüssel, gleiche Ergebnisse teilen eine Datei.
+def _cache_root() -> Path:
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Caches"
+    return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
+
+
+STORE_DIR = _cache_root() / "chemdraw-mcp" / "panel-parts"
+# Ältere Dateien als die jüngsten so vielen werden beim Schreiben gelöscht
+# (je Datei meist 50–300 kB). Fehlt ein Block, zeigt das Panel einen Hinweis
+# mit den Dateipfaden statt einer leeren Fläche.
+_DISK_MAX = 200
+# Die jüngsten Blöcke zusätzlich im Speicher: das Panel lädt meist sofort nach.
 _STORE_MAX = 32
 _STORE: OrderedDict[str, str] = OrderedDict()
 
@@ -81,11 +96,35 @@ def _set(root: Any, path: tuple, value: Any) -> None:
 
 def _remember(parts: list[str]) -> str:
     """Alle Teile als ein JSON-Array: das Panel holt einen Block statt je Teil einen."""
-    token = secrets.token_hex(8)
-    _STORE[token] = _compact(parts)
+    block = _compact(parts)
+    token = hashlib.sha256(block.encode()).hexdigest()[:32]
+    _STORE[token] = block
+    _STORE.move_to_end(token)
     while len(_STORE) > _STORE_MAX:
         _STORE.popitem(last=False)
+    try:
+        STORE_DIR.mkdir(parents=True, exist_ok=True)
+        path = STORE_DIR / f"{token}.json"
+        if not path.exists():
+            path.write_text(block, encoding="utf-8")
+        path.touch()
+        files = sorted(STORE_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        for old in files[_DISK_MAX:]:
+            old.unlink(missing_ok=True)
+    except OSError:
+        pass  # dann eben nur im Speicher — das Panel lädt ohnehin sofort nach
     return token
+
+
+def _recall(token: str) -> str | None:
+    if token in _STORE:
+        return _STORE[token]
+    if not (len(token) == 32 and all(c in "0123456789abcdef" for c in token)):
+        return None  # kein Pfad aus fremder Eingabe
+    try:
+        return (STORE_DIR / f"{token}.json").read_text(encoding="utf-8")
+    except OSError:
+        return None
 
 
 def shape(payload: dict) -> dict:
@@ -111,8 +150,8 @@ def shape(payload: dict) -> dict:
     parts: list[str] = []
 
     def measured() -> int:
-        # Vermerk mit Platzhalter-Token einrechnen: 16 Hex-Zeichen wie das echte.
-        return _wire({**shaped, DEFERRED_KEY: {"token": "0" * 16, "paths": paths}})
+        # Vermerk mit Platzhalter-Token einrechnen: 32 Hex-Zeichen wie das echte.
+        return _wire({**shaped, DEFERRED_KEY: {"token": "0" * 32, "paths": paths}})
 
     for path, value in [*strings, *lists]:
         if any(tuple(done) == path[: len(done)] for done in paths):
@@ -157,11 +196,11 @@ def tool_result(result: Any) -> Any:
 def load_part(token: str, offset: int = 0) -> dict:
     """Ein Stück des zurückgehaltenen Blocks (JSON-Array der Teile, in der
     Reihenfolge von `_deferred.paths`) und der Versatz des nächsten Stücks."""
-    block = _STORE.get(token)
+    block = _recall(token)
     if block is None:
         raise ValueError(
             "This panel content is no longer held by the server (it keeps the last "
-            f"{_STORE_MAX} results, and a restart clears them). Run the tool again."
+            f"{_DISK_MAX} large results). Run the tool again."
         )
     if not 0 <= offset <= len(block):
         raise ValueError(f"offset must be between 0 and {len(block)}.")

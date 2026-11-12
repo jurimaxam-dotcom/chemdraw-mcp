@@ -16,6 +16,7 @@ statt Namen, Datenbanken antworten „offline“, Proteine aus den Fixtures.
 
 import asyncio
 import json
+import re
 
 import pytest
 import requests
@@ -91,6 +92,15 @@ FAELLE = {
     "Mechanismus Fischer-Ester": ("generate_mechanism", {
         "reaction_type": "fischer_ester", "substrates": ["OC(=O)c1ccc(cc1)-c1ccc(cc1)OC(=O)c1ccccc1", "OCCCCCCCCCC"]}),
     "Antikörper (IgG 1HZH)": ("generate_protein_or_antibody", {"name": "antibody"}),
+    # Knopfwege des Panels (MoleculeView, AddToAnkiButton): rufen dieselben Tools mit
+    # anderen Argumenten — die Platzhalter müssen jedes Payload-Schema bestehen.
+    "Vancomycin All H": ("generate_molecule", {"name_or_smiles": VANCOMYCIN, "view": "all_h"}),
+    # Stereovarianten: drei offene Zentren (das Höchstmaß, 8 Isomere) im großen Gerüst
+    "Vancomycin Stereovarianten": ("generate_molecule", {
+        "name_or_smiles": re.sub(r"\[C@@?H\]", "[CH]", VANCOMYCIN, count=3), "stereo_variants": True}),
+    "Anki-Deck mit 12 Strukturen": ("export_anki_deck", {
+        "deck_name": "M2 probe", "deliver": "apkg",
+        "cards": [{"front": {"structure": s}, "back": {"text": "x"}} for s in [VANCOMYCIN, PACLITAXEL, *ARZNEISTOFFE[:10]]]}),
 }
 
 
@@ -139,8 +149,8 @@ def test_jedes_panel_tool_hat_einen_alltagsfall(server):
         t.name for t in asyncio.run(server.list_tools())
         if ((t.meta or {}).get("ui") or {}).get("resourceUri")
     }
-    # export_anki_deck ändert ein laufendes Anki — nie aus einem Testlauf
-    assert panel - {"export_anki_deck"} == {k for k in FAELLE if k in panel}
+    # export_anki_deck läuft nur mit deliver="apkg" (Datei in tmp_path, kein Anki)
+    assert panel == {k for k in FAELLE if k in panel} | {"export_anki_deck"}
 
 
 @pytest.mark.parametrize("fall", list(FAELLE))
@@ -173,7 +183,8 @@ def _nachladen(server, payload: dict) -> tuple[dict, int]:
     return payload, groesstes, abrufe
 
 
-GROSS = ["Vancomycin", "Stapel mit 20 Arzneistoffen", "Vergleich 4 × Vancomycin", "Scope mit 12 Einträgen"]
+GROSS = ["Vancomycin", "Stapel mit 20 Arzneistoffen", "Vergleich 4 × Vancomycin", "Scope mit 12 Einträgen",
+         "Vancomycin All H", "Vancomycin Stereovarianten"]
 
 
 @pytest.mark.parametrize("fall", GROSS)
@@ -204,3 +215,23 @@ def test_unter_dem_budget_bleibt_structured_content_wie_vom_sdk(server, offline)
 def test_unbekanntes_token_meldet_was_hilft(server, offline):
     with pytest.raises(ToolError, match="Run the tool again"):
         asyncio.run(server.call_tool("load_panel_part", {"token": "weg"}))
+
+
+def test_teile_ueberstehen_einen_server_neustart(server, offline, monkeypatch):
+    """Desktop zeigt alte Ergebnisse beim Wiederöffnen eines Chats erneut an —
+    dann muss das Panel auch nach einem Neustart des Servers nachladen können."""
+    from chemdraw_tool import result_budget
+
+    tool, args = FAELLE["Vancomycin"]
+    result, _, _ = _messen(server, tool, args)
+    monkeypatch.setattr(result_budget, "_STORE", type(result_budget._STORE)())  # neuer Prozess
+    ganz, _, _ = _nachladen(srv.create_server("full"), dict(result.structured_content))
+    assert ganz["svg"].startswith("<?xml")
+
+
+def test_token_ist_ein_inhaltsschluessel(server, offline):
+    """Gleiches Ergebnis, gleiches Token: der Speicher wächst nicht je Aufruf."""
+    tool, args = FAELLE["Vancomycin"]
+    a, _, _ = _messen(server, tool, args)
+    b, _, _ = _messen(server, tool, args)
+    assert a.structured_content["_deferred"]["token"] == b.structured_content["_deferred"]["token"]

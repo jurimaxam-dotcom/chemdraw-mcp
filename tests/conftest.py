@@ -128,3 +128,13 @@ def _gene_lookup_offline(monkeypatch):
     from chemdraw_tool import resolver
 
     monkeypatch.setattr(resolver, "_gene_lookup", lambda name: None)
+
+
+@pytest.fixture(autouse=True)
+def _panel_teile_in_tmp(monkeypatch, tmp_path):
+    """Zurückgehaltene Panel-Teile (result_budget.py, M2) landen im Test in tmp_path,
+    nie im Cache-Ordner des Nutzers."""
+    from chemdraw_tool import result_budget
+
+    monkeypatch.setattr(result_budget, "STORE_DIR", tmp_path / "panel-parts")
+    monkeypatch.setattr(result_budget, "_STORE", type(result_budget._STORE)())
