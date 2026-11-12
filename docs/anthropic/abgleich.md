@@ -32,7 +32,7 @@ Status: ✓ erfüllt · ◐ teilweise · ✗ fehlt · ? ungeprüft · ⚠ Spannu
 |---|---|---|---|---|
 | 1 | Panel soll Claudes Farben und Schrift (Anthropic Sans) übernehmen: durchsichtiger Hintergrund, `color-scheme`-Meta, Host-Variablen über die mitgelieferten Helfer, Rahmen vom Host | theming, design-guidelines | ✗ eigene Variablen, kein Meta, kein `prefersBorder` | **M1** (größter Hebel für „sauberer") |
 | 2 | Ergebnisse ab ca. 150.000 Zeichen werden bei aktiver Code-Sandbox als Datei abgelegt, das Panel lädt dann **gar nicht** | troubleshooting | ? nie gemessen | **M2:** Größen messen (3D-SVG, Mechanismus, Plots, Stapel), Großes per `callServerTool` nachladen |
-| 3 | Werkzeuge brauchen `title` und `readOnlyHint`/`destructiveHint` (für die Einreichung Pflicht, auch sonst Konvention) | submission | ✗ 0 von 23 | **M3:** alle 23 annotieren (alle lesend bzw. schreiben nur nach `~/ChemDraw-Output`) — im Tool-Snapshot sichtbar |
+| 3 | Werkzeuge brauchen `title` und `readOnlyHint`/`destructiveHint` (für die Einreichung Pflicht, auch sonst Konvention) | submission | ✓ 24 von 24 (12.11.2026, `8a81068`: `_TOOL_LABELS` in `server.py`; schreibende Tools nicht lesend, `export_anki_deck` destructive) | erledigt — Wirkung auf Freigabe-Klicks misst der Handtest U5 |
 | 4 | Ressource trägt MIME `text/html;profile=mcp-app` | quickstart | ✓ | — |
 | 5 | Für lokale stdio-Server gibt es kein `ui.domain` — das Feld darf nicht gesetzt sein | troubleshooting | ✓ nicht gesetzt | — |
 | 6 | Jeder Aufruf öffnet ein eigenes Panel, alte bleiben aktiv und können weiter an Claude schicken; Ablösung über Schlüssel `{createdAt, seq}` aus dem Server + `BroadcastChannel` | instance-supersession | n/a (Panels ohne Zustand) | **M5** erst beim Quiz-/Prüfmodus |

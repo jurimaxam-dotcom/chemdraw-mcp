@@ -16,6 +16,8 @@ a limited set of organizations, and not in every conversation“. Dass das Seite
 Besitzers erscheint, ist seine Beobachtung vom 11.11., keine Messung. GS sagt außerdem, Desktop starte die
 Beispielserver lokal, und nur App-Tools, Einstiegspunkte und eingebettete Seiten seien mit eigenem Remote-Server zu testen.
 
+**Stand 12.11.2026 (`c45fdff`):** gebaut sind inzwischen `sendMessage` (Zeile „Continue in chat“), `updateModelContext` (ein Besitzer, `ModelContext.jsx`), Layout nach gemeldeter Größe und `requestDisplayMode`, `toolinput`/`toolcancelled` (Platzhalter), Tool-`title` und Annotationen (24 von 24), `visibility: ["app"]` für `save_png` und vier Prompts. Die Spalte „Nutzen wir?“ in den Tabellen darunter zeigt für diese Zeilen noch den alten Stand; ob Desktop sie lokal ausführt, misst der Handtest U5.
+
 **Spalte „Nutzen wir?“** gilt für Commit `0413183`. Im Arbeitsbaum liegt am 11.11. fremde, uncommittete Arbeit an
 M10 (`useHostLayout.js`, `HostDiagnostics.jsx`, `requestDisplayMode` in `MoleculeView.jsx`) — nicht Teil dieser Recherche.
 

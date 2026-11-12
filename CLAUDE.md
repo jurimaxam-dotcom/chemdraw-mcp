@@ -280,6 +280,8 @@ chemdraw_tool/
 │                            each `type` needs a matching case in App.jsx
 ├── png_writer.py          — client-rendered PNG → file
 ├── vault.py               — optional notes lookup (only if CHEMDRAW_VAULT_PATH)
+├── prompts.py             — MCP prompts (study_compound, practice_mechanism,
+│                            exam_flashcards, compare_compounds); mvp tools only
 ├── privacy.py             — may a typed structure go online? (CHEMDRAW_SMILES_LOOKUP,
 │                            default off; read on every call)
 ├── chemdraw.py            — macOS AppleScript bridge (no tool right now; CDXML
@@ -321,6 +323,28 @@ and are therefore built differently:
   `ExportPngButton` uses. Only successes are cached, so a failure stays
   retryable, and a user who switches back mid-flight keeps their view (a
   `wanted` ref decides, not the arriving response).
+
+**The panel talks to Claude through two channels, both gated on host capabilities (12.11.2026).**
+`components/ContinueRow.jsx` sends one user message per click (`app.sendMessage`, only inside the click
+handler) and does not render at all without the host capability `message`; its sentences are pure functions in
+`utils/followUps.js` and offer only what the server can deliver (a mechanism button needs a carboxylic acid, a
+primary/secondary alcohol or a halide on an sp3 carbon). `ModelContext.jsx` is the **single owner** of
+`app.updateModelContext`: views only report their text (`utils/modelContext.js`), the provider sends the full
+state, debounced, because the host keeps only the last update — a second sender would overwrite the first. A
+view that is hidden (parent structure behind the stereo-variant list) must report `""`, and the view that
+replaces it must report itself, or the host keeps the stale text. Hover is a preview, a click pins a group or
+atom (`pinnedGroup`); hover must never clear the pin. The Study tab (`components/StudyPanel.jsx`, molecule view
+only, opt-in) covers name, key facts and groups — nothing in that mode may leak the name (tooltips, `title`,
+`aria-label`, file paths). `test:host` switches the capabilities on and off and sends `toolinput` before
+`toolresult` (placeholder in `components/ToolPlaceholder.jsx`).
+
+**Tool titles, annotations and prompts live next to the registration.** `_TOOL_LABELS` in `server.py` gives
+every tool a human `title` and honest `ToolAnnotations` (a tool that writes under `~/ChemDraw-Output` is not
+read-only; `export_anki_deck` is destructive because it updates notes in Anki); a new tool needs an entry, and
+`tests/test_tool_annotations.py` lists the writing tools explicitly. `save_png` carries
+`_meta.ui.visibility: ["app"]` without a `resourceUri`, so it stays registered and counted but is not a panel
+tool. `chemdraw_tool/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile
+(`tests/test_prompts.py`).
 
 A component test for an async panel path is worthless outside `act()`: the
 follow-up render never flushes and the test passes while the bug is live.
