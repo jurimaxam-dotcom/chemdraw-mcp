@@ -503,7 +503,7 @@ const SZENEN = {
   },
   // β-D-Glucose: Ansicht-Achse einmal durch — 2D → Fischer → Haworth → Chair → 3D
   "sugar-views": {
-    ...BLUESKY, datei: "sugar-views", hoehe: 860,
+    ...BLUESKY, datei: "sugar-views", hoehe: 1080,
     tool: "generate_molecule", args: { name_or_smiles: "beta-D-glucose" },
     async ablauf({ frame, halten, klick, imBild }) {
       const achse = frame.locator("[data-view-axis]");
@@ -621,7 +621,7 @@ const SZENEN = {
   },
   // Aspirin: zwei Gruppen-Chips, dann „Add to Anki“ → „Saved“ (Testhost: deliver apkg, kein Anki)
   anki: {
-    ...BLUESKY, datei: "anki", hoehe: 690,
+    ...BLUESKY, datei: "anki", hoehe: 900,
     tool: "generate_molecule", args: { name_or_smiles: "aspirin" },
     async ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild }) {
       const gruppen = frame.locator("button.functional-group");
