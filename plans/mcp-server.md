@@ -43,11 +43,14 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
-## Weiter bei — Desktop-Handtest für M2 läuft bei Codex (Fr. 13.11.2026, 16:45)
+## Weiter bei — M2 in Desktop bestanden, nächster Schritt ist Jays Wort zum Release (Fr. 13.11.2026, 17:05)
 
-- **Jay 13.11., 16:42: „Ja, jetzt“.** Auftrag an Codex `w62:p3` abgegeben: Tisch-Faden `20261113-164407-desktop-handtest-m2-ergebnisgroe` (aus dem Bau-Repo nur mit `tisch auftrag codex - --ort chemdraw-vermarktung` zustellbar; eine Pane-ID aus einem fremden Workspace lehnt `tisch` ab). Lease `claude-desktop` bei Codex bis 17:14. Fälle: A Koffein, B Vancomycin, C Stapel mit 20 Arzneistoffen; Screenshots nach `/tmp/chemdraw-desktop-test/m2/`.
-- **Wenn der Bericht da ist:** Screenshots selbst ansehen und mit `test:host` vergleichen; leeres Panel oder Freigabe-Dialog beim Nachladen → erst beheben, dann Release. Danach diesen Block und den Punkt „Offen vor dem nächsten Release“ unten abhaken.
-- **Vermarktung (nur Zeiger):** wie zugesagt angestoßen, Faden `20261113-164357-weitergeleitet-aus-chemdraw-mcp`, neue Session drüben (`w62:p4`).
+- **Desktop-Handtest M2 bestanden (Codex, Faden `20261113-164407-desktop-handtest-m2-ergebnisgroe`, geschlossen; Owner hat die Screenshots selbst angesehen):** Handshake nach Neustart 18/13 und 25/17 · A Koffein: Panel in einem Stück (`a-caffeine.png`) · B Vancomycin: vollständige Struktur, 2 App-Abrufe in 8 ms (`b-vancomycin.png`) · C Stapel mit 20 Arzneistoffen: 20 Karten, alle mit Bild, 6 App-Abrufe in 29 ms, vollständig spätestens 4,15 s danach (`c-kontaktbogen.png`) · kein Freigabe-Dialog, weder beim Tool noch beim Nachladen · kein leeres Panel. Belege unter `/tmp/chemdraw-desktop-test/m2/` (flüchtig).
+- **Messgrenzen:** Desktops `mcp.log` kürzt `tools/call` auf `params` — dass die 2 bzw. 6 Abrufe `load_panel_part` sind, folgt aus Zeitpunkt und Bild, nicht aus dem Log. Die Haupttool-Aufrufe des Modells stehen in diesem Log gar nicht. Zeit vom leeren Rahmen bis zum Bild nicht getrennt erfasst.
+- **Erster Durchlauf ungültig:** Konnektor war aus (Jay, 16:50), das Modell zeichnete Koffein per Shell-Befehl mit RDKit statt über das Tool; Jays Eingriff in Desktop stoppte Codex. Das Plus-Menü zeigt lokale Konnektoren ohne Ein/Aus-Schalter („Add from chemdraw“) — vor einem Handtest den Konnektor-Stand belegen lassen.
+- **Nebenbei behoben (`6c26f1d`):** „Continue in chat“ bot bei Glucose die Fischer-Veresterung an; Alkohol-Rolle jetzt nur bei genau einer Hydroxylgruppe (Befund der Vermarktung). Gate rc=0.
+- **Offen:** Release mit M2 ist Jays Entscheidung (Bremse). Vorher laut Workflow Stufe 4 (`run_claude.py --echt` + Stub-Lauf) und `codex exec review`. Der Manifest-Text 17 → 18 ist mit dem Handshake 18/13 belegt.
+- **Vermarktung (nur Zeiger):** Desktop-Shorts wurden nie aufgenommen; Neuaufnahme führt die Vermarktung (Faden `20261113-164357-weitergeleitet-aus-chemdraw-mcp`), Lease frei gemeldet.
 
 ## Stand vor dem Kontext-Neustart (Fr. 13.11.2026, 11:08) — Frage „Handtest jetzt?“ ist beantwortet
 
