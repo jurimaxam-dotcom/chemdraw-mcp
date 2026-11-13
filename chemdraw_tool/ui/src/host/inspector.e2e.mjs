@@ -23,7 +23,8 @@ const unbekannt = wahl.filter((n) => !beispiele[n] || beispiele[n].auslassen);
 if (unbekannt.length) { console.error(`ABBRUCH: kein Beispiel für ${unbekannt.join(", ")}`); process.exit(2); }
 const tools = Object.entries(beispiele).filter(([n, b]) => !b.auslassen && (!wahl.length || wahl.includes(n)));
 
-const [SERVER, WEB, SANDBOX] = [8765, 6274, 6275];
+// 8791, nicht 8765: dort lauscht AnkiConnect, sobald Anki offen ist (Abbruch am 13.11.2026).
+const [SERVER, WEB, SANDBOX] = [8791, 6274, 6275];
 const token = randomBytes(24).toString("hex");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "inspector-home-"));
 const shots = mkdtempSync(join(tmpdir(), "inspector-shots-"));

@@ -7,7 +7,7 @@ Bewusst KEIN Einstiegspunkt des Wheels und kein Modus von `chemdraw-tool-server`
 der Server schreibt Dateien und hat mit `export_anki_deck` ein destruktives Tool,
 HTTP ohne Anmeldung ist deshalb kein Produktmerkmal. Die Adresse ist fest Loopback.
 
-    uv run python scripts/dev_http.py            # http://127.0.0.1:8765/mcp
+    uv run python scripts/dev_http.py            # http://127.0.0.1:8791/mcp (8765 gehört AnkiConnect)
     PORT=9000 uv run python scripts/dev_http.py
 """
 
@@ -17,5 +17,5 @@ from chemdraw_tool.server import create_server
 
 if __name__ == "__main__":
     create_server(os.environ.get("CHEMDRAW_PROFILE", "mvp")).run(
-        transport="streamable-http", host="127.0.0.1", port=int(os.environ.get("PORT", "8765"))
+        transport="streamable-http", host="127.0.0.1", port=int(os.environ.get("PORT", "8791"))
     )
