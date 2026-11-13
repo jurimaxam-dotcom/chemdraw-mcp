@@ -43,7 +43,13 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
-## Weiter bei — Desktop-Handtest für M2 wartet auf Jays Wort (Fr. 13.11.2026, 11:08, vor Kontext-Neustart)
+## Weiter bei — Desktop-Handtest für M2 läuft bei Codex (Fr. 13.11.2026, 16:45)
+
+- **Jay 13.11., 16:42: „Ja, jetzt“.** Auftrag an Codex `w62:p3` abgegeben: Tisch-Faden `20261113-164407-desktop-handtest-m2-ergebnisgroe` (aus dem Bau-Repo nur mit `tisch auftrag codex - --ort chemdraw-vermarktung` zustellbar; eine Pane-ID aus einem fremden Workspace lehnt `tisch` ab). Lease `claude-desktop` bei Codex bis 17:14. Fälle: A Koffein, B Vancomycin, C Stapel mit 20 Arzneistoffen; Screenshots nach `/tmp/chemdraw-desktop-test/m2/`.
+- **Wenn der Bericht da ist:** Screenshots selbst ansehen und mit `test:host` vergleichen; leeres Panel oder Freigabe-Dialog beim Nachladen → erst beheben, dann Release. Danach diesen Block und den Punkt „Offen vor dem nächsten Release“ unten abhaken.
+- **Vermarktung (nur Zeiger):** wie zugesagt angestoßen, Faden `20261113-164357-weitergeleitet-aus-chemdraw-mcp`, neue Session drüben (`w62:p4`).
+
+## Stand vor dem Kontext-Neustart (Fr. 13.11.2026, 11:08) — Frage „Handtest jetzt?“ ist beantwortet
 
 - **Nichts halbfertig, Arbeitsbaum sauber, alles gepusht.** M2 (Ergebnisgröße) ist gebaut und vom Owner nachgeprüft (Block darunter); offene Tisch-Fäden dieser Session: keine (M2-Faden und beide Vermarktungs-Fäden geschlossen bzw. berichtet).
 - **Offene Frage an Jay, unbeantwortet — nicht bauen, nicht Desktop bedienen:** „Handtest jetzt?“ — ein Codex-Lauf in Claude Desktop, etwa 15 Minuten Hände weg. Gestellt dreimal am 13.11. morgens; Jay fragte zuletzt zurück („hast du schon mit Codex Desktop Tests gemacht dazu? … wie würdest du jetzt weitermachen? … wann können wir mit der Vermarktung weitermachen?“) und bekam als Antwort: nein, kein Desktop-Test seit M2; Vermarktung hängt nicht daran.
