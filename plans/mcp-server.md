@@ -43,7 +43,7 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
-## Weiter bei — M2 in Desktop bestanden, nächster Schritt ist Jays Wort zum Release (Fr. 13.11.2026, 17:05)
+## Weiter bei — M2 in Desktop bestanden, nächster Schritt ist Jays Wort zum Release (Fr. 13.11.2026, 16:59)
 
 - **Desktop-Handtest M2 bestanden (Codex, Faden `20261113-164407-desktop-handtest-m2-ergebnisgroe`, geschlossen; Owner hat die Screenshots selbst angesehen):** Handshake nach Neustart 18/13 und 25/17 · A Koffein: Panel in einem Stück (`a-caffeine.png`) · B Vancomycin: vollständige Struktur, 2 App-Abrufe in 8 ms (`b-vancomycin.png`) · C Stapel mit 20 Arzneistoffen: 20 Karten, alle mit Bild, 6 App-Abrufe in 29 ms, vollständig spätestens 4,15 s danach (`c-kontaktbogen.png`) · kein Freigabe-Dialog, weder beim Tool noch beim Nachladen · kein leeres Panel. Belege unter `/tmp/chemdraw-desktop-test/m2/` (flüchtig).
 - **Messgrenzen:** Desktops `mcp.log` kürzt `tools/call` auf `params` — dass die 2 bzw. 6 Abrufe `load_panel_part` sind, folgt aus Zeitpunkt und Bild, nicht aus dem Log. Die Haupttool-Aufrufe des Modells stehen in diesem Log gar nicht. Zeit vom leeren Rahmen bis zum Bild nicht getrennt erfasst.
