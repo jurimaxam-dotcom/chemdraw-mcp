@@ -47,6 +47,13 @@ test("Mechanismus: primärer/sekundärer Alkohol → Fischer, tertiärer nicht",
   assert.equal(mechanismFor(groups, chain("O", 0)), null);
 });
 
+test("Mechanismus: Polyol (Zucker) bekommt keinen Fischer-Vorschlag", () => {
+  // beta-D-Glucose: fünf Hydroxylgruppen in einer Gruppe — welche verestert würde,
+  // ist offen, und für Zucker ist die Fischer-Veresterung nicht die Lehrbuchreaktion.
+  const groups = [{ name: "Hydroxyl", atomIndices: [1, 2, 3, 4], count: 5 }];
+  assert.equal(mechanismFor(groups, chain("O", 2)), null);
+});
+
 test("Mechanismus: Phenol ist kein Alkohol für die Fischer-Veresterung", () => {
   assert.equal(mechanismFor([{ name: "Phenol", atomIndices: [1, 2], count: 1 }], chain("O", 0)), null);
 });

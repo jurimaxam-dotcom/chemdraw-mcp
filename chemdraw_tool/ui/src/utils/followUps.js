@@ -87,7 +87,11 @@ export function mechanismFor(groups, atoms) {
   const find = (name) => list.find((g) => g.name === name);
   if (find("Carbonsäure")) return { type: "fischer_ester", role: "acid" };
   const alcohol = find("Hydroxyl");
-  if (alcohol && isPrimaryOrSecondaryAlcohol(alcohol, atoms)) return { type: "fischer_ester", role: "alcohol" };
+  // Nur ein Stoff mit genau einer Hydroxylgruppe: bei Polyolen (Zucker) wäre offen,
+  // welche OH-Gruppe gemeint ist, und der Vorschlag passt nicht zum Stoff.
+  if (alcohol && (alcohol.count ?? 1) === 1 && isPrimaryOrSecondaryAlcohol(alcohol, atoms)) {
+    return { type: "fischer_ester", role: "alcohol" };
+  }
   const halide = find("Halogenid");
   if (halide && atoms?.length) {
     const aromatic = new Set(find("Aromat")?.atomIndices || []);
