@@ -24,6 +24,7 @@ nicht aufrufen), dürfen aber nie vom Modell von sich aus benutzt werden —
 deshalb wird hier auch geprüft, dass ihre Beschreibung sie als intern ausweist.
 """
 
+import asyncio
 import inspect
 
 import pytest
@@ -359,3 +360,32 @@ def test_generate_reaction_says_which_mechanisms_are_drawn(profile):
     assert "only for SN1, SN2 and Fischer esterification" in flat, flat
     assert "Diels–Alder" in flat, flat
     assert "arrow mechanism is not drawn" in flat, flat
+
+
+# --- Das Standardprofil (mvp) hat eigene Beschreibungen ------------------------
+#
+# Gemessen 14.11.2026: Ein Zaun im Docstring von batch_generate wirkte im
+# Routing-Lauf nicht, weil das mvp-Profil (das Desktop und der Stub-Lauf zeigen)
+# die Kurzfassung aus _MVP_SUMMARIES ausliefert. Größe und Zäune gelten deshalb
+# auch für die Fassung, die tatsächlich ankommt.
+
+
+def _mvp():
+    return {t.name: t.description or "" for t in asyncio.run(server.create_server("mvp").list_tools())}
+
+
+@pytest.mark.parametrize("tool", sorted(server.MVP_TOOLS))
+def test_mvp_description_survives_the_2kb_cap(tool):
+    size = len(_mvp()[tool].encode())
+    assert size <= MAX_DESCRIPTION_BYTES, f"{tool} (mvp): {size} B"
+
+
+# all-stereoisomers: „alle Stereoisomere der Weinsäure“ ging 6 von 6 Mal an
+# batch_generate (drei vom Modell geschriebene SMILES). generate_molecule mit
+# stereo_variants=True zählt die Isomere selbst ab, Meso-Formen einmal.
+def test_alle_stereoisomere_gehoeren_generate_molecule_in_beide_richtungen():
+    mvp = {name: " ".join(desc.split()) for name, desc in _mvp().items()}
+    assert "all stereoisomers" in mvp["generate_molecule"].split("Args:")[0].lower()
+    assert "stereo_variants" in mvp["generate_molecule"].split("Args:")[0]
+    nicht = mvp["batch_generate"].split("Not this tool for:")[1]
+    assert "stereoisomers" in nicht and "generate_molecule" in nicht

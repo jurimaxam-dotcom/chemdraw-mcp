@@ -153,9 +153,14 @@ cases:
     prompt: "Zeig mir alle Stereoisomere der Weinsäure"
     expect: generate_molecule
     forbidden: [batch_generate, compare_molecules]
+    required_args: {stereo_variants: true}
     why: >
       Gegenrichtung: alle Stereoisomere eines Stoffs sind ein Parameter von
       generate_molecule (stereo_variants), keine Liste fuer batch_generate.
+      Der Server zaehlt die Isomere selbst ab (Weinsaeure: drei, meso einmal);
+      bei batch_generate schreibt das Modell die SMILES und damit die
+      Stereochemie selbst. generate_molecule ohne stereo_variants zeichnet nur
+      eines.
 
   - id: draw-mechanism
     prompt: "Zeig mir den Mechanismus der SN2-Reaktion Schritt fuer Schritt"

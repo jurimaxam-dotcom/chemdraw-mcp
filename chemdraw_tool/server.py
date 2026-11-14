@@ -357,6 +357,8 @@ does (acidity, solubility) — the answer is in its structure.
 A Fischer or Haworth projection of a sugar or amino acid, a chair
 conformation of a cyclohexane or pyranose ring, or a drawing with all H
 atoms, is this tool too: set view to "fischer", "haworth", "chair" or "all_h".
+All stereoisomers of one compound are this tool too: set stereo_variants=True
+(meso forms counted once).
 
 Not this tool for: several individual structures (use batch_generate),
 structural differences (use compare_molecules), a reaction scheme (use
@@ -372,8 +374,10 @@ generate_species_distribution), a rotatable 3D model or the shape in space
 Failed names are reported in failed while successful structures are returned.
 Pass English or IUPAC names, or SMILES.
 
-Not this tool for: one compound (use generate_molecule), structural
-differences (use compare_molecules), or a reaction scheme (use generate_reaction).
+Not this tool for: one compound (use generate_molecule), all stereoisomers
+of one compound (use generate_molecule with stereo_variants=True — it
+enumerates them, meso forms once), structural differences (use
+compare_molecules), or a reaction scheme (use generate_reaction).
 """,
     "generate_reaction": """Draw a reaction scheme from reactants, products and conditions.
 
@@ -1242,16 +1246,14 @@ def generate_molecule(
         name_or_smiles: English/IUPAC name or SMILES. Peptides:
             "Ala-Gly-Ser" (D-Ala, Ac-, -NH2, cyclo(…)); one-letter only as
             "peptide:AGS" (lowercase = D).
-        label: Display name shown below the structure (may be localized).
-        formats: "png", "svg", "cdxml" (default: png + svg); "cdxml" only
-            for editing in ChemDraw.
+        label: Display name below the structure (may be localized).
+        formats: any of "png", "svg", "cdxml" (default png + svg; cdxml
+            only for ChemDraw).
         annotate_stereo: True prints CIP descriptors (R/S, E/Z).
-        abbreviate_groups: True draws substituents as short labels (Ph,
-            OAc, Boc, …); chemistry unchanged, no panel tooltips.
-        render_style: "" standard, "compact" (small print), "presentation"
-            (slides) or "grayscale".
-        stereo_variants: True returns the stereoisomers of open centers
-            (max 3) as a pick list; only on request.
+        abbreviate_groups: True draws substituents as labels (Ph, OAc, Boc).
+        render_style: "", "compact", "presentation" or "grayscale".
+        stereo_variants: True lists all stereoisomers (max 3 open centers)
+            as a pick list; only when the user asks for them.
         view: "fischer"/"haworth"/"chair"/"all_h" opens on that drawing,
             only if the user names it.
     """
