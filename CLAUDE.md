@@ -43,18 +43,20 @@ Who builds, who helps and when a second session is worth it follows the global h
 (`~/.claude/CLAUDE.md`, section Arbeitsweise); the three-session split of early November is gone. The owner
 session builds itself. Only this differs or adds here:
 
-- **Desktop hand tests and screen recordings stay with Codex** — one Tisch order per test run with all steps,
-  no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
-- **A hand test is due only before a release and after a host-specific change** (Jay, 12.11.2026) — not per
+- **The scripted Desktop check is `scripts/desktop-probe`** (stage 5 below, since 14.11.2026): the owner runs it,
+  no helper needed. **Screen recordings and anything the probe cannot judge stay with Codex** — one Tisch order
+  per run with all steps, no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
+- **A Desktop run is due only before a release and after a host-specific change** (Jay, 12.11.2026) — not per
   tool or feature. Host-specific means: manifest/bundle/install path, `_meta.ui`, host capabilities, CSP, ext-apps
   SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on the fixed
   workflow below (stages 1–4). What the hand tests of 07.11. found were routing and permission cases (model
   called no tool in 3 of 9, missing "Always allow"), not panel bugs — and **`run_claude.py` does not predict those**:
   the `desktop-*` cases (same questions, wording of the 02.11. acceptance) were green in one stub run with Opus
-  on 12.11.2026. Whether Desktop's model calls the tool stays a hand-test question.
+  on 12.11.2026. Whether Desktop's model calls the tool is what stage A of the probe measures, in Desktop itself.
 - **Desktop cannot be driven over CDP** (measured 12.11.2026): started with `--remote-debugging-port=9222` it
   exits with "refusing to start — a debugging or network-override switch is present on the command line". So
-  Playwright cannot attach; AX clicks via `scripts/ax-claude.sh` remain the only driver. DevTools (`⌘⌥I`,
+  Playwright cannot attach. The accessibility tree is the only way in: XCUIAutomation for checks
+  (`scripts/desktop-probe`), `scripts/ax-claude.sh` for recordings (it moves a visible pointer). DevTools (`⌘⌥I`,
   `allowDevTools` is on) is for diagnosis of a failing panel, never an acceptance step.
 - **Review before a release** runs without a pane: `codex exec review --commit <sha> < /dev/null`. The reviewer
   only reports; the owner checks every finding against the code before taking or rejecting it.
@@ -110,7 +112,7 @@ Schreibrecht hat kein Modell, prüft die Datei (Länge, `@` entschärft, Stand u
 
 ## Fixed workflow: which check when (Jay, 12.11.2026)
 
-No mouse until stage 5. Research behind it (12.11.2026): the ext-apps repo itself tests panels with Playwright
+No mouse until stage 5, and none of Jay's or a helper's hands until stage 6. Research behind it (12.11.2026): the ext-apps repo itself tests panels with Playwright
 behind a reference host, none of five surveyed server repos tests against a real client, and Anthropic's own
 guidance ends in a manual check in the real client.
 
@@ -127,10 +129,20 @@ guidance ends in a manual check in the real client.
 4. **Before a release, scripted:** `uv run python evals/tool-routing/run_claude.py --echt` (Claude Code calls
    the real server once per panel tool: tool call, error-free result, no denied call) and the stub run of the
    routing cases.
-5. **Before a release and after a host-specific change, by hand:** one Codex run in Desktop (see Helpers) for
-   what only Desktop shows — the panel is visible, the permission dialog, and whether the model calls the tool.
+5. **Before a release and after a host-specific change, scripted in Desktop:** `scripts/desktop-probe/run.sh A`
+   (one new prompt per panel tool: does the model call the tool, is there a permission dialog, does the panel
+   appear) and `scripts/desktop-probe/run.sh B` (the checkpoints of `checkpoints.json` on the chats A left
+   behind: the panel is rebuilt when a chat is reopened, tabs and toggles respond). XCUIAutomation drives the
+   installed Claude Desktop; measured 14.11.2026 with Xcode 27.2: A 617 s, B 375 s for 13 tools. The run takes
+   the screen and the `claude-desktop` lease (the script reserves it) — switching to another app turns
+   checkpoints red. A costs one chat per tool in Jay's account and its result varies with the model, so one red
+   routing checkpoint is a finding to repeat, not yet a bug; B is deterministic. Rules learnt from false-green
+   runs are in `scripts/desktop-probe/README.md`. After a panel change that renames or removes a control, update
+   `checkpoints.json` in the same commit — it searches by accessibility name, not by visible text.
+6. **Only for what the probe cannot judge, by hand:** one Codex run in Desktop (see Helpers) — whether the panel
+   *looks* right, a first-time permission dialog on a fresh install, and screen recordings.
 
-`evals/panel-beispiele.json` feeds stages 3 and 4 (arguments, prompt and a ready selector per panel tool);
+`evals/panel-beispiele.json` feeds stages 3, 4 and 5 (arguments, prompt and a ready selector per panel tool);
 `tests/test_panel_beispiele.py` keeps it in sync with the registration, so a new panel tool needs an entry.
 `scripts/dev_http.py` is a development launcher bound to 127.0.0.1 and deliberately no wheel entry point: the
 server writes files and has a destructive tool, so HTTP without auth is not a product feature.
