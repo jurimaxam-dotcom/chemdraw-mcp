@@ -66,21 +66,35 @@ def befehl(prompt: str, config: str, modell: str | None, erlaubt: list[str], max
     return cmd
 
 
+def server_verbunden(events: list[dict]) -> bool:
+    """Meldet das init-Event den Server `chemdraw` als verbunden? Sonst sah das Modell kein Tool."""
+    for e in events:
+        if e.get("type") == "system" and e.get("subtype") == "init":
+            return any(s.get("name") == "chemdraw" and s.get("status") == "connected"
+                       for s in e.get("mcp_servers") or [])
+    return False
+
+
 def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[str],
           max_turns: int | None = None) -> tuple[list[str], str, dict]:
     """Ein `claude -p`-Lauf. Ohne `erlaubt` verweigert Claude Code jeden MCP-Aufruf."""
     cmd = befehl(prompt, config, modell, erlaubt, max_turns or (3 if erlaubt else 2))
-    out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=cwd).stdout
+    # Der Attrappen-Start (uv + RDKit-Import) braucht unter Last länger als Claude Codes
+    # Vorgabe; dann meldet init „failed“ und das Modell sieht kein Tool (14.11.2026).
+    umgebung = {**os.environ, "MCP_TIMEOUT": os.environ.get("MCP_TIMEOUT", "120000")}
+    out = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=cwd, env=umgebung).stdout
     namen: list[str] = []
     text = ""
     # zuege: Toolnamen je Antwort des Modells (message.id) — parallele Aufrufe einer
     # Antwort kommen als einzelne assistant-Events mit derselben id.
-    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}, "aufrufe": [], "zuege": {}}
+    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}, "aufrufe": [], "zuege": {}, "verbunden": False}
     for zeile in out.splitlines():
         try:
             e = json.loads(zeile)
         except ValueError:
             continue
+        if e.get("type") == "system" and e.get("subtype") == "init":
+            echt["verbunden"] = server_verbunden([e])
         if e.get("type") == "assistant":
             for b in e["message"]["content"]:
                 if b.get("type") == "tool_use":
@@ -230,10 +244,13 @@ def main() -> int:
         shutil.rmtree(arbeit, ignore_errors=True)
 
 
-def bewerte(fall: dict, aufrufe: list[tuple[str, dict]], verweigert: list[str] | None = None) -> list[str]:
+def bewerte(fall: dict, aufrufe: list[tuple[str, dict]], verweigert: list[str] | None = None,
+            verbunden: bool = True) -> list[str]:
     """Mängel eines Stub-Laufs; leer = grün. Argumente zählen nur am erwarteten Tool."""
     namen = [name for name, _ in aufrufe]
     maengel = []
+    if not verbunden:
+        return ["Messung ungültig: Server nicht verbunden (Modell sah kein Tool)"]
     if verweigert:
         # Dann hat das Modell nie eine Antwort der Attrappe gesehen: Messgerät, kein Routing
         maengel.append(f"Messung ungültig, Aufruf verweigert: {verweigert}")
@@ -266,7 +283,7 @@ def _messen(fälle: list[dict], config: str, cwd: str, erlaubt: list[str]) -> in
         for fall, echt, text in pool.map(lauf, fälle):
             aufrufe = echt["aufrufe"]
             tools = [name for name, _ in aufrufe]
-            maengel = bewerte(fall, aufrufe, echt["verweigert"])
+            maengel = bewerte(fall, aufrufe, echt["verweigert"], echt["verbunden"])
             ok = not maengel
             rot += not ok
             print(f"{'✔' if ok else '✘'} {fall['id']:<28} gerufen: {tools or '—'}")

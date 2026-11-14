@@ -138,3 +138,23 @@ def test_stub_lauf_mit_verweigertem_aufruf_ist_keine_messung():
     runner = _load("run_claude")
     fall = {"expect": "generate_molecule"}
     assert runner.bewerte(fall, [("generate_molecule", {})], verweigert=["generate_molecule"])
+
+
+# Gemessen 14.11.2026 unter Last: 4 von 4 parallelen Läufen meldeten den Attrappen-
+# Server als „failed“ (Start zu langsam), das Modell hatte keine Tools und antwortete
+# in Prosa — der Lauf zählte das als „Modell wählt kein Tool“ (explain-substance rot).
+def test_stub_lauf_ohne_verbundenen_server_ist_keine_messung():
+    runner = _load("run_claude")
+    fall = {"expect": "generate_molecule"}
+    maengel = runner.bewerte(fall, [], verbunden=False)
+    assert maengel and "nicht verbunden" in maengel[0]
+    assert runner.bewerte(fall, [("generate_molecule", {})], verbunden=True) == []
+
+
+def test_verbindungsstatus_kommt_aus_dem_init_event():
+    runner = _load("run_claude")
+    init = {"type": "system", "subtype": "init", "mcp_servers": [{"name": "chemdraw", "status": "failed"}]}
+    assert runner.server_verbunden([init]) is False
+    init["mcp_servers"][0]["status"] = "connected"
+    assert runner.server_verbunden([init]) is True
+    assert runner.server_verbunden([]) is False
