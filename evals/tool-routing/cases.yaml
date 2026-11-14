@@ -257,8 +257,16 @@ cases:
   - id: lookup-data-sheet
     prompt: "Gib mir ein Datenblatt zu Ibuprofen mit allem was du hast"
     expect: lookup_molecule_data
-    forbidden: [lookup, generate_molecule]
-    why: Datenblatt heisst Panel mit Struktur plus gruppierten Quellen.
+    forbidden: [generate_molecule]
+    why: >
+      Datenblatt heisst Panel mit Struktur plus gruppierten Quellen. Das Panel
+      traegt die Struktur schon, ein generate_molecule danach zeichnet sie doppelt.
+      lookup ist seit 14.11.2026 erlaubt: „mit allem was du hast“ fragt auch nach
+      dem, was das Datenblatt nicht hat (Schmelzpunkt, biologische Rolle,
+      Stoffwechselwege — die echte Antwort fuer Ibuprofen enthaelt nur PubChem-
+      Eigenschaften und GHS), und genau dorthin schickt die Beschreibung von
+      lookup_molecule_data. Gemessen: 3 von 3 Laeufen rufen lookup physical,
+      biochem und pathway im selben Zug wie das Datenblatt.
 
   # --- Proteine (E6/E8, eigenes Tool seit 10.11.2026) ------------------------
   # Desktop zeigt dem Modell vor der Tool-Suche nur Toolnamen; mit Proteinen nur
