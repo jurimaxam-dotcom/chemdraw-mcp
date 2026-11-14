@@ -1,0 +1,551 @@
+{
+ "_kommentar": "Stufe B: Checkpoints je Panel-Tool. Gesucht wird über Bedienungshilfen-Namen (title/label/value), nie über sichtbaren Text – der Knopf mit der Aufschrift 'Export PNG' heißt 'Export as PNG'. Felder: typ, genau eines aus titel/beginnt/enthaelt, aktion (da|klick), wert (value nach dem Klick), dann (Folgeelement), bild (Panel-Bild mit dieser Marke), pause, timeout. Nie klicken: die Knöpfe unter 'Continue in chat' (jeder schreibt eine Nachricht) und 'Add a flashcard to the Anki deck …' (ändert Anki).",
+ "generate_molecule": {
+  "schritte": [
+   {
+    "name": "Name Koffein",
+    "typ": "staticText",
+    "titel": "Koffein"
+   },
+   {
+    "name": "Tab Data lädt das Datenblatt (callServerTool)",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Data",
+    "wert": "1",
+    "dann": {
+     "typ": "staticText",
+     "titel": "58-08-2"
+    },
+    "bild": "daten"
+   },
+   {
+    "name": "Tab Structure zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Structure",
+    "wert": "1"
+   },
+   {
+    "name": "Ansicht 3D",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "titel": "3D",
+    "wert": "1",
+    "pause": 2.5,
+    "bild": "3d"
+   },
+   {
+    "name": "Ansicht 2D zurück",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "titel": "2D",
+    "wert": "1"
+   },
+   {
+    "name": "Gruppe Amide anheften",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "beginnt": "Amide",
+    "wert": "1",
+    "bild": "gruppe"
+   },
+   {
+    "name": "Gruppe Amide lösen",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "beginnt": "Amide",
+    "wert": "0"
+   },
+   {
+    "name": "Tab Study vorhanden",
+    "typ": "tab",
+    "titel": "Study"
+   },
+   {
+    "name": "Zeile Continue in chat vorhanden",
+    "typ": "group",
+    "titel": "Continue in chat"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   },
+   {
+    "name": "Anki-Knopf vorhanden (nicht geklickt)",
+    "typ": "button",
+    "beginnt": "Add a flashcard to the Anki deck"
+   }
+  ]
+ },
+ "compare_molecules": {
+  "schritte": [
+   {
+    "name": "Titel Ibuprofen vs. Naproxen",
+    "typ": "staticText",
+    "beginnt": "Ibuprofen vs. Naproxen"
+   },
+   {
+    "name": "Vergleichsbild",
+    "typ": "image"
+   },
+   {
+    "name": "Knopf Explain the differences vorhanden",
+    "typ": "button",
+    "titel": "Explain the differences"
+   },
+   {
+    "name": "Zeile Continue in chat vorhanden",
+    "typ": "group",
+    "titel": "Continue in chat"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "batch_generate": {
+  "schritte": [
+   {
+    "name": "Karte benzene",
+    "typ": "staticText",
+    "titel": "benzene"
+   },
+   {
+    "name": "Karte toluene",
+    "typ": "staticText",
+    "titel": "toluene"
+   },
+   {
+    "name": "Karte phenol",
+    "typ": "staticText",
+    "titel": "phenol"
+   },
+   {
+    "name": "Tab Data der ersten Karte",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Data",
+    "wert": "1",
+    "dann": {
+     "typ": "staticText",
+     "titel": "71-43-2"
+    },
+    "bild": "daten"
+   },
+   {
+    "name": "Tab Structure zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Structure",
+    "wert": "1"
+   },
+   {
+    "name": "Gruppe Phenol anheften",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "beginnt": "Phenol",
+    "wert": "1",
+    "bild": "phenol"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_reaction": {
+  "schritte": [
+   {
+    "name": "Reaktionsbild",
+    "typ": "image"
+   },
+   {
+    "name": "Edukt acetic acid",
+    "typ": "staticText",
+    "titel": "acetic acid"
+   },
+   {
+    "name": "Produkt ethyl acetate",
+    "typ": "staticText",
+    "titel": "ethyl acetate"
+   },
+   {
+    "name": "Bilanzvermerk balanced",
+    "typ": "staticText",
+    "titel": "balanced"
+   },
+   {
+    "name": "Knopf Show the mechanism vorhanden",
+    "typ": "button",
+    "titel": "Show the mechanism"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_mechanism": {
+  "schritte": [
+   {
+    "name": "Titel SN2",
+    "typ": "staticText",
+    "beginnt": "Nucleophilic Substitution (SN2)"
+   },
+   {
+    "name": "Drei Schritte in der Übersicht",
+    "typ": "button",
+    "beginnt": "Open step 3"
+   },
+   {
+    "name": "Schritt 2 öffnen",
+    "typ": "button",
+    "aktion": "klick",
+    "beginnt": "Open step 2",
+    "pause": 1.5,
+    "bild": "schritt2"
+   },
+   {
+    "name": "Zurück zur Übersicht",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Overview",
+    "dann": {
+     "typ": "button",
+     "beginnt": "Open step 1"
+    }
+   },
+   {
+    "name": "Ansicht Step by step",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Step by step",
+    "pause": 1.5,
+    "bild": "schrittweise"
+   },
+   {
+    "name": "Übersicht wieder",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Overview",
+    "dann": {
+     "typ": "button",
+     "beginnt": "Open step 1"
+    }
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_3d": {
+  "schritte": [
+   {
+    "name": "Name Koffein",
+    "typ": "staticText",
+    "titel": "Koffein"
+   },
+   {
+    "name": "Unterzeile 3D conformer",
+    "typ": "staticText",
+    "beginnt": "3D conformer"
+   },
+   {
+    "name": "Drehbares 3D-Modell",
+    "typ": "image",
+    "titel": "3D model, drag to rotate",
+    "bild": "3d"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_protein_or_antibody": {
+  "schritte": [
+   {
+    "name": "Titel Trastuzumab",
+    "typ": "staticText",
+    "beginnt": "Trastuzumab"
+   },
+   {
+    "name": "Legende light chain",
+    "typ": "staticText",
+    "titel": "light chain (A)"
+   },
+   {
+    "name": "Tab Scheme (IgG-Schema)",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Scheme",
+    "wert": "1",
+    "pause": 1.5,
+    "bild": "schema"
+   },
+   {
+    "name": "Tab Structure zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Structure",
+    "wert": "1",
+    "pause": 2
+   },
+   {
+    "name": "Färbung Secondary",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Secondary",
+    "wert": "1",
+    "pause": 2,
+    "bild": "sekundaer"
+   },
+   {
+    "name": "Färbung Chain zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Chain",
+    "wert": "1"
+   },
+   {
+    "name": "Darstellung Trace",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Trace",
+    "wert": "1",
+    "pause": 2,
+    "bild": "trace"
+   },
+   {
+    "name": "Darstellung Cartoon zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Cartoon",
+    "wert": "1",
+    "pause": 2,
+    "bild": "cartoon"
+   },
+   {
+    "name": "Knopf Reset",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Reset"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "lookup_molecule_data": {
+  "schritte": [
+   {
+    "name": "Name Paracetamol",
+    "typ": "staticText",
+    "titel": "Paracetamol"
+   },
+   {
+    "name": "Tab Data ist gewählt",
+    "typ": "tab",
+    "titel": "Data",
+    "wert": "1"
+   },
+   {
+    "name": "Molmasse 151.16 g/mol",
+    "typ": "staticText",
+    "titel": "151.16 g/mol"
+   },
+   {
+    "name": "CAS 103-90-2",
+    "typ": "staticText",
+    "titel": "103-90-2"
+   },
+   {
+    "name": "Quelle GHS",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "titel": "GHS",
+    "wert": "1",
+    "pause": 1.5,
+    "bild": "ghs"
+   },
+   {
+    "name": "Quelle PubChem zurück",
+    "typ": "checkBox",
+    "aktion": "klick",
+    "titel": "PubChem",
+    "wert": "1"
+   },
+   {
+    "name": "Tab Structure (lokal, ohne Netz)",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Structure",
+    "wert": "1",
+    "dann": {
+     "typ": "checkBox",
+     "beginnt": "Amide"
+    },
+    "bild": "struktur"
+   },
+   {
+    "name": "Tab Data zurück",
+    "typ": "tab",
+    "aktion": "klick",
+    "titel": "Data",
+    "wert": "1"
+   }
+  ]
+ },
+ "generate_spectrum": {
+  "schritte": [
+   {
+    "name": "Achse Wavenumber",
+    "typ": "staticText",
+    "beginnt": "Wavenumber"
+   },
+   {
+    "name": "Achse Transmission",
+    "typ": "staticText",
+    "beginnt": "Transmission"
+   },
+   {
+    "name": "Bande Ester-C=O beschriftet",
+    "typ": "staticText",
+    "titel": "Ester-C=O"
+   },
+   {
+    "name": "Bande Säure-C=O beschriftet",
+    "typ": "staticText",
+    "titel": "Säure-C=O"
+   },
+   {
+    "name": "Knopf Explain this spectrum vorhanden",
+    "typ": "button",
+    "titel": "Explain this spectrum"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_tlc": {
+  "schritte": [
+   {
+    "name": "Bahn Edukt",
+    "typ": "staticText",
+    "titel": "Edukt"
+   },
+   {
+    "name": "Bahn Produkt",
+    "typ": "staticText",
+    "titel": "Produkt"
+   },
+   {
+    "name": "Achse Rf value",
+    "typ": "staticText",
+    "titel": "Rf value"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_titration_curve": {
+  "schritte": [
+   {
+    "name": "Titel Essigsäure mit NaOH",
+    "typ": "staticText",
+    "titel": "Essigsäure mit NaOH"
+   },
+   {
+    "name": "Halbäquivalenzpunkt pH = pKa = 4.76",
+    "typ": "staticText",
+    "titel": "pH = pKa = 4.76"
+   },
+   {
+    "name": "Indikator Phenolphthalein",
+    "typ": "staticText",
+    "titel": "Phenolphthalein"
+   },
+   {
+    "name": "Knopf Explain this plot vorhanden",
+    "typ": "button",
+    "titel": "Explain this plot"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "generate_species_distribution": {
+  "schritte": [
+   {
+    "name": "Name Ibuprofen",
+    "typ": "staticText",
+    "titel": "Ibuprofen"
+   },
+   {
+    "name": "Achse Species fraction α",
+    "typ": "staticText",
+    "titel": "Species fraction α"
+   },
+   {
+    "name": "Spezies neutral",
+    "typ": "staticText",
+    "titel": "R–COOH (neutral)"
+   },
+   {
+    "name": "Spezies Anion",
+    "typ": "staticText",
+    "titel": "R–COO⁻ (Anion)"
+   },
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
+   }
+  ]
+ },
+ "export_anki_deck": {
+  "prompt": "Exportiere mit dem ChemDraw-Tool ein Anki-Deck mit Koffein und Paracetamol, nur als .apkg-Datei, ohne Anki zu öffnen.",
+  "schritte": [
+   {
+    "name": "Deckname",
+    "typ": "staticText",
+    "beginnt": "Koffein und Paracetamol"
+   },
+   {
+    "name": "Zwei Karten",
+    "typ": "staticText",
+    "beginnt": "2 cards"
+   },
+   {
+    "name": "Dateityp APKG",
+    "typ": "staticText",
+    "titel": "APKG"
+   },
+   {
+    "name": "Pfad unter ~/ChemDraw-Output",
+    "typ": "staticText",
+    "beginnt": "~/ChemDraw-Output/"
+   }
+  ]
+ }
+}

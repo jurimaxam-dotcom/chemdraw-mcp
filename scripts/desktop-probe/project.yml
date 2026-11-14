@@ -1,0 +1,32 @@
+# Erzeugt mit xcodegen (run.sh ruft es auf). Ein UI-Test-Bündel ohne eigene App:
+# XCUIApplication(bundleIdentifier:) steuert das installierte Claude Desktop.
+name: DesktopProbe
+options:
+  bundleIdPrefix: local.chemdraw.probe
+  deploymentTarget:
+    macOS: "15.0"
+targets:
+  DesktopProbeUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: Tests
+      - path: checkpoints.json
+        buildPhase: resources
+      - path: ../../evals/panel-beispiele.json
+        buildPhase: resources
+    settings:
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGN_STYLE: Manual
+      GENERATE_INFOPLIST_FILE: YES
+      SWIFT_VERSION: "5.0"
+schemes:
+  DesktopProbe:
+    build:
+      targets:
+        DesktopProbeUITests: [test]
+    test:
+      targets: [DesktopProbeUITests]
+      testPlans:
+        - path: DesktopProbe.xctestplan
+          defaultPlan: true

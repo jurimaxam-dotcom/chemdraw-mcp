@@ -43,6 +43,20 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
+## Weiter bei — Desktop-Probe mit XCUIAutomation als Testfassung gebaut (Sa. 14.11.2026, 19:00)
+
+- **Nichts halbfertig.** `scripts/desktop-probe/` liegt im Repo (Anleitung und Fehllauf-Regeln: `scripts/desktop-probe/README.md`), Gate grün. Der feste Ablauf in `CLAUDE.md` ist bewusst **nicht** geändert (Jay: „vorerst nur zum Testen“).
+- **Gemessen (Xcode 27.2, Claude Desktop 5.11492.5, Server = Arbeitsbaum auf `78a8723` mit den vier uncommitteten Dateien, Desktop-Neustart 17:52):**
+  Stufe A `run.sh A` — 13 Tools in 617 s; nach zwei Testkorrekturen alle 13 mit Tool-Aufruf und Panel, kein Rechte-Dialog. Stufe B `run.sh B` — 13 Tools, 147 Checkpoints grün in 375 s.
+- **Befunde aus den Läufen:**
+  1. `export_anki_deck`: Der erste Prompt („Erstelle ein Anki-Deck nur als .apkg-Datei …“) führte zu **keinem** Tool-Aufruf — das Modell baute das Deck selbst mit genanki im verbundenen Rechner. Erst „Exportiere mit dem ChemDraw-Tool …“ rief das Tool. Routing-Fall für `evals/tool-routing/cases.yaml`, noch nicht eingetragen.
+  2. Zwei Konnektoren mit demselben Server antworten abwechselnd: `chemdraw` und `chemdraw-pharma` (beide in `claude_desktop_config.json`, gleiche Kommandozeile); um 17:54 antwortete zusätzlich das installierte Bündel „ChemDraw MCP (unofficial)“ mit älterem Panel (ohne Study-Tab). Welcher Stand im Handtest geprüft wird, ist damit nicht eindeutig.
+  3. Die Gruppe um das Panel heißt mal `<server> embed`, mal `<server>: <Titel>` — Anker ist die WebView `MCP-UI Proxy`.
+  4. Öffnet ein Chat eine Dateivorschau (DC-Platte: das Modell legte zusätzlich `dc-platte.svg` an), klappt Desktop die Seitenleiste ein.
+- **Grenzen:** je Tool ein Lauf (n=1) für die Routing-Frage; der Test braucht Claude im Vordergrund und die Lease; Videos zeigen den ganzen Bildschirm samt privater Chat-Titel, nur `bilder/` (Panel-Ausschnitt) taugt für draußen. Stufe A hat 18 Chats in Jays Konto hinterlassen (13 + 5 aus Wiederholungen und Probeläufen), nicht gelöscht.
+- **Material für die Vermarktung:** `~/Documents/projects/chemdraw-vermarktung/out/desktop-probe-2026-11-14/` (40 Panel-Bilder, 30 Videos); Verwertung liegt drüben.
+- **Offen bei Jay (unbeantwortet — nicht bauen):** Soll die Desktop-Probe als Stufe 5 in den festen Ablauf (`CLAUDE.md`) und den Codex-Handtest für „Panel sichtbar, Klicks gehen, Tool gerufen“ ersetzen?
+
 ## Weiter bei — Stand vor Kontext-Neustart (Fr. 13.11.2026, 20:42)
 
 - **Nichts halbfertig, Arbeitsbaum sauber.** M2 in Desktop bestanden, Stufen 3 und 4 gelaufen (Block darunter).
