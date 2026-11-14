@@ -92,3 +92,31 @@ def test_echt_serverfehler_ist_rot_quellenausfall_nur_gelb():
     assert runner.bewerte_echt("generate_molecule", ["generate_molecule"], kaputt)[0] == "rot"
     quelle = _echt({"generate_molecule": (True, "sources_down: PubChem could not be reached")})
     assert runner.bewerte_echt("generate_molecule", ["generate_molecule"], quelle)[0] == "gelb"
+
+
+# Der Stub-Lauf über Claude Code prüfte bis 14.11.2026 nur Toolnamen: `required_args`
+# und `forbidden_args` aus cases.yaml wertete allein der promptfoo-Weg aus. Ein Fall
+# wie „Sessel → generate_molecule mit view=chair“ war damit grün, sobald das Tool fiel.
+def test_stub_lauf_rot_wenn_verlangtes_argument_fehlt():
+    runner = _load("run_claude")
+    fall = {"expect": "generate_molecule", "required_args": {"view": "chair"}}
+    assert runner.bewerte(fall, [("generate_molecule", {"name": "cyclohexane", "view": "chair"})]) == []
+    maengel = runner.bewerte(fall, [("generate_molecule", {"name": "cyclohexane"})])
+    assert maengel and "view" in maengel[0]
+
+
+def test_stub_lauf_rot_bei_ungefragtem_argument_und_verbotenem_tool():
+    runner = _load("run_claude")
+    fall = {"expect": "generate_molecule", "forbidden": ["batch_generate"], "forbidden_args": ["stereo_variants"]}
+    assert runner.bewerte(fall, [("generate_molecule", {"name": "x"})]) == []
+    assert runner.bewerte(fall, [("generate_molecule", {"name": "x", "stereo_variants": True})])
+    assert runner.bewerte(fall, [("generate_molecule", {"name": "x"}), ("batch_generate", {})])
+    assert runner.bewerte(fall, [])
+
+
+def test_stub_lauf_argumente_zaehlen_nur_am_erwarteten_tool():
+    runner = _load("run_claude")
+    fall = {"expect": "generate_molecule", "required_args": {"view": "chair"}}
+    # Sessel plus drehbares Modell ist erlaubt; das zweite Tool braucht kein `view`.
+    aufrufe = [("generate_molecule", {"name": "cyclohexane", "view": "chair"}), ("generate_3d", {"name": "cyclohexane"})]
+    assert runner.bewerte(fall, aufrufe) == []

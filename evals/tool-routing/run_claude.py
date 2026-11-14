@@ -66,7 +66,7 @@ def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[
     out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=cwd).stdout
     namen: list[str] = []
     text = ""
-    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}}
+    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}, "aufrufe": []}
     for zeile in out.splitlines():
         try:
             e = json.loads(zeile)
@@ -77,6 +77,7 @@ def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[
                 if b.get("type") == "tool_use":
                     namen.append(b["name"].removeprefix(PREFIX))
                     echt["ids"][b.get("id")] = namen[-1]
+                    echt["aufrufe"].append((namen[-1], b.get("input") or {}))
                 elif b.get("type") == "text" and not text:
                     text = b["text"]
         elif e.get("type") == "user" and isinstance(e["message"].get("content"), list):
@@ -219,24 +220,44 @@ def main() -> int:
         shutil.rmtree(arbeit, ignore_errors=True)
 
 
+def bewerte(fall: dict, aufrufe: list[tuple[str, dict]]) -> list[str]:
+    """Mängel eines Stub-Laufs; leer = grün. Argumente zählen nur am erwarteten Tool."""
+    namen = [name for name, _ in aufrufe]
+    maengel = []
+    if fall["expect"] not in namen:
+        maengel.append(f"erwartet {fall['expect']}")
+    falsch = [t for t in fall.get("forbidden", []) if t in namen]
+    if falsch:
+        maengel.append(f"verboten {falsch}")
+    eigene = [eingabe for name, eingabe in aufrufe if name == fall["expect"]]
+    for arg, wert in fall.get("required_args", {}).items():
+        if eigene and not any(e.get(arg) == wert for e in eigene):
+            maengel.append(f"Argument {arg}={wert!r} fehlt (gesetzt: {[e.get(arg) for e in eigene]})")
+    for arg in fall.get("forbidden_args", []):
+        if any(arg in e for e in eigene):
+            maengel.append(f"ungefragtes Argument {arg}")
+    return maengel
+
+
 def _messen(fälle: list[dict], config: str, cwd: str) -> int:
     modell = os.environ.get("MODEL")
 
-    def lauf(fall: dict) -> tuple[dict, list[str], str]:
-        return (fall, *gerufene_tools(fall["prompt"].strip(), config, modell, cwd))
+    def lauf(fall: dict) -> tuple[dict, list[tuple[str, dict]], str]:
+        _, text, echt = _lauf(fall["prompt"].strip(), config, modell, cwd, [])
+        return fall, echt["aufrufe"], text
 
     rot = 0
     with ThreadPoolExecutor(max_workers=4) as pool:
-        for fall, tools, text in pool.map(lauf, fälle):
-            fehlt = fall["expect"] not in tools
-            falsch = [t for t in fall.get("forbidden", []) if t in tools]
-            ok = not fehlt and not falsch
+        for fall, aufrufe, text in pool.map(lauf, fälle):
+            tools = [name for name, _ in aufrufe]
+            maengel = bewerte(fall, aufrufe)
+            ok = not maengel
             rot += not ok
             print(f"{'✔' if ok else '✘'} {fall['id']:<28} gerufen: {tools or '—'}")
             if not ok:
                 if not tools:
                     print(f"    Modell schrieb stattdessen: {' '.join(text.split())[:200]}")
-                print(f"    erwartet {fall['expect']}, verboten {falsch or '—'}\n    warum: {' '.join(fall['why'].split())}")
+                print(f"    {'; '.join(maengel)}\n    warum: {' '.join(fall['why'].split())}")
     print(f"\n{len(fälle) - rot}/{len(fälle)} grün")
     return 1 if rot else 0
 
