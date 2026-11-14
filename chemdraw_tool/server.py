@@ -376,8 +376,10 @@ Pass English or IUPAC names, or SMILES.
 
 Not this tool for: one compound (use generate_molecule), all stereoisomers
 of one compound (use generate_molecule with stereo_variants=True — it
-enumerates them, meso forms once), structural differences (use
-compare_molecules), or a reaction scheme (use generate_reaction).
+enumerates them, meso forms once), structures the user wants to learn or
+revise (use export_anki_deck — the cards draw the structures themselves),
+structural differences (use compare_molecules), or a reaction scheme (use
+generate_reaction).
 """,
     "generate_reaction": """Draw a reaction scheme from reactants, products and conditions.
 
@@ -1696,7 +1698,11 @@ def export_anki_deck(
     Use this whenever the user wants flashcards, Anki cards or a study deck
     for molecules, reactions (e.g. pharmacopoeia identity tests) or spectra.
     A stated intention to learn or an exam coming up is the same request:
-    offer a deck and write the cards yourself.
+    offer a deck and write the cards yourself. The cards draw their
+    structures, so learning needs no extra batch_generate call.
+
+    Not this tool for: structures only to look at, not to learn (use
+    generate_molecule or batch_generate).
 
     Two ways to fill the deck. Either pass `cards` you wrote yourself, or
     pass `curated_deck_id` for a ready-made, formula-verified starter deck:
@@ -1716,21 +1722,19 @@ def export_anki_deck(
     Re-exporting under the SAME deck name updates existing cards instead of
     duplicating them — the front identifies the card.
 
-    Options: reversed=true drills both directions (one note, two cards);
-    cloze=true makes fill-in-the-blank cards (front.text carries {{c1::...}},
-    back.text becomes the extra note). "Parent::Child" nests subdecks.
+    Options: reversed=true drills both directions; cloze=true makes
+    fill-in-the-blank cards ({{c1::...}} in front.text, back.text is the
+    extra note). "Parent::Child" nests subdecks.
 
     IMPORTANT: structures take English/IUPAC names or SMILES; card TEXTS may
     be localized. Never deliver via AnkiConnect unless asked.
 
     Args:
-        deck_name: Deck name, also the filename; re-use it to update a deck.
-            Ignored when curated_deck_id is set.
+        deck_name: Deck name and filename (ignored with curated_deck_id).
         cards: The flashcards. Fronts unambiguous, explanations on the back.
         default_tags: Tags added to every card.
-        deliver: "apkg" (file only), "open" (also opens it in Anki, macOS)
-            or "ankiconnect" (imports via the AnkiConnect add-on).
-        curated_deck_id: "analgesics-structures" or "pheur-identity-basics".
+        deliver: "apkg" (file), "open" (opens Anki, macOS) or "ankiconnect".
+        curated_deck_id: one of the two ids above.
     """
     if curated_deck_id:
         from chemdraw_tool.curated_decks import get_curated_deck
@@ -4398,8 +4402,9 @@ def batch_generate(
     in one step (e.g. 'Draw Aspirin, Paracetamol and Ibuprofen').
 
     Not this tool for: ONE molecule — that is generate_molecule. Also not
-    for products of one reaction with yields (generate_scope_table) or for
-    contrasting structures (compare_molecules).
+    for products of one reaction with yields (generate_scope_table), for
+    contrasting structures (compare_molecules) or for structures the user
+    wants to learn or revise (export_anki_deck — the cards draw them).
 
     IMPORTANT: Always pass English or IUPAC compound names, never localized
     names. For example use 'Aspirin' not 'Acetylsalicylsäure', 'Caffeine'

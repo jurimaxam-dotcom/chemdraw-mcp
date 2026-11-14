@@ -176,7 +176,10 @@ NEEDS_DELIMITATION = {
     "generate_3d": ("generate_protein_or_antibody", "generate_molecule"),
     "generate_scope_table": ("generate_molecule",),
     "compare_molecules": ("generate_molecule",),
-    "batch_generate": ("generate_molecule",),
+    # exam-revision (14.11.2026): „muss die Strukturen draufhaben" bekam neben dem
+    # Deck eine Bilderreihe — die Karten zeichnen die Strukturen selbst.
+    "batch_generate": ("generate_molecule", "export_anki_deck"),
+    "export_anki_deck": ("batch_generate",),
     "generate_reaction": ("generate_mechanism",),
     "generate_mechanism": ("generate_reaction",),
     # Der Coffein-Fall (15.08.2026): Ein blanker Stoffname ist maximal nah an
@@ -389,3 +392,9 @@ def test_alle_stereoisomere_gehoeren_generate_molecule_in_beide_richtungen():
     assert "stereo_variants" in mvp["generate_molecule"].split("Args:")[0]
     nicht = mvp["batch_generate"].split("Not this tool for:")[1]
     assert "stereoisomers" in nicht and "generate_molecule" in nicht
+
+
+def test_lernen_gehoert_dem_deck_auch_in_der_mvp_fassung():
+    mvp = {name: " ".join(desc.split()) for name, desc in _mvp().items()}
+    assert "export_anki_deck" in mvp["batch_generate"].split("Not this tool for:")[1]
+    assert "batch_generate" in mvp["export_anki_deck"]
