@@ -65,19 +65,29 @@ final class StufeA: ProbeFall {
     // Auf den Tool-Kopf warten; nebenbei einen Rechte-Dialog bedienen und das Antwortende erkennen.
     var gerufen = "", dialog = "kein Dialog"
     let erwartetDa = checkpoint("Modell ruft ein Tool") {
-      let allow = app.buttons.matching(NSPredicate(format: "title CONTAINS[c] 'allow' OR label CONTAINS[c] 'allow'"))
+      // Exakte Titel, und nur im Dialog selbst: `CONTAINS 'once'` traf am 14.11.2026 den Seitenleisten-Chat
+      // „Phenytoin plasma concentration …“ — der Dialog blieb offen und der Lauf meldete „kein Tool-Aufruf“.
+      let anfrage = app.groups.matching(NSPredicate(format: "title BEGINSWITH 'Permission request'")).firstMatch
       let kopf = chat.staticTexts.matching(NSPredicate(format: "value IN %@", toolNamen))
       let strom = chat.groups["Currently streaming message"].firstMatch
       let antwort = chat.groups.matching(NSPredicate(format: "title BEGINSWITH 'Message 2 of'"))
       let ende = Date().addingTimeInterval(180)
-      var fertigSeit: Date? = nil
+      var fertigSeit: Date? = nil, dialogSeit: Date? = nil
       while Date() < ende {
-        if allow.count > 0 {
-          let namen = allow.allElementsBoundByIndex.map { $0.title.isEmpty ? $0.label : $0.title }
-          dialog = "Dialog: \(namen)"
-          let once = app.buttons.matching(NSPredicate(format: "title CONTAINS[c] 'once' OR label CONTAINS[c] 'once'")).firstMatch
-          (once.exists ? once : allow.firstMatch).click()
-        }
+        if anfrage.exists {
+          // „Claude wants to use <Tool> from <Konnektor>“ — sagt, welcher Konnektor fragt.
+          let wer = anfrage.buttons.matching(NSPredicate(format: "title BEGINSWITH 'Claude wants to use'")).firstMatch
+          dialog = "Dialog: \(wer.exists ? wer.title : anfrage.title)"
+          let once = anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Allow once'")).firstMatch
+          // Nur die einmalige Freigabe: „Always allow“ würde Jays Konnektor-Rechte ändern.
+          // Der Dialog baut sich beim Erscheinen einmal neu auf (Klick im ersten Moment: „No matches found“,
+          // 14.11.2026): erst klicken, wenn er eine Runde später noch steht und treffbar ist.
+          if dialogSeit == nil { dialogSeit = Date() }
+          else if Date().timeIntervalSince(dialogSeit!) > 1.5, once.exists, once.isHittable {
+            once.click(); dialogSeit = nil; fertigSeit = nil
+          }
+          Thread.sleep(forTimeInterval: 1.0); continue
+        } else { dialogSeit = nil }
         if kopf.count > 0 { gerufen = (kopf.firstMatch.value as? String) ?? ""; return (true, gerufen) }
         // Antwort da, Streaming-Gruppe weg und 6 s lang kein Tool-Kopf: das Modell hat kein Tool gerufen.
         if antwort.count > 0 && !strom.exists {

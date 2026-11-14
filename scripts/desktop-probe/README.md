@@ -50,6 +50,11 @@ in beiden Stufen, die Schritte in `checkpoints.json`.
   Prüfung landet der Prompt im alten Chat und der Lauf ist falsch grün.
 - **Vor jedem Klick in den sichtbaren Bereich rollen.** Ein Klick auf ein nicht treffbares Element
   bricht den ganzen Test ab. Einträge unterhalb des sichtbaren Bereichs stehen mit 1 px Höhe im Baum.
+- **Knöpfe über den exakten Titel und innerhalb ihres Behälters suchen, nie über ein Teilwort in der
+  ganzen App.** `title CONTAINS 'once'` traf statt „Allow once“ den Seitenleisten-Chat „… plasma
+  c*once*ntration …“; der Rechte-Dialog blieb offen und der Lauf meldete „Antwort ohne Tool-Aufruf“
+  (14.11.2026, Fable-Lauf, Protein-Tool). Der Dialog ist die Gruppe `Permission request: …`; bedient
+  wird nur „Allow once“ — „Always allow“ ändert Jays Konnektor-Rechte.
 - **Nie klicken:** die Knöpfe unter „Continue in chat“ (jeder schreibt eine Nachricht) und
   „Add a flashcard to the Anki deck …“ (ändert Anki).
 - **Aufnahmen nie ins Repo.** Videos und Bäume zeigen die Seitenleiste mit privaten Chat-Titeln.
