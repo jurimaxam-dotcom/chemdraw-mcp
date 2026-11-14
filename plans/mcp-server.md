@@ -54,7 +54,7 @@
   3. Die Gruppe um das Panel heißt mal `<server> embed`, mal `<server>: <Titel>` — Anker ist die WebView `MCP-UI Proxy`.
   4. Öffnet ein Chat eine Dateivorschau (DC-Platte: das Modell legte zusätzlich `dc-platte.svg` an), klappt Desktop die Seitenleiste ein.
 - **Grenzen:** je Tool ein Lauf (n=1) für die Routing-Frage; der Test braucht Claude im Vordergrund und die Lease; Videos zeigen den ganzen Bildschirm samt privater Chat-Titel, nur `bilder/` (Panel-Ausschnitt) taugt für draußen. Die Läufe haben 19 neue Chats in Jays Konto hinterlassen (13 + 4 Wiederholungen + 2 Probeläufe) und eine Nachricht „Zeichne Koffein.“ im vorhandenen Chat „Fischer esterification of aspirin“ (Fehllauf, daraus die Menü-Regel); nichts gelöscht.
-- **Material für die Vermarktung:** `~/Documents/projects/chemdraw-vermarktung/out/desktop-probe-2026-11-14/` (40 Panel-Bilder, 30 Videos); Verwertung liegt drüben.
+- **Material für die Vermarktung:** `~/Documents/projects/chemdraw-vermarktung/out/desktop-probe-2026-11-14/` (40 Panel-Bilder, 30 Videos); Verwertung liegt drüben. Offener Tisch-Faden: `20261114-185459-weitergeleitet-aus-chemdraw-mcp` (Auftrag an die Vermarktung, Session dort gestartet; Bericht kommt über den Faden).
 - **Offen bei Jay (unbeantwortet — nicht bauen):** Soll die Desktop-Probe als Stufe 5 in den festen Ablauf (`CLAUDE.md`) und den Codex-Handtest für „Panel sichtbar, Klicks gehen, Tool gerufen“ ersetzen?
 
 ## Weiter bei — Stand vor Kontext-Neustart (Fr. 13.11.2026, 20:42)
