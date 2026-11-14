@@ -43,6 +43,23 @@
 - **U5-Befunde ohne Fix, geprüft:** „Continue in chat“ füllt in Desktop nur das Eingabefeld (Host-Verhalten, kein Fehlertext im Panel; `ContinueRow.jsx` gibt nach 8 s nur den Knopf frei) · Name im Lernmodus: gefragt wurde ausdrücklich, der Kontexttext erlaubt das („unless the user explicitly asks“) · `save_png` fehlt in Claudes Toolliste (16 statt 17, wie gewollt) · vier Prompts erscheinen unter Plus → Connectors, nicht unter Slash.
 - **Ungemessen:** Ladeplatzhalter in Desktop; Freigabe bei lesendem Tool (CAS-Frage löste kein Tool aus; Modus stand auf „Manual“, bei `generate_molecule` kam kein Dialog).
 
+## Weiter bei — Auftrag „Probe in den Ablauf, Fable-Lauf, Fehler beheben, Panel perfektionieren“ (Sa. 14.11.2026, 19:05)
+
+**Jays Auftrag (14.11.2026, ca. 18:58, wörtlich):** „Ziel: Die Desktop-Probe (scripts/desktop-probe, XCUIAutomation) nach deiner Empfehlung als Stufe in den festen Ablauf in CLAUDE.md eintragen und dabei kurz berichten, welche Annahmen der Echttest vom 14.11.2026 widerlegt hat und was dich überrascht hat; danach Stufe A in Claude Desktop zusätzlich mit Fable 5.2 als Modell laufen lassen und auf dieser Grundlage chemdraw-mcp wie ein neurotischer Entwickler durchgehen (alle gefundenen Fehler beheben, alles sauber machen) und wie ein neurotischer Designer das Panel für den Nutzer perfektionieren und den Ablauf flüssig machen – damit der Server vor dem nächsten Release in echter Desktop-Nutzung fehlerfrei und rund ist. Ort: CLAUDE.md (Abschnitt „Fixed workflow“), scripts/desktop-probe/, Server unter chemdraw_tool/ und Panel unter chemdraw_tool/ui/; für das Panel ist ein komplettes Redesign nach eigenem Ermessen freigegeben, der Code gehört dir, sein Design liegt bei dir. Vor jeder Aktion an Claude Desktop die Lease claude-desktop im Schwester-Repo reservieren und danach freigeben; Release und Veröffentlichung bleiben Jays Entscheidung. Fertig, wenn CLAUDE.md die neue Stufe enthält, Stufe A mit Fable 5.2 für alle 13 Panel-Tools real gelaufen ist, die dabei und im Code gefundenen Fehler behoben sind, das überarbeitete Panel in Stufe B und im Gate (./test.sh, test:host, test:inspector) grün ist und du Befunde, widerlegte Annahmen und Vorher-Nachher-Bilder des Panels berichtest – die ganze Aufgabe in einem Zug, ohne Restliste.“
+
+Stand und Reihenfolge (Haken = erledigt und geprüft):
+
+- [x] CLAUDE.md: Probe als Stufe 5, Codex-Handlauf als Stufe 6 (`6b3eb0d`).
+- [x] Stufe A kann das Modell umstellen: `run.sh A --modell "Fable 5.2"` (Checkpoint „Modell“ je Tool). Der Klickweg übers Modellmenü ist noch **nie** gelaufen (Modell stand schon auf Fable) — beim Zurückstellen auf Opus 5.5 am Ende Titel und Anhang `modellmenue` ansehen.
+- [ ] Stufe A mit Fable 5.2 über alle 13 Tools — läuft seit 19:03 (Ausgabe: `scripts/desktop-probe/out/<zeit>-A-Fable_5.2/bericht.md`). Rote Checkpoints erst am Baum prüfen (beim Opus-Lauf waren 3 von 4 Testfehler).
+- [ ] Bericht an Jay: widerlegte Annahmen und Überraschungen (Stoff steht im Block darunter und in `scripts/desktop-probe/README.md` → „Regeln, die aus Fehlläufen stammen“).
+- [ ] Vier offene Dateien im Arbeitsbaum (`server.py`, `cases.yaml`, `stub_server.py`, Schnappschuss `batch_generate`) = angefangener Schritt „Beschreibungen schärfen“: prüfen, Stub-Lauf messen, einzeln committen, bevor ein Arbeiter am Baum arbeitet.
+- [ ] Fehlerliste: Anki-Routing-Fall in `cases.yaml`, vier stabil rote Routing-Fälle, doppelte Konnektoren, alles aus dem Fable-Lauf; dann Code-Durchgang (Opus-Arbeiter, frisch je Etappe, Bericht an Diff und Gate prüfen).
+- [ ] Vor der ersten Panel-Zeile: `uv run python scripts/anthropic_sync.py --check`.
+- [ ] Mängelliste je View aus **allen** 25 Vorher-Bildern (`scripts/desktop-probe/out/2026-11-14_184456-B/bilder`, unberührt lassen), dann Redesign View für View mit grünem Gate und eigenem Commit. Verhalten bleibt (Goldens, Parität, `ModelContext` einziger Sender, Study verrät den Namen nicht, Protein-Fallback, `loadToolData`, Farben in Python und JS); geänderte Bedienungshilfen-Namen → `checkpoints.json` im selben Commit.
+- [ ] Beweis, dass Stufe B das **neue** Panel prüft: Desktop neu starten, `handshake.sh`, frischer A-Lauf, Checkpoint auf ein Element, das nur das neue Panel hat; Konnektorname als harter Checkpoint (nur `chemdraw`/`chemdraw-pharma`, nie das installierte Bündel).
+- [ ] Abschluss: `./test.sh`, `test:host`, `test:inspector`, `handshake.sh`, Stufe B grün; Modell in Desktop zurück auf Opus 5.5; Vorher-Nachher-Bilder im Bericht. Release bleibt Jays Entscheidung.
+
 ## Weiter bei — Desktop-Probe mit XCUIAutomation als Testfassung gebaut (Sa. 14.11.2026, 19:00)
 
 - **Nichts halbfertig.** `scripts/desktop-probe/` liegt im Repo (Anleitung und Fehllauf-Regeln: `scripts/desktop-probe/README.md`), Gate grün. Der feste Ablauf in `CLAUDE.md` ist bewusst **nicht** geändert (Jay: „vorerst nur zum Testen“).
@@ -55,7 +72,7 @@
   4. Öffnet ein Chat eine Dateivorschau (DC-Platte: das Modell legte zusätzlich `dc-platte.svg` an), klappt Desktop die Seitenleiste ein.
 - **Grenzen:** je Tool ein Lauf (n=1) für die Routing-Frage; der Test braucht Claude im Vordergrund und die Lease; Videos zeigen den ganzen Bildschirm samt privater Chat-Titel, nur `bilder/` (Panel-Ausschnitt) taugt für draußen. Die Läufe haben 19 neue Chats in Jays Konto hinterlassen (13 + 4 Wiederholungen + 2 Probeläufe) und eine Nachricht „Zeichne Koffein.“ im vorhandenen Chat „Fischer esterification of aspirin“ (Fehllauf, daraus die Menü-Regel); nichts gelöscht.
 - **Material für die Vermarktung:** `~/Documents/projects/chemdraw-vermarktung/out/desktop-probe-2026-11-14/` (40 Panel-Bilder, 30 Videos); Verwertung liegt drüben. Offener Tisch-Faden: `20261114-185459-weitergeleitet-aus-chemdraw-mcp` (Auftrag an die Vermarktung, Session dort gestartet; Bericht kommt über den Faden).
-- **Offen bei Jay (unbeantwortet — nicht bauen):** Soll die Desktop-Probe als Stufe 5 in den festen Ablauf (`CLAUDE.md`) und den Codex-Handtest für „Panel sichtbar, Klicks gehen, Tool gerufen“ ersetzen?
+- **Beantwortet (Jay, 14.11.2026, ca. 18:58): ja** — Probe als Stufe in den festen Ablauf, siehe Block darüber.
 
 ## Weiter bei — Stand vor Kontext-Neustart (Fr. 13.11.2026, 20:42)
 

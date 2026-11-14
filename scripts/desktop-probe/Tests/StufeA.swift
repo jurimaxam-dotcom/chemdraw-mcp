@@ -5,6 +5,27 @@ import XCTest
 final class StufeA: ProbeFall {
   override var stufe: String { "A" }
 
+  var modell = ""
+
+  /// Liest das Modell des neuen Chats; mit PROBE_MODELL (run.sh --modell "Fable 5.2") stellt es um.
+  /// Der Knopf heißt "Model: <Name> <Aufwand>", die Wahl bleibt für folgende neue Chats stehen.
+  func waehleModell() -> String {
+    let knopf = app.popUpButtons.matching(NSPredicate(format: "title BEGINSWITH 'Model: '")).firstMatch
+    guard knopf.waitForExistence(timeout: 5) else { return "" }
+    let wunsch = ProcessInfo.processInfo.environment["PROBE_MODELL"] ?? ""
+    if !wunsch.isEmpty && !knopf.title.localizedCaseInsensitiveContains(wunsch) {
+      // Über die Koordinate klicken: click() auf einem PopUpButton wartet auf die Meldung eines
+      // nativen Menüs, die ein Web-Menü nie schickt, und bricht dann den Test ab.
+      knopf.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+      Thread.sleep(forTimeInterval: 0.8)
+      haengeBaumAn("modellmenue")
+      let eintrag = app.descendants(matching: .any).matching(NSPredicate(format: "(title CONTAINS[c] %@ OR label CONTAINS[c] %@) AND NOT (title BEGINSWITH 'Model: ')", wunsch, wunsch)).firstMatch
+      if eintrag.waitForExistence(timeout: 5) { eintrag.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click() } else { app.typeKey(.escape, modifierFlags: []) }
+      Thread.sleep(forTimeInterval: 0.8)
+    }
+    return knopf.title.replacingOccurrences(of: "Model: ", with: "")
+  }
+
   func lauf(_ name: String) {
     tool = name
     let faelle = ladeJSON("panel-beispiele"), extra = ladeJSON("checkpoints")
@@ -23,12 +44,15 @@ final class StufeA: ProbeFall {
       guard chat.waitForNonExistence(timeout: 10) else { return (false, "alter Chat noch offen – kein neuer Chat") }
       let feld = app.textViews["Write your prompt to Claude"].firstMatch
       guard feld.waitForExistence(timeout: 10) else { return (false, "Eingabefeld fehlt") }
+      modell = waehleModell()
       feld.click()
       feld.typeText(prompt)
       feld.typeKey(.return, modifierFlags: [])
       return (true, "")
     }
     guard gesendet else { return }
+    let wunsch = ProcessInfo.processInfo.environment["PROBE_MODELL"] ?? ""
+    checkpoint("Modell") { (wunsch.isEmpty || modell.localizedCaseInsensitiveContains(wunsch), wunsch.isEmpty ? modell : "gewünscht \(wunsch), gewählt \(modell)") }
 
     checkpoint("Prompt unverändert im Chat") {
       let meiner = irgendwo(app, .staticText, "value == %@", prompt)

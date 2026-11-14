@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 # Desktop-Probe: Claude Desktop per XCUIAutomation prüfen (Testfassung, 14.11.2026).
 #   scripts/desktop-probe/run.sh A [tool …] neuer Prompt je Panel-Tool (Modell, Rechte, Panel)
+#   scripts/desktop-probe/run.sh A --modell "Fable 5.2" [tool …]   dasselbe mit umgestelltem Modell
 #   scripts/desktop-probe/run.sh B [tool …] Checkpoints am vorhandenen Chat, kein neuer Prompt
 # Reserviert die Lease claude-desktop im Schwester-Repo und gibt sie am Ende frei. Während des
 # Laufs gehört der Bildschirm dem Test: ein Wechsel in eine andere App macht Checkpoints rot.
 set -uo pipefail
-STUFE="${1:-}"; shift || true; TOOLS=("$@"); TOOL="${TOOLS[*]:-}"; TOOL="${TOOL// /+}"
+STUFE="${1:-}"; shift || true
+MODELL=""
+if [ "${1:-}" = "--modell" ]; then MODELL="$2"; shift 2; fi
+TOOLS=("$@"); TOOL="${TOOLS[*]:-}"; TOOL="${TOOL// /+}"
 case "$STUFE" in A|B) ;; *) echo "usage: run.sh A|B [tool …]" >&2; exit 2;; esac
 HIER="$(cd "$(dirname "$0")" && pwd)"
 SCHWESTER="${CHEMDRAW_VERMARKTUNG:-$HOME/Documents/projects/chemdraw-vermarktung}"
 TISCH="$HOME/.claude/bin/tisch"
 STEMPEL="$(date +%Y-%m-%d_%H%M%S)"
-OUT="$HIER/out/$STEMPEL-$STUFE${TOOL:+-$TOOL}"
+OUT="$HIER/out/$STEMPEL-$STUFE${MODELL:+-${MODELL// /_}}${TOOL:+-$TOOL}"
 mkdir -p "$OUT"
 
 # Lease: ein Fahrer für Claude Desktop. Fremde Lease = Hände weg.
@@ -50,7 +54,7 @@ if [ ${#TOOLS[@]} -eq 0 ]; then NUR=(-only-testing:"DesktopProbeUITests/Stufe$ST
 else for t in "${TOOLS[@]}"; do NUR+=(-only-testing:"DesktopProbeUITests/Stufe$STUFE/test_$t"); done; fi
 open -a Claude; sleep 2
 T0=$(date +%s)
-xcodebuild test -project DesktopProbe.xcodeproj -scheme DesktopProbe -destination 'platform=macOS' \
+TEST_RUNNER_PROBE_MODELL="$MODELL" xcodebuild test -project DesktopProbe.xcodeproj -scheme DesktopProbe -destination 'platform=macOS' \
   "${NUR[@]}" -resultBundlePath "$OUT/ergebnis.xcresult" > "$OUT/xcodebuild.log" 2>&1
 RC=$?
 T1=$(date +%s)
