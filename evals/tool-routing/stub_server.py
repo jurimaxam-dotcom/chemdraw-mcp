@@ -15,6 +15,8 @@ from mcp import types
 from mcp.server.lowlevel import Server
 from mcp.server.stdio import stdio_server
 
+from chemdraw_tool.payloads import DatabasePayload, DatabaseRow, DatabaseSource
+from chemdraw_tool.result_budget import _compact
 from chemdraw_tool.server import mcp as echt
 
 
@@ -22,8 +24,28 @@ async def _tools(_ctx, _params) -> types.ListToolsResult:
     return types.ListToolsResult(tools=await echt.list_tools())
 
 
+# Eine nackte Quittung liest das Modell als „es kam nichts“: beim Datenblatt rief es
+# danach lookup und generate_molecule hinterher (lookup-data-sheet, drei Läufe rot am
+# 13.11.2026). Wo der echte Server Inhalt liefert, den das Modell als Antwort braucht,
+# liefert die Attrappe deshalb erfundene Werte in der echten Form: dasselbe Payload-Modell,
+# derselbe kompakte JSON-Textblock wie `result_budget` (kein Prosatext, den der echte
+# Server nie schickt — sonst wäre das Messgerät passend gemacht).
+def _datenblatt() -> str:
+    zeilen = [("CAS", "0-00-0"), ("InChIKey", "ATTRAPPE-ATTRAPPE-N"), ("Molecular formula", "C0H0"),
+              ("Molar mass", "0.00 g/mol"), ("XLogP", "0.0"), ("Melting point", "0 °C")]
+    quelle = DatabaseSource(type="PubChem", source="PubChem (Attrappe)", url="https://example.invalid/",
+                            rows=[DatabaseRow(key=k, val=v) for k, v in zeilen])
+    ghs = DatabaseSource(type="GHS", source="PubChem GHS (Attrappe)", url="https://example.invalid/",
+                         status="empty", note="No GHS classification on record.")
+    payload = DatabasePayload(name="(Attrappe)", molecule_svg="<svg/>", sources=[quelle, ghs])
+    return _compact(payload.model_dump())
+
+
+_ANTWORTEN = {"lookup_molecule_data": _datenblatt()}
+
+
 async def _call(_ctx, params: types.CallToolRequestParams) -> types.CallToolResult:
-    text = f"(Attrappe) {params.name} aufgerufen"
+    text = _ANTWORTEN.get(params.name, f"(Attrappe) {params.name} aufgerufen")
     return types.CallToolResult(content=[types.TextContent(type="text", text=text)])
 
 
