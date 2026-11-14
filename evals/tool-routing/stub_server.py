@@ -21,7 +21,12 @@ from chemdraw_tool.server import mcp as echt
 
 
 async def _tools(_ctx, _params) -> types.ListToolsResult:
-    return types.ListToolsResult(tools=await echt.list_tools())
+    # Ohne outputSchema: die Attrappe liefert kein structuredContent, und Claude Code
+    # machte sonst aus jeder Quittung einen Fehler („has an output schema but did not
+    # return structured content“, gemessen 14.11.2026). Das Modell sieht vom Schema
+    # ohnehin nur Name, Beschreibung und Eingabeschema — die bleiben echt.
+    tools = [t.model_copy(update={"output_schema": None}) for t in await echt.list_tools()]
+    return types.ListToolsResult(tools=tools)
 
 
 # Eine nackte Quittung liest das Modell als „es kam nichts“: beim Datenblatt rief es
