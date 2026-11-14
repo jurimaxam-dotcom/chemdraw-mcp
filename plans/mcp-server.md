@@ -50,7 +50,7 @@
 **Reihenfolge bis zum Release (festgeschrieben 14.11.2026, Tisch-Faden `20261114-194334-ablauf-bis-zum-release`; je Zug eine Etappe an Jay melden, nicht fünf):**
 
 1. **Fehler:** rote Routing-Fälle (Arbeiterbericht am Diff prüfen; `lookup` neben dem Datenblatt an der Antwort des echten Servers entscheiden, nicht an der Attrappe), dann doppelte Konnektoren.
-2. **Panel:** vor der ersten Zeile Jay die Mängelliste zeigen und den Umfang bestätigen lassen (eine Frage) — Jay sagt am 14.11. „das UI verbessern“; „komplettes Redesign“ stand im geschärften Prompt, der auch Fable falsch nach Desktop verortet hat.
+2. **Panel — Umfang bestätigt (Jay 14.11.2026, ca. 20:05): alle 7 Mängel der Liste unten beheben, das heutige Aussehen (Farben, Schrift, Grundaufbau) bleibt; kein komplettes Redesign.** Vorgeschichte: vor der ersten Zeile Jay die Mängelliste zeigen und den Umfang bestätigen lassen (eine Frage) — Jay sagt am 14.11. „das UI verbessern“; „komplettes Redesign“ stand im geschärften Prompt, der auch Fable falsch nach Desktop verortet hat.
 3. **Desktop-Probe härten:** ganzes Panel aufnehmen, Drehung im 3D-Checkpoint belegen, Dialog-Zweig bestätigen; grün erst nach zwei vollständigen Läufen in Folge ohne Änderung am Testcode. Modell: Opus 5.5 Medium (Standard in `run.sh`).
 4. **Release** — Jays Entscheidung.
 5. **Danach:** Marketing-Lauf der Probe gehört der Vermarktung (ruht bis zum Release); der Bau liefert nur den Schalter in `run.sh` (englische Prompts, Seitenleiste zu, ganzes Panel).
