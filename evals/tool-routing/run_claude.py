@@ -49,24 +49,33 @@ def gerufene_tools(prompt: str, config: str, modell: str | None, cwd: str) -> tu
     return namen, text
 
 
-def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[str]) -> tuple[list[str], str, dict]:
-    """Ein `claude -p`-Lauf. `erlaubt` (nur --echt): Tools, die ohne Rückfrage laufen dürfen."""
+def befehl(prompt: str, config: str, modell: str | None, erlaubt: list[str], max_turns: int) -> list[str]:
+    """Kommandozeile für einen `claude -p`-Lauf. `erlaubt`: Tools, die ohne Rückfrage laufen."""
     cmd = [
         "claude", "-p", prompt,
         "--mcp-config", config, "--strict-mcp-config", "--tools", os.environ.get("BUILTIN_TOOLS", ""),
         # Ohne Isolation leaken Jays Hooks und CLAUDE.md (CWD-Wächter, Antwortstil) in die Wahl
         "--setting-sources", "project", "--disable-slash-commands",
         "--output-format", "stream-json", "--verbose",
-        "--max-turns", "3" if erlaubt else "2", "--no-session-persistence",
+        "--max-turns", str(max_turns), "--no-session-persistence",
     ]
     if erlaubt:
         cmd += ["--allowedTools", ",".join(PREFIX + name for name in erlaubt)]
     if modell:
         cmd += ["--model", modell]
+    return cmd
+
+
+def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[str],
+          max_turns: int | None = None) -> tuple[list[str], str, dict]:
+    """Ein `claude -p`-Lauf. Ohne `erlaubt` verweigert Claude Code jeden MCP-Aufruf."""
+    cmd = befehl(prompt, config, modell, erlaubt, max_turns or (3 if erlaubt else 2))
     out = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=cwd).stdout
     namen: list[str] = []
     text = ""
-    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}, "aufrufe": []}
+    # zuege: Toolnamen je Antwort des Modells (message.id) — parallele Aufrufe einer
+    # Antwort kommen als einzelne assistant-Events mit derselben id.
+    echt: dict = {"ergebnisse": {}, "verweigert": [], "ids": {}, "aufrufe": [], "zuege": {}}
     for zeile in out.splitlines():
         try:
             e = json.loads(zeile)
@@ -76,6 +85,7 @@ def _lauf(prompt: str, config: str, modell: str | None, cwd: str, erlaubt: list[
             for b in e["message"]["content"]:
                 if b.get("type") == "tool_use":
                     namen.append(b["name"].removeprefix(PREFIX))
+                    echt["zuege"].setdefault(e["message"].get("id"), []).append(namen[-1])
                     echt["ids"][b.get("id")] = namen[-1]
                     echt["aufrufe"].append((namen[-1], b.get("input") or {}))
                 elif b.get("type") == "text" and not text:
@@ -215,15 +225,18 @@ def main() -> int:
     try:
         config_pfad = Path(arbeit) / "mcp.json"
         config_pfad.write_text(config)
-        return _messen(fälle, str(config_pfad), arbeit)
+        return _messen(fälle, str(config_pfad), arbeit, sorted(offered))
     finally:
         shutil.rmtree(arbeit, ignore_errors=True)
 
 
-def bewerte(fall: dict, aufrufe: list[tuple[str, dict]]) -> list[str]:
+def bewerte(fall: dict, aufrufe: list[tuple[str, dict]], verweigert: list[str] | None = None) -> list[str]:
     """Mängel eines Stub-Laufs; leer = grün. Argumente zählen nur am erwarteten Tool."""
     namen = [name for name, _ in aufrufe]
     maengel = []
+    if verweigert:
+        # Dann hat das Modell nie eine Antwort der Attrappe gesehen: Messgerät, kein Routing
+        maengel.append(f"Messung ungültig, Aufruf verweigert: {verweigert}")
     if fall["expect"] not in namen:
         maengel.append(f"erwartet {fall['expect']}")
     falsch = [t for t in fall.get("forbidden", []) if t in namen]
@@ -239,24 +252,29 @@ def bewerte(fall: dict, aufrufe: list[tuple[str, dict]]) -> list[str]:
     return maengel
 
 
-def _messen(fälle: list[dict], config: str, cwd: str) -> int:
+def _messen(fälle: list[dict], config: str, cwd: str, erlaubt: list[str]) -> int:
     modell = os.environ.get("MODEL")
 
-    def lauf(fall: dict) -> tuple[dict, list[tuple[str, dict]], str]:
-        _, text, echt = _lauf(fall["prompt"].strip(), config, modell, cwd, [])
-        return fall, echt["aufrufe"], text
+    def lauf(fall: dict) -> tuple[dict, dict, str]:
+        # Die Attrappe führt nichts aus: alles freigeben, sonst sieht das Modell nur
+        # Verweigerungen statt ihrer Antworten. Zwei Züge: Wahl + Reaktion auf das Ergebnis.
+        _, text, echt = _lauf(fall["prompt"].strip(), config, modell, cwd, erlaubt, max_turns=2)
+        return fall, echt, text
 
     rot = 0
     with ThreadPoolExecutor(max_workers=4) as pool:
-        for fall, aufrufe, text in pool.map(lauf, fälle):
+        for fall, echt, text in pool.map(lauf, fälle):
+            aufrufe = echt["aufrufe"]
             tools = [name for name, _ in aufrufe]
-            maengel = bewerte(fall, aufrufe)
+            maengel = bewerte(fall, aufrufe, echt["verweigert"])
             ok = not maengel
             rot += not ok
             print(f"{'✔' if ok else '✘'} {fall['id']:<28} gerufen: {tools or '—'}")
             if not ok:
                 if not tools:
                     print(f"    Modell schrieb stattdessen: {' '.join(text.split())[:200]}")
+                if len(echt["zuege"]) > 1:
+                    print("    je Zug: " + " | ".join(str(z) for z in echt["zuege"].values()))
                 print(f"    {'; '.join(maengel)}\n    warum: {' '.join(fall['why'].split())}")
     print(f"\n{len(fälle) - rot}/{len(fälle)} grün")
     return 1 if rot else 0

@@ -120,3 +120,21 @@ def test_stub_lauf_argumente_zaehlen_nur_am_erwarteten_tool():
     # Sessel plus drehbares Modell ist erlaubt; das zweite Tool braucht kein `view`.
     aufrufe = [("generate_molecule", {"name": "cyclohexane", "view": "chair"}), ("generate_3d", {"name": "cyclohexane"})]
     assert runner.bewerte(fall, aufrufe) == []
+
+
+# Bis 14.11.2026 lief der Stub-Lauf ohne `--allowedTools`: Claude Code verweigerte jeden
+# Aufruf („you haven't granted it yet“), die Attrappe antwortete nie, und Zug 2 war die
+# Reaktion des Modells auf eine Verweigerung statt auf ein Ergebnis. Die Attrappe führt
+# nichts aus, also darf jedes angebotene Tool ohne Rückfrage laufen.
+def test_stub_lauf_gibt_alle_angebotenen_tools_frei_und_bleibt_bei_zwei_zuegen():
+    runner = _load("run_claude")
+    cmd = runner.befehl("Draw aspirin", "/x/mcp.json", None, ["generate_molecule", "lookup"], max_turns=2)
+    erlaubt = cmd[cmd.index("--allowedTools") + 1].split(",")
+    assert erlaubt == ["mcp__chemdraw__generate_molecule", "mcp__chemdraw__lookup"]
+    assert cmd[cmd.index("--max-turns") + 1] == "2"
+
+
+def test_stub_lauf_mit_verweigertem_aufruf_ist_keine_messung():
+    runner = _load("run_claude")
+    fall = {"expect": "generate_molecule"}
+    assert runner.bewerte(fall, [("generate_molecule", {})], verweigert=["generate_molecule"])
