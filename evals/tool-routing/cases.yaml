@@ -212,9 +212,24 @@ cases:
 
   - id: draw-3d-english-conformation
     prompt: "What does the chair conformation of cyclohexane look like?"
+    expect: generate_molecule
+    forbidden: [generate_reaction, batch_generate]
+    required_args: {view: chair}
+    why: >
+      Bis 13.11.2026 stand hier generate_3d (Fall vom 30.10., aelter als die
+      Sessel-Ansicht). Seit E5 (09.11.) ist ein genannter Sessel eine Zeichnung
+      im Molekuel-Panel — der Zaun steht in beiden Beschreibungen, die Ansicht
+      gibt es auch fuer Cyclohexan (gemessen 13.11.), und das Modell folgte ihm
+      in drei Stub-Laeufen. generate_3d ist nicht verboten: Sessel plus
+      drehbares Modell ist eine gute Antwort.
+
+  - id: draw-3d-english-spatial
+    prompt: "What does the staggered conformation of ethane look like in space?"
     expect: generate_3d
     forbidden: [generate_reaction, batch_generate]
-    why: Konformation auf Englisch — dritter, andersartiger Ausloeser.
+    why: >
+      Konformation auf Englisch ohne Sessel — der dritte, andersartige
+      Ausloeser fuer generate_3d, den der Cyclohexan-Fall bis 13.11. trug.
 
   # --- Nachschlagen: der benannte Einzelwert --------------------------------
   - id: lookup-named-value
