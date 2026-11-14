@@ -139,6 +139,12 @@ guidance ends in a manual check in the real client.
    routing checkpoint is a finding to repeat, not yet a bug; B is deterministic. Rules learnt from false-green
    runs are in `scripts/desktop-probe/README.md`. After a panel change that renames or removes a control, update
    `checkpoints.json` in the same commit — it searches by accessibility name, not by visible text.
+   **Rules for a probe run:** (a) The probe counts as green only after two complete runs in a row with no
+   change to the test code in between — a run that needed a fix to the probe proves the fix, not the product.
+   (b) Every checkpoint must prove what its name says: a checkpoint called "rotatable 3D model" has to drag and
+   compare the picture before and after, not just find the canvas. (c) The model in Claude Desktop is Opus 5.5
+   at Medium effort — the default of `run.sh A`; another model only when Jay asks for it explicitly "in
+   Desktop" (`--modell`). (d) Before any run that takes mouse and keyboard, announce how long it will take.
 6. **Only for what the probe cannot judge, by hand:** one Codex run in Desktop (see Helpers) — whether the panel
    *looks* right, a first-time permission dialog on a fresh install, and screen recordings.
 

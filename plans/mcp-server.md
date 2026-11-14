@@ -47,6 +47,16 @@
 
 **Jays Auftrag (14.11.2026, ca. 18:58, wörtlich):** „Ziel: Die Desktop-Probe (scripts/desktop-probe, XCUIAutomation) nach deiner Empfehlung als Stufe in den festen Ablauf in CLAUDE.md eintragen und dabei kurz berichten, welche Annahmen der Echttest vom 14.11.2026 widerlegt hat und was dich überrascht hat; danach Stufe A in Claude Desktop zusätzlich mit Fable 5.2 als Modell laufen lassen und auf dieser Grundlage chemdraw-mcp wie ein neurotischer Entwickler durchgehen (alle gefundenen Fehler beheben, alles sauber machen) und wie ein neurotischer Designer das Panel für den Nutzer perfektionieren und den Ablauf flüssig machen – damit der Server vor dem nächsten Release in echter Desktop-Nutzung fehlerfrei und rund ist. Ort: CLAUDE.md (Abschnitt „Fixed workflow“), scripts/desktop-probe/, Server unter chemdraw_tool/ und Panel unter chemdraw_tool/ui/; für das Panel ist ein komplettes Redesign nach eigenem Ermessen freigegeben, der Code gehört dir, sein Design liegt bei dir. Vor jeder Aktion an Claude Desktop die Lease claude-desktop im Schwester-Repo reservieren und danach freigeben; Release und Veröffentlichung bleiben Jays Entscheidung. Fertig, wenn CLAUDE.md die neue Stufe enthält, Stufe A mit Fable 5.2 für alle 13 Panel-Tools real gelaufen ist, die dabei und im Code gefundenen Fehler behoben sind, das überarbeitete Panel in Stufe B und im Gate (./test.sh, test:host, test:inspector) grün ist und du Befunde, widerlegte Annahmen und Vorher-Nachher-Bilder des Panels berichtest – die ganze Aufgabe in einem Zug, ohne Restliste.“
 
+**Reihenfolge bis zum Release (festgeschrieben 14.11.2026, Tisch-Faden `20261114-194334-ablauf-bis-zum-release`; je Zug eine Etappe an Jay melden, nicht fünf):**
+
+1. **Fehler:** rote Routing-Fälle (Arbeiterbericht am Diff prüfen; `lookup` neben dem Datenblatt an der Antwort des echten Servers entscheiden, nicht an der Attrappe), dann doppelte Konnektoren.
+2. **Panel:** vor der ersten Zeile Jay die Mängelliste zeigen und den Umfang bestätigen lassen (eine Frage) — Jay sagt am 14.11. „das UI verbessern“; „komplettes Redesign“ stand im geschärften Prompt, der auch Fable falsch nach Desktop verortet hat.
+3. **Desktop-Probe härten:** ganzes Panel aufnehmen, Drehung im 3D-Checkpoint belegen, Dialog-Zweig bestätigen; grün erst nach zwei vollständigen Läufen in Folge ohne Änderung am Testcode. Modell: Opus 5.5 Medium (Standard in `run.sh`).
+4. **Release** — Jays Entscheidung.
+5. **Danach:** Marketing-Lauf der Probe gehört der Vermarktung (ruht bis zum Release); der Bau liefert nur den Schalter in `run.sh` (englische Prompts, Seitenleiste zu, ganzes Panel).
+
+Arbeitsregeln dieser Session: Jays Fragen vollständig beantworten, bevor weitergearbeitet wird; nichts als laufend oder erledigt melden, was nicht selbst gesehen ist; vor jedem Lauf, der Maus und Tastatur belegt, die Dauer ansagen.
+
 Stand und Reihenfolge (Haken = erledigt und geprüft):
 
 - [x] CLAUDE.md: Probe als Stufe 5, Codex-Handlauf als Stufe 6 (`6b3eb0d`).

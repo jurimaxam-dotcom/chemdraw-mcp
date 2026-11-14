@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Desktop-Probe: Claude Desktop per XCUIAutomation prüfen (Testfassung, 14.11.2026).
 #   scripts/desktop-probe/run.sh A [tool …] neuer Prompt je Panel-Tool (Modell, Rechte, Panel)
-#   scripts/desktop-probe/run.sh A --modell "Fable 5.2" [tool …]   dasselbe mit umgestelltem Modell
+#   scripts/desktop-probe/run.sh A --modell "<Name>" [tool …]   anderes Modell als der Standard Opus 5.5
 #   scripts/desktop-probe/run.sh B [tool …] Checkpoints am vorhandenen Chat, kein neuer Prompt
 # Reserviert die Lease claude-desktop im Schwester-Repo und gibt sie am Ende frei. Während des
 # Laufs gehört der Bildschirm dem Test: ein Wechsel in eine andere App macht Checkpoints rot.
 set -uo pipefail
 STUFE="${1:-}"; shift || true
-MODELL=""
+# Standardmodell für Stufe A ist Opus 5.5 (Stufe B schickt keinen Prompt und stellt nichts um).
+# Ein anderes Modell nur mit --modell, und nur wenn Jay es ausdrücklich für Desktop verlangt.
+MODELL=""; [ "$STUFE" = A ] && MODELL="Opus 5.5"
 if [ "${1:-}" = "--modell" ]; then MODELL="$2"; shift 2; fi
 TOOLS=("$@"); TOOL="${TOOLS[*]:-}"; TOOL="${TOOL// /+}"
 case "$STUFE" in A|B) ;; *) echo "usage: run.sh A|B [tool …]" >&2; exit 2;; esac
