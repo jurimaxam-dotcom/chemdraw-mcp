@@ -316,7 +316,8 @@ try {
           check(d.ink === null || d.ink > 0.6, `E1 ${tag} dunkel: Achsen/Striche hell (${d.ink})`);
           if (tag === "tlc") check(d.platte > 0.9 && d.fleck !== null && d.fleck < 0.3, `E1 tlc dunkel: Platte hell (${d.platte}), Fleckname dunkel (${d.fleck})`);
           if (tag === "species") check(d.rot === "rgb(214, 39, 40)", `E1 species dunkel: Spezies-Rot bleibt (${d.rot})`);
-          if (tag === "compare") check(d.rot === "rgb(255, 127, 127)", `E1 compare dunkel: Unterschied-Markierung bleibt (${d.rot})`);
+          // Markierung bleibt sichtbar, aber nicht im O-Rot (--atom-o #ff7b72 ≈ RDKits #FF7F7F).
+          if (tag === "compare") check(d.rot === "rgb(163, 71, 107)", `E1 compare dunkel: Unterschied-Markierung eigene Farbe, nicht O-Rot (${d.rot})`);
           await page.screenshot({ path: join(layoutShots, `e1-${tag}-dark.png`) });
           await page.close();
         }

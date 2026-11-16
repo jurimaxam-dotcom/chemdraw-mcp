@@ -413,7 +413,7 @@ button:active { filter: brightness(0.92); }
 .plot-svg.tlc-svg svg { max-height: calc(var(--plot-max-h) - 30px); }
 .plot-panel { box-sizing: border-box; display: flex; flex-direction: column; padding: 12px 16px; }
 .plot-svg { background: var(--plot-paper); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; padding: 8px; display: flex; align-items: center; justify-content: center; }
-.plot-svg svg { display: block; width: 100%; height: auto; max-height: var(--plot-max-h); }
+.plot-svg svg { display: block; width: 100%; height: auto; max-height: max(240px, calc(var(--plot-max-h) - var(--plot-notes, 0) * 20px)); }
 @media (max-width: 419px) {
   /* Seitenpanel 320 px: jeder Pixel Breite geht an die Figur. */
   .plot-panel { padding: 8px 0; }
@@ -432,6 +432,9 @@ button:active { filter: brightness(0.92); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
   :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
+  /* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
   :root:not([data-theme="light"]) .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
   :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
   :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }
@@ -441,6 +444,9 @@ button:active { filter: brightness(0.92); }
 }
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
 :root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
+/* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
+:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
 :root[data-theme="dark"] .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }

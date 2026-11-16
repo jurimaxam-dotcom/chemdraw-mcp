@@ -69,6 +69,14 @@ for (const [file, name, input] of [
   CASES.push([`${file}-1000x700`, name, input, 1000, 700]);
   CASES.push([`${file}-320x700`, name, input, 320, 700]);
 }
+// Vollprofil-Kurven über dieselbe PlotView: je einmal im Chat bei 1000 px.
+for (const [file, name, input] of [
+  ["plot-kalibrierung", "generate_calibration_curve", { concentrations: [0, 2, 4, 6, 8, 10], signals: [0.01, 0.21, 0.40, 0.62, 0.80, 1.01],
+    unknown_signals: [0.47, 0.55], substance: "Paracetamol", x_label: "c [mg/L]", y_label: "A" }],
+  ["plot-pk", "generate_pk_curve", { dose_mg: 500, vd_l: 40, half_life_h: 6, ka_per_h: 1.2, bioavailability: 0.8, tau_h: 8,
+    mec_mg_per_l: 5, mtc_mg_per_l: 20, drug: "Beispiel" }],
+  ["plot-dosis", "generate_dose_response", { ec50: 10, antagonist_concentration: 30, antagonist_kb: 10, drug: "Agonist" }],
+]) CASES.push([`${file}-chat1000`, name, input, 1000]);
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 

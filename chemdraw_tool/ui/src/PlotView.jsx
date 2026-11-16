@@ -19,7 +19,9 @@ export default function PlotView({ data }) {
   }
 
   return (
-    <div className="plot-panel">
+    // Jede Zeile unter der Figur (Kalibrierung, PK, Dosis-Wirkung) kostet ~20 px —
+    // um so viel wird die Figur flacher, damit das Panel im Chat in 700 px bleibt.
+    <div className="plot-panel" style={{ "--plot-notes": data.notes?.length || 0 }}>
       <SectionHeader title={data.name} subtitle={data.subtitle} />
       <PlotFigure svg={data.svg} />
       {data.notes?.length > 0 && (
