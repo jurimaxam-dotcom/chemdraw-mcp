@@ -214,3 +214,65 @@ Gelesen per `--diff` vor der Panel-Etappe. Keine Änderung an MCP-Apps-Seiten, a
 | platform release-notes | 12.11.2026: selbst gehostete Managed Agents | ohne Folge |
 
 Pakete: ext-apps 2.0.4 und 2.1.0 sind Nebenversionen von `^2.0.3`; kein Bump vor dem Release (ein SDK-Bump wäre eine hostspezifische Änderung mit eigenem Desktop-Lauf).
+
+## 9. Nachprüfung am 16.11.2026 (abends): 28 geänderte Seiten
+
+Alle 28 per `--diff` gelesen. 18 Seiten unter modelcontextprotocol.io haben nur eine neue Fußzeile des Doku-Hosts
+(Mintlify) — kein Inhalt der Spezifikation, kein Inhalt von MCP Apps hat sich bewegt. Die zehn claude.com-Seiten
+bringen zwei neue Dinge: ein eigenes App-Symbol und die Marke **Unverified** über offenen Panels eigener Connectors.
+Größengrenze, CSP-Felder, Anzeigemodi, Fähigkeiten, Annotationen und Manifest sind unverändert.
+
+| Seite | Was sich geändert hat | Folge für uns |
+|---|---|---|
+| mcp-apps/design-guidelines | (a) Neuer Abschnitt „Declare an app icon“: PNG/JPEG als `data:`-URI in `serverInfo.icons` (64–128 px, < 10 KB, `serverInfo` gesamt ≈ 16.000 Zeichen, SVG wird entfernt) oder je Tool in `tools/list`; erscheint in der Titelleiste von Seitenpanel und Vollbild, nur bei Verified-Listing oder bei einem Custom Connector, dessen **Adresse** zu keinem Listing passt, und nicht in jeder Organisation. (b) „Contextual“ heißt jetzt: aus den Tool-Argumenten, nicht aus dem Chatverlauf. (c) Ein neu geladenes Panel beginnt beim HTML; Bleibendes gehört auf den Server. (d) Mobil: iOS erlaubt Kamera/Mikrofon nach Freigabe, meldet sie aber nicht in `sandbox.permissions` | (a) Wir setzen kein Symbol (`MCPServer(...)` in `chemdraw_tool/server.py`, Manifest-`icon` gilt nur für die Erweiterungsliste). Ob ein lokaler stdio-Server als „Custom Connector ohne Adresse“ zählt, sagt die Seite nicht — **ungeklärt**, kann warten. (b) passt: Panels lesen nur `toolinput`/`toolresult`. (c) deckt M2 schon ab (`result_budget.py` legt Teile auf die Platte, `load_panel_part`). (d) ohne Folge, wir fordern nur `clipboardWrite` |
+| mcp-apps/entry-points | Einstiegs-Kachel kann das deklarierte Symbol zeigen | entfällt (Einstiegspunkte nur remote, §6 Nr. 21) |
+| mcp-apps/embedded-sites | Freigabe-Dialog für Ursprünge kann vor ungeprüftem Connector warnen; Panels laufen unter einem eigenen Host bei `claudemcpcontent.com` (fest mit `ui.domain`, sonst je Chat neu); Mobil meldet keine Gerätefunktionen; neuer Hinweis zur Anmeldung in eingebetteten Seiten | ohne Folge: wir betten keine Seiten ein, setzen kein `frameDomains` und kein `ui.domain`; Panelzustand hängt nicht am Ursprung (kein `localStorage`-Vertrag) |
+| mcp-apps/getting-started, troubleshooting | Fehlermeldungen bei falschem `ui.domain` nicht mehr wörtlich genannt; Hinweis, dass eine Codebasis in mehreren Hosts läuft und nur `ui.domain` je Host abweicht | ohne Folge (kein `ui.domain`) |
+| testing, verification, directory-vs-custom | Solange ein Panel eines Custom Connectors offen ist, kann Claude den Connector als **Unverified** markieren — im Chat, im Seitenpanel und im Vollbild; Nutzer eines Listings sehen das nicht; ein Fehler am Server ist damit nicht gemeint | Ob die Marke auch über lokalen Erweiterungen erscheint, ist offen. **Beim nächsten Desktop-Lauf (Stufe 5) beobachten** und, wenn sie erscheint, in `scripts/desktop-probe/README.md` als erwartet notieren, damit sie nicht als Fehler gilt |
+| custom/add-unlisted | Neuer Unterabschnitt zum GitHub-MCP-Server (Basis-URL, Toolset-URLs mit eigener GitHub App, `X-MCP-Readonly`) | ohne Folge |
+| enterprise-managed-auth | Neue „express admin setup“: Scope `ema_issuer:manage`, Setup-Endpunkt per `PUT` | ohne Folge (keine Anmeldung) |
+| extensions/apps/build, overview | nur Fußzeile des Doku-Hosts | ohne Folge |
+| specification 2024-11-05 … 2026-07-28: server/tools, server/resources, changelog (fünf Fassungen), deprecated, basic/transports/stdio | nur Fußzeile des Doku-Hosts | ohne Folge: `outputSchema`/`structuredContent`, `title`, Annotationen, Ressourcen-MIME und stdio unverändert |
+
+### Frage „Konnektoren sind jetzt Plugins“
+
+Belegt (Stand der Seiten am 16.11.2026):
+
+- Keine Umbenennung. Die neue Übersicht „Connectors, skills, and plugins“
+  (https://claude.com/docs/extend/overview.md, abgerufen 16.11.2026) trennt drei Dinge: Connector = Verbindung zu einem
+  MCP-Server, Skill = Anleitung, Plugin = **Paket** aus Skills, Connectors, Befehlen und Agenten. Alle drei liegen auf der
+  Seite **Customize**; Connectors stehen weiter unter **Connectors**. Ab jetzt wird die Seite mitbeobachtet
+  (`quellen.json`, Muster `/docs/extend/`).
+- **Customize** als eigene Seite mit Listen für Skills, Plugins und Connectors gibt es seit Desktop v2.2553.0
+  (17.09.2026, https://claude.com/docs/cowork/changelog.md); das ist die sichtbare Neuordnung, nicht neu seit heute.
+  Der Changelog bis v5.11492.5 (13.11.2026) nennt keine Umbenennung von Connectors oder Erweiterungen.
+- `.mcpb` heißt weiter **desktop extension** und wird unter **Settings > Extensions** installiert
+  (https://claude.com/docs/connectors/custom/add-unlisted.md#install-a-local-connector-in-the-desktop-app,
+  https://claude.com/docs/connectors/building/mcpb.md). Die Verwaltungsschlüssel heißen seit dem Ende der
+  `isDxt*`-Namen `isDesktopExtension*` (Changelog, dort als breaking).
+- Wichtig für uns: Ein lokaler Server **in einem Plugin** wird im Chat ignoriert und läuft nur in Claude Code und in
+  lokalen Cowork-Sitzungen (https://claude.com/docs/plugins/platform-support.md, Tabelle „Local MCP server … including
+  `.mcpb` bundles“). Unser Panel im Chat braucht also weiterhin die eigenständige Erweiterung oder den Eintrag in
+  `claude_desktop_config.json`, nicht ein Plugin.
+- Seit Desktop v5.1231.0 (10.11.2026) gelten Erlaubt-/Sperrlisten aus den verwalteten Claude-Code-Einstellungen in
+  Code-Sitzungen auch für Server und Erweiterungen, die in der Desktop-App eingetragen sind — nur verwaltete Geräte.
+
+Vermutet, nicht belegt: Das Gerücht stammt vermutlich aus der Customize-Seite und der Verzeichnis-Doku, die Plugins und
+Connectors gemeinsam einreicht („Build a plugin … an MCP connector … a listing“). Eine Web-Suche am 16.11.2026 fand
+keine Ankündigung einer Umbenennung.
+
+Folge für Begriffe: README (Abschnitt Installation, „Claude Desktop extension“, „two connectors“), `docs/installation.md`
+und `docs/getting-started.md` treffen die aktuelle Wortwahl; nichts umzubenennen.
+
+### Zu tun vor dem Release
+
+- Nichts muss geändert werden. Beim ohnehin fälligen Desktop-Lauf (Stufe 5, `scripts/desktop-probe/run.sh A`/`B`)
+  darauf achten, ob über dem Panel eine **Unverified**-Marke erscheint; falls ja, in `scripts/desktop-probe/README.md`
+  als erwartet festhalten (eigener Commit der Hauptsession).
+
+### Kann warten
+
+- App-Symbol: `icons` am `MCPServer(...)` in `chemdraw_tool/server.py` (PNG ≤ 10 KB als `data:`-URI), erst wenn geklärt
+  ist, ob Desktop es bei lokalen Erweiterungen zeigt; ein Symbol wäre eine hostspezifische Änderung mit eigenem
+  Desktop-Lauf.
+- Pakete: ext-apps 2.0.4/2.1.0 weiter kein Bump (siehe §8).

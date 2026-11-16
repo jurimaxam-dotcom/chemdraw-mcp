@@ -13,6 +13,7 @@
         "/docs/directory/",
         "/docs/build/",
         "/docs/plugins/",
+        "/docs/extend/",
         "/docs/cowork/changelog\\.md$"
       ]
     },
