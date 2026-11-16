@@ -292,3 +292,11 @@ def test_pharma_lists_no_study_prompts():
     from chemdraw_tool.server import create_server
 
     assert asyncio.run(create_server("pharma").list_prompts()) == []
+
+
+def test_mvp_instructions_ask_for_the_structure_while_explaining():
+    # Routing-Messung 16.11.2026: „Erklaer mir kurz, was Ibuprofen im Koerper macht“
+    # zeichnete in mvp nur in 1 von 6 Läufen, im Vollprofil in 3 von 3 — dort steht
+    # der Satz am Anfang der Hinweise, in mvp stand er als Nebensatz beim blanken Namen.
+    head = _data()["instructions"].split("- A bare compound name")[0]
+    assert "while you answer, not only when asked to draw" in head

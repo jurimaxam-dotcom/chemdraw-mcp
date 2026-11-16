@@ -311,20 +311,21 @@ _MVP_INSTRUCTIONS = """\
 Draw chemical structures and reaction schemes as PNG/SVG files with an
 interactive panel, and compute the numbers behind them.
 
-- A bare compound name ("caffeine") means generate_molecule. Use it also
-  while explaining a compound when its structure helps.
+Reach for these tools while you answer, not only when asked to draw: explaining
+what a compound does goes with its structure beside the words (generate_molecule).
+
+- A bare compound name ("caffeine") means generate_molecule.
 - A protein, enzyme or antibody name (lysozyme, trastuzumab):
-  generate_protein_or_antibody draws its cartoon from the PDB; do not sketch your own.
+  generate_protein_or_antibody draws its cartoon; do not sketch your own.
 - A pH, buffer recipe or degree of ionisation asked as a number:
-  calculate_ph, also when you could work it out yourself — it solves the
-  exact charge balance and shows the approximation beside it.
+  calculate_ph, also when you could work it out yourself (it solves the
+  exact charge balance).
 - Several individual structures: batch_generate.
 - Structural differences between two to four compounds: compare_molecules.
 - Reactants, products and conditions: generate_reaction.
 - SN1, SN2 or Fischer esterification step by step with curved arrows:
-  generate_mechanism (draws the user's substrates within each family's limit;
-  other mechanisms are not drawn).
-- Shape in space (geometry, conformation, a rotatable model): generate_3d;
+  generate_mechanism (the user's substrates; other mechanisms are not drawn).
+- Shape in space (geometry, a rotatable model): generate_3d;
   a chair drawing: generate_molecule, view "chair".
 - One named value as text (CAS number, melting point, GHS hazards, biological
   role, pathways): lookup.
