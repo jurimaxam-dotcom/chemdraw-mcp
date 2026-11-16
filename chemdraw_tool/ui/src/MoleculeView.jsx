@@ -352,18 +352,11 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
           onCover={() => { setRevealed([]); setStudyFocus(null); }} />
       ) : view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
-          <div className="structure-layout" data-layout-3d={is3d ? "" : undefined}>
-            {/* Zeichenfläche und Ansicht-Achse als eine Spalte: die Achse sitzt direkt
-                unter Zeichnung oder Kuhle, vor den Kernwerten (Design-Kritik Rang 3). */}
+          <div className="structure-layout">
+            {/* Ansicht-Achse über der Zeichenfläche (Etappe 3): an fester Stelle, sie rutscht
+                beim Umschalten nicht mit. 2D und 3D teilen dieselbe Fläche und Anordnung —
+                Kernwerte daneben —, damit das Panel mit 3D bei 1000×700 ohne Rollen passt. */}
             <div className="structure-main">
-              {is3d
-                ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
-                    <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
-                  </div>
-                : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
-                    hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
-                    pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
-                    onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
               {(views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
                 <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
                   title="Skeletal formula">2D</AxisButton>
@@ -374,6 +367,14 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
                 {query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
                   title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</AxisButton>}
               </div>}
+              {is3d
+                ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
+                    <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
+                  </div>
+                : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
+                    hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
+                    pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
+                    onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
             </div>
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />

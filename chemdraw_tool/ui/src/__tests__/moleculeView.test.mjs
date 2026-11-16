@@ -269,8 +269,13 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
   assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
-  // Jay 07.11.: 3D ist der Hebel — die Kuhle bekommt die volle Panelbreite, die Kernwerte rutschen darunter.
-  assert.ok(container.querySelector(".structure-layout[data-layout-3d]"), "3D-Layout: Kuhle nicht über die volle Breite");
+  // Etappe 3, bewusst geändert (vorher Jay 07.11.: Kuhle über die volle Breite, Kernwerte darunter —
+  // das Panel wurde bei 1000 px über 1100 px hoch): 3D teilt Fläche und Anordnung mit 2D,
+  // die Kernwerte bleiben daneben, die Achse steht davor.
+  const main = container.querySelector(".structure-main");
+  assert.ok(main.firstElementChild.matches("[data-view-axis]"), "Achse steht nicht über der Kuhle");
+  assert.ok(main.contains(viewer()), "Kuhle nicht in derselben Spalte wie die 2D-Zeichnung");
+  assert.ok(container.querySelector(".structure-layout > .key-facts"), "Kernwerte nicht neben der Kuhle");
 
   await click(buttonByText(container, "3D"));
   assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");
@@ -282,7 +287,6 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   // All H verdrängt 3D — eine Zeichenfläche, nie zwei.
   await click(buttonByText(container, "All H"));
   assert.equal(Boolean(viewer()), false, "3D und All H zugleich");
-  assert.equal(container.querySelector(".structure-layout[data-layout-3d]"), null, "3D-Layout bleibt nach All H kleben");
   assert.ok(container.querySelector("[data-all-h]"));
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "false");
   unmount();
@@ -450,7 +454,7 @@ test("ruft das Modell view selbst, startet das Panel auf der Ansicht — mit Kn�
 
 const STEREO = { kind: "atom", atoms: [1], label: "Unspecified stereocenter" };
 
-test("eine Ansicht-Achse: 2D · All H · 3D direkt unter der Zeichenfläche, vor den Kernwerten", () => {
+test("eine Ansicht-Achse: 2D · All H · 3D direkt über der Zeichenfläche, vor den Kernwerten", () => {
   const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
   const { container, unmount } = renderMolecule(data);
   const axes = container.querySelectorAll("[data-view-axis]");
@@ -465,7 +469,8 @@ test("eine Ansicht-Achse: 2D · All H · 3D direkt unter der Zeichenfläche, vor
   const canvas = container.querySelector(".structure-canvas");
   const facts = container.querySelector(".key-facts");
   const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
-  assert.ok(follows(canvas, axis), "Achse steht nicht hinter der Zeichenfläche");
+  // Etappe 3: die Achse steht über der Zeichenfläche (vorher darunter, sie rutschte in 3D aus dem Bild).
+  assert.ok(follows(axis, canvas), "Achse steht nicht über der Zeichenfläche");
   assert.ok(follows(axis, facts), "Achse steht nicht vor den Kernwerten");
   assert.equal(buttonByText(container, "2D").getAttribute("aria-pressed"), "true", "2D nicht als aktiv markiert");
   unmount();

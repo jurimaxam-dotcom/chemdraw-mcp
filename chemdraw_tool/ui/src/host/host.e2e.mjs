@@ -159,6 +159,65 @@ try {
       check(h0 === 320 && h1 > 600 && h2 === 320 && same, `U2 (c): Wechsel ändert die Fläche ohne Neuladen (${h0} → ${h1} → ${h2})`);
       await page.close();
     }
+    // (f) Etappe 3: der 2D/3D-Schalter sitzt über der Zeichenfläche und bleibt beim Umschalten
+    // stehen; die 3D-Fläche passt bei 1000×700 samt Kopf und Fußzeile ohne Rollen — im Chat
+    // (gemeldete Höhe) wie im Vollbild — und im 320-px-Seitenpanel in die Breite.
+    {
+      const KOFFEIN = { name_or_smiles: "caffeine" };
+      const achse = (f) => f.evaluate(() => {
+        const a = document.querySelector("[data-view-axis]")?.getBoundingClientRect();
+        const c = document.querySelector('[data-view="structure"] .structure-canvas')?.getBoundingClientRect();
+        return a && c ? { top: Math.round(a.top), left: Math.round(a.left), ueber: a.bottom <= c.top + 1 } : null;
+      });
+      const zu3d = async (f) => {
+        await f.getByRole("button", { name: "3D", exact: true }).click();
+        await f.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 });
+        await f.page().waitForTimeout(300);
+      };
+      {
+        const [page, f] = await open("generate_molecule", KOFFEIN, chat(1000), { viewport: { width: 1000, height: 700 } });
+        await settle(f);
+        await fitChat(page);
+        const a2 = await achse(f);
+        const g2 = await geo(f);
+        await zu3d(f);
+        await fitChat(page);
+        const a3 = await achse(f);
+        const g3 = await geo(f);
+        const h3 = await page.evaluate(() => window.__panelSizes.at(-1)?.height);
+        messwerte["f-chat"] = `Achse 2D ${JSON.stringify(a2)} → 3D ${JSON.stringify(a3)}; 3D ${lage(g3)}; gemeldet ${h3}`;
+        check(a2?.ueber && a3?.ueber, `E3 (f) Chat: Schalter über der Zeichenfläche (2D ${JSON.stringify(a2)}, 3D ${JSON.stringify(a3)})`);
+        check(a2 && a3 && a2.top === a3.top && a2.left === a3.left, `E3 (f) Chat: Schalter bleibt beim Umschalten stehen (${a2?.top}/${a2?.left} → ${a3?.top}/${a3?.left})`);
+        check(g2.canvas && g3.canvas && g3.canvas.h === g2.canvas.h, `E3 (f) Chat: 3D-Fläche so hoch wie die 2D-Fläche (${g2.canvas?.h} → ${g3.canvas?.h})`);
+        check(h3 && h3 <= 700, `E3 (f) Chat 1000 px: Panel mit 3D samt Kopf und Fußzeile ≤ 700 px (${h3})`);
+        await page.screenshot({ path: join(layoutShots, "f-koffein-chat-3d-1000.png"), fullPage: true });
+        await page.close();
+      }
+      for (const [w, h] of [[1000, 700], [320, 700]]) {
+        const [page, f] = await open("generate_molecule", KOFFEIN, full(w, h));
+        await settle(f);
+        const a2 = await achse(f);
+        await zu3d(f);
+        const a3 = await achse(f);
+        const g3 = await geo(f);
+        messwerte[`f-${w}x${h}`] = `Achse ${JSON.stringify(a2)} → ${JSON.stringify(a3)}; 3D ${lage(g3)}`;
+        check(a2 && a3 && a2.top === a3.top && a3.ueber, `E3 (f) ${w}×${h}: Schalter über der Fläche, bleibt stehen (${a2?.top} → ${a3?.top})`);
+        check(g3.sw <= g3.iw, `E3 (f) ${w}×${h}: 3D passt in die Breite (${lage(g3)})`);
+        if (w === 1000) check(g3.sh <= g3.ih, `E3 (f) ${w}×${h}: 3D ohne Rollen (${lage(g3)})`);
+        await page.screenshot({ path: join(layoutShots, `f-koffein-3d-${w}x${h}.png`) });
+        await page.close();
+      }
+      // generate_3d: das quadratische SVG darf die Höhe nicht vorgeben (vorher 1095 px in 700).
+      {
+        const [page, f] = await open("generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }, full(1000, 700));
+        await f.locator(".m3d-panel svg").first().waitFor();
+        await page.waitForTimeout(300);
+        const g = await geo(f);
+        messwerte["f-generate_3d"] = lage(g);
+        check(g.sh <= g.ih, `E3 (f) generate_3d 1000×700: ohne Rollen (${lage(g)})`);
+        await page.close();
+      }
+    }
     // (d) 320 px breit, feste Höhe: nichts scrollt waagrecht, kein Knopf abgeschnitten
     const schmal = async (f) => f.evaluate(() => {
       const de = document.documentElement;
@@ -826,7 +885,7 @@ try {
   }
 
   // E19: Bildgröße im Proteinpanel am Maßstab des Molekül-3D-Knopfs
-  // (styles.css, `.structure-layout[data-layout-3d] .structure-canvas`: Quadrat,
+  // (bis Etappe 3 der Maßstab der 3D-Kuhle; styles.css `.protein-stage`: Quadrat,
   // höchstens 720 px). Wie Desktop: das iframe bekommt die Höhe, die das Panel
   // per size-changed meldet — dann darf im Panel nichts scrollen oder abschneiden.
   const sizeShots = process.env.PROTEIN_SIZE_SHOTS || join(tmpdir(), "chemdraw-protein-size");
@@ -1332,10 +1391,11 @@ try {
   const breite2d = (await frame.locator(".structure-canvas").boundingBox())?.width ?? 0;
   await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
-  // Jay 07.11.: 3D größer — die Kuhle nimmt die volle Panelbreite, die Kernwerte rutschen darunter
+  // Etappe 3 (vorher Jay 07.11.: Kuhle als Quadrat über die volle Breite): 3D teilt Fläche und
+  // Anordnung mit 2D, damit das Panel bei 1000×700 ohne Rollen passt; mehr Fläche gibt Expand.
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
-  prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 1 && box3d.width >= breite2d && box3d.height > 320 * 1.3,
-    `3D-Kuhle nutzt die Panelbreite als Quadrat (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px)`);
+  prüfe(Math.abs(box3d.width - breite2d) <= 1 && Math.round(box3d.height) === 320,
+    `3D-Kuhle in derselben Fläche wie 2D (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px)`);
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
     "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
@@ -1372,14 +1432,13 @@ try {
   prüfe(randLum > 0.6, `3D-Export: Kuhle mit aufgelösten Theme-Farben (Rand-Luminanz ${randLum.toFixed(2)})`);
   await page.screenshot({ path: join(tmpdir(), "panel-host-3d-export.png") });
   await page.emulateMedia({ colorScheme: "dark" }); // Folgebilder wie bisher im dunklen Schema
-  // E2 (Design-Kritik Rang 3): eine Ansicht-Achse direkt unter der Kuhle, Stereo und Gruppen in 3D aus
-  const achse = (await frame.locator("[data-view-axis]").boundingBox()) ?? { y: Infinity };
+  // E2/Etappe 3: eine Ansicht-Achse direkt über der Kuhle, Stereo und Gruppen in 3D aus
+  const achse = (await frame.locator("[data-view-axis]").boundingBox()) ?? { y: Infinity, height: 0 };
   const kuhle = (await frame.locator("[data-view-3d]").boundingBox()) ?? { y: 0, height: 0 };
-  const fakten = (await frame.locator(".key-facts").boundingBox()) ?? { y: 0 };
-  const abstand = achse.y - (kuhle.y + kuhle.height);
+  const abstand = kuhle.y - (achse.y + achse.height);
   prüfe(await frame.locator("[data-view-axis]").count() === 1 && await frame.locator(".structure-tools").count() === 0
-    && abstand >= 0 && abstand <= 24 && achse.y < fakten.y,
-    `Ansicht-Achse sitzt ${Math.round(abstand)} px unter der Kuhle, vor den Kernwerten — genau eine Reihe`);
+    && abstand >= 0 && abstand <= 24,
+    `Ansicht-Achse sitzt ${Math.round(abstand)} px über der Kuhle — genau eine Reihe`);
   prüfe(await frame.locator("[data-testid='stereo-note']").count() === 0 && await frame.locator(".group-section").count() === 0,
     "3D blendet Stereo-Zeile und Gruppen-Chips aus");
   await page.waitForTimeout(1300); // Einblend-Drehung abgeschlossen, Bild zeigt die Ruhelage
@@ -1388,7 +1447,6 @@ try {
   await frame.locator(".structure-drawing").waitFor({ timeout: 5000 });
   prüfe(await frame.locator("[data-testid='stereo-note']").count() === 1 && await frame.locator(".group-section").count() === 1,
     "Zurück in 2D: Stereo-Zeile und Gruppen-Chips wieder da");
-  prüfe(await frame.locator(".structure-layout[data-layout-3d]").count() === 0, "Zurück in 2D: Kernwerte wieder neben der Zeichnung");
   await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d]").waitFor({ timeout: 5000 });
   prüfe(serverCalls.slice(vor3d).filter((n) => n === "generate_3d").length === 1, "Zweiter 3D-Klick kommt aus dem Cache (save_png des 3D-Exports zählt nicht)");

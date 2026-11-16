@@ -32,7 +32,7 @@ export default function Molecule3DView({ data }) {
         title={data.name}
         subtitle="3D conformer (ETKDG + force field) · drag to rotate"
       />
-      <div ref={viewer} style={{ flex: 1, minHeight: 0, display: "flex" }}>
+      <div ref={viewer} className="m3d-stage" style={{ flex: 1, minHeight: 0, display: "flex" }}>
         <Ball3DCanvas atoms={data.atoms || []} bonds={data.bonds || []} />
       </div>
       {/* Fußzeile (E3): SDF links, Export der aktuellen Drehlage rechts. */}

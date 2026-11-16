@@ -317,11 +317,11 @@ test("E19: Panel ohne feste Höhe, eine Bildfläche für Cartoon, Spur und Schem
   unmount();
 });
 
-test("E19: styles.css bemisst die Bildfläche wie den 3D-Knopf (Quadrat, höchstens 720 px)", async () => {
+// Etappe 3: die 3D-Kuhle im Molekülpanel ist kein 720-px-Quadrat mehr (sie teilt die Fläche
+// mit 2D); die Proteinfläche behält ihr eigenes Maß.
+test("E19: styles.css bemisst die Proteinfläche als Quadrat, höchstens 720 px", async () => {
   const { readFileSync } = await import("node:fs");
   const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
-  const yardstick = /\.structure-layout\[data-layout-3d\] \.structure-canvas \{[^}]*aspect-ratio: 1 \/ 1;[^}]*720px/.exec(css);
-  assert.ok(yardstick, "Maßstab: 3D-Fläche im Molekülpanel");
   const rule = /\.protein-stage \{([^}]*)\}/.exec(css);
   assert.ok(rule, ".protein-stage fehlt");
   for (const decl of ["width: 100%", "aspect-ratio: 1 / 1", "max-height: 720px", "position: relative"]) {

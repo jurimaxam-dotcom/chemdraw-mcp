@@ -259,14 +259,10 @@ button:active { filter: brightness(0.92); }
 .structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
 .structure-canvas { height: 320px; border: 1px solid var(--border); border-radius: 12px; }
 .structure-drawing { display: flex; align-items: center; justify-content: center; }
-/* 3D (Jay 07.11.): die Kuhle bekommt die volle Panelbreite als Quadrat, die Kernwerte rutschen als Reihe darunter. */
-.structure-layout[data-layout-3d] { grid-template-columns: minmax(0, 1fr); }
-.structure-layout[data-layout-3d] .structure-canvas { display: flex; height: auto; aspect-ratio: 1 / 1; width: min(100%, 720px); margin-inline: auto; }
-/* E19: Proteinbild am selben Maßstab — Höhe wie die 3D-Kuhle (Quadrat, höchstens 720 px),
+/* E19: Proteinbild als Quadrat, höchstens 720 px hoch (bis Etappe 3 der Maßstab der 3D-Kuhle),
    Breite die ganze Zeile, weil Proteine im Ansichtsrahmen quer liegen. Eigene Größe statt
    Rest einer festen Panelhöhe; Cartoon, Spur und Schema teilen dieselbe Fläche. */
 .protein-stage { position: relative; display: flex; width: 100%; aspect-ratio: 1 / 1; max-height: 720px; min-height: 0; flex-shrink: 0; }
-.structure-layout[data-layout-3d] .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
 .structure-drawing > svg { width: 100%; height: 100%; }
 .molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
 .section-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 8px; }
@@ -376,12 +372,11 @@ button:active { filter: brightness(0.92); }
 
 /* Unbestimmte Stereoelemente: ruhige Hinweiszeile, Hover/Klick lässt die Atome leuchten. */
 .stereo-note { margin-top: 10px; font-size: 13px; color: var(--fg-muted); --stereo-color: #d6336c; }
-/* Ansicht-Achse (2D · All H · Fischer · Haworth · 3D) direkt unter Zeichnung oder Kuhle:
-   dasselbe Segment wie Structure ⇄ Data, eine Reihe statt Chips unter den Kernwerten. */
+/* Ansicht-Achse (2D · All H · Fischer · Haworth · 3D) über Zeichnung oder Kuhle (Etappe 3):
+   dasselbe Segment wie Structure ⇄ Data, an fester Stelle — 2D und 3D teilen eine Fläche. */
 /* Grid statt Flex: StructureCanvas trägt inline flex: 1 1 70% und würde in einer Flex-Spalte in die Höhe wachsen. */
 .structure-main { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 8px; min-width: 0; }
 .view-axis { justify-self: start; }
-.structure-layout[data-layout-3d] .view-axis { justify-self: center; }
 /* Lädt ein Knopf, darf der Klick nicht tot aussehen: Spinner im Knopf (seg-spinner) und Wartecursor. */
 .seg button[aria-busy="true"] { cursor: progress; color: var(--fg); }
 /* 3D hinter dem Knopf: dieselbe Fläche wie die 2D-Zeichnung, der Viewer füllt sie. */
@@ -501,15 +496,14 @@ button:active { filter: brightness(0.92); }
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel > [data-view="structure"] { flex: 1 0 auto; display: flex; flex-direction: column; }
 /* Nur die Zeichenfläche nimmt den Rest; Kopf, Achse, Kernwerte, Gruppen, Fußzeile behalten ihre Größe. */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout { flex: 1 0 auto; grid-template-rows: minmax(0, 1fr); }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main { grid-template-rows: minmax(var(--canvas-min), 1fr) auto; }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main { grid-template-rows: auto minmax(var(--canvas-min), 1fr); }
 /* contain: size — die Fläche bemisst sich nur an der Grid-Zeile; das quadratische 3D-SVG
    würde sonst über seine Breite die Höhe vorgeben (968 × 968 statt der Resthöhe). */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-canvas { height: auto; contain: size; }
-/* 3D hinter dem Knopf: statt Quadrat bis 720 px die ganze Fläche; Kernwerte als Reihe darunter. */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] { grid-template-rows: minmax(0, 1fr) auto; }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-canvas { aspect-ratio: auto; width: 100%; height: auto; }
 /* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
 :root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
+/* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
+:root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; }
 :root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
 /* Diagramm und Strukturvergleich (U5, 12.11.2026): die Bildfläche nimmt die Resthöhe, das SVG
    skaliert über seine viewBox hinein — absolut gesetzt, damit seine Eigenmaße die Höhe nicht vorgeben. */
