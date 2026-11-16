@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import AmbiguousView from "./AmbiguousView";
 import CopyButton from "./components/CopyButton";
 import FoundAs from "./components/FoundAs";
+import Formula from "./components/Formula";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
@@ -399,16 +400,19 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
                 Ringform (Halbacetal statt Aldehyd) und stünden dort falsch. */}
             {groups.length > 0 && !(shown === "fischer" && data.projectionNote)
               && <section className="group-section" aria-label="Functional groups">
-              <h3 className="section-label">Functional groups</h3>
-              <FunctionalGroupList groups={groups} pinnedGroup={pinned?.kind === "group" ? pinned.name : null}
-                onHoverGroup={setHoveredGroup} onPin={pinGroup} />
-              <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canAsk={canAsk} onClear={clearPin} />
+              {/* Etappe 4: Überschrift, Chips und Hinweis in einer umbrechenden Zeile. */}
+              <div className="group-section-row">
+                <h3 className="section-label">Functional groups</h3>
+                <FunctionalGroupList groups={groups} pinnedGroup={pinned?.kind === "group" ? pinned.name : null}
+                  onHoverGroup={setHoveredGroup} onPin={pinGroup} />
+                <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canAsk={canAsk} onClear={clearPin} />
+              </div>
             </section>}
           </>}
         </div>
       ) : (
         <div id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
-          {sheet ? <SourceList sources={sheet.sources} moleculeSvg={sheet.molecule_svg || data.svg} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
+          {sheet ? <SourceList sources={sheet.sources} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
         </div>
       )}
       <ContinueRow actions={followUps} flush={flush} />
@@ -456,16 +460,10 @@ function molarMass(mw) {
   return /g\/mol/.test(String(mw)) ? String(mw) : `${mw} g/mol`;
 }
 
-// Zahlen in der Summenformel tiefgestellt: C9H8O4 → C₉H₈O₄.
-function Formula({ text }) {
-  return String(text).split(/(\d+)/).map((part, i) =>
-    /^\d+$/.test(part) ? <sub key={i}>{part}</sub> : part);
-}
-
 function Fact({ label, value, copy }) {
   if (value == null || value === "") return null;
   return <div className="fact">
     <dt>{label}</dt>
-    <dd><span>{value}</span>{copy && <CopyButton text={String(copy)} size="sm" />}</dd>
+    <dd><span>{value}</span>{copy && <CopyButton text={String(copy)} size="sm" quiet />}</dd>
   </div>;
 }

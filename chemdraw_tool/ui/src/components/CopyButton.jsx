@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 
-export default function CopyButton({ text, size, label = "Copy value" }) {
+// quiet (Etappe 4, 16.11.2026): der Knopf tritt zurück — ohne Rahmen, erst bei Hover/Fokus
+// der Zeile voll sichtbar, ohne Hover-Gerät dezent. Nur Deckkraft, nie display/visibility:
+// er bleibt im Bedienungshilfen-Baum und per Tab erreichbar (Desktop-Probe sucht „Copy value“).
+// Aussehen über Klassen statt inline, damit die Hover-Regeln in styles.css greifen.
+export default function CopyButton({ text, size, label = "Copy value", quiet = false }) {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef(null);
-  const dim = size === "xs" ? 22 : size === "sm" ? 32 : 36;
+  const sizeClass = size === "xs" ? " is-xs" : size === "sm" ? " is-sm" : "";
 
   // Clear any pending timer if the component unmounts before it fires.
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
@@ -50,20 +54,7 @@ export default function CopyButton({ text, size, label = "Copy value" }) {
       aria-label={label}
       onClick={handleCopy}
       title="Copy"
-      style={{
-        width: dim,
-        height: dim,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: copied ? "var(--copy-success-bg)" : "transparent",
-        border: `1px solid ${copied ? "var(--copy-success)" : "var(--border)"}`,
-        borderRadius: "var(--border-radius-sm, 6px)",
-        cursor: "pointer",
-        color: copied ? "var(--copy-success)" : "var(--fg-muted)",
-        padding: 0,
-        flexShrink: 0,
-      }}
+      className={`copy-button${sizeClass}${quiet ? " is-quiet" : ""}${copied ? " is-copied" : ""}`}
     >
       {copied ? (
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CopyButton from "./CopyButton";
+import Formula, { looksLikeFormula } from "./Formula";
 import Tabs from "./Tabs";
 
 // Das Datenblatt: Reiter je Quelle + die Zeilen der aktiven Quelle.
@@ -7,12 +8,18 @@ import Tabs from "./Tabs";
 // Aus DatabaseView herausgeloest, weil das Molekuel-Panel nach dem Nachladen
 // exakt dieselbe Optik zeigen muss. Zwei Kopien waeren zwei Optiken, sobald
 // eine davon einmal angefasst wird.
+//
+// Etappe 4 (16.11.2026): Etikett und Wert stehen nah beieinander (Etikettspalte fester
+// Breite statt 36 % der Zeile), der Kopierknopf direkt hinter dem Wert und leise. Eine
+// Summenformel wird tiefgestellt gesetzt; kopiert wird die Klarschrift.
 function DataTable({ rows }) {
-  return <dl className="source-table">{rows.map(([key, value]) =>
-    <div className="source-row" key={key}>
-      <dt>{key}</dt><dd><span>{value != null ? String(value) : "—"}</span>{value != null && <CopyButton text={String(value)} size="sm" />}</dd>
-    </div>
-  )}</dl>;
+  return <dl className="source-table">{rows.map(([key, value]) => {
+    const text = value != null ? String(value) : "—";
+    const shown = value != null && /formula/i.test(key) && looksLikeFormula(text) ? <Formula text={text} /> : text;
+    return <div className="source-row" key={key}>
+      <dt>{key}</dt><dd><span className="source-value">{shown}</span>{value != null && <CopyButton text={text} size="sm" quiet />}</dd>
+    </div>;
+  })}</dl>;
 }
 
 // --- GHS je Quelle (Etappe 5) ---
@@ -86,22 +93,22 @@ function GhsGroups({ groups }) {
   </div>;
 }
 
-function SourcePanel({ source, moleculeSvg }) {
+// Keine Mini-Struktur mehr neben der Tabelle (Etappe 4): sie stand in einer eigenen, sonst
+// leeren Spalte und nahm der Tabelle ein Fünftel der Breite; die volle Struktur ist einen
+// Reiter entfernt (Structure), und der Kopf nennt den Stoff.
+function SourcePanel({ source }) {
   const rows = (source.rows || []).map((r) => [r.key, r.val]);
   const groups = source.groups || [];
   return <section className="source-panel" aria-label={source.source || source.type || "Source"}>
-    <div className="source-content">
-      {moleculeSvg && <div className="source-structure" aria-hidden="true" dangerouslySetInnerHTML={{ __html: moleculeSvg }} />}
-      <div className="source-body">
-        {source.note && <p className="ghs-note">{source.note}</p>}
-        {groups.length > 0 ? <GhsGroups groups={groups} /> : rows.length > 0 && <DataTable rows={rows} />}
-      </div>
+    <div className="source-body">
+      {source.note && <p className="ghs-note">{source.note}</p>}
+      {groups.length > 0 ? <GhsGroups groups={groups} /> : rows.length > 0 && <DataTable rows={rows} />}
     </div>
     {safeHref(source.url) && <a className="source-link" href={safeHref(source.url)} target="_blank" rel="noopener noreferrer">{source.source || "View source"} →</a>}
   </section>;
 }
 
-export default function SourceList({ sources, moleculeSvg }) {
+export default function SourceList({ sources }) {
   const list = sources || [];
   // Ein Reiter je Typ, eindeutig: mehrere Quellen gleichen Typs (GHS) wohnen
   // als Gruppen in EINER Quelle — ein zweiter "GHS"-Reiter waere unanwaehlbar.
@@ -124,7 +131,7 @@ export default function SourceList({ sources, moleculeSvg }) {
           tabs={tabs.map((t) => ({ key: t, label: t }))} />
       )}
       <div className="source-sheet">
-        <SourcePanel source={activeSource} moleculeSvg={moleculeSvg} />
+        <SourcePanel source={activeSource} />
       </div>
     </>
   );

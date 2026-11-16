@@ -42,7 +42,7 @@ export default function PanelFooter({ files = [], children }) {
             <div className="panel-footer-file" key={`${f.label}:${f.path}`}>
               <span className="panel-footer-label">{f.label}</span>
               <span className="panel-footer-path" title={f.path}>{displayPath(f.path)}</span>
-              <CopyButton text={f.path} size="xs" label="Copy path" />
+              <CopyButton text={f.path} size="xs" label="Copy path" quiet />
             </div>
           ))
         )}

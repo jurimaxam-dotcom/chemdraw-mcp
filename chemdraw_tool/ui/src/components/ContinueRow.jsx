@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { useAppBridge } from "../AppContext";
 import { hostCan } from "../ModelContext";
 
@@ -17,6 +17,7 @@ const RELEASE_MS = 8000;
 
 export default function ContinueRow({ actions, flush, hint = "Each button writes one message for Claude" }) {
   const app = useAppBridge();
+  const hintId = useId();
   const [busy, setBusy] = useState(null);
   const [note, setNote] = useState("");
   const inFlight = useRef(false);
@@ -57,12 +58,13 @@ export default function ContinueRow({ actions, flush, hint = "Each button writes
   }
 
   return (
-    <section className="continue-row" data-testid="continue-row" aria-label="Continue in chat">
-      <div className="continue-head">
-        <h3 className="section-label">Continue in chat</h3>
-        <span className="continue-hint">{hint}</span>
-      </div>
+    // Etappe 4 (16.11.2026): eine kompakte Zeile statt eines Kastens mit Titel und Erklärzeile —
+    // kleines Etikett vor den Knöpfen; die Erklärung bleibt als Tooltip am Etikett und als
+    // Beschreibung der Gruppe (aria-describedby), sichtbar nur noch für Bedienungshilfen.
+    <section className="continue-row" data-testid="continue-row" aria-label="Continue in chat" aria-describedby={hintId}>
+      <span id={hintId} className="visually-hidden">{hint}</span>
       <div className="continue-actions">
+        <span className="continue-label" title={hint} aria-hidden="true">Continue in chat</span>
         {actions.map((a) => (
           <button key={a.id} type="button" className={`continue-button${a.color ? " is-about" : ""}`}
             style={a.color ? { "--group-color": a.color } : undefined}

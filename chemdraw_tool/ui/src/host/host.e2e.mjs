@@ -403,8 +403,11 @@ try {
           await page.waitForTimeout(400);
           const p = await plotFigure(f);
           messwerte[`e1-${tag}-${w}x${h}`] = JSON.stringify(p);
-          // Breite Figur: schmal die ganze Kartenbreite, breit mindestens 60 %; DC-Platte: die Höhe.
-          const voll = p.hoch ? p.h >= 0.85 * (p.cardH - 18) : p.w >= (w === 320 ? 0.9 * (p.card - 18) : 0.6 * p.card);
+          // Breite Figur: schmal die ganze Kartenbreite, breit mindestens 60 %; DC-Platte: die Höhe —
+          // oder, schmal, die ganze Breite: dann ist die Platte so groß, wie sie werden kann (Etappe 4:
+          // die kompakte Weiter-Zeile gibt der Karte bei 320 px mehr Höhe, als die Platte braucht).
+          const breitVoll = p.w >= 0.9 * (p.card - 18);
+          const voll = p.hoch ? p.h >= 0.85 * (p.cardH - 18) || (w === 320 && breitVoll) : p.w >= (w === 320 ? 0.9 * (p.card - 18) : 0.6 * p.card);
           check(voll && p.sh <= p.ih && p.sw <= p.iw, `E1 ${tag} ${w}×${h}: Figur ${p.w}×${p.h} in Karte ${p.card}×${p.cardH}, kein Rollen`);
           await page.close();
         }
@@ -601,6 +604,63 @@ try {
         const g = await geo(f);
         check(await row(f).count() === 1 && g.sh <= g.ih + 1, `U3 inline: Weiter-Zeile im Chat, gemeldete Höhe reicht (${lage(g)})`);
         await page.screenshot({ path: join(uiShots, "molecule-inline-700-continue.png"), fullPage: true });
+        await page.close();
+      }
+      // Etappe 4 (16.11.2026): Koffein im Chat bei 1000 px höchstens 700 px hoch (vorher 811);
+      // Datenblatt: Wert nah am Etikett, Kopierknöpfe leise (Deckkraft 0 ohne Hover), aber
+      // im Bedienungshilfen-Baum, bei Hover und Tastaturfokus der Zeile voll sichtbar.
+      {
+        const [page, f] = await open("generate_molecule", { name_or_smiles: "caffeine" }, chat(1000));
+        await settle(f);
+        await fitChat(page);
+        const size = await page.evaluate(() => window.__panelSizes.at(-1));
+        check(size && size.height <= 700, `E4: Koffein im Chat (1000 px) höchstens 700 px hoch (${size?.height})`);
+        await page.close();
+      }
+      // Der Hinweis teilt die Zeile mit den Chips: Vorschau (Hover) und Auswahl dürfen die
+      // Panelhöhe nicht ändern — sonst skaliert Desktop das iframe und die Chips wandern unter der Maus.
+      for (const width of [1000, 700]) {
+        const [page, f] = await open("generate_molecule", morphine, chat(width));
+        await settle(f);
+        await fitChat(page);
+        const hoehe = () => f.evaluate(() => document.documentElement.scrollHeight);
+        const ruhe = await hoehe();
+        const chips = f.locator("button.functional-group");
+        const n = await chips.count();
+        const werte = [];
+        for (let i = 0; i < n; i++) { await chips.nth(i).hover(); await page.waitForTimeout(120); werte.push(await hoehe()); }
+        check(n >= 2 && werte.every((h) => h === ruhe), `E4 ${width}: Hover über die Gruppen ändert die Höhe nicht (Ruhe ${ruhe}, dann ${werte.join(", ")}; ${n} Gruppen)`);
+        // Anheften tauscht die Knöpfe der Weiter-Zeile (gewollt); die Gruppen-Zeile selbst bleibt gleich hoch.
+        const sektion = () => f.evaluate(() => Math.round(document.querySelector(".group-section").getBoundingClientRect().height));
+        await page.mouse.move(2, 2); await page.waitForTimeout(120);
+        const vor = await sektion();
+        await chips.nth(0).click(); await page.mouse.move(2, 2); await page.waitForTimeout(150);
+        const nach = await sektion();
+        check(vor === nach, `E4 ${width}: Anheften ändert die Höhe der Gruppen-Zeile nicht (${vor} → ${nach})`);
+        await page.close();
+      }
+      {
+        const [page, f] = await open("lookup_molecule_data", { name: "paracetamol" }, chat(1000));
+        await settle(f);
+        const rowOf = (key) => f.locator(".source-row", { has: f.locator("dt", { hasText: key }) }).first();
+        const cas = rowOf("CAS");
+        const btn = cas.getByRole("button", { name: "Copy value" });
+        const op = () => btn.evaluate((b) => getComputedStyle(b).opacity);
+        const hover = await f.evaluate(() => matchMedia("(hover: hover)").matches);
+        const ruhe = await op();
+        check(await f.getByRole("button", { name: "Copy value" }).count() >= 5, "E4: jede Datenblatt-Zeile hat „Copy value“ im Bedienungshilfen-Baum");
+        check(hover ? ruhe === "0" : Number(ruhe) > 0, `E4: Kopierknopf ohne Hover leise (${ruhe}, hover:${hover})`);
+        await cas.hover();
+        await page.waitForTimeout(200);
+        check(await op() === "1", "E4: Hover über die Zeile zeigt den Kopierknopf");
+        await page.mouse.move(2, 2);
+        await btn.focus();
+        await page.waitForTimeout(200);
+        check(await op() === "1", "E4: Tastaturfokus zeigt den Kopierknopf");
+        const abstand = await cas.evaluate((r) => Math.round(r.querySelector("dd").getBoundingClientRect().left - r.querySelector("dt").getBoundingClientRect().left));
+        check(abstand <= 200, `E4: Wert steht nah am Etikett (${abstand} px Versatz; vorher 230, Bild etappe4/vorher)`);
+        const subs = await rowOf("Molecular formula").locator("dd sub").count();
+        check(subs === 3, `E4: Summenformel im Datenblatt tiefgestellt (${subs} Indizes)`);
         await page.close();
       }
       // Platzhalter aus toolinput (Stapel), dann das Ergebnis; Abbruch beendet den Ladezustand

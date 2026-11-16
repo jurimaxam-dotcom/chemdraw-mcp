@@ -108,6 +108,21 @@ for (const [file, name, input, klick] of DRITTE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
 }
+// Etappe 4 (16.11.2026): Datenblatt-Zeilen (PubChem, GHS), Gruppen-Sektion mit und ohne
+// angeheftete Gruppe, die kompakte Zeile „Continue in chat“ — Koffein und Aspirin wegen der Höhe.
+const VIERTE = [
+  ["e4-molekuel", "generate_molecule", KOFFEIN],
+  ["e4-aspirin", "generate_molecule", { name_or_smiles: "aspirin" }],
+  ["e4-gruppe-angeheftet", "generate_molecule", KOFFEIN, "button.functional-group >> nth=0"],
+  ["e4-datenblatt", "lookup_molecule_data", { name: "paracetamol" }],
+  ["e4-datenblatt-ghs", "lookup_molecule_data", { name: "paracetamol" }, "[role=tab]:has-text('GHS')"],
+  ["e4-reaktion", "generate_reaction", VERESTERUNG],
+];
+for (const [file, name, input, klick] of VIERTE) {
+  CASES.push([`${file}-chat1000`, name, input, 1000, undefined, klick]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
+}
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 

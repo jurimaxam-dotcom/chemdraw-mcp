@@ -21,48 +21,50 @@ export default function FunctionalGroupList({ groups, pinnedGroup, onHoverGroup,
   </div>;
 }
 
-const HINT_PIN = "Click a group to pin it. The buttons below then ask Claude about it.";
-const HINT_HOVER = "Hover a group to see where it sits in the structure.";
-const PINNED_ASK = "Pinned. The buttons below now ask about this group.";
+// Etappe 4 (16.11.2026): der Hinweis steht in der Zeile der Überschrift statt als eigener
+// Kasten darunter. Sichtbar ist nur der knappe Anfang; der volle Satz bleibt als Tooltip und
+// für Bedienungshilfen (visually-hidden, nicht display:none) erhalten.
+const HINT_PIN = ["Click a group to pin it", ". The buttons below then ask Claude about it."];
+const HINT_HOVER = ["Hover a group to see where it sits", " in the structure."];
+const PINNED_ASK = ["Pinned.", " The buttons below now ask about this group."];
+
+function Hint({ parts }) {
+  return <span className="group-note-hint" title={parts.join("")}>
+    {parts[0]}<span className="visually-hidden">{parts[1]}</span>
+  </span>;
+}
 
 /**
- * Hinweis-Karte unter den Chips: angezeigt wird die Hover-Vorschau, sonst die
- * festgehaltene Auswahl (Gruppe oder Einzelatom). Die Sätze versprechen nur, was die
- * Chat-Knöpfe leisten (die Gruppe steht im gesendeten Satz) — ohne Knöpfe (canAsk) kein
- * Satz über Claude, für ein Einzelatom auch nicht (dafür gibt es keinen Knopf).
+ * Hinweis neben den Chips: angezeigt wird die Hover-Vorschau, sonst die festgehaltene
+ * Auswahl (Gruppe oder Einzelatom), sonst der knappe Hinweis — der verschwindet, sobald
+ * etwas angeheftet ist. Die Sätze versprechen nur, was die Chat-Knöpfe leisten (die Gruppe
+ * steht im gesendeten Satz) — ohne Knöpfe (canAsk) kein Satz über Claude, für ein
+ * Einzelatom auch nicht (dafür gibt es keinen Knopf).
  */
 export function GroupNote({ groups, hoveredGroup, pinned, canAsk = false, onClear }) {
   const pinnedName = pinned?.kind === "group" ? pinned.name : null;
   const group = groups?.find((g) => g.name === (hoveredGroup || pinnedName));
-  const pinLine = (
-    <div className="group-note-pin">
-      <span className="group-note-hint">{canAsk && pinnedName ? PINNED_ASK : "Pinned."}</span>
-      {onClear && <button type="button" className="group-note-clear" onClick={onClear}>Clear</button>}
-    </div>
-  );
+  const pinLine = <>
+    {canAsk && pinnedName ? <Hint parts={PINNED_ASK} /> : <span className="group-note-hint">Pinned.</span>}
+    {onClear && <button type="button" className="group-note-clear" onClick={onClear}>Clear</button>}
+  </>;
   if (!group && pinned?.kind === "atom") {
     return <div className="group-note is-active is-pinned" role="status" style={{ "--group-color": "var(--accent)" }}>
-      <div className="group-note-head">
-        <span className="group-dot" aria-hidden="true" />
-        <strong>{elementName(pinned.el).replace(/^./, (c) => c.toUpperCase())} atom</strong>
-        <span className="group-formula">{pinned.el}</span>
-      </div>
+      <span className="group-dot" aria-hidden="true" />
+      <strong>{elementName(pinned.el).replace(/^./, (c) => c.toUpperCase())} atom</strong>
+      <span className="group-formula">{pinned.el}</span>
       {pinLine}
     </div>;
   }
   if (!group) {
-    return <div className="group-note" role="status">
-      <span className="group-note-hint">{canAsk ? HINT_PIN : HINT_HOVER}</span>
-    </div>;
+    return <div className="group-note" role="status"><Hint parts={canAsk ? HINT_PIN : HINT_HOVER} /></div>;
   }
   const info = groupInfo(group.name);
   const isPinned = group.name === pinnedName;
   return <div className={`group-note is-active${isPinned ? " is-pinned" : ""}`} role="status" style={{ "--group-color": group.color }}>
-    <div className="group-note-head">
-      <span className="group-dot" aria-hidden="true" />
-      <strong>{info.label}</strong>
-      {info.formula && <span className="group-formula">{info.formula}</span>}
-    </div>
+    <span className="group-dot" aria-hidden="true" />
+    <strong>{info.label}</strong>
+    {info.formula && <span className="group-formula">{info.formula}</span>}
     {isPinned && pinLine}
   </div>;
 }

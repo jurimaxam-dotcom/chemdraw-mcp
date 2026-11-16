@@ -271,17 +271,24 @@ button:active { filter: brightness(0.92); }
 .fact dt { font-size: 12px; color: var(--fg-muted); }
 .fact dd { display: flex; align-items: center; gap: 6px; font-size: 19px; font-weight: 500; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .fact dd sub { font-size: 0.7em; }
-.group-section { padding-top: 20px; }
+.group-section { padding-top: 12px; }
+/* Etappe 4: Überschrift, Chips und Hinweis teilen eine umbrechende Zeile (vorher drei Zeilen,
+   davon ein gestrichelter Kasten nur für den Hinweis). */
+.group-section-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.group-section-row > .section-label { margin: 0; }
 /* Glow: weiche, unscharfe Linien ueber den Bindungen der Gruppe (AtomHighlights). */
 .group-glow { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; pointer-events: none; filter: blur(5px); opacity: 0.55; }
 .group-glow line { stroke: var(--group-color); stroke-width: 12; stroke-linecap: round; }
 .group-glow circle { fill: var(--group-color); }
-/* Name + Kurzformel unter den Gruppen-Chips (GroupNote). */
-.group-note { margin-top: 12px; min-height: 52px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--border); background: var(--bg-alt); transition: background-color 160ms ease, border-color 160ms ease; }
-.group-note.is-active { border-style: solid; border-color: color-mix(in srgb, var(--group-color) 45%, transparent); background: color-mix(in srgb, var(--group-color) 9%, var(--bg)); }
-.group-note-hint { color: var(--fg-muted); font-size: 13px; }
-.group-note-head { display: flex; align-items: center; gap: 10px; font-size: 15px; }
-.group-note-head .group-dot { width: 10px; height: 10px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--group-color) 20%, transparent); }
+/* Name + Kurzformel neben den Gruppen-Chips (GroupNote): ruhig als Hinweis, getönt bei Vorschau/Auswahl. */
+/* Feste Mindestbreite und kein Umbruch im Hinweis: ob er neben den Chips Platz hat, entscheidet
+   die reservierte Breite, nicht der wechselnde Inhalt — Hover/Anheften ändern die Höhe nicht. */
+.group-note { flex: 1 0 min(340px, 100%); display: flex; flex-wrap: nowrap; align-items: center; gap: 4px 10px; min-width: 0; min-height: 40px; box-sizing: border-box; overflow: hidden; padding: 0 2px; border-radius: 7px; border: 1px solid transparent; font-size: 13px; transition: background-color 160ms ease, border-color 160ms ease; }
+.group-note.is-active { padding: 0 4px 0 12px; border-color: color-mix(in srgb, var(--group-color) 45%, transparent); background: color-mix(in srgb, var(--group-color) 9%, var(--bg)); }
+.group-note-hint { color: var(--fg-muted); font-size: 12px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.group-note > strong { white-space: nowrap; }
+.group-note > .group-formula, .group-note > .group-note-clear { flex-shrink: 0; }
+.group-note .group-dot { width: 10px; height: 10px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--group-color) 20%, transparent); }
 .group-formula { font-family: var(--font-mono); font-size: 12px; padding: 2px 6px; border-radius: 4px; color: var(--fg); background: color-mix(in srgb, var(--group-color) 14%, transparent); }
 @media (prefers-reduced-motion: reduce) { .group-note { transition: none; } }
 .functional-groups { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -300,14 +307,15 @@ button:active { filter: brightness(0.92); }
 .section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; flex-shrink: 0; }
 .section-header > .panel-heading { flex: 1 1 230px; }
 .mech-header { margin-bottom: 8px; }
-.source-content { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: 24px; }
-.source-content:not(:has(.source-structure)) { grid-template-columns: 1fr; }
-.source-structure { max-height: 160px; pointer-events: none; padding-top: 12px; }
+/* Datenblatt-Zeile (Etappe 4): Etikettspalte fester Breite, der Wert gleich daneben, der
+   leise Kopierknopf direkt hinter dem Wert. Lange Werte (IUPAC, InChIKey) brechen an
+   Bindestrichen und erst notfalls mitten im Wort. */
 .source-table { min-width: 0; }
-.source-row { display: grid; grid-template-columns: minmax(100px, 0.36fr) minmax(0, 1fr); align-items: start; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.source-row dt { color: var(--fg-muted); overflow-wrap: anywhere; }
-.source-row dd { min-width: 0; display: flex; align-items: flex-start; gap: 8px; font-variant-numeric: tabular-nums; }
-.source-row dd > span { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.source-row { display: grid; grid-template-columns: 10.5em minmax(0, 1fr); align-items: center; gap: 2px 16px; min-height: 40px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.source-row dt { color: var(--fg-muted); overflow-wrap: break-word; min-width: 0; }
+.source-row dd { min-width: 0; display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.source-value { min-width: 0; overflow-wrap: break-word; }
+.source-value sub, .source-row dd sub { font-size: 0.75em; line-height: 0; }
 .source-link { display: inline-block; margin-top: 12px; padding-block: 8px; color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
 .source-body { min-width: 0; }
 .ghs-group { border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 8px; }
@@ -325,9 +333,7 @@ button:active { filter: brightness(0.92); }
   .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
   .fact dd { font-size: 17px; }
   .molecule-info { border-left: 0; border-top: 1px solid var(--border); padding: 16px 0 0; }
-  .source-content { grid-template-columns: 1fr; gap: 12px; }
-  .source-structure { width: 100px; max-height: 100px; margin-inline: auto; }
-  .source-row { grid-template-columns: minmax(105px, 0.4fr) minmax(0, 1fr); gap: 12px; font-size: 12px; }
+  .source-row { grid-template-columns: 8.5em minmax(0, 1fr); gap: 2px 10px; font-size: 12px; }
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #82c6b7; } }
 :root[data-theme="dark"] { --accent: #82c6b7; }
@@ -525,29 +531,27 @@ button:active { filter: brightness(0.92); }
   :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout { grid-template-rows: minmax(0, 1fr) auto; }
 }
 
-/* U4: Hinweis-Karte mit festgehaltener Auswahl — Satz links, „Clear“ rechts. */
-.group-note-pin { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
-.group-note-pin .group-note-hint { font-size: 12px; min-width: 0; }
+/* U4: festgehaltene Auswahl — „Clear“ sitzt im getönten Hinweis, deshalb etwas flacher. */
+.group-note .group-note-clear { min-height: 32px; }
 .group-note-clear, .study-button, .continue-button { font: inherit; font-size: 12px; font-weight: 600; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; }
 .group-note-clear:focus-visible, .study-button:focus-visible, .continue-button:focus-visible, .study-cover:focus-visible, .study-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-/* U3: Zeile „Continue in chat“ über der Fußzeile. Wächst nie mit (feste Höhe im Seitenpanel). */
-.continue-row { flex: none; display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-alt); }
-.continue-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
-.continue-head .section-label { margin-bottom: 0; }
-.continue-hint { font-size: 11px; color: var(--fg-muted); }
-.continue-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+/* U3: Zeile „Continue in chat“ über der Fußzeile. Wächst nie mit (feste Höhe im Seitenpanel).
+   Etappe 4: kein Kasten mehr — ein kleines Etikett vor den Knöpfen, alles in einer
+   umbrechenden Zeile; die Erklärung steht im Tooltip und für Bedienungshilfen. */
+.continue-row { flex: none; display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.continue-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-right: 4px; cursor: help; }
+.continue-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .continue-button { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg); background: var(--bg); text-align: left; max-width: 100%; }
 .continue-button > span { min-width: 0; overflow-wrap: anywhere; }
 .continue-button svg { flex: none; color: var(--fg-muted); }
 .continue-button.is-about { border-color: var(--group-color); }
 .continue-button[aria-busy="true"] { cursor: progress; color: var(--fg-muted); }
 .continue-note { font-size: 12px; color: var(--fg-muted); margin: 0; }
-/* Schmal (320 px, Narrow-Entwurf): Knöpfe untereinander, volle Breite. */
-@media (max-width: 419px) {
-  .continue-actions { flex-direction: column; }
-  .continue-button { width: 100%; justify-content: space-between; }
-}
+/* Ab 420 px etwas flacher (36 px, wie die Ansicht-Achse); schmal bleiben es 40 px Tippfläche. */
+@media (min-width: 420px) { .continue-button { min-height: 36px; } }
+/* Schmal (320 px): keine eigene Regel mehr — Etikett und Knöpfe brechen um wie breit auch
+   (Etappe 4; vorher je Knopf eine volle Zeile, das Panel rollte allein deshalb). */
 
 /* U4b: Lernmodus. Verdecktes ist gestrichelt, Aufgedecktes sieht aus wie sonst. */
 .study-name { align-self: flex-start; min-height: 40px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 600; text-align: left; border: 1px dashed var(--fg-muted); border-radius: 8px; background: var(--bg-alt); color: var(--fg); cursor: pointer; }
@@ -571,3 +575,22 @@ button:active { filter: brightness(0.92); }
 .placeholder-card { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .placeholder-box { display: block; height: 110px; border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-alt); }
 .placeholder-label { font-size: 12px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Kopierknopf (Etappe 4): Aussehen hier statt inline. „is-quiet“ tritt zurück — ohne Rahmen,
+   mit Hover-Gerät erst bei Hover/Fokus der Zeile sichtbar, ohne Hover (Touch) dezent. Nur
+   Deckkraft: der Knopf bleibt im Bedienungshilfen-Baum, klickbar und per Tab erreichbar. */
+.copy-button { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; background: transparent; border: 1px solid var(--border); border-radius: var(--border-radius-sm, 6px); color: var(--fg-muted); cursor: pointer; transition: opacity 120ms ease; }
+.copy-button.is-sm { width: 32px; height: 32px; }
+.copy-button.is-xs { width: 22px; height: 22px; }
+.copy-button.is-quiet { border-color: transparent; opacity: 0.45; }
+.copy-button.is-quiet:hover { border-color: var(--border); }
+@media (hover: hover) {
+  .copy-button.is-quiet { opacity: 0; }
+  :is(.source-row, .fact, .panel-footer-file):hover .copy-button.is-quiet { opacity: 1; }
+}
+:is(.source-row, .fact, .panel-footer-file):focus-within .copy-button.is-quiet, .copy-button.is-quiet:focus-visible, .copy-button.is-copied { opacity: 1; }
+.copy-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.copy-button.is-copied { background: var(--copy-success-bg); border-color: var(--copy-success); color: var(--copy-success); }
+@media (prefers-reduced-motion: reduce) { .copy-button { transition: none; } }
+/* Nur für Bedienungshilfen: bleibt im Baum (kein display:none). */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
