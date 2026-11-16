@@ -151,6 +151,6 @@ PROMPTS = (
 
 
 def register_prompts(instance: MCPServer) -> None:
-    """Alle Lernabläufe registrieren — in beiden Profilen dieselben."""
+    """Alle Lernabläufe registrieren — in mvp und full dieselben, in pharma keine (create_server)."""
     for fn, title, description in PROMPTS:
         instance.prompt(title=title, description=description)(fn)

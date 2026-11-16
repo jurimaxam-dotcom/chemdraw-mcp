@@ -235,3 +235,33 @@ def test_token_ist_ein_inhaltsschluessel(server, offline):
     a, _, _ = _messen(server, tool, args)
     b, _, _ = _messen(server, tool, args)
     assert a.structured_content["_deferred"]["token"] == b.structured_content["_deferred"]["token"]
+
+
+# --- Profil `pharma` (16.11.2026): der zweite Konnektor liefert nur die Zusatz-Tools.
+# Seine Panels rufen save_png und load_panel_part am EIGENEN Konnektor — der Host
+# leitet callServerTool an den Server, der das Ergebnis geliefert hat. Fehlen die
+# beiden dort, bleibt das große Scope-Bild leer und der Export-Knopf tot.
+
+
+def test_pharma_laedt_zurueckgehaltene_teile_am_eigenen_konnektor(offline):
+    pharma = srv.create_server("pharma")
+    tool, args = FAELLE["Scope mit 12 Einträgen"]
+    result, _, _ = _messen(pharma, tool, args)
+    assert result.structured_content.get("_deferred"), "Fall zu klein — nichts zurückgehalten"
+    ganz, _, _ = _nachladen(pharma, dict(result.structured_content))
+    assert ganz["svg"].startswith("<")
+
+
+def test_pharma_speichert_den_panel_export_am_eigenen_konnektor(offline, monkeypatch, tmp_path):
+    import base64
+    from pathlib import Path
+
+    from tests.test_png_writer import _png_b64
+
+    monkeypatch.setattr(Path, "home", classmethod(lambda cls: tmp_path))
+    antwort = asyncio.run(srv.create_server("pharma").call_tool(
+        "save_png", {"png_base64": _png_b64(), "filename": "Kalibrierung"}))
+    assert not antwort.is_error, antwort.content[0].text
+    pfad = Path(antwort.content[0].text)
+    assert pfad.parent == tmp_path / "ChemDraw-Output" / "png"
+    assert pfad.read_bytes()[:4] == base64.b64decode(_png_b64())[:4]

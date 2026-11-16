@@ -345,6 +345,41 @@ write their files themselves — never call save_png, that is the panel's
 export button.
 """
 
+# Profil `pharma` (16.11.2026): der zweite Konnektor `chemdraw-pharma` liefert
+# nur, was `full` über `mvp` hinaus hat — zusammen mit `chemdraw` der volle Satz,
+# kein Tool doppelt (vorher sah das Modell 18 Tools zweimal, und die Aufrufe
+# verteilten sich zufällig auf beide Konnektoren). Die Beschreibungen sind die
+# des Vollprofils; nur die Bereichskarte hier ist eigen und nennt bewusst kein
+# Tool des anderen Konnektors beim Namen.
+_PHARMA_INSTRUCTIONS = """\
+Pharmacy bench maths and pharmacology figures as PNG/SVG files with an
+interactive panel. This connector holds seven tools that complement the
+chemdraw connector:
+
+- Several products of one reaction in a grid with labels and yields (a
+  substrate-scope figure): generate_scope_table.
+- A calibration line from standards, reading unknown samples off it, with
+  LOD/LOQ: generate_calibration_curve.
+- Plasma concentration over time after one or repeated doses, with the
+  therapeutic window: generate_pk_curve.
+- A dose-response curve with EC50, optionally shifted by a competitive
+  antagonist: generate_dose_response.
+- Half-life, clearance, AUC, steady state or a loading dose as numbers with
+  the working: calculate_pharmacokinetics.
+- Weighing, dilution, mixing cross or molar mass with the working:
+  calculate_solution.
+- A content determination (titration, photometry, Grubbs, t-test) or a fat
+  characteristic (acid, saponification, iodine value, Karl Fischer):
+  calculate_content.
+
+Single structures, reactions, mechanisms, spectra, TLC plates, pH values and
+pH curves, proteins and Anki decks come from the chemdraw connector, not from
+this one.
+
+Drawing tools write their files themselves — never call save_png or
+load_panel_part, they belong to the panel.
+"""
+
 # Nur die Auswahlhinweise unterscheiden sich. Parameter und Schemata bleiben
 # identisch; der Vollumfang behält seine eingefrorenen Beschreibungen.
 _MVP_SUMMARIES = {
@@ -4865,6 +4900,11 @@ if vault_enabled():
         return f"# {entry_name}\n\n{content}"
 
 
+# Startprofile (CHEMDRAW_PROFILE) → Bereichskarte fürs Modell.
+_INSTRUCTIONS = {"mvp": _MVP_INSTRUCTIONS, "pharma": _PHARMA_INSTRUCTIONS, "full": _FULL_INSTRUCTIONS}
+PROFILES = frozenset(_INSTRUCTIONS)
+
+
 def _user_facing_errors(fn):
     """ValueError aus dem Tool als `ToolError` weiterreichen.
 
@@ -4907,18 +4947,22 @@ def _within_budget(fn):
 def create_server(profile: str | None = None) -> MCPServer:
     """Build a server with only the tools enabled by its startup profile."""
     selected = os.environ.get("CHEMDRAW_PROFILE", "mvp") if profile is None else profile
-    if selected not in {"mvp", "full"}:
-        raise ValueError("CHEMDRAW_PROFILE must be 'mvp' or 'full'.")
+    if selected not in PROFILES:
+        raise ValueError("CHEMDRAW_PROFILE must be 'mvp', 'pharma' or 'full'.")
     # Der Host soll die Paketversion sehen, nicht die Version des MCP-SDK
     # (mcp 1.x meldete sonst "1.27.1", mcp 2 einen Leerstring). Seit mcp 2 ist
     # das ein Konstruktor-Argument statt eines Eingriffs in den Low-Level-Server.
     instance = MCPServer(
         "ChemDraw Tool",
-        instructions=_MVP_INSTRUCTIONS if selected == "mvp" else _FULL_INSTRUCTIONS,
+        instructions=_INSTRUCTIONS[selected],
         version=_pkg_version("chemdraw-mcp"),
     )
     for fn, options in _TOOL_DEFINITIONS:
         if selected == "mvp" and fn.__name__ not in MVP_TOOLS:
+            continue
+        # pharma = FULL − MVP, abgeleitet statt als zweite Liste gepflegt. Die
+        # App-Helfer bleiben: seine Panels rufen sie am eigenen Konnektor.
+        if selected == "pharma" and fn.__name__ in MVP_TOOLS and options.get("meta") is not _APP_ONLY_META:
             continue
         registration = dict(options)
         registration["title"], registration["annotations"] = _TOOL_LABELS[fn.__name__]
@@ -4935,7 +4979,9 @@ def create_server(profile: str | None = None) -> MCPServer:
         mime_type="text/html;profile=mcp-app",
         meta={"ui": {"permissions": {"clipboardWrite": {}}}},
     )(chem_app_ui)
-    register_prompts(instance)
+    # Die Lernabläufe schicken das Modell zu mvp-Tools — in pharma liefen sie ins Leere.
+    if selected != "pharma":
+        register_prompts(instance)
     return instance
 
 

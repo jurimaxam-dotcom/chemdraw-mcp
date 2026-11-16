@@ -210,3 +210,85 @@ def test_mvp_data_sheet_says_its_panel_already_draws_the_structure():
     summary = _summary("lookup_molecule_data")
     assert "already draws the structure" in summary
     assert "do not call generate_molecule after" in summary
+
+
+# --- Profil `pharma` (16.11.2026) --------------------------------------------
+# Der zweite Konnektor `chemdraw-pharma` lieferte bis hier das Vollprofil: mit
+# beiden Konnektoren sah das Modell 18 Tools doppelt, und Aufrufe verteilten sich
+# zufällig (Desktop-Messung 14.11.2026: 10× chemdraw, 2× chemdraw-pharma, dabei
+# ein unerwarteter Freigabe-Dialog). Jetzt: nur die Zusatz-Tools, plus die zwei
+# App-Helfer, die seine Panels am eigenen Konnektor rufen.
+APP_HELPERS = {"save_png", "load_panel_part"}
+PHARMA_EXTRA = FULL - MVP
+
+
+def _panels(data):
+    uri = "ui://chem-app/index.html"
+    return {t["name"] for t in data["tools"] if ((t.get("_meta") or {}).get("ui") or {}).get("resourceUri") == uri}
+
+
+def test_pharma_offers_exactly_the_extra_tools_and_the_panel_helpers():
+    assert len(PHARMA_EXTRA) == 7, sorted(PHARMA_EXTRA)
+    assert {t["name"] for t in _data("pharma")["tools"]} == PHARMA_EXTRA | APP_HELPERS
+
+
+def test_both_connectors_together_offer_the_full_catalog_without_doubles():
+    mvp, pharma = (_data(p) for p in ("mvp", "pharma"))
+    names = {p: {t["name"] for t in d["tools"]} for p, d in (("mvp", mvp), ("pharma", pharma))}
+    assert names["mvp"] | names["pharma"] == FULL
+    # Doppelt nur, was das Modell nie sieht (visibility: app).
+    assert names["mvp"] & names["pharma"] == APP_HELPERS
+    for tool in pharma["tools"]:
+        if tool["name"] in APP_HELPERS:
+            assert tool["_meta"]["ui"]["visibility"] == ["app"]
+    assert _panels(mvp) | _panels(pharma) == _panels(_data("full"))
+    assert not _panels(mvp) & _panels(pharma)
+
+
+def test_pharma_keeps_the_full_profile_text_and_schemas():
+    full = {t["name"]: t for t in _data("full")["tools"]}
+    for tool in _data("pharma")["tools"]:
+        assert tool == full[tool["name"]], tool["name"]
+
+
+def test_pharma_keeps_the_panel_resource():
+    assert "ui://chem-app/index.html" in _data("pharma")["resources"]
+
+
+def test_pharma_rejects_mvp_tools_instead_of_only_hiding_them():
+    import asyncio
+
+    from mcp.server.mcpserver.exceptions import ToolError
+
+    from chemdraw_tool.server import create_server
+
+    with pytest.raises(ToolError, match="Unknown tool"):
+        asyncio.run(create_server("pharma").call_tool("generate_molecule", {"name_or_smiles": "O"}))
+
+
+def test_pharma_registers_vault_tools_like_full():
+    vault = {"search_vault", "read_vault_entry"}
+    assert {t["name"] for t in _data("full", vault=True)["tools"]} - FULL == vault
+    assert {t["name"] for t in _data("pharma", vault=True)["tools"]} == PHARMA_EXTRA | APP_HELPERS | vault
+
+
+def test_pharma_instructions_name_its_tools_and_point_to_chemdraw():
+    from tests.test_server_taxonomy import SUPERLATIVES
+
+    text = _data("pharma")["instructions"]
+    assert len(text.encode()) <= 2048
+    for tool in PHARMA_EXTRA:
+        assert tool in text, tool
+    # Werkzeuge des anderen Konnektors nennt der Text nicht beim Namen — er verweist auf ihn.
+    assert not (set(re.findall(r"\b[a-z]+(?:_[a-z0-9]+)+\b", text)) & (MVP - APP_HELPERS))
+    assert "`chemdraw`" in text or "chemdraw connector" in text
+    for phrase in SUPERLATIVES:
+        assert phrase not in text, phrase
+
+
+def test_pharma_lists_no_study_prompts():
+    import asyncio
+
+    from chemdraw_tool.server import create_server
+
+    assert asyncio.run(create_server("pharma").list_prompts()) == []
