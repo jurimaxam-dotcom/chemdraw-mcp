@@ -202,3 +202,11 @@ def test_invalid_profile_aborts_startup(profile):
     result = _start(profile)
     assert result.returncode != 0
     assert "CHEMDRAW_PROFILE" in result.stderr
+
+
+def test_mvp_data_sheet_says_its_panel_already_draws_the_structure():
+    # Routing-Messung 16.11.2026: in 1 von 3 Läufen folgte auf das Datenblatt ein
+    # zweiter Zug mit generate_molecule — die Struktur stand dann doppelt da.
+    summary = _summary("lookup_molecule_data")
+    assert "already draws the structure" in summary
+    assert "do not call generate_molecule after" in summary

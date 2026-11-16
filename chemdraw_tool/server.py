@@ -404,6 +404,7 @@ net scheme here and tell the user that the arrow mechanism is not drawn.
 Use it for a data sheet or facts available from those sources. The molecule
 panel also calls this tool when the user clicks Data. Internet access is
 required. Missing values are not evidence that a property or hazard is absent.
+Its panel already draws the structure — do not call generate_molecule after it.
 
 Not this tool for: a bare compound name with no data requested — use
 generate_molecule; one named value as text, or physical constants, biological
