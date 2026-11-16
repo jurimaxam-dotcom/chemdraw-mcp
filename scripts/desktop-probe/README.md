@@ -54,7 +54,8 @@ in beiden Stufen, die Schritte in `checkpoints.json`.
   ganzen App.** `title CONTAINS 'once'` traf statt „Allow once“ den Seitenleisten-Chat „… plasma
   c*once*ntration …“; der Rechte-Dialog blieb offen und der Lauf meldete „Antwort ohne Tool-Aufruf“
   (14.11.2026, Fable-Lauf, Protein-Tool). Der Dialog ist die Gruppe `Permission request: …`; bedient
-  wird nur „Allow once“ — „Always allow“ ändert Jays Konnektor-Rechte.
+  wird „Always allow“ (Jay 16.11.2026: für die Tools dieses Servers ausdrücklich erlaubt), sonst
+  „Allow once“ — und nur, wenn der Dialog ein Tool von `chemdraw` oder `chemdraw-pharma` nennt.
 - **Nie klicken:** die Knöpfe unter „Continue in chat“ (jeder schreibt eine Nachricht) und
   „Add a flashcard to the Anki deck …“ (ändert Anki).
 - **Aufnahmen nie ins Repo.** Videos und Bäume zeigen die Seitenleiste mit privaten Chat-Titeln.

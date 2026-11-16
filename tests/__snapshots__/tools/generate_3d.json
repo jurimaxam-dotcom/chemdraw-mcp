@@ -143,10 +143,27 @@
         "title": "Files",
         "type": "object"
       },
+      "formula": {
+        "default": "",
+        "title": "Formula",
+        "type": "string"
+      },
       "message": {
         "default": "",
         "title": "Message",
         "type": "string"
+      },
+      "molar_mass": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Molar Mass"
       },
       "name": {
         "title": "Name",

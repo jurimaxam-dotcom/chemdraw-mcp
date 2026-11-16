@@ -430,6 +430,10 @@ class Molecule3DPayload(BaseModel):
     atoms: list[dict] = []
     bonds: list[dict] = []
     files: dict[str, str] = {}
+    # Aus dem RDKit-Molekül (16.11.2026): die Atomliste trägt nur Elementsymbole, also weder
+    # Isotope noch Ladungen — daraus gerechnet zeigte das Panel D2O mit 18,02 g/mol.
+    formula: str = ""
+    molar_mass: float | None = None
     # Nur bei type="protein" (Protein3DPayload, E8): Rückgratspur statt Konformer.
     subtitle: str = ""
     message: str = ""

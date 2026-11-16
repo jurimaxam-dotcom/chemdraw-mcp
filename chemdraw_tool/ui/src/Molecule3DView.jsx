@@ -20,11 +20,11 @@ export default function Molecule3DView({ data }) {
   const viewer = useRef(null);
   // Reset view: neu einhängen stellt die Ausgangsdrehung wieder her (samt Einblend-Drehung).
   const [turn, setTurn] = useState(0);
-  // Etappe 5: Formel und Molmasse aus den Atomen (die Payload trägt sie nicht, die Atomliste
-  // ist mit expliziten H vollständig); der Bedienhinweis steht jetzt an der Fläche.
+  // Formel und Molmasse liefert der Server aus dem RDKit-Molekül (Isotope, Ladung). Die Atomliste
+  // trägt nur Elementsymbole; aus ihr wird nur noch für alte Ergebnisse ohne diese Felder gerechnet.
   const atoms = data.atoms || [];
-  const formula = formulaOfAtoms(atoms);
-  const mass = massOfAtoms(atoms);
+  const formula = data.formula || formulaOfAtoms(atoms);
+  const mass = typeof data.molar_mass === "number" ? data.molar_mass : massOfAtoms(atoms);
   const subtitle = <>3D conformer (ETKDG + force field){formula && <> · <Formula text={formula} /></>}{mass != null && ` · ${mass.toFixed(2)} g/mol`}</>;
   return (
     <div

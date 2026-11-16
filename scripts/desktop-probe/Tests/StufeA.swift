@@ -78,12 +78,15 @@ final class StufeA: ProbeFall {
           // „Claude wants to use <Tool> from <Konnektor>“ — sagt, welcher Konnektor fragt.
           let wer = anfrage.buttons.matching(NSPredicate(format: "title BEGINSWITH 'Claude wants to use'")).firstMatch
           dialog = "Dialog: \(wer.exists ? wer.title : anfrage.title)"
-          let once = anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Allow once'")).firstMatch
-          // Nur die einmalige Freigabe: „Always allow“ würde Jays Konnektor-Rechte ändern.
+          // „Always allow“ (Jay 16.11.2026: ausdrücklich erlaubt, für die Tools dieses Servers); fehlt
+          // der Knopf, die einmalige Freigabe. Geklickt wird nur im Dialog selbst, nie per Teilwort.
+          let immer = anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Always allow'")).firstMatch
+          let once = immer.exists ? immer : anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Allow once'")).firstMatch
           // Der Dialog baut sich beim Erscheinen einmal neu auf (Klick im ersten Moment: „No matches found“,
           // 14.11.2026): erst klicken, wenn er eine Runde später noch steht und treffbar ist.
           if dialogSeit == nil { dialogSeit = Date() }
-          else if Date().timeIntervalSince(dialogSeit!) > 1.5, once.exists, once.isHittable {
+          else if Date().timeIntervalSince(dialogSeit!) > 1.5, once.exists, once.isHittable,
+                  dialog.hasSuffix(" from chemdraw") || dialog.hasSuffix(" from chemdraw-pharma") {
             once.click(); dialogSeit = nil; fertigSeit = nil
           }
           Thread.sleep(forTimeInterval: 1.0); continue

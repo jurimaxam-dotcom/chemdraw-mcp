@@ -2342,11 +2342,16 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 
     sdf_path.write_text(_Chem.MolToMolBlock(mol3d), encoding="utf-8")
 
+    from rdkit.Chem import Descriptors as _Descriptors
+    from rdkit.Chem import rdMolDescriptors as _rdMolDescriptors
+
     return Molecule3DPayload(
         name=display_name,
         atoms=atoms,
         bonds=bonds,
         files={"sdf": str(sdf_path)},
+        formula=_rdMolDescriptors.CalcMolFormula(mol3d),
+        molar_mass=round(_Descriptors.MolWt(mol3d), 2),
     )
 
 

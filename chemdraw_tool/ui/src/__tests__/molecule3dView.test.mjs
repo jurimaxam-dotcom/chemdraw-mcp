@@ -37,6 +37,16 @@ test("Kopf: Formel und Molmasse im Untertitel, der mit „3D conformer“ beginn
   unmount();
 });
 
+test("Kopf nimmt Formel und Molmasse des Servers, nicht die aus den Atomen (Isotope, Ladung)", () => {
+  // Codex-Review 16.11.2026: schweres Wasser stand mit 18,02 statt 20,03 g/mol im Kopf.
+  const data = { ...ETHANOL, formula: "H2O", molar_mass: 20.03 };
+  const { container, unmount } = render(React.createElement(Molecule3DView, { data }));
+  const sub = container.querySelector(".panel-subtitle");
+  assert.match(sub.textContent, /H2O · 20\.03 g\/mol/);
+  assert.equal(/46\.07/.test(sub.textContent), false);
+  unmount();
+});
+
 const geometry = (c) => JSON.stringify([...c.querySelectorAll("circle[fill^='url(#atom-']")].map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));
 const pointer = (el, type, x, y) => act(async () => {
   el.dispatchEvent(new window.MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y }));

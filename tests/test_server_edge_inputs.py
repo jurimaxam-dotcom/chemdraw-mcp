@@ -187,3 +187,16 @@ def test_single_atom_names_are_drawn_as_one_atom(tmp_path, monkeypatch, name, fo
     assert payload.atoms[0].el == formula
     assert payload.atoms[0].hCount == 0
     assert {"png", "svg"} <= set(payload.files)
+
+
+def test_3d_payload_carries_formula_and_isotope_aware_molar_mass():
+    # Codex-Review 16.11.2026: das Panel rechnete die Masse aus der Atomliste (nur
+    # Elementsymbole) und zeigte für schweres Wasser 18,02 statt 20,03 g/mol.
+    heavy = s.generate_3d("[2H]O[2H]")
+    assert abs(heavy.molar_mass - 20.03) < 0.01
+    plain = s.generate_3d("O")
+    assert plain.formula == "H2O" and abs(plain.molar_mass - 18.02) < 0.01
+
+
+def test_3d_formula_keeps_the_charge_of_an_ion():
+    assert s.generate_3d("[NH4+]").formula == "H4N+"
