@@ -8,7 +8,7 @@ import { test } from "node:test";
 import React, { act } from "react";
 
 import {
-  Button, Chip, Facts, Hint, Icon, Panel, PanelFoot, PanelHead, PanelState, Stage, StageBar,
+  Button, Chip, Facts, Hint, Icon, Panel, PanelBody, PanelFoot, PanelHead, PanelState, Stage, StageBar,
 } from "../components/Panel";
 import { click, render, textOf } from "./harness.mjs";
 
@@ -312,5 +312,36 @@ test("PanelFoot: Rückmeldung einer Aktion (FooterStatus) ersetzt den Schalter, 
   assert.equal(note.getAttribute("role"), "status");
   assert.equal(container.querySelectorAll("button[aria-expanded]").length, 0, "Schalter steht neben der Rückmeldung");
   assert.equal(container.querySelectorAll(".panel-foot-list .panel-footer-path[title]").length, 2, "Liste verschwand mit dem Schalter");
+  unmount();
+});
+
+test("PanelHead: Klassen has-tabs / has-expand nur für vorhandene Teile (kein leeres Grid-Gap)", () => {
+  const cases = [
+    [{ title: "T" }, false, false],
+    [{ title: "T", expand: h("button", { type: "button" }) }, false, true],
+    [{ title: "T", tabs: h("div", { role: "tablist" }) }, true, false],
+    [{ title: "T", tabs: h("div", { role: "tablist" }), expand: h("button", { type: "button" }) }, true, true],
+  ];
+  for (const [props, tabs, expand] of cases) {
+    const { container, unmount } = render(h(PanelHead, props));
+    const head = container.firstElementChild;
+    assert.equal(head.classList.contains("has-tabs"), tabs, `has-tabs bei ${Object.keys(props)}`);
+    assert.equal(head.classList.contains("has-expand"), expand, `has-expand bei ${Object.keys(props)}`);
+    unmount();
+  }
+});
+
+test("PanelBody: Reiter-Container als Zonen-Spalte, reicht role, id, hidden und data-* durch", () => {
+  const { container, unmount } = render(h(Panel, { kind: "molecule" },
+    h(PanelBody, { id: "p-structure", role: "tabpanel", "data-view": "structure" }, h(Stage, {})),
+    h(PanelBody, { id: "p-data", role: "tabpanel", "data-view": "data", hidden: true }),
+  ));
+  const [shown, hidden] = container.querySelectorAll(".panel-body");
+  assert.equal(Boolean(shown && hidden), true, "PanelBody rendert kein .panel-body");
+  assert.equal(shown.getAttribute("role"), "tabpanel");
+  assert.equal(shown.getAttribute("data-view"), "structure");
+  assert.equal(shown.id, "p-structure");
+  assert.equal(Boolean(shown.querySelector(":scope > .stage")), true);
+  assert.equal(hidden.hidden, true);
   unmount();
 });

@@ -14,14 +14,20 @@
 }
 
 /* --- Panel: eine Spalte, Zonen mit gap 16, kein eigener Innenabstand (body trägt 16 / schmal 12) --- */
-.panel { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
-.panel > * { min-width: 0; margin-top: 0; margin-bottom: 0; }
+.panel, .panel-body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+:is(.panel, .panel-body) > * { min-width: 0; margin-top: 0; margin-bottom: 0; }
+/* .panel-body[hidden] (zugeklappter Reiter) bleibt verborgen, obwohl die Regel oben display setzt. */
+.panel-body[hidden] { display: none; }
 /* Haken-Zonen bringen eigene Abstände nach oben mit; im Rahmen trennt nur das gap. */
-.panel > :is(.continue-row, .group-section, .stereo-row, .balance-row, .rotate-row, .panel-note, .panel-note-quiet) { margin-top: 0; padding-top: 0; padding-bottom: 0; }
-.panel > .stage-bar + .stage { margin-top: calc(var(--space-2) - var(--space-4)); }
+:is(.panel, .panel-body) > :is(.continue-row, .group-section, .stereo-row, .balance-row, .rotate-row, .panel-note, .panel-note-quiet) { margin-top: 0; padding-top: 0; padding-bottom: 0; }
+:is(.panel, .panel-body) > .stage-bar + .stage { margin-top: calc(var(--space-2) - var(--space-4)); }
 
 /* --- PanelHead: Grid, links Titel und Untertitel, rechts Reiter und Expand ------------------- */
-.panel-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "heading tabs expand"; align-items: start; gap: var(--space-3) var(--space-2); padding: 0; border: 0; flex-shrink: 0; }
+/* Spalten nur für vorhandene Teile (has-tabs / has-expand aus PanelHead) — sonst bliebe ein leeres Gap stehen. */
+.panel-head { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "heading"; align-items: start; gap: var(--space-3) var(--space-2); padding: 0; border: 0; flex-shrink: 0; }
+.panel-head.has-expand { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading expand"; }
+.panel-head.has-tabs { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading tabs"; }
+.panel-head.has-tabs.has-expand { grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "heading tabs expand"; }
 .panel-head > .panel-heading { grid-area: heading; min-width: 0; }
 .panel-head > .panel-actions { display: contents; }
 .panel-head .panel-head-tabs { grid-area: tabs; min-width: 0; }
@@ -34,7 +40,8 @@
 }
 /* Unter 480 px rutschen die Reiter in eine eigene Zeile, Expand bleibt neben dem Titel. */
 @media (max-width: 479px) {
-  .panel-head { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading expand" "tabs tabs"; }
+  .panel-head.has-tabs { grid-template-columns: minmax(0, 1fr); grid-template-areas: "heading" "tabs"; }
+  .panel-head.has-tabs.has-expand { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading expand" "tabs tabs"; }
   .panel-head .panel-head-tabs { justify-self: start; }
 }
 
@@ -65,13 +72,13 @@
 /* 3D: volle Inhaltsbreite, Höhe min(Breite, 720) — bei 1000 px Chat 968 × 720 (Korrektur 16.11., 23:30). */
 .stage-3d { height: auto; aspect-ratio: 1 / 1; max-height: var(--stage-3d-max); }
 /* Fill (Seitenpanel, Vollbild): die Bühne nimmt den Rest; ihr Inhalt gibt die Höhe nicht vor. */
-:root[data-host-height] .panel[data-fill] { flex: 1 0 auto; }
-:root[data-host-height] .panel[data-fill] > .stage { flex: 1 0 320px; height: auto; aspect-ratio: auto; max-height: none; contain: size; }
-:root[data-host-height] .panel[data-fill] > .stage-3d { flex-basis: 200px; }
-:root[data-host-height] .panel[data-fill] > .panel-state { flex: 1 0 240px; min-height: 0; }
+:root[data-host-height] .panel[data-fill], :root[data-host-height] .panel[data-fill] .panel-body { flex: 1 0 auto; }
+:root[data-host-height] :is(.panel[data-fill], .panel[data-fill] .panel-body) > .stage { flex: 1 0 320px; height: auto; aspect-ratio: auto; max-height: none; contain: size; }
+:root[data-host-height] :is(.panel[data-fill], .panel[data-fill] .panel-body) > .stage-3d { flex-basis: 200px; }
+:root[data-host-height] :is(.panel[data-fill], .panel[data-fill] .panel-body) > .panel-state { flex: 1 0 240px; min-height: 0; }
 @media (max-width: 619px) {
-  :root[data-host-height] .panel[data-fill] > .stage { flex-basis: 240px; }
-  :root[data-host-height] .panel[data-fill] > .stage-3d { flex-basis: var(--canvas-min, 240px); }
+  :root[data-host-height] :is(.panel[data-fill], .panel[data-fill] .panel-body) > .stage { flex-basis: 240px; }
+  :root[data-host-height] :is(.panel[data-fill], .panel[data-fill] .panel-body) > .stage-3d { flex-basis: var(--canvas-min, 240px); }
 }
 
 /* --- Facts: Kernwerte als umbrechende Zeile ---------------------------------------------------- */

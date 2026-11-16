@@ -10,7 +10,7 @@ import { displayPath } from "../utils/displayPath";
 // die alten Haken (.panel-header, .panel-title, .key-facts, .panel-footer …) stehen zusätzlich am
 // Element, weil Tests, test:host und die Desktop-Probe auf sie zielen.
 //
-// Zonen-Reihenfolge (§2): PanelHead → StageBar → Stage → Facts → Extras → ContinueRow → PanelFoot.
+// Zonen-Reihenfolge (§2): PanelHead → (PanelBody je Reiter) → StageBar → Stage → Facts → Extras → ContinueRow → PanelFoot.
 // Jeder Baustein ohne Inhalt rendert nichts; der Abstand kommt aus dem gap von .panel und fällt mit.
 //
 // A0 (17.11.2026): bereitgestellt, noch von keiner View benutzt.
@@ -55,6 +55,15 @@ export const Panel = forwardRef(function Panel({ kind, fill = false, className, 
 });
 
 /**
+ * div.panel-body — Zonen-Spalte innerhalb eines Reiters (role="tabpanel", data-view …): dieselbe Spalte
+ * mit gap 16 und dieselbe Fill-Kette wie .panel, damit Bühne, StageBar und Facts im Reiter wirken wie
+ * direkte Kinder des Panels. hidden blendet den Reiter aus.
+ */
+export const PanelBody = forwardRef(function PanelBody({ className, children, ...rest }, ref) {
+  return <div ref={ref} className={cx("panel-body", className)} {...rest}>{children}</div>;
+});
+
+/**
  * header.panel-head: links Titel (h2.panel-title), Untertitel (p.panel-subtitle, voller Text im title)
  * und „Found as“; rechts `tabs` und `expand` als fertige Knoten in .panel-actions. `heading` ersetzt
  * Titel und Untertitel ganz (Study: verdeckter Name, Zähler) — dann steht vom Titel nichts im DOM.
@@ -65,7 +74,7 @@ export function PanelHead({ title, subtitle, subtitleTitle, foundAs, tabs, expan
   if (!hasHeading && !hasActions) return null;
   const subTitle = subtitleTitle ?? (typeof subtitle === "string" ? subtitle : undefined);
   return (
-    <header className={cx("panel-head", "panel-header", className)} {...rest}>
+    <header className={cx("panel-head", "panel-header", !isEmpty(tabs) && "has-tabs", !isEmpty(expand) && "has-expand", className)} {...rest}>
       <div className="panel-heading">
         {!isEmpty(heading) ? heading : (
           <>
