@@ -539,15 +539,27 @@ cases:
       der Nutzer sie sich vorstellen. Kein pH-Wert gefragt, nur das Warum.
 
   - id: reaction-in-conversation
-    prompt: "Wie laeuft die Veresterung von Essigsaeure mit Ethanol ab?"
+    prompt: "Was entsteht eigentlich, wenn man Ethen mit Brom umsetzt?"
     expect: generate_reaction
     forbidden: [generate_molecule]
     why: >
-      „Wie laeuft ab" klingt nach Prosa, meint aber eine Gleichung. Ohne
+      „Was entsteht" klingt nach Prosa, meint aber eine Gleichung. Ohne
       diesen Fall bleibt generate_reaction ein Tool fuer Zeichenauftraege.
-      Entscheidung 02.10.2026: Reaktion UND Mechanismus ist eine gute Antwort auf
-      „wie laeuft ab" (gemessen: das Modell ruft beide) — verboten bleibt nur das
-      Einzelmolekuel; vorher stand generate_mechanism auch in `forbidden`.
+      Bewusst eine Reaktion ausserhalb der drei Mechanismus-Familien (SN1, SN2,
+      Fischer-Veresterung) — sonst gewinnt generate_mechanism, siehe naechster Fall.
+
+  - id: esterification-in-conversation
+    prompt: "Wie laeuft die Veresterung von Essigsaeure mit Ethanol ab?"
+    expect: generate_mechanism
+    forbidden: [generate_molecule]
+    why: >
+      Bis 16.11.2026 stand hier generate_reaction als Erwartung (Entscheidung
+      02.10.2026: „Reaktion UND Mechanismus", gemessen: das Modell ruft beide).
+      Seit generate_mechanism die Fischer-Veresterung mit den Substraten des
+      Nutzers zeichnet, ruft das Modell nur noch den Mechanismus: 0 von 6 Laeufen
+      mit generate_reaction am 16.11.2026, 0 von 7 am 14.11. „Wie laeuft ab" fragt
+      nach den Schritten, und die liefert der Mechanismus; generate_reaction bleibt
+      erlaubt, das Einzelmolekuel verboten.
 
   - id: mechanism-in-conversation
     prompt: "Ich verstehe nicht, warum die SN2 zur Inversion fuehrt"
