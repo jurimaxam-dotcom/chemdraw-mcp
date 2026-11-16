@@ -305,6 +305,7 @@ export default function MechanismView({ data }) {
       ))}
 
       <div
+        className="mech-stage"
         style={{
           background: "var(--bg-alt)",
           borderRadius: "var(--radius, 10px)",

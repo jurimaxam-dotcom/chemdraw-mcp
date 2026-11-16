@@ -101,6 +101,7 @@ const DRITTE = [
   ["e3-3d", "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }],
   ["e3-protein", "generate_protein_or_antibody", { name: "trastuzumab" }],
   ["e3-reaktion", "generate_reaction", VERESTERUNG],
+  ["e3-scope", "generate_scope_table", { entries: [{ structure: "CC(=O)c1ccccc1" }, { structure: "CC(=O)c1ccc(Cl)cc1" }, { structure: "CC(=O)c1ccc(OC)cc1" }, { structure: "CC(=O)c1ccc(F)cc1" }] }],
 ];
 for (const [file, name, input, klick] of DRITTE) {
   CASES.push([`${file}-chat1000`, name, input, 1000, undefined, klick]);

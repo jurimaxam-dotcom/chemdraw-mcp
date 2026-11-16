@@ -207,6 +207,19 @@ try {
         await page.screenshot({ path: join(layoutShots, `f-koffein-3d-${w}x${h}.png`) });
         await page.close();
       }
+      // Expand füllt beim Mechanismus den Bereich (Scope: Vollprofil, siehe panel:shots e3-scope), ohne dass der Inhalt die Höhe vorgibt.
+      for (const [name, input, sel] of [
+        ["generate_mechanism", { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] }, ".mechanism-panel"],
+      ]) {
+        const [page, f] = await open(name, input, full(1000, 700));
+        await f.locator(`${sel} svg`).first().waitFor();
+        await page.waitForTimeout(300);
+        const m = await f.evaluate((q) => ({ h: Math.round(document.querySelector(q).getBoundingClientRect().height),
+          sh: document.documentElement.scrollHeight, ih: innerHeight }), sel);
+        messwerte[`f-${name}`] = JSON.stringify(m);
+        check(m.sh <= m.ih && m.h > 560, `E3 (f) ${name} 1000×700: füllt den Bereich ohne Rollen (${JSON.stringify(m)})`);
+        await page.close();
+      }
       // generate_3d: das quadratische SVG darf die Höhe nicht vorgeben (vorher 1095 px in 700).
       {
         const [page, f] = await open("generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }, full(1000, 700));

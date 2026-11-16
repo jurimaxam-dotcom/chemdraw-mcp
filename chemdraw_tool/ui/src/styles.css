@@ -507,6 +507,8 @@ button:active { filter: brightness(0.92); }
 :root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
 /* Etappe 3: Mechanismus und Scope tragen im Chat eine feste Höhe (inline); mit Expand füllen sie den Bereich. */
 :root[data-host-height] .panel-root > :is(.mechanism-panel, .scope-panel) { flex: 1 0 auto; height: auto !important; min-height: 480px; }
+/* Bühne bzw. Figur nimmt den Rest; ihr Inhalt (Übersichtsliste, RDKit-px-Maße) gibt die Höhe nicht vor. */
+:root[data-host-height] .panel-root > .mechanism-panel > .mech-stage, :root[data-host-height] .panel-root > .scope-panel > .scope-svg { contain: size; }
 /* Diagramm und Strukturvergleich (U5, 12.11.2026): die Bildfläche nimmt die Resthöhe, das SVG
    skaliert über seine viewBox hinein — absolut gesetzt, damit seine Eigenmaße die Höhe nicht vorgeben. */
 :root[data-host-height] .panel-root > .plot-panel { flex: 1 0 auto; height: auto; min-height: 480px; }
