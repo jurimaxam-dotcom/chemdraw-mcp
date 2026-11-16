@@ -579,6 +579,16 @@
     "beginnt": "2 cards"
    },
    {
+    "name": "Kartenvorschau Vorderseite",
+    "typ": "staticText",
+    "titel": "Front"
+   },
+   {
+    "name": "Kartenvorschau Rückseite",
+    "typ": "staticText",
+    "titel": "Back"
+   },
+   {
     "name": "Dateityp APKG",
     "typ": "staticText",
     "titel": "APKG"

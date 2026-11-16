@@ -1804,6 +1804,7 @@ def export_anki_deck(
         fronts=[c.front.text or c.front.structure for c in card_models],
         file=str(out_path),
         delivery=delivery,
+        previews=_anki.card_previews(card_models),
     )
 
 

@@ -225,6 +225,35 @@
   },
   "name": "export_anki_deck",
   "outputSchema": {
+    "$defs": {
+      "AnkiCardPreview": {
+        "description": "One card as the panel previews it: text as in the deck, image as a small PNG data URI.",
+        "properties": {
+          "back": {
+            "default": "",
+            "title": "Back",
+            "type": "string"
+          },
+          "back_image": {
+            "default": "",
+            "title": "Back Image",
+            "type": "string"
+          },
+          "front": {
+            "default": "",
+            "title": "Front",
+            "type": "string"
+          },
+          "front_image": {
+            "default": "",
+            "title": "Front Image",
+            "type": "string"
+          }
+        },
+        "title": "AnkiCardPreview",
+        "type": "object"
+      }
+    },
     "properties": {
       "cards": {
         "title": "Cards",
@@ -255,6 +284,14 @@
       "name": {
         "title": "Name",
         "type": "string"
+      },
+      "previews": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AnkiCardPreview"
+        },
+        "title": "Previews",
+        "type": "array"
       },
       "type": {
         "default": "anki_deck",

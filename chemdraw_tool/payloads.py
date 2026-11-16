@@ -387,6 +387,15 @@ class AnkiCard(BaseModel):
     cloze: bool = False
 
 
+class AnkiCardPreview(BaseModel):
+    """One card as the panel previews it: text as in the deck, image as a small PNG data URI."""
+
+    front: str = ""
+    back: str = ""
+    front_image: str = ""
+    back_image: str = ""
+
+
 class AnkiDeckPayload(BaseModel):
     type: str = "anki_deck"
     delivery: str = "apkg"
@@ -395,6 +404,8 @@ class AnkiDeckPayload(BaseModel):
     media: int
     fronts: list[str] = []
     file: str = ""
+    # Etappe 5: Vorschau der ersten Karten fürs Panel; leer bei älteren Ergebnissen.
+    previews: list[AnkiCardPreview] = []
 
 
 class PlotPayload(BaseModel):

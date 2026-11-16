@@ -149,6 +149,29 @@ try {
       }
     }
 
+    // Etappe 5: Anki-Panel mit Kartenvorschau — Bilder als data-URI laden unter der CSP des Hosts,
+    // der Pfad hat einen Kopierknopf, und es gibt keinen Knopf, der Anki startet oder ändert.
+    {
+      const DECK = { deck_name: "Koffein und Paracetamol", deliver: "apkg", cards: [
+        { front: { structure: "Cn1c(=O)c2c(ncn2C)n(C)c1=O" }, back: { text: "<b>Koffein</b><br>Methylxanthin" } },
+        { front: { text: "Welcher Wirkstoff?" }, back: { text: "Paracetamol", structure: "CC(=O)Nc1ccc(O)cc1" } }] };
+      const [page, f] = await open("export_anki_deck", DECK, chat(1000), { viewport: { width: 1000, height: 1300 } });
+      await f.locator("[data-anki-card]").first().waitFor();
+      await fitChat(page);
+      const a = await f.evaluate(() => ({
+        karten: document.querySelectorAll("[data-anki-card]").length,
+        bilder: [...document.querySelectorAll("[data-anki-card] img")].map((i) => i.complete && i.naturalWidth > 0),
+        sub: document.querySelector(".panel-subtitle")?.textContent,
+        knoepfe: [...document.querySelectorAll("button")].map((b) => b.getAttribute("aria-label") || b.textContent.trim()),
+        fuss: document.querySelector("[data-testid='panel-footer']")?.textContent,
+      }));
+      messwerte["e5-anki"] = JSON.stringify(a);
+      check(a.karten === 2 && a.bilder.length === 2 && a.bilder.every(Boolean), `E5 Anki: zwei Karten mit Vorder-/Rückseite, beide Bilder geladen (${JSON.stringify(a.bilder)})`);
+      check(/^2 cards/.test(a.sub) && /APKG/.test(a.fuss) && /ChemDraw-Output\/anki\//.test(a.fuss), `E5 Anki: Kartenzahl und .apkg-Pfad (${a.sub})`);
+      check(a.knoepfe.every((k) => ["Copy path", "Expand"].includes(k)), `E5 Anki: nur Kopieren/Expand, kein Knopf, der Anki startet (${a.knoepfe})`);
+      await page.close();
+    }
+
     // (a) Morphin im Vollbild 1000×1200, hell und dunkel
     for (const colorScheme of ["light", "dark"]) {
       const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });

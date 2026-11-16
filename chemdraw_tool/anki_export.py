@@ -13,12 +13,15 @@ deshalb weder untereinander noch in Ankis globalem Medienordner.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import html
+import io
 import re
 import subprocess
 import sys
 import tempfile
+from collections import OrderedDict
 from pathlib import Path
 
 import genanki
@@ -133,7 +136,26 @@ def deck_id_for(name: str) -> int:
     return (1 << 30) + (int.from_bytes(digest[:8], "big") % (1 << 30))
 
 
+# Zuletzt gezeichnete Kartenbilder (Etappe 5): die Panel-Vorschau nimmt dasselbe PNG wie das
+# Deck, ohne den Namen ein zweites Mal aufzulösen oder neu zu zeichnen.
+_VISUALS: OrderedDict[str, bytes | None] = OrderedDict()
+_VISUALS_MAX = 64
+
+
 def _render_visual(side: CardSide) -> bytes | None:
+    """Das Kartenbild einer Seite, aus dem Zwischenspeicher oder frisch gezeichnet."""
+    key = side.model_dump_json(exclude={"text"})
+    if key in _VISUALS:
+        _VISUALS.move_to_end(key)
+        return _VISUALS[key]
+    png = _draw_visual(side)
+    _VISUALS[key] = png
+    while len(_VISUALS) > _VISUALS_MAX:
+        _VISUALS.popitem(last=False)
+    return png
+
+
+def _draw_visual(side: CardSide) -> bytes | None:
     """Rendert das (höchstens eine) Visual einer Kartenseite als PNG."""
     # Lazy imports: RDKit/matplotlib nur laden, wenn wirklich gezeichnet wird.
     if side.structure:
@@ -307,3 +329,36 @@ def write_deck(
             "cards": len(package.decks[0].notes),
             "media": len(package.media_files),
         }
+
+
+# Vorschau im Panel (Etappe 5, 16.11.2026): die ersten Karten mit Vorder- und Rückseite und
+# dem Bild der Karte als kleines PNG. Mehr Karten zeigt das Panel als „+ n more“ — jede
+# Vorschau reist im Tool-Ergebnis mit, das auch Claude liest.
+PREVIEW_CARDS = 6
+_THUMB = (300, 200)
+
+
+def _thumbnail(png: bytes | None) -> str:
+    if not png:
+        return ""
+    from PIL import Image
+
+    with Image.open(io.BytesIO(png)) as img:
+        img.thumbnail(_THUMB)
+        out = io.BytesIO()
+        img.save(out, format="PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(out.getvalue()).decode("ascii")
+
+
+def card_previews(cards: list[AnkiCard], limit: int = PREVIEW_CARDS) -> list[dict]:
+    """Vorder- und Rückseite der ersten Karten: Text wie im Deck (Anki-HTML), Bild als data-URI.
+    Nach write_deck aufgerufen, kommen die Bilder aus dem Zwischenspeicher."""
+    previews = []
+    for card in cards[:limit]:
+        previews.append({
+            "front": card.front.text,
+            "back": card.back.text,
+            "front_image": _thumbnail(_render_visual(card.front)),
+            "back_image": _thumbnail(_render_visual(card.back)),
+        })
+    return previews

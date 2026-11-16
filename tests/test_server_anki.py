@@ -177,3 +177,62 @@ def test_open_delivery_falls_back_to_the_file_when_open_fails(tmp_path, monkeypa
     payload = export_anki_deck("ChemDraw", _cards(), deliver="open")
     assert payload.delivery == "apkg"
     assert Path(payload.file).exists()
+
+
+# Etappe 5 (16.11.2026): das Panel zeigt eine Vorschau der Karten — Vorder- und Rückseite,
+# mit dem Bild, das auch im Deck steht (verkleinert), für die ersten Karten.
+def test_payload_carries_card_previews_with_thumbnails(tmp_path, monkeypatch):
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    payload = export_anki_deck("Vorschau", _cards())
+    assert len(payload.previews) == 2
+    first, second = payload.previews
+    assert first.front == "Welche Substanz?" and first.back == "Aspirin"
+    assert first.front_image.startswith("data:image/png;base64,")
+    assert first.back_image == ""
+    assert second.front == "Trivialname von Ethansäure?" and second.front_image == ""
+
+
+def test_preview_thumbnail_is_small(tmp_path, monkeypatch):
+    import base64
+    import io
+
+    from PIL import Image
+
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    image = export_anki_deck("Klein", _cards()).previews[0].front_image
+    png = base64.b64decode(image.split(",", 1)[1])
+    width, height = Image.open(io.BytesIO(png)).size
+    assert width <= 320 and height <= 220, (width, height)
+    assert len(image) < 30_000
+
+
+def test_previews_only_for_the_first_cards(tmp_path, monkeypatch):
+    from chemdraw_tool.anki_export import PREVIEW_CARDS
+
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    cards = [AnkiCard(front=CardSide(text=f"Frage {i}"), back=CardSide(text=f"Antwort {i}")) for i in range(10)]
+    payload = export_anki_deck("Viele", cards)
+    assert payload.cards == 10
+    assert len(payload.previews) == PREVIEW_CARDS < 10
+    assert payload.previews[-1].front == f"Frage {PREVIEW_CARDS - 1}"
+
+
+def test_preview_reuses_the_rendered_deck_image(tmp_path, monkeypatch):
+    """Die Vorschau zeichnet nicht ein zweites Mal: ein Name wird einmal aufgelöst."""
+    from collections import OrderedDict
+
+    import chemdraw_tool.anki_export as ax
+    import chemdraw_tool.resolver as resolver
+
+    monkeypatch.setattr("chemdraw_tool.server.ANKI_DIR", tmp_path)
+    monkeypatch.setattr(ax, "_VISUALS", OrderedDict())  # Zwischenspeicher früherer Tests leeren
+    calls = []
+    original = resolver.resolve
+
+    def counting(text, *a, **kw):
+        calls.append(text)
+        return original(text, *a, **kw)
+
+    monkeypatch.setattr(resolver, "resolve", counting)
+    export_anki_deck("Einmal", [AnkiCard(front=CardSide(structure="CCO"), back=CardSide(text="Ethanol"))])
+    assert calls == ["CCO"]
