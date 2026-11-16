@@ -3,6 +3,7 @@ import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
+import PlotFigure from "./components/PlotFigure";
 import { useModelContextReport } from "./ModelContext";
 import { tlcFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -10,11 +11,15 @@ import { genericContext } from "./utils/modelContext.js";
 // Rf ist ein Verhältnis — im Protokoll immer zweistellig notiert.
 const fmtRf = (rf) => (typeof rf === "number" ? rf.toFixed(2) : String(rf ?? ""));
 
+// Ein Fleck, der wie seine Bahn heißt („Edukt“ auf der Bahn „Edukt“), braucht den
+// Namen nicht noch einmal — sonst „Edukt: 0.30 Edukt“ (Desktop-Befund 14.11.2026).
+const same = (a, b) => String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
+
 function laneSummary(lane) {
   const spots = lane.spots || [];
   if (spots.length === 0) return "—";
   return spots
-    .map((s) => (s.label ? `${fmtRf(s.rf)} ${s.label}` : fmtRf(s.rf)))
+    .map((s) => (s.label && !same(s.label, lane.name) ? `${fmtRf(s.rf)} ${s.label}` : fmtRf(s.rf)))
     .join(" · ");
 }
 
@@ -37,40 +42,14 @@ export default function TlcView({ data }) {
   }
 
   return (
-    <div
-      style={{
-        height: 520, // intrinsisch — der Host bemisst das iframe am Inhalt
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "12px 16px",
-      }}
-    >
+    <div className="plot-panel">
       <SectionHeader
         title={data.name || "TLC plate"}
         subtitle={
           conditions || "Schematic plate, drawn from the given Rf values"
         }
       />
-      <div
-        className="tlc-svg"
-        style={{
-          background: "#ffffff",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-md)",
-          overflow: "hidden",
-          padding: 8,
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        dangerouslySetInnerHTML={{ __html: data.svg }}
-      />
-      {/* matplotlib emits fixed pt dimensions — scale to the panel width */}
-      <style>{`.tlc-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
+      <PlotFigure svg={data.svg} kind="tlc" />
       {lanes.length > 0 && (
         <div
           style={{

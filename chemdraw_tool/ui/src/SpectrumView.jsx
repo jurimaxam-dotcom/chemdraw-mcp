@@ -3,6 +3,7 @@ import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
+import PlotFigure from "./components/PlotFigure";
 import { useModelContextReport } from "./ModelContext";
 import { spectrumFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -34,38 +35,12 @@ export default function SpectrumView({ data }) {
   }
 
   return (
-    <div
-      style={{
-        height: 480,  // intrinsisch — der Host bemisst das iframe am Inhalt
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "12px 16px",
-      }}
-    >
+    <div className="plot-panel">
       <SectionHeader
         title={data.name || `${typeLabel} spectrum`}
         subtitle={`${typeLabel} · schematic, drawn from the given peak list`}
       />
-      <div
-        className="spectrum-svg"
-        style={{
-          background: "#ffffff",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-md)",
-          overflow: "hidden",
-          padding: 8,
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        dangerouslySetInnerHTML={{ __html: data.svg }}
-      />
-      {/* matplotlib emits fixed pt dimensions — scale to the panel width */}
-      <style>{`.spectrum-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
+      <PlotFigure svg={data.svg} kind="spectrum" />
       <ContinueRow actions={spectrumFollowUps(data)} flush={flush} />
       <PanelFooter files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "spectrum"} size="sm" />

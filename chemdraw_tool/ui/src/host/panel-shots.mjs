@@ -48,11 +48,48 @@ const CASES = [
   ["scope-abgekuerzt", "generate_scope_table", { entries: [{ structure: BOC }, { structure: "O=C(c1ccccc1)CC1CCN(S(=O)(=O)c2ccc(C)cc2)CC1" }], abbreviate_groups: true }, 930],
 ];
 
+// Diagramm-Panels (Etappe 1, 16.11.2026): je Fall Chat 1000 px (inhaltsgroß),
+// Vollbild 1000×700 und Seitenpanel 320×700 (feste Höhe vom Host).
+const IR_NAH = { spectrum_type: "ir", title: "Aspirin IR", peaks: [
+  { position: 1750, intensity: 1, label: "Ester-C=O" }, { position: 1690, intensity: 1, label: "Säure-C=O" }] };
+const DC = { title: "DC-Platte", lanes: [
+  { name: "Edukt", spots: [{ rf: 0.3, label: "Edukt" }] }, { name: "Produkt", spots: [{ rf: 0.65, label: "Produkt" }] }] };
+const TITRATION = { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1, v_acid_ml: 25, c_titrant: 0.1,
+  indicator: { name: "Phenolphthalein", ph_range: [8.2, 10.0] } };
+const SPEZIES = { substance: "Phosphoric acid", pka_values: [2.15, 7.2, 12.35] };
+const VERGLEICH = { structures: ["CC(C)Cc1ccc(cc1)C(C)C(=O)O", "COc1ccc2cc(ccc2c1)[C@H](C)C(=O)O"], labels: ["Ibuprofen", "Naproxen"] };
+for (const [file, name, input] of [
+  ["plot-spektrum", "generate_spectrum", IR_NAH],
+  ["plot-dc", "generate_tlc", DC],
+  ["plot-titration", "generate_titration_curve", TITRATION],
+  ["plot-spezies", "generate_species_distribution", SPEZIES],
+  ["plot-vergleich", "compare_molecules", VERGLEICH],
+]) {
+  CASES.push([`${file}-chat1000`, name, input, 1000]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700]);
+}
+const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
+  platform: "desktop", containerDimensions: { width, height } });
+
+// Maße der Diagrammfläche: Karte, gezeichnete Figur (viewBox, „meet“), Rollen ja/nein.
+function plotMetrics() {
+  const card = document.querySelector(".plot-svg, .spectrum-svg, .tlc-svg");
+  const svg = card?.querySelector("svg");
+  if (!svg) return null;
+  const c = card.getBoundingClientRect(), r = svg.getBoundingClientRect();
+  const vb = svg.viewBox.baseVal;
+  const k = vb && vb.width ? Math.min(r.width / vb.width, r.height / vb.height) : 1;
+  return { karte: `${Math.round(c.width)}×${Math.round(c.height)}`, figur: `${Math.round(vb.width * k)}×${Math.round(vb.height * k)}`,
+    massstab: +k.toFixed(2), rollen: document.documentElement.scrollHeight > innerHeight + 1,
+    hintergrund: getComputedStyle(card).backgroundColor };
+}
+
 const only = process.env.SHOTS_ONLY?.split(",");
 const tools = (await client.listTools()).tools;
 const browser = await chromium.launch();
 try {
-  for (const [file, name, input, width] of CASES) {
+  for (const [file, name, input, width, fixed] of CASES) {
     if (only && !only.includes(file)) continue;
     const tool = tools.find((t) => t.name === name);
     const result = await client.callTool({ name, arguments: input });
@@ -63,18 +100,28 @@ try {
       await page.setContent('<body style="margin:0;background:#888"></body>');
       await page.addScriptTag({ path: out });
       await page.exposeFunction("__callTool", (req) => client.callTool(req));
-      await page.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result });
+      const hostContext = fixed ? fixedCtx(width, fixed) : undefined;
+      await page.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result, hostContext });
       const iframe = page.locator("iframe").last();
-      await iframe.evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "1380px"; }, width);
+      if (!fixed) await iframe.evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "1380px"; }, width);
       const frame = page.frames().at(-1);
       await frame.locator("svg").first().waitFor({ timeout: 30000 });
       await page.waitForTimeout(600);
+      if (fixed) {
+        const m = await frame.evaluate(plotMetrics);
+        await page.setViewportSize({ width: width + 20, height: fixed + 20 });
+        await iframe.screenshot({ path: join(dest, `${file}-${colorScheme}.png`) });
+        console.log(`✔ ${file}-${colorScheme}.png (${width}×${fixed}) ${JSON.stringify(m)}`);
+        await page.close();
+        continue;
+      }
       // Bild nur so hoch wie der Inhalt: Panelhöhe aus dem iframe-Dokument.
       const h = await frame.evaluate(() => Math.ceil(document.getElementById("root").getBoundingClientRect().bottom) + 16);
       await page.setViewportSize({ width: width + 20, height: Math.min(1400, h + 20) });
       await iframe.evaluate((el, hh) => { el.style.height = `${hh}px`; }, h);
       await iframe.screenshot({ path: join(dest, `${file}-${colorScheme}.png`) });
-      console.log(`✔ ${file}-${colorScheme}.png (${width}×${h})`);
+      const m = await frame.evaluate(plotMetrics);
+      console.log(`✔ ${file}-${colorScheme}.png (${width}×${h})${m ? ` ${JSON.stringify(m)}` : ""}`);
       await page.close();
     }
   }

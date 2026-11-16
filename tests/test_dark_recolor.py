@@ -22,9 +22,11 @@ from chemdraw_tool.svg_renderer import render_svg
 CSS = (Path(__file__).parent.parent / "chemdraw_tool" / "ui" / "src" / "styles.css").read_text()
 
 # Zwei Dunkel-Varianten: Systemschema (Media-Query) und Host-Schalter data-theme.
+# Seit Etappe 1 (16.11.2026) ist nur noch Scope ausgenommen: der Strukturvergleich
+# (.plot-svg) liegt im Dunkeln nicht mehr auf weißer Karte und wird mit umgefärbt.
 _PREFIXES = {
-    "media": ':root:not([data-theme="light"]) svg:not(.plot-svg svg, .scope-svg svg)',
-    "data-theme": ':root[data-theme="dark"] svg:not(.plot-svg svg, .scope-svg svg)',
+    "media": ':root:not([data-theme="light"]) svg:not(.scope-svg svg)',
+    "data-theme": ':root[data-theme="dark"] svg:not(.scope-svg svg)',
 }
 
 PROBES = {

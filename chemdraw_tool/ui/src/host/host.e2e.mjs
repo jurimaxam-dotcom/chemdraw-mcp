@@ -241,6 +241,87 @@ try {
       }
       await page.close();
     }
+    // Etappe 1 (16.11.2026): Diagramme lesbar. Vorher saß die Figur im Chat bei 1000 px
+    // 330 px breit in einer 936-px-Karte (feste 480 px Panelhöhe, Continue-Zeile darunter),
+    // Spektrum und DC füllten das Vollbild nicht, und im Dunkeln stand eine weiße Fläche.
+    {
+      const plotFigure = (f) => f.evaluate(() => {
+        const card = document.querySelector(".plot-svg");
+        const svg = card?.querySelector("svg");
+        if (!svg) return null;
+        const c = card.getBoundingClientRect(), r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+        const k = Math.min(r.width / vb.width, r.height / vb.height);
+        const de = document.documentElement;
+        return { card: Math.round(c.width), cardH: Math.round(c.height), w: Math.round(vb.width * k), h: Math.round(vb.height * k),
+          hoch: vb.height > vb.width, sh: de.scrollHeight, ih: innerHeight, sw: de.scrollWidth, iw: innerWidth,
+          panel: Math.ceil(document.getElementById("root").getBoundingClientRect().bottom) + 16 };
+      });
+      const PLOTS = [
+        ["spectrum", "generate_spectrum", { spectrum_type: "ir", title: "Aspirin IR", peaks: [
+          { position: 1750, intensity: 1, label: "Ester-C=O" }, { position: 1690, intensity: 1, label: "Säure-C=O" }] }],
+        ["tlc", "generate_tlc", { title: "DC", lanes: [{ name: "Edukt", spots: [{ rf: 0.3, label: "Edukt" }] }, { name: "Produkt", spots: [{ rf: 0.65 }] }] }],
+        ["titration", "generate_titration_curve", { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1, v_acid_ml: 25, c_titrant: 0.1 }],
+        ["species", "generate_species_distribution", { substance: "Phosphoric acid", pka_values: [2.15, 7.2, 12.35] }],
+        ["compare", "compare_molecules", { structures: ["CC(C)Cc1ccc(cc1)C(C)C(=O)O", "COc1ccc2cc(ccc2c1)[C@H](C)C(=O)O"], labels: ["Ibuprofen", "Naproxen"] }],
+      ];
+      for (const [tag, name, input] of PLOTS) {
+        // Chat 1000 px: die Figur nutzt die Breite, bis die Höchsthöhe greift; das Panel passt in 700 px.
+        {
+          const [page, f] = await open(name, input, chat(1000), { viewport: { width: 1000, height: 1300 } });
+          await f.locator(".plot-svg svg").waitFor();
+          await fitChat(page);
+          const p = await plotFigure(f);
+          messwerte[`e1-${tag}-chat1000`] = JSON.stringify(p);
+          const voll = p.hoch ? p.h >= 360 : p.w >= 0.6 * p.card;
+          check(voll && p.panel <= 700, `E1 ${tag} Chat 1000: Figur ${p.w}×${p.h} in Karte ${p.card}, Panel ${p.panel} ≤ 700 px`);
+          await page.close();
+        }
+        // Vollbild 1000×700 und Seitenpanel 320×700: nichts rollt, die Figur füllt die Karte.
+        for (const [w, h] of [[1000, 700], [320, 700]]) {
+          const [page, f] = await open(name, input, full(w, h), { viewport: { width: w, height: h } });
+          await f.locator(".plot-svg svg").waitFor();
+          await page.waitForTimeout(400);
+          const p = await plotFigure(f);
+          messwerte[`e1-${tag}-${w}x${h}`] = JSON.stringify(p);
+          // Breite Figur: schmal die ganze Kartenbreite, breit mindestens 60 %; DC-Platte: die Höhe.
+          const voll = p.hoch ? p.h >= 0.85 * (p.cardH - 18) : p.w >= (w === 320 ? 0.9 * (p.card - 18) : 0.6 * p.card);
+          check(voll && p.sh <= p.ih && p.sw <= p.iw, `E1 ${tag} ${w}×${h}: Figur ${p.w}×${p.h} in Karte ${p.card}×${p.cardH}, kein Rollen`);
+          await page.close();
+        }
+        // Dunkel: Fläche, Achsen und Schrift folgen dem Thema; Datenfarben bleiben.
+        {
+          const [page, f] = await open(name, input, chat(1000), { colorScheme: "dark", viewport: { width: 1000, height: 1300 } });
+          await f.locator(".plot-svg svg").waitFor();
+          await page.waitForTimeout(300);
+          const d = await f.evaluate(() => {
+            const card = document.querySelector(".plot-svg");
+            const svg = card.querySelector("svg");
+            const lum = (c) => { const m = c.match(/[\d.]+/g); return m ? (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255 : -1; };
+            const cs = (el, prop) => (el ? getComputedStyle(el)[prop] : "");
+            // Achsenbeschriftung bzw. RDKit-Bindungen: die hellste Kante und Schrift im Bild
+            const text = [...svg.querySelectorAll("text")].find((t) => !/fill:/.test(t.getAttribute("style") || ""));
+            const ink = svg.querySelector('path[style*="stroke: #000000"], path[style*="stroke:#000000"]');
+            const bg = svg.querySelector('path[style*="fill: #ffffff"], rect[style*="fill:#FFFFFF"]');
+            const red = svg.querySelector('path[style*="stroke: #d62728"], path[style*="fill:#FF7F7F"]');
+            // DC: die Platte bleibt hell, der Fleckname darauf dunkel.
+            const fleck = [...svg.querySelectorAll('text[style*="font-size: 8px"]')].find((t) => t.textContent.trim() === "Edukt");
+            const platte = svg.querySelector('path[style*="fill: #fbfaf6"]');
+            return { fleck: fleck ? lum(cs(fleck, "fill")) : null, platte: platte ? lum(cs(platte, "fill")) : null,
+              karte: lum(cs(card, "backgroundColor")), text: text ? lum(cs(text, "fill")) : null, ink: ink ? lum(cs(ink, "stroke")) : null,
+              papier: bg ? cs(bg, "fill") : null, rot: red ? (red.getAttribute("style").includes("FF7F7F") ? cs(red, "fill") : cs(red, "stroke")) : null };
+          });
+          messwerte[`e1-${tag}-dunkel`] = JSON.stringify(d);
+          check(d.karte >= 0 && d.karte < 0.3, `E1 ${tag} dunkel: Karte dunkel (Luminanz ${d.karte})`);
+          check(d.text === null || d.text > 0.6, `E1 ${tag} dunkel: Schrift hell (${d.text})`);
+          check(d.ink === null || d.ink > 0.6, `E1 ${tag} dunkel: Achsen/Striche hell (${d.ink})`);
+          if (tag === "tlc") check(d.platte > 0.9 && d.fleck !== null && d.fleck < 0.3, `E1 tlc dunkel: Platte hell (${d.platte}), Fleckname dunkel (${d.fleck})`);
+          if (tag === "species") check(d.rot === "rgb(214, 39, 40)", `E1 species dunkel: Spezies-Rot bleibt (${d.rot})`);
+          if (tag === "compare") check(d.rot === "rgb(255, 127, 127)", `E1 compare dunkel: Unterschied-Markierung bleibt (${d.rot})`);
+          await page.screenshot({ path: join(layoutShots, `e1-${tag}-dark.png`) });
+          await page.close();
+        }
+      }
+    }
     // Isomer-Auswahl (Glucose): das gewählte Molekül füllt die Höhe wie die direkte Ansicht.
     {
       const [page, f] = await open("generate_molecule", { name_or_smiles: "glucose" }, full(1000, 1100));
@@ -1349,7 +1430,9 @@ try {
   await cmpPage.close();
 
   // Desktop-Befund 02.11.2026: im Dunkelmodus färbte die globale RDKit-Umfärbung
-  // das gemeinsame Gerüst hell — auf dem bewusst weißen Bildgrund fast unsichtbar.
+  // das gemeinsame Gerüst hell — auf dem damals weißen Bildgrund fast unsichtbar.
+  // Seit Etappe 1 (16.11.2026) folgt die Fläche dem Thema: dunkler Grund, Gerüst hell.
+  // Gleich bleibt der Kern des Befunds: Grund und Gerüst stehen im Kontrast.
   const cmpDark = await browser.newPage({ viewport: { width: 720, height: 600 }, colorScheme: "dark" });
   await cmpDark.setContent("<body></body>");
   await cmpDark.addScriptTag({ path: out });
@@ -1367,8 +1450,8 @@ try {
       bg: lum(getComputedStyle(document.querySelector(".plot-svg")).backgroundColor),
     };
   });
-  check(scaffold.n > 0 && scaffold.bg > 0.9 && scaffold.maxStroke < 0.5 && scaffold.maxFill < 0.5,
-    `Vergleich dunkel: Gerüst dunkel auf weißem Grund (${scaffold.n} Pfade, Strich ${scaffold.maxStroke.toFixed(2)}, Schrift ${scaffold.maxFill.toFixed(2)})`);
+  check(scaffold.n > 0 && scaffold.bg < 0.3 && scaffold.maxStroke > 0.6 && (scaffold.maxFill === 0 || scaffold.maxFill > 0.6),
+    `Vergleich dunkel: Gerüst hell auf dunklem Grund (${scaffold.n} Pfade, Strich ${scaffold.maxStroke.toFixed(2)}, Schrift ${scaffold.maxFill.toFixed(2)})`);
   await cmpDark.close();
 
   // E16 (10.11.2026): (1) Abkürzungs-Labels (Boc, Ph, CO2H) standen im dunklen

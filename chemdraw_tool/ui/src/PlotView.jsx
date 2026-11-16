@@ -3,6 +3,7 @@ import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
+import PlotFigure from "./components/PlotFigure";
 import { useModelContextReport } from "./ModelContext";
 import { plotFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -20,7 +21,7 @@ export default function PlotView({ data }) {
   return (
     <div className="plot-panel">
       <SectionHeader title={data.name} subtitle={data.subtitle} />
-      <div className="plot-svg" dangerouslySetInnerHTML={{ __html: data.svg }} />
+      <PlotFigure svg={data.svg} />
       {data.notes?.length > 0 && (
         <ul
           style={{
