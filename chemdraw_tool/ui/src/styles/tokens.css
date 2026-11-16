@@ -1,0 +1,61 @@
+/* Gestaltungs-Tokens der Panel-Überarbeitung (docs/design/panel-ueberarbeitung-2026-11-17.md, §3).
+   Diese Datei lädt als erste (main.jsx): Abstände, Radien, Schriftleiter, Linien, Flächen, Akzent, Bühnenmaße.
+   Flächen und Linien leiten sich aus den Host-Variablen ab (--bg, --fg, --fg-muted, --border aus styles.css,
+   die Desktops --color-* übernehmen); die Hex-Werte sind nur Rückfall für den Referenz-Host.
+   A0 (17.11.2026): nur bereitgestellt — die alten Namen (--radius, --radius-sm …) bleiben in styles.css,
+   bis Paket A die Views umzieht. Gleich lautende Werte (--accent, --plot-max-h) setzt styles.css danach
+   noch einmal identisch; das ist Absicht, damit A0 nichts am Aussehen ändert. */
+:root {
+  /* Abstand: 4er-Raster */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  /* Radien: drei Stufen, ineinander (innen = außen − Polster) */
+  --radius-s: 4px;      /* Kopier-Knopf, Formel-Marke, Segment-Knopf in der Spur */
+  --radius-m: 8px;      /* Knopf, Segment-Spur, Karte, Papierbühne */
+  --radius-pill: 999px; /* nur Gruppen-Chip (Filter-Bedeutung) */
+  /* Schriftleiter: 1,25er-Schritte */
+  --text-meta: 12px;  --lh-meta: 16px;   /* Etiketten, Untertitel, Hinweis, Fuß */
+  --text-body: 13px;  --lh-body: 20px;   /* Fließtext, Knöpfe, Tabellen */
+  --text-value: 15px; --lh-value: 20px;  /* Kernwerte */
+  --text-title: 19px; --lh-title: 26px;  /* Panel-Titel; schmal 17/24 (frame.css) */
+  --weight-regular: 400;
+  --weight-strong: 600;
+  /* Linien */
+  --line-w: 1px;
+  --line: var(--border);
+  --line-strong: color-mix(in srgb, var(--fg) 32%, var(--bg));
+  /* Flächen */
+  --surface-0: var(--bg);
+  --surface-1: color-mix(in srgb, var(--fg) 5%, var(--bg));   /* Segment-Spur, Hover */
+  --surface-2: color-mix(in srgb, var(--fg) 9%, var(--bg));   /* gedrückt */
+  --text: var(--fg);
+  --text-2: var(--fg-muted);
+  --accent: #23796d;
+  --on-accent: var(--bg);
+  --danger: #b42318;
+  --success: var(--copy-success);
+  --paper: #fbfbf9;            /* Papierbühne, Anki-Kartengrund; in beiden Themen hell */
+  --focus: var(--accent);
+  /* Bühnen */
+  --stage-h: 320px;            /* 2D-Zeichnung im Chat */
+  --stage-3d-max: 720px;       /* größte Höhe der 3D-Bühne im Chat; Breite = volle Inhaltsbreite (Korrektur 16.11., 23:30) */
+  --plot-max-h: 400px;
+}
+
+/* Dunkel, beide Selektoren (Systemschema und Host-Schalter); der Rest folgt aus --bg/--fg. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #82c6b7;
+    --danger: #f97066;
+    --line-strong: color-mix(in srgb, var(--fg) 36%, var(--bg));
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #82c6b7;
+  --danger: #f97066;
+  --line-strong: color-mix(in srgb, var(--fg) 36%, var(--bg));
+}

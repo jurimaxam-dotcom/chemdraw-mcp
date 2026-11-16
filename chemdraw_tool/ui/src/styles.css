@@ -275,14 +275,6 @@ button:active { filter: brightness(0.92); }
 .structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
 .structure-canvas { height: 320px; border: 1px solid var(--border); border-radius: 12px; }
 .structure-drawing { display: flex; align-items: center; justify-content: center; }
-/* E19: Proteinbild als Quadrat, höchstens 720 px hoch (bis Etappe 3 der Maßstab der 3D-Kuhle),
-   Breite die ganze Zeile, weil Proteine im Ansichtsrahmen quer liegen. Eigene Größe statt
-   Rest einer festen Panelhöhe; Cartoon, Spur und Schema teilen dieselbe Fläche. */
-/* Etappe 5: im Chat eine feste Höhe statt des Quadrats — so bleibt das Panel samt Reitern,
-   Legende, Weiter-Zeile und vier Dateizeilen (Antikörper) bei 1000 px unter 700 px (vorher
-   1171 px, die Fläche 720 px hoch). Mehr Fläche gibt Expand. */
-.protein-stage { position: relative; display: flex; width: 100%; height: 280px; min-height: 0; flex-shrink: 0; }
-.protein-hint { margin: 4px 0 0; }
 .structure-drawing > svg { width: 100%; height: 100%; }
 .molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
 .section-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 8px; }
@@ -474,8 +466,6 @@ button:active { filter: brightness(0.92); }
    feste Höhe meldet (Seitenpanel, Vollbild: [data-host-height] an <html>, gesetzt von
    utils/useHostLayout.js). Der Chat-Weg (maxHeight oder kein Kontext) bleibt unberührt:
    inhaltsgroß, 320-px-Zeichenfläche, Auto-Resize. */
-/* Etappe 6: im Chat ein Quadrat über die Inhaltsbreite, höchstens 640 px (vorher Panel 500 px, Fläche 864×329). */
-.m3d-stage { display: flex; min-height: 0; flex: none; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; }
 /* Diagramm-Ansicht (PlotView, Spektrum, DC, Vergleich — Etappe 1, 16.11.2026). Im Chat
    inhaltsgroß (der Host bemisst das iframe am Inhalt): die Figur nimmt die Kartenbreite,
    die Höhe folgt ihrem Seitenverhältnis bis --plot-max-h — so passen Kopf, Diagramm,
@@ -493,40 +483,6 @@ button:active { filter: brightness(0.92); }
   .plot-panel { padding: 8px 0; }
   .plot-svg { padding: 4px; }
 }
-/* Dunkel: Fläche, Achsen, Striche und Schrift über die Theme-Variablen. Datenfarben
-   (Spezies, Indikator, Markierungen) bleiben; die DC-Platte bleibt hell wie Kieselgel,
-   ihre Flecken und Beschriftung darauf ebenso. Nur die Anzeige — das SVG und damit
-   „Export PNG“ bleiben das helle Original. matplotlib schreibt „fill: #ffffff“ (mit
-   Leerzeichen), RDKit „fill:#FFFFFF“; die RDKit-Striche färben die Regeln oben um. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --plot-paper: var(--bg); }
-}
-:root[data-theme="dark"] { --plot-paper: var(--bg); }
-.plot-svg [style*="fill: #ffffff"], .plot-svg rect[style*="fill:#FFFFFF"] { fill: var(--plot-paper) !important; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
-  /* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="stroke: #1a1a1a"] { stroke: var(--fg) !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #1a1a1a"] { fill: var(--fg) !important; }
-  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #555555"] { fill: var(--fg-muted) !important; }
-}
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
-:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
-/* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
-:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
-:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
-:root[data-theme="dark"] .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="stroke: #1a1a1a"] { stroke: var(--fg) !important; }
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #1a1a1a"] { fill: var(--fg) !important; }
-:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #555555"] { fill: var(--fg-muted) !important; }
 .expand-button { font-size: 12px; font-weight: 560; min-height: 40px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
 .expand-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .host-diagnostics { margin-top: 12px; padding: 8px 10px; border-top: 1px dashed var(--border); font-family: var(--font-mono); font-size: 10px; line-height: 1.4; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -560,11 +516,6 @@ button:active { filter: brightness(0.92); }
 @media (min-width: 620px) {
   :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-main { grid-template-rows: auto minmax(200px, 1fr); }
 }
-/* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
-:root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
-/* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
-:root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; flex: 1 1 0; aspect-ratio: auto; max-height: none; }
-:root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
 /* Etappe 3: Mechanismus und Scope tragen im Chat eine feste Höhe (inline); mit Expand füllen sie den Bereich. */
 :root[data-host-height] .panel-root > :is(.mechanism-panel, .scope-panel) { flex: 1 0 auto; height: auto !important; min-height: 480px; }
 /* Bühne bzw. Figur nimmt den Rest; ihr Inhalt (Übersichtsliste, RDKit-px-Maße) gibt die Höhe nicht vor. */
@@ -583,7 +534,6 @@ button:active { filter: brightness(0.92); }
   :root[data-host-height] .panel-root > .plot-panel .plot-svg svg { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
   :root[data-host-height] .panel-root > .plot-panel .plot-svg[data-plot-kind="tlc"] { max-height: calc((100cqw - 10px) * var(--plot-aspect, 10) + 10px); }
 }
-:root[data-host-height] .panel-root > .protein-panel .protein-stage { flex: 1 0 auto; height: auto; min-height: 240px; }
 @media (max-width: 619px) {
   :root[data-safe-area] body { padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left)); }
   :root[data-host-height] { --canvas-min: 260px; }
@@ -655,23 +605,6 @@ button:active { filter: brightness(0.92); }
 /* Nur für Bedienungshilfen: bleibt im Baum (kein display:none). */
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* Anki-Deck (Etappe 5): Karten als Raster, je Karte Vorder- und Rückseite nebeneinander.
-   Die Kartenbilder (transparente PNGs mit dunklen Bindungen, wie im Deck) liegen auf einem
-   hellen Kartengrund — auch im Dunkeln, wie eine Anki-Karte. */
 :root { --card-paper: #fbfbf9; }
-.anki-panel { padding: 16px; }
-.anki-cards { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: 12px; padding-top: 16px; }
-.anki-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.anki-side { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; padding: 10px 12px; }
-.anki-side + .anki-side { border-left: 1px solid var(--border); background: var(--bg-alt); }
-.anki-side-label { font-size: 12px; color: var(--fg-muted); }
-.anki-side-text { font-size: 13px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
-.anki-thumb { display: block; max-width: 100%; max-height: 140px; width: auto; height: auto; padding: 4px; border-radius: 6px; background: var(--card-paper); }
-/* Ältere Ergebnisse ohne Vorschau: nur die Vorderseiten, nummeriert wie bisher. */
-.anki-cards.is-fronts { display: block; list-style: decimal; padding: 12px 0 0 22px; font-size: 13px; line-height: 1.7; }
-.anki-more { margin-top: 10px; font-size: 12px; color: var(--fg-muted); }
-/* Etappe 5: Bedienhinweis und „Reset view“ direkt unter jedem drehbaren 3D-Modell. */
-.rotate-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 6px; flex-shrink: 0; }
-.rotate-row > .panel-note-quiet { margin: 0; }
 .reset-view { font: inherit; font-size: 12px; font-weight: 600; min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; }
 .reset-view:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }

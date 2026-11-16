@@ -1,0 +1,36 @@
+/* Paket B (Grafiken): Spektrum, DC, Titration, Vergleich, Reaktion, Mechanismus, Scope.
+   A0 (17.11.2026): die .plot-svg-Umfärbung unverändert aus styles.css hierher verschoben. */
+/* Dunkel: Fläche, Achsen, Striche und Schrift über die Theme-Variablen. Datenfarben
+   (Spezies, Indikator, Markierungen) bleiben; die DC-Platte bleibt hell wie Kieselgel,
+   ihre Flecken und Beschriftung darauf ebenso. Nur die Anzeige — das SVG und damit
+   „Export PNG“ bleiben das helle Original. matplotlib schreibt „fill: #ffffff“ (mit
+   Leerzeichen), RDKit „fill:#FFFFFF“; die RDKit-Striche färben die Regeln oben um. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --plot-paper: var(--bg); }
+}
+:root[data-theme="dark"] { --plot-paper: var(--bg); }
+.plot-svg [style*="fill: #ffffff"], .plot-svg rect[style*="fill:#FFFFFF"] { fill: var(--plot-paper) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
+  /* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="stroke: #1a1a1a"] { stroke: var(--fg) !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #1a1a1a"] { fill: var(--fg) !important; }
+  :root:not([data-theme="light"]) .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #555555"] { fill: var(--fg-muted) !important; }
+}
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] text { fill: var(--fg); }
+:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] path[style*="fill:#000000"] { fill: var(--atom-c) !important; } /* Keilbindung im Vergleich */
+/* Unterschied-Markierung: RDKits Lachs #FF7F7F fiele im Dunkeln mit dem hellen O-Rot (--atom-o #ff7b72) zusammen — eine unmarkierte COOH sähe markiert aus. Dunkles Rosé: andere Helligkeit, die hellen Bindungen bleiben darauf lesbar. */
+:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="fill:#FF7F7F"] { fill: #a3476b !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="rdkit"] [style*="stroke:#FF7F7F"] { stroke: #a3476b !important; }
+:root[data-theme="dark"] .plot-svg[data-plot-kind="tlc"] text[style*="font-size: 8px"] { fill: #1a1a1a; } /* Fleckname auf der hellen Platte (tlc.py: 8 pt, Standardfarbe) */
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="stroke: #000000"] { stroke: var(--fg) !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"] [style*="fill: #444444"] { fill: var(--fg-muted) !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="stroke: #1a1a1a"] { stroke: var(--fg) !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #1a1a1a"] { fill: var(--fg) !important; }
+:root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #555555"] { fill: var(--fg-muted) !important; }

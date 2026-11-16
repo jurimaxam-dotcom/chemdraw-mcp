@@ -1,0 +1,147 @@
+/* Rahmen und Bausteine des Panels (docs/design/panel-ueberarbeitung-2026-11-17.md, §2–§4), gebaut
+   aus components/Panel.jsx. Lädt nach styles.css. Nur Tokens aus tokens.css, keine wörtlichen Farben.
+   A0 (17.11.2026): Jede Regel hängt an einer neuen Klasse (.panel, .panel-head, .stage, .btn, .chip …)
+   oder an .panel als Vorfahr. Die alten Haken (.seg, .key-facts, .panel-footer, .copy-button,
+   .continue-row …) behalten außerhalb von .panel ihr Aussehen, bis eine View auf <Panel> umzieht. */
+
+/* --- Global, aber nur im neuen Rahmen (§3) ------------------------------------------------- */
+.panel :is(button, a, input, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* Hover = Fläche statt Helligkeitsfilter (styles.css setzt ihn global für jeden Knopf). */
+.panel button:hover, .panel button:active { filter: none; }
+.btn, .chip, .panel-foot-toggle, .panel .seg button, .panel .continue-button, .panel .copy-button { transition: background-color 120ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  .btn, .chip, .panel-foot-toggle, .panel .seg button, .panel .continue-button, .panel .copy-button { transition: none; }
+}
+
+/* --- Panel: eine Spalte, Zonen mit gap 16, kein eigener Innenabstand (body trägt 16 / schmal 12) --- */
+.panel { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.panel > * { min-width: 0; margin-top: 0; margin-bottom: 0; }
+/* Haken-Zonen bringen eigene Abstände nach oben mit; im Rahmen trennt nur das gap. */
+.panel > :is(.continue-row, .group-section, .stereo-row, .balance-row, .rotate-row, .panel-note, .panel-note-quiet) { margin-top: 0; padding-top: 0; padding-bottom: 0; }
+.panel > .stage-bar + .stage { margin-top: calc(var(--space-2) - var(--space-4)); }
+
+/* --- PanelHead: Grid, links Titel und Untertitel, rechts Reiter und Expand ------------------- */
+.panel-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "heading tabs expand"; align-items: start; gap: var(--space-3) var(--space-2); padding: 0; border: 0; flex-shrink: 0; }
+.panel-head > .panel-heading { grid-area: heading; min-width: 0; }
+.panel-head > .panel-actions { display: contents; }
+.panel-head .panel-head-tabs { grid-area: tabs; min-width: 0; }
+.panel-head .panel-head-expand { grid-area: expand; }
+.panel-head .panel-title { font-size: var(--text-title); line-height: var(--lh-title); font-weight: var(--weight-strong); color: var(--text); }
+.panel-head :is(.panel-subtitle, .panel-record) { margin-top: 0; font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 619px) {
+  .panel-head .panel-title { font-size: 17px; line-height: 24px; }
+  .panel-head :is(.panel-subtitle, .panel-record) { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+}
+/* Unter 480 px rutschen die Reiter in eine eigene Zeile, Expand bleibt neben dem Titel. */
+@media (max-width: 479px) {
+  .panel-head { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading expand" "tabs tabs"; }
+  .panel-head .panel-head-tabs { justify-self: start; }
+}
+
+/* --- Reiter und Achse im Rahmen: Spur statt Kante -------------------------------------------- */
+.panel .seg { min-height: 32px; padding: 2px; gap: 2px; background: var(--surface-1); border: 0; border-radius: var(--radius-m); }
+.panel .seg button { min-height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-s); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); color: var(--text-2); }
+.panel .seg button:hover { color: var(--text); }
+.panel .seg button:is([aria-selected="true"], [aria-pressed="true"]) { background: var(--surface-0); color: var(--text); box-shadow: 0 0 0 var(--line-w) var(--line); }
+.panel .seg.seg-sm { min-height: 28px; border-radius: var(--radius-m); }
+.panel .seg.seg-sm button { min-height: 24px; padding: 0 10px; border-radius: var(--radius-s); font-size: var(--text-meta); line-height: var(--lh-meta); }
+
+/* --- Expand im Rahmen: 32 × 32, ruhig, nur Symbol -------------------------------------------- */
+.panel .expand-button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; min-height: 32px; padding: 0; border: 0; border-radius: var(--radius-m); background: transparent; color: var(--text-2); }
+.panel .expand-button:hover { background: var(--surface-1); color: var(--text); }
+
+/* --- StageBar ---------------------------------------------------------------------------------- */
+.stage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 28px; flex-shrink: 0; }
+.stage-bar-start, .stage-bar-end { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-width: 0; }
+.stage-bar-end { margin-left: auto; }
+.stage-bar-hint { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+@media (max-width: 479px) { .stage-bar-hint { display: none; } }
+
+/* --- Stage: plain / paper / 3d ----------------------------------------------------------------- */
+.stage { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; min-width: 0; flex: none; border: 0; border-radius: 0; background: none; padding: 0; }
+.stage > svg { width: 100%; height: 100%; }
+.stage-plain { height: var(--stage-h); }
+.stage-paper { background: var(--paper); border-radius: var(--radius-m); padding: var(--space-3); }
+/* 3D: volle Inhaltsbreite, Höhe min(Breite, 720) — bei 1000 px Chat 968 × 720 (Korrektur 16.11., 23:30). */
+.stage-3d { height: auto; aspect-ratio: 1 / 1; max-height: var(--stage-3d-max); }
+/* Fill (Seitenpanel, Vollbild): die Bühne nimmt den Rest; ihr Inhalt gibt die Höhe nicht vor. */
+:root[data-host-height] .panel[data-fill] { flex: 1 0 auto; }
+:root[data-host-height] .panel[data-fill] > .stage { flex: 1 0 320px; height: auto; aspect-ratio: auto; max-height: none; contain: size; }
+:root[data-host-height] .panel[data-fill] > .stage-3d { flex-basis: 200px; }
+:root[data-host-height] .panel[data-fill] > .panel-state { flex: 1 0 240px; min-height: 0; }
+@media (max-width: 619px) {
+  :root[data-host-height] .panel[data-fill] > .stage { flex-basis: 240px; }
+  :root[data-host-height] .panel[data-fill] > .stage-3d { flex-basis: var(--canvas-min, 240px); }
+}
+
+/* --- Facts: Kernwerte als umbrechende Zeile ---------------------------------------------------- */
+.panel-facts { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; align-items: flex-start; gap: var(--space-2) var(--space-8); margin: 0; min-width: 0; }
+.panel-facts > .fact { min-width: 0; }
+.panel-facts dt { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.panel-facts dd { display: flex; align-items: center; gap: var(--space-1); margin: 0; font-size: var(--text-value); line-height: var(--lh-value); font-weight: var(--weight-regular); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.panel-facts dd sub { font-size: 0.75em; }
+@media (max-width: 619px) {
+  .panel-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); }
+}
+
+/* --- Chip: die einzige Pille ------------------------------------------------------------------- */
+.chip { display: inline-flex; align-items: center; gap: var(--space-2); height: 32px; min-height: 32px; padding: 0 var(--space-3); border: var(--line-w) solid var(--line); border-radius: var(--radius-pill); background: var(--surface-0); color: var(--text); font: inherit; font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-regular); box-shadow: none; cursor: pointer; }
+.chip:hover { background: var(--surface-1); }
+.chip[aria-pressed="true"] { border-color: var(--group-color); background: color-mix(in srgb, var(--group-color) 12%, var(--bg)); box-shadow: none; font-weight: var(--weight-strong); }
+.chip-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--group-color); }
+.chip-count { color: var(--text-2); font-size: var(--text-meta); font-variant-numeric: tabular-nums; }
+
+/* --- Button: ruhig oder primär ----------------------------------------------------------------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; min-height: 32px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-m); background: transparent; color: var(--text-2); font: inherit; font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); white-space: nowrap; cursor: pointer; }
+.btn > .icon { flex: none; }
+.btn.is-icon { width: 32px; padding: 0; }
+.btn:hover, .btn:active { filter: none; }
+.btn-quiet:hover:not(:disabled) { background: var(--surface-1); color: var(--text); }
+.btn-quiet:active:not(:disabled) { background: var(--surface-2); }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn:disabled { color: var(--text-2); opacity: 0.5; cursor: default; }
+.btn-primary:disabled { background: var(--accent); color: var(--on-accent); }
+.btn[aria-busy="true"] { cursor: progress; }
+.btn.is-copied { color: var(--success); }
+
+/* --- ContinueRow im Rahmen: eine Zeile, Knöpfe ruhig mit Kante, ohne Pfeil --------------------- */
+.panel .continue-row { gap: var(--space-2); }
+.panel .continue-actions { gap: var(--space-2); }
+.panel .continue-label { font-size: var(--text-meta); line-height: var(--lh-meta); font-weight: var(--weight-strong); color: var(--text-2); }
+.panel .continue-button { min-height: 28px; height: auto; padding: 4px 10px; border: var(--line-w) solid var(--line); border-radius: var(--radius-m); background: transparent; color: var(--text); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-regular); }
+.panel .continue-button:hover { background: var(--surface-1); }
+.panel .continue-button > svg { display: none; }
+@media (max-width: 479px) { .panel .continue-actions > .continue-label { flex-basis: 100%; } }
+
+/* --- CopyButton im Rahmen: 24 × 24 (xs 20), ruhig, Haken in --success ------------------------- */
+.panel .copy-button, .panel .copy-button.is-quiet:hover { width: 24px; height: 24px; border-color: transparent; border-radius: var(--radius-s); }
+.panel .copy-button.is-xs { width: 20px; height: 20px; }
+.panel .copy-button:hover { background: var(--surface-1); }
+.panel .copy-button.is-copied { background: transparent; border-color: transparent; color: var(--success); }
+
+/* --- PanelFoot: Haarlinie, eine Zeile 32 hoch; Liste darunter, zu = hidden ---------------------- */
+.panel-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--space-4); min-height: 0; margin-top: 0; padding-top: var(--space-2); border-top: var(--line-w) solid var(--line); flex-shrink: 0; }
+.panel-foot-files { display: flex; align-items: center; flex: 0 1 auto; min-width: 0; min-height: 32px; font-family: var(--font); font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.panel-foot-toggle { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 var(--space-2); margin-left: calc(-1 * var(--space-2)); border: 0; border-radius: var(--radius-m); background: transparent; color: var(--text); font: inherit; font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); cursor: pointer; }
+.panel-foot-toggle:hover { background: var(--surface-1); filter: none; }
+.panel-foot-count { color: var(--text-2); font-weight: var(--weight-regular); font-variant-numeric: tabular-nums; }
+.panel-foot-toggle > .icon { color: var(--text-2); }
+.panel-foot-toggle[aria-expanded="true"] > .icon { transform: rotate(180deg); }
+.panel-foot .export-feedback { font-family: var(--font); font-size: var(--text-meta); color: var(--success); overflow-wrap: anywhere; }
+.panel-foot .export-feedback.is-error { color: var(--danger); }
+.panel-foot-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-2); margin-left: auto; }
+.panel-foot-list { flex: 1 0 100%; display: flex; flex-direction: column; align-items: stretch; gap: 2px; padding-top: var(--space-1); min-width: 0; }
+.panel-foot-list[hidden] { display: none; }
+.panel-foot-list .panel-footer-file { display: flex; align-items: center; gap: var(--space-2); min-width: 0; min-height: 24px; }
+.panel-foot-list .panel-footer-label { flex-shrink: 0; min-width: 40px; font-family: var(--font); font-size: var(--text-meta); font-weight: var(--weight-strong); color: var(--text); }
+/* Ellipse links: der Dateiname am Ende bleibt lesbar; der volle Pfad steht im title. */
+.panel-foot-list .panel-footer-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+.panel-foot-list .panel-foot-folder { align-self: flex-start; height: 28px; min-height: 28px; margin-left: calc(-1 * var(--space-2)); padding: 0 var(--space-2); font-size: var(--text-meta); }
+
+/* --- Hint und PanelState ----------------------------------------------------------------------- */
+.hint { margin: 0; font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.hint-dot { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--danger); vertical-align: middle; }
+.panel-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-1); min-height: var(--stage-h); padding: var(--space-4); border-radius: var(--radius-m); background: var(--surface-1); font-size: var(--text-body); line-height: var(--lh-body); color: var(--text-2); text-align: center; }
+.panel-state-title { font-weight: var(--weight-strong); color: var(--text); }
+.panel-state-message { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.panel-state > .seg-spinner { width: 12px; height: 12px; }

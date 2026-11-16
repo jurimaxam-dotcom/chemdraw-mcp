@@ -9,7 +9,12 @@ import ToolPlaceholder from "./components/ToolPlaceholder";
 import { ModelContextProvider } from "./ModelContext";
 import { extractToolData, extractToolError, loadToolData, writtenFiles } from "./utils/toolData";
 import { useHostLayout } from "./utils/useHostLayout";
+// Reihenfolge der Kaskade (Panel-Überarbeitung §7): Tokens, Altbestand, Rahmen, dann die Pakete B und C.
+import "./styles/tokens.css";
 import "./styles.css";
+import "./styles/frame.css";
+import "./styles/b-graphics.css";
+import "./styles/c-protein-3d-anki.css";
 
 function Root() {
   const [data, setData] = useState(null);

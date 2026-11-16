@@ -321,9 +321,10 @@ test("E19: Panel ohne feste Höhe, eine Bildfläche für Cartoon, Spur und Schem
 // Etappe 3: die 3D-Kuhle im Molekülpanel ist kein 720-px-Quadrat mehr (sie teilt die Fläche
 // mit 2D). Etappe 5 (16.11.2026): auch die Proteinfläche nicht — im Chat eine feste Höhe,
 // damit das Panel bei 1000 px unter 700 px bleibt (vorher Quadrat bis 720 px, Panel 1171 px).
-test("Etappe 5: styles.css gibt der Proteinfläche im Chat volle Breite und eine feste Höhe", async () => {
+test("Etappe 5: das Protein-Stylesheet gibt der Proteinfläche im Chat volle Breite und eine feste Höhe", async () => {
   const { readFileSync } = await import("node:fs");
-  const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+  // A0 (17.11.2026): die Protein-Regeln stehen in styles/c-protein-3d-anki.css.
+  const css = readFileSync(new URL("../styles/c-protein-3d-anki.css", import.meta.url), "utf8");
   const rule = /\.protein-stage \{([^}]*)\}/.exec(css);
   assert.ok(rule, ".protein-stage fehlt");
   assert.ok(!rule[1].includes("aspect-ratio"), ".protein-stage: kein Quadrat mehr");
