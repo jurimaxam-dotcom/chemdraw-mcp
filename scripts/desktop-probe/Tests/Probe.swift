@@ -11,6 +11,11 @@ let toolNamen = [
   "generate_spectrum", "generate_tlc", "generate_titration_curve",
   "generate_species_distribution", "export_anki_deck",
   "lookup", "predict_spectrum", "calculate_ph", "save_png", "load_panel_part",
+] + pharmaTools
+/// Tools, die nur der zweite Konnektor `chemdraw-pharma` liefert (Profil pharma, seit 16.11.2026).
+let pharmaTools = [
+  "generate_scope_table", "generate_calibration_curve", "generate_pk_curve", "generate_dose_response",
+  "calculate_solution", "calculate_content", "calculate_pharmacokinetics",
 ]
 
 func ladeJSON(_ name: String) -> [String: Any] {
@@ -88,12 +93,79 @@ class ProbeFall: XCTestCase {
     a.name = "baum-\(stufe)-\(tool)-\(marke).txt"; a.lifetime = .keepAlways; add(a)
   }
 
+  /// Sichtbarer Bereich des Chats im Fenster: oben liegt die Kopfzeile, unten das Antwortfeld.
+  var sichtbar: (oben: CGFloat, unten: CGFloat) {
+    let f = app.windows.firstMatch.frame
+    return (f.minY + 70, f.maxY - 170)
+  }
+
+  /// Rollt den Chat, bis `y` (Bildschirmkoordinate eines Punkts im Panel) auf `ziel` liegt.
+  func rolle(_ el: XCUIElement, _ punkt: @escaping (CGRect) -> CGFloat, auf ziel: CGFloat) {
+    let mitte = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    var still = 0, runden = 0
+    while runden < 30 {
+      let vorher = punkt(el.frame)
+      let abstand = vorher - ziel
+      if abs(abstand) < 12 { break }
+      mitte.scroll(byDeltaX: 0, deltaY: max(-400, min(400, -abstand)))
+      runden += 1; Thread.sleep(forTimeInterval: 0.35)
+      still = abs(punkt(el.frame) - vorher) < 2 ? still + 1 : 0
+      if still >= 3 { break }
+    }
+  }
+
   /// Bild nur vom Panel (ohne Seitenleiste mit privaten Chat-Titeln) – das ist das Material für draußen.
+  /// Ein Bildschirmfoto zeigt nur, was im Fenster liegt (12 von 40 Bildern am 14.11.2026 waren
+  /// abgeschnitten): deshalb erst das Panel in den sichtbaren Bereich rollen; ist es höher als der
+  /// Bereich, entstehen zwei Bilder (`-oben`, `-unten`), die zusammen das ganze Panel zeigen.
   func panelBild(_ marke: String, _ el: XCUIElement? = nil) {
     let ziel = el ?? panel
     guard ziel.exists else { return }
-    let a = XCTAttachment(screenshot: ziel.screenshot())
-    a.name = "panel-\(tool)-\(marke).png"; a.lifetime = .keepAlways; add(a)
+    func foto(_ zusatz: String) {
+      let a = XCTAttachment(screenshot: ziel.screenshot())
+      a.name = "panel-\(tool)-\(marke)\(zusatz).png"; a.lifetime = .keepAlways; add(a)
+    }
+    let (oben, unten) = sichtbar
+    if ziel.frame.height <= unten - oben {
+      if ziel.frame.minY < oben || ziel.frame.maxY > unten { rolle(ziel, { $0.midY }, auf: (oben + unten) / 2) }
+      foto("")
+    } else {
+      rolle(ziel, { $0.minY }, auf: oben); foto("-oben")
+      rolle(ziel, { $0.maxY }, auf: unten); foto("-unten")
+    }
+  }
+
+  /// Mittlerer Helligkeitsunterschied zweier Bilder (0–255), beide auf 64×64 Graustufen gebracht.
+  /// Für „hat sich das Bild geändert“ und „ist es wieder das alte“ – nicht für feine Vergleiche.
+  func bildabstand(_ a: XCUIScreenshot, _ b: XCUIScreenshot) -> Double {
+    func grau(_ s: XCUIScreenshot) -> [UInt8]? {
+      guard let cg = s.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+      var px = [UInt8](repeating: 0, count: 64 * 64)
+      let ok = px.withUnsafeMutableBytes { roh -> Bool in
+        guard let ctx = CGContext(data: roh.baseAddress, width: 64, height: 64, bitsPerComponent: 8, bytesPerRow: 64,
+                                  space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return false }
+        ctx.interpolationQuality = .medium
+        ctx.draw(cg, in: CGRect(x: 0, y: 0, width: 64, height: 64)); return true
+      }
+      return ok ? px : nil
+    }
+    guard let x = grau(a), let y = grau(b) else { return -1 }
+    var summe = 0
+    for i in 0..<x.count { summe += abs(Int(x[i]) - Int(y[i])) }
+    return Double(summe) / Double(x.count)
+  }
+
+  /// Welcher Konnektor muss antworten? Seit 16.11.2026 liefert `chemdraw` die 18 Standard-Tools und
+  /// `chemdraw-pharma` nur die Zusatz-Tools; das installierte Bündel („ChemDraw MCP (unofficial)“) darf
+  /// in einem Probe-Lauf gar nicht antworten – es bringt einen älteren Stand mit.
+  func konnektorCheckpoint() {
+    checkpoint("Antwort kommt vom richtigen Konnektor") {
+      let titel = server
+      let soll = pharmaTools.contains(tool) ? "chemdraw-pharma" : "chemdraw"
+      // Die Gruppe heißt "<konnektor> embed" oder "<konnektor>: <Titel>".
+      let ist = titel.components(separatedBy: CharacterSet(charactersIn: " :")).first ?? ""
+      return (ist == soll, "soll \(soll), Gruppe „\(titel)“")
+    }
   }
 
   func nachVorn() -> Bool {

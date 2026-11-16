@@ -25,6 +25,9 @@ final class StufeB: ProbeFall {
     return q.matching(NSPredicate(format: format, wert, wert, wert)).firstMatch
   }
 
+  /// Bilder, die ein Schritt mit "merke" abgelegt hat – Vergleichsgrundlage für "gleichWie".
+  var gemerkt: [String: XCUIScreenshot] = [:]
+
   func schritt(_ s: [String: Any]) {
     let name = (s["name"] as? String) ?? "?"
     let warte = (s["timeout"] as? Double) ?? 8
@@ -38,6 +41,31 @@ final class StufeB: ProbeFall {
       }
       guard el.waitForExistence(timeout: warte) else { return (false, "nicht gefunden") }
       var info = ""
+      // "merke": Bild des Elements ablegen. "ziehen": mit der Maus über das Element ziehen und belegen,
+      // dass sich sein Bild dabei ändert (ein Checkpoint „drehbar“ muss drehen, nicht nur die Fläche
+      // finden). "gleichWie": das Bild muss wieder dem gemerkten entsprechen (z. B. nach „Reset view“).
+      if s["merke"] != nil || s["ziehen"] != nil || s["gleichWie"] != nil {
+        let (oben, unten) = sichtbar
+        if el.frame.minY < oben || el.frame.maxY > unten { rolle(el, { $0.midY }, auf: (oben + unten) / 2) }
+        Thread.sleep(forTimeInterval: 0.5)
+      }
+      if let m = s["merke"] as? String { gemerkt[m] = el.screenshot() }
+      if (s["ziehen"] as? Bool) == true {
+        let vorher = el.screenshot()
+        el.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.45))
+          .press(forDuration: 0.2, thenDragTo: el.coordinate(withNormalizedOffset: CGVector(dx: 0.65, dy: 0.6)))
+        Thread.sleep(forTimeInterval: 0.8)
+        let d = bildabstand(vorher, el.screenshot())
+        if let marke = s["bild"] as? String { panelBild(marke) }
+        // Schwelle 1,0 von 255: ein unbewegtes Bild liegt bei 0, ein gedrehtes Modell bei mehreren Einheiten.
+        return (d >= 1.0, String(format: "Bildabstand nach dem Ziehen %.2f (Schwelle 1,0)", d))
+      }
+      if let m = s["gleichWie"] as? String {
+        guard let alt = gemerkt[m] else { return (false, "kein gemerktes Bild „\(m)“") }
+        let d = bildabstand(alt, el.screenshot())
+        if let marke = s["bild"] as? String { panelBild(marke) }
+        return (d >= 0 && d < 0.5, String(format: "Bildabstand zum gemerkten Bild %.2f (Schwelle 0,5)", d))
+      }
       // Schalter, die schon im Zielzustand stehen (Chat war noch offen), nicht umlegen.
       let schonDa = (s["wert"] as? String).map { $0 == "\(el.value ?? "")" } ?? false
       if schonDa && (s["aktion"] as? String) == "klick" && s["dann"] == nil { info = "stand schon so" }
@@ -114,6 +142,7 @@ final class StufeB: ProbeFall {
       return (ok, ok ? server : "keine WebView MCP-UI Proxy im Chat")
     }
     guard da else { return }
+    konnektorCheckpoint()
     checkpoint("Panel hat Inhalt") {
       guard panelInhalt.waitForExistence(timeout: 30) else { return (false, "WebView Chem-MCP fehlt") }
       let inhalt = panelInhalt.descendants(matching: .any).matching(NSPredicate(format: "elementType IN %@", [XCUIElement.ElementType.staticText.rawValue, XCUIElement.ElementType.image.rawValue]))
@@ -122,6 +151,7 @@ final class StufeB: ProbeFall {
       return (inhalt.count >= 2, "\(inhalt.count) Text-/Bildelemente")
     }
     panelBild("B-start")
+    gemerkt = [:]
     for s in (plan["schritte"] as? [[String: Any]]) ?? [] { schritt(s) }
     let a = XCTAttachment(string: panel.debugDescription)
     a.name = "baum-B-\(name)-panel.txt"; a.lifetime = .keepAlways; add(a)
@@ -140,4 +170,5 @@ final class StufeB: ProbeFall {
   func test_generate_titration_curve() { lauf("generate_titration_curve") }
   func test_generate_species_distribution() { lauf("generate_species_distribution") }
   func test_export_anki_deck() { lauf("export_anki_deck") }
+  func test_generate_calibration_curve() { lauf("generate_calibration_curve") }
 }

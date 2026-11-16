@@ -107,6 +107,7 @@ final class StufeA: ProbeFall {
       return (ok, ok ? server : "keine WebView MCP-UI Proxy im Chat")
     }
     if da {
+      konnektorCheckpoint()
       checkpoint("Panel hat Inhalt") {
         let ok = panelInhalt.waitForExistence(timeout: 30)
         guard ok else { return (false, "WebView Chem-MCP fehlt") }
@@ -142,4 +143,6 @@ final class StufeA: ProbeFall {
   func test_generate_titration_curve() { lauf("generate_titration_curve") }
   func test_generate_species_distribution() { lauf("generate_species_distribution") }
   func test_export_anki_deck() { lauf("export_anki_deck") }
+  // Ein Tool des zweiten Konnektors: zeigt, ob das Modell bei zwei Konnektoren den richtigen trifft.
+  func test_generate_calibration_curve() { lauf("generate_calibration_curve") }
 }

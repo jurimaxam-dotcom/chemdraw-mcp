@@ -303,10 +303,18 @@
     "beginnt": "3D conformer"
    },
    {
-    "name": "Drehbares 3D-Modell",
+    "name": "3D-Modell vorhanden",
     "typ": "image",
     "titel": "3D model, drag to rotate",
+    "merke": "start",
     "bild": "3d"
+   },
+   {
+    "name": "3D-Modell dreht sich beim Ziehen",
+    "typ": "image",
+    "titel": "3D model, drag to rotate",
+    "ziehen": true,
+    "bild": "3d-gedreht"
    },
    {
     "name": "Knopf Reset view vorhanden und klickbar",
@@ -314,6 +322,13 @@
     "aktion": "klick",
     "titel": "Reset view",
     "pause": 1.5
+   },
+   {
+    "name": "Reset view stellt die Ausgangslage wieder her",
+    "typ": "image",
+    "titel": "3D model, drag to rotate",
+    "gleichWie": "start",
+    "bild": "3d-zurueck"
    },
    {
     "name": "Knopf Export as PNG vorhanden",
@@ -611,6 +626,16 @@
     "name": "Pfad unter ~/ChemDraw-Output",
     "typ": "staticText",
     "beginnt": "~/ChemDraw-Output/"
+   }
+  ]
+ },
+ "generate_calibration_curve": {
+  "prompt": "Zeichne eine Kalibriergerade aus meinen Standards: 2 mg/L → 0,105, 4 mg/L → 0,198, 6 mg/L → 0,305, 8 mg/L → 0,401, 10 mg/L → 0,497 (Extinktion), und lies die Probe mit Extinktion 0,250 ab.",
+  "schritte": [
+   {
+    "name": "Knopf Export as PNG vorhanden",
+    "typ": "button",
+    "titel": "Export as PNG"
    }
   ]
  }
