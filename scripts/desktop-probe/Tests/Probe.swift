@@ -188,6 +188,12 @@ class ProbeFall: XCTestCase {
     root.descendants(matching: typ).matching(NSPredicate(format: format, argumentArray: args)).firstMatch
   }
 
+  /// Steht Desktop an der Nutzungsgrenze? Dann antwortet das Modell nicht, und jeder rote Checkpoint
+  /// danach wäre keine Messung (16.11.2026: 14 Fälle „Eingabefeld fehlt“, 3 Fälle „180 s ohne Tool-Kopf“).
+  var nutzungsgrenze: Bool {
+    irgendwo(app, .staticText, "value BEGINSWITH[c] %@ OR value CONTAINS[c] %@ OR title == %@", "You’ve reached you", "usage limit", "Need more usage?").exists
+  }
+
   var chatTitel: String {
     let b = irgendwo(app, .button, "title ENDSWITH ', rename session'")
     guard b.exists else { return "" }

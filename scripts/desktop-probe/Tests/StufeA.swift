@@ -43,7 +43,7 @@ final class StufeA: ProbeFall {
       eintrag.click()
       guard chat.waitForNonExistence(timeout: 10) else { return (false, "alter Chat noch offen – kein neuer Chat") }
       let feld = app.textViews["Write your prompt to Claude"].firstMatch
-      guard feld.waitForExistence(timeout: 10) else { return (false, "Eingabefeld fehlt") }
+      guard feld.waitForExistence(timeout: 10) else { return (false, nutzungsgrenze ? "Desktop an der Nutzungsgrenze – keine Messung" : "Eingabefeld fehlt") }
       modell = waehleModell()
       feld.click()
       feld.typeText(prompt)
@@ -99,7 +99,7 @@ final class StufeA: ProbeFall {
         }
         Thread.sleep(forTimeInterval: 1.0)
       }
-      return (false, "180 s ohne Tool-Kopf")
+      return (false, nutzungsgrenze ? "Desktop an der Nutzungsgrenze – keine Messung" : "180 s ohne Tool-Kopf")
     }
     checkpoint("Rechte-Dialog", befund: true) { (dialog == "kein Dialog", dialog) }
     guard erwartetDa else { Zustand.merken(name, ["titel": chatTitel, "gerufen": ""]); return }
