@@ -1,5 +1,5 @@
 {
- "_kommentar": "Stufe B: Checkpoints je Panel-Tool. Gesucht wird über Bedienungshilfen-Namen (title/label/value), nie über sichtbaren Text – der Knopf mit der Aufschrift 'Export PNG' heißt 'Export as PNG'. Felder: typ, genau eines aus titel/beginnt/enthaelt, aktion (da|klick), wert (value nach dem Klick), dann (Folgeelement), bild (Panel-Bild mit dieser Marke), pause, timeout, fehlt (true: das Element darf nicht da sein; grün, sobald es fehlt). Nie klicken: die Knöpfe unter 'Continue in chat' (jeder schreibt eine Nachricht) und 'Add a flashcard to the Anki deck …' (ändert Anki).",
+ "_kommentar": "Stufe B: Checkpoints je Panel-Tool. Gesucht wird über Bedienungshilfen-Namen (title/label/value), nie über sichtbaren Text – der Knopf mit der Aufschrift 'Export PNG' heißt 'Export as PNG'. Felder: typ, genau eines aus titel/beginnt/enthaelt, aktion (da|klick), wert (value nach dem Klick), dann (Folgeelement), bild (Panel-Bild mit dieser Marke), pause, timeout, fehlt (true: das Element darf nicht da sein; grün, sobald es fehlt). Nie klicken: die Knöpfe unter 'Continue in chat' (jeder schreibt eine Nachricht) und 'Add a flashcard to the Anki deck …' (ändert Anki). Seit 16.11.2026 liefert Desktop für Umschalter (aria-pressed, im Baum CheckBox) keinen value mehr – auch für seine eigenen. Ihr Zustand wird deshalb an der Folge belegt (3D-Bild da/weg, Knopf Clear da/weg), nicht am value; Reiter (Tab) melden value weiter.",
  "generate_molecule": {
   "schritte": [
    {
@@ -31,9 +31,12 @@
     "typ": "checkBox",
     "aktion": "klick",
     "titel": "3D",
-    "wert": "1",
     "pause": 2.5,
-    "bild": "3d"
+    "bild": "3d",
+    "dann": {
+     "typ": "image",
+     "titel": "3D model, drag to rotate"
+    }
    },
    {
     "name": "Knopf Reset view vorhanden und klickbar",
@@ -46,23 +49,36 @@
     "name": "Ansicht 2D zurück",
     "typ": "checkBox",
     "aktion": "klick",
-    "titel": "2D",
-    "wert": "1"
+    "titel": "2D"
+   },
+   {
+    "name": "3D-Modell ist nach 2D wieder weg",
+    "typ": "image",
+    "titel": "3D model, drag to rotate",
+    "fehlt": true
    },
    {
     "name": "Gruppe Amide anheften",
     "typ": "checkBox",
     "aktion": "klick",
     "beginnt": "Amide",
-    "wert": "1",
-    "bild": "gruppe"
+    "bild": "gruppe",
+    "dann": {
+     "typ": "button",
+     "titel": "Clear"
+    }
    },
    {
     "name": "Gruppe Amide lösen",
     "typ": "checkBox",
     "aktion": "klick",
-    "beginnt": "Amide",
-    "wert": "0"
+    "beginnt": "Amide"
+   },
+   {
+    "name": "Gruppe gelöst: Knopf Clear ist weg",
+    "typ": "button",
+    "titel": "Clear",
+    "fehlt": true
    },
    {
     "name": "Tab Study vorhanden",
@@ -172,8 +188,11 @@
     "typ": "checkBox",
     "aktion": "klick",
     "beginnt": "Phenol",
-    "wert": "1",
-    "bild": "phenol"
+    "bild": "phenol",
+    "dann": {
+     "typ": "button",
+     "titel": "Clear"
+    }
    },
    {
     "name": "Detail: Knopf Export as PNG vorhanden",
@@ -310,11 +329,12 @@
     "bild": "3d"
    },
    {
-    "name": "3D-Modell dreht sich beim Ziehen",
+    "name": "3D-Modell dreht sich beim Ziehen (XCUI-Zug; Beleg mit echter Maus: Handlauf)",
     "typ": "image",
     "titel": "3D model, drag to rotate",
     "ziehen": true,
-    "bild": "3d-gedreht"
+    "bild": "3d-gedreht",
+    "befund": true
    },
    {
     "name": "Knopf Reset view vorhanden und klickbar",

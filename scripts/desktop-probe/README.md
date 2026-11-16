@@ -62,6 +62,16 @@ in beiden Stufen, die Schritte in `checkpoints.json`.
   Für draußen taugen nur die Bilder unter `bilder/` (Ausschnitt des Panels); die Verwertung gehört
   dem Schwester-Repo.
 
+- **Ziehen in der WebView kommt nicht an.** `press(forDuration:thenDragTo:)` – schnell, langsam mit Halten,
+  über Element- und über Fensterkoordinaten – drehte das 3D-Modell in Desktop nicht (16.11.2026, Bildabstand
+  0,00; in der Aufnahme bewegt sich das Modell nie). Im Referenz-Host dreht dieselbe Fläche mit echter
+  Playwright-Maus (`test:host`, „3D: Ziehen ändert die projizierten Atomkoordinaten“). Der Schritt ist
+  deshalb ein Befund (◆), kein Rot; ob das Modell in Desktop mit echter Maus dreht, belegt der Handlauf.
+- **Umschalter melden keinen `value` mehr** (16.11.2026, auch Desktops eigene): Zustand an der Folge
+  belegen (Bild da/weg, Knopf „Clear“ da/weg). Reiter (`tab`) melden `value` weiter.
+- **Eine Einbettung oberhalb des sichtbaren Bereichs ist 1 px hoch und hat keine WebView:** hochrollen,
+  bis sie gebaut ist (Chat mit Dateivorschau).
+
 ## Genutzte Apple-Doku
 
 - `XCUIApplication(bundleIdentifier:)`, `activate()`, `wait(for:timeout:)` — fremde App steuern

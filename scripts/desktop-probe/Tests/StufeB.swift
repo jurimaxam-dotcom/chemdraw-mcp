@@ -31,7 +31,9 @@ final class StufeB: ProbeFall {
   func schritt(_ s: [String: Any]) {
     let name = (s["name"] as? String) ?? "?"
     let warte = (s["timeout"] as? Double) ?? 8
-    checkpoint(name) {
+    // "befund": true – ein Rot hier ist meldenswert, aber kein Fehler des Produkts, den dieser Schritt
+    // belegen könnte (z. B. ein Zug, den XCUIAutomation in Desktops WebView nicht ausgelöst bekommt).
+    checkpoint(name, befund: (s["befund"] as? Bool) == true) {
       let el = finde(s)
       // "fehlt": true – das Element darf nicht (mehr) da sein, z. B. Reiter in einer Übersicht.
       if (s["fehlt"] as? Bool) == true {
@@ -52,13 +54,20 @@ final class StufeB: ProbeFall {
       if let m = s["merke"] as? String { gemerkt[m] = el.screenshot() }
       if (s["ziehen"] as? Bool) == true {
         let vorher = el.screenshot()
-        el.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.45))
-          .press(forDuration: 0.2, thenDragTo: el.coordinate(withNormalizedOffset: CGVector(dx: 0.65, dy: 0.6)))
+        // Langsam ziehen und am Ende kurz halten: ein schneller Zug kommt in der WebView als
+        // Drücken und Loslassen ohne Bewegung dazwischen an (16.11.2026: Bildabstand 0,00).
+        // Koordinaten über das Fenster, aus dem Rahmen des Elements im Moment des Ziehens: die
+        // elementbezogene Koordinate eines Web-Bildes traf nach dem Rollen nicht (Bildabstand 0,00).
+        let f = el.frame, w = app.windows.firstMatch, wf = w.frame
+        func punkt(_ dx: CGFloat, _ dy: CGFloat) -> XCUICoordinate {
+          w.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: f.minX + f.width * dx - wf.minX, dy: f.minY + f.height * dy - wf.minY))
+        }
+        punkt(0.4, 0.45).press(forDuration: 0.3, thenDragTo: punkt(0.6, 0.6), withVelocity: .slow, thenHoldForDuration: 0.3)
         Thread.sleep(forTimeInterval: 0.8)
         let d = bildabstand(vorher, el.screenshot())
         if let marke = s["bild"] as? String { panelBild(marke) }
         // Schwelle 1,0 von 255: ein unbewegtes Bild liegt bei 0, ein gedrehtes Modell bei mehreren Einheiten.
-        return (d >= 1.0, String(format: "Bildabstand nach dem Ziehen %.2f (Schwelle 1,0)", d))
+        return (d >= 1.0, String(format: "Bildabstand nach dem Ziehen %.2f (Schwelle 1,0), Fläche %.0f×%.0f bei %.0f/%.0f", d, f.width, f.height, f.minX, f.minY))
       }
       if let m = s["gleichWie"] as? String {
         guard let alt = gemerkt[m] else { return (false, "kein gemerktes Bild „\(m)“") }
@@ -138,8 +147,14 @@ final class StufeB: ProbeFall {
     guard offen else { return }
 
     let da = checkpoint("Panel nach Wiederöffnen eingebettet") {
-      let ok = panel.waitForExistence(timeout: 30)
-      return (ok, ok ? server : "keine WebView MCP-UI Proxy im Chat")
+      // Öffnet der Chat neben einer Dateivorschau oder am Ende einer langen Antwort, liegt die
+      // Einbettung oberhalb des sichtbaren Bereichs und steht nur als 1 px hohe Gruppe im Baum –
+      // die WebView baut Desktop erst, wenn sie ins Bild rollt (Kalibriergerade, 16.11.2026).
+      var ok = panel.waitForExistence(timeout: 8)
+      let mitte = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.4, dy: 0.5))
+      var runden = 0
+      while !ok && runden < 20 { mitte.scroll(byDeltaX: 0, deltaY: 300); runden += 1; ok = panel.waitForExistence(timeout: 1.5) }
+      return (ok, ok ? server + (runden > 0 ? " (nach \(runden)× Hochrollen)" : "") : "keine WebView MCP-UI Proxy im Chat")
     }
     guard da else { return }
     konnektorCheckpoint()
