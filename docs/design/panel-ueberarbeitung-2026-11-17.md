@@ -6,6 +6,8 @@ Referenz-Hosts (`scripts/desktop-probe/out/etappe1…5/nachher/`, lokal, nicht v
 (`/tmp/chemdraw-desktop-test/release-2026-11-16/`, lokal, @2x: 1856 px Bild = 928 CSS-px). Pfade kurz: `ui/` =
 `chemdraw_tool/ui/src/`. Alle Maße in CSS-px. Diese Datei entscheidet; wer abweicht, ändert erst sie.
 
+**Korrektur des Owners (16.11.2026, 23:30):** Die erste Fassung deckelte 3D auf 600×600 – kleiner als der Stand nach Jays „3D ist zu klein“ (`60ee87b`: 968×720 im Molekül-Panel, 936×640 bei `generate_3d`). 3D nimmt die volle Inhaltsbreite und bis zu 720 px Höhe. Außerdem: Die Dateiliste hinter „Files“ steht immer im DOM (`hidden`, solange zugeklappt), damit `.panel-footer-path` mit `title` für `test:host` erreichbar bleibt.
+
 ---
 
 ## §1 Befund: die zwölf stärksten Unruhe-Quellen
@@ -111,7 +113,7 @@ Die Hex-Werte sind nur Rückfall für den Referenz-Host. Dunkel steht in beiden 
   --focus: var(--accent);
   /* Bühnen */
   --stage-h: 320px;            /* 2D-Zeichnung im Chat */
-  --stage-3d-max: 600px;       /* Kantenlänge 3D im Chat */
+  --stage-3d-max: 720px;       /* größte Höhe der 3D-Bühne im Chat; die Breite ist immer die volle Inhaltsbreite */
   --plot-max-h: 400px;
 }
 /* dunkel, beide Selektoren: */
@@ -151,7 +153,7 @@ bleiben als Haken erhalten (`.panel-title`, `.panel-subtitle`, `.structure-canva
 | **Tabs (Unter)** und **Achse** | `size="sm"` bzw. `role=group` mit `aria-pressed` | gleiche Form, Knopf 24 (Spur 28), 12/600. Die Molekül-Achse bleibt `aria-pressed` (Probe: `checkBox` „2D“/„3D“), Protein-Achsen bleiben Tabs | `.seg-sm`, `.view-axis` |
 | **ExpandButton** | wie heute | 32×32, ruhig, nur Symbol (eigenes SVG, zwei Diagonalpfeile, 1,5 px Strich), `aria-label="Expand"`, `title="Open in the side panel"` | Text-Knopf mit Rahmen |
 | **StageBar** | `left, right` | `div.stage-bar`: Flex, `min-height 28`, `justify-content: space-between`, `gap 8`, darunter 8 px. Links Achse oder Unterreiter, rechts Hinweis (12, `--text-2`, ab < 480 px ausgeblendet, dann nur `title`) und ruhige Knöpfe (Reset view, Back/Next) | `RotateRow`, Protein-Steuerleiste, Mechanismus-Navigation |
-| **Stage** | `variant="plain" \| "paper" \| "3d"` | `div.stage`. **plain** (Standard): keine Kante, keine Fläche, Breite 100 %, Höhe `--stage-h` (Chat) bzw. Rest (Fill). **paper**: `--paper`, Radius m, Polster 12, nur Scope. **3d**: quadratisch, `width: min(100%, var(--stage-3d-max))`, `aspect-ratio: 1`, mittig; in Fill `min(100%, Resthöhe)` | `.structure-canvas`-Rahmen, `.plot-svg`-Rahmen, `--bg-alt`-Flächen |
+| **Stage** | `variant="plain" \| "paper" \| "3d"` | `div.stage`. **plain** (Standard): keine Kante, keine Fläche, Breite 100 %, Höhe `--stage-h` (Chat) bzw. Rest (Fill). **paper**: `--paper`, Radius m, Polster 12, nur Scope. **3d**: volle Inhaltsbreite, Höhe `min(Breite, var(--stage-3d-max))` (Chat 1000: 968×720, nie kleiner als der Stand `60ee87b`); in Fill nimmt sie den Rest, schmal nie unter `--canvas-min`, breit nie unter 200 px | `.structure-canvas`-Rahmen, `.plot-svg`-Rahmen, `--bg-alt`-Flächen |
 | **Facts** | `items=[{label, value, copy}]` | `dl.panel-facts.key-facts`: Flex-Zeile mit Umbruch, `gap 8px 32px`; `dt` 12/16 `--text-2`, `dd` 15/20 `--weight-regular`, `tabular-nums`; Kopierknopf ruhig hinter dem Wert. Schmal zwei Spalten | `Fact` in MoleculeView, Rf-Zeile, Anki-Zähler |
 | **Chip** | `pressed, color, count` | `button.chip` (und `.functional-group`): 32 hoch, Pille, 1 px `--line`, Punkt 8 px in `--group-color`, Zahl `--text-2`. Gedrückt: Kante `--group-color`, Fläche `color-mix(--group-color 12%, --bg)`, 600. **Einzige Pille im Panel.** Stereo-Knopf und Ansichts-Chips werden ruhige Knöpfe | `.functional-group`, `.chip-toggle`, `.stereo-note-button`, `.balance-badge` |
 | **Button** | `variant="quiet" \| "primary"`, `icon` | `button.btn`: 32 hoch, Polster 0 12, Radius m, 13/600. **quiet**: keine Kante, `--text-2`, Hover `--surface-1`, Text `--text`. **primary**: `--accent`/`--on-accent`, nur „Reveal all“. Ein Symbol 14 px links, aus einem eigenen Strich-Satz (1,5 px). `disabled`: `--text-2` bei 50 % Deckkraft, bleibt sichtbar | Export, Anki, Reset, Clear, Back/Next, Apply, Undo, Study-Knöpfe |
@@ -179,10 +181,10 @@ Formula C8H10N4O2  Molar mass 194.19 g/mol  CAS 58-08-2 │ (Zeichnung, Rest)
 ● 1 unspecified stereocenter  [Show variants]           │ CAS
 ```
 - **Entfällt:** die rechte Kernwert-Spalte samt Trennlinie, der Bühnenrahmen, die Linie unter dem Kopf und das Etikett „Functional groups“ (die Chips erklären sich; das Etikett lebt als `aria-label` der Sektion weiter).
-- **3D-Modus:** Bühne `variant="3d"`, 600×600 bei 1000 und 860 px (Inhaltsbreite ≥ 600). Rechts in der StageBar „Drag to rotate“ und „Reset view“. Die Kernwerte bleiben als Zeile darunter; Gruppen und Stereo bleiben aus.
+- **3D-Modus:** Bühne `variant="3d"`, volle Breite × 720 bei 1000 px (bei 860 px volle Breite × 720). Rechts in der StageBar „Drag to rotate“ und „Reset view“. Die Kernwerte bleiben als Zeile darunter; Gruppen und Stereo bleiben aus.
 - **Data:** Unterreiter PubChem/GHS in der StageBar; Tabelle `.source-row` 36 hoch, Etikettspalte 10,5 em, Linie nur zwischen Zeilen. Der Quellen-Link steht als Hint unter der Tabelle. GHS-Aufklapper mit SVG-Chevron statt ▸▾.
 - **Study:** gleiche Geometrie wie Structure. Verdecktes = `--surface-1` mit 1 px gestrichelter `--line-strong`-Kante; das ist die einzige gestrichelte Form, sie bedeutet „verdeckt“. Im Fuß keine Files und kein Export, nur Add to Anki. **B9 beheben:** In Fill bekommt die Study-Bühne dieselbe Flex-Kette wie Structure (`[data-view="study"] .stage { flex: 1 0 var(--canvas-min) }`).
-- **Ziel:** 2D ≤ 660 / ≤ 700 px; Data ≤ 700 px (10 Zeilen); 3D ≈ 900 px (ausgenommen).
+- **Ziel:** 2D ≤ 660 / ≤ 700 px; Data ≤ 700 px (10 Zeilen); 3D ≈ 1000 px (ausgenommen).
 
 ### 5.2 Datenblatt (lookup_molecule_data) — A
 Wie 5.1 mit Startreiter Data. Der Untertitel wird der PubChem-Datensatz wie im Molekül-Panel (nicht die Formel).
@@ -258,12 +260,12 @@ Papierkante statt einer randlosen weißen Fläche (B11). Einträge als Facts-Zei
 Koffein                                       [⤢] │ Koffein             [⤢]
 3D conformer (ETKDG + force field) · C8H10N4O2    │ 3D conformer (ETKDG…
                 drag to rotate · [Reset view]     │          [Reset view]
-            ┌ Kuhle 600 × 600, mittig ┐           │  ( Kuhle 296 × 296 )
+      ┌ Kuhle volle Breite × 720 ┐                │  ( Kuhle 296 × 296 )
 Formula C8H10N4O2   Molar mass 194.19 g/mol       │ Formula   Molar mass
 ```
 - Bühne `variant="3d"`, dieselbe Regel wie im Molekül-Panel. Die Kuhle ist die einzige Form (kein Rahmen, keine Fläche). Untertitel beginnt mit „3D conformer“ (Probe). Molmasse und Formel wandern aus dem Untertitel in die Facts.
 - In Fill rückt der Fuß direkt unter die Facts, der Rest bleibt unten frei. Das beseitigt den Streifen aus B1.
-- Ziel im Chat: 600 + ~170 ≈ 770 px (ausgenommen).
+- Ziel im Chat: 720 + ~170 ≈ 890 px (ausgenommen).
 
 ### 5.12 Protein / Antikörper — C
 ```
@@ -333,9 +335,9 @@ Fehlt B oder C ein Baustein, meldet das Paket ihn an A und baut ihn nicht selbst
 
 | Paket | Dateien (ausschließlich) | Abnahme |
 |---|---|---|
-| **A Fundament** | `styles.css`, `styles/tokens.css`, `styles/frame.css`, `main.jsx`, `App.jsx`, `components/Panel.jsx` (neu), `Tabs`, `ViewToggle`, `ExpandButton`, `SectionHeader`, `PanelFooter`, `ContinueRow`, `CopyButton`, `ExportPngButton`, `AddToAnkiButton`, `RotateRow` (geht in StageBar auf), `ToolPlaceholder`, `ToolError`, `HostDiagnostics`, `FunctionalGroupList`, `StereoNote`, `StudyPanel`, `SourceList`, `StructureCanvas`, `AtomHighlights`, `AtomTooltip`, `Formula`, `FoundAs`; `MoleculeView`, `DatabaseView`, `BatchView`, `AmbiguousView`; `ModelContext.jsx` nur lesen; `scripts/desktop-probe/checkpoints.json` (allein A, Ziel: keine Änderung); `host/host.e2e.mjs`, `host/panel-shots.mjs` und die Tests dieser Komponenten | Chat 1000: Molekül 2D ≤ 660 px, Data ≤ 700, Batch-6 ≤ 700; 860: alle ≤ 700. 3D im Molekül-Panel: Kuhlen-Box 600 × 600 ± 4 bei 1000 und 860. Fill 320×700: die Molekül-Bühne ≥ 240 px hoch, keine waagrechte Rolle. Study in Fill: Bühne ≥ `--canvas-min` (B9). Kontraste nach §3, gemessen in beiden Themen. Kein Rahmen um `.stage`, genau eine Haarlinie (Fuß). `grep -E '#[0-9a-fA-F]{3,6}' frame.css` leer |
+| **A Fundament** | `styles.css`, `styles/tokens.css`, `styles/frame.css`, `main.jsx`, `App.jsx`, `components/Panel.jsx` (neu), `Tabs`, `ViewToggle`, `ExpandButton`, `SectionHeader`, `PanelFooter`, `ContinueRow`, `CopyButton`, `ExportPngButton`, `AddToAnkiButton`, `RotateRow` (geht in StageBar auf), `ToolPlaceholder`, `ToolError`, `HostDiagnostics`, `FunctionalGroupList`, `StereoNote`, `StudyPanel`, `SourceList`, `StructureCanvas`, `AtomHighlights`, `AtomTooltip`, `Formula`, `FoundAs`; `MoleculeView`, `DatabaseView`, `BatchView`, `AmbiguousView`; `ModelContext.jsx` nur lesen; `scripts/desktop-probe/checkpoints.json` (allein A, Ziel: keine Änderung); `host/host.e2e.mjs`, `host/panel-shots.mjs` und die Tests dieser Komponenten | Chat 1000: Molekül 2D ≤ 660 px, Data ≤ 700, Batch-6 ≤ 700; 860: alle ≤ 700. 3D im Molekül-Panel: Kuhlen-Box volle Inhaltsbreite ± 4 und 720 hoch bei 1000 und 860 (nie kleiner als `60ee87b`: 968×720). Fill 320×700: die Molekül-Bühne ≥ 240 px hoch, keine waagrechte Rolle. Study in Fill: Bühne ≥ `--canvas-min` (B9). Kontraste nach §3, gemessen in beiden Themen. Kein Rahmen um `.stage`, genau eine Haarlinie (Fuß). `grep -E '#[0-9a-fA-F]{3,6}' frame.css` leer |
 | **B Grafiken** | `PlotView`, `SpectrumView`, `TlcView`, `components/PlotFigure.jsx`, `ReactionView`, `MechanismView`, `utils/mechanismLayout.js`, `ScopeView`, `styles/b-graphics.css` und ihre Tests | Chat 1000: Spektrum, Titration und Spezies ≤ 620 px, DC ≤ 640, Vergleich ≤ 560, Reaktion ≤ 440, Mechanismus-Übersicht ≤ 700, Schritt ≤ 620. Plotbreite = Inhaltsbreite ± 0. Kein Inline-`style` mit Farbe. Scope dunkel: keine Fläche heller als `--paper` außerhalb der Papierbühne. Back/Next 32 hoch und beide sichtbar |
-| **C 3D, Protein, Anki** | `Molecule3DView`, `ProteinView`, `components/Ball3DCanvas.jsx`, `BackboneCanvas`, `IgGScheme`, `protein/*`, `utils/atoms3d.js`, `AnkiDeckView`, `styles/c-protein-3d-anki.css` und ihre Tests | Chat 1000: Kuhle 600×600 ± 4 bei 1000 und 860; Protein-Bühne 520 hoch, volle Breite, in Struktur und Scheme gleich. Fill 320×700: Kuhle ≥ 280, kein Leerstreifen zwischen Facts und Fuß. Ohne WebGL weiter die Spur, nie eine leere Fläche (`test:host`). Anki ≤ 700 px, `APKG` und Pfad sichtbar. Protein: höchstens zwei Steuerzeilen bei 1000, drei bei 320 |
+| **C 3D, Protein, Anki** | `Molecule3DView`, `ProteinView`, `components/Ball3DCanvas.jsx`, `BackboneCanvas`, `IgGScheme`, `protein/*`, `utils/atoms3d.js`, `AnkiDeckView`, `styles/c-protein-3d-anki.css` und ihre Tests | Chat 1000: Kuhle volle Inhaltsbreite ± 4 × 720 bei 1000 und 860 (heute 936×640, nicht kleiner); Protein-Bühne 520 hoch, volle Breite, in Struktur und Scheme gleich. Fill 320×700: Kuhle ≥ 280, kein Leerstreifen zwischen Facts und Fuß. Ohne WebGL weiter die Spur, nie eine leere Fläche (`test:host`). Anki ≤ 700 px, `APKG` und Pfad sichtbar. Protein: höchstens zwei Steuerzeilen bei 1000, drei bei 320 |
 
 **Gemeinsame Abnahme** (A führt zusammen): Ein frischer `npm --prefix chemdraw_tool/ui run build` erzeugt das Bündel,
 dann laufen `./test.sh`, `test:host`, `test:inspector` und die Bildserie von `host/panel-shots.mjs` in drei Größen, hell
