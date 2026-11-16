@@ -37,3 +37,17 @@ test("Spektrum nutzt dieselbe Fläche, Klasse spectrum-svg bleibt", () => {
   assert.ok(container.querySelector(".plot-panel > .plot-svg.spectrum-svg"));
   unmount();
 });
+
+// Etappe 5 (16.11.2026): die Notizen unter der Kalibrierkurve tragen Markdown-Sterne (**4.616**) —
+// für Claude und die Exportdatei richtig, im Panel standen sie wörtlich da. Das Panel setzt fett.
+test("Notizen: **…** wird fett gesetzt, keine Sterne im Panel", () => {
+  const data = { type: "plot", name: "Calibration curve", svg: "<svg viewBox='0 0 10 10'></svg>",
+    notes: ["Signal 0.47 → **4.61612** (x = (y − b) / a)", "a * b ohne Fettdruck", "**offen"] };
+  const { container, unmount } = render(React.createElement(PlotView, { data }));
+  const items = [...container.querySelectorAll("li")];
+  assert.equal(items[0].textContent, "Signal 0.47 → 4.61612 (x = (y − b) / a)");
+  assert.equal(items[0].querySelector("strong")?.textContent, "4.61612");
+  assert.equal(items[1].textContent, "a * b ohne Fettdruck", "einzelne Sterne bleiben");
+  assert.equal(items[2].textContent, "**offen", "ohne schließende Sterne kein Fettdruck");
+  unmount();
+});

@@ -273,7 +273,9 @@ export default function MechanismView({ data }) {
   // Die Weiter-Zeile (U3) sitzt in der festen Höhe: um sie wächst das Panel,
   // damit die Schrittkarte nicht schrumpft.
   const withRow = hostCan(useAppBridge(), "message");
-  const chatHeight = withRow ? 680 : 540;  // intrinsisch — der Host bemisst das iframe am Inhalt
+  // Intrinsisch — der Host bemisst das iframe am Inhalt. Etappe 5: 668 statt 680, damit das
+  // Panel samt body-Rand im Chat 700 px hoch ist (vorher 712).
+  const chatHeight = withRow ? 668 : 528;
 
   // Übersicht (Etappe 5): Platz der Bühne messen — Breite direkt, Höhe als Panelhöhe minus
   // alles außer der Bühne. Beides hängt nicht vom Inhalt der Übersicht ab, deshalb kann die

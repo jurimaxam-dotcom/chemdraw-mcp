@@ -8,6 +8,14 @@ import { useModelContextReport } from "./ModelContext";
 import { plotFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
 
+// Notizen tragen Markdown-Fettdruck (**4.616**) — für Claude und die Exportdatei; das
+// Panel setzt ihn als <strong> statt die Sterne zu zeigen (Etappe 5). Nur Paare, ein
+// einzelnes Sternchen bleibt Text.
+export function noteParts(note) {
+  return String(note ?? "").split(/\*\*(.+?)\*\*/g)
+    .map((text, i) => (i % 2 ? <strong key={i}>{text}</strong> : text));
+}
+
 export default function PlotView({ data }) {
   const { flush } = useModelContextReport(genericContext("plot", data), data.name || "plot");
   if (!data.svg) {
@@ -35,7 +43,7 @@ export default function PlotView({ data }) {
           }}
         >
           {data.notes.map((note, i) => (
-            <li key={i}>{note}</li>
+            <li key={i}>{noteParts(note)}</li>
           ))}
         </ul>
       )}

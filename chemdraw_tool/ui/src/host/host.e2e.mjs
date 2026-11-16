@@ -197,6 +197,17 @@ try {
       await page2.close();
     }
 
+    // Etappe 5: Datenblatt bei 1000×700 ohne Rollen (vorher 713 px).
+    {
+      const [page, f] = await open("lookup_molecule_data", { name: "paracetamol" }, full(1000, 700), { viewport: { width: 1000, height: 700 } });
+      await f.getByText("103-90-2").first().waitFor({ timeout: 30000 });
+      await page.waitForTimeout(300);
+      const g = await f.evaluate(() => ({ sh: document.documentElement.scrollHeight, ih: innerHeight }));
+      messwerte["e5-datenblatt-1000x700"] = JSON.stringify(g);
+      check(g.sh <= g.ih, `E5 Datenblatt 1000×700: kein Rollen (${g.sh} in ${g.ih})`);
+      await page.close();
+    }
+
     // (a) Morphin im Vollbild 1000×1200, hell und dunkel
     for (const colorScheme of ["light", "dark"]) {
       const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });
@@ -517,11 +528,10 @@ try {
           await page.waitForTimeout(400);
           const p = await plotFigure(f);
           messwerte[`e1-${tag}-${w}x${h}`] = JSON.stringify(p);
-          // Breite Figur: schmal die ganze Kartenbreite, breit mindestens 60 %; DC-Platte: die Höhe —
-          // oder, schmal, die ganze Breite: dann ist die Platte so groß, wie sie werden kann (Etappe 4:
-          // die kompakte Weiter-Zeile gibt der Karte bei 320 px mehr Höhe, als die Platte braucht).
-          const breitVoll = p.w >= 0.9 * (p.card - 18);
-          const voll = p.hoch ? p.h >= 0.85 * (p.cardH - 18) || (w === 320 && breitVoll) : p.w >= (w === 320 ? 0.9 * (p.card - 18) : 0.6 * p.card);
+          // Breite Figur: schmal die ganze Kartenbreite, breit mindestens 60 %; DC-Platte: die Höhe der
+          // Karte — auch schmal (Etappe 5: die Karte passt sich der Platte an; in Etappe 4 war hier die
+          // Ausnahme „schmal genügt die Breite“, darunter blieben ~70 px der Karte leer).
+          const voll = p.hoch ? p.h >= 0.85 * (p.cardH - 18) : p.w >= (w === 320 ? 0.9 * (p.card - 18) : 0.6 * p.card);
           check(voll && p.sh <= p.ih && p.sw <= p.iw, `E1 ${tag} ${w}×${h}: Figur ${p.w}×${p.h} in Karte ${p.card}×${p.cardH}, kein Rollen`);
           await page.close();
         }
