@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import SectionHeader from "./components/SectionHeader";
 import Tabs from "./components/Tabs";
 import ExportPngButton from "./components/ExportPngButton";
@@ -9,10 +9,19 @@ import { useAppBridge } from "./AppContext";
 import { mechanismFollowUps } from "./utils/followUps.js";
 import { mechanismContext } from "./utils/modelContext.js";
 import { composeSvg } from "./utils/composeSvg";
-import { naturalWidth } from "./utils/svgSize";
+import { naturalHeight, naturalWidth } from "./utils/svgSize";
+import { overviewLayout, ARROW_H, ARROW_W, TILE_PAD } from "./utils/mechanismLayout.js";
 
-// Pixel je viewBox-Einheit in der Overview: gleiche Atomgröße in allen Kacheln.
-const OVERVIEW_SCALE = 0.62;
+// Lesbare Angabe der Familie für den Untertitel (Etappe 5: vorher stand dort der Rohwert „sn2“).
+const FAMILY_LABEL = { sn2: "SN2", sn1: "SN1", fischer_ester: "Fischer esterification" };
+
+/** „SN1 · 3 steps“ — die Familie nur, wenn der Titel sie nicht schon nennt. */
+export function mechanismSubtitle(data, total) {
+  const label = FAMILY_LABEL[data.reaction_type];
+  const named = label && String(data.name || "").toLowerCase().includes(label.toLowerCase());
+  return [label && !named ? label : null, `${total} step${total === 1 ? "" : "s"}`,
+    data.reversible ? "each step an equilibrium" : null].filter(Boolean).join(" · ");
+}
 
 function StepIndicator({ current, total, onStepClick }) {
   return (
@@ -48,93 +57,97 @@ function StepIndicator({ current, total, onStepClick }) {
   );
 }
 
-// reversible (Fischer): jeder Schritt ist ein Gleichgewicht — zwei Halbpfeile ⇌, senkrecht
-// (hin links nach unten, zurück rechts nach oben), statt eines einfachen Pfeils (Etappe E2).
-function StepArrow({ reversible }) {
+// Pfeil zwischen zwei Schritten: in einer Zeile waagrecht, zwischen zwei Zeilen senkrecht.
+// reversible (Fischer): jeder Schritt ist ein Gleichgewicht — zwei Halbpfeile ⇌ statt eines
+// einfachen Pfeils (Etappe E2). Maße wie ARROW_W/ARROW_H in utils/mechanismLayout.js.
+function StepArrow({ reversible, down = false }) {
+  const stroke = { stroke: "var(--fg-muted)", strokeWidth: 1.5, fill: "none" };
   return (
     <div
       data-arrow={reversible ? "equilibrium" : "forward"}
+      data-arrow-dir={down ? "down" : "right"}
       title={reversible ? "equilibrium" : undefined}
-      style={{ display: "flex", alignItems: "center", flexShrink: 0, padding: "0 2px" }}
+      style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        width: down ? "100%" : ARROW_W, height: down ? ARROW_H : undefined }}
     >
-      {reversible ? (
-        <svg width="20" height="26" viewBox="0 0 20 26">
-          <line x1="7" y1="2" x2="7" y2="23" stroke="var(--fg-muted)" strokeWidth="1.5" />
-          <polyline points="3,17 7,23" fill="none" stroke="var(--fg-muted)" strokeWidth="1.5" />
-          <line x1="13" y1="3" x2="13" y2="24" stroke="var(--fg-muted)" strokeWidth="1.5" />
-          <polyline points="17,9 13,3" fill="none" stroke="var(--fg-muted)" strokeWidth="1.5" />
+      {down ? (
+        reversible ? (
+          <svg width="20" height="26" viewBox="0 0 20 26">
+            <line x1="7" y1="2" x2="7" y2="23" {...stroke} />
+            <polyline points="3,17 7,23" {...stroke} />
+            <line x1="13" y1="3" x2="13" y2="24" {...stroke} />
+            <polyline points="17,9 13,3" {...stroke} />
+          </svg>
+        ) : (
+          <svg width="20" height="26" viewBox="0 0 20 26">
+            <line x1="10" y1="2" x2="10" y2="16" {...stroke} />
+            <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
+          </svg>
+        )
+      ) : reversible ? (
+        <svg width="26" height="20" viewBox="0 0 26 20">
+          <line x1="2" y1="7" x2="23" y2="7" {...stroke} />
+          <polyline points="17,3 23,7" {...stroke} />
+          <line x1="3" y1="13" x2="24" y2="13" {...stroke} />
+          <polyline points="9,17 3,13" {...stroke} />
         </svg>
       ) : (
-        <svg width="20" height="26" viewBox="0 0 20 26">
-          <line x1="10" y1="2" x2="10" y2="16" stroke="var(--fg-muted)" strokeWidth="1.5" />
-          <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
+        <svg width="26" height="20" viewBox="0 0 26 20">
+          <line x1="2" y1="10" x2="16" y2="10" {...stroke} />
+          <polygon points="16,6 24,10 16,14" fill="var(--fg-muted)" />
         </svg>
       )}
     </div>
   );
 }
 
-function OverviewMode({ steps, reversible, onStepClick }) {
+function StepTile({ step, index, scale, onStepClick }) {
+  const w = naturalWidth(step.svg) || 300;
+  const h = naturalHeight(step.svg) || 200;
+  const caption = step.is_transition_state ? `[${step.label}]‡` : step.label;
   return (
     <div
-      style={{
-        // Spalte statt Zeile: Schritte sind unterschiedlich breit (Produkt + abgespaltenes Br⁻),
-        // in einer Zeile werden sie entweder winzig oder brechen mitten im Fluss um.
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 4,
-        padding: 8,
+      role="button"
+      tabIndex={0}
+      className="mech-tile"
+      aria-label={`Open step ${index + 1}: ${step.label}`}
+      onClick={() => onStepClick(index)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onStepClick(index);
+        }
       }}
+      style={{ padding: TILE_PAD, width: Math.round(w * scale) + 2 * TILE_PAD }}
     >
-      {steps.map((step, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && <StepArrow reversible={reversible} />}
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label={`Open step ${i + 1}: ${step.label}`}
-            onClick={() => onStepClick(i)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onStepClick(i);
-              }
-            }}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 6,
-              flexShrink: 0,
-              maxWidth: "100%",
-              cursor: "pointer",
-              padding: 6,
-              borderRadius: 8,
-              transition: "background 0.15s",
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
-            onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-          >
-            <div
-              dangerouslySetInnerHTML={{ __html: step.svg }}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: naturalWidth(step.svg) ? naturalWidth(step.svg) * OVERVIEW_SCALE : "100%",
-                maxWidth: "100%",
-              }}
-            />
-            <div
-              style={{
-                fontSize: 11,
-                color: step.is_transition_state ? "var(--accent)" : "var(--fg-muted)",
-                textAlign: "center",
-                fontWeight: step.is_transition_state ? 600 : 400,
-              }}
-            >
-              {step.is_transition_state ? `[${step.label}]‡` : step.label}
-            </div>
+      <div
+        className="mech-tile-svg"
+        dangerouslySetInnerHTML={{ __html: step.svg }}
+        style={{ width: Math.round(w * scale), height: Math.round(h * scale) }}
+      />
+      <div className={step.is_transition_state ? "mech-tile-caption is-ts" : "mech-tile-caption"} title={caption}>
+        {caption}
+      </div>
+    </div>
+  );
+}
+
+// Übersicht (Etappe 5): Zeilen aus Schritten mit Pfeilen dazwischen, so wenige Zeilen wie die
+// Breite in lesbarer Größe erlaubt (utils/mechanismLayout.js). Kein eigener Rollbereich:
+// passt es nicht in die Höhe, wächst das Panel.
+function OverviewMode({ steps, reversible, layout, onStepClick }) {
+  return (
+    <div className="mech-overview" data-rows={layout.rows.length}>
+      {layout.rows.map((row, r) => (
+        <React.Fragment key={r}>
+          {r > 0 && <StepArrow reversible={reversible} down />}
+          <div className="mech-overview-row">
+            {row.map((i, k) => (
+              <React.Fragment key={i}>
+                {k > 0 && <StepArrow reversible={reversible} />}
+                <StepTile step={steps[i]} index={i} scale={layout.scale} onStepClick={onStepClick} />
+              </React.Fragment>
+            ))}
           </div>
         </React.Fragment>
       ))}
@@ -236,8 +249,9 @@ function StepMode({ steps, currentStep: wantedStep, setCurrentStep }) {
   );
 }
 
-// Export folgt der Ansicht: im Schrittmodus der gezeigte Schritt, in der
-// Übersicht alle Schritte untereinander mit Pfeilen — wie im Panel.
+// Export folgt der Ansicht: im Schrittmodus der gezeigte Schritt, in der Übersicht alle
+// Schritte untereinander mit Pfeilen (eine Spalte — das Panel ordnet sie seit Etappe 5 in
+// Zeilen nach der Breite, die Datei bleibt davon unabhängig).
 function overviewSvg(steps, reversible) {
   const parts = [];
   steps.forEach((step, i) => {
@@ -246,6 +260,8 @@ function overviewSvg(steps, reversible) {
   });
   return composeSvg(parts, { direction: "column", gap: 6 });
 }
+
+const STAGE_PAD = 12;
 
 export default function MechanismView({ data }) {
   const steps = data.steps || [];
@@ -257,6 +273,41 @@ export default function MechanismView({ data }) {
   // Die Weiter-Zeile (U3) sitzt in der festen Höhe: um sie wächst das Panel,
   // damit die Schrittkarte nicht schrumpft.
   const withRow = hostCan(useAppBridge(), "message");
+  const chatHeight = withRow ? 680 : 540;  // intrinsisch — der Host bemisst das iframe am Inhalt
+
+  // Übersicht (Etappe 5): Platz der Bühne messen — Breite direkt, Höhe als Panelhöhe minus
+  // alles außer der Bühne. Beides hängt nicht vom Inhalt der Übersicht ab, deshalb kann die
+  // Aufteilung das Maß nicht zurückverändern (keine Mess-Schleife).
+  const panelRef = useRef(null);
+  const stageRef = useRef(null);
+  const [box, setBox] = useState({ width: 0, height: 0 });
+  const sizes = useMemo(
+    () => steps.map((s) => ({ w: naturalWidth(s.svg) || 300, h: naturalHeight(s.svg) || 200 })),
+    [steps]
+  );
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const stage = stageRef.current;
+    if (mode !== "overview" || !panel || !stage || typeof ResizeObserver === "undefined") return undefined;
+    const measure = () => {
+      let total = chatHeight;
+      if (document.documentElement.hasAttribute("data-host-height")) {
+        const cs = getComputedStyle(document.body);
+        total = window.innerHeight - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+      }
+      const rest = panel.getBoundingClientRect().height - stage.getBoundingClientRect().height;
+      const width = Math.floor(stage.clientWidth - 2 * STAGE_PAD);
+      const height = Math.floor(total - rest - 2 * STAGE_PAD);
+      setBox((b) => (b.width === width && b.height === height ? b : { width, height }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(panel);
+    ro.observe(stage);
+    return () => ro.disconnect();
+  }, [mode, chatHeight]);
+  const layout = useMemo(() => overviewLayout(sizes, box.width, box.height), [sizes, box]);
+  const grows = mode === "overview" && layout.overflow;
 
   if (steps.length === 0) {
     return (
@@ -268,9 +319,12 @@ export default function MechanismView({ data }) {
 
   return (
     <div
+      ref={panelRef}
       className="mechanism-panel"
       style={{
-        height: withRow ? 680 : 540,  // intrinsisch — der Host bemisst das iframe am Inhalt
+        // Feste Höhe im Chat; nur eine Übersicht, die lesbar nicht hineinpasst, macht das Panel höher.
+        height: grows ? "auto" : chatHeight,
+        "--mech-min-h": `${chatHeight}px`,
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -280,7 +334,7 @@ export default function MechanismView({ data }) {
     >
       <SectionHeader
         title={data.name || "Mechanismus"}
-        subtitle={data.reaction_type}
+        subtitle={mechanismSubtitle(data, steps.length)}
         className="mech-header"
         expand
         actions={<Tabs label="Mechanism view" value={mode} onChange={setMode}
@@ -305,23 +359,27 @@ export default function MechanismView({ data }) {
       ))}
 
       <div
+        ref={stageRef}
         className="mech-stage"
+        data-mode={mode}
         style={{
           background: "var(--bg-alt)",
           borderRadius: "var(--radius, 10px)",
           boxShadow: "var(--shadow)",
-          padding: 12,
-          flex: 1,
+          padding: STAGE_PAD,
+          // Step-Modus füllt die feste Fläche; die Übersicht ist nie kleiner als ihr Inhalt
+          // und rollt nie selbst (Etappe 5: vorher eigener Rollbalken in der Karte).
+          flex: mode === "step" ? "1 1 0" : "1 0 auto",
           minHeight: 0,
           display: "flex",
           flexDirection: "column",
-          // Step-Modus füllt die Fläche ohne Scroll; die Overview-Liste
-          // scrollt INNERHALB der Karte, nie das ganze Panel.
-          overflow: mode === "step" ? "hidden" : "auto",
+          justifyContent: mode === "step" ? undefined : "center",
+          overflow: "hidden",
         }}
       >
         {mode === "overview" ? (
-          <OverviewMode steps={steps} reversible={!!data.reversible} onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
+          <OverviewMode steps={steps} reversible={!!data.reversible} layout={layout}
+            onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
         ) : (
           <StepMode
             steps={steps}

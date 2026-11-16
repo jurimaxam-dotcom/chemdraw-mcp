@@ -123,6 +123,36 @@ for (const [file, name, input, klick] of VIERTE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
 }
+// Etappe 5 (16.11.2026): Mechanismus-Übersicht (SN2, Fischer mit acht Schritten), Anki-Deck,
+// 3D mit Formel und „Reset view“, Protein-Höhe, Kalibrier-Notizen, Datenblatt und DC-Platte.
+const ANKI = { deck_name: "Koffein und Paracetamol", cards: [
+  { front: { structure: "caffeine" }, back: { text: "<b>Koffein</b> (Caffeine)<br>Methylxanthin, Adenosin-Antagonist" } },
+  { front: { structure: "paracetamol" }, back: { text: "<b>Paracetamol</b><br>Analgetikum, Antipyretikum" } },
+  { front: { text: "Welche funktionelle Gruppe trägt Aspirin neben der Carbonsäure?" }, back: { text: "Einen Phenylester (Acetylester)", structure: "aspirin" } },
+] };
+const ANKI_VIELE = { deck_name: "Lösungsmittel", cards: ["methanol", "ethanol", "acetone", "toluene", "hexane", "benzene", "phenol", "pyridine", "acetonitrile", "chloroform"]
+  .map((s) => ({ front: { text: `Formel von ${s}?` }, back: { text: s } })) };
+const KALIBRIERUNG = { concentrations: [0, 2, 4, 6, 8, 10], signals: [0.01, 0.21, 0.40, 0.62, 0.80, 1.01],
+  unknown_signals: [0.47, 0.55], substance: "Paracetamol", x_label: "c [mg/L]", y_label: "A" };
+const FUENFTE = [
+  ["e5-mechanismus", "generate_mechanism", SN2],
+  ["e5-mechanismus-fischer", "generate_mechanism", { reaction_type: "fischer_ester", substrates: ["CCCCCCCCCCCCCCCCCC(=O)O", "CCO"] }],
+  ["e5-mechanismus-schritt2", "generate_mechanism", SN2, "[aria-label^='Open step 2']"],
+  ["e5-anki", "export_anki_deck", ANKI],
+  ["e5-anki-viele", "export_anki_deck", ANKI_VIELE],
+  ["e5-3d", "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }],
+  ["e5-molekuel-3d", "generate_molecule", KOFFEIN, "[data-view-axis] button:has-text('3D')"],
+  ["e5-protein", "generate_protein_or_antibody", { name: "trastuzumab" }],
+  ["e5-protein-lysozym", "generate_protein_or_antibody", { name: "lysozyme" }],
+  ["e5-kalibrierung", "generate_calibration_curve", KALIBRIERUNG],
+  ["e5-datenblatt", "lookup_molecule_data", { name: "paracetamol" }],
+  ["e5-dc", "generate_tlc", DC],
+];
+for (const [file, name, input, klick] of FUENFTE) {
+  CASES.push([`${file}-chat1000`, name, input, 1000, undefined, klick]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
+}
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 

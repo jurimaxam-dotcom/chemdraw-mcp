@@ -83,6 +83,72 @@ try {
     const settle = async (f) => { await f.getByRole("button", { name: "Export as PNG" }).waitFor(); await f.page().waitForTimeout(300); };
     const messwerte = {};
 
+    // Etappe 5 (16.11.2026): Mechanismus-Übersicht ohne Rollbereich im Rollbereich. Vorher eine
+    // Spalte in einer Karte mit eigenem Rollbalken — im Chat bei 1000 px waren zwei von drei
+    // SN2-Schritten zu sehen. Jetzt nebeneinander, Maßstab ≥ 0,62 px je viewBox-Einheit.
+    {
+      const SN2 = { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] };
+      const FISCHER = { reaction_type: "fischer_ester", substrates: ["CCCCCCCCCCCCCCCCCC(=O)O", "CCO"] };
+      const uebersicht = (f) => f.evaluate(() => {
+        const tiles = [...document.querySelectorAll("[aria-label^='Open step']")].map((t) => {
+          const b = t.getBoundingClientRect(), svg = t.querySelector("svg"), vb = svg.viewBox.baseVal;
+          return { top: Math.round(b.top), bottom: Math.round(b.bottom), left: Math.round(b.left), right: Math.round(b.right),
+            massstab: +(svg.getBoundingClientRect().width / vb.width).toFixed(2) };
+        });
+        const stage = document.querySelector(".mech-stage").getBoundingClientRect();
+        const inner = [...document.querySelectorAll(".mechanism-panel *")].filter((el) => {
+          const cs = getComputedStyle(el);
+          return /auto|scroll/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1;
+        }).map((el) => el.className);
+        const de = document.documentElement;
+        return { tiles, inner, stageBottom: Math.round(stage.bottom), sh: de.scrollHeight, ih: innerHeight, sw: de.scrollWidth, iw: innerWidth,
+          sub: document.querySelector(".panel-subtitle")?.textContent };
+      });
+      {
+        const [page, f] = await open("generate_mechanism", SN2, chat(1000), { viewport: { width: 1000, height: 1300 } });
+        await f.getByRole("tab", { name: "Overview", exact: true }).waitFor();
+        await fitChat(page);
+        const u = await uebersicht(f);
+        const h = await page.evaluate(() => window.__panelSizes.at(-1)?.height);
+        messwerte["e5-mech-chat1000"] = JSON.stringify({ ...u, h });
+        check(u.tiles.length === 3 && new Set(u.tiles.map((t) => t.top)).size === 1, `E5 Mechanismus Chat 1000: drei Schritte nebeneinander (${JSON.stringify(u.tiles)})`);
+        check(u.tiles.every((t) => t.massstab >= 0.62 && t.bottom <= u.stageBottom), `E5 Mechanismus Chat 1000: jeder Schritt ganz sichtbar, Maßstab ≥ 0,62 (${JSON.stringify(u.tiles)})`);
+        check(u.inner.length === 0 && h <= 700, `E5 Mechanismus Chat 1000: kein innerer Rollbereich, Panel ${h} ≤ 700 px (${u.inner})`);
+        check(u.sub === "3 steps", `E5 Mechanismus: Untertitel lesbar statt Rohwert („${u.sub}“)`);
+        await f.locator("[aria-label^='Open step 2']").click();
+        check(await f.getByRole("tab", { name: "Step by step", exact: true }).getAttribute("aria-selected") === "true"
+          && /Step 2 \/ 3/.test(await f.locator("body").innerText()), "E5 Mechanismus: Klick auf Schritt 2 öffnet ihn in Step by step");
+        await page.close();
+      }
+      for (const [w, h] of [[1000, 700], [320, 700]]) {
+        const [page, f] = await open("generate_mechanism", SN2, full(w, h), { viewport: { width: w, height: h } });
+        await f.getByRole("tab", { name: "Overview", exact: true }).waitFor();
+        await page.waitForTimeout(400);
+        const u = await uebersicht(f);
+        messwerte[`e5-mech-${w}x${h}`] = JSON.stringify(u);
+        if (w === 1000) {
+          check(new Set(u.tiles.map((t) => t.top)).size === 1 && u.tiles.every((t) => t.massstab >= 0.62) && u.sh <= u.ih,
+            `E5 Mechanismus 1000×700: nebeneinander, lesbar, ohne Rollen (${JSON.stringify(u)})`);
+        } else {
+          check(u.tiles.every((t, i) => i === 0 || t.top > u.tiles[i - 1].bottom) && u.sw <= u.iw && u.inner.length === 0,
+            `E5 Mechanismus 320×700: untereinander, nichts ragt seitlich heraus, kein innerer Rollbereich (${JSON.stringify(u)})`);
+        }
+        await page.close();
+      }
+      // Fischer, acht Schritte: passt lesbar nicht in 700 px — mehrere je Zeile, das Panel wächst statt zu rollen.
+      {
+        const [page, f] = await open("generate_mechanism", FISCHER, chat(1000), { viewport: { width: 1000, height: 1300 } });
+        await f.getByRole("tab", { name: "Overview", exact: true }).waitFor();
+        await fitChat(page);
+        const u = await uebersicht(f);
+        messwerte["e5-mech-fischer-chat1000"] = JSON.stringify(u);
+        check(u.tiles.length === 8 && new Set(u.tiles.map((t) => t.top)).size < 8 && u.tiles.every((t) => t.massstab >= 0.62 && t.bottom <= u.stageBottom)
+          && u.inner.length === 0 && u.sh <= u.ih + 1, `E5 Fischer Chat 1000: alle acht Schritte ganz sichtbar, mehrere je Zeile, kein innerer Rollbereich (${JSON.stringify(u)})`);
+        check(await f.locator("[data-arrow='equilibrium']").count() === 7, "E5 Fischer: sieben ⇌ zwischen acht Schritten");
+        await page.close();
+      }
+    }
+
     // (a) Morphin im Vollbild 1000×1200, hell und dunkel
     for (const colorScheme of ["light", "dark"]) {
       const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });
