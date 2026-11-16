@@ -144,6 +144,7 @@ const FUENFTE = [
   ["e5-molekuel-3d", "generate_molecule", KOFFEIN, "[data-view-axis] button:has-text('3D')"],
   ["e5-protein", "generate_protein_or_antibody", { name: "trastuzumab" }],
   ["e5-protein-lysozym", "generate_protein_or_antibody", { name: "lysozyme" }],
+  ["e5-protein-schema", "generate_protein_or_antibody", { name: "trastuzumab" }, "[role='tab']:has-text('Scheme')"],
   ["e5-kalibrierung", "generate_calibration_curve", KALIBRIERUNG],
   ["e5-datenblatt", "lookup_molecule_data", { name: "paracetamol" }],
   ["e5-dc", "generate_tlc", DC],

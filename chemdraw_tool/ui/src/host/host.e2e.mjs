@@ -139,8 +139,10 @@ try {
       {
         const [page, f] = await open("generate_mechanism", FISCHER, chat(1000), { viewport: { width: 1000, height: 1300 } });
         await f.getByRole("tab", { name: "Overview", exact: true }).waitFor();
+        await page.waitForTimeout(500);
         await fitChat(page);
         const u = await uebersicht(f);
+        u.gemeldet = await page.evaluate(() => window.__panelSizes.map((s) => s.height));
         messwerte["e5-mech-fischer-chat1000"] = JSON.stringify(u);
         check(u.tiles.length === 8 && new Set(u.tiles.map((t) => t.top)).size < 8 && u.tiles.every((t) => t.massstab >= 0.62 && t.bottom <= u.stageBottom)
           && u.inner.length === 0 && u.sh <= u.ih + 1, `E5 Fischer Chat 1000: alle acht Schritte ganz sichtbar, mehrere je Zeile, kein innerer Rollbereich (${JSON.stringify(u)})`);
@@ -1126,7 +1128,14 @@ try {
     const canvas = document.querySelector("[data-cartoon-host] canvas");
     return { stage: r(stage), canvas: canvas && getComputedStyle(canvas.parentElement).visibility !== "hidden" ? r(canvas) : null,
       backbone: painted(document.querySelector("svg[data-backbone]")),
-      scheme: painted(document.querySelector("svg[data-igg-scheme]")) };
+      scheme: painted(document.querySelector("svg[data-igg-scheme]")),
+      // kleinste Schrift des Schemas in Bildschirm-px (font-size × Maßstab der viewBox)
+      schemeFont: (() => {
+        const svg = document.querySelector("svg[data-igg-scheme]");
+        if (!svg) return null;
+        const k = svg.getScreenCTM().a;
+        return Math.min(...[...svg.querySelectorAll("text")].map((t) => parseFloat(getComputedStyle(t).fontSize) * k));
+      })() };
   });
   // Eigener Browser für die großen WebGL-Flächen: danach konnte der gemeinsame
   // Browser in Welle 2 keine Screenshots mehr aufnehmen (Page.captureScreenshot,
@@ -1193,7 +1202,10 @@ try {
     if (width === 860 && !patch && name === "trastuzumab") {
       const c = groß["cartoon-860"];
       check(m.stage.w === c.stage.w && m.stage.h === c.stage.h, `E19 Schema: dieselbe Fläche wie der Cartoon (${m.stage.w}×${m.stage.h})`);
-      check(m.scheme && m.scheme.h >= 700, `E19 Schema 860px: gemalt ${m.scheme?.w}×${m.scheme?.h} (vorher ~330×300)`);
+      // Etappe 5: die Fläche ist im Chat 280 px hoch (Panel ≤ 700, vorher ein Quadrat bis 720,
+      // Schema ≥ 700) — das Schema füllt ihre Höhe, und die kleinste Schrift bleibt ≥ 8 px.
+      check(m.scheme && m.scheme.h >= m.stage.h - 2 && m.schemeFont >= 8,
+        `E19 Schema 860px: gemalt ${m.scheme?.w}×${m.scheme?.h} in ${m.stage.w}×${m.stage.h}, kleinste Schrift ${m.schemeFont?.toFixed(1)} px`);
     }
     // Beschriftung „antigen-binding site“ frei: kein Schnitt mit dem gestrichelten
     // Rahmen des Fab-Arms, keine Überlappung mit anderen Texten, innerhalb der viewBox
