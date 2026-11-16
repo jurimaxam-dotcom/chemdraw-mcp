@@ -1,5 +1,5 @@
 {
- "geprueft": "2026-11-12",
+ "geprueft": "2026-11-16",
  "hinweis": "Fingerabdrücke und Titel — die Texte liegen lokal in .cache/anthropic/ und gehören Anthropic.",
  "seiten": {
   "https://claude.com/docs/build/overview.md": {
@@ -36,7 +36,7 @@
    "titel": "Build an MCP server for Claude",
    "beschreibung": "Build a remote MCP server that people use as a connector in Claude: where it runs, authentication, what it exposes, size and timeout limits, and distribution.",
    "quelle": "claude-docs",
-   "hash": "fb9b2b1ba24fddc4"
+   "hash": "2513c0c259eb4e89"
   },
   "https://claude.com/docs/connectors/building/lazy-authentication.md": {
    "titel": "Lazy authentication for MCP servers",
@@ -150,19 +150,19 @@
    "titel": "Connector pre-submission checklist",
    "beschreibung": "Check your MCP connector against what Anthropic reviewers test, including tool design, prompt-injection patterns, and functional quality, before you submit.",
    "quelle": "claude-docs",
-   "hash": "41d6a8a79c32d110"
+   "hash": "594fb3c632e30a06"
   },
   "https://claude.com/docs/connectors/building/submission.md": {
    "titel": "Submit a connector to the directory",
    "beschreibung": "Submit a remote MCP server or MCP App to the Connectors Directory through the developer portal: requirements, screenshot specs, and what each step asks for.",
    "quelle": "claude-docs",
-   "hash": "81a8058b886d57ae"
+   "hash": "1399ca8b3be824eb"
   },
   "https://claude.com/docs/connectors/building/testing.md": {
    "titel": "Test your connector",
    "beschreibung": "Test your MCP server against Claude as a custom connector before you submit it to the directory, including a local server exposed through a tunnel.",
    "quelle": "claude-docs",
-   "hash": "5cc2fdf01b933ab9"
+   "hash": "cd3c5f6b76bb36bb"
   },
   "https://claude.com/docs/connectors/building/troubleshooting.md": {
    "titel": "Troubleshoot your connector",
@@ -204,7 +204,7 @@
    "titel": "Changelog",
    "beschreibung": "Release notes for Claude Desktop",
    "quelle": "claude-docs",
-   "hash": "ed139370b2d9b39e"
+   "hash": "44bb5bce4b446fa1"
   },
   "https://claude.com/docs/directory/publish.md": {
    "titel": "Publish to the directory",
@@ -408,7 +408,7 @@
    "titel": "Overview",
    "beschreibung": "Claude Platform release notes",
    "quelle": "claude-plattform",
-   "hash": "844de807d78ad1e5"
+   "hash": "3765708c8c004443"
   }
  }
 }

@@ -202,3 +202,15 @@ nur noch mit Verified-Label. Für einen lokalen, nicht gelisteten Server folgt d
 | custom/add-unlisted | Dialog neu: Name + URL, dann Anmeldeart (Vorschläge als **Detected** markiert), danach **Connect**; Option „No sign-in“ und Free-Tarif bleiben | gelesen, ohne Folge; §5a bleibt richtig (wichtig erst für einen Remote-Test) |
 | enterprise-managed-auth | Test eines gelisteten Servers unter anderer URL bzw. per Mail-Freischaltung | gelesen, ohne Folge (keine Anmeldung, kein Listing) |
 | mcp-apps/quickstart | ein neuer Link unter „Next steps“ | gelesen, ohne Folge |
+
+## 8. Nachprüfung am 16.11.2026: sechs geänderte Seiten, keine Folge für den Bau
+
+Gelesen per `--diff` vor der Panel-Etappe. Keine Änderung an MCP-Apps-Seiten, am Manifest oder an der Größengrenze.
+
+| Seite | Was sich geändert hat | Folge für uns |
+|---|---|---|
+| connectors/building/index, testing, submission, review-criteria | Testzugänge wandern aus dem Einreichungsportal: Community-Einträge brauchen keinen Testzugang, bei Verified-Prüfung fragt ein Prüfer per Mail; im Portal bleibt die Bestätigung, jedes Tool selbst gefahren zu haben | ohne Folge (lokaler Server ohne Anmeldung); bei einer Einreichung gilt die neue Fassung |
+| cowork/changelog | Desktop 5.11492.0–5.11492.5 (bis 13.11.2026): Freigaben für Sandbox-Shell und organisationsbeschränkte Konnektor-Tools im Code-Tab, Web search/Web fetch als Konnektoren im Plus-Menü, per Geräteverwaltung blockierte Konnektor-Tools greifen ohne Neustart | kein Eintrag zu MCP-Apps oder lokalen Konnektoren im Chat; der Desktop-Lauf vor dem Release (Stufe 5) deckt die neue Version ab |
+| platform release-notes | 12.11.2026: selbst gehostete Managed Agents | ohne Folge |
+
+Pakete: ext-apps 2.0.4 und 2.1.0 sind Nebenversionen von `^2.0.3`; kein Bump vor dem Release (ein SDK-Bump wäre eine hostspezifische Änderung mit eigenem Desktop-Lauf).
