@@ -118,7 +118,9 @@ export function moleculeContext(data, state = {}) {
   if (state.view === "study") {
     lines.push(...studyLines(data, state.revealed));
   } else if (state.view === "data") {
-    lines.push("View: Data sheet (database entries for the compound)");
+    // Quellen nennen, sobald das Datenblatt da ist (Datenblatt-Einstieg, Etappe 3: wie databaseContext).
+    const sources = (state.sources || []).map((src) => src.source || src.type).filter(Boolean);
+    lines.push(sources.length ? `View: Data sheet — sources ${sources.join(", ")}` : "View: Data sheet (database entries for the compound)");
   } else {
     const drawing = state.is3d ? "rotatable 3D ball-and-stick model" : DRAWINGS[state.drawing || "skeletal"] || state.drawing;
     lines.push(`View: Structure — ${drawing}`);

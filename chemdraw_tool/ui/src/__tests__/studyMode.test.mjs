@@ -50,12 +50,37 @@ test("Study ist ein dritter Reiter; Standard bleibt Structure", () => {
   unmount();
 });
 
-test("DatabaseView bekommt keinen Study-Reiter", () => {
+// Etappe 3, bewusst geändert: das Datenblatt aus lookup_molecule_data ist dieselbe
+// Molekül-Ansicht mit offenem Data-Reiter — mit Study, sofern nichts den Namen verrät.
+test("DatabaseView hat dieselben Reiter wie die Molekül-Ansicht, Data gewählt", () => {
   const app = { getHostCapabilities: () => ({}) };
   const view = render(React.createElement(AppContext.Provider, { value: app }, React.createElement(DatabaseView, { data: DATABASE })));
-  const tabs = [...view.container.querySelectorAll("[role='tab']")].map((t) => t.textContent.trim());
-  assert.deepEqual(tabs, ["Structure", "Data"]);
+  const tabs = [...view.container.querySelectorAll("[role='tab']")];
+  assert.deepEqual(tabs.map((t) => t.textContent.trim()), ["Structure", "Data", "Study"]);
+  assert.equal(tabs[1].getAttribute("aria-selected"), "true");
   view.unmount();
+});
+
+test("DatabaseView im Lernmodus: nichts verrät Name, CAS, InChIKey oder Gruppen", async () => {
+  const log = [];
+  const app = {
+    getHostCapabilities: () => ({ message: { text: {} }, updateModelContext: { text: {} } }),
+    callServerTool: async (req) => (log.push(["tool", req.name]), { isError: true }),
+    updateModelContext: async () => ({}),
+    sendMessage: async () => ({}),
+  };
+  const data = { ...DATABASE, foundAs: "Aspirin", functionalGroups: DATA.functionalGroups };
+  const { container, unmount } = render(React.createElement(AppContext.Provider, { value: app },
+    React.createElement(ModelContextProvider, { app, delay: 10_000 }, React.createElement(DatabaseView, { data }))));
+  await click(buttonByText(container, "Study"));
+  assert.ok(container.querySelector("[data-view='study']"), "Lernansicht fehlt");
+  assert.equal(log.length, 0, "Study löst einen Toolaufruf aus");
+  const all = everything(container);
+  for (const secret of [/aspirin/i, /50-78-2/, /BSYNRYMUTXBXSQ/, /Ester/, /Aromat/, /pubchem/i]) {
+    assert.doesNotMatch(all, secret, `verrät ${secret}`);
+  }
+  assert.equal(buttonByText(container, "Export PNG"), undefined, "Export PNG trägt den Namen im Dateinamen");
+  unmount();
 });
 
 test("im Lernmodus verrät nichts den Namen, CAS oder die Gruppen — auch keine Attribute", async () => {

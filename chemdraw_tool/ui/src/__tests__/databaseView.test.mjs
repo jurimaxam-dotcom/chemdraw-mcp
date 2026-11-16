@@ -125,3 +125,27 @@ test("Quell-Links nur mit http/https — javascript: wird nicht verlinkt", () =>
   assert.ok(okHrefs.includes("https://pubchem.ncbi.nlm.nih.gov/compound/2244"), `https-Link fehlt: ${okHrefs}`);
   ok.unmount();
 });
+
+// --- Etappe 3: gleiche Anordnung wie die Molekül-Ansicht ---------------------
+test("Struktur-Ansicht: Kernwerte neben, Gruppen unter der Zeichnung — wie MoleculeView", async () => {
+  const data = { ...DATABASE, functionalGroups: [{ name: "Ester", atomIndices: [0], count: 1, color: "#d35400" }],
+    sources: [{ type: "PubChem", source: "PubChem", rows: [{ key: "Molecular formula", val: "C9H8O4" },
+      { key: "Molar mass", val: "180.16 g/mol" }, { key: "CAS No.", val: "50-78-2" }] }] };
+  const { container, panel, unmount } = setup(data);
+  await click(buttonByText(container, "Structure"));
+  const facts = panel("structure").querySelector("dl.key-facts");
+  assert.ok(facts, "keine Kernwerte");
+  assert.match(textOf(facts), /180\.16 g\/mol/);
+  assert.match(textOf(facts), /50-78-2/);
+  assert.ok(panel("structure").querySelector("section.group-section"), "Gruppen nicht unter der Zeichnung");
+  assert.equal(container.querySelector("aside.molecule-info"), null, "Gruppen stehen noch rechts");
+  assert.ok(container.querySelector("[data-view-axis]"), "kein 2D/3D-Schalter");
+  unmount();
+});
+
+test("ohne Strukturbild: nur das Datenblatt, keine Reiter", () => {
+  const { container, panel, unmount } = setup({ ...DATABASE, molecule_svg: "" });
+  assert.ok(panel("data"));
+  assert.equal(container.querySelector("[role='tab']"), null);
+  unmount();
+});

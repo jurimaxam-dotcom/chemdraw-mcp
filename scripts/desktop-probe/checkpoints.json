@@ -398,6 +398,11 @@
     "wert": "1"
    },
    {
+    "name": "Tab Study vorhanden (wie Molekül-Ansicht)",
+    "typ": "tab",
+    "titel": "Study"
+   },
+   {
     "name": "Molmasse 151.16 g/mol",
     "typ": "staticText",
     "titel": "151.16 g/mol"

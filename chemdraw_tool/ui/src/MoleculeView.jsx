@@ -36,7 +36,9 @@ export const CONFORMER_LOAD_ERROR =
 // waeren 16+ Bilder, der Server lehnt ab — dann gar kein Knopf.
 const MAX_OPEN_STEREO = 3;
 
-export default function MoleculeView({ data, expandable = true }) {
+// initialSheet: ein schon geholtes DatabasePayload (DatabaseView, Etappe 3) — dann startet
+// die Ansicht im Data-Reiter und holt nichts nach; Struktur, 3D, Study wie gewohnt.
+export default function MoleculeView({ data, expandable = true, initialSheet = null }) {
   const app = useAppBridge();
   const hostContext = useHostContext();
   const uid = useId();
@@ -45,7 +47,7 @@ export default function MoleculeView({ data, expandable = true }) {
   // Hover, sonst die Auswahl. pinned: {kind:"group",name} | {kind:"atom",idx,el} | null.
   const [hoveredGroup, setHoveredGroup] = useState(null);
   const [pinned, setPinned] = useState(null);
-  const [view, setView] = useState("structure");
+  const [view, setView] = useState(initialSheet ? "data" : "structure");
   // Lernmodus (U4b): Schlüssel der aufgedeckten Stücke ("name", "formula",
   // "mass", "cas", "group:<Name>") und die Gruppe, die gerade leuchtet.
   const [revealed, setRevealed] = useState([]);
@@ -79,7 +81,7 @@ export default function MoleculeView({ data, expandable = true }) {
   const viewer3d = useRef(null); // Fläche der Kuhle: Export PNG liest dort das aktuelle SVG
   // Gecachtes DatabasePayload. Nur Erfolge landen hier — ein Fehlschlag bleibt
   // wiederholbar, statt sich als leeres Datenblatt einzubrennen.
-  const [sheet, setSheet] = useState(null);
+  const [sheet, setSheet] = useState(initialSheet);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const inFlight = useRef(false); // blockiert den re-entranten Doppelklick
@@ -87,7 +89,7 @@ export default function MoleculeView({ data, expandable = true }) {
   // kann er zurueck auf die Struktur klicken — das eintreffende Ergebnis darf
   // ihm die Ansicht dann nicht wieder wegziehen. Bei PubChem-Latenz ist das
   // kein Randfall.
-  const wanted = useRef("structure");
+  const wanted = useRef(initialSheet ? "data" : "structure");
   // Stereo-Varianten: einmal geholt, dann gecacht wie das Datenblatt.
   const [variants, setVariants] = useState(null);
   const [showVariants, setShowVariants] = useState(false);
@@ -302,7 +304,7 @@ export default function MoleculeView({ data, expandable = true }) {
   // sie nichts — sonst läse Claude die Ausgangsstruktur samt alter Auswahl.
   const hiddenByVariants = showVariants && Boolean(variants);
   const { flush, canAsk } = useModelContextReport(
-    hiddenByVariants ? "" : moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed }),
+    hiddenByVariants ? "" : moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed, sources: sheet?.sources }),
     hiddenByVariants ? "" : moleculeSummary(data),
   );
   const followUps = view === "study"

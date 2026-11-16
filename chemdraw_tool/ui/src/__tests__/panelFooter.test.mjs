@@ -59,7 +59,8 @@ const MECHANISM = {
 const CASES = [
   ["Molekül", () => React.createElement(MoleculeView, { data: MOLECULE_FILES }),
     ["~/ChemDraw-Output/einzelmolekuele/aspirin.png", "~/ChemDraw-Output/einzelmolekuele/aspirin.svg"], ["Export PNG", "Add to Anki"]],
-  ["Datenblatt", () => React.createElement(DatabaseView, { data: DATABASE }), [], ["Export PNG"]],
+  // Etappe 3: Datenblatt = Molekül-Ansicht mit offenem Data-Reiter, also auch Add to Anki.
+  ["Datenblatt", () => React.createElement(DatabaseView, { data: DATABASE }), [], ["Export PNG", "Add to Anki"]],
   ["Reaktion", () => React.createElement(ReactionView, { data: REACTION }),
     ["~/ChemDraw-Output/reaktionen/esterification.png"], ["Export PNG"]],
   ["Mechanismus", () => React.createElement(MechanismView, { data: MECHANISM }), [], ["Export PNG"]],

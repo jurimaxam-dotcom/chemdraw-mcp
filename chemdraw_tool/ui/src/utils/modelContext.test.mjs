@@ -45,6 +45,11 @@ test("Molekül: Ansichten All H, 3D und Daten werden genannt", () => {
   assert.match(moleculeContext(MOLECULE, { view: "data" }), /Data sheet/);
 });
 
+test("Molekül, Data-Reiter mit geladenem Blatt: Quellen wie im Datenblatt-Einstieg (Etappe 3)", () => {
+  const ctx = moleculeContext(MOLECULE, { view: "data", sources: [{ source: "PubChem CID 2244" }, { type: "GHS" }] });
+  assert.match(ctx, /View: Data sheet — sources PubChem CID 2244, GHS/);
+});
+
 test("Molekül: festgehaltene Gruppe bzw. Atom steht drin", () => {
   const group = moleculeContext(MOLECULE, { view: "structure", pinned: { kind: "group", name: "Ester" } });
   assert.match(group, /Pinned selection: the Ester group/);

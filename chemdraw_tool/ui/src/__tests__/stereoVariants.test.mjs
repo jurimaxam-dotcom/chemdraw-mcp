@@ -64,7 +64,9 @@ test("ueber drei offenen Elementen kein Knopf (Server-Grenze gespiegelt)", () =>
   unmount();
 });
 
-test("Datenblatt bekommt keinen Varianten-Knopf", () => {
+// Etappe 3, bewusst geändert: das Datenblatt hat dieselben Bedienelemente wie die
+// Molekül-Ansicht — in der Struktur-Ansicht also auch „Show variants“.
+test("Datenblatt bietet in der Struktur-Ansicht denselben Varianten-Knopf", async () => {
   const view = render(
     React.createElement(
       AppContext.Provider,
@@ -72,7 +74,9 @@ test("Datenblatt bekommt keinen Varianten-Knopf", () => {
       React.createElement(DatabaseView, { data: { ...DATABASE, stereoWarnings: [CENTER] } })
     )
   );
-  assert.equal(showButton(view.container), undefined);
+  assert.equal(showButton(view.container), undefined, "im Datenblatt-Reiter gehört er nicht hin");
+  await click([...view.container.querySelectorAll("button")].find((b) => b.textContent.trim() === "Structure"));
+  assert.ok(showButton(view.container), "kein Varianten-Knopf in der Struktur-Ansicht");
   view.unmount();
 });
 
