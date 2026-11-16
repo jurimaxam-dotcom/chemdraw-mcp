@@ -7,6 +7,13 @@ The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
 for the panel's Add to Anki button and the chat route), plus
 `lookup_molecule_data`, `save_png` and (since 12.11.2026) `load_panel_part` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein_or_antibody` (18 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
 and restart to restore the full catalog (25 tools, 17 with a panel).
+Since 16.11.2026 a third profile, `pharma` (9 tools, 4 with a panel), is what
+the second connector `chemdraw-pharma` starts with: exactly FULL − MVP (7, derived
+in `create_server`, not listed) plus `save_png` and `load_panel_part`, which its
+panels call on their own connector; own `instructions`, no prompts. Reason: with
+`chemdraw-pharma` on `full` next to `chemdraw`, the model saw 18 tools twice and
+calls spread across both connectors (Desktop, 14.11.2026: 10 vs 2, one surprise
+permission dialog).
 Other tools remain implemented and tested, but are not registered in the MVP.
 The immediate goal is a reliable input → correct structure → usable export
 workflow for general chemistry. Specialized pharmacy, trainer, quiz and payment
@@ -168,7 +175,7 @@ One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright i
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
-the two numbers the Python side predicts (default MVP: 18 tools, 13 with a panel;
+the numbers the Python side predicts per registered connector (default MVP: 18 tools, 13 with a panel; pharma: 9, 4;
 full profile: 25 tools, 17 with a panel).
 `test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): one `tisch auftrag codex` per test run, carrying every step at once — prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/` (see "Helpers" below); Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. **Claude Desktop is one shared resource: one driver at a time** (Jay, 10.11.2026, after two helpers typed into the same window and spoiled a take). Before any GUI action on Desktop — `ax-claude`, typing, clicks, window or settings changes, restart — run `~/.claude/bin/tisch leases` in `~/Documents/projects/chemdraw-vermarktung` and reserve there: `tisch reserviere claude-desktop --minuten <n>`; a foreign lease on `claude-desktop` or on a recording folder under `out/` means hands off, ask through the Tisch instead. Check every helper session in both repos (`herdr agent list`), not only the own pane. Release with `tisch gib-frei` when done. In-process tests cannot see the two failure modes that have actually cost time
 here: a stale server process and a GUI PATH that cannot find `uv`.

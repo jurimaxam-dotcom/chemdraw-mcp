@@ -1,7 +1,7 @@
 # Tools in detail
 
 What each tool of chemdraw-mcp does, the options on the drawing tools, the
-`full` profile and the known limits. The short overview with example prompts is
+`pharma` and `full` profiles and the known limits. The short overview with example prompts is
 the [tool table in the README](../README.md#tools).
 
 Files go to `~/ChemDraw-Output/`.
@@ -300,9 +300,10 @@ structure card.
 | Profile | Tools | Contents |
 |---|---|---|
 | `mvp` (default) | 18, 13 with a panel | the five areas above |
+| `pharma` | 9, 4 with a panel | only what `full` adds to `mvp`, plus the panel's two internal helpers (`save_png`, `load_panel_part`) |
 | `full` | 25, 17 with a panel | adds a substrate-scope figure, a calibration curve, pharmacology curves and three more calculators |
 
-The `full` profile adds:
+The `full` profile adds, and the `pharma` profile holds:
 
 - **`generate_scope_table`** — the substrate-scope figure of the methodology
   literature: general equation with conditions on top, products below with
@@ -327,17 +328,22 @@ To switch, set `CHEMDRAW_PROFILE` and restart the server:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
+CHEMDRAW_PROFILE=pharma uv run chemdraw-tool-server # only the seven extra tools
 CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
 ```
 
-In Claude Desktop the two profiles are two connectors from one installation:
-`chemdraw` (`mvp`) and `chemdraw-pharma` (`full`), registered by both the
-extension bundles and `chemdraw-install`. Enable one per chat in the connector
-menu — switching needs no restart; with both on, the model sees the default
-tools twice. By hand, the entry's `"env": {"CHEMDRAW_PROFILE": "full"}` picks
-the profile. An invalid profile name stops startup with an error. Two optional vault tools
-(`search_vault`, `read_vault_entry`) appear only in the full profile and only
-when `CHEMDRAW_VAULT_PATH` is set.
+In Claude Desktop two connectors come from one installation: `chemdraw`
+(`mvp`) and `chemdraw-pharma` (`pharma`), registered by both the extension
+bundles and `chemdraw-install`. They complement each other — with both on, the
+model sees every tool once; turning one on or off needs no restart. The
+`pharma` profile carries the two internal panel helpers too, because its
+panels call them on their own connector; the model never calls them. Up to
+0.10.0, `chemdraw-pharma` started with `full`: if you used only that
+connector, enable `chemdraw` as well, or set `"env": {"CHEMDRAW_PROFILE":
+"full"}` in an entry of your own for one connector with everything. An
+invalid profile name stops startup with an error. Two optional vault tools
+(`search_vault`, `read_vault_entry`) appear only in the `pharma` and `full`
+profiles and only when `CHEMDRAW_VAULT_PATH` is set.
 
 The server keeps a small log at `~/ChemDraw-Output/server.log` (rotated at 1 MB,
 two older files kept). It records start-up, requests and errors, and a name

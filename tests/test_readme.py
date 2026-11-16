@@ -88,15 +88,16 @@ def test_profilabschnitt_nennt_genau_die_zusatztools_des_vollprofils():
 
 
 def test_toolzahlen_stimmen_mit_den_profilen():
-    mvp, full = len(_tools("mvp")), len(_tools("full"))
+    mvp, pharma, full = len(_tools("mvp")), len(_tools("pharma")), len(_tools("full"))
     assert f"registers {mvp} tools" in README
     profile = _section("## Profiles", "The `full` profile adds", TOOLS_DOC)
     assert f"| `mvp` (default) | {mvp}," in profile
+    assert f"| `pharma` | {pharma}," in profile
     assert f"| `full` | {full}," in profile
     assert f"# all {full} tools" in TOOLS_DOC
     # Keine andere „N tools“-Zahl, die stehen geblieben ist — in keiner der Dateien.
     for zahl in re.findall(r"\b(\d+) tools\b", "\n".join(DOCS)):
-        assert int(zahl) in {mvp, full}, f"„{zahl} tools“ in README/docs passt zu keinem Profil"
+        assert int(zahl) in {mvp, pharma, full}, f"„{zahl} tools“ in README/docs passt zu keinem Profil"
 
 
 def _asset_refs(texte: list[str] = DOCS) -> list[str]:
@@ -169,11 +170,17 @@ def test_anker_und_registry_kennung_bleiben():
 
 
 def test_readme_erklaert_beide_konnektoren():
-    """Welle 3 (Jay 06.11.2026): zwei Konnektoren aus einer Installation, einer je Chat."""
+    """Welle 3 (Jay 06.11.2026): zwei Konnektoren aus einer Installation. Seit
+    16.11.2026 ergänzen sie sich (Profil `pharma`) — die alte Regel „einer je
+    Chat, sonst alles doppelt“ darf nicht stehen bleiben."""
     profile = _section("### Profiles", "\n## ", README)
-    for name in ("`chemdraw`", "`chemdraw-pharma`", "`mvp`", "`full`"):
+    for name in ("`chemdraw`", "`chemdraw-pharma`", "`mvp`", "`pharma`", "`full`"):
         assert name in profile, name
     assert "chemdraw-mcp-pharma-<version>.mcpb" in profile
     assert "no restart" in profile
+    assert "CHEMDRAW_PROFILE=full" in profile, "Weg für bisherige Nur-pharma-Nutzer"
     for doc in (README, TOOLS_DOC):
         assert "chemdraw-pharma" in doc
+    for text in DOCS:
+        for veraltet in ("enable one connector", "Enable one connector", "Enable one per chat"):
+            assert veraltet not in text, veraltet

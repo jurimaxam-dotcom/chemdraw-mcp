@@ -6,7 +6,7 @@ where the files go and what to do when nothing happens.
 ## Install
 
 Pick **one** route. The extension and `chemdraw-install` register the same two
-connectors; installing both makes the model see every tool twice.
+connectors; installing both registers them twice.
 
 ### Route 1: Claude Desktop extension (macOS, Linux)
 
@@ -21,8 +21,9 @@ and takes a minute; later starts are offline. If uv is missing, the extension
 downloads a fixed uv version and checks its SHA-256.
 
 `chemdraw-mcp-pharma-<version>.mcpb` from the same release is the second
-connector with the `full` profile (see [Configuration](configuration.md)).
-Both bundles share one installation on disk.
+connector, with the seven pharmacy tools that the first one lacks (profile
+`pharma`, see [Configuration](configuration.md)). Both can be on at once, and
+both bundles share one installation on disk.
 
 If your organisation manages Claude Desktop, extensions may be blocked or
 limited to a list. Use route 2 then.

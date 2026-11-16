@@ -7,9 +7,12 @@ with the answer and what to do.
 
 **The model sees every tool twice.**
 Two registrations are active: either the extension and `chemdraw-install`
-were both installed, or both connectors (`chemdraw` and `chemdraw-pharma`)
-are switched on in the same chat. Keep one installation route and enable one
-connector per chat.
+were both installed, or `chemdraw-pharma` still starts with the `full` profile
+it had up to 0.10.0 while `chemdraw` is on as well. Keep one installation
+route; re-run the installer (or update the extension), which gives
+`chemdraw-pharma` the `pharma` profile — then both connectors can stay on and
+every tool appears once. `chemdraw-doctor` shows which profile each connector
+starts with.
 
 **I installed or updated it and nothing changed, or the panel is missing.**
 Claude Desktop keeps the old server process. Quit Claude Desktop completely

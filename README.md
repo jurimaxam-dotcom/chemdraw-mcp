@@ -140,8 +140,7 @@ in a deck called NSAIDs
 ## Installation
 
 Pick **one** route for Claude Desktop. The extension and `chemdraw-install`
-register the same connectors, and installing both makes the model see every
-tool twice. After installing, restart Claude Desktop once and ask
+register the same connectors, and installing both registers them twice. After installing, restart Claude Desktop once and ask
 *"draw caffeine"* in a new chat.
 
 1. **Claude Desktop extension (macOS, Linux):** download
@@ -185,18 +184,22 @@ Desktop.
 ### Profiles
 
 Either Claude Desktop route registers **two connectors** from one
-installation. They differ only in the profile the server starts with:
+installation. They complement each other: **both can be on at once**, and
+together they offer every tool, none of them twice.
 
-| Connector | Profile | Tools | Adds |
+| Connector | Profile | Tools | Contents |
 |---|---|---|---|
 | `chemdraw` | `mvp` (default) | 18, 13 with a panel | the five areas in the [tool table](#tools) |
-| `chemdraw-pharma` | `full` | 25, 17 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics |
+| `chemdraw-pharma` | `pharma` | 9, 4 with a panel | substrate-scope figure, calibration curve, pharmacology curves, and calculators for solutions, content determination and pharmacokinetics (seven tools), plus the panel's two internal helpers |
 
 The extension route ships them as two bundles (`chemdraw-mcp-<version>.mcpb`,
 `chemdraw-mcp-pharma-<version>.mcpb`); `chemdraw-install` writes both entries
-into `claude_desktop_config.json`. In a chat, **enable one connector at a
-time** in the connector menu: with both on, the model sees the default tools
-twice. Switching between them needs no restart. Details:
+into `claude_desktop_config.json`. Turning a connector on or off in the
+connector menu needs no restart. Up to 0.10.0, `chemdraw-pharma` started with
+the `full` profile (25 tools); if you used only that connector, enable
+`chemdraw` as well, or keep one connector with everything by setting
+`CHEMDRAW_PROFILE=full` in a config entry of your own. Re-run the installer to
+update an existing entry. Details:
 [docs/configuration.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/configuration.md).
 
 ## Tools

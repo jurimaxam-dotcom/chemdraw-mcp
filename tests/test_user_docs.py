@@ -106,7 +106,9 @@ def _full_verstoesse(quelle: str) -> list[str]:
         if zeile.startswith("#"):
             abschnitt = zeile
         for name in re.findall(r"`([a-z]+_[a-z0-9_]+)`", zeile):
-            if name in _nur_full() and "full" not in abschnitt.lower() and "full" not in zeile.lower():
+            # Seit 16.11.2026 liefert auch der Konnektor chemdraw-pharma (Profil pharma) diese Tools.
+            hinweis = (abschnitt + " " + zeile).lower()
+            if name in _nur_full() and "full" not in hinweis and "pharma" not in hinweis:
                 raus.append(f"{quelle}: `{name}` unter {abschnitt!r}")
     return raus
 

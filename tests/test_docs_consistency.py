@@ -137,7 +137,7 @@ def _panel(profile: str) -> int:
 
 def test_panelzahlen_je_profil_stimmen():
     profile = _section(_read("docs/tools.md"), "## Profiles")
-    for name, zeile in (("mvp", "| `mvp` (default) |"), ("full", "| `full` |")):
+    for name, zeile in (("mvp", "| `mvp` (default) |"), ("pharma", "| `pharma` |"), ("full", "| `full` |")):
         erwartet = f"{zeile} {len(_tools(name))}, {_panel(name)} with a panel |"
         assert erwartet in profile, f"Profiltabelle falsch, erwartet: {erwartet}"
 

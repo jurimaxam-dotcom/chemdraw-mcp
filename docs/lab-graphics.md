@@ -1,7 +1,8 @@
 # Lab graphics
 
 Schematic spectra, TLC plates, titration curves, species distributions and pH
-calculations from the default profile, and what the `full` profile adds.
+calculations from the default profile, and what the connector
+`chemdraw-pharma` (profile `pharma`, also part of `full`) adds.
 These tools draw the numbers they are given. For a named compound Claude
 supplies typical literature values from memory: check them before they go
 into a report.
@@ -80,10 +81,12 @@ tool. Add "use ChemDraw" to the prompt to get the worked answer.
 
 ## Only in the full profile
 
-The `full` profile (connector `chemdraw-pharma`) adds seven tools. To use them,
-install the second bundle or run `chemdraw-install`, and switch to
-`chemdraw-pharma` in the connector menu; with your own config set
-`CHEMDRAW_PROFILE=full` ([Configuration](configuration.md)).
+The connector `chemdraw-pharma` (profile `pharma`) adds seven tools; the
+`full` profile contains them too. To use them, install the second bundle or
+run `chemdraw-install`, and turn `chemdraw-pharma` on in the connector menu
+next to `chemdraw` — both can stay on. With your own config set
+`CHEMDRAW_PROFILE=pharma` for a second entry or `full` for a single one
+([Configuration](configuration.md)).
 
 - `generate_calibration_curve`: least-squares line, unknowns read back,
   LOD/LOQ (ICH Q2 estimate).
