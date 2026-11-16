@@ -36,6 +36,13 @@
     "bild": "3d"
    },
    {
+    "name": "Knopf Reset view vorhanden und klickbar",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Reset view",
+    "pause": 1.5
+   },
+   {
     "name": "Ansicht 2D zurück",
     "typ": "checkBox",
     "aktion": "klick",
@@ -300,6 +307,13 @@
     "typ": "image",
     "titel": "3D model, drag to rotate",
     "bild": "3d"
+   },
+   {
+    "name": "Knopf Reset view vorhanden und klickbar",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Reset view",
+    "pause": 1.5
    },
    {
     "name": "Knopf Export as PNG vorhanden",

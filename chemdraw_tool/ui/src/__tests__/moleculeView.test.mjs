@@ -559,3 +559,14 @@ test("ein zweiter Ansicht-Klick während des Ladens gewinnt", async () => {
   assert.equal(calls.length, 2);
   unmount();
 });
+
+test("Etappe 5: hinter dem 3D-Knopf derselbe Knopf „Reset view“ an derselben Stelle wie im 3D-Einstieg", async () => {
+  const data = { ...MOLECULE, views: ["all_h"], viewRequest: REQUEST };
+  const { container, unmount } = renderMolecule(data, (req) =>
+    req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
+  await click(buttonByText(container, "3D"));
+  const row = container.querySelector(".rotate-row");
+  assert.ok(row && buttonByText(row, "Reset view"), "Reset view fehlt unter dem 3D-Modell");
+  assert.match(row.textContent, /Drag to rotate/);
+  unmount();
+});

@@ -114,10 +114,12 @@ export default function ProteinView({ data }) {
   const segs = useMemo(() => layout(protein), [protein]);
   const ligands = useMemo(() => ligandLegend(protein.ligands), [protein.ligands]);
   const ready = engine === "ready";
+  // Etappe 5: Untertitel = was man sieht (Eintrag, Ketten, Reste); der Bedienhinweis steht
+  // knapp unter der Fläche wie beim 3D-Modell, statt als zweite Zeile im Kopf.
   const hint = ready
-    ? "drag to rotate · pinch or ⌘/Ctrl+scroll to zoom · right-drag to move"
-    : "drag to rotate";
-  const subtitle = `${protein.subtitle || ""}${isModel && !(protein.subtitle || "").includes("predicted") ? " · predicted" : ""} · ${hint}`;
+    ? "Drag to rotate · pinch or ⌘/Ctrl+scroll to zoom · right-drag to move"
+    : "Drag to rotate";
+  const subtitle = `${protein.subtitle || ""}${isModel && !(protein.subtitle || "").includes("predicted") ? " · predicted" : ""}`;
 
   // Engine starten — einmal je Datensatz; Fehlschlag = SVG-Spur bleibt.
   useEffect(() => {
@@ -255,6 +257,7 @@ export default function ProteinView({ data }) {
           </div>
         )}
       </div>
+      {!onScheme && <p className="panel-note-quiet protein-hint">{hint}</p>}
       {engine === "failed" && (
         <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>
           3D cartoon unavailable here (no WebGL) — showing the backbone trace.

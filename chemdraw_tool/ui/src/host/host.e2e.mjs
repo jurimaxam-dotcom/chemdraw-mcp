@@ -172,6 +172,31 @@ try {
       await page.close();
     }
 
+    // Etappe 5: Protein im Chat ≤ 700 px (vorher 1171 px, die Fläche ein Quadrat bis 720 px),
+    // bei 1000×700 kein Rollen (vorher 11 px); der Bedienhinweis steht unter der Fläche, nicht im Kopf.
+    {
+      const TRASTUZUMAB = { name: "trastuzumab" };
+      const [page, f] = await open("generate_protein_or_antibody", TRASTUZUMAB, chat(1000), { viewport: { width: 1000, height: 1300 } });
+      await f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
+      await fitChat(page);
+      const h = await page.evaluate(() => window.__panelSizes.at(-1)?.height);
+      const p = await f.evaluate(() => ({ sub: document.querySelector(".panel-subtitle")?.textContent,
+        hinweis: document.querySelector("[data-protein-viewer] + .protein-hint")?.textContent,
+        sh: document.documentElement.scrollHeight, ih: innerHeight }));
+      messwerte["e5-protein-chat1000"] = JSON.stringify({ h, ...p });
+      check(h <= 700 && p.sh <= p.ih + 1, `E5 Protein Chat 1000: Panel ${h} ≤ 700 px`);
+      check(!/drag/i.test(p.sub) && /^Drag to rotate/.test(p.hinweis || ""), `E5 Protein: Untertitel ohne Bedienhinweis, Hinweis unter der Fläche (${p.sub} | ${p.hinweis})`);
+      await page.close();
+      const [page2, f2] = await open("generate_protein_or_antibody", TRASTUZUMAB, full(1000, 700), { viewport: { width: 1000, height: 700 } });
+      await f2.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
+      await page2.waitForTimeout(400);
+      const g = await f2.evaluate(() => ({ sh: document.documentElement.scrollHeight, ih: innerHeight,
+        stage: Math.round(document.querySelector("[data-protein-viewer]").getBoundingClientRect().height) }));
+      messwerte["e5-protein-1000x700"] = JSON.stringify(g);
+      check(g.sh <= g.ih && g.stage >= 240, `E5 Protein 1000×700: kein Rollen, Fläche ${g.stage} px (${JSON.stringify(g)})`);
+      await page2.close();
+    }
+
     // (a) Morphin im Vollbild 1000×1200, hell und dunkel
     for (const colorScheme of ["light", "dark"]) {
       const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });
@@ -828,7 +853,9 @@ try {
   await canvas.waitFor({ state: "visible" });
   check(await canvas.locator('circle[fill^="url(#atom-"]').count() === 24 && await canvas.locator("line").count() > 20,
     "3D: sichtbare SVG-Zeichenfläche enthält Caffeins 24 Atome und Bindungen");
-  check((await spatialFrame.locator("body").innerText()).includes("drag to rotate"), "3D: Bedienhinweis sichtbar");
+  check(/drag to rotate/i.test(await spatialFrame.locator("body").innerText()), "3D: Bedienhinweis sichtbar");
+  // Etappe 5: Formel und Molmasse aus den Atomen im Untertitel
+  check(/C8H10N4O2 · 194\.19 g\/mol/.test(await spatialFrame.locator(".panel-subtitle").innerText()), "3D: Summenformel und Molmasse im Untertitel (Koffein)");
   const geometry = () => canvas.locator('circle[fill^="url(#atom-"]').evaluateAll((atoms) => atoms.map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));
   // E2: Einblend-Drehung — die Lage ändert sich ohne Zutun und kommt dann zur Ruhe.
   const ersteLage = JSON.stringify(await geometry());
@@ -844,6 +871,10 @@ try {
   await spatial.mouse.move(box.x + box.width / 2 + 85, box.y + box.height / 2 + 45, { steps: 8 });
   await spatial.mouse.up();
   check(JSON.stringify(await geometry()) !== before, "3D: Ziehen ändert die projizierten Atomkoordinaten");
+  // Etappe 5: „Reset view“ stellt die Ausgangsdrehung wieder her (nach der Einblend-Drehung dieselbe Ruhelage).
+  await spatialFrame.getByRole("button", { name: "Reset view" }).click();
+  await spatial.waitForTimeout(1600);
+  check(JSON.stringify(await geometry()) === ruhe, "3D: Reset view stellt die Ausgangslage wieder her");
   await spatial.close();
 
   // E8/E13: Proteine — Cartoon (Mol*-Engine, WebGL) statt Strukturformel, über
@@ -1046,9 +1077,8 @@ try {
     await page.close();
   }
 
-  // E19: Bildgröße im Proteinpanel am Maßstab des Molekül-3D-Knopfs
-  // (bis Etappe 3 der Maßstab der 3D-Kuhle; styles.css `.protein-stage`: Quadrat,
-  // höchstens 720 px). Wie Desktop: das iframe bekommt die Höhe, die das Panel
+  // E19: Bildgröße im Proteinpanel (bis Etappe 4 ein Quadrat bis 720 px; seit Etappe 5
+  // im Chat 280 px hoch, styles.css `.protein-stage`, mehr Fläche gibt Expand). Wie Desktop: das iframe bekommt die Höhe, die das Panel
   // per size-changed meldet — dann darf im Panel nichts scrollen oder abschneiden.
   const sizeShots = process.env.PROTEIN_SIZE_SHOTS || join(tmpdir(), "chemdraw-protein-size");
   mkdirSync(sizeShots, { recursive: true });
@@ -1101,8 +1131,9 @@ try {
     const m = await stageOf(f);
     groß[`cartoon-${width}`] = m;
     const inhalt = width - 64; // body 16 + Panel 16 je Seite
-    check(m.stage.w >= inhalt - 2 && Math.abs(m.stage.h - Math.min(m.stage.w, 720)) <= 1,
-      `E19 lysozyme ${width}px: Bildfläche volle Breite, Höhe wie der 3D-Knopf (Quadrat, höchstens 720) — ${m.stage.w}×${m.stage.h}`);
+    // Etappe 5: feste Höhe im Chat statt Quadrat (vorher bis 720 px — Panel 1171 px bei 1000 px)
+    check(m.stage.w >= inhalt - 2 && m.stage.h === 280,
+      `E19 lysozyme ${width}px: Bildfläche volle Breite, im Chat 280 px hoch — ${m.stage.w}×${m.stage.h}`);
     check(m.canvas && m.canvas.w === m.stage.w && m.canvas.h === m.stage.h, `E19 lysozyme ${width}px: Cartoon füllt die Fläche (${m.canvas?.w}×${m.canvas?.h})`);
     await page.waitForTimeout(1500);
     await page.screenshot({ path: join(sizeShots, `e19-cartoon-lysozyme-${width}.png`), fullPage: true });

@@ -10,6 +10,7 @@ import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
 import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import Ball3DCanvas from "./components/Ball3DCanvas";
+import RotateRow from "./components/RotateRow";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 import ExpandButton from "./components/ExpandButton";
@@ -49,6 +50,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
   // Hover, sonst die Auswahl. pinned: {kind:"group",name} | {kind:"atom",idx,el} | null.
   const [hoveredGroup, setHoveredGroup] = useState(null);
   const [pinned, setPinned] = useState(null);
+  const [turn3d, setTurn3d] = useState(0); // „Reset view“ hängt das 3D-Modell neu ein (Etappe 5)
   const [view, setView] = useState(initialSheet ? "data" : "structure");
   // Lernmodus (U4b): Schlüssel der aufgedeckten Stücke ("name", "formula",
   // "mass", "cas", "group:<Name>") und die Gruppe, die gerade leuchtet.
@@ -371,7 +373,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
               </div>}
               {is3d
                 ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
-                    <Ball3DCanvas atoms={conformer.atoms} bonds={conformer.bonds || []} />
+                    <Ball3DCanvas key={turn3d} atoms={conformer.atoms} bonds={conformer.bonds || []} />
                   </div>
                 : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
                     hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
@@ -386,7 +388,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
           </div>
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
-          {is3d && <p className="panel-note-quiet">Drag to rotate · explicit hydrogens</p>}
+          {is3d && <RotateRow onReset={() => setTurn3d((t) => t + 1)} />}
           {/* Stereo, Gruppen und der Projektionssatz beziehen sich auf die 2D-Zeichnung — in 3D aus.
               Der Satz steht dort, wo er etwas erklärt: mit Fischer-Knopf unter Fischer (offene
               Kette), ohne ihn unter Haworth (Glykosid: warum es keine Fischer-Projektion gibt). */}
