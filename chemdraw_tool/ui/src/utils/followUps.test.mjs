@@ -182,3 +182,19 @@ test("Spektrum, DC, Diagramm, Protein: je ein schlichter Knopf", () => {
   assert.doesNotMatch(cmp.text, /plot/);
   assert.deepEqual(proteinFollowUps({ name: "" }), []);
 });
+
+// Etappe 2 (16.11.2026): eine Weiter-Zeile für die Batch-Übersicht.
+import { batchFollowUps } from "./followUps.js";
+
+test("batchFollowUps: Vergleich nur für 2–4 Stoffe (compare_molecules), Quiz und Gruppen immer", () => {
+  const mols = (n) => Array.from({ length: n }, (_, i) => ({ name: `stoff${i + 1}` }));
+  const three = batchFollowUps(mols(3));
+  assert.deepEqual(three.map((a) => a.id), ["compare", "groups", "quiz"]);
+  assert.match(three[0].text, /stoff1, stoff2 and stoff3/);
+  const six = batchFollowUps(mols(6));
+  assert.deepEqual(six.map((a) => a.id), ["groups", "quiz"]);
+  assert.deepEqual(batchFollowUps(mols(1)).map((a) => a.id), ["groups", "quiz"]);
+  assert.deepEqual(batchFollowUps([]), []);
+  // Ohne Namen trägt der SMILES den Stoff.
+  assert.match(batchFollowUps([{ properties: { smiles: "CCO" } }, { name: "x" }])[0].text, /CCO and x/);
+});

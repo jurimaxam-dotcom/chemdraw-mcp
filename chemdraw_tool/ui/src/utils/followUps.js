@@ -222,6 +222,32 @@ export function mechanismFollowUps(data, { mode, step }) {
 
 // --- Laborgrafiken und Protein -----------------------------------------------------
 
+// compare_molecules nimmt 2–4 Strukturen (server.py): mehr bietet der Knopf nicht an.
+const COMPARE_MIN = 2;
+const COMPARE_MAX = 4;
+
+function joinNames(names) {
+  if (names.length <= 1) return names.join("");
+  return `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+}
+
+/** Batch-Übersicht (Etappe 2): eine Zeile für alle Stoffe statt einer je Karte. */
+export function batchFollowUps(molecules) {
+  const names = (molecules || []).map((m) => ref({ name: m?.name, smiles: m?.smiles ?? m?.properties?.smiles }));
+  if (names.length === 0) return [];
+  const all = joinNames(names);
+  const actions = [];
+  if (names.length >= COMPARE_MIN && names.length <= COMPARE_MAX) {
+    actions.push({ id: "compare", label: "Compare these compounds",
+      text: `Compare ${all}: draw them side by side and explain the structural differences.` });
+  }
+  actions.push({ id: "groups", label: "Explain their functional groups",
+    text: `Which functional groups do ${all} have, and how do they differ?` });
+  actions.push({ id: "quiz", label: "Quiz me on these compounds",
+    text: `Quiz me on ${all}: ask one question at a time and wait for my answer.` });
+  return actions;
+}
+
 export function spectrumFollowUps(data) {
   const of = data.name ? ` of ${data.name}` : "";
   const kind = data.spectrum_type ? `${data.spectrum_type} ` : "";

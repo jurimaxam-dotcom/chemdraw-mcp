@@ -166,7 +166,7 @@ test("Diagnose: Dreifachklick auf den Titel blendet Fähigkeiten und Kontext ein
   view.unmount();
 });
 
-test("Stapel (batch): keine Expand-Knöpfe an den einzelnen Karten", async () => {
+test("Stapel (batch): ein Expand-Knopf für das ganze Panel, keiner je Karte", async () => {
   const { default: App } = await import("../App");
   const ctx = { displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"] };
   const app = fakeApp(ctx);
@@ -175,7 +175,11 @@ test("Stapel (batch): keine Expand-Knöpfe an den einzelnen Karten", async () =>
       React.createElement(HostContext.Provider, { value: ctx },
         React.createElement(App, { data: { type: "batch", molecules: [MOLECULE, { ...MOLECULE, name: "Zwei", properties: { ...MOLECULE.properties, smiles: "CCO" } }], failed: [] } })))
   );
-  assert.equal(view.container.querySelectorAll(".molecule-panel").length, 2);
-  assert.equal(Boolean(buttonByText(view.container, "Expand")), false, "Expand-Knopf an einer Stapelkarte");
+  assert.equal(view.container.querySelectorAll(".molecule-panel").length, 0, "volle Karten in der Übersicht");
+  assert.equal(view.container.querySelectorAll("button.batch-card").length, 2);
+  const expands = () => [...view.container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand");
+  assert.equal(expands().length, 1, "Übersicht ohne genau einen Expand-Knopf");
+  await act(async () => { view.container.querySelector("button.batch-card").click(); });
+  assert.equal(expands().length, 1, "Detail ohne genau einen Expand-Knopf");
   view.unmount();
 });

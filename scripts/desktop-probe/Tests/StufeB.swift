@@ -30,6 +30,12 @@ final class StufeB: ProbeFall {
     let warte = (s["timeout"] as? Double) ?? 8
     checkpoint(name) {
       let el = finde(s)
+      // "fehlt": true – das Element darf nicht (mehr) da sein, z. B. Reiter in einer Übersicht.
+      if (s["fehlt"] as? Bool) == true {
+        let weg = el.waitForNonExistence(timeout: warte)
+        if weg, let marke = s["bild"] as? String { panelBild(marke) }
+        return (weg, weg ? "fehlt wie erwartet" : "ist noch da")
+      }
       guard el.waitForExistence(timeout: warte) else { return (false, "nicht gefunden") }
       var info = ""
       // Schalter, die schon im Zielzustand stehen (Chat war noch offen), nicht umlegen.

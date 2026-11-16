@@ -77,6 +77,16 @@ for (const [file, name, input] of [
     mec_mg_per_l: 5, mtc_mg_per_l: 20, drug: "Beispiel" }],
   ["plot-dosis", "generate_dose_response", { ec50: 10, antagonist_concentration: 30, antagonist_kb: 10, drug: "Agonist" }],
 ]) CASES.push([`${file}-chat1000`, name, input, 1000]);
+// Etappe 2 (16.11.2026): batch_generate als Raster. Sechs Stoffe in drei Breiten,
+// drei Stoffe mit einem Fehlschlag, und die Detailansicht nach Klick auf eine Karte.
+const SECHS = { molecules: ["benzene", "toluene", "phenol", "aspirin", "caffeine", "ibuprofen"] };
+const MIT_FEHLER = { molecules: ["benzene", "xyzzyl", "phenol"] };
+CASES.push(["batch6-chat1000", "batch_generate", SECHS, 1000]);
+CASES.push(["batch6-1000x700", "batch_generate", SECHS, 1000, 700]);
+CASES.push(["batch6-320x700", "batch_generate", SECHS, 320, 700]);
+CASES.push(["batch-fehler-chat1000", "batch_generate", MIT_FEHLER, 1000]);
+CASES.push(["batch6-detail-chat1000", "batch_generate", SECHS, 1000, undefined, ".batch-card >> nth=2"]);
+CASES.push(["batch6-detail-320x700", "batch_generate", SECHS, 320, 700, ".batch-card >> nth=2"]);
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 
@@ -97,7 +107,7 @@ const only = process.env.SHOTS_ONLY?.split(",");
 const tools = (await client.listTools()).tools;
 const browser = await chromium.launch();
 try {
-  for (const [file, name, input, width, fixed] of CASES) {
+  for (const [file, name, input, width, fixed, klick] of CASES) {
     if (only && !only.includes(file)) continue;
     const tool = tools.find((t) => t.name === name);
     const result = await client.callTool({ name, arguments: input });
@@ -115,6 +125,11 @@ try {
       const frame = page.frames().at(-1);
       await frame.locator("svg").first().waitFor({ timeout: 30000 });
       await page.waitForTimeout(600);
+      // Optionaler Klick vor dem Bild (Detailansicht); fehlt das Element, bleibt die Startansicht.
+      if (klick && await frame.locator(klick).count()) {
+        await frame.locator(klick).click();
+        await page.waitForTimeout(600);
+      }
       if (fixed) {
         const m = await frame.evaluate(plotMetrics);
         await page.setViewportSize({ width: width + 20, height: fixed + 20 });

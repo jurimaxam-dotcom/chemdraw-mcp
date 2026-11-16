@@ -139,6 +139,37 @@ export function moleculeSummary(data) {
   return formula ? `${who} (${formula})` : who;
 }
 
+// Ein Eintrag aus `failed` (server.py batch_generate) ist die Eingabe selbst,
+// bei Familiennamen mit " (ambiguous: …)" dahinter. Mehr Grund liefert der
+// Server nicht, also ein fester Satz für alles andere.
+export function splitBatchFailure(entry) {
+  const m = /^(.*) \((ambiguous: .*)\)$/.exec(String(entry));
+  return m ? { input: m[1], reason: m[2] } : { input: String(entry), reason: "could not be resolved" };
+}
+
+function massText(mw) {
+  if (mw == null || mw === "") return "";
+  return /g\/mol/.test(String(mw)) ? String(mw) : `${mw} g/mol`;
+}
+
+/**
+ * BatchView, Übersicht (Etappe 2): die Stoffliste. Ist ein Stoff geöffnet, meldet
+ * dessen MoleculeView sich selbst und die Übersicht meldet "" — dieser Text gilt
+ * also nur, solange kein Detail offen ist.
+ */
+export function batchContext(data) {
+  const molecules = data.molecules || [];
+  const lines = [HEAD, `Batch of ${plural(molecules.length, "structure")} as an overview grid; `
+    + "the user can open one for its tabs, data sheet and export (none is open now):"];
+  molecules.forEach((m, i) => {
+    const mass = massText(m.properties?.mw);
+    lines.push(`${i + 1}. ${moleculeSummary(m)}${mass ? `, ${mass}` : ""}`);
+  });
+  const failed = (data.failed || []).map(splitBatchFailure);
+  if (failed.length) lines.push(`Not drawn: ${failed.map((f) => `${f.input} (${f.reason})`).join("; ")}`);
+  return clip(lines.join("\n"));
+}
+
 /** DatabaseView: Datenblatt mit lokalem Weg zur Struktur. */
 export function databaseContext(data, state = {}) {
   const lines = [HEAD, compoundLine(data.name, data.formula, data.smiles)];
@@ -215,7 +246,8 @@ export function genericContext(type, data) {
 
 /**
  * Ein Text aus allen Meldungen des Panels. Eine Meldung → ihr Text. Mehrere
- * (batch_generate): ein gemeinsamer Überblick plus die Karte, die zuletzt
+ * (seit Etappe 2 meldet batch_generate nur eine View auf einmal; der Pfad bleibt
+ * für jede künftige Mehrfach-Ansicht): ein gemeinsamer Überblick plus die Karte, die zuletzt
  * bedient wurde — so überschreiben sich die Karten nicht gegenseitig.
  * `entries`: [{ text, summary, focus }] in Anzeigereihenfolge; focus > 0 = bedient.
  */

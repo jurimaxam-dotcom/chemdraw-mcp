@@ -11,7 +11,7 @@ import React from "react";
 //
 // `idPrefix` verknuepft Reiter und Ansicht (aria-controls ⇄ aria-labelledby).
 // Er kommt von aussen, weil das Panel-Element dem aufrufenden View gehoert —
-// und weil `batch_generate` mehrere Molekuel-Panels nebeneinander rendert,
+// und weil ein Dokument mehrere solcher Panels tragen kann,
 // muss er pro Panel eindeutig sein (React `useId`).
 // `study` (opt-in, U4b): dritter Reiter „Study“ — nur MoleculeView setzt ihn.
 export default function ViewToggle({ view, onChange, loading = false, idPrefix, study = false }) {

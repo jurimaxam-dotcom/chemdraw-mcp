@@ -11,50 +11,7 @@ import PlotView from "./PlotView";
 import Molecule3DView from "./Molecule3DView";
 import ProteinView from "./ProteinView";
 import AmbiguousView from "./AmbiguousView";
-
-// Ein Eintrag aus `failed` (server.py batch_generate) ist die Eingabe selbst,
-// bei Familiennamen mit " (ambiguous: …)" dahinter. Mehr Grund liefert der
-// Server nicht, also ein fester Satz für alles andere.
-function splitFailure(entry) {
-  const m = /^(.*) \((ambiguous: .*)\)$/.exec(entry);
-  return m ? { input: m[1], reason: m[2] } : { input: entry, reason: "could not be resolved" };
-}
-
-// Fehlschläge unter den gelungenen Kacheln — sonst sieht der Batch
-// vollständig aus, obwohl ein Name fehlt.
-function BatchFailedList({ failed }) {
-  if (failed.length === 0) return null;
-  return (
-    <div
-      data-testid="batch-failed"
-      role="status"
-      style={{
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius-md)",
-        padding: "8px 12px",
-        fontSize: 12,
-        color: "var(--fg-muted)",
-      }}
-    >
-      <div style={{ color: "var(--fg)", fontWeight: 600, marginBottom: 4 }}>
-        Not drawn ({failed.length})
-      </div>
-      <ul style={{ margin: 0, paddingLeft: 16 }}>
-        {failed.map((entry, i) => {
-          const { input, reason } = splitFailure(entry);
-          return (
-            <li key={`${entry}-${i}`}>
-              <span className="batch-failed-input" style={{ color: "var(--fg)", fontFamily: "ui-monospace, monospace" }}>
-                {input}
-              </span>
-              {` — ${reason}`}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
+import BatchView from "./BatchView";
 
 export default function App({ data }) {
   switch (data.type) {
@@ -75,16 +32,9 @@ export default function App({ data }) {
     case "database":
       return <DatabaseView key={data.smiles || data.name} data={data} />;
     case "batch":
-      return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {(data.molecules || []).map((mol, i) => (
-            // Prefer a stable identity (SMILES/name) so per-molecule state
-            // survives list changes; fall back to index when neither exists.
-            <MoleculeView key={mol.properties?.smiles || mol.name || i} data={mol} expandable={false} />
-          ))}
-          <BatchFailedList failed={data.failed || []} />
-        </div>
-      );
+      // Raster kompakter Karten, Klick öffnet die volle Molekül-Ansicht (Etappe 2).
+      // Schlüssel = die Stoffe: ein neues Ergebnis beginnt in der Übersicht, nie in einem alten Detail.
+      return <BatchView key={(data.molecules || []).map((m) => m.properties?.smiles || m.name).join("|")} data={data} />;
     case "mechanism":
       return <MechanismView key={`${data.name}|${data.reaction_type}|${(data.steps || []).length}`} data={data} />;
     case "spectrum":

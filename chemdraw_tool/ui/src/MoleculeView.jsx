@@ -334,7 +334,7 @@ export default function MoleculeView({ data, expandable = true }) {
         </div>
         {(query || (expandable && canRequestFullscreen(hostContext))) && <div className="panel-actions">
           {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study />}
-          {/* Im Stapel (batch) vergrößert man das Panel, nicht eine Karte: dort kein Knopf. */}
+          {/* expandable=false: Einbettungen, in denen ein anderer Teil das Panel vergrößert. */}
           {expandable && <ExpandButton app={app} hostContext={hostContext} />}
         </div>}
       </header>
@@ -427,7 +427,7 @@ export default function MoleculeView({ data, expandable = true }) {
 // das Panel im Chat steht. requestDisplayMode direkt im Klick-Handler — Claude
 // lehnt die Anfrage ohne frische Nutzeraktion ab. Nach dem Wechsel meldet der Host
 // displayMode "fullscreen", der Knopf verschwindet von selbst.
-function ExpandButton({ app, hostContext }) {
+export function ExpandButton({ app, hostContext }) {
   if (!canRequestFullscreen(hostContext) || !app?.requestDisplayMode) return null;
   const expand = () => {
     app.requestDisplayMode({ mode: "fullscreen" }).catch(() => {});

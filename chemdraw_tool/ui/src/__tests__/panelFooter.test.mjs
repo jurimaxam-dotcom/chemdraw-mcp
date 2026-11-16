@@ -128,18 +128,21 @@ test("Panels ohne Datei und ohne Aktion bekommen keine leere Fußzeile", () => {
   }
 });
 
-test("Batch: jeder Eintrag endet mit seiner eigenen Fußzeile", () => {
+test("Batch: Übersicht mit einer Fußzeile (Ordner), Detail mit den Pfaden des Stoffs", async () => {
   const second = { ...MOLECULE_FILES, name: "Caffeine", properties: { ...MOLECULE.properties, smiles: "Cn1cnc2c1c(=O)n(C)c(=O)n2C" },
     files: { png: `${HOME}/einzelmolekuele/caffeine.png` } };
   const { container, unmount } = render(withApp(React.createElement(App, {
     data: { type: "batch", molecules: [MOLECULE_FILES, second], cdxml_paths: [], failed: [] } })));
-  const panels = [...container.querySelectorAll("article.molecule-panel")];
-  assert.equal(panels.length, 2);
-  for (const panel of panels) {
-    assert.equal(panel.lastElementChild?.getAttribute("data-testid"), "panel-footer");
-    assert.equal(panel.querySelectorAll("button.export-png").length, 1);
-  }
-  assert.match(textOf(panels[1].lastElementChild), /caffeine\.png/);
+  const footers = container.querySelectorAll("[data-testid='panel-footer']");
+  assert.equal(footers.length, 1);
+  assert.match(textOf(footers[0]), /FOLDER/);
+  assert.match(textOf(footers[0]), /einzelmolekuele/);
+  assert.equal(footers[0].querySelectorAll(".panel-footer-file").length, 1, "ein Ordner, nicht je Datei eine Zeile");
+  await click(container.querySelectorAll("button.batch-card")[1]);
+  const panel = container.querySelector("article.molecule-panel");
+  assert.equal(panel.lastElementChild?.getAttribute("data-testid"), "panel-footer");
+  assert.equal(panel.querySelectorAll("button.export-png").length, 1);
+  assert.match(textOf(panel.lastElementChild), /caffeine\.png/);
   unmount();
 });
 

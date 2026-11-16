@@ -215,7 +215,7 @@ try {
       ["tlc", "generate_tlc", { title: "Three lanes", lanes: [{ name: "A", spots: [{ rf: 0.2 }] }, { name: "B", spots: [{ rf: 0.6 }] }] }, (f) => f.locator("svg").first().waitFor()],
       ["titration", "generate_titration_curve", { substance: "Acetic acid", pka_values: [4.76], c_acid: 0.1, v_acid_ml: 25, c_titrant: 0.1 }, (f) => f.locator("svg").first().waitFor()],
       ["compare", "compare_molecules", { structures: ["ibuprofen", "naproxen", "ketoprofen"] }, (f) => f.locator("svg").first().waitFor()],
-      ["batch", "batch_generate", { molecules: ["benzene", "toluene", "phenol"] }, (f) => f.locator(".panel-title").nth(2).waitFor()],
+      ["batch", "batch_generate", { molecules: ["benzene", "toluene", "phenol"] }, (f) => f.locator(".batch-card").nth(2).waitFor()],
     ]) {
       const [page, f] = await open(name, input, full(1400, 900), { viewport: { width: 1400, height: 900 } });
       await ready(f);
@@ -235,11 +235,59 @@ try {
         check(p.box > 600 && p.svg > 0.6 * p.box && p.sh <= p.ih, `U5 ${tag} 1400×900: Diagramm füllt die Höhe (${JSON.stringify(p)})`);
       }
       if (tag === "batch") {
-        const hs = await f.locator(".structure-canvas").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
-        messwerte["w-batch-flächen"] = hs.join(",");
-        check(hs.length === 3 && hs.every((h) => h === 320), `U2 batch: Stapel bleibt inhaltsgroß, je Karte 320 px (${hs.join(", ")})`);
+        // Etappe 2: Raster statt Stapel — drei Karten in einer Reihe, jede mit Zeichnung.
+        const k = await f.locator(".batch-card").evaluateAll((els) => els.map((e) => {
+          const b = e.getBoundingClientRect(), s = e.querySelector(".batch-card-structure svg")?.getBoundingClientRect();
+          return { top: Math.round(b.top), svg: s ? Math.round(s.height) : 0 };
+        }));
+        messwerte["w-batch-karten"] = JSON.stringify(k);
+        check(k.length === 3 && k.every((c) => c.top === k[0].top && c.svg > 80), `U2 batch: drei Karten in einer Reihe mit Zeichnung (${JSON.stringify(k)})`);
       }
       await page.close();
+    }
+    // Etappe 2 (16.11.2026): batch_generate als Raster. Vorher standen sechs volle Karten
+    // untereinander (4920 px im Chat bei 1000 px); jetzt Übersicht, Detail auf Klick.
+    {
+      const SECHS = { molecules: ["benzene", "toluene", "phenol", "aspirin", "caffeine", "ibuprofen"] };
+      const karten = (f) => f.locator(".batch-card").evaluateAll((els) => els.map((e) => {
+        const b = e.getBoundingClientRect();
+        return { left: Math.round(b.left), top: Math.round(b.top), w: Math.round(b.width) };
+      }));
+      {
+        const [page, f] = await open("batch_generate", SECHS, chat(1000), { viewport: { width: 1000, height: 1300 } });
+        await f.locator(".batch-card").nth(5).waitFor();
+        await fitChat(page);
+        const k = await karten(f);
+        const panel = await f.evaluate(() => Math.ceil(document.getElementById("root").getBoundingClientRect().bottom) + 16);
+        const spalten = new Set(k.map((c) => c.left)).size;
+        messwerte["e2-batch6-chat1000"] = JSON.stringify({ panel, spalten });
+        check(k.length === 6 && spalten >= 3 && panel <= 900, `E2 batch 6 Stoffe Chat 1000: ${spalten} Spalten, Panel ${panel} px ≤ 900`);
+        await page.close();
+      }
+      {
+        const [page, f] = await open("batch_generate", SECHS, full(320, 700), { viewport: { width: 320, height: 700 } });
+        await f.locator(".batch-card").nth(5).waitFor();
+        await page.waitForTimeout(300);
+        const k = await karten(f);
+        const de = await f.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth }));
+        const spalten = new Set(k.map((c) => c.left)).size;
+        check(spalten === 2 && de.sw <= de.iw, `E2 batch Seitenpanel 320×700: zwei Spalten, nichts ragt heraus (${spalten}, ${de.sw}≤${de.iw})`);
+        // Rollposition: zur letzten Karte rollen, öffnen, zurück — die Übersicht steht wieder dort.
+        const letzte = f.locator(".batch-card").nth(5);
+        await f.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await page.waitForTimeout(150);
+        const vorher = await f.evaluate(() => scrollY);
+        await letzte.click();
+        await f.getByRole("button", { name: "Back to all structures" }).waitFor();
+        const imDetail = await f.evaluate(() => scrollY);
+        await page.screenshot({ path: join(layoutShots, "e2-batch-detail-320x700.png") });
+        await f.getByRole("button", { name: "Back to all structures" }).click();
+        await letzte.waitFor();
+        const nachher = await f.evaluate(() => scrollY);
+        check(vorher > 100 && imDetail === 0 && Math.abs(nachher - vorher) <= 2,
+          `E2 batch 320×700: Detail beginnt oben, zurück an derselben Stelle (${vorher} → ${imDetail} → ${nachher})`);
+        await page.close();
+      }
     }
     // Etappe 1 (16.11.2026): Diagramme lesbar. Vorher saß die Figur im Chat bei 1000 px
     // 330 px breit in einer 936-px-Karte (feste 480 px Panelhöhe, Continue-Zeile darunter),
@@ -494,7 +542,7 @@ try {
           `toolinput: beschriftete Platzhalter statt „Waiting for data…“ (${labels.join(", ")})`);
         await page.screenshot({ path: join(uiShots, "placeholder-toolinput-batch.png") });
         await page.evaluate((r) => window.__sendToolResult(r), result);
-        await f.locator(".panel-title").nth(2).waitFor();
+        await f.locator(".batch-card").nth(2).waitFor();
         check(await ph.count() === 0, "toolinput: das Ergebnis ersetzt den Platzhalter");
         await page.close();
       }
@@ -1598,8 +1646,8 @@ try {
       + "CO)O)O)(C)N)O";
     const faelle = [
       { label: "Stapel mit 20 Arzneistoffen, ohne structuredContent", tool: "batch_generate",
-        input: { molecules: ARZNEISTOFFE }, strip: true, karten: 20 },
-      { label: "Vancomycin", tool: "generate_molecule", input: { name_or_smiles: VANCOMYCIN }, strip: false, karten: 1 },
+        input: { molecules: ARZNEISTOFFE }, strip: true, karten: 20, karte: ".batch-card" },
+      { label: "Vancomycin", tool: "generate_molecule", input: { name_or_smiles: VANCOMYCIN }, strip: false, karten: 1, karte: ".panel-title" },
     ];
     for (const fall of faelle) {
       const p = await browser.newPage({ viewport: { width: 720, height: 900 } });
@@ -1616,12 +1664,16 @@ try {
       const resource = await client.readResource({ uri: tool._meta.ui.resourceUri });
       await p.evaluate((a) => window.__startHost(a), { html: resource.contents[0].text, toolInput: fall.input, toolResult });
       const f = p.frames().at(-1);
-      await f.locator(".panel-title").nth(fall.karten - 1).waitFor({ timeout: 30000 }).catch(() => {});
-      const bilder = await f.locator(".panel-title").count();
-      const pfade = await f.locator("svg path").count();
-      check(bilder === fall.karten && pfade > 50 * fall.karten && calls.includes("load_panel_part")
+      await f.locator(fall.karte).nth(fall.karten - 1).waitFor({ timeout: 30000 }).catch(() => {});
+      const bilder = await f.locator(fall.karte).count();
+      // Je Karte eine Zeichnung mit Bindungen (Stapel: das Vorschaubild der Karte; die Schwelle 50 × Karten
+      // zählte früher auch Knopf-Symbole der vollen Karten mit, Etappe 2).
+      const zeichnung = fall.karte === ".batch-card" ? ".batch-card-structure" : "[data-view='structure'] .structure-canvas";
+      const jeKarte = await f.locator(zeichnung).evaluateAll((els) => els.map((e) => e.querySelectorAll("path").length));
+      const pfade = jeKarte.reduce((a, b) => a + b, 0);
+      check(bilder === fall.karten && jeKarte.length === fall.karten && jeKarte.every((n) => n >= 6) && calls.includes("load_panel_part")
         && calls.every((n) => n === "load_panel_part"),
-        `${fall.label}: Panel lädt ${calls.length}× nach und zeigt ${bilder} Karte(n) mit ${pfade} Pfaden`);
+        `${fall.label}: Panel lädt ${calls.length}× nach und zeigt ${bilder} Karte(n) mit ${pfade} Pfaden (je Zeichnung mind. ${Math.min(...jeKarte)})`);
       await p.screenshot({ path: join(tmpdir(), `panel-host-m2-${fall.tool}.png`) });
       await p.close();
     }
@@ -1643,7 +1695,7 @@ try {
       await f.getByRole("alert").waitFor({ timeout: 15000 }).catch(() => {});
       const shown = await f.locator("body").innerText();
       check(await f.getByRole("alert").count() === 1 && shown.includes("could not be loaded")
-        && shown.includes("Run the tool again") && /\.png/.test(shown) && await f.locator(".panel-title").count() === 0,
+        && shown.includes("Run the tool again") && /\.png/.test(shown) && await f.locator(".panel-title, .batch-card").count() === 0,
         `Nachladen scheitert: Meldung mit Dateipfaden statt leerer Fläche („${shown.replace(/\s+/g, " ").slice(0, 90)}…“)`);
       await p.screenshot({ path: join(tmpdir(), "panel-host-m2-fehlt.png") });
       await p.close();
@@ -1655,10 +1707,26 @@ try {
   await batchPage.addScriptTag({ path: out });
   await batchPage.exposeFunction("__callTool", (req) => client.callTool(req));
   const batch = await mount(batchPage, "batch_generate", { molecules: ["benzene", "toluene", "phenol"] });
-  await batch.locator(".panel-title").nth(2).waitFor();
-  const titles = (await batch.locator(".panel-title").allInnerTexts()).map((t) => t.toLowerCase());
-  check(["benzene", "toluene", "phenol"].every((n) => titles.some((t) => t.includes(n))), `Batch: drei Molekülkarten (${titles.join(", ")})`);
-  check(await batch.locator("button.export-png").count() === 3, "Batch: je Molekül ein Export-Knopf");
+  await batch.locator(".batch-card").nth(2).waitFor();
+  const names = (await batch.locator(".batch-card-name").allInnerTexts()).map((t) => t.toLowerCase());
+  check(["benzene", "toluene", "phenol"].every((n) => names.includes(n)), `Batch: drei Karten im Raster (${names.join(", ")})`);
+  check(await batch.locator("article.molecule-panel").count() === 0 && await batch.locator("[data-testid='panel-footer']").count() === 1,
+    "Batch: Übersicht ohne volle Molekül-Karten, eine Fußzeile");
+  // Etappe 2: Karte öffnen (Tastatur: Enter), Daten über den echten Server, zurück zur Übersicht.
+  await batch.getByRole("button", { name: /^phenol, / }).focus();
+  await batch.page().keyboard.press("Enter");
+  await batch.locator("article.molecule-panel .panel-title").waitFor();
+  check((await batch.locator("article.molecule-panel .panel-title").innerText()).toLowerCase() === "phenol"
+    && await batch.locator(".batch-card").count() === 0, "Batch: Enter auf der Karte öffnet die volle Ansicht von phenol");
+  await batch.getByRole("tab", { name: "Data" }).click();
+  await batch.getByText("108-95-2").first().waitFor({ timeout: 30000 });
+  check(true, "Batch-Detail: Reiter Data lädt das Datenblatt (CAS 108-95-2)");
+  check(await batch.locator("button.export-png").count() === 1, "Batch-Detail: Export-Knopf des Stoffs");
+  await batch.getByRole("button", { name: "Back to all structures" }).click();
+  await batch.locator(".batch-card").nth(2).waitFor();
+  const fokus = await batch.evaluate(() => document.activeElement?.getAttribute("aria-label") || "");
+  check(await batch.locator(".batch-card").count() === 3 && /^phenol, /.test(fokus),
+    `Batch: zurück in der Übersicht, Fokus auf der geöffneten Karte (${fokus})`);
   await batchPage.close();
 } finally {
   await browser?.close();

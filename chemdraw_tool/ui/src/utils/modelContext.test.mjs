@@ -103,3 +103,28 @@ test("nie länger als MAX_CONTEXT Zeichen", () => {
   assert.ok(buildModelContext([{ text: "y".repeat(9000), summary: "s", focus: 0 }]).length <= MAX_CONTEXT);
   assert.ok(MAX_CONTEXT <= 4000);
 });
+
+// Etappe 2 (16.11.2026): batch_generate als Raster — die Übersicht meldet die Stoffliste.
+import { batchContext, splitBatchFailure } from "./modelContext.js";
+
+test("batchContext: Liste der Stoffe mit Formel und Molmasse, Fehlschläge mit Grund", () => {
+  const text = batchContext({
+    type: "batch",
+    molecules: [
+      { name: "benzene", formula: "C6H6", properties: { mw: "78.11 g/mol" } },
+      { name: "", properties: { smiles: "CCO", formula: "C2H6O", mw: "46.07" } },
+    ],
+    failed: ["xyzzyl", "xylene (ambiguous: o-xylene, m-xylene)"],
+  });
+  assert.match(text, /^Chem-MCP panel/);
+  assert.match(text, /2 structures as an overview grid/);
+  assert.match(text, /1\. benzene \(C6H6\), 78\.11 g\/mol/);
+  assert.match(text, /2\. CCO \(C2H6O\), 46\.07 g\/mol/);
+  assert.match(text, /Not drawn: xyzzyl \(could not be resolved\); xylene \(ambiguous: o-xylene, m-xylene\)/);
+  assert.ok(text.length <= MAX_CONTEXT);
+});
+
+test("splitBatchFailure trennt Eingabe und Grund", () => {
+  assert.deepEqual(splitBatchFailure("xyzzyl"), { input: "xyzzyl", reason: "could not be resolved" });
+  assert.deepEqual(splitBatchFailure("xylene (ambiguous: a, b)"), { input: "xylene", reason: "ambiguous: a, b" });
+});

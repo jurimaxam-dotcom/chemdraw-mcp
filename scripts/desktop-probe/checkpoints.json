@@ -1,5 +1,5 @@
 {
- "_kommentar": "Stufe B: Checkpoints je Panel-Tool. Gesucht wird über Bedienungshilfen-Namen (title/label/value), nie über sichtbaren Text – der Knopf mit der Aufschrift 'Export PNG' heißt 'Export as PNG'. Felder: typ, genau eines aus titel/beginnt/enthaelt, aktion (da|klick), wert (value nach dem Klick), dann (Folgeelement), bild (Panel-Bild mit dieser Marke), pause, timeout. Nie klicken: die Knöpfe unter 'Continue in chat' (jeder schreibt eine Nachricht) und 'Add a flashcard to the Anki deck …' (ändert Anki).",
+ "_kommentar": "Stufe B: Checkpoints je Panel-Tool. Gesucht wird über Bedienungshilfen-Namen (title/label/value), nie über sichtbaren Text – der Knopf mit der Aufschrift 'Export PNG' heißt 'Export as PNG'. Felder: typ, genau eines aus titel/beginnt/enthaelt, aktion (da|klick), wert (value nach dem Klick), dann (Folgeelement), bild (Panel-Bild mit dieser Marke), pause, timeout, fehlt (true: das Element darf nicht da sein; grün, sobald es fehlt). Nie klicken: die Knöpfe unter 'Continue in chat' (jeder schreibt eine Nachricht) und 'Add a flashcard to the Anki deck …' (ändert Anki).",
  "generate_molecule": {
   "schritte": [
    {
@@ -110,41 +110,58 @@
  "batch_generate": {
   "schritte": [
    {
-    "name": "Karte benzene",
-    "typ": "staticText",
-    "titel": "benzene"
+    "name": "Übersicht: Karte benzene",
+    "typ": "button",
+    "beginnt": "benzene, "
    },
    {
-    "name": "Karte toluene",
-    "typ": "staticText",
-    "titel": "toluene"
+    "name": "Übersicht: Karte toluene",
+    "typ": "button",
+    "beginnt": "toluene, "
    },
    {
-    "name": "Karte phenol",
-    "typ": "staticText",
-    "titel": "phenol"
+    "name": "Übersicht: Karte phenol",
+    "typ": "button",
+    "beginnt": "phenol, "
    },
    {
-    "name": "Tab Data der ersten Karte",
+    "name": "Übersicht ohne volle Karten (kein Tab Data)",
+    "typ": "tab",
+    "titel": "Data",
+    "fehlt": true
+   },
+   {
+    "name": "Klick auf Karte phenol öffnet die Detailansicht mit Reitern",
+    "typ": "button",
+    "aktion": "klick",
+    "beginnt": "phenol, ",
+    "dann": {
+     "typ": "tab",
+     "titel": "Data"
+    },
+    "bild": "detail"
+   },
+   {
+    "name": "Detail: Tab Data lädt das Datenblatt von phenol",
     "typ": "tab",
     "aktion": "klick",
     "titel": "Data",
     "wert": "1",
     "dann": {
      "typ": "staticText",
-     "titel": "71-43-2"
+     "titel": "108-95-2"
     },
     "bild": "daten"
    },
    {
-    "name": "Tab Structure zurück",
+    "name": "Detail: Tab Structure zurück",
     "typ": "tab",
     "aktion": "klick",
     "titel": "Structure",
     "wert": "1"
    },
    {
-    "name": "Gruppe Phenol anheften",
+    "name": "Detail: Gruppe Phenol anheften",
     "typ": "checkBox",
     "aktion": "klick",
     "beginnt": "Phenol",
@@ -152,9 +169,26 @@
     "bild": "phenol"
    },
    {
-    "name": "Knopf Export as PNG vorhanden",
+    "name": "Detail: Knopf Export as PNG vorhanden",
     "typ": "button",
     "titel": "Export as PNG"
+   },
+   {
+    "name": "Rückweg führt zur Übersicht (Karte benzene wieder da)",
+    "typ": "button",
+    "aktion": "klick",
+    "titel": "Back to all structures",
+    "dann": {
+     "typ": "button",
+     "beginnt": "benzene, "
+    },
+    "bild": "zurueck"
+   },
+   {
+    "name": "Übersicht: Detail wieder zu (kein Tab Data)",
+    "typ": "tab",
+    "titel": "Data",
+    "fehlt": true
    }
   ]
  },

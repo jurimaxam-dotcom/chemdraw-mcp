@@ -141,22 +141,26 @@ test("Kontext-Fehler werden still geschluckt", async () => {
   view.unmount();
 });
 
-test("Stapel: ein gemeinsamer Text, die bediente Karte im Fokus", async () => {
+test("Stapel: Übersicht mit einer Weiter-Zeile, im Detail spricht nur der geöffnete Stoff", async () => {
   const second = { ...MOLECULE, name: "Caffeine", formula: "C8H10N4O2", properties: { ...MOLECULE.properties, smiles: "Cn1cnc2c1c(=O)n(C)c(=O)n2C" } };
   const app = fakeApp();
   const view = mount(app, React.createElement(App, { data: { type: "batch", molecules: [MOLECULE, second], failed: [] } }));
   await wait(60);
   const first = contexts(app).at(-1);
-  assert.match(first, /2 cards/);
+  assert.match(first, /2 structures/);
   assert.match(first, /Aspirin/);
   assert.match(first, /Caffeine/);
-  const cards = view.container.querySelectorAll("article.molecule-panel");
-  const ester = [...cards[1].querySelectorAll("button.functional-group")][0];
+  assert.equal(view.container.querySelectorAll("[data-testid='continue-row']").length, 1);
+  await click(buttonByText(view.container, "Compare these compounds"));
+  const sent = app.log.filter(([k]) => k === "message").at(-1);
+  assert.match(sent[1], /Compare Aspirin and Caffeine/);
+  await click(view.container.querySelectorAll("button.batch-card")[1]);
+  const ester = [...view.container.querySelectorAll("button.functional-group")][0];
   await click(ester);
   await wait(60);
   const last = contexts(app).at(-1);
-  assert.match(last, /card 2 of 2/);
+  assert.match(last, /Compound: Caffeine/);
   assert.match(last, /Pinned selection: the Ester group/);
-  assert.match(last, /Aspirin/, "Überblick verlor die andere Karte");
+  assert.doesNotMatch(last, /Aspirin/, "verdeckte Übersicht meldet noch");
   view.unmount();
 });
