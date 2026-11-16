@@ -2,10 +2,14 @@
 """Registriert die zwei ChemDraw-Konnektoren in der Claude-Desktop-Config.
 
 Zwei Einträge aus demselben Paket (Jay-Entscheid 06.11.2026, Welle 3):
-    chemdraw         CHEMDRAW_PROFILE=mvp   (Standardprofil, 16 Tools)
-    chemdraw-pharma  CHEMDRAW_PROFILE=full  (Vollprofil, 23 Tools)
-Der Nutzer wechselt im Konnektor-Menü des Chats, ohne Desktop-Neustart. Das
-Profil steht fest im Eintrag (env), damit nie beide dasselbe liefern.
+    chemdraw         CHEMDRAW_PROFILE=mvp     (Standardprofil, 18 Tools)
+    chemdraw-pharma  CHEMDRAW_PROFILE=pharma  (Zusatz-Tools, 9 Tools)
+Seit 16.11.2026 ergänzen sich beide: `pharma` hat genau, was das Vollprofil
+über `mvp` hinaus hat (7), dazu die zwei Panel-Helfer save_png und
+load_panel_part, die das Modell nicht sieht. Vorher lieferte chemdraw-pharma
+das Vollprofil (25), und mit beiden Konnektoren sah das Modell 18 Tools
+doppelt. Ein Eintrag mit `full` wird beim Installieren umgeschrieben; von Hand
+bleibt CHEMDRAW_PROFILE=full gültig (ein Konnektor mit allem).
 
 Idempotenter Merge: fügt die Einträge hinzu bzw. aktualisiert sie und räumt
 den Eintrag der Vor-Welle-3-Installation (`chemdraw-tool`) weg, OHNE andere
@@ -37,9 +41,13 @@ import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
-# Konnektorname → Serverprofil (`create_server` in server.py kennt genau diese
-# zwei). Reihenfolge = Reihenfolge in der Config und im Konnektor-Menü.
-CONNECTORS: dict[str, str] = {"chemdraw": "mvp", "chemdraw-pharma": "full"}
+# Konnektorname → Serverprofil. Reihenfolge = Reihenfolge in der Config und im
+# Konnektor-Menü.
+CONNECTORS: dict[str, str] = {"chemdraw": "mvp", "chemdraw-pharma": "pharma"}
+# Was `create_server` in server.py annimmt (Test hält beide gleich; server.py
+# hier nicht importieren, das zöge RDKit in Installer und Doctor). `full` ist
+# kein Konnektor des Installers, aber von Hand weiter gültig.
+PROFILES: frozenset[str] = frozenset({"mvp", "pharma", "full"})
 # Hauptkonnektor: was Doctor und Handshake meinen, wenn sie von "dem" Eintrag
 # sprechen; der zweite hängt in CONNECTORS daran.
 SERVER_NAME = "chemdraw"
@@ -115,10 +123,10 @@ def resolve_uv_command(
 
 
 def _profile_env(profile: str) -> dict[str, str]:
-    """Das feste Profil eines Eintrags — nur die zwei, die der Server kennt."""
-    if profile not in CONNECTORS.values():
+    """Das feste Profil eines Eintrags — nur eins, das der Server kennt."""
+    if profile not in PROFILES:
         raise ValueError(
-            f"profile must be 'mvp' or 'full', got: {profile!r} "
+            f"profile must be 'mvp', 'pharma' or 'full', got: {profile!r} "
             f"(connectors: {', '.join(f'{n}={p}' for n, p in CONNECTORS.items())})"
         )
     return {"CHEMDRAW_PROFILE": profile}
@@ -281,7 +289,8 @@ def main() -> int:
     # Nicht __doc__: der Modul-Docstring ist Entwicklerdoku auf Deutsch, --help sieht der Nutzer.
     ap = argparse.ArgumentParser(
         description="Register the two ChemDraw MCP connectors (chemdraw = default "
-        "profile, chemdraw-pharma = full profile) in the Claude Desktop config. "
+        "profile, chemdraw-pharma = the pharmacy tools on top of it) in the Claude "
+        "Desktop config. Both can be enabled at once; together they offer every tool. "
         "Idempotent; other MCP servers stay untouched and a .bak backup is written "
         "before the first change."
     )

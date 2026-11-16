@@ -59,7 +59,7 @@ trap 'rm -rf "$TMP"' EXIT
 # Ueber die Logik des Installers, nicht ueber einen zweiten hartkodierten Pfad:
 # desktop_config.py kennt Konnektornamen, Profile und den plattformabhaengigen
 # Config-Pfad. Seit Welle 3 gibt es zwei Konnektoren (chemdraw = mvp,
-# chemdraw-pharma = full); eine Installation von davor heisst chemdraw-tool und
+# chemdraw-pharma = pharma, bis 16.11.2026 full); eine Installation von davor heisst chemdraw-tool und
 # wird mit Warnung ebenfalls geprueft — der Desktop startet sie ja genauso.
 # Ausgabe: erste Zeile = Herkunft (config|fallback|broken <TAB> Detail), danach
 # je Konnektor eine Zeile "name <TAB> profil <TAB> argv-Elemente mit TAB getrennt".
@@ -90,6 +90,11 @@ for name in (*CONNECTORS, *LEGACY_SERVER_NAMES):
         profile = (entry.get("env") or {}).get("CHEMDRAW_PROFILE", "mvp")
         argv = [entry["command"], *(entry.get("args") or [])]
         found.append((name, profile, argv))
+        # Geprueft wird, was eingetragen ist — aber ein chemdraw-pharma mit full
+        # (Installationen vom 07.-16.11.2026) zeigt neben chemdraw 18 Tools doppelt.
+        if name in CONNECTORS and profile != CONNECTORS[name]:
+            print(f"⚠ {name} laeuft mit Profil {profile}, der Installer schreibt "
+                  f"{CONNECTORS[name]} — ./install.sh schreibt den Eintrag um.", file=sys.stderr)
 
 if found:
     print(f"config\t{path}")

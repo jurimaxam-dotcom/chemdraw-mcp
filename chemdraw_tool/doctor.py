@@ -384,13 +384,36 @@ def check_desktop_config(
             fix=f"{_install_command()}   (idempotent; leaves your other MCP servers untouched)",
         )
 
+    def profile_of(connector: str) -> str:
+        return (servers[connector].get("env") or {}).get("CHEMDRAW_PROFILE", "mvp")
+
+    # Seit 16.11.2026 liefert chemdraw-pharma nur die Zusatz-Tools (`pharma`).
+    # Ein Eintrag von davor (`full`) startet, aber neben `chemdraw` sieht das
+    # Modell dann 18 Tools doppelt — und ein Paket-Update ändert die Config nicht.
+    drifted = [c for c in connectors if profile_of(c) != connectors[c]]
+    if drifted:
+        doubled = any(profile_of(c) == "full" for c in connectors)
+        return CheckResult(
+            name=name,
+            status=LIMITED,
+            detail=(
+                "Connector profile differs from what the installer writes: "
+                + ", ".join(f"{c} = {profile_of(c)} (expected {connectors[c]})" for c in drifted)
+                + "."
+                + (
+                    " With both connectors enabled, the model sees the shared tools twice "
+                    "and calls spread across both."
+                    if doubled
+                    else ""
+                )
+            ),
+            fix=f"{_install_command()}   (rewrites both entries; leaves your other MCP servers untouched)",
+        )
+
     main_entry = servers[_server_name()]
     command = main_entry.get("command") or ""
     args = " ".join(str(a) for a in main_entry.get("args", []))
-    profiles = ", ".join(
-        f"{connector} = {(servers[connector].get('env') or {}).get('CHEMDRAW_PROFILE', 'mvp')}"
-        for connector in connectors
-    )
+    profiles = ", ".join(f"{connector} = {profile_of(connector)}" for connector in connectors)
     return CheckResult(
         name=name,
         status=OK,

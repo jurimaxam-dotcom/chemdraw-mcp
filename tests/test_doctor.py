@@ -194,7 +194,7 @@ def test_working_desktop_entry_is_ok(tmp_path):
                 "chemdraw-pharma": {
                     "command": str(uv),
                     "args": ["run"],
-                    "env": {"CHEMDRAW_PROFILE": "full"},
+                    "env": {"CHEMDRAW_PROFILE": "pharma"},
                 },
             }
         },
@@ -203,6 +203,27 @@ def test_working_desktop_entry_is_ok(tmp_path):
     assert result.status == OK
     assert str(uv) in result.detail
     assert "chemdraw-pharma" in result.detail
+
+
+def test_pharma_connector_still_on_the_full_profile_asks_to_rerun_the_installer(tmp_path):
+    """Installationen vom 07.–16.11.2026 tragen `chemdraw-pharma` mit `full`. Das
+    startet, aber mit beiden Konnektoren sieht das Modell 18 Tools doppelt — ein
+    Paket-Update ändert die Config nicht, also muss der Doctor es sagen."""
+    uv = _executable(tmp_path / "bin" / "uv")
+    path = _write_config(
+        tmp_path / "config.json",
+        {
+            "mcpServers": {
+                "chemdraw": {"command": str(uv), "args": ["run"], "env": {"CHEMDRAW_PROFILE": "mvp"}},
+                "chemdraw-pharma": {"command": str(uv), "args": ["run"], "env": {"CHEMDRAW_PROFILE": "full"}},
+            }
+        },
+    )
+    result = check_desktop_config(config_path=path)
+    assert result.status == LIMITED
+    assert "chemdraw-pharma" in result.detail and "full" in result.detail
+    assert "twice" in result.detail
+    assert "install" in result.fix
 
 
 def test_desktop_config_with_only_the_old_entry_asks_to_rerun_the_installer(tmp_path):

@@ -13,7 +13,7 @@
 #
 # Zwei Bundles aus derselben Vorlage (Welle 3, scripts/mcpb_manifest.py):
 #   chemdraw-mcp         Standardprofil (mvp)
-#   chemdraw-mcp-pharma  Vollprofil (full)
+#   chemdraw-mcp-pharma  Zusatz-Tools (pharma; seit 16.11.2026, vorher full)
 # Eigene Extension-IDs, derselbe Starter, dieselbe Installation auf der Platte.
 #
 # Voraussetzung: npx (Node 20+), uv. Ergebnis: dist/chemdraw-mcp-<version>.mcpb
@@ -54,7 +54,7 @@ fi
 printf 'chemdraw-mcp==%s %s\n' "$VERSION" "$HASHES" >> "$REQS"
 
 mkdir -p dist
-for PROFILE in mvp full; do
+for PROFILE in mvp pharma; do
   uv run python scripts/mcpb_manifest.py "$PROFILE" | sed "s/@@VERSION@@/$VERSION/g" > "$STAGE/manifest.json"
   NAME=$(python3 -c "import json;print(json.load(open('$STAGE/manifest.json'))['name'])")
   OUT="$PWD/dist/$NAME-$VERSION.mcpb"

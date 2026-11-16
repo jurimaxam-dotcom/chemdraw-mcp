@@ -216,15 +216,37 @@ def test_install_refuses_corrupt_config_without_touching_it(tmp_path):
 
 # --- Zwei Konnektoren (Welle 3, Jay-Entscheid 06.11.2026) ------------------
 # Claude Desktop bekommt zwei Einträge aus demselben Paket: `chemdraw` mit dem
-# Standardprofil (16 Tools) und `chemdraw-pharma` mit dem Vollprofil (23 Tools).
-# Der Nutzer wechselt im Konnektor-Menü des Chats, ohne Neustart. Das Profil
-# steht fest im Eintrag (env), damit nie beide dasselbe liefern.
+# Standardprofil (18 Tools) und `chemdraw-pharma` mit dem Profil `pharma`
+# (seit 16.11.2026: nur die 7 Zusatz-Tools plus die 2 Panel-Helfer, vorher das
+# Vollprofil — beide an hieß 18 Tools doppelt). Das Profil steht fest im
+# Eintrag (env); beide Konnektoren zusammen ergeben den vollen Satz.
 
 
 def test_exactly_two_connectors_with_fixed_profiles():
     from chemdraw_tool.desktop_config import CONNECTORS
 
-    assert CONNECTORS == {"chemdraw": "mvp", "chemdraw-pharma": "full"}
+    assert CONNECTORS == {"chemdraw": "mvp", "chemdraw-pharma": "pharma"}
+
+
+def test_connector_profiles_are_profiles_the_server_knows():
+    from chemdraw_tool.desktop_config import CONNECTORS, PROFILES
+    from chemdraw_tool.server import PROFILES as SERVER_PROFILES
+
+    assert set(CONNECTORS.values()) <= PROFILES == SERVER_PROFILES
+
+
+def test_install_rewrites_a_pharma_connector_on_the_full_profile(tmp_path):
+    """Installationen vom 07.–16.11.2026 tragen `chemdraw-pharma` mit `full`:
+    beide Konnektoren an zeigte dem Modell 18 Tools doppelt. Ein erneuter
+    Installer-Lauf schreibt den Eintrag auf `pharma` um."""
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    alt = {"command": str(uv), "args": ["run"], "env": {"CHEMDRAW_PROFILE": "full"}}
+    cfg.write_text(json.dumps({"mcpServers": {"chemdraw-pharma": alt}}), encoding="utf-8")
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    servers = json.loads(cfg.read_text())["mcpServers"]
+    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "pharma"}
+    assert servers["chemdraw"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
 
 
 def test_build_server_entry_pins_the_profile_in_env(tmp_path):
@@ -249,7 +271,7 @@ def test_build_server_entry_defaults_to_the_mvp_profile(tmp_path):
 def test_build_server_entry_rejects_unknown_profile(tmp_path):
     uv = _fake_uv(tmp_path / "bin")
     with pytest.raises(ValueError, match="mvp"):
-        build_server_entry("/Users/x/proj", uv_command=str(uv), profile="pharma")
+        build_server_entry("/Users/x/proj", uv_command=str(uv), profile="typo")
 
 
 def test_build_installed_entry_pins_the_profile(tmp_path):
@@ -268,7 +290,7 @@ def test_install_writes_both_connectors(tmp_path):
     servers = json.loads(cfg.read_text())["mcpServers"]
     assert set(servers) == {"chemdraw", "chemdraw-pharma"}
     assert servers["chemdraw"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
-    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "full"}
+    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "pharma"}
     for entry in servers.values():
         assert entry["command"] == str(uv)
         assert entry["args"] == [

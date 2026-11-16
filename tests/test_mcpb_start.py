@@ -478,19 +478,19 @@ def test_mvp_variante_ist_das_basis_manifest():
     assert _variant("mvp") == json.loads(MANIFEST.read_text())
 
 
-def test_pharma_variante_hat_eigene_id_und_festes_vollprofil():
+def test_pharma_variante_hat_eigene_id_und_festes_pharma_profil():
     import json
 
     from chemdraw_tool.server import create_server
 
     base = json.loads(MANIFEST.read_text())
-    pharma = _variant("full")
+    pharma = _variant("pharma")
     assert pharma["name"] == "chemdraw-mcp-pharma"
     assert pharma["name"] != base["name"], (
         "gleiche ID hieße: eine Extension überschreibt die andere"
     )
     assert pharma["server"]["mcp_config"]["env"] == {
-        "CHEMDRAW_PROFILE": "full",
+        "CHEMDRAW_PROFILE": "pharma",
         "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}",
     }
     assert pharma["display_name"] != base["display_name"]
@@ -499,29 +499,39 @@ def test_pharma_variante_hat_eigene_id_und_festes_vollprofil():
         "derselbe Starter"
     )
     assert pharma["version"] == base["version"]
-    n = len(create_server("full")._tool_manager.list_tools())
+    # Seit 16.11.2026 ergänzt das Pharma-Bündel das Standardbündel (nur die
+    # Zusatz-Tools): die Zahl im Text ist die der Tools, die das Modell sieht.
+    sichtbar = [
+        t for t in create_server("pharma")._tool_manager.list_tools()
+        if ((t.meta or {}).get("ui") or {}).get("visibility") != ["app"]
+    ]
+    n = len(sichtbar)
     assert f"{n} tools" in pharma["long_description"], (n, pharma["long_description"])
-    assert "16 tools" not in pharma["long_description"].split(f"{n} tools")[0]
+    for t in sichtbar:
+        assert t.name in pharma["long_description"], t.name
+    for text in (pharma["description"], pharma["long_description"]):
+        assert "full profile" not in text and "pick one connector" not in text, text
 
 
 def test_unbekanntes_profil_bricht_den_manifestbau_ab():
     import sys
 
+    # `full` hat kein Bündel: chemdraw-mcp und chemdraw-mcp-pharma zusammen ergeben es.
     result = subprocess.run(
-        [sys.executable, str(MANIFEST_SCRIPT), "pharma"],
+        [sys.executable, str(MANIFEST_SCRIPT), "full"],
         capture_output=True,
         text=True,
         cwd=MANIFEST.parents[1],
     )
     assert result.returncode != 0
-    assert "full" in result.stderr
+    assert "pharma" in result.stderr
 
 
 def test_run_sh_reicht_das_profil_an_den_server_durch(tmp_path):
     """Das Bundle setzt CHEMDRAW_PROFILE in mcp_config.env; run.sh darf es auf
     dem Weg zum Server weder verlieren noch überschreiben."""
-    out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="full").stdout.strip()
-    assert out == "SERVER ==9.9.1 profile=full"
+    out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="pharma").stdout.strip()
+    assert out == "SERVER ==9.9.1 profile=pharma"
 
 
 # --- E12: Häkchen „SMILES-Abgleich“ in den Extension-Einstellungen ---------------
@@ -531,7 +541,7 @@ def test_run_sh_reicht_das_profil_an_den_server_durch(tmp_path):
 # dist/shared/config.js); chemdraw_tool.privacy liest genau diese Variable.
 
 
-@pytest.mark.parametrize("profile", ["mvp", "full"])
+@pytest.mark.parametrize("profile", ["mvp", "pharma"])
 def test_beide_bundles_haben_das_haekchen_standard_aus(profile):
     from chemdraw_tool.privacy import ENV_VAR, SETTING_TITLE
 
@@ -549,3 +559,8 @@ def test_beide_bundles_haben_das_haekchen_standard_aus(profile):
 def test_run_sh_reicht_das_haekchen_an_den_server_durch(tmp_path):
     out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="mvp", CHEMDRAW_SMILES_LOOKUP="true").stdout.strip()
     assert out == "SERVER ==9.9.1 profile=mvp smiles=true"
+
+
+def test_build_skript_baut_genau_die_zwei_konnektor_buendel():
+    build = (MANIFEST.parents[1] / "scripts" / "build-mcpb.sh").read_text()
+    assert "for PROFILE in mvp pharma; do" in build
