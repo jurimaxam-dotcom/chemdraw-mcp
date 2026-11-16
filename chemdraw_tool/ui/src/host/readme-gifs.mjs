@@ -530,7 +530,7 @@ const SZENEN = {
     tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] },
     async ablauf({ frame, halten, klick }) {
       await halten(1500);
-      await klick(frame.getByRole("button", { name: "Step by step", exact: true }), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
+      await klick(frame.getByRole("tab", { name: "Step by step", exact: true }), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
       const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
       await halten(1600);
       for (let i = 2; i <= gesamt; i++) {

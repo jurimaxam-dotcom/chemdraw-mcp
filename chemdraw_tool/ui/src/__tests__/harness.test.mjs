@@ -8,16 +8,17 @@ import { test } from "node:test";
 
 import React from "react";
 
-import NavTabs from "../components/NavTabs";
+import Tabs from "../components/Tabs";
 import { buttonByText, click, render } from "./harness.mjs";
 
 test("jsdom + JSX-Loader: eine bestehende Komponente rendert und reagiert", async () => {
   let picked = null;
   const view = render(
-    React.createElement(NavTabs, {
-      tabs: ["PubChem", "ChEBI"],
-      activeTab: "PubChem",
-      onTabChange: (t) => {
+    React.createElement(Tabs, {
+      label: "Data sources",
+      tabs: [{ key: "PubChem", label: "PubChem" }, { key: "ChEBI", label: "ChEBI" }],
+      value: "PubChem",
+      onChange: (t) => {
         picked = t;
       },
     })

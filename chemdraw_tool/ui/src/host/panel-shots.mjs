@@ -87,6 +87,26 @@ CASES.push(["batch6-320x700", "batch_generate", SECHS, 320, 700]);
 CASES.push(["batch-fehler-chat1000", "batch_generate", MIT_FEHLER, 1000]);
 CASES.push(["batch6-detail-chat1000", "batch_generate", SECHS, 1000, undefined, ".batch-card >> nth=2"]);
 CASES.push(["batch6-detail-320x700", "batch_generate", SECHS, 320, 700, ".batch-card >> nth=2"]);
+// Etappe 3 (16.11.2026): einheitliche Bedienelemente — Molekül (2D/3D), Datenblatt aus
+// lookup_molecule_data, Mechanismus, 3D-Einstieg, Protein und Reaktion in drei Breiten.
+const KOFFEIN = { name_or_smiles: "caffeine" };
+const SN2 = { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] };
+const VERESTERUNG = { reactants: ["CC(=O)O", "CCO"], products: ["CC(=O)OCC", "O"], conditions: "H2SO4", name: "Fischer esterification" };
+const DRITTE = [
+  ["e3-molekuel", "generate_molecule", KOFFEIN],
+  ["e3-molekuel-3d", "generate_molecule", KOFFEIN, "[data-view-axis] button:has-text('3D')"],
+  ["e3-datenblatt", "lookup_molecule_data", { name: "paracetamol" }],
+  ["e3-datenblatt-struktur", "lookup_molecule_data", { name: "paracetamol" }, "[role=tab]:has-text('Structure')"],
+  ["e3-mechanismus", "generate_mechanism", SN2],
+  ["e3-3d", "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }],
+  ["e3-protein", "generate_protein_or_antibody", { name: "trastuzumab" }],
+  ["e3-reaktion", "generate_reaction", VERESTERUNG],
+];
+for (const [file, name, input, klick] of DRITTE) {
+  CASES.push([`${file}-chat1000`, name, input, 1000, undefined, klick]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
+}
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 
@@ -94,7 +114,7 @@ const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDispl
 function plotMetrics() {
   const card = document.querySelector(".plot-svg, .spectrum-svg, .tlc-svg");
   const svg = card?.querySelector("svg");
-  if (!svg) return null;
+  if (!svg) return { rollen: document.documentElement.scrollHeight > innerHeight + 1, hoehe: document.documentElement.scrollHeight };
   const c = card.getBoundingClientRect(), r = svg.getBoundingClientRect();
   const vb = svg.viewBox.baseVal;
   const k = vb && vb.width ? Math.min(r.width / vb.width, r.height / vb.height) : 1;
@@ -127,8 +147,8 @@ try {
       await page.waitForTimeout(600);
       // Optionaler Klick vor dem Bild (Detailansicht); fehlt das Element, bleibt die Startansicht.
       if (klick && await frame.locator(klick).count()) {
-        await frame.locator(klick).click();
-        await page.waitForTimeout(600);
+        await frame.locator(klick).first().click();
+        await page.waitForTimeout(2500);
       }
       if (fixed) {
         const m = await frame.evaluate(plotMetrics);

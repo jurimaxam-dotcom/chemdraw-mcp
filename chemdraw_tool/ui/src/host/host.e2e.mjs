@@ -190,7 +190,7 @@ try {
       ["reaction", "generate_reaction", { reactants: ["CC(=O)O", "CCO"], products: ["CC(=O)OCC", "O"], conditions: "H2SO4", name: "Fischer esterification" },
         (f) => f.locator('[data-testid="balance-badge"]').waitFor()],
       ["mechanism", "generate_mechanism", { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] },
-        (f) => f.getByRole("button", { name: "Overview", exact: true }).waitFor()],
+        (f) => f.getByRole("tab", { name: "Overview", exact: true }).waitFor()],
       ["protein", "generate_protein_or_antibody", { name: "trastuzumab" }, (f) => f.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 })],
     ]) {
       const [page, f] = await open(name, input, full(320, 900));
@@ -198,7 +198,7 @@ try {
       await page.waitForTimeout(500);
       const views = tag === "mechanism" ? ["Overview", "Step by step"] : tag === "protein" ? ["Structure", "Scheme"] : [null];
       for (const v of views) {
-        if (v) await f.getByRole(tag === "protein" ? "tab" : "button", { name: v, exact: true }).click();
+        if (v) await f.getByRole("tab", { name: v, exact: true }).click();
         await page.waitForTimeout(300);
         const s = await schmal(f);
         messwerte[`d-${tag}${v ? `-${v}` : ""}`] = `${s.sw}≤${s.cw}`;
@@ -579,12 +579,12 @@ try {
     ["fischer_ester", ["CCC(=O)O", "CCO"], "propionic acid + ethanol", 8],
   ]) {
     const f = await mount(gallery, "generate_mechanism", { reaction_type: type, substrates });
-    await f.getByRole("button", { name: "Overview", exact: true }).waitFor();
+    await f.getByRole("tab", { name: "Overview", exact: true }).waitFor();
     const body = await f.locator("body").innerText();
     check(!body.includes("textbook example") && body.includes(example), `${type}: sichtbarer Titel nennt die gezeichneten Substrate`);
     // Pfeile und Struktur kommen aus echten Renderer-SVGs, nicht aus einem Text-Platzhalter.
     check(await f.locator('svg path').count() > 0 && body.includes("Reactants"), `${type}: Übersicht enthält gezeichnete Strukturen und Schritte`);
-    await f.getByRole("button", { name: "Step by step", exact: true }).click();
+    await f.getByRole("tab", { name: "Step by step", exact: true }).click();
     await f.getByText(`Step 1 / ${count}`, { exact: true }).waitFor();
     check(await f.getByRole("button", { name: "← Back", exact: true }).isDisabled(), `${type}: erster Schritt sperrt Zurück`);
     const first = await f.locator(".mech-step-svg").innerHTML();

@@ -247,31 +247,34 @@
    },
    {
     "name": "Zurück zur Übersicht",
-    "typ": "button",
+    "typ": "tab",
     "aktion": "klick",
     "titel": "Overview",
     "dann": {
      "typ": "button",
      "beginnt": "Open step 1"
-    }
+    },
+    "wert": "1"
    },
    {
     "name": "Ansicht Step by step",
-    "typ": "button",
+    "typ": "tab",
     "aktion": "klick",
     "titel": "Step by step",
     "pause": 1.5,
-    "bild": "schrittweise"
+    "bild": "schrittweise",
+    "wert": "1"
    },
    {
     "name": "Übersicht wieder",
-    "typ": "button",
+    "typ": "tab",
     "aktion": "klick",
     "titel": "Overview",
     "dann": {
      "typ": "button",
      "beginnt": "Open step 1"
-    }
+    },
+    "wert": "1"
    },
    {
     "name": "Knopf Export as PNG vorhanden",
@@ -406,7 +409,7 @@
    },
    {
     "name": "Quelle GHS",
-    "typ": "checkBox",
+    "typ": "tab",
     "aktion": "klick",
     "titel": "GHS",
     "wert": "1",
@@ -415,7 +418,7 @@
    },
    {
     "name": "Quelle PubChem zurück",
-    "typ": "checkBox",
+    "typ": "tab",
     "aktion": "klick",
     "titel": "PubChem",
     "wert": "1"

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import BackboneCanvas from "./components/BackboneCanvas";
 import SectionHeader from "./components/SectionHeader";
+import Tabs from "./components/Tabs";
 import ExportPngButton from "./components/ExportPngButton";
 import IgGScheme, { SCHEME_LEGEND } from "./components/IgGScheme";
 import PanelFooter, { fileEntries } from "./components/PanelFooter";
@@ -228,31 +229,14 @@ export default function ProteinView({ data }) {
       <SectionHeader title={protein.title || data.name} subtitle={subtitle} />
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center", marginBottom: 6 }}>
         {scheme && (
-          <div className="seg" role="tablist" aria-label="View">
-            {[["structure", "Structure"], ["scheme", "Scheme"]].map(([key, text]) => (
-              <button key={key} type="button" role="tab" aria-selected={pane === key} onClick={() => setPane(key)}>
-                {text}
-              </button>
-            ))}
-          </div>
+          <Tabs label="View" value={pane} onChange={setPane}
+            tabs={[{ key: "structure", label: "Structure" }, { key: "scheme", label: "Scheme" }]} />
         )}
         {!onScheme && modes.length > 1 && (
-          <div className="seg" role="tablist" aria-label="Colour by">
-            {modes.map(([key, text]) => (
-              <button key={key} type="button" role="tab" aria-selected={mode === key} onClick={() => setMode(key)}>
-                {text}
-              </button>
-            ))}
-          </div>
+          <Tabs label="Colour by" value={mode} onChange={setMode} tabs={modes.map(([key, label]) => ({ key, label }))} />
         )}
         {ready && !onScheme && (
-          <div className="seg" role="tablist" aria-label="Representation">
-            {STYLES.map(([key, text]) => (
-              <button key={key} type="button" role="tab" aria-selected={style === key} onClick={() => setStyle(key)}>
-                {text}
-              </button>
-            ))}
-          </div>
+          <Tabs label="Representation" value={style} onChange={setStyle} tabs={STYLES.map(([key, label]) => ({ key, label }))} />
         )}
         {!onScheme && <div className="seg">
           <button type="button" onClick={resetView} title="Back to the starting view">Reset</button>

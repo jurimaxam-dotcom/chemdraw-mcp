@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CopyButton from "./CopyButton";
-import NavTabs from "./NavTabs";
+import Tabs from "./Tabs";
 
 // Das Datenblatt: Reiter je Quelle + die Zeilen der aktiven Quelle.
 //
@@ -120,7 +120,8 @@ export default function SourceList({ sources, moleculeSvg }) {
   return (
     <>
       {tabs.length > 1 && (
-        <NavTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+        <Tabs label="Data sources" size="sm" className="source-tabs" value={activeTab} onChange={setActiveTab}
+          tabs={tabs.map((t) => ({ key: t, label: t }))} />
       )}
       <div className="source-sheet">
         <SourcePanel source={activeSource} moleculeSvg={moleculeSvg} />

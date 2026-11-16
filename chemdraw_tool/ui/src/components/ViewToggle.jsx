@@ -1,6 +1,8 @@
 import React from "react";
+import Tabs from "./Tabs";
 
-// Segment-Control „Struktur ⇄ Daten" im Panel-Kopf.
+// Segment-Control „Struktur ⇄ Daten" im Panel-Kopf — seit Etappe 3 eine dünne Hülle
+// um das gemeinsame Reiter-Bauteil (Tabs.jsx).
 //
 // Die Optik steckt in styles.css (.seg), nicht in inline-styles: Fokus-Ring
 // (:focus-visible), Spinner-Keyframes und die reduced-motion-Variante lassen
@@ -15,45 +17,12 @@ import React from "react";
 // muss er pro Panel eindeutig sein (React `useId`).
 // `study` (opt-in, U4b): dritter Reiter „Study“ — nur MoleculeView setzt ihn.
 export default function ViewToggle({ view, onChange, loading = false, idPrefix, study = false }) {
-  const tabId = (name) => (idPrefix ? `${idPrefix}-tab-${name}` : undefined);
-  const panelId = (name) => (idPrefix ? `${idPrefix}-${name}` : undefined);
-
-  return (
-    <div className="seg" role="tablist" aria-label="View">
-      <button
-        type="button"
-        role="tab"
-        id={tabId("structure")}
-        aria-controls={panelId("structure")}
-        aria-selected={view === "structure"}
-        onClick={() => onChange("structure")}
-      >
-        Structure
-      </button>
-      <button
-        type="button"
-        role="tab"
-        id={tabId("data")}
-        aria-controls={panelId("data")}
-        aria-selected={view === "data"}
-        aria-busy={loading || undefined}
-        onClick={() => onChange("data")}
-      >
-        {loading && <span className="seg-spinner" aria-hidden="true" />}
-        Data
-      </button>
-      {study && (
-        <button
-          type="button"
-          role="tab"
-          id={tabId("study")}
-          aria-controls={panelId("study")}
-          aria-selected={view === "study"}
-          onClick={() => onChange("study")}
-        >
-          Study
-        </button>
-      )}
-    </div>
-  );
+  const tab = (key, label, extra = {}) => ({
+    key, label,
+    id: idPrefix ? `${idPrefix}-tab-${key}` : undefined,
+    controls: idPrefix ? `${idPrefix}-${key}` : undefined,
+    ...extra,
+  });
+  const tabs = [tab("structure", "Structure"), tab("data", "Data", { busy: loading }), ...(study ? [tab("study", "Study")] : [])];
+  return <Tabs label="View" tabs={tabs} value={view} onChange={onChange} />;
 }

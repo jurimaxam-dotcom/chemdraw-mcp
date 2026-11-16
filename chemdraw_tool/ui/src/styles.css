@@ -296,9 +296,14 @@ button:active { filter: brightness(0.92); }
 .group-count { color: var(--fg-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .data-panel { padding-top: 16px; }
 .panel-note { font-size: 13px; color: var(--fg-muted); padding: 16px 0; }
-.source-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.source-tabs button { font-size: 12px; padding: 6px 12px; min-height: 36px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--fg-muted); cursor: pointer; }
-.source-tabs button[aria-pressed="true"] { color: var(--fg); border-color: var(--border); background: var(--bg-alt); }
+/* Unter-Reiter (Datenblatt-Quellen): dasselbe Segment wie die Haupt-Reiter, nur kleiner (Etappe 3). */
+.seg.seg-sm { min-height: 34px; border-radius: 6px; }
+.seg.seg-sm button { min-height: 28px; padding: 4px 10px; border-radius: 4px; }
+.source-tabs { margin-bottom: 12px; flex-wrap: wrap; }
+/* Kopf mit Aktionen rechts oben (SectionHeader mit actions): Reiter und Expand wie im Molekül-Panel. */
+.section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; flex-shrink: 0; }
+.section-header > .panel-heading { flex: 1 1 230px; }
+.mech-header { margin-bottom: 8px; }
 .source-content { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: 24px; }
 .source-content:not(:has(.source-structure)) { grid-template-columns: 1fr; }
 .source-structure { max-height: 160px; pointer-events: none; padding-top: 12px; }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SectionHeader from "./components/SectionHeader";
+import Tabs from "./components/Tabs";
 import ExportPngButton from "./components/ExportPngButton";
 import PanelFooter from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
@@ -279,6 +280,9 @@ export default function MechanismView({ data }) {
       <SectionHeader
         title={data.name || "Mechanismus"}
         subtitle={data.reaction_type}
+        className="mech-header"
+        actions={<Tabs label="Mechanism view" value={mode} onChange={setMode}
+          tabs={[{ key: "overview", label: "Overview" }, { key: "step", label: "Step by step" }]} />}
       />
 
       {(data.notes || []).map((note, i) => (
@@ -297,39 +301,6 @@ export default function MechanismView({ data }) {
           {note}
         </div>
       ))}
-
-      <div
-        style={{
-          display: "flex",
-          gap: 2,
-          marginBottom: 8,
-          background: "var(--bg-alt)",
-          borderRadius: 6,
-          padding: 2,
-        }}
-      >
-        {["overview", "step"].map((m) => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            style={{
-              flex: 1,
-              padding: "4px 8px",
-              fontSize: 11,
-              fontFamily: "var(--font)",
-              borderRadius: 4,
-              border: "none",
-              cursor: "pointer",
-              background: mode === m ? "var(--bg)" : "transparent",
-              boxShadow: mode === m ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
-              color: mode === m ? "var(--fg)" : "var(--fg-muted)",
-              transition: "all 0.15s",
-            }}
-          >
-            {m === "overview" ? "Overview" : "Step by step"}
-          </button>
-        ))}
-      </div>
 
       <div
         style={{
