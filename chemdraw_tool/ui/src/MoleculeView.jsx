@@ -356,10 +356,10 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
           onCover={() => { setRevealed([]); setStudyFocus(null); }} />
       ) : view === "structure" ? (
         <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
-          <div className="structure-layout">
+          <div className="structure-layout" data-layout-3d={is3d ? "" : undefined}>
             {/* Ansicht-Achse über der Zeichenfläche (Etappe 3): an fester Stelle, sie rutscht
-                beim Umschalten nicht mit. 2D und 3D teilen dieselbe Fläche und Anordnung —
-                Kernwerte daneben —, damit das Panel mit 3D bei 1000×700 ohne Rollen passt. */}
+                beim Umschalten nicht mit. 3D nimmt wieder die volle Breite, die Kernwerte rücken
+                darunter (Etappe 6, Jay 16.11.: „3D ist zu klein“). */}
             <div className="structure-main">
               {(views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
                 <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}

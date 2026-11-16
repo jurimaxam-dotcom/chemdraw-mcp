@@ -30,8 +30,8 @@ export default function Molecule3DView({ data }) {
     <div
       className="m3d-panel"
       style={{
-        // Höhe 500 px steht in styles.css (.m3d-panel): intrinsisch — der Host
-        // bemisst das iframe am Inhalt; bei gemeldeter fester Höhe füllt sie den Bereich.
+        // Größe steht in styles.css (.m3d-stage, Etappe 6: Quadrat bis 640 px): intrinsisch —
+        // der Host bemisst das iframe am Inhalt; bei gemeldeter fester Höhe füllt sie den Bereich.
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -44,7 +44,7 @@ export default function Molecule3DView({ data }) {
         subtitle={subtitle}
         expand
       />
-      <div ref={viewer} className="m3d-stage" style={{ flex: 1, minHeight: 0, display: "flex" }}>
+      <div ref={viewer} className="m3d-stage">
         <Ball3DCanvas key={turn} atoms={atoms} bonds={data.bonds || []} />
       </div>
       <RotateRow onReset={() => setTurn((t) => t + 1)} />

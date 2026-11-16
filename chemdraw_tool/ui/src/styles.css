@@ -424,6 +424,12 @@ button:active { filter: brightness(0.92); }
 /* 3D hinter dem Knopf: dieselbe Fläche wie die 2D-Zeichnung, der Viewer füllt sie. */
 /* Die Kuhle ist die einzige Form: kein Rahmen, kein Innenabstand um sie herum. */
 .structure-3d { display: flex; padding: 0; border: 0; }
+/* Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): die Kuhle nimmt wie am 07.11.
+   die volle Breite, höchstens 720 px hoch; die Kernwerte rücken als Reihe darunter. Etappe 3 hatte 3D in die
+   320-px-Fläche der 2D-Zeichnung gelegt, damit das Panel im Chat ≤ 700 px bleibt — das gilt für 3D nicht mehr. */
+.structure-layout[data-layout-3d] { grid-template-columns: minmax(0, 1fr); }
+.structure-layout[data-layout-3d] .structure-canvas { height: auto; width: 100%; aspect-ratio: 1 / 1; max-height: 720px; }
+.structure-layout[data-layout-3d] .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
 .panel-note-quiet { font-size: 12px; color: var(--fg-muted); margin: 6px 0 0; }
 .stereo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
 .stereo-row > .stereo-note { margin-top: 0; }
@@ -468,7 +474,8 @@ button:active { filter: brightness(0.92); }
    feste Höhe meldet (Seitenpanel, Vollbild: [data-host-height] an <html>, gesetzt von
    utils/useHostLayout.js). Der Chat-Weg (maxHeight oder kein Kontext) bleibt unberührt:
    inhaltsgroß, 320-px-Zeichenfläche, Auto-Resize. */
-.m3d-panel { height: 500px; }
+/* Etappe 6: im Chat ein Quadrat über die Inhaltsbreite, höchstens 640 px (vorher Panel 500 px, Fläche 864×329). */
+.m3d-stage { display: flex; min-height: 0; flex: none; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; }
 /* Diagramm-Ansicht (PlotView, Spektrum, DC, Vergleich — Etappe 1, 16.11.2026). Im Chat
    inhaltsgroß (der Host bemisst das iframe am Inhalt): die Figur nimmt die Kartenbreite,
    die Höhe folgt ihrem Seitenverhältnis bis --plot-max-h — so passen Kopf, Diagramm,
@@ -545,10 +552,15 @@ button:active { filter: brightness(0.92); }
 /* contain: size — die Fläche bemisst sich nur an der Grid-Zeile; das quadratische 3D-SVG
    würde sonst über seine Breite die Höhe vorgeben (968 × 968 statt der Resthöhe). */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-canvas { height: auto; contain: size; }
+/* 3D (Etappe 6): Kuhle füllt die Fläche, Kernwerte als Reihe darunter. */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] { grid-template-rows: minmax(0, 1fr) auto; }
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-canvas { aspect-ratio: auto; max-height: none; }
+/* Die Kernwerte-Reihe kostet unter der Kuhle ~60 px: bei 1000×700 darf die Kuhle dafür unter 320 px schrumpfen (skaliert mit). */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-main { grid-template-rows: auto minmax(200px, 1fr); }
 /* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
 :root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
 /* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
-:root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; }
+:root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; flex: 1 1 0; aspect-ratio: auto; max-height: none; }
 :root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
 /* Etappe 3: Mechanismus und Scope tragen im Chat eine feste Höhe (inline); mit Expand füllen sie den Bereich. */
 :root[data-host-height] .panel-root > :is(.mechanism-panel, .scope-panel) { flex: 1 0 auto; height: auto !important; min-height: 480px; }

@@ -361,8 +361,13 @@ try {
         messwerte["f-chat"] = `Achse 2D ${JSON.stringify(a2)} → 3D ${JSON.stringify(a3)}; 3D ${lage(g3)}; gemeldet ${h3}`;
         check(a2?.ueber && a3?.ueber, `E3 (f) Chat: Schalter über der Zeichenfläche (2D ${JSON.stringify(a2)}, 3D ${JSON.stringify(a3)})`);
         check(a2 && a3 && a2.top === a3.top && a2.left === a3.left, `E3 (f) Chat: Schalter bleibt beim Umschalten stehen (${a2?.top}/${a2?.left} → ${a3?.top}/${a3?.left})`);
-        check(g2.canvas && g3.canvas && g3.canvas.h === g2.canvas.h, `E3 (f) Chat: 3D-Fläche so hoch wie die 2D-Fläche (${g2.canvas?.h} → ${g3.canvas?.h})`);
-        check(h3 && h3 <= 700, `E3 (f) Chat 1000 px: Panel mit 3D samt Kopf und Fußzeile ≤ 700 px (${h3})`);
+        // Etappe 6, bewusst zurückgedreht (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer
+        // werden“): vorher (Etappe 3) teilte 3D die 320-px-Fläche der 2D-Zeichnung und das Panel blieb
+        // ≤ 700 px. Jetzt wieder volle Breite wie am 07.11., Kernwerte darunter; die 700-px-Grenze
+        // im Chat gilt für 3D nicht mehr.
+        const inhalt = await f.evaluate(() => Math.round(document.querySelector('[data-view="structure"] .structure-layout').getBoundingClientRect().width));
+        check(g3.canvas && g3.canvas.h >= 500 && g3.canvas.w >= 0.9 * inhalt,
+          `E6 Chat 1000 px: 3D-Modell groß, volle Breite (${g3.canvas?.w}×${g3.canvas?.h} bei Inhaltsbreite ${inhalt}, 2D ${g2.canvas?.w}×${g2.canvas?.h}, Panel ${h3})`);
         await page.screenshot({ path: join(layoutShots, "f-koffein-chat-3d-1000.png"), fullPage: true });
         await page.close();
       }
@@ -401,6 +406,28 @@ try {
         const g = await geo(f);
         messwerte["f-generate_3d"] = lage(g);
         check(g.sh <= g.ih, `E3 (f) generate_3d 1000×700: ohne Rollen (${lage(g)})`);
+        await page.close();
+      }
+      // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): im Chat war die
+      // Modellfläche 864×329 px (Panel 500 px hoch). Jetzt ein Quadrat über die Inhaltsbreite, höchstens 640 px;
+      // 320×700 im Seitenpanel skaliert weiter ohne Abschneiden.
+      for (const [w, h] of [[1000, 0], [320, 700]]) {
+        const [page, f] = await open("generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" },
+          h ? full(w, h) : chat(w), { viewport: { width: w, height: h || 1300 } });
+        await f.locator(".m3d-panel svg circle").first().waitFor();
+        if (!h) await fitChat(page);
+        await page.waitForTimeout(300);
+        const m = await f.evaluate(() => {
+          const b = document.querySelector(".m3d-stage").getBoundingClientRect();
+          const p = document.querySelector(".m3d-panel"), cs = getComputedStyle(p);
+          const inhalt = p.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+          const de = document.documentElement;
+          return { w: Math.round(b.width), h: Math.round(b.height), inhalt: Math.round(inhalt), sh: de.scrollHeight, ih: innerHeight, sw: de.scrollWidth, iw: innerWidth };
+        });
+        messwerte[`e6-generate_3d-${w}x${h || "chat"}`] = JSON.stringify(m);
+        if (!h) check(m.h >= 500 && m.w >= 0.9 * m.inhalt && m.sh <= m.ih + 1,
+          `E6 generate_3d Chat ${w}: Modellfläche groß (${JSON.stringify(m)})`);
+        else check(m.sh <= m.ih && m.sw <= m.iw && m.h >= 240, `E6 generate_3d ${w}×${h}: passt ohne Rollen (${JSON.stringify(m)})`);
         await page.close();
       }
     }
@@ -1652,11 +1679,13 @@ try {
   const breite2d = (await frame.locator(".structure-canvas").boundingBox())?.width ?? 0;
   await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
-  // Etappe 3 (vorher Jay 07.11.: Kuhle als Quadrat über die volle Breite): 3D teilt Fläche und
-  // Anordnung mit 2D, damit das Panel bei 1000×700 ohne Rollen passt; mehr Fläche gibt Expand.
+  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): wieder wie am
+  // 07.11. — die Kuhle nimmt die volle Breite (höchstens 720 px hoch), die Kernwerte rücken darunter.
+  // Etappe 3 hatte sie in die 320-px-Fläche der 2D-Zeichnung gelegt.
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
-  prüfe(Math.abs(box3d.width - breite2d) <= 1 && Math.round(box3d.height) === 320,
-    `3D-Kuhle in derselben Fläche wie 2D (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px)`);
+  const breiteZeile = (await frame.locator('[data-view="structure"] .structure-layout').boundingBox())?.width ?? 0;
+  prüfe(box3d.width > breite2d && Math.abs(box3d.width - breiteZeile) <= 1 && Math.abs(box3d.height - Math.min(720, box3d.width)) <= 1,
+    `3D-Kuhle über die volle Breite (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px, Zeile ${Math.round(breiteZeile)})`);
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
     "3D-Viewer mit Atomen steht an Stelle der 2D-Zeichnung");
