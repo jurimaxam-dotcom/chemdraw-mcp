@@ -406,3 +406,47 @@ def test_uncrowded_spectrum_is_byte_identical_without_avoidance(spectrum_type, p
     monkeypatch.setattr(sp, "_spread_overlapping_labels", lambda *a, **k: None)
     assert sp.render_spectrum_png(spectrum_type, peaks) == png
     assert svg() == before
+
+
+# --- Desktop-Fall 14.11.2026: zwei starke C=O-Banden 1750/1690 cm⁻¹ ---------
+# Die gespreizte Reihe lag in der Bande: „Ester-C=O“ und „Säure-C=O“ standen
+# 4 pt auseinander, und beide Wände der Doppelbande liefen durch die Schrift.
+# Gemessen wird jede Etikett-Box gegen die andere (mit Mindestabstand) und
+# gegen die gezeichnete Kurve.
+ASPIRIN_CO = [
+    {"position": 1750, "intensity": 1, "label": "Ester-C=O"},
+    {"position": 1690, "intensity": 1, "label": "Säure-C=O"},
+]
+
+
+def _label_and_curve_boxes(spectrum_type, peaks):
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.text import Text
+
+    from chemdraw_tool import spectrum as sp
+
+    fig = sp._build_figure(spectrum_type, peaks, "", (10.0, 6.5))
+    FigureCanvasAgg(fig)
+    renderer = fig.canvas.get_renderer()
+    ax = fig.axes[0]
+    boxes = []
+    for ann in ax.texts:
+        ann.update_positions(renderer)
+        boxes.append(Text.get_window_extent(ann, renderer))
+    line = ax.lines[0]
+    curve = ax.transData.transform(line.get_xydata())
+    return boxes, curve
+
+
+def test_close_ir_band_labels_keep_a_gap_and_stay_off_the_curve():
+    boxes, curve = _label_and_curve_boxes("ir", ASPIRIN_CO)
+    assert len(boxes) == 2
+    left, right = sorted(boxes, key=lambda b: b.x0)
+    # Sichtbare Luft (≥ 10 px bei 100 dpi), nicht nur „berührt sich nicht“.
+    assert right.x0 - left.x1 >= 10, (left, right)
+    for box in boxes:
+        inside = [
+            (x, y) for x, y in curve
+            if box.x0 - 2 <= x <= box.x1 + 2 and box.y0 - 2 <= y <= box.y1 + 2
+        ]
+        assert not inside, f"Kurve läuft durch das Etikett {box}: {inside[:3]}"

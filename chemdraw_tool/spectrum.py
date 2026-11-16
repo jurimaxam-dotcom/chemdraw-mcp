@@ -323,11 +323,20 @@ def _build_figure(
     return fig
 
 
-LABEL_GAP_PX = 6
+LABEL_GAP_PX = 12
 # Eine gespreizte Gruppe steht so weit von ihren Apexen weg, dass die
 # Führungslinien steil laufen und unter/über der Labelreihe bleiben.
 LABEL_ROW_LIFT = 22
-_LEADER = {"arrowstyle": "-", "color": "#888888", "linewidth": 0.6, "shrinkA": 1, "shrinkB": 2}
+# Abstand der Reihe über dem höchsten Kurvenpunkt unter ihr (Desktop-Fall
+# 14.11.2026: die Reihe lag in der IR-Doppelbande, die Wände liefen durch die Schrift).
+LABEL_CURVE_GAP_PX = 12
+# Führungslinie: vom Etikett schräg bis LEADER_ARM_PX unter die Reihe (noch
+# über der Kurve, LEADER_ARM_PX < LABEL_CURVE_GAP_PX), dann senkrecht zum
+# Apex — senkrecht über einem Apex liegt nie Kurve, eine durchgehend schräge
+# Linie kreuzte dagegen die Wände der Bande.
+LEADER_ARM_PX = 8
+LEADER_COLOR = "#888888"
+LEADER_WIDTH = 0.6
 
 
 def _text_box(ann, renderer):
@@ -345,8 +354,9 @@ def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
     1690 cm⁻¹) landen über den Boden-Clamp trotzdem auf derselben Höhe. Hier
     zählt die gemessene Textbox: überschneidende Labels einer Gruppe stehen
     nebeneinander (Reihenfolge wie die Banden) in einer Reihe, die um
-    LABEL_ROW_LIFT vom Apex weg versetzt ist — bei IR in die Bande hinein,
-    sonst darüber —, jedes mit einer dünnen Linie zu seinem Apex. Ohne
+    LABEL_ROW_LIFT über dem Apex steht und zugleich über jedem Kurvenpunkt
+    unter ihr — bei einer IR-Doppelbande also über der Grundlinie statt
+    zwischen den Wänden —, jedes mit einer dünnen Linie zu seinem Apex. Ohne
     Überschneidung passiert nichts: das Bild bleibt byteweise gleich.
     """
     if len(placed) < 2:
@@ -354,7 +364,12 @@ def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
     renderer = fig._get_renderer()
     px_per_pt = fig.dpi / 72.0
     area = ax.get_window_extent(renderer)
+    # Die gezeichnete Kurve in Pixeln (Balkenspektren haben keine Linie).
+    curve = ax.transData.transform(ax.lines[0].get_xydata()) if ax.lines else None
     group = list(range(len(placed)))
+    leaders: dict[int, object] = {}
+    columns: dict[int, tuple[float, float, float]] = {}  # senkrechter Teil je Führungslinie (px)
+    to_data = ax.transData.inverted()
 
     def root(i):
         while group[i] != i:
@@ -368,6 +383,15 @@ def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
             for i in range(len(boxes))
             for j in range(i + 1, len(boxes))
             if boxes[i].overlaps(boxes[j])
+        ]
+        # Ein Etikett auf der senkrechten Führungslinie eines gespreizten
+        # Nachbarn gehört mit in dessen Reihe (sonst bleibt es darunter stehen).
+        pairs += [
+            (i, j)
+            for j, (x, y_lo, y_hi) in columns.items()
+            for i in range(len(boxes))
+            if i != j and boxes[i].x0 <= x <= boxes[i].x1
+            and boxes[i].y0 < y_hi and boxes[i].y1 > y_lo
         ]
         if not pairs:
             return
@@ -385,9 +409,18 @@ def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
             total = sum(widths) + LABEL_GAP_PX * (len(idx) - 1)
             centre = sum(a[0] for a in anchor.values()) / len(idx)
             start = min(max(centre - total / 2, area.x0), area.x1 - total)
-            # Reihe auf gemeinsamer Höhe: über dem höchsten Apex (IR: die
-            # Labels gehen in die Bande hinein) bzw. über dem höchsten Peak.
+            # Reihe auf gemeinsamer Höhe: über dem höchsten Apex bzw. Peak.
             top = max(a[1] for a in anchor.values()) + LABEL_ROW_LIFT * px_per_pt
+            if curve is not None:
+                # Kein Kurvenstück unter der Reihe darf in die Schrift ragen.
+                under = curve[(curve[:, 0] >= start - LABEL_CURVE_GAP_PX)
+                              & (curve[:, 0] <= start + total + LABEL_CURVE_GAP_PX), 1]
+                # Nur solange die Reihe in der Achsenfläche bleibt: ragt die
+                # Kurve selbst darüber hinaus (NMR-Multiplett), gilt die alte Höhe.
+                row_h = max(boxes[i].height for i in idx)
+                if len(under):
+                    clear = float(under.max()) + LABEL_CURVE_GAP_PX
+                    top = max(top, min(clear, area.y1 - row_h - 2))
             for i, width in zip(idx, widths):
                 ann, lx, ly, offset, above = placed[i]
                 text = ann.get_text()
@@ -403,12 +436,26 @@ def _spread_overlapping_labels(fig: Figure, ax, placed: list) -> None:
                         ha="center",
                         va="bottom",
                         fontsize=9,
-                        arrowprops=_LEADER,
                     ),
                     lx,
                     ly,
                     offset,
                     above,
+                )
+                # Führungslinie in Datenkoordinaten: bleibt bei jeder dpi (PNG
+                # 150, SVG 72) an derselben Stelle wie das Etikett.
+                if i in leaders:
+                    leaders[i].remove()
+                ax_, ay_ = anchor[i]
+                columns[i] = (ax_, ay_, top - LEADER_ARM_PX)
+                pts = to_data.transform([
+                    (ax_, ay_ + 2),
+                    (ax_, top - LEADER_ARM_PX),
+                    (start + width / 2, top - 1),
+                ])
+                (leaders[i],) = ax.plot(
+                    pts[:, 0], pts[:, 1], color=LEADER_COLOR,
+                    linewidth=LEADER_WIDTH, solid_capstyle="butt",
                 )
                 start += width + LABEL_GAP_PX
 
