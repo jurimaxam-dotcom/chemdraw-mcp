@@ -269,17 +269,21 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
   assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
-  // Etappe 3, bewusst geändert (vorher Jay 07.11.: Kuhle über die volle Breite, Kernwerte darunter —
-  // das Panel wurde bei 1000 px über 1100 px hoch): 3D teilt Fläche und Anordnung mit 2D,
-  // die Kernwerte bleiben daneben, die Achse steht davor.
+  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): wieder volle
+  // Breite (data-layout-3d), Kernwerte darunter; Achse davor, Hinweis und „Reset view“ direkt am Modell.
   const main = container.querySelector(".structure-main");
   assert.ok(main.firstElementChild.matches("[data-view-axis]"), "Achse steht nicht über der Kuhle");
   assert.ok(main.contains(viewer()), "Kuhle nicht in derselben Spalte wie die 2D-Zeichnung");
-  assert.ok(container.querySelector(".structure-layout > .key-facts"), "Kernwerte nicht neben der Kuhle");
+  assert.ok(container.querySelector(".structure-layout[data-layout-3d] > .key-facts"), "3D-Layout (volle Breite, Kernwerte darunter) fehlt");
+  const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+  const row = main.querySelector(".rotate-row");
+  assert.ok(row && follows(viewer(), row) && follows(row, container.querySelector(".key-facts")),
+    "Hinweis und Reset view stehen nicht direkt am Modell, vor den Kernwerten");
 
   await click(buttonByText(container, "3D"));
   assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");
   assert.ok(container.querySelector(".structure-drawing"));
+  assert.equal(container.querySelector(".structure-layout[data-layout-3d]"), null, "3D-Layout bleibt nach 2D kleben");
   await click(buttonByText(container, "3D"));
   assert.ok(viewer());
   assert.equal(calls.length, 1, "zweiter Klick muss aus dem Cache kommen");

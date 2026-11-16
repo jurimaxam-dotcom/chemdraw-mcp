@@ -379,6 +379,8 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
                     hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
                     pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
                     onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
+              {/* Etappe 6: Hinweis und „Reset view“ direkt am Modell, vor den Kernwerten darunter. */}
+              {is3d && <RotateRow onReset={() => setTurn3d((t) => t + 1)} />}
             </div>
             <dl className="key-facts" aria-label="Molecule details">
               <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
@@ -388,7 +390,6 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
           </div>
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
-          {is3d && <RotateRow onReset={() => setTurn3d((t) => t + 1)} />}
           {/* Stereo, Gruppen und der Projektionssatz beziehen sich auf die 2D-Zeichnung — in 3D aus.
               Der Satz steht dort, wo er etwas erklärt: mit Fischer-Knopf unter Fischer (offene
               Kette), ohne ihn unter Haworth (Glykosid: warum es keine Fischer-Projektion gibt). */}
