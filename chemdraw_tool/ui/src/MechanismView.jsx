@@ -268,6 +268,7 @@ export default function MechanismView({ data }) {
 
   return (
     <div
+      className="mechanism-panel"
       style={{
         height: withRow ? 680 : 540,  // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
@@ -281,6 +282,7 @@ export default function MechanismView({ data }) {
         title={data.name || "Mechanismus"}
         subtitle={data.reaction_type}
         className="mech-header"
+        expand
         actions={<Tabs label="Mechanism view" value={mode} onChange={setMode}
           tabs={[{ key: "overview", label: "Overview" }, { key: "step", label: "Step by step" }]} />}
       />

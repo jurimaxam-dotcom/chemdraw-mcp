@@ -39,6 +39,7 @@ export default function SpectrumView({ data }) {
       <SectionHeader
         title={data.name || `${typeLabel} spectrum`}
         subtitle={`${typeLabel} · schematic, drawn from the given peak list`}
+        expand
       />
       <PlotFigure svg={data.svg} kind="spectrum" />
       <ContinueRow actions={spectrumFollowUps(data)} flush={flush} />

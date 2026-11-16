@@ -226,7 +226,7 @@ export default function ProteinView({ data }) {
         padding: "12px 16px",
       }}
     >
-      <SectionHeader title={protein.title || data.name} subtitle={subtitle} />
+      <SectionHeader title={protein.title || data.name} subtitle={subtitle} expand />
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center", marginBottom: 6 }}>
         {scheme && (
           <Tabs label="View" value={pane} onChange={setPane}

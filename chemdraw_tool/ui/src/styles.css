@@ -505,6 +505,8 @@ button:active { filter: brightness(0.92); }
 /* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
 :root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; }
 :root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
+/* Etappe 3: Mechanismus und Scope tragen im Chat eine feste Höhe (inline); mit Expand füllen sie den Bereich. */
+:root[data-host-height] .panel-root > :is(.mechanism-panel, .scope-panel) { flex: 1 0 auto; height: auto !important; min-height: 480px; }
 /* Diagramm und Strukturvergleich (U5, 12.11.2026): die Bildfläche nimmt die Resthöhe, das SVG
    skaliert über seine viewBox hinein — absolut gesetzt, damit seine Eigenmaße die Höhe nicht vorgeben. */
 :root[data-host-height] .panel-root > .plot-panel { flex: 1 0 auto; height: auto; min-height: 480px; }

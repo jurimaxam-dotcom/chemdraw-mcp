@@ -48,6 +48,7 @@ export default function TlcView({ data }) {
         subtitle={
           conditions || "Schematic plate, drawn from the given Rf values"
         }
+        expand
       />
       <PlotFigure svg={data.svg} kind="tlc" />
       {lanes.length > 0 && (

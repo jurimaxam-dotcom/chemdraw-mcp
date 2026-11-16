@@ -11,6 +11,7 @@ import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import Ball3DCanvas from "./components/Ball3DCanvas";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
+import ExpandButton from "./components/ExpandButton";
 import ContinueRow from "./components/ContinueRow";
 import StudyPanel from "./components/StudyPanel";
 import { useModelContextReport } from "./ModelContext";
@@ -426,18 +427,8 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
   );
 }
 
-// Eigener Vergrößern-Knopf (U2, M10): nur wenn der Host `fullscreen` anbietet und
-// das Panel im Chat steht. requestDisplayMode direkt im Klick-Handler — Claude
-// lehnt die Anfrage ohne frische Nutzeraktion ab. Nach dem Wechsel meldet der Host
-// displayMode "fullscreen", der Knopf verschwindet von selbst.
-export function ExpandButton({ app, hostContext }) {
-  if (!canRequestFullscreen(hostContext) || !app?.requestDisplayMode) return null;
-  const expand = () => {
-    app.requestDisplayMode({ mode: "fullscreen" }).catch(() => {});
-  };
-  return <button type="button" className="expand-button" onClick={expand}
-    title="Open in the side panel">Expand</button>;
-}
+// Expand liegt seit Etappe 3 in components/ExpandButton.jsx (alle Views); Re-Export für BatchView.
+export { ExpandButton };
 
 const DRAWING_TOGGLES = [
   { key: "all_h", label: "All H", title: "Draw every hydrogen atom" },

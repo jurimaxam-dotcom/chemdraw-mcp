@@ -31,6 +31,7 @@ export default function ScopeView({ data }) {
 
   return (
     <div
+      className="scope-panel"
       style={{
         height: 560, // intrinsisch — der Host bemisst das iframe am Inhalt
         boxSizing: "border-box",
@@ -40,7 +41,7 @@ export default function ScopeView({ data }) {
         padding: "12px 16px",
       }}
     >
-      <SectionHeader title={data.name || "Substrate scope"} subtitle={subtitle} />
+      <SectionHeader title={data.name || "Substrate scope"} subtitle={subtitle} expand />
       <div
         className="scope-svg"
         style={{

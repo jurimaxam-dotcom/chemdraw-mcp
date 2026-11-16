@@ -9,6 +9,7 @@ import React, { act } from "react";
 import ProteinView, { viewerDeps } from "../ProteinView";
 import BackboneCanvas from "../components/BackboneCanvas";
 import App from "../App";
+import { AppContext, HostContext } from "../AppContext";
 import { buttonByText, click, render, textOf } from "./harness.mjs";
 
 // Zwei kurze Ketten im Ansichtsrahmen; Format wie vom Server (protein_view.py):
@@ -333,5 +334,15 @@ test("E19: styles.css bemisst die Proteinfläche als Quadrat, höchstens 720 px"
 test("E19: Spur übernimmt die gemessene Fläche als Zeichenmaß (kein Briefkasten)", () => {
   const { container, unmount } = render(React.createElement(BackboneCanvas, { chains: ONE_CHAIN.protein.chains, width: 796, height: 720 }));
   assert.equal(container.querySelector("svg[data-backbone]").getAttribute("viewBox"), "0 0 796 720");
+  unmount();
+});
+
+test("Etappe 3: Expand rechts im Kopf, wenn der Host den Vollbildmodus anbietet", () => {
+  const ctx = { displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"] };
+  const { container, unmount } = render(React.createElement(AppContext.Provider, { value: { requestDisplayMode: async () => ({}) } },
+    React.createElement(HostContext.Provider, { value: ctx }, React.createElement(ProteinView, { data: PROTEIN }))));
+  const expand = buttonByText(container, "Expand");
+  assert.ok(expand, "kein Expand im Protein-Panel");
+  assert.ok(container.firstElementChild.firstElementChild.contains(expand), "Expand nicht im Kopf");
   unmount();
 });

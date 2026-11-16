@@ -10,7 +10,7 @@ import { test } from "node:test";
 import React from "react";
 
 import App from "../App";
-import { AppContext } from "../AppContext";
+import { AppContext, HostContext } from "../AppContext";
 import AmbiguousView from "../AmbiguousView";
 import AnkiDeckView from "../AnkiDeckView";
 import DatabaseView from "../DatabaseView";
@@ -115,6 +115,31 @@ for (const [label, make, paths, actions] of CASES) {
     assert.equal(container.querySelectorAll(".panel-header button.export-png, .panel-header button.add-to-anki").length, 0,
       "Aktion steht noch im Kopf");
     unmount();
+  });
+}
+
+// Etappe 3: Expand an derselben Stelle (rechts im Kopf, erstes Kind des Panels) in jeder
+// View, die von mehr Fläche profitiert — nur wenn der Host den Vollbildmodus anbietet.
+const INLINE = { displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"] };
+const withHost = (el, ctx) => React.createElement(AppContext.Provider, {
+  value: { callServerTool: async () => lookupSuccess(), requestDisplayMode: async () => ({}) } },
+React.createElement(HostContext.Provider, { value: ctx }, el));
+for (const [label, make] of CASES) {
+  const wants = label !== "Anki-Deck";
+  test(`${label}: Expand ${wants ? "rechts im Kopf, genau einmal" : "fehlt (profitiert nicht von Fläche)"}`, () => {
+    const { container, unmount } = render(withHost(make(), INLINE));
+    const buttons = [...container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand");
+    assert.equal(buttons.length, wants ? 1 : 0);
+    if (wants) {
+      const head = container.firstElementChild.firstElementChild;
+      assert.ok(head.contains(buttons[0]), "Expand steht nicht im Kopf (erstes Kind des Panels)");
+      assert.ok(buttons[0].closest(".panel-actions"), "Expand nicht in .panel-actions");
+    }
+    unmount();
+    const off = render(withHost(make(), { displayMode: "inline", availableDisplayModes: ["inline"] }));
+    assert.equal([...off.container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand").length, 0,
+      "Expand ohne angebotenen Vollbildmodus");
+    off.unmount();
   });
 }
 

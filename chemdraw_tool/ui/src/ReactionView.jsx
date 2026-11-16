@@ -428,7 +428,7 @@ export default function ReactionView({ data: initial }) {
 
   return (
     <div className="reaction-panel">
-      {name && <SectionHeader title={name} />}
+      <SectionHeader title={name} expand />
       <div
         style={{
           borderRadius: "var(--radius-md)",
