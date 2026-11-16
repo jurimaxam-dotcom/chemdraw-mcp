@@ -97,6 +97,14 @@
   :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[fill="#FF7F00"]          { fill: var(--atom-p); }
   :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
   :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[fill="#A020F0"]          { fill: var(--atom-i); }
+  /* Mechanismus (Etappe 6): RDKits Standardpalette — Br #7F4C19, I #A01EEF —, die Klammern des Übergangszustands
+     als stroke-Attribut und die Keilbindung mit fill im style. Nur die Anzeige; die Exportdatei bleibt hell. */
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[stroke="#000000"]          { stroke: var(--atom-c); }
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[style*="fill:#000000"]   { fill: var(--atom-c) !important; }
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[style*="stroke:#7F4C19"] { stroke: var(--atom-br) !important; }
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[fill="#7F4C19"]          { fill: var(--atom-br); }
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[style*="stroke:#A01EEF"] { stroke: var(--atom-i) !important; }
+  :root:not([data-theme="light"]) svg:not(.scope-svg svg) path[fill="#A01EEF"]          { fill: var(--atom-i); }
 }
 
   :root[data-theme="dark"] {
@@ -164,6 +172,14 @@
   :root[data-theme="dark"] svg:not(.scope-svg svg) path[fill="#FF7F00"]          { fill: var(--atom-p); }
   :root[data-theme="dark"] svg:not(.scope-svg svg) path[style*="stroke:#A020F0"] { stroke: var(--atom-i) !important; }
   :root[data-theme="dark"] svg:not(.scope-svg svg) path[fill="#A020F0"]          { fill: var(--atom-i); }
+  /* Mechanismus (Etappe 6): RDKits Standardpalette — Br #7F4C19, I #A01EEF —, die Klammern des Übergangszustands
+     als stroke-Attribut und die Keilbindung mit fill im style. Nur die Anzeige; die Exportdatei bleibt hell. */
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[stroke="#000000"]          { stroke: var(--atom-c); }
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[style*="fill:#000000"]   { fill: var(--atom-c) !important; }
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[style*="stroke:#7F4C19"] { stroke: var(--atom-br) !important; }
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[fill="#7F4C19"]          { fill: var(--atom-br); }
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[style*="stroke:#A01EEF"] { stroke: var(--atom-i) !important; }
+  :root[data-theme="dark"] svg:not(.scope-svg svg) path[fill="#A01EEF"]          { fill: var(--atom-i); }
 
 
 html, body {
@@ -523,6 +539,9 @@ button:active { filter: brightness(0.92); }
 /* Nur die Zeichenfläche nimmt den Rest; Kopf, Achse, Kernwerte, Gruppen, Fußzeile behalten ihre Größe. */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout { flex: 1 0 auto; grid-template-rows: minmax(0, 1fr); }
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main { grid-template-rows: auto minmax(var(--canvas-min), 1fr); }
+/* Etappe 6: ohne Ansicht-Achse (Study-Reiter, Molekül ohne Rückfrage-Weg) ist die Fläche das einzige Kind —
+   sie fiel sonst in die auto-Zeile und schrumpfte unter contain: size auf ihren Rahmen (~10 px nach Expand). */
+:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main:not(:has(> .view-axis)) { grid-template-rows: minmax(var(--canvas-min), 1fr); }
 /* contain: size — die Fläche bemisst sich nur an der Grid-Zeile; das quadratische 3D-SVG
    würde sonst über seine Breite die Höhe vorgeben (968 × 968 statt der Resthöhe). */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-canvas { height: auto; contain: size; }

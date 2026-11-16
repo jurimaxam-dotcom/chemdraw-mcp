@@ -154,6 +154,23 @@ for (const [file, name, input, klick] of FUENFTE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
 }
+// Etappe 6 (16.11.2026): Study in der vergrößerten Ansicht, Mechanismen im Dunkeln, 3D-Größe.
+const SECHSTE = [
+  ["e6-study", "generate_molecule", { name_or_smiles: "aspirin" }, "[role=tab]:has-text('Study')"],
+  ["e6-datenblatt-study", "lookup_molecule_data", { name: "paracetamol" }, "[role=tab]:has-text('Study')"],
+  ["e6-mechanismus-sn2", "generate_mechanism", SN2],
+  ["e6-mechanismus-sn2-schritt2", "generate_mechanism", SN2, "[aria-label^='Open step 2']"],
+  ["e6-mechanismus-sn1", "generate_mechanism", { reaction_type: "sn1", substrates: ["CC(C)(C)Cl", "O"] }],
+  ["e6-mechanismus-sn1-iod", "generate_mechanism", { reaction_type: "sn1", substrates: ["CC(C)(C)I", "[OH-]"] }],
+  ["e6-mechanismus-fischer", "generate_mechanism", { reaction_type: "fischer_ester", substrates: ["CC(=O)O", "CCO"] }],
+  ["e6-molekuel-3d", "generate_molecule", KOFFEIN, "[data-view-axis] button:has-text('3D')"],
+  ["e6-3d", "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }],
+];
+for (const [file, name, input, klick] of SECHSTE) {
+  CASES.push([`${file}-chat1000`, name, input, 1000, undefined, klick]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
+}
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 

@@ -210,6 +210,52 @@ try {
       await page.close();
     }
 
+    // Etappe 6 (16.11.2026, Handlauf in Desktop): nach Expand stand im Study-Reiter statt der
+    // Zeichnung ein ~10 px hoher leerer Rahmen. Die Zeichenfläche muss dort so groß sein wie im
+    // Structure-Reiter — für generate_molecule, das Datenblatt und die Detailansicht im Batch.
+    {
+      const flaeche = (f, v) => f.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const b = el.getBoundingClientRect();
+        return { w: Math.round(b.width), h: Math.round(b.height),
+          rollen: document.documentElement.scrollHeight > innerHeight + 1 };
+      }, `[data-view="${v}"] .structure-canvas`);
+      const faelle = [
+        ["molecule", "generate_molecule", { name_or_smiles: "aspirin" }, async () => {}],
+        ["datenblatt", "lookup_molecule_data", { name: "paracetamol" }, async (f) => {
+          await f.getByText("103-90-2").first().waitFor({ timeout: 30000 });
+        }],
+        ["batch", "batch_generate", { molecules: ["benzene", "toluene", "phenol"] }, async (f) => {
+          await f.locator(".batch-card").nth(2).click();
+          await f.getByRole("button", { name: "Back to all structures" }).waitFor();
+        }],
+      ];
+      for (const [tag, name, input, vorbereiten] of faelle) {
+        for (const [w, h] of [[740, 1040], [1000, 700]]) {
+          if (tag !== "molecule" && w === 740) continue;
+          const [page, f] = await open(name, input, full(w, h), { viewport: { width: w, height: h } });
+          await vorbereiten(f);
+          await f.getByRole("tab", { name: "Study", exact: true }).waitFor({ timeout: 30000 });
+          await f.getByRole("tab", { name: "Structure", exact: true }).click();
+          await f.locator('[data-view="structure"] .structure-canvas').waitFor();
+          await page.waitForTimeout(300);
+          const s = await flaeche(f, "structure");
+          await f.getByRole("tab", { name: "Study", exact: true }).click();
+          await f.locator('[data-view="study"]').waitFor();
+          await page.waitForTimeout(300);
+          const l = await flaeche(f, "study");
+          messwerte[`e6-study-${tag}-${w}x${h}`] = JSON.stringify({ structure: s, study: l });
+          // Gleiche Breite; die Höhe darf um die Zeilen abweichen, die nur Study trägt (Überschrift
+          // „Functional groups: N to find“ als eigene Zeile, „Reveal all · Cover again“) — bei 1000×700
+          // ~50 px. Vorher (Desktop 16.11.) war es ein Rahmen von ~10 px.
+          check(l && l.h >= 200 && l.w === s.w && l.h >= 0.8 * s.h && l.rollen === s.rollen,
+            `E6 Study ${tag} ${w}×${h}: Zeichenfläche wie im Structure-Reiter (Structure ${s?.w}×${s?.h}${s?.rollen ? " rollt" : ""}, Study ${l?.w}×${l?.h}${l?.rollen ? " rollt" : ""})`);
+          await page.close();
+        }
+      }
+    }
+
     // (a) Morphin im Vollbild 1000×1200, hell und dunkel
     for (const colorScheme of ["light", "dark"]) {
       const [page, f] = await open("generate_molecule", { name_or_smiles: MORPHIN, label: "Morphine" }, full(1000, 1200), { colorScheme });
