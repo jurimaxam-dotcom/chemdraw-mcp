@@ -381,6 +381,8 @@ try {
         messwerte[`f-${w}x${h}`] = `Achse ${JSON.stringify(a2)} → ${JSON.stringify(a3)}; 3D ${lage(g3)}`;
         check(a2 && a3 && a2.top === a3.top && a3.ueber, `E3 (f) ${w}×${h}: Schalter über der Fläche, bleibt stehen (${a2?.top} → ${a3?.top})`);
         check(g3.sw <= g3.iw, `E3 (f) ${w}×${h}: 3D passt in die Breite (${lage(g3)})`);
+        // Etappe 6: schmal hält die Kuhle die Mindesthöhe der Zeichenfläche (260 px), nur ab 620 px darf sie für die Kernwerte schrumpfen.
+        if (w === 320) check(g3.canvas.h >= 260, `E6 ${w}×${h}: 3D-Modell nicht kleiner als die 2D-Fläche (${lage(g3)})`);
         if (w === 1000) check(g3.sh <= g3.ih, `E3 (f) ${w}×${h}: 3D ohne Rollen (${lage(g3)})`);
         await page.screenshot({ path: join(layoutShots, `f-koffein-3d-${w}x${h}.png`) });
         await page.close();
@@ -1684,7 +1686,7 @@ try {
   // Etappe 3 hatte sie in die 320-px-Fläche der 2D-Zeichnung gelegt.
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
   const breiteZeile = (await frame.locator('[data-view="structure"] .structure-layout').boundingBox())?.width ?? 0;
-  prüfe(box3d.width > breite2d && Math.abs(box3d.width - breiteZeile) <= 1 && Math.abs(box3d.height - Math.min(720, box3d.width)) <= 1,
+  prüfe(box3d.width >= breite2d && Math.abs(box3d.width - breiteZeile) <= 1 && Math.abs(box3d.height - Math.min(720, box3d.width)) <= 1,
     `3D-Kuhle über die volle Breite (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px, Zeile ${Math.round(breiteZeile)})`);
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,

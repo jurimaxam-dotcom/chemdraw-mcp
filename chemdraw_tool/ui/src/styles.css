@@ -555,8 +555,11 @@ button:active { filter: brightness(0.92); }
 /* 3D (Etappe 6): Kuhle füllt die Fläche, Kernwerte als Reihe darunter. */
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] { grid-template-rows: minmax(0, 1fr) auto; }
 :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-canvas { aspect-ratio: auto; max-height: none; }
-/* Die Kernwerte-Reihe kostet unter der Kuhle ~60 px: bei 1000×700 darf die Kuhle dafür unter 320 px schrumpfen (skaliert mit). */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-main { grid-template-rows: auto minmax(200px, 1fr); }
+/* Die Kernwerte-Reihe kostet unter der Kuhle ~60 px: bei 1000×700 darf die Kuhle dafür unter 320 px schrumpfen (skaliert mit).
+   Schmal (unter 620 px) rollt das Panel ohnehin — dort bleibt die Mindesthöhe der Zeichenfläche (260 px). */
+@media (min-width: 620px) {
+  :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-main { grid-template-rows: auto minmax(200px, 1fr); }
+}
 /* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
 :root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
 /* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
