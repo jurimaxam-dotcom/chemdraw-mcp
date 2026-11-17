@@ -157,3 +157,81 @@ def test_private_begriffsliste_ausserhalb_des_repos(repo, tmp_path):
     r = _pruefe(repo, {"docs/n.md": "Arbeit am Geheimprojekt läuft\n"}, {"OEFFENTLICH_BEGRIFFE": str(liste)})
     assert r.returncode == 1
     assert "docs/n.md:1" in r.stdout and "geheimprojekt" not in r.stdout.lower()
+
+
+# --- Wege an pre-commit vorbei: Merge, Rebase, Commit-Betreff, Push ----------------
+
+
+def _lauf(repo: Path, *args: str, env: dict[str, str] | None = None):
+    return subprocess.run(
+        [sys.executable, str(SKRIPT), "--ohne-gitleaks", *args],
+        cwd=repo, capture_output=True, text=True, env={**os.environ, **(env or {})},
+    )
+
+
+def _commit(repo: Path, dateien: dict[str, bytes | str], betreff: str = "x", env: dict[str, str] | None = None) -> str:
+    for pfad, inhalt in dateien.items():
+        ziel = repo / pfad
+        ziel.parent.mkdir(parents=True, exist_ok=True)
+        ziel.write_bytes(inhalt if isinstance(inhalt, bytes) else inhalt.encode())
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", betreff, "--no-verify"], cwd=repo, check=True, env={**os.environ, **(env or {})})
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+
+
+def test_auch_andere_binaerdateien_brauchen_die_bestaetigung(repo):
+    """Ein PDF oder eine Office-Datei kann dasselbe zeigen wie ein Screenshot."""
+    r = _pruefe(repo, {"docs/bericht.pdf": b"%PDF-1.7\n\0\0\xff\xfe binaer"})
+    assert r.returncode == 1 and "docs/bericht.pdf" in r.stdout
+
+
+def test_umbenannte_und_geaenderte_datei_wird_gelesen(repo):
+    _commit(repo, {"docs/alt.md": "eins\nzwei\ndrei\nvier\nfuenf\nsechs\n"})
+    subprocess.run(["git", "mv", "docs/alt.md", "docs/neu.md"], cwd=repo, check=True)
+    r = _pruefe(repo, {"docs/neu.md": "eins\nzwei\ndrei\nvier\nfuenf\nsechs\nKontakt: erika.muster@example.org\n"})
+    assert r.returncode == 1 and "docs/neu.md" in r.stdout
+
+
+def test_commit_betreff_wird_geprueft(repo, tmp_path):
+    nachricht = tmp_path / "MSG"
+    nachricht.write_text("Fix für erika.muster@example.org\n\n# Kommentar mit /Users/erika/x zählt nicht\n")
+    r = _lauf(repo, "--nachricht", str(nachricht))
+    assert r.returncode == 1 and "E-Mail" in r.stdout
+    nachricht.write_text("Panel: Knopf sitzt jetzt rechts\n\n# /Users/erika/x\n")
+    assert _lauf(repo, "--nachricht", str(nachricht)).returncode == 0
+
+
+def test_bereich_findet_was_an_pre_commit_vorbeikam(repo):
+    """Fast-Forward-Merge, Rebase und Cherry-Pick lösen keinen pre-commit aus —
+    der Push ist die letzte Stelle vor der Veröffentlichung."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    spitze = _commit(repo, {"docs/n.md": "Config unter /Users/erika/x\n", "assets/p.png": _png(600, 400)})
+    r = _lauf(repo, "--bereich", basis, spitze)
+    assert r.returncode == 1
+    assert "docs/n.md:1" in r.stdout and "assets/p.png" in r.stdout
+
+
+def test_bereich_prueft_betreff_und_adresse_jedes_commits(repo):
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    mitte = _commit(repo, {"b.py": "y = 1\n"}, betreff="Abnahme per Meeting-ID 635")
+    fremd = {"GIT_COMMITTER_EMAIL": "erika@uni-beispiel.de", "GIT_COMMITTER_NAME": "erika"}
+    spitze = _commit(repo, {"c.py": "z = 1\n"}, env=fremd)
+    r = _lauf(repo, "--bereich", basis, spitze)
+    assert r.returncode == 1
+    assert mitte[:7] in r.stdout and "Besprechung" in r.stdout
+    assert spitze[:7] in r.stdout and "noreply" in r.stdout
+    assert "uni-beispiel" not in r.stdout, "die Adresse selbst gehört nicht in den Bericht"
+
+
+def test_einmal_angesehen_gilt_auch_beim_push(repo):
+    """Die Freigabe hängt am Inhalt (Blob), nicht am Aufruf: sonst bliebe jedes
+    freigegebene Bild beim Push erneut hängen, wo niemand eine Variable setzt."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    bild = {"assets/p.png": _png(600, 400)}
+    assert _pruefe(repo, bild, {"OEFFENTLICH_GESEHEN": "assets/p.png"}).returncode == 0
+    subprocess.run(["git", "commit", "-qm", "bild", "--no-verify"], cwd=repo, check=True)
+    spitze = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+    assert _lauf(repo, "--bereich", basis, spitze).returncode == 0
+    # derselbe Pfad mit anderem Inhalt ist ein anderes Bild
+    neu = _commit(repo, {"assets/p.png": _png(640, 400)})
+    assert _lauf(repo, "--bereich", spitze, neu).returncode == 1

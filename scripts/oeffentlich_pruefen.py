@@ -5,8 +5,14 @@ Regeln: CLAUDE.md, Abschnitt „Public repo: what may be committed". Dieses Skri
 prüft den Teil davon, den eine Maschine prüfen kann, und nur den Index — also
 genau das, was der Commit veröffentlichen würde (der post-commit-Hook pusht sofort).
 
-    scripts/oeffentlich_pruefen.py            # als pre-commit-Hook
+    scripts/oeffentlich_pruefen.py                      # pre-commit, pre-merge-commit: der Index
+    scripts/oeffentlich_pruefen.py --nachricht <datei>  # commit-msg: Betreff und Text
+    scripts/oeffentlich_pruefen.py --bereich <alt> <neu>  # pre-push: alles, was der Push veröffentlicht
     OEFFENTLICH_GESEHEN="assets/a.gif:assets/b.mp4" git commit …
+
+Der Bereichslauf ist das Netz unter den anderen: Fast-Forward-Merge, Rebase und
+Cherry-Pick lösen keinen pre-commit aus, und ein Worktree auf altem Stand hat
+dieses Skript noch gar nicht.
 
 Bewusst nur Standardbibliothek: der Hook läuft mit dem System-Python, ohne venv.
 
@@ -14,8 +20,10 @@ Was geprüft wird
 - Commit-Adresse: nur die GitHub-noreply-Adresse.
 - Neue Textzeilen: ausgeschriebenes Heimatverzeichnis, E-Mail-Adressen,
   Besprechungs-Links; dazu eine private Begriffsliste außerhalb des Repos.
-- Bilder und Videos: jedes neue oder geänderte außerhalb von __fixtures__/ bleibt
-  hängen, bis es jemand angesehen hat und die Datei in OEFFENTLICH_GESEHEN nennt.
+- Bilder, Videos und jede andere Binärdatei: jede neue oder geänderte außerhalb
+  von __fixtures__/ bleibt hängen, bis sie jemand angesehen hat und die Datei in
+  OEFFENTLICH_GESEHEN nennt. Die Freigabe wird am Inhalt festgemacht (Blob-Hash in
+  .git/oeffentlich-gesehen) und gilt damit auch beim Push.
   Messen (Vollbild-Größe, Bildschirm-Seitenverhältnis, docs/evidence/) sagt nur,
   wie dringend — in ein Bild hineinsehen kann das Skript nicht. Textbefunde hebt
   die Freigabe nicht auf.
@@ -88,9 +96,9 @@ def bildgroesse(daten: bytes) -> tuple[int, int] | None:
     return None
 
 
-def neue_zeilen() -> list[tuple[str, int, str]]:
-    """(Datei, Zeilennummer, Text) für jede Zeile, die der Commit hinzufügt."""
-    diff = git("diff", "--cached", "-U0", "--no-color", "--diff-filter=AM")  # Binärdateien liefern keine Zeilen
+def neue_zeilen(quelle: list[str]) -> list[tuple[str, int, str]]:
+    """(Datei, Zeilennummer, Text) für jede Zeile, die hinzukommt. Binärdateien liefern keine."""
+    diff = git("diff", *quelle, "-U0", "--no-color", "--diff-filter=AMR")
     zeilen, datei, nr = [], None, 0
     for z in diff.split("\n"):
         if z.startswith("+++ "):
@@ -104,12 +112,15 @@ def neue_zeilen() -> list[tuple[str, int, str]]:
     return zeilen
 
 
+def gemeinsames_git_verzeichnis() -> Path:
+    """Worktrees teilen Begriffsliste und Freigaben des Haupt-Repos."""
+    return Path(git("rev-parse", "--path-format=absolute", "--git-common-dir").strip())
+
+
 def private_begriffe() -> list[re.Pattern]:
     pfad = os.environ.get("OEFFENTLICH_BEGRIFFE")
     if not pfad:
-        # Worktrees teilen die Liste des Haupt-Repos
-        gemeinsam = Path(git("rev-parse", "--path-format=absolute", "--git-common-dir").strip())
-        pfad = str(Path.home() / ".claude" / "oeffentlich-begriffe" / f"{gemeinsam.parent.name}.txt")
+        pfad = str(Path.home() / ".claude" / "oeffentlich-begriffe" / f"{gemeinsames_git_verzeichnis().parent.name}.txt")
     p = Path(pfad)
     if not p.is_file():
         return []
@@ -121,80 +132,133 @@ def private_begriffe() -> list[re.Pattern]:
     return muster
 
 
-def main() -> int:
+def textbefunde(text: str, datei: str, begriffe: list[re.Pattern], ich: str) -> list[str]:
+    funde = []
+    for m in HEIMAT.finditer(text):
+        if m.group(1) == ich or (m.group(1) not in HEIMAT_OK and not TESTDATEI.search(datei)):
+            funde.append("Heimatverzeichnis ausgeschrieben — `~` schreiben")
+            break
+    if any(not ERLAUBTE_ADRESSEN.search(m.group(0)) for m in ADRESSE.finditer(text)):
+        funde.append("E-Mail-Adresse")
+    if BESPRECHUNG.search(text):
+        funde.append("Besprechungs-Link oder -Kennung")
+    if any(b.search(text) for b in begriffe):
+        funde.append("Treffer der privaten Begriffsliste")
+    return funde
+
+
+def pruefe_nachricht(zeilen: list[str], ort: str, begriffe: list[re.Pattern], ich: str) -> list[str]:
+    befunde = []
+    for nr, z in enumerate(zeilen, 1):
+        if z.startswith("#"):
+            continue
+        befunde += [f"{ort}, Zeile {nr} der Commit-Nachricht: {f}" for f in textbefunde(z, "", begriffe, ich)]
+    return befunde
+
+
+def pruefe_inhalt(quelle: list[str], blob_von: str, begriffe: list[re.Pattern], ich: str) -> list[str]:
+    """Text, Dateinamen und Binärdateien eines Diffs; `blob_von` ist "" (Index) oder ein Commit."""
     befunde: list[str] = []
+    merkzettel = gemeinsames_git_verzeichnis() / "oeffentlich-gesehen"
+    freigegeben = set(merkzettel.read_text().split()) if merkzettel.is_file() else set()
     gesehen = {p.strip() for p in re.split(r"[:,\n]", os.environ.get("OEFFENTLICH_GESEHEN", "")) if p.strip()}
 
-    # 1. Commit-Adresse
-    for rolle in ("GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"):
-        ident = subprocess.run(["git", "var", rolle], capture_output=True, text=True).stdout
-        if "users.noreply.github.com>" not in ident:
-            befunde.append(
-                f"Commit-Adresse ({rolle.split('_')[1].lower()}) ist nicht die GitHub-noreply-Adresse — "
-                "`git config user.email` in diesem Klon setzen"
-            )
-
-    # 2. Neue Textzeilen
-    begriffe = private_begriffe()
-    ich = getpass.getuser()
-    for datei, nr, text in neue_zeilen():
+    for datei, nr, text in neue_zeilen(quelle):
         if OHNE_TEXTPRUEFUNG.search(datei) or "\0" in text:
             continue
-        ort = f"{datei}:{nr}"
-        for m in HEIMAT.finditer(text):
-            if m.group(1) == ich or (m.group(1) not in HEIMAT_OK and not TESTDATEI.search(datei)):
-                befunde.append(f"{ort}: Heimatverzeichnis ausgeschrieben — `~` schreiben")
-                break
-        for m in ADRESSE.finditer(text):
-            if not ERLAUBTE_ADRESSEN.search(m.group(0)):
-                befunde.append(f"{ort}: E-Mail-Adresse")
-                break
-        if BESPRECHUNG.search(text):
-            befunde.append(f"{ort}: Besprechungs-Link oder -Kennung")
-        if any(b.search(text) for b in begriffe):
-            befunde.append(f"{ort}: Treffer der privaten Begriffsliste")
+        befunde += [f"{datei}:{nr}: {f}" for f in textbefunde(text, datei, begriffe, ich)]
 
-    # 3. Dateinamen, Bilder, Videos
-    for datei in git("diff", "--cached", "--name-only", "--diff-filter=AMR", "-z").split("\0"):
+    binaer = set()
+    for z in git("diff", *quelle, "--numstat", "--diff-filter=AMR", "-z", "--no-renames").split("\0"):
+        teile = z.split("\t")
+        if len(teile) == 3 and teile[0] == "-":
+            binaer.add(teile[2])
+    neu_freigegeben = []
+    for datei in git("diff", *quelle, "--name-only", "--diff-filter=AMR", "-z", "--no-renames").split("\0"):
         if not datei:
             continue
         if any(b.search(datei) for b in begriffe):
             befunde.append(f"{datei}: Dateiname trifft die private Begriffsliste")
         endung = Path(datei).suffix.lower()
-        if endung not in BILD | VIDEO or datei in gesehen:
+        if endung not in BILD | VIDEO and datei not in binaer:
+            continue
+        blob = git("rev-parse", f"{blob_von}:{datei}").strip()
+        if blob in freigegeben:
+            continue
+        if datei in gesehen:
+            neu_freigegeben.append(blob)
             continue
         hinweis = f" — ansehen, dann OEFFENTLICH_GESEHEN={datei}"
         if endung in VIDEO:
             befunde.append(f"{datei}: Video{hinweis}")
-            continue
-        if datei.startswith("docs/evidence/"):
-            befunde.append(f"{datei}: Bild unter docs/evidence/ — Belege gehören als Text ins Repo{hinweis}")
-            continue
-        if FIXTURE.search(datei):
-            continue  # von unserem Code gerendert, nie eine Aufnahme
-        groesse = bildgroesse(git("show", f":{datei}", binaer=True))
-        if groesse is None or not all(groesse):
-            befunde.append(f"{datei}: Bildgröße nicht lesbar{hinweis}")
-        elif groesse[0] >= VOLLBILD_BREITE or (
-            groesse[0] >= 1000 and abs(groesse[0] / groesse[1] - BILDSCHIRM) < BILDSCHIRM_TOLERANZ
-        ):
-            befunde.append(f"{datei}: sieht nach Vollbild aus ({groesse[0]}×{groesse[1]}){hinweis}")
+        elif datei.startswith("docs/evidence/"):
+            befunde.append(f"{datei}: Datei unter docs/evidence/ — Belege gehören als Text ins Repo{hinweis}")
+        elif FIXTURE.search(datei):
+            continue  # von unserem Code erzeugt, nie eine Aufnahme
+        elif endung not in BILD:
+            befunde.append(f"{datei}: Binärdatei{hinweis}")
         else:
-            # Messen findet nur die groben Fälle; ein Ausschnitt mit Seitenleiste sähe harmlos aus.
-            befunde.append(f"{datei}: neues oder geändertes Bild{hinweis}")
+            groesse = bildgroesse(git("cat-file", "blob", blob, binaer=True))
+            if groesse is None or not all(groesse):
+                befunde.append(f"{datei}: Bildgröße nicht lesbar{hinweis}")
+            elif groesse[0] >= VOLLBILD_BREITE or (
+                groesse[0] >= 1000 and abs(groesse[0] / groesse[1] - BILDSCHIRM) < BILDSCHIRM_TOLERANZ
+            ):
+                befunde.append(f"{datei}: sieht nach Vollbild aus ({groesse[0]}×{groesse[1]}){hinweis}")
+            else:
+                # Messen findet nur die groben Fälle; ein Ausschnitt mit Seitenleiste sähe harmlos aus.
+                befunde.append(f"{datei}: neues oder geändertes Bild{hinweis}")
+    if neu_freigegeben:
+        with merkzettel.open("a") as f:
+            f.write("".join(b + "\n" for b in neu_freigegeben))
+    return befunde
 
-    # 4. Schlüssel
-    if "--ohne-gitleaks" not in sys.argv and shutil.which("gitleaks"):
-        lauf = subprocess.run(
-            ["gitleaks", "git", "--pre-commit", "--staged", "--no-banner", "--redact", "--log-level", "error"],
-            capture_output=True, text=True,
-        )
-        if lauf.returncode != 0:
-            befunde.append("gitleaks meldet einen Schlüssel im Index:\n" + (lauf.stdout + lauf.stderr).strip())
+
+def main() -> int:
+    args = sys.argv[1:]
+    begriffe, ich = private_begriffe(), getpass.getuser()
+    befunde: list[str] = []
+    mit_gitleaks = "--ohne-gitleaks" not in args and shutil.which("gitleaks")
+    gitleaks = ["gitleaks", "git", "--no-banner", "--redact", "--log-level", "error"]
+
+    if "--nachricht" in args:
+        was = "Commit"
+        text = Path(args[args.index("--nachricht") + 1]).read_text(encoding="utf-8", errors="replace")
+        befunde = pruefe_nachricht(text.splitlines(), "Nachricht", begriffe, ich)
+    elif "--bereich" in args:
+        was = "Push"
+        alt, neu = args[args.index("--bereich") + 1 : args.index("--bereich") + 3]
+        for eintrag in git("log", "--format=%h%x1f%ae%x1f%ce%x1f%B%x1e", f"{alt}..{neu}").split("\x1e"):
+            if not eintrag.strip():
+                continue
+            kurz, autor, committer, nachricht = eintrag.strip("\n").split("\x1f", 3)
+            for rolle, adresse in (("Autor", autor), ("Committer", committer)):
+                if not ERLAUBTE_ADRESSEN.search(adresse):
+                    befunde.append(f"{kurz}: {rolle}-Adresse ist keine noreply-Adresse")
+            befunde += pruefe_nachricht(nachricht.splitlines(), kurz, begriffe, ich)
+        befunde += pruefe_inhalt([alt, neu], neu, begriffe, ich)
+        if mit_gitleaks:
+            lauf = subprocess.run([*gitleaks, f"--log-opts={alt}..{neu}"], capture_output=True, text=True)
+            if lauf.returncode != 0:
+                befunde.append("gitleaks meldet einen Schlüssel:\n" + (lauf.stdout + lauf.stderr).strip())
+    else:
+        was = "Commit"
+        for rolle in ("GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"):
+            ident = subprocess.run(["git", "var", rolle], capture_output=True, text=True).stdout
+            if "users.noreply.github.com>" not in ident:
+                befunde.append(
+                    f"Commit-Adresse ({rolle.split('_')[1].lower()}) ist nicht die GitHub-noreply-Adresse — "
+                    "`git config user.email` in diesem Klon setzen"
+                )
+        befunde += pruefe_inhalt(["--cached"], "", begriffe, ich)
+        if mit_gitleaks:
+            lauf = subprocess.run([*gitleaks, "--pre-commit", "--staged"], capture_output=True, text=True)
+            if lauf.returncode != 0:
+                befunde.append("gitleaks meldet einen Schlüssel im Index:\n" + (lauf.stdout + lauf.stderr).strip())
 
     if not befunde:
         return 0
-    print("Commit gesperrt — das Repo ist öffentlich, jeder Commit wird sofort gepusht.")
+    print(f"{was} gesperrt — das Repo ist öffentlich.")
     for b in befunde:
         print(f"  ✗ {b}")
     print("Regeln: CLAUDE.md, „Public repo: what may be committed“. Die Sperre nicht mit --no-verify umgehen.")

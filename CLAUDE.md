@@ -64,14 +64,25 @@ tags and forks even after it is deleted. So these rules are hard, for every help
 7. **A slip is reported, not papered over.** A follow-up commit does not remove anything from history; tell Jay what
    went out and where. Rewriting history and force-pushing is Jay's decision alone.
 
-**Enforced before every commit** by `scripts/oeffentlich_pruefen.py` (the global pre-commit hook runs it in every
-clone and worktree; `tests/test_oeffentlich_pruefen.py`). It reads the index only and blocks: a commit address other
-than the noreply one; in newly added lines a spelled-out home directory, an e-mail address, a meeting link, or a hit
-from the private term list (a file outside the repo — the report names the place, never the term); a secret found by
-`gitleaks`; and **every new or changed image or video outside `__fixtures__/`**. The script can measure a picture but
-not look into it, so an image passes only when someone has looked at it and names it:
-`OEFFENTLICH_GESEHEN="assets/a.gif:assets/b.png" git commit …`. Naming a file you have not opened, or
-`--no-verify`, is a breach of rule 1, not a shortcut. A text finding has no override: change the line.
+**Enforced by `scripts/oeffentlich_pruefen.py`** (`tests/test_oeffentlich_pruefen.py`), which the global git hooks
+run at four points: `pre-commit` and `pre-merge-commit` on the index, `commit-msg` on the message, and `pre-push` on
+everything the push would publish. The push check is the net under the others — a fast-forward merge, a rebase and a
+cherry-pick fire no commit hook. A worktree on an older branch uses the script of the main checkout. It blocks:
+
+- a commit or committer address other than the noreply one;
+- in newly added lines and in commit messages: a spelled-out home directory, an e-mail address, a meeting link, or a
+  hit from the private term list (a file outside the repo — the report names the place, never the term);
+- a secret found by `gitleaks`;
+- **every new or changed image, video or other binary file outside `__fixtures__/`.** The script can measure a picture
+  but not look into it, so a file passes only when someone has looked at it and names it:
+  `OEFFENTLICH_GESEHEN="assets/a.gif:assets/b.png" git commit …`. The release is stored by content, so it also holds
+  at push time; the same path with new content is a new file to look at.
+
+Naming a file you have not opened, or `--no-verify`, is a breach of rule 1, not a shortcut. A text finding has no
+override: change the line. **What the lock cannot do:** see what a picture shows, judge prose that describes a person
+without a listed term, or check commits GitHub creates itself (a merge button uses the account's e-mail — the account
+settings "Keep my email addresses private" and "Block command line pushes that expose my email" cover that, and only
+Jay can set them). A blocked background push is reported by a notification and in `~/.claude/logs/oeffentlich-gesperrt.log`.
 
 **Licence and copyright.** The project is Apache-2.0; the holder line is `Copyright 2026 jurimaxam-dotcom` in `NOTICE`.
 Released versions stay under that licence for good; only a future version could change it, and only Jay decides that.
