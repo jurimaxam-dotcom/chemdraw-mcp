@@ -198,7 +198,10 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   await context.close();
   const quellFps = Number((bilder.length / (ende / 1000)).toFixed(1));
   if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }, BREITE) };
-  const werte = gifBauen(datei ?? `demo-${name}-${theme}`, bilder, ende, fps, dir, farben, sekunden);
+  // Szene mit eigenem Dateinamen in beiden Themen: <datei>-<theme>.gif, die helle zusätzlich als <datei>.gif
+  const beideThemen = datei && (SZENEN[name].themes?.length ?? 0) > 1;
+  const werte = gifBauen(datei ? (beideThemen ? `${datei}-${theme}` : datei) : `demo-${name}-${theme}`, bilder, ende, fps, dir, farben, sekunden);
+  if (beideThemen && theme === "light" && !molecule) copyFileSync(werte.datei, join(MODUS.ausgabe, `${datei}.gif`));
   // Alte Namen ohne Theme bleiben als Kopie der hellen Fassung: PyPI und ältere
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
   if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(MODUS.ausgabe, `demo-${name}.gif`));
@@ -370,6 +373,10 @@ const BLUESKY = { themes: ["light"], fps: 12, nurGif: true, aufAnsage: true, sek
 // (assets/<datei>.gif). Breite und Höhe so, dass das ganze Panel samt Export-Knopf im Bild ist —
 // abgeschnitten wird nichts; flacher wird das Bild über die Breite, nicht über einen Ausschnitt.
 const README_010 = { themes: ["light"], fps: 15, nurGif: true };
+// README-Galerie (17.11.2026): bewegte Fassung der Galerie-Fälle, hell UND dunkel — das README wählt per
+// <picture> nach dem Thema des Lesers. Ausgabe assets/<datei>-<theme>.gif, die helle zusätzlich als
+// <datei>.gif. Nur auf Ansage; für Bluesky dieselben Szenen mit --theme light und GIF_AUSGABE.
+const GALERIE = { themes: ["light", "dark"], fps: 12, nurGif: true, aufAnsage: true, sekunden: [5, 12], breite: 600 };
 
 const SZENEN = {
   // Hero links, Thalidomid: 2D → All H → 2D → Show variants → (S) mit Keil → Datenblatt
@@ -483,7 +490,7 @@ const SZENEN = {
   // Kein Bild der SVG-Rückfallspur: die Aufnahme beginnt erst, wenn die Engine steht
   // und ihre Einblend-Drehung ausgelaufen ist; steht am Ende nicht „ready“, ist die Szene rot.
   "lysozyme-cartoon": {
-    ...README_010, datei: "lysozyme-cartoon", breite: 600, hoehe: 812, fps: 12, farben: 96, eigenerBrowser: true,
+    ...README_010, themes: ["light", "dark"], datei: "lysozyme-cartoon", breite: 600, hoehe: 812, fps: 12, farben: 96, eigenerBrowser: true,
     tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
     async vorlauf({ frame, page }) {
       await frame.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 60000 });
@@ -502,47 +509,46 @@ const SZENEN = {
         throw new Error("ROT lysozyme-cartoon: am Ende kein Cartoon-Canvas (Rückfallspur?)");
     },
   },
-  // β-D-Glucose: Ansicht-Achse einmal durch — 2D → Fischer → Haworth → Chair → 3D
+  // β-D-Glucose: Ansicht-Achse einmal durch — 2D → Fischer → Haworth → Chair (ohne 3D: dessen Bühne ist
+  // doppelt so hoch, das GIF stünde sonst die meiste Zeit halb leer; 3D zeigt das Hero-GIF)
   "sugar-views": {
-    ...BLUESKY, datei: "sugar-views", hoehe: 1080,
+    ...GALERIE, datei: "sugar-views", hoehe: 680,
     tool: "generate_molecule", args: { name_or_smiles: "beta-D-glucose" },
     async ablauf({ frame, halten, klick, imBild }) {
       const achse = frame.locator("[data-view-axis]");
       const knopf = (text) => achse.getByRole("button", { name: text, exact: true });
       const gedrückt = (text) => achse.locator('button[aria-pressed="true"][aria-busy="false"]', { hasText: text });
       await frame.locator(".structure-canvas svg").first().waitFor();
-      for (const v of ["Fischer", "Haworth", "Chair", "3D"])
+      for (const v of ["Fischer", "Haworth", "Chair"])
         if (!(await knopf(v).count())) throw new Error(`sugar-views: kein Knopf ${v}`);
       await imBild(achse, "Ansicht-Achse");
       await halten(1300);
       for (const v of ["Fischer", "Haworth", "Chair"]) {
         await klick(knopf(v), () => gedrückt(v).waitFor({ timeout: 30000 }), v);
-        await halten(1400);
+        await imBild(frame.locator(".panel-footer"), `Fußzeile (${v})`);
+        await halten(v === "Chair" ? 2200 : 1500);
       }
-      await klick(knopf("3D"), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
-      await imBild(frame.locator("[data-view-3d]"), "3D-Kuhle");
-      await imBild(frame.locator(".panel-footer"), "Fußzeile");
-      await halten(2000); // Einblend-Drehung (1200 ms) läuft zu Ende
     },
   },
   // SN2 mit (R)-2-Brombutan + Cyanid: Overview → Step by step → mit Next durch alle Schritte
   "mechanism-steps": {
-    ...BLUESKY, datei: "mechanism-steps", hoehe: 560, panel: "button:has-text(\"Step by step\")",
+    ...GALERIE, datei: "mechanism-steps", hoehe: 610, panel: "button:has-text(\"Step by step\")",
     tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] },
-    async ablauf({ frame, halten, klick }) {
+    async ablauf({ frame, halten, klick, imBild }) {
       await halten(1500);
       await klick(frame.getByRole("tab", { name: "Step by step", exact: true }), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
       const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
       await halten(1600);
       for (let i = 2; i <= gesamt; i++) {
-        await klick(frame.getByRole("button", { name: "Next →" }), () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 }), "Next");
+        await klick(frame.getByRole("button", { name: "Next", exact: true }), () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 }), "Next");
+        await imBild(frame.locator(".panel-footer"), `Fußzeile (Schritt ${i})`);
         await halten(i === gesamt ? 2200 : 1600);
       }
     },
   },
   // H₂ + O₂ → H₂O, so gezeichnet nicht ausgeglichen: Badge zeigen, dann „Apply coefficients“
   "reaction-balance": {
-    ...BLUESKY, datei: "reaction-balance", hoehe: 236, panel: ".reaction-panel",
+    ...GALERIE, datei: "reaction-balance", hoehe: 236, panel: ".reaction-panel",
     tool: "generate_reaction", args: { reactants: ["hydrogen", "oxygen"], products: ["water"] },
     async ablauf({ frame, page, halten, zeiger, klick }) {
       // Zeiger knapp unter die Badges: mittig darauf verdeckte er genau den Text, um den es geht
@@ -566,7 +572,7 @@ const SZENEN = {
   },
   // Trastuzumab: Structure drehen, hinein- und herauszoomen, dann Scheme und zurück
   "antibody-scheme": {
-    ...BLUESKY, datei: "antibody-scheme", hoehe: 912, farben: 96, eigenerBrowser: true,
+    ...GALERIE, datei: "antibody-scheme", hoehe: 912, farben: 96, eigenerBrowser: true,
     tool: "generate_protein_or_antibody", args: { name: "trastuzumab" }, panel: "[data-protein-viewer]",
     vorlauf: proteinBereit,
     async ablauf(werkzeug) {

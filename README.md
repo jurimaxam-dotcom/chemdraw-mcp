@@ -63,7 +63,7 @@ Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
 rotatable in the panel:
 
 <!-- Aufnahme: `npm --prefix chemdraw_tool/ui run readme:gifs -- lysozyme-cartoon` (Mol*-Cartoon, WebGL) -->
-<p align="center"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon.gif" alt="The lysozyme panel: hen egg-white lysozyme, PDB 1LYZ, as a cartoon with red helices, yellow strands and grey loops; after two seconds a drag turns it about the vertical axis" width="480"></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-light.gif" alt="The lysozyme panel: hen egg-white lysozyme, PDB 1LYZ, as a cartoon with red helices, yellow strands and grey loops; after two seconds a drag turns it about the vertical axis" width="480"></picture></p>
 <p align="center"><sub>Prompt: <i>"Draw lysozyme"</i>. Drag to rotate; colouring, Cartoon/Trace and Reset sit above the picture.</sub></p>
 
 ## Gallery
@@ -79,11 +79,10 @@ the linked pages.
 **Structure** · [Drawing structures](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/drawing.md)
 
 ```text
-Draw the chair conformation of
-beta-D-glucose
+Draw beta-D-glucose
 ```
 
-<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-chair.png" alt="Panel for beta-D-glucose in the Chair view: every OH group and CH2OH equatorial, buttons 2D, All H, Fischer, Haworth, Chair, 3D, formula C6H12O6 and molar mass 180.16 g/mol" width="400">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/sugar-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/sugar-views-light.gif" alt="Panel for beta-D-glucose: the view bar switches from the skeletal formula to Fischer, Haworth and the chair conformation; formula C6H12O6 and molar mass 180.16 g/mol below" width="400"></picture>
 
 </td>
 <td width="50%" valign="top">
@@ -95,7 +94,7 @@ Show the SN2 mechanism of
 (R)-2-bromobutane with cyanide, step by step
 ```
 
-<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-mechanism-step1.png" alt="Mechanism panel, step 1 of 3: cyanide attacks (R)-2-bromobutane from the back, curved arrows to the carbon and to the leaving bromide" width="400">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-light.gif" alt="Mechanism panel: Step by step through the SN2 reaction of (R)-2-bromobutane with cyanide, from the backside attack over the transition state to the inverted (S) product" width="400"></picture>
 
 </td>
 </tr>
@@ -108,7 +107,7 @@ Show the SN2 mechanism of
 Draw trastuzumab
 ```
 
-<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-igg-scheme.png" alt="Trastuzumab panel on the Scheme tab: IgG domain scheme with the left Fab arm marked as the shown structure (PDB 1N8Z), antigen-binding sites, hinge, N297 glycan and Fc" width="320">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/antibody-scheme-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/antibody-scheme-light.gif" alt="Trastuzumab panel: the Fab fragment (PDB 1N8Z) as a cartoon, rotated and zoomed by dragging, then the Scheme tab with the IgG domain scheme, the shown Fab arm marked" width="400"></picture>
 
 </td>
 <td width="50%" valign="top">
@@ -120,7 +119,7 @@ Draw hydrogen + oxygen → water
 as a reaction scheme
 ```
 
-<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-reaction.png" alt="Reaction panel: hydrogen plus oxygen to water, the note 'not balanced: left: +1 O' with the suggestion 2 H2 + O2 → 2 H2O and the Apply coefficients button" width="400">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/reaction-balance-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/reaction-balance-light.gif" alt="Reaction panel: hydrogen plus oxygen to water with the note 'not balanced', the suggestion 2 H2 + O2 → 2 H2O, and after Apply coefficients the scheme marked balanced" width="400"></picture>
 
 </td>
 </tr>

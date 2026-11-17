@@ -42,8 +42,11 @@ The panel GIFs are recorded in the panel test host (600 px wide, `hero-capsaicin
 `npm --prefix chemdraw_tool/ui run readme:gifs` records `demo-views`, `demo-3d` and
 `demo-molecule` in a light and a dark version (`assets/demo-<scene>-light.gif`, `-dark.gif`;
 the README picks one via `<picture>`/`prefers-color-scheme`) plus `hero-capsaicin`,
-`hero-caffeine-3d` and `lysozyme-cartoon` in light only. The README shows `demo-views`,
-`demo-3d` and `lysozyme-cartoon`.
+`hero-caffeine-3d` in light only, and `lysozyme-cartoon` in both. The gallery scenes are
+recorded on request, each in light and dark (`assets/<scene>-light.gif`, `-dark.gif`):
+`npm --prefix chemdraw_tool/ui run readme:gifs -- sugar-views mechanism-steps reaction-balance antibody-scheme`.
+The README shows `demo-views`, `demo-3d`, `lysozyme-cartoon` and the four gallery scenes,
+each through a `<picture>` element that follows the reader's colour scheme.
 `-- views 3d --theme dark` limits scenes and theme, `--molecule NAME` swaps the molecule.
 The panel screenshots in `docs/images/` (`panel-*.png`, `protein-panel-lysozyme.png`) come from
 `SHOTS_ONLY='doku-*' node src/host/panel-shots.mjs <folder>` in `chemdraw_tool/ui`; copy each
