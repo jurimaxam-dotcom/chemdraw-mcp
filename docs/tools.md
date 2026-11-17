@@ -281,7 +281,7 @@ identity reactions and spectrum band assignments, with tags and
 `Parent::Child` subdecks. Re-exporting a deck updates its cards instead of
 duplicating them. With the AnkiConnect add-on the cards go straight into the
 running Anki. `curated_deck_id` picks a small bundled starter deck instead of
-your own cards. The panel previews every card with front, back and picture.
+your own cards. The panel previews the first four cards with front, back and picture.
 The molecule panel's **Add to Anki** button adds a single structure card.
 
 <p align="center"><img src="../assets/anki-card.png" alt="An Anki card from export_anki_deck: the front asks to name the aspirin structure, the back repeats the structure and answers Aspirin (acetylsalicylic acid)" width="760"></p>

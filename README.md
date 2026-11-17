@@ -19,7 +19,7 @@ chemdraw-mcp gives Claude Desktop a chemistry panel. Type *"Draw caffeine"* and
 the structure appears in the chat: a clean skeletal formula, a 3D model you
 rotate with the mouse, the PubChem data sheet one tab away, PNG and SVG on
 disk. The same works for reaction mechanisms with electron-flow arrows,
-proteins and antibodies from the PDB, spectra, TLC plates and titration
+proteins and antibodies from the PDB or AlphaFold, spectra, TLC plates and titration
 curves.
 
 <!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
@@ -30,9 +30,9 @@ curves.
 <p align="center"><sub>Prompt: <i>"Draw thalidomide"</i>. Left: skeletal formula, all hydrogens, the (S) isomer, the data sheet. Right: the same molecule in 3D, turned by dragging.</sub></p>
 
 - **Interactive, not a picture.** 13 of the 18 tools open a panel in the chat: switch views, pin a functional group, step through a mechanism, rotate a protein.
-- **Drawn on your machine.** RDKit renders every structure locally. A SMILES you type stays there; only its InChIKey, a hash, is looked up.
+- **Drawn on your machine.** RDKit draws every molecule locally. By default a SMILES you type stays there; only its InChIKey, a hash, is looked up.
 - **Made for studying.** A Study tab that covers name and groups, follow-up buttons that ask Claude about what you see, and Anki cards with the structure on the front.
-- **Checked before it ships.** About 10,000 tests, 67 names pinned to their InChIKey, and a scripted run in the real Claude Desktop before every release.
+- **Checked before it ships.** About 10,000 tests, 67 inputs pinned to their InChIKey, and a scripted run in the real Claude Desktop before every release.
 - **Free.** No additional API key, no ChemDraw licence. Apache-2.0; unofficial, not affiliated with Revvity.
 
 **Install in Claude Desktop (macOS, Linux):** download
@@ -56,7 +56,8 @@ works offline. If chemdraw-mcp saves you an afternoon of drawing, a
 3. In the panel, click a functional group to pin it, switch to **3D** for a
    rotatable model, **Data** for the PubChem data sheet or **Study** to quiz
    yourself, use **Continue in chat** for a follow-up, or **Export PNG** to
-   save the drawing to `~/ChemDraw-Output/png/`.
+   copy the drawing as an image (where the clipboard is not available, it is
+   saved to `~/ChemDraw-Output/png/`).
 
 Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
 rotatable in the panel:
