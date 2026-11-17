@@ -13,6 +13,12 @@
   `generator.find_unspecified_stereo` nutzt `Chem.FindPotentialStereo`, das Käfig-Brückenköpfe als mögliche Zentren
   zählt; `EnumerateStereoisomers(unique=True)` liefert je genau 1 Isomer. Fix-Idee: nur melden, wenn die Aufzählung > 1
   eindeutiges Isomer ergibt (TDD, Fälle Cuban/Adamantan/Carvon). Cuban zusätzlich in 2D als drei Vierringe (RDKit-Layout).
+- [ ] **Gruppen-Chips ohne Alken und Thioether** (Befund 17.11.2026 aus den Bluesky-Clips `out/clips-60fps-0.11.0`, nur geplant):
+  `_FUNCTIONAL_GROUPS` in `chemdraw_tool/svg_renderer.py:242` kennt weder C=C noch C–S–C. Cholesterin zeigt nur
+  „Alcohol“ (C5=C6 fehlt), Carvon nur „Ketone“ (zwei C=C, davon ein Enon), Penicillin G keinen Thioether. Bau (TDD):
+  Alken `[CX3]=[CX3]` ohne aromatische und ohne C=C in Carbonyl-/Heteroatom-Mustern, Thioether `[#6][SX2][#6]` (nicht
+  im Thiol/Disulfid); Fälle Cholesterin, Carvon, Penicillin G, Benzol (kein Alken). Klären vor dem Bau: Enon als eigene
+  Gruppe oder Keton + Alken (IUPAC/Lehrbuch belegen); Farben passend zur Legende; Golden-SVGs nur bewusst neu segnen.
 
 ## Weiter bei — Codex-Handlauf abgeschlossen (17.11.2026)
 
