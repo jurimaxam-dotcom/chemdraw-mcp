@@ -33,6 +33,10 @@ def repo(tmp_path, monkeypatch):
     for name in list(os.environ):
         if name.startswith("GIT_") or name.startswith("OEFFENTLICH_"):
             monkeypatch.delenv(name)
+    # Der echte Benutzername sperrt überall; auf GitHub heißt er "runner" und stünde
+    # damit im Platzhalter-Test. Die Fälle legen ihn deshalb selbst fest.
+    for name in ("LOGNAME", "USER", "LNAME", "USERNAME"):
+        monkeypatch.setenv(name, "probe")
     monkeypatch.setenv("HOME", str(tmp_path / "home"))  # keine private Begriffsliste, keine globale Git-Config
     (tmp_path / "home").mkdir()
     r = tmp_path / "repo"
