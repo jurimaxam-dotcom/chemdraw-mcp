@@ -58,6 +58,13 @@
 
 ### Weiter bei (16.11.2026, 22:29) — NEUER UMFANG: komplette UI-Überarbeitung VOR dem Release
 
+**STAND 17.11.2026, 10:50 – Release v0.11.0 angelegt (Jay 10:14: „Ich gebe dir die Freigabe den Release zu machen, wenn alles fertig ist“), `publish.yml` wartet auf die Freigabe der Umgebung `pypi` (Jays Klick).**
+- Release: https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.11.0 auf `006c3d9`; Lauf 44058615709: `check` und `build` grün, `publish` wartet. Die Freigabe ist eine bewusst gesetzte Sperre (Required Reviewer) – nicht per API selbst freigegeben.
+- **Nach Jays Freigabe prüfen:** PyPI 0.11.0 da · Jobs `bundle` (zwei `.mcpb` am Release) und `registry` grün · `isLatest` 0.11.0 (sonst `./scripts/publish-registry.sh`) · Bündel-Abnahme in Desktop wie `docs/evidence/bundle-abnahme-2026-11-10-0-10-0.md` (installiertes Bündel 0.10.0 ist seit 16.11. ausgeschaltet, Sicherung `…chemdraw-mcp.json.bak-2026-11-16-probe`) · Vermarktung benachrichtigen (`schwester weiter`: Release ist da, neue Panelbilder und Galerie-GIFs in `assets/`).
+- Handlauf (Codex, Faden `…umbau-handlauf-desktop-2`, erledigt): 13 Punkte, 3D dreht mit echter Maus in allen drei Wegen. Nicht behoben, bewusst: Anki-Vorschau ohne Expand (keine Bühne, Spezifikation §5.13), Kartenbilder dort hell (echte Karten), Protein nach Drehung am Bühnenrand angeschnitten, Leerfläche über/unter der Grafik in hochformatiger Vollansicht.
+- README: Kopf neu, Galerie mit bewegten Aufnahmen in hell und dunkel (`0728ba0`), Gegenlesen durch Codex eingearbeitet (`0cf8195`). Version `4bcddd6`, Lock-Revision `3b7172d` (ohne Gate committet, CI grün), Changelog-Zeile Expand `006c3d9`.
+- Noch nie rot gesehen: die Dunkel-Prüfungen `karte` und `scaffold.bg` in `host.e2e.mjs` (Vorfahren-Walk).
+
 **STAND 17.11.2026, 10:15 – Jay (09:10): „erledige alles, was vor dem Release erledigt sein muss … arbeite, bis ich den Release veröffentlichen kann“; dazu „README … so beeindruckend wie möglich“.**
 - **Rot am Batch-Detail war ein Messfehler** (`30432ef`): Chip stand frei in der Fenstermitte (Video `032421-B`), Desktop meldete für die Chat-Tabelle veraltete Rahmen; Probe rollt jetzt, wenn mittig und nicht treffbar. Zweites Rot (Speziesverteilung): Legendentext bestimmt das Modell, Checkpoint nimmt mehrere Schreibweisen (`9743bd3`, Schlüssel `eines`).
 - **Probe grün nach Regel (a):** A `091636-A`, `093222-A` je 168/0; B `094827-B`, `095712-B` je 179/0, 1 Befund (XCUI-Zug dreht 3D nicht → Handlauf).
