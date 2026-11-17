@@ -56,16 +56,14 @@ export default function CopyButton({ text, size, label = "Copy value", quiet = f
       title="Copy"
       className={`copy-button${sizeClass}${quiet ? " is-quiet" : ""}${copied ? " is-copied" : ""}`}
     >
-      {copied ? (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" />
-          <path d="M1 4h2v6a1 1 0 001 1h5v1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      )}
+      {/* Panel-Umbau A (§4): derselbe Strich-Satz wie Panel.jsx (16er-Raster, 1,5 px); „kopiert“ = Haken in --success. */}
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+        {copied ? <path d="m3 8.5 3 3 7-7" /> : <>
+          <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+          <path d="M10.5 3.5V3A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5" />
+        </>}
+      </svg>
     </button>
   );
 }

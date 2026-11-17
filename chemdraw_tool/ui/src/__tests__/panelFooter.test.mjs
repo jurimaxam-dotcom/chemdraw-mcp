@@ -24,7 +24,7 @@ import SpectrumView from "../SpectrumView";
 import TlcView from "../TlcView";
 import { exportDeps } from "../components/ExportPngButton";
 import { AMBIGUOUS, DATABASE, MOLECULE, lookupFailure, lookupSuccess } from "./fixtures.mjs";
-import { buttonByText, click, render, textOf } from "./harness.mjs";
+import { buttonByText, buttonName, click, render, textOf } from "./harness.mjs";
 
 // jsdom kennt keinen ResizeObserver; ScaledRow (Reaktion) braucht nur, dass es ihn gibt.
 if (!globalThis.ResizeObserver) {
@@ -128,7 +128,7 @@ for (const [label, make] of CASES) {
   const wants = label !== "Anki-Deck";
   test(`${label}: Expand ${wants ? "rechts im Kopf, genau einmal" : "fehlt (profitiert nicht von Fläche)"}`, () => {
     const { container, unmount } = render(withHost(make(), INLINE));
-    const buttons = [...container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand");
+    const buttons = [...container.querySelectorAll("button")].filter((b) => buttonName(b) === "Expand");
     assert.equal(buttons.length, wants ? 1 : 0);
     if (wants) {
       const head = container.firstElementChild.firstElementChild;
@@ -137,7 +137,7 @@ for (const [label, make] of CASES) {
     }
     unmount();
     const off = render(withHost(make(), { displayMode: "inline", availableDisplayModes: ["inline"] }));
-    assert.equal([...off.container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand").length, 0,
+    assert.equal([...off.container.querySelectorAll("button")].filter((b) => buttonName(b) === "Expand").length, 0,
       "Expand ohne angebotenen Vollbildmodus");
     off.unmount();
   });

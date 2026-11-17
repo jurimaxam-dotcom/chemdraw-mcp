@@ -61,6 +61,7 @@ export default function ContinueRow({ actions, flush, hint = "Each button writes
     // Etappe 4 (16.11.2026): eine kompakte Zeile statt eines Kastens mit Titel und Erklärzeile —
     // kleines Etikett vor den Knöpfen; die Erklärung bleibt als Tooltip am Etikett und als
     // Beschreibung der Gruppe (aria-describedby), sichtbar nur noch für Bedienungshilfen.
+    // Panel-Umbau A (§4): Knöpfe ruhig mit Haarlinie, 28 hoch, ohne Pfeil (der war aria-hidden).
     <section className="continue-row" data-testid="continue-row" aria-label="Continue in chat" aria-describedby={hintId}>
       <span id={hintId} className="visually-hidden">{hint}</span>
       <div className="continue-actions">
@@ -70,8 +71,6 @@ export default function ContinueRow({ actions, flush, hint = "Each button writes
             style={a.color ? { "--group-color": a.color } : undefined}
             aria-busy={busy === a.id} onClick={() => send(a)}>
             <span>{a.label}</span>
-            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor"
-              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" /></svg>
           </button>
         ))}
       </div>

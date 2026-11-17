@@ -38,10 +38,16 @@ export async function click(element) {
   });
 }
 
-/** Alle Knoepfe eines Containers nach ihrem sichtbaren Text. */
+/** Name eines Knopfs wie für Bedienungshilfen: sichtbarer Text, bei reinen Symbol-Knöpfen
+ *  (Panel-Umbau A: Expand ist nur noch ein Symbol) das aria-label. */
+export function buttonName(b) {
+  return b.textContent.trim() || (b.getAttribute("aria-label") || "").trim();
+}
+
+/** Alle Knoepfe eines Containers nach ihrem sichtbaren Text (Symbol-Knopf: aria-label). */
 export function buttonByText(container, text) {
   return [...container.querySelectorAll("button")].find(
-    (b) => b.textContent.trim() === text
+    (b) => buttonName(b) === text
   );
 }
 

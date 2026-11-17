@@ -3,6 +3,7 @@ import { useAppBridge } from "../AppContext";
 import { svgToPngBlob, blobToBase64, copyPngToClipboard } from "../utils/svgToPng";
 import { displayPath } from "../utils/displayPath";
 import { FooterStatus } from "./PanelFooter";
+import { Icon } from "./Panel";
 
 // Austauschbare Naht für die DOM-Tests: jsdom hat kein Canvas und Node kein
 // FileReader. Im Panel sind es immer die echten Funktionen.
@@ -26,7 +27,6 @@ export default function ExportPngButton({ svg, getSvg, filename, size, backgroun
   const [reason, setReason] = useState("");
   const timeoutRef = useRef(null);
   const busyRef = useRef(false); // in-flight guard: blocks a re-entrant double-click
-  const dim = size === "sm" ? 32 : 40;
   const ok = status === "copied" || status === "saved";
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
@@ -130,43 +130,18 @@ export default function ExportPngButton({ svg, getSvg, filename, size, backgroun
       ? `Export failed: ${reason}`
       : "Export as PNG";
 
-  const borderColor = ok ? "var(--copy-success)" : status === "error" ? "var(--danger, #c0392b)" : "var(--border)";
-  const fg = ok ? "var(--copy-success)" : status === "error" ? "var(--danger, #c0392b)" : "var(--fg-muted)";
-
+  // Panel-Umbau A (§4 Button): ruhiger Knopf (.btn.btn-quiet) ohne Kante, Symbol aus dem Strich-Satz;
+  // Erfolg = Haken und Text in --success, Fehler in --danger — keine Inline-Farben mehr.
+  const state = ok ? " is-ok" : status === "error" ? " is-error" : "";
   const button = (
     <button
       type="button"
-      className="export-png"
+      className={`btn btn-quiet export-png${state}`}
       aria-label={title}
       onClick={handleExport}
       title={title}
-      style={{
-        minWidth: dim,
-        height: dim,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: ok ? "var(--copy-success-bg)" : "transparent",
-        border: `1px solid ${borderColor}`,
-        borderRadius: "var(--border-radius-sm, 6px)",
-        cursor: "pointer",
-        color: fg,
-        padding: "0 10px",
-        gap: 7,
-        flexShrink: 0,
-      }}
     >
-      {ok ? (
-        <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="1.5" y="2" width="11" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.1" />
-          <circle cx="5" cy="5.5" r="1" fill="currentColor" />
-          <path d="M2 10l3-3 2.5 2.5L10 6l2 2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
+      <Icon name={ok ? "check" : "download"} />
       <span>{ok ? (status === "copied" ? "Copied" : "Saved") : status === "error" ? "Retry PNG" : "Export PNG"}</span>
     </button>
   );

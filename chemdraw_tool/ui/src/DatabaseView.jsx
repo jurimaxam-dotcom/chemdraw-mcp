@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 import MoleculeView from "./MoleculeView";
-import SectionHeader from "./components/SectionHeader";
-import PanelFooter from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import AddToAnkiButton from "./components/AddToAnkiButton";
+import { Panel, PanelBody, PanelFoot, PanelHead } from "./components/Panel";
 import SourceList from "./components/SourceList";
 import { useModelContextReport } from "./ModelContext";
 import { moleculeFollowUps } from "./utils/followUps.js";
@@ -22,18 +23,26 @@ export default function DatabaseView({ data }) {
   return <MoleculeView data={molecule} initialSheet={data} />;
 }
 
-// Ohne Strukturbild gibt es nichts umzuschalten: nur das Datenblatt.
+// Ohne Strukturbild gibt es nichts umzuschalten: nur das Datenblatt. Panel-Umbau A (§5.2):
+// derselbe Rahmen wie das Molekül-Panel, Untertitel = PubChem-Datensatz statt Formel; ohne
+// Datei und ohne Aktion entfällt der Fuß ganz.
 function SheetOnly({ data }) {
   const { flush } = useModelContextReport(databaseContext(data, { view: "data" }), data.name || data.smiles || "data sheet");
+  const canExpand = useCanExpand();
+  const cid = databaseAsMolecule(data).properties.cid;
   return (
-    <article className="molecule-panel">
-      {data.name && <header className="panel-header"><SectionHeader title={data.name} subtitle={data.formula} foundAs={data.foundAs} /></header>}
-      <div className="data-panel" data-view="data">
+    <Panel kind="database" fill className="molecule-panel">
+      <PanelHead title={data.name} subtitle={cid ? `PubChem CID ${cid}` : ""} foundAs={data.foundAs}
+        expand={canExpand && <ExpandButton />} />
+      <PanelBody className="data-panel" data-view="data">
         <SourceList sources={data.sources} />
-      </div>
+      </PanelBody>
       {(data.name || data.smiles) && <ContinueRow flush={flush}
         actions={moleculeFollowUps({ name: data.name, smiles: data.smiles, groups: [], atoms: [], pinned: null })} />}
-      <PanelFooter />
-    </article>
+      {/* §5.2: Add to Anki im Fuß wie beim Molekül; Dateien gibt es beim Datenblatt keine. */}
+      {data.smiles && <PanelFoot hideFiles>
+        <AddToAnkiButton smiles={data.smiles} name={data.name} />
+      </PanelFoot>}
+    </Panel>
   );
 }

@@ -8,9 +8,9 @@
 .panel :is(button, a, input, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 /* Hover = Fläche statt Helligkeitsfilter (styles.css setzt ihn global für jeden Knopf). */
 .panel button:hover, .panel button:active { filter: none; }
-.btn, .chip, .panel-foot-toggle, .panel .seg button, .panel .continue-button, .panel .copy-button { transition: background-color 120ms ease; }
+.btn, .chip, .panel-foot-toggle, .seg button, .continue-button, .copy-button { transition: background-color 120ms ease; }
 @media (prefers-reduced-motion: reduce) {
-  .btn, .chip, .panel-foot-toggle, .panel .seg button, .panel .continue-button, .panel .copy-button { transition: none; }
+  .btn, .chip, .panel-foot-toggle, .seg button, .continue-button, .copy-button { transition: none; }
 }
 
 /* --- Panel: eine Spalte, Zonen mit gap 16, kein eigener Innenabstand (body trägt 16 / schmal 12) --- */
@@ -45,17 +45,19 @@
   .panel-head .panel-head-tabs { justify-self: start; }
 }
 
-/* --- Reiter und Achse im Rahmen: Spur statt Kante -------------------------------------------- */
-.panel .seg { min-height: 32px; padding: 2px; gap: 2px; background: var(--surface-1); border: 0; border-radius: var(--radius-m); }
-.panel .seg button { min-height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-s); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); color: var(--text-2); }
-.panel .seg button:hover { color: var(--text); }
-.panel .seg button:is([aria-selected="true"], [aria-pressed="true"]) { background: var(--surface-0); color: var(--text); box-shadow: 0 0 0 var(--line-w) var(--line); }
-.panel .seg.seg-sm { min-height: 28px; border-radius: var(--radius-m); }
-.panel .seg.seg-sm button { min-height: 24px; padding: 0 10px; border-radius: var(--radius-s); font-size: var(--text-meta); line-height: var(--lh-meta); }
+/* Paket A (17.11.2026): Reiter, Expand, Continue und Copy gelten jetzt überall, nicht nur unter .panel —
+   der neue Look aus §4 gilt für alle Panels, auch für B/C-Views, die noch keinen <Panel> haben. */
+/* --- Reiter und Achse: Spur statt Kante -------------------------------------------- */
+.seg { min-height: 32px; padding: 2px; gap: 2px; background: var(--surface-1); border: 0; border-radius: var(--radius-m); }
+.seg button { min-height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-s); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); color: var(--text-2); }
+.seg button:hover { color: var(--text); }
+.seg button:is([aria-selected="true"], [aria-pressed="true"]) { background: var(--surface-0); color: var(--text); box-shadow: 0 0 0 var(--line-w) var(--line); }
+.seg.seg-sm { min-height: 28px; border-radius: var(--radius-m); }
+.seg.seg-sm button { min-height: 24px; padding: 0 10px; border-radius: var(--radius-s); font-size: var(--text-meta); line-height: var(--lh-meta); }
 
 /* --- Expand im Rahmen: 32 × 32, ruhig, nur Symbol -------------------------------------------- */
-.panel .expand-button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; min-height: 32px; padding: 0; border: 0; border-radius: var(--radius-m); background: transparent; color: var(--text-2); }
-.panel .expand-button:hover { background: var(--surface-1); color: var(--text); }
+.expand-button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; min-height: 32px; padding: 0; border: 0; border-radius: var(--radius-m); background: transparent; color: var(--text-2); }
+.expand-button:hover { background: var(--surface-1); color: var(--text); }
 
 /* --- StageBar ---------------------------------------------------------------------------------- */
 .stage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 28px; flex-shrink: 0; }
@@ -112,19 +114,19 @@
 .btn.is-copied { color: var(--success); }
 
 /* --- ContinueRow im Rahmen: eine Zeile, Knöpfe ruhig mit Kante, ohne Pfeil --------------------- */
-.panel .continue-row { gap: var(--space-2); }
-.panel .continue-actions { gap: var(--space-2); }
-.panel .continue-label { font-size: var(--text-meta); line-height: var(--lh-meta); font-weight: var(--weight-strong); color: var(--text-2); }
-.panel .continue-button { min-height: 28px; height: auto; padding: 4px 10px; border: var(--line-w) solid var(--line); border-radius: var(--radius-m); background: transparent; color: var(--text); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-regular); }
-.panel .continue-button:hover { background: var(--surface-1); }
-.panel .continue-button > svg { display: none; }
-@media (max-width: 479px) { .panel .continue-actions > .continue-label { flex-basis: 100%; } }
+.continue-row { gap: var(--space-2); }
+.continue-actions { gap: var(--space-2); }
+.continue-label { font-size: var(--text-meta); line-height: var(--lh-meta); font-weight: var(--weight-strong); color: var(--text-2); }
+.continue-button { min-height: 28px; height: auto; padding: 3px 10px; border: var(--line-w) solid var(--line); border-radius: var(--radius-m); background: transparent; color: var(--text); font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-regular); }
+.continue-button:hover { background: var(--surface-1); }
+.continue-button > svg { display: none; }
+@media (max-width: 479px) { .continue-actions > .continue-label { flex-basis: 100%; } }
 
 /* --- CopyButton im Rahmen: 24 × 24 (xs 20), ruhig, Haken in --success ------------------------- */
-.panel .copy-button, .panel .copy-button.is-quiet:hover { width: 24px; height: 24px; border-color: transparent; border-radius: var(--radius-s); }
-.panel .copy-button.is-xs { width: 20px; height: 20px; }
-.panel .copy-button:hover { background: var(--surface-1); }
-.panel .copy-button.is-copied { background: transparent; border-color: transparent; color: var(--success); }
+.copy-button, .copy-button.is-quiet:hover { width: 24px; height: 24px; border-color: transparent; border-radius: var(--radius-s); }
+.copy-button.is-xs { width: 20px; height: 20px; }
+.copy-button:hover { background: var(--surface-1); }
+.copy-button.is-copied { background: transparent; border-color: transparent; color: var(--success); }
 
 /* --- PanelFoot: Haarlinie, eine Zeile 32 hoch; Liste darunter, zu = hidden ---------------------- */
 .panel-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--space-4); min-height: 0; margin-top: 0; padding-top: var(--space-2); border-top: var(--line-w) solid var(--line); flex-shrink: 0; }
@@ -152,3 +154,128 @@
 .panel-state-title { font-weight: var(--weight-strong); color: var(--text); }
 .panel-state-message { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .panel-state > .seg-spinner { width: 12px; height: 12px; }
+
+/* ============================================================================================
+   Paket A (17.11.2026): Molekül, Datenblatt, Stapel, Auswahl, Platzhalter, Fehler (§5.1–§5.4, §5.14).
+   Ersetzt die alten Regeln aus styles.css (.structure-layout, .molecule-info, .key-facts-Spalte,
+   .functional-group, .study-*, .candidate*, .batch*, .source-*, .ghs-*, .placeholder*, .tool-error).
+   ============================================================================================ */
+
+/* --- Molekül-Bühne: die Zeichnung füllt die Stage (StructureCanvas = div.stage.stage-plain) ---- */
+.stage.structure-canvas { overflow: hidden; }
+.stage > .structure-drawing { width: 100%; height: 100%; }
+.stage-3d.structure-3d { display: flex; }
+.view-axis { justify-self: start; }
+/* Schmal: weniger Bühnenhöhe im Chat, sonst rollt das Panel schon wegen der Zeichnung. */
+@media (max-width: 619px) { .stage-plain { height: 260px; } }
+
+/* Atom-Tooltip: Haarlinie statt Schatten, Fläche --surface-0 (§3: keine Schatten). */
+.atom-tooltip { position: absolute; z-index: 10; transform: translate(-50%, -100%); pointer-events: none; white-space: nowrap; padding: 6px 10px; border: var(--line-w) solid var(--line); border-radius: var(--radius-m); background: var(--surface-0); color: var(--text); font-size: var(--text-meta); line-height: var(--lh-meta); }
+.atom-tooltip-head { display: flex; align-items: center; gap: 6px; }
+.atom-tooltip-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.atom-tooltip-el { font-weight: var(--weight-strong); }
+.atom-tooltip-name, .atom-tooltip-line { color: var(--text-2); }
+
+/* --- Gruppen: Chips und Hinweis in einer umbrechenden Zeile ------------------------------------ */
+.group-section-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.functional-groups { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.group-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--group-color); }
+.group-count { color: var(--text-2); font-size: var(--text-meta); font-variant-numeric: tabular-nums; }
+/* Feste Mindestbreite, kein Umbruch: Hover und Anheften ändern die Höhe nicht. Aktiv = getönte Fläche, keine Kante. */
+.group-note { flex: 1 0 min(320px, 100%); display: flex; flex-wrap: nowrap; align-items: center; gap: var(--space-1) var(--space-2); min-width: 0; min-height: 32px; overflow: hidden; padding: 0 var(--space-1); border-radius: var(--radius-m); font-size: var(--text-body); line-height: var(--lh-body); }
+.group-note.is-active { padding: 0 var(--space-1) 0 var(--space-3); background: color-mix(in srgb, var(--group-color) 10%, var(--bg)); }
+.group-note-hint { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.group-note > strong { white-space: nowrap; font-weight: var(--weight-strong); }
+.group-note > :is(.group-formula, .group-note-clear) { flex-shrink: 0; }
+.group-note .group-note-clear { height: 28px; min-height: 28px; padding: 0 var(--space-2); }
+.group-formula { padding: 0 6px; border-radius: var(--radius-s); background: color-mix(in srgb, var(--group-color) 14%, transparent); color: var(--text); font-size: var(--text-meta); line-height: 20px; }
+
+/* --- Stereo: Satz als ruhiger Knopf mit Punkt, „Show variants“ als ruhiger Knopf --------------- */
+.stereo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.stereo-note { margin: 0; font-size: var(--text-body); line-height: var(--lh-body); color: var(--text-2); }
+.stereo-note > span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.stereo-note .stereo-note-button { gap: var(--space-2); margin-left: calc(-1 * var(--space-2)); padding: 0 var(--space-2); font-weight: var(--weight-regular); }
+.stereo-note .stereo-note-button[aria-pressed="true"] { background: color-mix(in srgb, var(--stereo-color) 10%, var(--bg)); color: var(--text); }
+.stereo-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--stereo-color); }
+.btn > .seg-spinner { margin-right: 2px; }
+
+/* --- Data: Unterreiter in der StageBar, Tabelle mit 36er-Zeilen, Linie nur zwischen Zeilen ------ */
+.source-sheet, .source-body, .source-table { min-width: 0; }
+.source-row { display: grid; grid-template-columns: 10.5em minmax(0, 1fr); align-items: center; gap: 0 var(--space-4); min-height: 36px; padding: 2px 0; font-size: var(--text-body); line-height: var(--lh-body); }
+.source-row + .source-row { border-top: var(--line-w) solid var(--line); }
+.source-row dt { min-width: 0; color: var(--text-2); overflow-wrap: break-word; }
+.source-row dd { display: flex; align-items: center; gap: var(--space-1); min-width: 0; margin: 0; font-variant-numeric: tabular-nums; }
+.source-value { min-width: 0; overflow-wrap: break-word; }
+.source-value sub, .source-row dd sub { font-size: 0.75em; line-height: 0; }
+.source-link-row { margin-top: var(--space-2); }
+.source-link { color: var(--accent); text-underline-offset: 3px; }
+.ghs-groups { display: flex; flex-direction: column; }
+.ghs-group + .ghs-group { border-top: var(--line-w) solid var(--line); }
+.ghs-group { padding-bottom: var(--space-1); }
+.ghs-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); width: 100%; min-height: 36px; padding: var(--space-2) 0; border: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); text-align: left; cursor: pointer; }
+.ghs-toggle:hover { background: transparent; }
+.ghs-toggle > .ghs-chevron { color: var(--text-2); }
+.ghs-toggle[aria-expanded="true"] > .ghs-chevron { transform: rotate(90deg); }
+.ghs-lead { padding: 0 6px; border-radius: var(--radius-s); background: var(--surface-1); color: var(--text-2); font-size: var(--text-meta); line-height: var(--lh-meta); font-weight: var(--weight-regular); }
+.ghs-summary { font-weight: var(--weight-regular); color: var(--text-2); }
+.ghs-note { margin: 0 0 var(--space-2); font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+@media (max-width: 619px) { .source-row { grid-template-columns: 8.5em minmax(0, 1fr); gap: 0 var(--space-3); } }
+
+/* --- Study: dieselbe Geometrie; Verdecktes = --surface-1 mit gestrichelter --line-strong-Kante --- */
+.study-name, .study-cover, .chip.is-covered { border: var(--line-w) dashed var(--line-strong); background: var(--surface-1); color: var(--text-2); }
+.study-name { justify-self: start; height: var(--lh-title); padding: 0 var(--space-3); border-radius: var(--radius-m); font: inherit; font-size: var(--text-value); line-height: var(--lh-value); font-weight: var(--weight-strong); text-align: left; cursor: pointer; color: var(--text); }
+/* So hoch wie ein Kernwert (20 px): Study und Structure haben dieselbe Bühnenhöhe (E6). */
+.study-cover { display: block; width: 100%; max-width: 100%; height: var(--lh-value); padding: 0 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border-radius: var(--radius-s); font: inherit; font-size: var(--text-meta); line-height: 18px; text-align: left; cursor: pointer; }
+.chip.is-covered .chip-dot { background: var(--text-2); }
+:is(.study-name, .study-cover, .chip.is-covered):hover { background: var(--surface-2); }
+.panel-head .study-counter { white-space: normal; }
+/* B9: die Study-Bühne bekommt in Fill dieselbe Flex-Kette wie Structure, nie unter --canvas-min. */
+:root[data-host-height] .panel[data-fill] [data-view="study"] > .stage { flex-basis: var(--canvas-min, 260px); min-height: var(--canvas-min, 260px); }
+
+/* --- Stapel und Auswahl: Karten mit Haarlinie, Radius m, Polster 12 (§5.3/§5.4) ---------------- */
+.batch-grid, .candidate-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-3); margin: 0; padding: 0; }
+.batch-card, .candidate { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); padding: var(--space-3); border: var(--line-w) solid var(--line); border-radius: var(--radius-m); background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+:is(.batch-card, .candidate):hover { border-color: var(--line-strong); background: transparent; }
+.candidate[aria-busy="true"] { border-color: var(--line-strong); cursor: progress; }
+:is(.batch-card-structure, .candidate-structure) { display: block; height: 120px; margin-bottom: var(--space-1); pointer-events: none; }
+:is(.batch-card-structure, .candidate-structure) svg { width: 100%; height: 100%; }
+:is(.batch-card-name, .candidate-label) { font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); overflow-wrap: anywhere; }
+.batch-card-facts { display: flex; flex-wrap: wrap; gap: 0 var(--space-3); font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.batch-card-facts sub { font-size: 0.75em; }
+.candidate-name { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); overflow-wrap: anywhere; }
+/* Die Kandidaten-Zeichnung steht über dem Etikett wie im Stapel (Reihenfolge im DOM bleibt). */
+.candidate > .candidate-structure { order: -1; }
+@media (max-width: 419px) {
+  .batch-grid, .candidate-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: var(--space-2); }
+  .batch-card, .candidate { padding: var(--space-2); }
+  :is(.batch-card-structure, .candidate-structure) { height: 96px; }
+}
+/* Fehlschläge als Hint „warn“: eine umbrechende Zeile, Punkt in --danger. */
+.batch-failed { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-2); -webkit-line-clamp: unset; }
+.batch-failed > .hint-dot { margin-right: 0; }
+.batch-failed-head { color: var(--text); font-weight: var(--weight-strong); }
+.batch-failed ul { display: contents; list-style: none; margin: 0; padding: 0; }
+.batch-failed li + li::before { content: "·"; margin-right: var(--space-2); }
+.batch-failed-input { color: var(--text); }
+/* Rückweg: ruhiger Knopf mit Chevron links, Position rechts in derselben Zeile. */
+.back-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); margin: 0 0 var(--space-2) calc(-1 * var(--space-3)); flex-shrink: 0; }
+.back-bar > .btn { color: var(--text); }
+.batch-position { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.panel > .back-bar { margin-bottom: 0; }
+
+/* --- Platzhalter und Fehler (§5.14) -------------------------------------------------------------- */
+.placeholder-title { font-size: var(--text-title); line-height: var(--lh-title); font-weight: var(--weight-strong); color: var(--text); overflow-wrap: anywhere; }
+.placeholder-canvas { border-radius: var(--radius-m); background: var(--surface-1); }
+.placeholder-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-3); margin: 0; padding: 0; }
+.placeholder-card { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-3); border: var(--line-w) solid var(--line); border-radius: var(--radius-m); }
+.placeholder-box { display: block; height: 120px; border-radius: var(--radius-s); background: var(--surface-1); }
+.placeholder-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--weight-strong); color: var(--text-2); }
+@media (max-width: 419px) { .placeholder-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: var(--space-2); } }
+.tool-error > .panel-state { min-height: 0; }
+.tool-error .hint-dot { margin-right: var(--space-2); }
+
+/* --- Export und Anki: ruhige Knöpfe; Erfolg in --success, Fehler in --danger -------------------- */
+.btn:is(.export-png, .add-to-anki).is-ok { color: var(--success); }
+.btn:is(.export-png, .add-to-anki).is-error { color: var(--danger); }
+/* Alter Fuß (PanelFooter in B/C) ohne Haarlinien-Doppel: die Knöpfe dort sind dieselben .btn. */
+.panel-footer-actions > .btn { margin: 0; }

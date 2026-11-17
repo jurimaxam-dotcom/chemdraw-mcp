@@ -1,6 +1,7 @@
 import React from "react";
 import { groupInfo } from "../utils/groupInfo";
 import { elementName } from "../utils/modelContext.js";
+import { Button, Chip } from "./Panel";
 
 // Chips statt Liste. Zwei getrennte Zustände (U4): Hover/Fokus ist nur Vorschau
 // (onHoverGroup), ein Klick hält die Gruppe fest (onPin) — zweiter Klick löst.
@@ -8,16 +9,15 @@ import { elementName } from "../utils/modelContext.js";
 export default function FunctionalGroupList({ groups, pinnedGroup, onHoverGroup, onPin }) {
   if (!groups?.length) return null;
   const pick = onPin || onHoverGroup;
+  // Panel-Umbau A (§4 Chip): die einzige Pille im Panel; aria-pressed = festgehalten.
   return <div className="functional-groups">
-    {groups.map((g, i) => <button key={i} type="button" className="functional-group"
-      style={{ "--group-color": g.color }}
-      aria-pressed={pinnedGroup === g.name}
+    {groups.map((g, i) => <Chip key={i} className="functional-group" color={g.color} count={g.count}
+      pressed={pinnedGroup === g.name}
       onMouseEnter={() => onHoverGroup?.(g.name)} onMouseLeave={() => onHoverGroup?.(null)}
       onFocus={() => onHoverGroup?.(g.name)} onBlur={() => onHoverGroup?.(null)}
       onClick={() => pick?.(g.name)}>
-      <span className="group-dot" aria-hidden="true" />
-      <span>{groupInfo(g.name).label}</span><span className="group-count">{g.count}</span>
-    </button>)}
+      <span>{groupInfo(g.name).label}</span>
+    </Chip>)}
   </div>;
 }
 
@@ -46,7 +46,7 @@ export function GroupNote({ groups, hoveredGroup, pinned, canAsk = false, onClea
   const group = groups?.find((g) => g.name === (hoveredGroup || pinnedName));
   const pinLine = <>
     {canAsk && pinnedName ? <Hint parts={PINNED_ASK} /> : <span className="group-note-hint">Pinned.</span>}
-    {onClear && <button type="button" className="group-note-clear" onClick={onClear}>Clear</button>}
+    {onClear && <Button className="group-note-clear" onClick={onClear}>Clear</Button>}
   </>;
   if (!group && pinned?.kind === "atom") {
     return <div className="group-note is-active is-pinned" role="status" style={{ "--group-color": "var(--accent)" }}>

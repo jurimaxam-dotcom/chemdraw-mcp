@@ -1,7 +1,7 @@
 // Bildschau für Lesbarkeit: dieselben Panel-Fälle im hellen UND dunklen Schema,
 // über denselben sandboxed Host wie host.e2e.mjs und den echten Server (Wegwerf-HOME,
 // nichts landet in ~/ChemDraw-Output). Kein Test — Bilder zum Ansehen, vorher/nachher.
-// usage: node src/host/panel-shots.mjs <ordner>   (Netz für PubChem-Namen)
+// usage: node src/host/panel-shots.mjs <ordner>   (Netz für PubChem-Namen; SHOTS_ONLY=a-*,e3-molekuel-chat1000 filtert)
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -171,8 +171,64 @@ for (const [file, name, input, klick] of SECHSTE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
 }
+// Panel-Umbau Paket A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §7): Molekül (2D, 3D,
+// Data, Study), Datenblatt, Batch (Raster, Detail), Auswahl, Platzhalter und Fehler in Chat 1000 und 860
+// (inline-Kontext wie Desktop, damit Expand erscheint), Seitenpanel 320×700 und Vollbild 1000×700.
+// Je Bild eine Messzeile (aMetrics): Panelhöhe, Bühne, Inhaltsbreite, waagrechtes Rollen.
+// Optionen je Fall: klick (Selektor vor dem Bild), hold (nur toolinput, kein Ergebnis), fehler (isError zulassen).
+const A_FAELLE = [
+  ["a-molekuel", "generate_molecule", KOFFEIN],
+  ["a-molekuel-stereo", "generate_molecule", { name_or_smiles: "methylphenidate" }],
+  ["a-molekuel-3d", "generate_molecule", KOFFEIN, { klick: "[data-view-axis] button:has-text('3D')" }],
+  ["a-molekuel-data", "generate_molecule", KOFFEIN, { klick: "[role=tab]:has-text('Data')" }],
+  ["a-molekuel-study", "generate_molecule", KOFFEIN, { klick: "[role=tab]:has-text('Study')" }],
+  ["a-datenblatt", "lookup_molecule_data", { name: "paracetamol" }],
+  ["a-batch6", "batch_generate", SECHS],
+  ["a-batch6-detail", "batch_generate", SECHS, { klick: ".batch-card >> nth=2" }],
+  ["a-batch-fehler", "batch_generate", MIT_FEHLER],
+  ["a-auswahl", "generate_molecule", { name_or_smiles: "glucose" }],
+  ["a-platzhalter", "generate_molecule", KOFFEIN, { hold: true }],
+  ["a-platzhalter-batch", "batch_generate", SECHS, { hold: true }],
+  ["a-fehler", "generate_molecule", { name_or_smiles: "C1CC" }, { fehler: true }],
+];
+for (const [file, name, input, opt = {}] of A_FAELLE) {
+  CASES.push([`${file}-chat1000`, name, input, 1000, undefined, opt.klick, { ...opt, inline: true }]);
+  CASES.push([`${file}-chat860`, name, input, 860, undefined, opt.klick, { ...opt, inline: true }]);
+  CASES.push([`${file}-1000x700`, name, input, 1000, 700, opt.klick, opt]);
+  CASES.push([`${file}-320x700`, name, input, 320, 700, opt.klick, opt]);
+}
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
+const inlineCtx = (width) => ({ displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"],
+  platform: "desktop", containerDimensions: { width, maxHeight: 6000 } });
+
+// Maße für Paket A: Panelhöhe (wie Desktop sie übernimmt: #root + body-Polster), die Bühne
+// (.stage, sonst die alte Zeichenfläche bzw. Kuhle), Inhaltsbreite, Rollen, Haarlinien.
+function aMetrics() {
+  const de = document.documentElement;
+  const q = (s) => document.querySelector(s);
+  const stage = q("[data-view-3d]") || q(".stage") || q(".structure-canvas") || q(".panel-state") || q(".placeholder-canvas");
+  const body = getComputedStyle(document.body);
+  const inhalt = document.body.clientWidth - parseFloat(body.paddingLeft) - parseFloat(body.paddingRight);
+  const b = stage?.getBoundingClientRect();
+  // Sichtbare Kanten (border-top/-bottom ≥ 1 px, nicht transparent) — Ziel: genau eine (Fuß).
+  const linien = [...document.querySelectorAll("body *")].filter((el) => {
+    if (!el.getClientRects().length) return false;
+    const cs = getComputedStyle(el);
+    const sichtbar = (w, s, c) => parseFloat(w) >= 1 && s !== "none" && !/rgba\(\d+, \d+, \d+, 0\)|transparent/.test(c);
+    return (sichtbar(cs.borderTopWidth, cs.borderTopStyle, cs.borderTopColor) && sichtbar(cs.borderBottomWidth, cs.borderBottomStyle, cs.borderBottomColor)) === false
+      && (sichtbar(cs.borderTopWidth, cs.borderTopStyle, cs.borderTopColor) || sichtbar(cs.borderBottomWidth, cs.borderBottomStyle, cs.borderBottomColor))
+      && (cs.borderLeftWidth === "0px" || cs.borderLeftStyle === "none");
+  }).map((el) => el.className?.baseVal ?? el.className);
+  return {
+    panel: Math.ceil(q("#root").getBoundingClientRect().bottom) + 16,
+    buehne: b ? `${Math.round(b.width)}×${Math.round(b.height)}` : null,
+    inhalt: Math.round(inhalt),
+    rollenX: de.scrollWidth > de.clientWidth + 1,
+    rollenY: de.scrollHeight > innerHeight + 1,
+    linien,
+  };
+}
 
 // Maße der Diagrammfläche: Karte, gezeichnete Figur (viewBox, „meet“), Rollen ja/nein.
 function plotMetrics() {
@@ -191,23 +247,25 @@ const only = process.env.SHOTS_ONLY?.split(",");
 const tools = (await client.listTools()).tools;
 const browser = await chromium.launch();
 try {
-  for (const [file, name, input, width, fixed, klick] of CASES) {
-    if (only && !only.includes(file)) continue;
+  for (const [file, name, input, width, fixed, klick, opt = {}] of CASES) {
+    if (only && !only.some((o) => file === o || (o.endsWith("*") && file.startsWith(o.slice(0, -1))))) continue;
+    const isA = file.startsWith("a-");
     const tool = tools.find((t) => t.name === name);
     const result = await client.callTool({ name, arguments: input });
-    if (result.isError) { console.log(`✘ ${file}: ${JSON.stringify(result.content).slice(0, 300)}`); continue; }
+    if (result.isError && !opt.fehler) { console.log(`✘ ${file}: ${JSON.stringify(result.content).slice(0, 300)}`); continue; }
     const html = (await client.readResource({ uri: tool._meta.ui.resourceUri })).contents[0].text;
     for (const colorScheme of ["light", "dark"]) {
       const page = await browser.newPage({ viewport: { width: width + 20, height: 1400 }, colorScheme });
       await page.setContent('<body style="margin:0;background:#888"></body>');
       await page.addScriptTag({ path: out });
       await page.exposeFunction("__callTool", (req) => client.callTool(req));
-      const hostContext = fixed ? fixedCtx(width, fixed) : undefined;
-      await page.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result, hostContext });
+      const hostContext = fixed ? fixedCtx(width, fixed) : opt.inline ? inlineCtx(width) : undefined;
+      await page.evaluate((a) => window.__startHost(a), { html, toolInput: input, toolResult: result, hostContext, holdResult: Boolean(opt.hold) });
       const iframe = page.locator("iframe").last();
       if (!fixed) await iframe.evaluate((el, w) => { el.style.width = `${w}px`; el.style.height = "1380px"; }, width);
       const frame = page.frames().at(-1);
-      await frame.locator("svg").first().waitFor({ timeout: 30000 });
+      const bereit = opt.hold ? "[data-testid='tool-placeholder']" : opt.fehler ? "[role=alert]" : "svg";
+      await frame.locator(bereit).first().waitFor({ timeout: 30000 });
       await page.waitForTimeout(600);
       // Optionaler Klick vor dem Bild (Detailansicht); fehlt das Element, bleibt die Startansicht.
       if (klick && await frame.locator(klick).count()) {
@@ -215,7 +273,7 @@ try {
         await page.waitForTimeout(2500);
       }
       if (fixed) {
-        const m = await frame.evaluate(plotMetrics);
+        const m = await frame.evaluate(isA ? aMetrics : plotMetrics);
         await page.setViewportSize({ width: width + 20, height: fixed + 20 });
         await iframe.screenshot({ path: join(dest, `${file}-${colorScheme}.png`) });
         console.log(`✔ ${file}-${colorScheme}.png (${width}×${fixed}) ${JSON.stringify(m)}`);
@@ -227,7 +285,7 @@ try {
       await page.setViewportSize({ width: width + 20, height: Math.min(1400, h + 20) });
       await iframe.evaluate((el, hh) => { el.style.height = `${hh}px`; }, h);
       await iframe.screenshot({ path: join(dest, `${file}-${colorScheme}.png`) });
-      const m = await frame.evaluate(plotMetrics);
+      const m = await frame.evaluate(isA ? aMetrics : plotMetrics);
       console.log(`✔ ${file}-${colorScheme}.png (${width}×${h})${m ? ` ${JSON.stringify(m)}` : ""}`);
       await page.close();
     }

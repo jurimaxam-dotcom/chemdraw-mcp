@@ -132,12 +132,14 @@ test("Continue in chat: eine Zeile, Erklärung nur noch für Bedienungshilfen un
 });
 
 // --- B6: Gruppen-Hinweis in der Überschrift -------------------------------------------------
-test("Gruppen: Überschrift, Chips und Hinweis in einer Zeile; der Hinweis ist knapp, der Rest Tooltip", async () => {
+// Panel-Umbau A (§5.1): das sichtbare Etikett „Functional groups“ entfällt, es lebt als aria-label der Sektion.
+test("Gruppen: Chips und Hinweis in einer Zeile; der Hinweis ist knapp, der Rest Tooltip", async () => {
   const view = withHost(React.createElement(MoleculeView, { data: MOLECULE }));
   const section = view.container.querySelector(".group-section");
   const head = section.querySelector(".group-section-row");
   assert.ok(head, "keine gemeinsame Zeile");
-  assert.ok(head.querySelector("h3.section-label"), "Überschrift nicht in der Zeile");
+  assert.equal(section.getAttribute("aria-label"), "Functional groups", "Sektion ohne Namen");
+  assert.equal(head.querySelector(".section-label"), null, "sichtbares Etikett steht noch da");
   assert.ok(head.querySelector("button.functional-group"), "Chips nicht in der Zeile");
   const note = head.querySelector(".group-note[role=status]");
   assert.ok(note, "Status nicht in der Zeile");

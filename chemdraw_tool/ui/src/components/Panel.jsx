@@ -28,10 +28,12 @@ const ICONS = {
   "chevron-right": <path d="m6 4 4 4-4 4" />,
   check: <path d="m3 8.5 3 3 7-7" />,
   download: <path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10" />,
+  // Karte mit Plus (Add to Anki)
+  "card-plus": <><rect x="2.5" y="3.5" width="11" height="9" rx="1.5" /><path d="M8 6v4M6 8h4" /></>,
   copy: <><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" /><path d="M10.5 3.5V3A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5" /></>,
 };
 
-/** Strich-Symbol `name` (expand, chevron-down/-left/-right, check, download, copy); unbekannt → nichts. */
+/** Strich-Symbol `name` (expand, chevron-down/-left/-right, check, download, card-plus, copy); unbekannt → nichts. */
 export function Icon({ name, size = 14, className }) {
   const shape = ICONS[name];
   if (!shape) return null;

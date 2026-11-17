@@ -1,21 +1,19 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import AmbiguousView from "./AmbiguousView";
-import CopyButton from "./components/CopyButton";
-import FoundAs from "./components/FoundAs";
 import Formula from "./components/Formula";
 import FunctionalGroupList, { GroupNote } from "./components/FunctionalGroupList";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { fileEntries } from "./components/PanelFooter";
 import AddToAnkiButton from "./components/AddToAnkiButton";
 import SourceList from "./components/SourceList";
 import StereoNote, { useStereoHighlight } from "./components/StereoNote";
 import Ball3DCanvas from "./components/Ball3DCanvas";
-import RotateRow from "./components/RotateRow";
 import StructureCanvas from "./components/StructureCanvas";
 import ViewToggle from "./components/ViewToggle";
 import ExpandButton from "./components/ExpandButton";
 import ContinueRow from "./components/ContinueRow";
 import StudyPanel from "./components/StudyPanel";
+import { Button, Facts, Hint, Panel, PanelBody, PanelFoot, PanelHead, PanelState, Stage, StageBar } from "./components/Panel";
 import { useModelContextReport } from "./ModelContext";
 import { moleculeFollowUps, studyFollowUps } from "./utils/followUps.js";
 import { moleculeContext, moleculeSummary, studyItems } from "./utils/modelContext.js";
@@ -105,9 +103,11 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
   // Welchen PubChem-Datensatz die Zahlen beschreiben. Steht im Kopf, weil ein
   // falsch aufgeloester Name sonst nirgends auffaellt: die Struktur passt dann
   // zu den Werten, nur eben zum falschen Stoff.
+  // Panel-Umbau A (§5.2): das Datenblatt (lookup_molecule_data) kennt den Titel nicht, nur die CID —
+  // dann steht „PubChem CID n“ im Untertitel statt gar keiner Herkunft.
   const record = props.pubchemTitle
     ? `PubChem: ${props.pubchemTitle}${props.cid ? ` (CID ${props.cid})` : ""}`
-    : "";
+    : props.cid ? `PubChem CID ${props.cid}` : "";
   const groups = data.functionalGroups || [];
   const stereo = useStereoHighlight(data.stereoWarnings || []);
   const formula = data.formula ?? props.formula;
@@ -319,118 +319,116 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
     return (
       <AmbiguousView data={variants}
         subtitle={`${variants.candidates.length} stereoisomers. Pick one to draw it with wedges.`}
-        backBar={<button type="button" className="candidate-back" onClick={() => setShowVariants(false)}>
+        backBar={<Button icon="chevron-left" className="candidate-back" onClick={() => setShowVariants(false)}>
           Back to the structure
-        </button>} />
+        </Button>} />
     );
   }
 
+  // Panel-Umbau A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §5.1): eine Spalte aus den
+  // Bausteinen in components/Panel.jsx — Kopf, StageBar (Achse; in 3D Hinweis und Reset view), Bühne über
+  // die volle Breite, Kernwerte als Zeile darunter, Hinweise, Gruppen, Continue, Fuß mit Files-Schalter.
+  // Die rechte Kernwert-Spalte, der Bühnenrahmen und die Linie unter dem Kopf entfallen.
+  const study = view === "study";
+  const facts = [
+    { key: "formula", label: "Formula", value: formula && <Formula text={formula} />, copy: formula || undefined },
+    { key: "mass", label: "Molar mass", value: molarMass(props.mw) },
+    { key: "cas", label: "CAS", value: props.cas, copy: props.cas || undefined },
+  ];
+  const axis = (views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
+    <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
+      title="Skeletal formula">2D</AxisButton>
+    {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
+      <AxisButton key={t.key} pressed={!show3d && shown === t.key} busy={drawingBusy === t.key}
+        onClick={() => toggleDrawing(t.key)}
+        title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</AxisButton>)}
+    {query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
+      title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</AxisButton>}
+  </div>;
+
   return (
-    <article className="molecule-panel">
-      <header className="panel-header">
-        <div className="panel-heading">
-          {view === "study" && !nameOpen
-            ? <button type="button" className="study-name" onClick={() => reveal("name")}>Which compound is this? Show name</button>
-            : <>
-              <h2 className="panel-title">{data.name || "Molecule"}</h2>
-              {record && <p data-testid="pubchem-record" className="panel-record">{record}</p>}
-              <FoundAs value={data.foundAs} />
-            </>}
-          {view === "study" && <p className="panel-record study-counter" role="status">{counter}</p>}
-        </div>
-        {(query || (expandable && canRequestFullscreen(hostContext))) && <div className="panel-actions">
-          {query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study />}
-          {/* expandable=false: Einbettungen, in denen ein anderer Teil das Panel vergrößert. */}
-          {expandable && <ExpandButton app={app} hostContext={hostContext} />}
-        </div>}
-      </header>
-      {view === "study" ? (
+    <Panel kind="molecule" fill className="molecule-panel" data-view-mode={view}>
+      {/* Im Lernmodus ersetzt `heading` Titel, Untertitel (samt title-Attribut) und Found as ganz:
+          dann steht vom Namen nichts im DOM, nur der Aufdeck-Knopf und der Zähler. */}
+      <PanelHead
+        heading={study && (nameOpen
+          ? <><h2 className="panel-title">{data.name || "Molecule"}</h2>
+              <p className="panel-subtitle study-counter" role="status">{counter}</p></>
+          : <><button type="button" className="study-name" onClick={() => reveal("name")}>Which compound is this? Show name</button>
+              <p className="panel-subtitle study-counter" role="status">{counter}</p></>)}
+        title={data.name || "Molecule"}
+        subtitle={record}
+        subtitleTitle={record || undefined}
+        foundAs={data.foundAs}
+        tabs={query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study />}
+        // expandable=false: Einbettungen, in denen ein anderer Teil das Panel vergrößert.
+        expand={expandable && canRequestFullscreen(hostContext) && app?.requestDisplayMode && <ExpandButton app={app} hostContext={hostContext} />}
+      />
+      {study ? (
         <StudyPanel uid={uid} svg={data.svg} atoms={data.atoms} groups={groups} revealed={revealed}
           focusGroup={studyFocus} onReveal={reveal} onFocusGroup={setStudyFocus}
-          facts={[
-            formula && { key: "formula", label: "Formula", value: <Formula text={formula} /> },
-            props.mw && { key: "mass", label: "Molar mass", value: molarMass(props.mw) },
-            props.cas && { key: "cas", label: "CAS", value: props.cas },
-          ].filter(Boolean)}
+          facts={facts.filter((f) => f.value).map(({ key, label, value }) => ({ key, label, value }))}
           onRevealAll={() => setRevealed(items.map((i) => i.key))}
           onCover={() => { setRevealed([]); setStudyFocus(null); }} />
       ) : view === "structure" ? (
-        <div id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
-          <div className="structure-layout" data-layout-3d={is3d ? "" : undefined}>
-            {/* Ansicht-Achse über der Zeichenfläche (Etappe 3): an fester Stelle, sie rutscht
-                beim Umschalten nicht mit. 3D nimmt wieder die volle Breite, die Kernwerte rücken
-                darunter (Etappe 6, Jay 16.11.: „3D ist zu klein“). */}
-            <div className="structure-main">
-              {(views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
-                <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
-                  title="Skeletal formula">2D</AxisButton>
-                {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
-                  <AxisButton key={t.key} pressed={!show3d && shown === t.key} busy={drawingBusy === t.key}
-                    onClick={() => toggleDrawing(t.key)}
-                    title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</AxisButton>)}
-                {query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
-                  title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</AxisButton>}
-              </div>}
-              {is3d
-                ? <div className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
-                    <Ball3DCanvas key={turn3d} atoms={conformer.atoms} bonds={conformer.bonds || []} />
-                  </div>
-                : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
-                    hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
-                    pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
-                    onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
-              {/* Etappe 6: Hinweis und „Reset view“ direkt am Modell, vor den Kernwerten darunter. */}
-              {is3d && <RotateRow onReset={() => setTurn3d((t) => t + 1)} />}
-            </div>
-            <dl className="key-facts" aria-label="Molecule details">
-              <Fact label="Formula" value={formula && <Formula text={formula} />} copy={formula} />
-              <Fact label="Molar mass" value={molarMass(props.mw)} />
-              <Fact label="CAS" value={props.cas} copy={props.cas} />
-            </dl>
-          </div>
+        <PanelBody id={`${uid}-structure`} role="tabpanel" aria-labelledby={`${uid}-tab-structure`} data-view="structure">
+          {/* Achse an fester Stelle über der Bühne (Etappe 3); in 3D rechts Hinweis und Reset view (§5.1). */}
+          <StageBar left={axis}
+            hint={is3d ? "Drag to rotate · explicit hydrogens" : undefined}
+            right={is3d && <Button className="reset-view" onClick={() => setTurn3d((t) => t + 1)}
+              title="Back to the starting rotation">Reset view</Button>} />
+          {is3d
+            ? <Stage variant="3d" className="structure-canvas structure-3d" data-view-3d="" ref={viewer3d}>
+                <Ball3DCanvas key={turn3d} atoms={conformer.atoms} bonds={conformer.bonds || []} />
+              </Stage>
+            : <StructureCanvas svg={svg} atoms={atoms} groups={groups}
+                hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
+                pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
+                onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
+          <Facts aria-label="Molecule details" items={facts} />
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
           {/* Stereo, Gruppen und der Projektionssatz beziehen sich auf die 2D-Zeichnung — in 3D aus.
               Der Satz steht dort, wo er etwas erklärt: mit Fischer-Knopf unter Fischer (offene
               Kette), ohne ihn unter Haworth (Glykosid: warum es keine Fischer-Projektion gibt). */}
-          {!is3d && <>
-            {shown === (views.includes("fischer") ? "fischer" : "haworth") && data.projectionNote
-              && <Note>{data.projectionNote}</Note>}
-            <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
-              variantsBusy={variantsLoading} />
-            {variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
-            {/* Fischer eines Ringzuckers zeigt die offene Kette; die Gruppen stammen aus der
-                Ringform (Halbacetal statt Aldehyd) und stünden dort falsch. */}
-            {groups.length > 0 && !(shown === "fischer" && data.projectionNote)
-              && <section className="group-section" aria-label="Functional groups">
-              {/* Etappe 4: Überschrift, Chips und Hinweis in einer umbrechenden Zeile. */}
+          {!is3d && shown === (views.includes("fischer") ? "fischer" : "haworth") && data.projectionNote
+            && <Note>{data.projectionNote}</Note>}
+          {!is3d && <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
+            variantsBusy={variantsLoading} />}
+          {!is3d && variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
+          {/* Fischer eines Ringzuckers zeigt die offene Kette; die Gruppen stammen aus der
+              Ringform (Halbacetal statt Aldehyd) und stünden dort falsch. Das Etikett
+              „Functional groups“ lebt nur noch als Name der Sektion (§5.1). */}
+          {!is3d && groups.length > 0 && !(shown === "fischer" && data.projectionNote)
+            && <section className="group-section" aria-label="Functional groups">
               <div className="group-section-row">
-                <h3 className="section-label">Functional groups</h3>
                 <FunctionalGroupList groups={groups} pinnedGroup={pinned?.kind === "group" ? pinned.name : null}
                   onHoverGroup={setHoveredGroup} onPin={pinGroup} />
                 <GroupNote groups={groups} hoveredGroup={hoveredGroup} pinned={pinned} canAsk={canAsk} onClear={clearPin} />
               </div>
             </section>}
-          </>}
-        </div>
+        </PanelBody>
       ) : (
-        <div id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
-          {sheet ? <SourceList sources={sheet.sources} /> : <Note>{failed ? DATA_LOAD_ERROR : "Loading the data sheet…"}</Note>}
-        </div>
+        <PanelBody id={`${uid}-data`} role="tabpanel" aria-labelledby={`${uid}-tab-data`} data-view="data" className="data-panel">
+          {sheet
+            ? <SourceList sources={sheet.sources} />
+            : <PanelState kind={failed ? "error" : "loading"} role="status" message={failed ? DATA_LOAD_ERROR : "Loading the data sheet…"} />}
+        </PanelBody>
       )}
       <ContinueRow actions={followUps} flush={flush} />
-      {/* Fußzeile (E3): Dateien links, Aktionen rechts. In 3D die SDF-Datei des
-          Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG.
-          Im Lernmodus ohne Pfade und ohne Export: beide tragen den Namen. */}
-      <PanelFooter files={view === "study" ? [] : footer3d ? fileEntries(conformer.files) : fileEntries(data.files)}>
-        {view === "study" ? null : footer3d
-          ? <ExportPngButton size="sm" filename={`${data.name || "molecule"}-3d`}
+      {/* Fuß (§4 PanelFoot): Files-Schalter links, Aktionen rechts. In 3D die SDF-Datei des
+          Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG. */}
+      {/* Im Lernmodus ohne Files und ohne Export: beide tragen den Namen (Dateiname). hideFiles
+          lässt Schalter und Liste ganz weg, nicht nur zugeklappt. */}
+      <PanelFoot files={footer3d ? fileEntries(conformer.files) : fileEntries(data.files)} hideFiles={study}>
+        {study ? null : footer3d
+          ? <ExportPngButton filename={`${data.name || "molecule"}-3d`}
               getSvg={() => serializeLiveSvg(viewer3d.current?.querySelector("svg"))}
               background={() => panelBackground(viewer3d.current)} />
-          : svg && <ExportPngButton size="sm" svg={svg} filename={data.name || "molecule"} />}
-        {smiles && <AddToAnkiButton size="sm" smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
-      </PanelFooter>
-    </article>
+          : svg && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
+        {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
+      </PanelFoot>
+    </Panel>
   );
 }
 
@@ -453,8 +451,9 @@ function AxisButton({ pressed, busy = false, onClick, title, children }) {
   </button>;
 }
 
+// Hinweis unter der Bühne (§4 Hint): ruhig, höchstens zwei Zeilen; role=status, damit er angesagt wird.
 function Note({ children }) {
-  return <div className="panel-note" role="status">{children}</div>;
+  return <Hint className="panel-note" role="status">{children}</Hint>;
 }
 
 // Der Server liefert "233.31 g/mol", aeltere Payloads nur die Zahl.
@@ -463,10 +462,3 @@ function molarMass(mw) {
   return /g\/mol/.test(String(mw)) ? String(mw) : `${mw} g/mol`;
 }
 
-function Fact({ label, value, copy }) {
-  if (value == null || value === "") return null;
-  return <div className="fact">
-    <dt>{label}</dt>
-    <dd><span>{value}</span>{copy && <CopyButton text={String(copy)} size="sm" quiet />}</dd>
-  </div>;
-}

@@ -1,7 +1,9 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
-import MoleculeView, { ExpandButton } from "./MoleculeView";
+import MoleculeView from "./MoleculeView";
 import ContinueRow from "./components/ContinueRow";
-import PanelFooter from "./components/PanelFooter";
+import ExpandButton from "./components/ExpandButton";
+import { Button, Panel, PanelFoot, PanelHead } from "./components/Panel";
+import { canRequestFullscreen } from "./utils/useHostLayout";
 import { useAppBridge, useHostContext } from "./AppContext";
 import { useModelContextReport } from "./ModelContext";
 import { batchFollowUps } from "./utils/followUps.js";
@@ -52,15 +54,16 @@ export default function BatchView({ data }) {
 
   if (detail) {
     const mol = detail;
+    // Panel-Umbau A (§5.3): Rückweg als ruhiger Knopf mit Chevron, Position rechts in derselben Zeile;
+    // darunter das volle Molekül-Panel. Sein Expand ist der einzige im Detail (die Leiste hat keinen
+    // zweiten) — ohne ihn käme man aus dem Detail nicht ins Seitenpanel (hostLayout.test).
     return (
       <div className="batch-detail">
         <div className="back-bar">
           {/* Kein Stoffname hier: im Lernmodus verriete die Leiste ihn. */}
-          <button type="button" ref={backRef} className="candidate-back batch-back" onClick={() => setOpen(null)}>
-            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor"
-              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M10 6H2M5.5 2.5L2 6l3.5 3.5" /></svg>
-            <span>Back to all structures</span>
-          </button>
+          <Button ref={backRef} icon="chevron-left" className="candidate-back batch-back" onClick={() => setOpen(null)}>
+            Back to all structures
+          </Button>
           <span className="batch-position" aria-hidden="true">{open + 1} / {molecules.length}</span>
         </div>
         <MoleculeView key={mol.properties?.smiles || mol.name || open} data={mol} />
@@ -69,15 +72,13 @@ export default function BatchView({ data }) {
   }
 
   const failed = data.failed || [];
+  const folders = folderEntries(data);
+  const canExpand = canRequestFullscreen(hostContext) && Boolean(app?.requestDisplayMode);
   return (
-    <article className="batch-panel">
-      <header className="panel-header">
-        <div className="panel-heading">
-          <h2 className="panel-title">{molecules.length} {molecules.length === 1 ? "structure" : "structures"}</h2>
-          <p className="panel-subtitle">Open a structure for its data sheet, functional groups and export.</p>
-        </div>
-        <div className="panel-actions"><ExpandButton app={app} hostContext={hostContext} /></div>
-      </header>
+    <Panel kind="batch" className="batch-panel">
+      <PanelHead title={`${molecules.length} ${molecules.length === 1 ? "structure" : "structures"}`}
+        subtitle="Open a structure for its data sheet, functional groups and export."
+        expand={canExpand && <ExpandButton app={app} hostContext={hostContext} />} />
       <ul className="batch-grid" aria-label="Structures">
         {molecules.map((mol, i) => {
           const props = mol.properties || {};
@@ -103,18 +104,20 @@ export default function BatchView({ data }) {
       <BatchFailedList failed={failed} />
       <ContinueRow actions={batchFollowUps(molecules)} flush={flush} />
       {/* Ein Ordner statt n×2 Pfaden: die Dateien eines Stapels liegen zusammen.
-          Jeder Einzelpfad steht in der Fußzeile seiner Detailansicht. */}
-      <PanelFooter files={folderEntries(data)} />
-    </article>
+          Jeder Einzelpfad steht im Fuß seiner Detailansicht. */}
+      <PanelFoot files={folders} folder={folders[0]?.path} />
+    </Panel>
   );
 }
 
 // Fehlschläge unter dem Raster — sonst sieht der Batch vollständig aus, obwohl ein Name fehlt.
+// Panel-Umbau A (§5.3): als Hint „warn“ (Punkt in --danger), statt gestricheltem Kasten.
 function BatchFailedList({ failed }) {
   if (failed.length === 0) return null;
   return (
-    <div data-testid="batch-failed" role="status" className="batch-failed">
-      <span className="batch-failed-head">Not drawn ({failed.length})</span>
+    <div data-testid="batch-failed" role="status" className="hint hint-warn batch-failed">
+      <span className="hint-dot" aria-hidden="true" />
+      <span className="batch-failed-head">Not drawn ({failed.length}):</span>
       <ul>
         {failed.map((entry, i) => {
           const { input, reason } = splitBatchFailure(entry);

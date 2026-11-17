@@ -11,7 +11,7 @@ import MoleculeView from "../MoleculeView";
 import HostDiagnostics from "../components/HostDiagnostics";
 import { applyHostLayout, canRequestFullscreen, useHostLayout } from "../utils/useHostLayout";
 import { MOLECULE } from "./fixtures.mjs";
-import { buttonByText, click, render, textOf } from "./harness.mjs";
+import { buttonByText, buttonName, click, render, textOf } from "./harness.mjs";
 
 const html = () => document.documentElement;
 const reset = () => applyHostLayout(null);
@@ -177,7 +177,7 @@ test("Stapel (batch): ein Expand-Knopf für das ganze Panel, keiner je Karte", a
   );
   assert.equal(view.container.querySelectorAll(".molecule-panel").length, 0, "volle Karten in der Übersicht");
   assert.equal(view.container.querySelectorAll("button.batch-card").length, 2);
-  const expands = () => [...view.container.querySelectorAll("button")].filter((b) => b.textContent.trim() === "Expand");
+  const expands = () => [...view.container.querySelectorAll("button")].filter((b) => buttonName(b) === "Expand");
   assert.equal(expands().length, 1, "Übersicht ohne genau einen Expand-Knopf");
   await act(async () => { view.container.querySelector("button.batch-card").click(); });
   assert.equal(expands().length, 1, "Detail ohne genau einen Expand-Knopf");

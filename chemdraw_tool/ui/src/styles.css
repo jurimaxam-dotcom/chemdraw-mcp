@@ -254,69 +254,24 @@ svg { display: block; max-width: 100%; max-height: 100%; }
 @media (prefers-reduced-motion: reduce) { .seg-spinner { animation-duration: 2.4s; } }
 
 /* Hostschrift: native Einbettung ohne Netzfont, klare Stufen fuer Stoffnamen und Daten. */
-:root { --radius-sm: 4px; --radius-md: 8px; --shadow-card: none; }
+:root { --radius-sm: var(--radius-s); --radius-md: var(--radius-m); --shadow-card: none; } /* Panel-Umbau A: Aliase für B/C (MechanismView, ReactionView, ScopeView, .plot-svg), entfallen mit ihnen. */
 #root { max-width: 1000px; margin-inline: auto; min-width: 0; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 button:hover { filter: brightness(0.96); }
 button:active { filter: brightness(0.92); }
-.panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
 .panel-heading { min-width: 0; }
-/* Nur in der Kopfzeile neben den Knöpfen wachsen — in Spalten-Views (flex-direction: column) würde die Überschrift sonst in die Höhe gehen */
-.panel-header > .panel-heading { flex: 1 1 230px; }
 .panel-title { font-size: 19px; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; letter-spacing: -0.02em; }
 .panel-subtitle, .panel-record { color: var(--fg-muted); font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
 .panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.seg { min-height: 40px; }
-.seg button { min-height: 32px; }
-.export-png, .add-to-anki { font-size: 12px; font-weight: 600; white-space: nowrap; }
-.structure-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(170px, 210px); gap: 24px; padding-top: 20px; align-items: stretch; }
-.structure-layout.structure-only { grid-template-columns: minmax(0, 1fr); }
-.structure-canvas { height: 320px; border: 1px solid var(--border); border-radius: 12px; }
 .structure-drawing { display: flex; align-items: center; justify-content: center; }
 .structure-drawing > svg { width: 100%; height: 100%; }
-.molecule-info { min-width: 0; border-left: 1px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
 .section-label { font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 8px; }
-/* Kernwerte rechts neben der Struktur: Feldname klein, Wert gross. */
-.key-facts { display: flex; flex-direction: column; justify-content: center; gap: 18px; min-width: 0; }
-.fact dt { font-size: 12px; color: var(--fg-muted); }
-.fact dd { display: flex; align-items: center; gap: 6px; font-size: 19px; font-weight: 500; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.fact dd sub { font-size: 0.7em; }
-.group-section { padding-top: 12px; }
-/* Etappe 4: Überschrift, Chips und Hinweis teilen eine umbrechende Zeile (vorher drei Zeilen,
-   davon ein gestrichelter Kasten nur für den Hinweis). */
-.group-section-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
-.group-section-row > .section-label { margin: 0; }
 /* Glow: weiche, unscharfe Linien ueber den Bindungen der Gruppe (AtomHighlights). */
 .group-glow { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; pointer-events: none; filter: blur(5px); opacity: 0.55; }
 .group-glow line { stroke: var(--group-color); stroke-width: 12; stroke-linecap: round; }
 .group-glow circle { fill: var(--group-color); }
-/* Name + Kurzformel neben den Gruppen-Chips (GroupNote): ruhig als Hinweis, getönt bei Vorschau/Auswahl. */
-/* Feste Mindestbreite und kein Umbruch im Hinweis: ob er neben den Chips Platz hat, entscheidet
-   die reservierte Breite, nicht der wechselnde Inhalt — Hover/Anheften ändern die Höhe nicht. */
-.group-note { flex: 1 0 min(340px, 100%); display: flex; flex-wrap: nowrap; align-items: center; gap: 4px 10px; min-width: 0; min-height: 40px; box-sizing: border-box; overflow: hidden; padding: 0 2px; border-radius: 7px; border: 1px solid transparent; font-size: 13px; transition: background-color 160ms ease, border-color 160ms ease; }
-.group-note.is-active { padding: 0 4px 0 12px; border-color: color-mix(in srgb, var(--group-color) 45%, transparent); background: color-mix(in srgb, var(--group-color) 9%, var(--bg)); }
-.group-note-hint { color: var(--fg-muted); font-size: 12px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.group-note > strong { white-space: nowrap; }
-.group-note > .group-formula, .group-note > .group-note-clear { flex-shrink: 0; }
-.group-note .group-dot { width: 10px; height: 10px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--group-color) 20%, transparent); }
-.group-formula { font-family: var(--font-mono); font-size: 12px; padding: 2px 6px; border-radius: 4px; color: var(--fg); background: color-mix(in srgb, var(--group-color) 14%, transparent); }
-@media (prefers-reduced-motion: reduce) { .group-note { transition: none; } }
-.functional-groups { display: flex; flex-wrap: wrap; gap: 8px; }
-.functional-group { display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 40px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--fg); font-size: 13px; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease; }
-/* Festgehalten (U4): kräftigerer Rand in Gruppenfarbe — als Schatten, damit die Breite nicht springt. */
-.functional-group[aria-pressed="true"] { border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color); background: color-mix(in srgb, var(--group-color) 14%, var(--bg)); font-weight: 600; }
-.group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--group-color); }
-.group-count { color: var(--fg-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-/* Etappe 5: Abstände um die Quellen-Reiter und den Quellen-Link knapper, damit das Datenblatt
-   bei 1000×700 ohne Rollen passt (vorher 713 px) — keine Zeile fällt weg. */
-.data-panel { padding-top: 8px; }
-.panel-note { font-size: 13px; color: var(--fg-muted); padding: 16px 0; }
-/* Unter-Reiter (Datenblatt-Quellen): dasselbe Segment wie die Haupt-Reiter, nur kleiner (Etappe 3). */
-.seg.seg-sm { min-height: 34px; border-radius: 6px; }
-.seg.seg-sm button { min-height: 28px; padding: 4px 10px; border-radius: 4px; }
-.source-tabs { margin-bottom: 8px; flex-wrap: wrap; }
 /* Kopf mit Aktionen rechts oben (SectionHeader mit actions): Reiter und Expand wie im Molekül-Panel. */
 .section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; flex-shrink: 0; }
 .section-header > .panel-heading { flex: 1 1 230px; }
@@ -335,106 +290,26 @@ button:active { filter: brightness(0.92); }
 .mech-tile-caption { max-width: 100%; font-size: 11px; line-height: 16px; color: var(--fg-muted); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mech-tile-caption.is-ts { color: var(--accent); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .mech-tile { transition: none; } }
-/* Datenblatt-Zeile (Etappe 4): Etikettspalte fester Breite, der Wert gleich daneben, der
-   leise Kopierknopf direkt hinter dem Wert. Lange Werte (IUPAC, InChIKey) brechen an
-   Bindestrichen und erst notfalls mitten im Wort. */
-.source-table { min-width: 0; }
-.source-row { display: grid; grid-template-columns: 10.5em minmax(0, 1fr); align-items: center; gap: 2px 16px; min-height: 40px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.source-row dt { color: var(--fg-muted); overflow-wrap: break-word; min-width: 0; }
-.source-row dd { min-width: 0; display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
-.source-value { min-width: 0; overflow-wrap: break-word; }
-.source-value sub, .source-row dd sub { font-size: 0.75em; line-height: 0; }
-.source-link { display: inline-block; margin-top: 6px; padding-block: 8px; color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
-.source-body { min-width: 0; }
-.ghs-group { border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 8px; }
-.ghs-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; width: 100%; min-height: 36px; padding: 8px 0; border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 13px; font-weight: 600; text-align: left; cursor: pointer; }
-.ghs-toggle::before { content: "▸"; color: var(--fg-muted); font-weight: 400; }
-.ghs-toggle[aria-expanded="true"]::before { content: "▾"; }
-.ghs-lead { font-size: 11px; font-weight: 500; padding: 1px 6px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); }
-.ghs-summary { font-weight: 400; color: var(--fg-muted); }
-.ghs-note { margin: 4px 0 8px; font-size: 12px; color: var(--fg-muted); }
 .reaction-panel > .panel-heading { margin-bottom: 16px; }
 @media (max-width: 619px) {
   body { padding: 12px; }
-  .structure-layout { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-top: 12px; }
-  .structure-canvas { height: 260px; }
-  .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
-  .fact dd { font-size: 17px; }
-  .molecule-info { border-left: 0; border-top: 1px solid var(--border); padding: 16px 0 0; }
-  .source-row { grid-template-columns: 8.5em minmax(0, 1fr); gap: 2px 10px; font-size: 12px; }
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #82c6b7; } }
 :root[data-theme="dark"] { --accent: #82c6b7; }
 
-/* Mehrdeutiger Name: Kandidaten als Vorschaubilder, Klick zeichnet. */
-.candidate-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding-top: 16px; }
-.candidate { width: 100%; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--fg); cursor: pointer; text-align: left; font: inherit; }
-.candidate:hover { border-color: var(--accent); }
-.candidate[aria-busy="true"] { border-color: var(--accent); }
-.candidate-label { font-size: 15px; font-weight: 600; }
-.candidate-structure { display: block; height: 110px; pointer-events: none; }
-.candidate-structure svg { width: 100%; height: 100%; }
-.candidate-name { font-size: 12px; color: var(--fg-muted); overflow-wrap: anywhere; }
-.back-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-.back-bar .candidate-back { margin-bottom: 0; }
-.candidate-back { font-size: 12px; padding: 6px 12px; min-height: 36px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--fg-muted); cursor: pointer; }
 
-/* batch_generate (Etappe 2): Raster kompakter Karten wie die Kandidaten, Klick öffnet das Detail. */
-.batch-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; padding-top: 16px; }
-.batch-card { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 10px 12px 12px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--fg); cursor: pointer; text-align: left; font: inherit; }
-.batch-card:hover { border-color: var(--accent); }
-.batch-card-structure { display: block; height: 130px; margin-bottom: 4px; pointer-events: none; }
-.batch-card-structure svg { width: 100%; height: 100%; }
-.batch-card-name { font-size: 15px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
-.batch-card-facts { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
-.batch-card-facts sub { font-size: 0.75em; }
-.batch-failed { margin-top: 12px; padding: 8px 12px; border: 1px dashed var(--border); border-radius: var(--radius-md); font-size: 12px; color: var(--fg-muted); display: flex; flex-wrap: wrap; gap: 2px 8px; }
-.batch-failed-head { color: var(--fg); font-weight: 600; }
-.batch-failed ul { list-style: none; margin: 0; padding: 0; display: contents; }
-.batch-failed li::before { content: "·"; margin-right: 8px; }
-.batch-failed-input { color: var(--fg); font-family: var(--font-mono); }
-/* Rückweg aus dem Detail: deutlich, nicht gedämpft wie die Kandidaten-Leiste. */
-.batch-back { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; color: var(--fg); font-weight: 600; }
-.batch-detail > .back-bar { align-items: center; }
-.batch-position { font-size: 12px; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
-@media (max-width: 419px) {
-  .batch-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
-  .batch-card { padding: 8px; }
-  .batch-card-structure { height: 96px; }
-  .batch-card-name { font-size: 13px; }
-}
-
-/* Unbestimmte Stereoelemente: ruhige Hinweiszeile, Hover/Klick lässt die Atome leuchten. */
-.stereo-note { margin-top: 10px; font-size: 13px; color: var(--fg-muted); --stereo-color: #d6336c; }
-/* Ansicht-Achse (2D · All H · Fischer · Haworth · 3D) über Zeichnung oder Kuhle (Etappe 3):
-   dasselbe Segment wie Structure ⇄ Data, an fester Stelle — 2D und 3D teilen eine Fläche. */
-/* Grid statt Flex: StructureCanvas trägt inline flex: 1 1 70% und würde in einer Flex-Spalte in die Höhe wachsen. */
-.structure-main { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 8px; min-width: 0; }
-.view-axis { justify-self: start; }
 /* Lädt ein Knopf, darf der Klick nicht tot aussehen: Spinner im Knopf (seg-spinner) und Wartecursor. */
 .seg button[aria-busy="true"] { cursor: progress; color: var(--fg); }
 /* 3D hinter dem Knopf: dieselbe Fläche wie die 2D-Zeichnung, der Viewer füllt sie. */
 /* Die Kuhle ist die einzige Form: kein Rahmen, kein Innenabstand um sie herum. */
 .structure-3d { display: flex; padding: 0; border: 0; }
-/* Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): die Kuhle nimmt wie am 07.11.
-   die volle Breite, höchstens 720 px hoch; die Kernwerte rücken als Reihe darunter. Etappe 3 hatte 3D in die
-   320-px-Fläche der 2D-Zeichnung gelegt, damit das Panel im Chat ≤ 700 px bleibt — das gilt für 3D nicht mehr. */
-.structure-layout[data-layout-3d] { grid-template-columns: minmax(0, 1fr); }
-.structure-layout[data-layout-3d] .structure-canvas { height: auto; width: 100%; aspect-ratio: 1 / 1; max-height: 720px; }
-.structure-layout[data-layout-3d] .key-facts { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 12px 24px; }
 .panel-note-quiet { font-size: 12px; color: var(--fg-muted); margin: 6px 0 0; }
-.stereo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
-.stereo-row > .stereo-note { margin-top: 0; }
 .chip-toggle { font: inherit; font-size: 12px; color: var(--fg-muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .chip-toggle[aria-pressed="true"] { color: var(--fg); background: var(--bg-alt); }
 .chip-toggle[aria-busy="true"] { cursor: progress; color: var(--fg); display: inline-flex; align-items: center; gap: 6px; }
 .chip-toggle[aria-busy="true"]::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--border); border-top-color: var(--fg-muted); animation: seg-spin 0.7s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .chip-toggle[aria-busy="true"]::before { animation-duration: 2.4s; } }
 .chip-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.stereo-note > span, .stereo-note-button { display: inline-flex; align-items: center; gap: 8px; }
-.stereo-note-button { font: inherit; color: inherit; background: none; border: 1px dashed var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
-.stereo-note-button[aria-pressed="true"] { border-style: solid; border-color: color-mix(in srgb, var(--stereo-color) 45%, transparent); background: color-mix(in srgb, var(--stereo-color) 9%, var(--bg)); color: var(--fg); }
-.stereo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--stereo-color); flex: none; }
 
 /* Reaktionsbilanz: grün = ausgeglichen, gedämpft = Befund, gestrichelt = Vorschlag (nicht gezeichnet). */
 .balance-row { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; }
@@ -457,10 +332,6 @@ button:active { filter: brightness(0.92); }
 .export-feedback { font-family: var(--font); font-size: 12px; color: var(--copy-success); overflow-wrap: anywhere; }
 .export-feedback.is-error { color: var(--danger, #c0392b); }
 
-/* Tool-Fehler im Panel (Fund b, 09.11.): ruhig, lesbar, keine Alarmfarbe. */
-.tool-error { padding: 16px; font-size: 13px; }
-.tool-error-title { font-weight: 600; margin-bottom: 6px; }
-.tool-error-message { margin: 0; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 
 /* U2 (M10): Layout nach gemeldeter Größe. Alles hier greift nur, wenn der Host eine
    feste Höhe meldet (Seitenpanel, Vollbild: [data-host-height] an <html>, gesetzt von
@@ -483,8 +354,6 @@ button:active { filter: brightness(0.92); }
   .plot-panel { padding: 8px 0; }
   .plot-svg { padding: 4px; }
 }
-.expand-button { font-size: 12px; font-weight: 560; min-height: 40px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
-.expand-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .host-diagnostics { margin-top: 12px; padding: 8px 10px; border-top: 1px dashed var(--border); font-family: var(--font-mono); font-size: 10px; line-height: 1.4; color: var(--fg-muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 :root[data-safe-area] body { padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left)); }
 /* Kette von oben bis zur Zeichenfläche: body (Höhe des Bereichs) → #root → .panel-root
@@ -497,25 +366,6 @@ button:active { filter: brightness(0.92); }
 :root[data-host-height] .panel-root { flex: 1 0 auto; display: flex; flex-direction: column; min-width: 0; }
 /* Gewähltes Isomer (AmbiguousView): dieselbe Molekül-Ansicht unter einer Zurück-Leiste. */
 :root[data-host-height] .panel-root > :is(.ambiguous-chosen, .batch-detail) { flex: 1 0 auto; display: flex; flex-direction: column; }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel { flex: 1 0 auto; display: flex; flex-direction: column; }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel > [data-view="structure"] { flex: 1 0 auto; display: flex; flex-direction: column; }
-/* Nur die Zeichenfläche nimmt den Rest; Kopf, Achse, Kernwerte, Gruppen, Fußzeile behalten ihre Größe. */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout { flex: 1 0 auto; grid-template-rows: minmax(0, 1fr); }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main { grid-template-rows: auto minmax(var(--canvas-min), 1fr); }
-/* Etappe 6: ohne Ansicht-Achse (Study-Reiter, Molekül ohne Rückfrage-Weg) ist die Fläche das einzige Kind —
-   sie fiel sonst in die auto-Zeile und schrumpfte unter contain: size auf ihren Rahmen (~10 px nach Expand). */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-main:not(:has(> .view-axis)) { grid-template-rows: minmax(var(--canvas-min), 1fr); }
-/* contain: size — die Fläche bemisst sich nur an der Grid-Zeile; das quadratische 3D-SVG
-   würde sonst über seine Breite die Höhe vorgeben (968 × 968 statt der Resthöhe). */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-canvas { height: auto; contain: size; }
-/* 3D (Etappe 6): Kuhle füllt die Fläche, Kernwerte als Reihe darunter. */
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] { grid-template-rows: minmax(0, 1fr) auto; }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-canvas { aspect-ratio: auto; max-height: none; }
-/* Die Kernwerte-Reihe kostet unter der Kuhle ~60 px: bei 1000×700 darf die Kuhle dafür unter 320 px schrumpfen (skaliert mit).
-   Schmal (unter 620 px) rollt das Panel ohnehin — dort bleibt die Mindesthöhe der Zeichenfläche (260 px). */
-@media (min-width: 620px) {
-  :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout[data-layout-3d] .structure-main { grid-template-rows: auto minmax(200px, 1fr); }
-}
 /* Etappe 3: Mechanismus und Scope tragen im Chat eine feste Höhe (inline); mit Expand füllen sie den Bereich. */
 :root[data-host-height] .panel-root > :is(.mechanism-panel, .scope-panel) { flex: 1 0 auto; height: auto !important; min-height: 480px; }
 /* Bühne bzw. Figur nimmt den Rest; ihr Inhalt (Übersichtsliste, RDKit-px-Maße) gibt die Höhe nicht vor. */
@@ -537,14 +387,12 @@ button:active { filter: brightness(0.92); }
 @media (max-width: 619px) {
   :root[data-safe-area] body { padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left)); }
   :root[data-host-height] { --canvas-min: 260px; }
-  /* Gestapelt: Zeichnung oben (wächst), Kernwerte darunter (natürliche Höhe). */
-  :root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel .structure-layout { grid-template-rows: minmax(0, 1fr) auto; }
 }
 
-/* U4: festgehaltene Auswahl — „Clear“ sitzt im getönten Hinweis, deshalb etwas flacher. */
-.group-note .group-note-clear { min-height: 32px; }
-.group-note-clear, .study-button, .continue-button { font: inherit; font-size: 12px; font-weight: 600; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; }
-.group-note-clear:focus-visible, .study-button:focus-visible, .continue-button:focus-visible, .study-cover:focus-visible, .study-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Paket A: Aussehen der Continue-Knöpfe in frame.css (§4); hier nur Schrift, Zeiger und Fokus außerhalb von .panel. */
+.continue-button { font: inherit; cursor: pointer; }
+.continue-button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* U3: Zeile „Continue in chat“ über der Fußzeile. Wächst nie mit (feste Höhe im Seitenpanel).
    Etappe 4: kein Kasten mehr — ein kleines Etikett vor den Knöpfen, alles in einer
@@ -554,42 +402,17 @@ button:active { filter: brightness(0.92); }
 .continue-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .continue-button { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg); background: var(--bg); text-align: left; max-width: 100%; }
 .continue-button > span { min-width: 0; overflow-wrap: anywhere; }
-.continue-button svg { flex: none; color: var(--fg-muted); }
 .continue-button.is-about { border-color: var(--group-color); }
 .continue-button[aria-busy="true"] { cursor: progress; color: var(--fg-muted); }
 .continue-note { font-size: 12px; color: var(--fg-muted); margin: 0; }
-/* Ab 420 px etwas flacher (36 px, wie die Ansicht-Achse); schmal bleiben es 40 px Tippfläche. */
-@media (min-width: 420px) { .continue-button { min-height: 36px; } }
 /* Schmal (320 px): keine eigene Regel mehr — Etikett und Knöpfe brechen um wie breit auch
    (Etappe 4; vorher je Knopf eine volle Zeile, das Panel rollte allein deshalb). */
 
-/* U4b: Lernmodus. Verdecktes ist gestrichelt, Aufgedecktes sieht aus wie sonst. */
-.study-name { align-self: flex-start; min-height: 40px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 600; text-align: left; border: 1px dashed var(--fg-muted); border-radius: 8px; background: var(--bg-alt); color: var(--fg); cursor: pointer; }
-.study-counter { margin-top: 6px; }
-.study-cover { font: inherit; font-size: 13px; font-weight: 400; min-height: 40px; width: 100%; padding: 0 12px; text-align: left; border: 1px dashed var(--fg-muted); border-radius: 8px; background: var(--bg-alt); color: var(--fg-muted); cursor: pointer; }
-.functional-group.is-covered { border-style: dashed; border-color: var(--fg-muted); background: var(--bg-alt); color: var(--fg-muted); }
-.functional-group.is-covered .group-dot { background: var(--fg-muted); }
-.study-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; }
-.study-button { font-size: 13px; color: var(--fg); }
-.study-button.is-primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-:root[data-host-height] :is(.panel-root, .ambiguous-chosen, .batch-detail) > .molecule-panel > [data-view="study"] { flex: 1 0 auto; display: flex; flex-direction: column; }
-
-/* Platzhalter aus toolinput: ruhig, ohne Animation. */
-.tool-placeholder { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-.placeholder-title { font-size: 19px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
-.placeholder-line { font-size: 12px; color: var(--fg-muted); }
-.placeholder-canvas { height: 320px; border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-alt); }
-/* Spalten wie .batch-grid (Etappe 2): toolinput → Ergebnis springt nicht. */
-.placeholder-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
-@media (max-width: 419px) { .placeholder-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; } }
-.placeholder-card { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.placeholder-box { display: block; height: 110px; border: 1px dashed var(--border); border-radius: 12px; background: var(--bg-alt); }
-.placeholder-label { font-size: 12px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Kopierknopf (Etappe 4): Aussehen hier statt inline. „is-quiet“ tritt zurück — ohne Rahmen,
    mit Hover-Gerät erst bei Hover/Fokus der Zeile sichtbar, ohne Hover (Touch) dezent. Nur
    Deckkraft: der Knopf bleibt im Bedienungshilfen-Baum, klickbar und per Tab erreichbar. */
-.copy-button { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; background: transparent; border: 1px solid var(--border); border-radius: var(--border-radius-sm, 6px); color: var(--fg-muted); cursor: pointer; transition: opacity 120ms ease; }
+.copy-button { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-s); color: var(--fg-muted); cursor: pointer; transition: opacity 120ms ease; }
 .copy-button.is-sm { width: 32px; height: 32px; }
 .copy-button.is-xs { width: 22px; height: 22px; }
 .copy-button.is-quiet { border-color: transparent; opacity: 0.45; }
@@ -605,6 +428,6 @@ button:active { filter: brightness(0.92); }
 /* Nur für Bedienungshilfen: bleibt im Baum (kein display:none). */
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-:root { --card-paper: #fbfbf9; }
-.reset-view { font: inherit; font-size: 12px; font-weight: 600; min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--fg-muted); cursor: pointer; }
-.reset-view:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+:root { --card-paper: var(--paper); } /* §3: Alias von --paper (C nutzt ihn noch) */
+/* Paket A: die Stereo-Farbe ist eine Datenfarbe (Leuchten der Atome), bleibt deshalb hier und nicht in frame.css. */
+:root { --stereo-color: #d6336c; }

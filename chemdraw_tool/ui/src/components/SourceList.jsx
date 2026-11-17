@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CopyButton from "./CopyButton";
 import Formula, { looksLikeFormula } from "./Formula";
 import Tabs from "./Tabs";
+import { Hint, Icon, StageBar } from "./Panel";
 
 // Das Datenblatt: Reiter je Quelle + die Zeilen der aktiven Quelle.
 //
@@ -75,6 +76,7 @@ function GhsGroup({ group, initiallyOpen }) {
   const summary = [group.signal, ...(group.hazards || []).map((h) => h.code)].filter(Boolean).join(" · ");
   return <section className="ghs-group" data-ghs-id={group.id} aria-label={group.source}>
     <button type="button" className="ghs-toggle" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((o) => !o)}>
+      <Icon name="chevron-right" className="ghs-chevron" />
       <span className="ghs-source">{group.source}</span>
       {group.lead && <span className="ghs-lead">Lead source</span>}
       {!open && summary && <span className="ghs-summary">{summary}</span>}
@@ -82,7 +84,7 @@ function GhsGroup({ group, initiallyOpen }) {
     {group.note && <p className="ghs-note">{group.note}</p>}
     {open && <div id={bodyId}>
       <DataTable rows={ghsRows(group)} />
-      {safeHref(group.url) && <a className="source-link" href={safeHref(group.url)} target="_blank" rel="noopener noreferrer">Source record →</a>}
+      {safeHref(group.url) && <Hint className="source-link-row"><a className="source-link" href={safeHref(group.url)} target="_blank" rel="noopener noreferrer">Source record</a></Hint>}
     </div>}
   </section>;
 }
@@ -99,12 +101,13 @@ function GhsGroups({ groups }) {
 function SourcePanel({ source }) {
   const rows = (source.rows || []).map((r) => [r.key, r.val]);
   const groups = source.groups || [];
+  // Panel-Umbau A (§5.1 Data): der Quellen-Link steht als Hint unter der Tabelle, ohne Pfeilzeichen.
   return <section className="source-panel" aria-label={source.source || source.type || "Source"}>
     <div className="source-body">
       {source.note && <p className="ghs-note">{source.note}</p>}
       {groups.length > 0 ? <GhsGroups groups={groups} /> : rows.length > 0 && <DataTable rows={rows} />}
     </div>
-    {safeHref(source.url) && <a className="source-link" href={safeHref(source.url)} target="_blank" rel="noopener noreferrer">{source.source || "View source"} →</a>}
+    {safeHref(source.url) && <Hint className="source-link-row"><a className="source-link" href={safeHref(source.url)} target="_blank" rel="noopener noreferrer">{source.source || "View source"}</a></Hint>}
   </section>;
 }
 
@@ -119,17 +122,15 @@ export default function SourceList({ sources }) {
     list.find((s) => (s.type || "Source") === activeTab) || list[0];
 
   if (!activeSource) {
-    return (
-      <div style={{ color: "var(--fg-muted)", fontSize: 13 }}>No data available</div>
-    );
+    return <Hint>No data available</Hint>;
   }
 
+  // Panel-Umbau A (§5.1): die Unterreiter PubChem/GHS stehen in der StageBar über der Tabelle.
   return (
     <>
-      {tabs.length > 1 && (
+      {tabs.length > 1 && <StageBar left={
         <Tabs label="Data sources" size="sm" className="source-tabs" value={activeTab} onChange={setActiveTab}
-          tabs={tabs.map((t) => ({ key: t, label: t }))} />
-      )}
+          tabs={tabs.map((t) => ({ key: t, label: t }))} />} />}
       <div className="source-sheet">
         <SourcePanel source={activeSource} />
       </div>

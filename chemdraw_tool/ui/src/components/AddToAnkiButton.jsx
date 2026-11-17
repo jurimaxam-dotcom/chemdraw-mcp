@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAppBridge } from "../AppContext";
 import { loadToolData } from "../utils/toolData";
+import { Icon } from "./Panel";
 
 // Fester Deckname: gleicher Name aktualisiert statt dupliziert (GUID = Deck +
 // Vorderseite), so sammeln sich alle Klicks in einem Anki-Deck.
@@ -28,7 +29,6 @@ export default function AddToAnkiButton({ smiles, name, formula, cas, size }) {
   const [file, setFile] = useState("");
   const timeoutRef = useRef(null);
   const busyRef = useRef(false); // blockiert den re-entranten Doppelklick
-  const dim = size === "sm" ? 32 : 40;
   const busy = status === "busy";
   const ok = status === "added" || status === "saved";
 
@@ -78,8 +78,6 @@ export default function AddToAnkiButton({ smiles, name, formula, cas, size }) {
       ? "Adding to Anki failed — click to retry"
       : `Add a flashcard to the Anki deck "${ANKI_DECK}"`;
 
-  const borderColor = ok ? "var(--copy-success)" : status === "error" ? "#e74c3c" : "var(--border)";
-  const fg = ok ? "var(--copy-success)" : status === "error" ? "#e74c3c" : "var(--fg-muted)";
   const label = busy
     ? "Adding…"
     : status === "added"
@@ -90,43 +88,19 @@ export default function AddToAnkiButton({ smiles, name, formula, cas, size }) {
     ? "Retry Anki"
     : "Add to Anki";
 
+  // Panel-Umbau A (§4 Button): ruhiger Knopf ohne Kante; Erfolg in --success, Fehler in --danger (vorher #e74c3c inline).
+  const state = ok ? " is-ok" : status === "error" ? " is-error" : "";
   return (
     <button
       type="button"
-      className="add-to-anki"
+      className={`btn btn-quiet add-to-anki${state}`}
       aria-label={title}
       title={title}
       onClick={handleAdd}
       disabled={busy}
       aria-busy={busy}
-      style={{
-        minWidth: dim,
-        height: dim,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: ok ? "var(--copy-success-bg)" : "transparent",
-        border: `1px solid ${borderColor}`,
-        borderRadius: "var(--border-radius-sm, 6px)",
-        cursor: busy ? "progress" : "pointer",
-        opacity: busy ? 0.6 : 1,
-        color: fg,
-        padding: "0 10px",
-        gap: 7,
-        flexShrink: 0,
-      }}
     >
-      {ok ? (
-        <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="1.5" y="3" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.1" />
-          <path d="M4 1.5h7a1.5 1.5 0 0 1 1.5 1.5v7" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M6 5.5v4M4 7.5h4" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-        </svg>
-      )}
+      <Icon name={ok ? "check" : "card-plus"} />
       <span aria-live="polite">{label}</span>
     </button>
   );

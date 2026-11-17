@@ -24,11 +24,19 @@ if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
 await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp" }, cwd: repo }));
 let browser;
+const rote = [];
 try {
   const tools = (await client.listTools()).tools;
   browser = await chromium.launch();
   // Welle 1: echte Galerie-Antworten über denselben sandboxed Host wie Desktop.
-  const check = (ok, message) => { if (!ok) throw new Error("ROT: " + message); console.log("✔", message); };
+  // HOST_SAMMELN=1: ein Rot bricht nicht ab, sondern wird gesammelt und am Ende einzeln gelistet
+  // (Panel-Umbau A, 17.11.2026: neue Prüfungen gegen das alte Bündel rot sehen, ohne dass das erste Rot alles verdeckt).
+  const check = (ok, message) => {
+    if (ok) return console.log("✔", message);
+    if (!process.env.HOST_SAMMELN) throw new Error("ROT: " + message);
+    rote.push(message);
+    console.log("✘ ROT:", message);
+  };
   const mount = async (p, name, input, prelude = "", patch = null) => {
     const tool = tools.find((t) => t.name === name);
     check(tool?._meta?.ui?.resourceUri, `${name} ist als Panel-Tool registriert`);
@@ -365,7 +373,8 @@ try {
         // werden“): vorher (Etappe 3) teilte 3D die 320-px-Fläche der 2D-Zeichnung und das Panel blieb
         // ≤ 700 px. Jetzt wieder volle Breite wie am 07.11., Kernwerte darunter; die 700-px-Grenze
         // im Chat gilt für 3D nicht mehr.
-        const inhalt = await f.evaluate(() => Math.round(document.querySelector('[data-view="structure"] .structure-layout').getBoundingClientRect().width));
+        // Panel-Umbau A: die Zonen-Spalte des Reiters ([data-view="structure"]) ist die Inhaltsbreite (vorher .structure-layout).
+        const inhalt = await f.evaluate(() => Math.round(document.querySelector('[data-view="structure"]').getBoundingClientRect().width));
         check(g3.canvas && g3.canvas.h >= 500 && g3.canvas.w >= 0.9 * inhalt,
           `E6 Chat 1000 px: 3D-Modell groß, volle Breite (${g3.canvas?.w}×${g3.canvas?.h} bei Inhaltsbreite ${inhalt}, 2D ${g2.canvas?.w}×${g2.canvas?.h}, Panel ${h3})`);
         await page.screenshot({ path: join(layoutShots, "f-koffein-chat-3d-1000.png"), fullPage: true });
@@ -535,7 +544,8 @@ try {
         const panel = await f.evaluate(() => Math.ceil(document.getElementById("root").getBoundingClientRect().bottom) + 16);
         const spalten = new Set(k.map((c) => c.left)).size;
         messwerte["e2-batch6-chat1000"] = JSON.stringify({ panel, spalten });
-        check(k.length === 6 && spalten >= 3 && panel <= 900, `E2 batch 6 Stoffe Chat 1000: ${spalten} Spalten, Panel ${panel} px ≤ 900`);
+        // Panel-Umbau A (§5.3): sechs Strukturen im Chat ≤ 700 px (Etappe 2: ≤ 900).
+        check(k.length === 6 && spalten >= 3 && panel <= 700, `A batch 6 Stoffe Chat 1000: ${spalten} Spalten, Panel ${panel} px ≤ 700`);
         await page.close();
       }
       {
@@ -777,7 +787,8 @@ try {
         }));
         const iw = await f.evaluate(() => document.documentElement.clientWidth);
         check(s.sw <= s.cw && s.raus.length === 0 && s.scroller.length === 0, `U3 320: kein waagrechtes Scrollen (${JSON.stringify(s)})`);
-        check(inRow.length >= 3 && inRow.every((b) => b.l >= 0 && b.r <= iw && b.h >= 40), `U3 320: alle Weiter-Knöpfe innerhalb der Breite, ≥ 40 px hoch (${JSON.stringify(inRow)})`);
+        // Panel-Umbau A (§4 ContinueRow): Knöpfe 28 px hoch statt 40 — ruhig, eine Zeile; Tippfläche bleibt ≥ 28.
+        check(inRow.length >= 3 && inRow.every((b) => b.l >= 0 && b.r <= iw && b.h >= 28), `U3 320: alle Weiter-Knöpfe innerhalb der Breite, ≥ 28 px hoch (${JSON.stringify(inRow)})`);
         await page.screenshot({ path: join(uiShots, "molecule-320x900-continue.png") });
         const reach = await f.evaluate(() => {
           const de = document.scrollingElement || document.documentElement;
@@ -808,15 +819,145 @@ try {
         await page.close();
       }
       // Etappe 4 (16.11.2026): Koffein im Chat bei 1000 px höchstens 700 px hoch (vorher 811);
+      // Panel-Umbau A (17.11.2026, §7): 2D bei 1000 px ≤ 660, bei 860 px ≤ 700.
       // Datenblatt: Wert nah am Etikett, Kopierknöpfe leise (Deckkraft 0 ohne Hover), aber
       // im Bedienungshilfen-Baum, bei Hover und Tastaturfokus der Zeile voll sichtbar.
-      {
-        const [page, f] = await open("generate_molecule", { name_or_smiles: "caffeine" }, chat(1000));
+      for (const [width, grenze] of [[1000, 660], [860, 700]]) {
+        const [page, f] = await open("generate_molecule", { name_or_smiles: "caffeine" }, chat(width), { viewport: { width, height: 1300 } });
         await settle(f);
         await fitChat(page);
         const size = await page.evaluate(() => window.__panelSizes.at(-1));
-        check(size && size.height <= 700, `E4: Koffein im Chat (1000 px) höchstens 700 px hoch (${size?.height})`);
+        messwerte[`a-koffein-chat${width}`] = size?.height;
+        check(size && size.height <= grenze, `A: Koffein 2D im Chat (${width} px) höchstens ${grenze} px hoch (${size?.height})`);
         await page.close();
+      }
+      // Panel-Umbau A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §7): Abnahme-Maße der Pakets A.
+      {
+        const KOFFEIN = { name_or_smiles: "caffeine" };
+        const hoehe = (page) => page.evaluate(() => window.__panelSizes.at(-1)?.height);
+        const rahmen = (f) => f.evaluate(() => {
+          const sichtbar = (cs, seite) => parseFloat(cs[`border${seite}Width`]) >= 1 && cs[`border${seite}Style`] !== "none"
+            && !/rgba\(\d+, \d+, \d+, 0\)|transparent/.test(cs[`border${seite}Color`]);
+          const stage = document.querySelector('[data-view="structure"] .stage');
+          const cs = stage ? getComputedStyle(stage) : null;
+          // Waagrechte Linien: Elemente mit Kante nur oben oder nur unten (Kästen mit vier Kanten sind Karten/Chips).
+          const linien = [...document.querySelectorAll("body *")].filter((el) => el.getClientRects().length > 0).filter((el) => {
+            const c = getComputedStyle(el);
+            return (sichtbar(c, "Top") !== sichtbar(c, "Bottom")) && !sichtbar(c, "Left");
+          }).map((el) => el.className?.baseVal ?? el.className);
+          const expand = [...document.querySelectorAll("button")].find((b) => b.getAttribute("aria-label") === "Expand");
+          const eb = expand?.getBoundingClientRect();
+          const weiter = [...document.querySelectorAll("[data-testid='continue-row'] button")].map((b) => ({
+            h: Math.round(b.getBoundingClientRect().height), pfeil: Boolean(b.querySelector("svg")) }));
+          return { stage: Boolean(stage), stageRand: cs ? ["Top", "Right", "Bottom", "Left"].some((x) => sichtbar(cs, x)) : null,
+            linien, expand: expand ? { w: Math.round(eb.width), h: Math.round(eb.height), text: expand.textContent.trim() } : null, weiter };
+        });
+        // Chat 1000 und 860: Bühne ohne Rahmen, genau eine Haarlinie (Fuß), Expand 32×32 nur Symbol, Continue 28 ohne Pfeil.
+        for (const width of [1000, 860]) {
+          const [page, f] = await open("generate_molecule", KOFFEIN, chat(width), { viewport: { width, height: 1300 } });
+          await settle(f);
+          await fitChat(page);
+          const r = await rahmen(f);
+          messwerte[`a-rahmen-${width}`] = JSON.stringify(r);
+          check(r.stage && r.stageRand === false, `A ${width}: .stage ohne Rahmen (${JSON.stringify(r)})`);
+          check(r.linien.length === 1 && /panel-foot/.test(r.linien[0]), `A ${width}: genau eine Haarlinie, die über dem Fuß (${r.linien.join(" | ")})`);
+          check(r.expand && r.expand.w === 32 && r.expand.h === 32 && r.expand.text === "", `A ${width}: Expand 32×32, nur Symbol (${JSON.stringify(r.expand)})`);
+          check(r.weiter.length >= 3 && r.weiter.every((b) => b.h === 28 && !b.pfeil), `A ${width}: Continue-Knöpfe 28 px, ohne Pfeil (${JSON.stringify(r.weiter)})`);
+          // Data-Reiter im Molekül-Panel ≤ 700
+          await f.getByRole("tab", { name: "Data", exact: true }).click();
+          await f.getByText("IUPAC name").first().waitFor({ timeout: 30000 });
+          await fitChat(page);
+          const hd = await hoehe(page);
+          messwerte[`a-koffein-data-${width}`] = hd;
+          check(hd <= 700, `A ${width}: Data-Reiter höchstens 700 px (${hd})`);
+          // 3D: volle Inhaltsbreite ± 4 × 720
+          await f.getByRole("tab", { name: "Structure", exact: true }).click();
+          await f.getByRole("button", { name: "3D", exact: true }).click();
+          await f.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 });
+          await fitChat(page);
+          const k = await f.evaluate(() => {
+            const b = document.querySelector("[data-view-3d]").getBoundingClientRect();
+            const cs = getComputedStyle(document.body);
+            return { w: Math.round(b.width), h: Math.round(b.height),
+              inhalt: Math.round(document.body.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) };
+          });
+          messwerte[`a-3d-${width}`] = JSON.stringify(k);
+          check(Math.abs(k.w - k.inhalt) <= 4 && k.h === 720, `A ${width}: 3D-Bühne volle Inhaltsbreite × 720 (${k.w}×${k.h}, Inhalt ${k.inhalt})`);
+          await page.close();
+        }
+        // Datenblatt (lookup_molecule_data) im Chat ≤ 700 bei 1000 und 860
+        for (const width of [1000, 860]) {
+          const [page, f] = await open("lookup_molecule_data", { name: "paracetamol" }, chat(width), { viewport: { width, height: 1300 } });
+          await f.getByText("103-90-2").first().waitFor({ timeout: 30000 });
+          await fitChat(page);
+          const h = await hoehe(page);
+          messwerte[`a-datenblatt-${width}`] = h;
+          check(h <= 700, `A ${width}: Datenblatt höchstens 700 px (${h})`);
+          await page.close();
+        }
+        // Batch 6 bei 860 ≤ 700
+        {
+          const [page, f] = await open("batch_generate", { molecules: ["benzene", "toluene", "phenol", "aspirin", "caffeine", "ibuprofen"] }, chat(860), { viewport: { width: 860, height: 1300 } });
+          await f.locator(".batch-card").nth(5).waitFor();
+          await fitChat(page);
+          const h = await hoehe(page);
+          messwerte["a-batch6-860"] = h;
+          check(h <= 700, `A 860: Batch mit sechs Strukturen höchstens 700 px (${h})`);
+          await page.close();
+        }
+        // Fill 320×700: Molekül-Bühne ≥ 240, keine waagrechte Rolle; Study: Bühne ≥ --canvas-min (B9), auch bei 1000×700.
+        for (const [w, h] of [[320, 700], [1000, 700]]) {
+          const [page, f] = await open("generate_molecule", KOFFEIN, full(w, h), { viewport: { width: w, height: h } });
+          await settle(f);
+          const m = (v) => f.evaluate((sel) => {
+            const st = document.querySelector(sel);
+            const de = document.documentElement;
+            return { h: st ? Math.round(st.getBoundingClientRect().height) : 0, min: parseFloat(getComputedStyle(de).getPropertyValue("--canvas-min")),
+              rollenX: de.scrollWidth > de.clientWidth + 1 };
+          }, `[data-view="${v}"] .stage`);
+          const s2 = await m("structure");
+          await f.getByRole("tab", { name: "Study", exact: true }).click();
+          await f.locator("[data-view='study']").waitFor();
+          await page.waitForTimeout(300);
+          const sl = await m("study");
+          messwerte[`a-fill-${w}x${h}`] = JSON.stringify({ structure: s2, study: sl });
+          if (w === 320) check(s2.h >= 240 && !s2.rollenX, `A ${w}×${h}: Molekül-Bühne ≥ 240 px, keine waagrechte Rolle (${JSON.stringify(s2)})`);
+          check(sl.h >= sl.min && !sl.rollenX, `A ${w}×${h}: Study-Bühne ≥ --canvas-min (${JSON.stringify(sl)})`);
+          await page.close();
+        }
+        // Kontraste nach §3 in beiden Themen: --text-2 und --accent ≥ 4,5:1 auf --surface-0, --line-strong ≥ 3:1;
+        // dazu gegen Desktops dunkle Fläche #2f2f2d.
+        for (const [thema, flaeche] of [["light", null], ["dark", null], ["dark", "#2f2f2d"]]) {
+          const [page, f] = await open("generate_molecule", KOFFEIN, chat(1000), { colorScheme: thema });
+          await settle(f);
+          const k = await f.evaluate((bg) => {
+            if (bg) document.documentElement.style.setProperty("--color-background-primary", bg);
+            const lum = (c) => {
+              // color-mix() kommt als „color(srgb 0.4 0.4 0.4)“ (0–1) zurück, alles andere als rgb() (0–255).
+              const skala = c.startsWith("color(") ? 1 : 255;
+              const [r, g, b] = c.replace(/^color\(srgb/, "").match(/[\d.]+/g).slice(0, 3).map(Number).map((v) => {
+                v /= skala;
+                return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+              });
+              return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            };
+            const farbe = (v) => {
+              const el = document.createElement("span");
+              el.style.color = `var(${v})`;
+              document.body.appendChild(el);
+              const c = getComputedStyle(el).color;
+              el.remove();
+              return c;
+            };
+            const grund = lum(farbe("--surface-0"));
+            const ratio = (v) => { const l = lum(farbe(v)); return +((Math.max(l, grund) + 0.05) / (Math.min(l, grund) + 0.05)).toFixed(2); };
+            return { text2: ratio("--text-2"), accent: ratio("--accent"), lineStrong: ratio("--line-strong"), grund: farbe("--surface-0") };
+          }, flaeche);
+          messwerte[`a-kontrast-${thema}${flaeche ? "-desktop" : ""}`] = JSON.stringify(k);
+          check(k.text2 >= 4.5 && k.accent >= 4.5 && k.lineStrong >= 3,
+            `A Kontrast ${thema}${flaeche ? ` auf ${flaeche}` : ""}: --text-2 ${k.text2}, --accent ${k.accent}, --line-strong ${k.lineStrong}`);
+          await page.close();
+        }
       }
       // Der Hinweis teilt die Zeile mit den Chips: Vorschau (Hover) und Auswahl dürfen die
       // Panelhöhe nicht ändern — sonst skaliert Desktop das iframe und die Chips wandern unter der Maus.
@@ -896,7 +1037,8 @@ try {
     console.log("LAYOUT_ONLY: übrige Fälle übersprungen");
     await browser.close();
     await client.close();
-    process.exit(0);
+    for (const r of rote) console.log("  ✘", r);
+    process.exit(rote.length ? 1 : 0);
   }
 
   const gallery = await browser.newPage({ viewport: { width: 1530, height: 560 } });
@@ -1557,7 +1699,7 @@ try {
   await page.screenshot({ path: join(tmpdir(), "panel-host.png") });
   const frame = page.frames().find((f) => f !== page.mainFrame());
   const text = async () => (await frame.locator("body").innerText()).replace(/\s+/g, " ");
-  const prüfe = (ok, was) => { if (!ok) throw new Error("ROT: " + was); console.log("✔", was); };
+  const prüfe = check;
 
   // 1. Strukturansicht: Panel hat das echte Tool-Ergebnis angenommen
   let t = await text();
@@ -1581,8 +1723,10 @@ try {
           exportLabel: document.querySelector('[title="Export as PNG"]').textContent };
       });
       prüfe(!geometry.overflow && geometry.titleSize >= 15 && geometry.exportLabel.includes("PNG"), `${colorScheme} ${width}px: readable title, explicit export, no horizontal overflow`);
-      if (width === 360) prüfe(geometry.info.top >= geometry.canvas.bottom - 1, "Schmale Ansicht stapelt Struktur und Steckbrief");
-      else prüfe(geometry.info.left >= geometry.canvas.right - 1, "Breite Ansicht ordnet Steckbrief neben Struktur an");
+      // Panel-Umbau A (§2, §5.1): die Zeichnung nimmt die volle Breite, die Kernwerte stehen bei jeder Breite darunter
+      // (vorher breit als Spalte rechts daneben).
+      prüfe(geometry.info.top >= geometry.canvas.bottom - 1 && geometry.canvas.width >= geometry.info.width - 1,
+        `${colorScheme} ${width}px: Kernwerte unter der Zeichnung, Zeichnung volle Breite (${Math.round(geometry.canvas.width)} ↔ ${Math.round(geometry.info.width)})`);
       await page.screenshot({ path: join(tmpdir(), `chem-ui-${colorScheme}-${width}.png`) });
       // Hover auf die erste Gruppe: Bindungen leuchten, darunter stehen Name und Kurzformel.
       await frame.locator("button.functional-group").first().hover();
@@ -1685,8 +1829,8 @@ try {
   // 07.11. — die Kuhle nimmt die volle Breite (höchstens 720 px hoch), die Kernwerte rücken darunter.
   // Etappe 3 hatte sie in die 320-px-Fläche der 2D-Zeichnung gelegt.
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };
-  const breiteZeile = (await frame.locator('[data-view="structure"] .structure-layout').boundingBox())?.width ?? 0;
-  prüfe(box3d.width >= breite2d && Math.abs(box3d.width - breiteZeile) <= 1 && Math.abs(box3d.height - Math.min(720, box3d.width)) <= 1,
+  const breiteZeile = (await frame.locator('[data-view="structure"]').boundingBox())?.width ?? 0;
+  prüfe(box3d.width >= breite2d - 1 && Math.abs(box3d.width - breiteZeile) <= 4 && Math.abs(box3d.height - Math.min(720, box3d.width)) <= 1,
     `3D-Kuhle über die volle Breite (2D ${Math.round(breite2d)}×320 px → 3D ${Math.round(box3d.width)}×${Math.round(box3d.height)} px, Zeile ${Math.round(breiteZeile)})`);
   prüfe(serverCalls.slice(vor3d).join() === "generate_3d", "3D-Knopf ruft generate_3d über die Bridge");
   prüfe(await frame.locator("[data-view-3d] svg circle").count() > 10 && await frame.locator(".structure-drawing").count() === 0,
@@ -2081,4 +2225,9 @@ try {
 } finally {
   await browser?.close();
   await client.close();
+  if (rote.length) {
+    console.log(`\n${rote.length} rote Prüfung(en):`);
+    for (const r of rote) console.log("  ✘", r);
+    process.exitCode = 1;
+  }
 }

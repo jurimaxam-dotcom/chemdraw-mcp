@@ -27,7 +27,9 @@
   /* Linien */
   --line-w: 1px;
   --line: var(--border);
-  --line-strong: color-mix(in srgb, var(--fg) 32%, var(--bg));
+  /* Panel-Umbau A: 52 % statt 32 % — erst so trägt die Kante verdeckter Felder 3 : 1 gegen --bg (gemessen 3,0;
+     32 % ergaben 1,9). Dunkel 44 % statt 36 % (2,9 → 3,4, auch auf Desktops #2f2f2d). */
+  --line-strong: color-mix(in srgb, var(--fg) 52%, var(--bg));
   /* Flächen */
   --surface-0: var(--bg);
   --surface-1: color-mix(in srgb, var(--fg) 5%, var(--bg));   /* Segment-Spur, Hover */
@@ -51,11 +53,11 @@
   :root:not([data-theme="light"]) {
     --accent: #82c6b7;
     --danger: #f97066;
-    --line-strong: color-mix(in srgb, var(--fg) 36%, var(--bg));
+    --line-strong: color-mix(in srgb, var(--fg) 44%, var(--bg));
   }
 }
 :root[data-theme="dark"] {
   --accent: #82c6b7;
   --danger: #f97066;
-  --line-strong: color-mix(in srgb, var(--fg) 36%, var(--bg));
+  --line-strong: color-mix(in srgb, var(--fg) 44%, var(--bg));
 }

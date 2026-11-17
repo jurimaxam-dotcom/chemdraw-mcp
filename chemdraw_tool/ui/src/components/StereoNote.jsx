@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "./Panel";
 
 // Hinweiszeile fuer unbestimmte Stereoelemente. Hover/Fokus/Klick meldet den
 // Wunsch nach oben; die Hervorhebung selbst laeuft ueber denselben Glow wie
@@ -40,7 +41,7 @@ export default function StereoNote({ warnings, hovered, pinned, onHover, onToggl
   const note = (
     <div className="stereo-note" data-testid="stereo-note" role="note" title={title}>
       {stereoAtoms(warnings).length > 0 ? (
-        <button type="button" className="stereo-note-button" aria-pressed={hovered || pinned}
+        <button type="button" className="btn btn-quiet stereo-note-button" aria-pressed={hovered || pinned}
           onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}
           onFocus={() => onHover(true)} onBlur={() => onHover(false)}
           onClick={onTogglePin}>
@@ -56,8 +57,11 @@ export default function StereoNote({ warnings, hovered, pinned, onHover, onToggl
   return (
     <div className="stereo-row">
       {note}
-      <button type="button" className="chip-toggle" aria-busy={Boolean(variantsBusy)} onClick={onShowVariants}
-        title="Draw every stereoisomer and pick one">Show variants</button>
+      {/* Panel-Umbau A (§4): ruhiger Knopf statt Pille; lädt er, dreht der Spinner im Knopf. */}
+      <Button className="stereo-variants" aria-busy={Boolean(variantsBusy)} onClick={onShowVariants}
+        title="Draw every stereoisomer and pick one">
+        {variantsBusy && <span className="seg-spinner" aria-hidden="true" />}Show variants
+      </Button>
     </div>
   );
 }

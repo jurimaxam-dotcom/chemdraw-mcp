@@ -269,21 +269,23 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
   assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
-  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): wieder volle
-  // Breite (data-layout-3d), Kernwerte darunter; Achse davor, Hinweis und „Reset view“ direkt am Modell.
-  const main = container.querySelector(".structure-main");
-  assert.ok(main.firstElementChild.matches("[data-view-axis]"), "Achse steht nicht über der Kuhle");
-  assert.ok(main.contains(viewer()), "Kuhle nicht in derselben Spalte wie die 2D-Zeichnung");
-  assert.ok(container.querySelector(".structure-layout[data-layout-3d] > .key-facts"), "3D-Layout (volle Breite, Kernwerte darunter) fehlt");
+  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“) und Panel-Umbau A (§5.1):
+  // die Kuhle ist eine 3D-Bühne über die volle Breite; darüber die StageBar mit Achse links und
+  // „Drag to rotate“ + „Reset view“ rechts, die Kernwerte als Zeile darunter.
+  const body = container.querySelector("[data-view='structure']");
+  const bar = body.querySelector(":scope > .stage-bar");
+  assert.ok(bar && bar.querySelector("[data-view-axis]"), "Achse steht nicht in der StageBar");
+  assert.ok(viewer().matches(".stage.stage-3d"), "Kuhle ist keine 3D-Bühne");
+  assert.equal(bar.nextElementSibling, viewer(), "StageBar steht nicht direkt über der Kuhle");
+  assert.ok(buttonByText(bar, "Reset view") && /Drag to rotate/.test(bar.textContent),
+    "Hinweis und Reset view stehen nicht in der StageBar über dem Modell");
   const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
-  const row = main.querySelector(".rotate-row");
-  assert.ok(row && follows(viewer(), row) && follows(row, container.querySelector(".key-facts")),
-    "Hinweis und Reset view stehen nicht direkt am Modell, vor den Kernwerten");
+  assert.ok(follows(viewer(), body.querySelector(":scope > .key-facts")), "Kernwerte nicht unter der Kuhle");
 
   await click(buttonByText(container, "3D"));
   assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");
   assert.ok(container.querySelector(".structure-drawing"));
-  assert.equal(container.querySelector(".structure-layout[data-layout-3d]"), null, "3D-Layout bleibt nach 2D kleben");
+  assert.equal(container.querySelector(".stage-3d"), null, "3D-Bühne bleibt nach 2D kleben");
   await click(buttonByText(container, "3D"));
   assert.ok(viewer());
   assert.equal(calls.length, 1, "zweiter Klick muss aus dem Cache kommen");
@@ -569,8 +571,9 @@ test("Etappe 5: hinter dem 3D-Knopf derselbe Knopf „Reset view“ an derselben
   const { container, unmount } = renderMolecule(data, (req) =>
     req.name === "generate_3d" ? lookupSuccess(CONFORMER) : lookupSuccess({ type: "molecule", svg: "<svg/>", initialView: "all_h", viewSvg: SVG_ALL_H, viewAtoms: [] }));
   await click(buttonByText(container, "3D"));
-  const row = container.querySelector(".rotate-row");
-  assert.ok(row && buttonByText(row, "Reset view"), "Reset view fehlt unter dem 3D-Modell");
+  // Panel-Umbau A (§5.1): die frühere RotateRow geht in der StageBar über der Bühne auf.
+  const row = container.querySelector("[data-view='structure'] > .stage-bar");
+  assert.ok(row && buttonByText(row, "Reset view"), "Reset view fehlt am 3D-Modell");
   assert.match(row.textContent, /Drag to rotate/);
   unmount();
 });

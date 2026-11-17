@@ -9,7 +9,7 @@ import { AppContext } from "../AppContext";
 import { ModelContextProvider } from "../ModelContext";
 import MoleculeView from "../MoleculeView";
 import DatabaseView from "../DatabaseView";
-import { DATABASE, MOLECULE } from "./fixtures.mjs";
+import { DATABASE, MOLECULE, lookupSuccess } from "./fixtures.mjs";
 import { buttonByText, click, render, textOf } from "./harness.mjs";
 
 const DATA = {
@@ -142,5 +142,41 @@ test("zurück auf Structure: alles wie vorher, Name wieder da", async () => {
   await click(buttonByText(container, "Structure"));
   assert.match(textOf(container.querySelector(".panel-title")), /Aspirin/);
   assert.ok(container.querySelector("[data-view='structure']"));
+  unmount();
+});
+
+// Panel-Umbau A (17.11.2026, §5.1/§7): Kopf (PanelHead mit Untertitel-title und Found as) und Fuß
+// (PanelFoot mit Files-Liste, die immer im DOM steht) sind neu. Im Lernmodus darf keiner davon den Namen,
+// den PubChem-Datensatz oder die Schreibweise „Found as“ verraten — auch nicht über title, aria-label,
+// die zugeklappte Dateiliste oder Dateinamen; ebenso nicht, nachdem das Datenblatt geladen und ein
+// Kernwert aufgedeckt wurde.
+test("Study nach Datenblatt: Name, Datensatz und Found as stehen nirgends im DOM (Text und alle Attribute)", async () => {
+  const data = {
+    ...DATA,
+    name: "Koffein",
+    foundAs: "Coffein",
+    properties: { ...DATA.properties, pubchemTitle: "Caffeine", cid: "2519" },
+    files: { png: "/Users/x/ChemDraw-Output/einzelmolekuele/koffein.png", svg: "/Users/x/ChemDraw-Output/einzelmolekuele/koffein.svg" },
+  };
+  const sheet = { ...DATABASE, name: "Koffein", sources: [{ ...DATABASE.sources[0], source: "PubChem: Caffeine",
+    rows: [{ key: "Title", val: "Caffeine" }, { key: "CAS", val: "58-08-2" }] }] };
+  const app = {
+    getHostCapabilities: () => ({ message: { text: {} }, updateModelContext: { text: {} } }),
+    callServerTool: async () => lookupSuccess(sheet),
+    updateModelContext: async () => ({}),
+    sendMessage: async () => ({}),
+  };
+  const { container, unmount } = render(React.createElement(AppContext.Provider, { value: app },
+    React.createElement(ModelContextProvider, { app, delay: 10_000 }, React.createElement(MoleculeView, { data }))));
+  assert.match(everything(container), /Koffein/, "Ausgangslage: Name im Structure-Reiter");
+  await click(buttonByText(container, "Data"));
+  assert.match(textOf(container), /58-08-2/, "Datenblatt nicht geladen");
+  await click(buttonByText(container, "Study"));
+  const secrets = [/koffein/i, /caffeine/i, /coffein/i, /2519/, /58-08-2/, /ChemDraw-Output/, /einzelmolekuele/];
+  const leaks = () => secrets.filter((s) => s.test(everything(container))).map(String);
+  assert.deepEqual(leaks(), [], "Lernmodus verrät etwas");
+  await click(container.querySelector("button[aria-label='Show formula']"));
+  assert.match(textOf(container), /C9H8O4/, "Formel nicht aufgedeckt");
+  assert.deepEqual(leaks(), [], "nach dem Aufdecken der Formel verrät der Lernmodus etwas");
   unmount();
 });

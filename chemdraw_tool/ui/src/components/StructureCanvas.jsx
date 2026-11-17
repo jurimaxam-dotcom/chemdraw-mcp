@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import AtomHighlights from "./AtomHighlights";
 import AtomTooltip from "./AtomTooltip";
+import { Stage } from "./Panel";
 import { resolveHighlight } from "../utils/highlight";
 import { clientToViewBox, getSvgTransform, viewBoxToScreen } from "../utils/svgCoords";
 
@@ -10,18 +11,10 @@ import { clientToViewBox, getSvgTransform, viewBoxToScreen } from "../utils/svgC
 // Aufgeteilt wird nach Besitz des Zustands: `hoveredAtom`/`tooltipPos` sieht
 // nur diese Komponente, `hoveredGroup` teilt sie sich mit der Gruppenliste in
 // der Seitenspalte — deshalb kommt der von aussen (kontrolliert).
-const BASE_STYLE = {
-  position: "relative",
-  flex: "1 1 70%",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 4,
-  minWidth: 0,
-  minHeight: 0,
-  overflow: "hidden",
-};
-
+//
+// Panel-Umbau A (17.11.2026, §4 Stage): die Fläche IST die Bühne (div.stage.stage-plain) — volle
+// Breite, kein Rahmen, Höhe --stage-h im Chat bzw. der Rest in Fill. Die Maße kommen aus frame.css;
+// das frühere Inline-flex „1 1 70%“ hätte in der Flex-Spalte des Panels die Höhe überstimmt.
 export default function StructureCanvas({
   svg,
   atoms,
@@ -99,26 +92,19 @@ export default function StructureCanvas({
   }, []);
 
   return (
-    <div
+    <Stage
       className="structure-canvas"
       ref={svgContainerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
       data-pickable={onPickAtom ? "" : undefined}
-      style={{ ...BASE_STYLE, ...style, ...(onPickAtom && hoveredAtom ? { cursor: "pointer" } : null) }}
+      style={{ ...style, ...(onPickAtom && hoveredAtom ? { cursor: "pointer" } : null) }}
     >
       {svg ? (
-        <div
-          className="structure-drawing"
-          dangerouslySetInnerHTML={{ __html: svg }}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        />
+        <div className="structure-drawing" dangerouslySetInnerHTML={{ __html: svg }} />
       ) : (
-        <div style={{ color: "var(--fg-muted)", fontSize: 11 }}>No structure available</div>
+        <p className="hint">No structure available</p>
       )}
       <AtomHighlights
         atoms={atoms}
@@ -126,6 +112,6 @@ export default function StructureCanvas({
         svgContainerRef={svgContainerRef}
       />
       <AtomTooltip atom={hoveredAtom} position={tooltipPos} />
-    </div>
+    </Stage>
   );
 }

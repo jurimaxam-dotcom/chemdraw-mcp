@@ -4,6 +4,7 @@ import { useAppBridge } from "./AppContext";
 import { useModelContextReport } from "./ModelContext";
 import { genericContext } from "./utils/modelContext.js";
 import { loadToolData } from "./utils/toolData";
+import { Button, Hint, Panel, PanelHead } from "./components/Panel";
 
 // Ein ruhiger Satz statt eines Stacktrace — wie beim Daten-Knopf.
 export const CANDIDATE_LOAD_ERROR =
@@ -57,26 +58,22 @@ export default function AmbiguousView({ data, subtitle, backBar }) {
       <div className="ambiguous-chosen">
         <div className="back-bar">
           {backBar}
-          <button type="button" className="candidate-back" onClick={() => setDrawn(null)}>
+          <Button icon="chevron-left" className="candidate-back" onClick={() => setDrawn(null)}>
             All candidates
-          </button>
+          </Button>
         </div>
         <MoleculeView key={drawn.properties?.smiles || drawn.name} data={drawn} />
       </div>
     );
   }
 
+  // Panel-Umbau A (§5.4): Kopf wie überall, Kandidaten als Karten wie im Stapel (Etikett, Zeichnung,
+  // Name), der Ladezustand bzw. Fehler als Hint unter dem Raster.
   return (
-    <article className="ambiguous-panel">
+    <Panel kind="ambiguous" className="ambiguous-panel">
       {backBar && <div className="back-bar">{backBar}</div>}
-      <header className="panel-header">
-        <div className="panel-heading">
-          <h2 className="panel-title">{data.name}</h2>
-          <p className="panel-subtitle">
-            {subtitle || `This name covers ${candidates.length} different compounds. Pick one to draw it.`}
-          </p>
-        </div>
-      </header>
+      <PanelHead title={data.name}
+        subtitle={subtitle || `This name covers ${candidates.length} different compounds. Pick one to draw it.`} />
       <ul className="candidate-grid" aria-label="Candidates">
         {candidates.map((c) => (
           <li key={c.smiles}>
@@ -95,10 +92,10 @@ export default function AmbiguousView({ data, subtitle, backBar }) {
         ))}
       </ul>
       {(pending || failed) && (
-        <div className="panel-note" role="status">
+        <Hint tone={failed && !pending ? "warn" : "quiet"} className="panel-note" role="status">
           {pending ? `Drawing ${pending}…` : CANDIDATE_LOAD_ERROR}
-        </div>
+        </Hint>
       )}
-    </article>
+    </Panel>
   );
 }

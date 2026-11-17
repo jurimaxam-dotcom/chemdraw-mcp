@@ -6,6 +6,7 @@ import { AppContext, HostContext } from "./AppContext";
 import HostDiagnostics from "./components/HostDiagnostics";
 import ToolError from "./components/ToolError";
 import ToolPlaceholder from "./components/ToolPlaceholder";
+import { PanelState } from "./components/Panel";
 import { ModelContextProvider } from "./ModelContext";
 import { extractToolData, extractToolError, loadToolData, writtenFiles } from "./utils/toolData";
 import { useHostLayout } from "./utils/useHostLayout";
@@ -98,7 +99,8 @@ function Root() {
   if (error) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Connection error</div>;
   if (!isConnected) return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Connecting…</div>;
   if (pendingInput || cancelled) return <ToolPlaceholder args={pendingInput} cancelled={cancelled} />;
-  return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Waiting for data…</div>;
+  // Panel-Umbau A (§4 PanelState): ruhiger Ladezustand statt Inline-Stil, Text unverändert.
+  return <PanelState kind="loading" message="Waiting for data…" />;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);

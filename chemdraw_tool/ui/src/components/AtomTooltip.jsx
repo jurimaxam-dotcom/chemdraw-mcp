@@ -32,48 +32,17 @@ export default function AtomTooltip({ atom, position }) {
   if (atom.charge > 0) chargeStr = `+${atom.charge}`;
   else if (atom.charge < 0) chargeStr = `${atom.charge}`;
 
+  // Panel-Umbau A: Aussehen in frame.css (.atom-tooltip) statt inline; Haarlinie statt Schatten (§3).
+  // Die Punktfarbe ist eine Datenfarbe (Element) und bleibt hier. Texte englisch (vorher „H-Atome“, „Ladung“).
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: position.x,
-        top: position.y,
-        transform: "translate(-50%, -100%) translateY(-10px)",
-        background: "var(--bg-alt)",
-        border: "1px solid var(--border)",
-        borderRadius: 6,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-        padding: "6px 10px",
-        pointerEvents: "none",
-        zIndex: 100,
-        minWidth: 90,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-        <div
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: color,
-            flexShrink: 0,
-          }}
-        />
-        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>
-          {atom.el}
-        </span>
-        <span style={{ fontSize: 11, color: "var(--fg-muted)" }}>{name}</span>
+    <div className="atom-tooltip" style={{ left: position.x, top: position.y }}>
+      <div className="atom-tooltip-head">
+        <span className="atom-tooltip-dot" style={{ background: color }} />
+        <span className="atom-tooltip-el">{atom.el}</span>
+        <span className="atom-tooltip-name">{name}</span>
       </div>
-      {atom.hCount != null && atom.hCount > 0 && (
-        <div style={{ fontSize: 10, color: "var(--fg-muted)" }}>
-          H-Atome: {atom.hCount}
-        </div>
-      )}
-      {chargeStr && (
-        <div style={{ fontSize: 10, color: "var(--fg-muted)" }}>
-          Ladung: {chargeStr}
-        </div>
-      )}
+      {atom.hCount != null && atom.hCount > 0 && <div className="atom-tooltip-line">Hydrogens: {atom.hCount}</div>}
+      {chargeStr && <div className="atom-tooltip-line">Charge: {chargeStr}</div>}
     </div>
   );
 }

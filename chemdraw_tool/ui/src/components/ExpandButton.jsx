@@ -1,5 +1,6 @@
 import React from "react";
 import { useAppBridge, useHostContext } from "../AppContext";
+import { Icon } from "./Panel";
 import { canRequestFullscreen } from "../utils/useHostLayout";
 
 // Eigener Vergrößern-Knopf (U2, M10; seit Etappe 3 in jeder View mit Bildfläche, immer
@@ -22,6 +23,7 @@ export default function ExpandButton({ app: appProp, hostContext: ctxProp }) {
   const expand = () => {
     app.requestDisplayMode({ mode: "fullscreen" }).catch(() => {});
   };
-  return <button type="button" className="expand-button" onClick={expand}
-    title="Open in the side panel">Expand</button>;
+  // Panel-Umbau A (§4): 32 × 32, ruhig, nur Symbol (zwei Diagonalpfeile); der Name bleibt „Expand“ über aria-label.
+  return <button type="button" className="expand-button" onClick={expand} aria-label="Expand"
+    title="Open in the side panel"><Icon name="expand" size={16} /></button>;
 }
