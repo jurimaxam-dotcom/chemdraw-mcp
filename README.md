@@ -210,7 +210,7 @@ The extension route ships them as two bundles (`chemdraw-mcp-<version>.mcpb`,
 `chemdraw-mcp-pharma-<version>.mcpb`); `chemdraw-install` writes both entries
 into `claude_desktop_config.json`. Turning a connector on or off in the
 connector menu needs no restart. Up to 0.10.0, `chemdraw-pharma` started with
-the `full` profile (25 tools); if you used only that connector, enable
+the `full` profile (every tool); if you used only that connector, enable
 `chemdraw` as well, or keep one connector with everything by setting
 `CHEMDRAW_PROFILE=full` in a config entry of your own. Re-run the installer to
 update an existing entry. Details:
