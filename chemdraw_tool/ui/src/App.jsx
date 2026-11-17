@@ -52,6 +52,6 @@ export default function App({ data }) {
     case "protein":
       return <ProteinView data={data} />;
     default:
-      return <div style={{ color: "#8b949e", padding: 16 }}>Unknown type: {data.type}</div>;
+      return <div style={{ color: "var(--fg-muted)", padding: 16, fontSize: 12 }}>Unknown type: {data.type}</div>;
   }
 }
