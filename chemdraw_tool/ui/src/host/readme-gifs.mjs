@@ -19,6 +19,14 @@
 // 1080 skaliert, damit die Schrift im 1080×1920-Short scharf bleibt), längere Haltezeiten, keine
 // 10-s-Kappe. Je Clip <szene>-<theme>.mp4, .beats.json (Klickzeiten in Sekunden) und .png (Standbild bei
 // 40 %) nach ~/Documents/projects/chemdraw-vermarktung/out/panel-clips/ (dort nicht versioniert).
+// --feed: Clips für Feed-Posts (Jay 17.11.2026: „mindestens 60 FPS“, hell, 4:5). Gesteuerte Uhr statt
+// Echtzeit-Screenshots: Playwrights page.clock fälscht Timer, rAF und Date auch im srcdoc-iframe, CSS-
+// Übergänge werden über document.getAnimations() angehalten und je Bild um 1/60 s vorgerückt, Zeiger und
+// Drehzüge rechnet das Skript je Bild. Dadurch ist jedes Bild ein eigener Zustand, egal wie lange der
+// Screenshot dauert. 1080×1350 (4:5), Panel 600 px mittig, Rand in Panelfarbe, 6–12 s, nur hell.
+// Szene mit Molekül als `szene@molekül`; Ausgabe <molekül>-<szene>.mp4 (+ .beats.json, .kontakt.png) nach
+// CLIP_AUSGABE (sonst chemdraw-vermarktung/out/clips-60fps-0.11.0). Ein roter Clip bricht den Lauf nicht ab.
+//   npm run readme:gifs -- --feed anki@"penicillin G" 3d@geosmin study@serotonin
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -27,7 +35,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "..", "..", "..", "..");
@@ -53,7 +61,8 @@ for (let i = 2; i < process.argv.length; i++) {
   const m = a.match(/^--(theme|molecule)(?:=(.*))?$/);
   if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
   else if (a === "--video") optionen.video = true;
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video)`);
+  else if (a === "--feed") optionen.feed = true;
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed)`);
   else gewählt.push(a);
 }
 
@@ -66,8 +75,14 @@ const MODI = {
   video: { scale: 2, fps: 30, bild: "jpg", screenshot: { type: "jpeg", quality: 95 }, ausgabe: join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "panel-clips"),
     breite: 1080, sekunden: [12, 25],
     takt: { vorKlick: 1200, start: 1500, startViews: 1500, nachAllH: 1200, nach2D: 1200, nachS: 1500, hover: 1200, vor3D: 2000, zwischenZügen: 1200, schluss3d: 3000, schlussDaten: 3000 } },
+  feed: { scale: 2, fps: 60, bild: "jpg", screenshot: { type: "jpeg", quality: 95 },
+    ausgabe: process.env.CLIP_AUSGABE || join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "clips-60fps-0.11.0"),
+    breite: 1080, hoehe: 1350, sekunden: [6, 12], mindestBilder: 55,
+    takt: { vorKlick: 250, start: 700, startViews: 800, nachAllH: 900, nach2D: 600, nachS: 1200, hover: 700, vor3D: 1300, zwischenZügen: 300, schluss3d: 1500, schlussDaten: 1800 } },
 };
-const MODUS = optionen.video ? MODI.video : MODI.gif;
+const FEED = !!optionen.feed;
+if (FEED && optionen.video) throw new Error("--feed und --video schließen sich aus");
+const MODUS = FEED ? MODI.feed : optionen.video ? MODI.video : MODI.gif;
 const TAKT = MODUS.takt;
 
 const hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
@@ -93,7 +108,8 @@ function filmuhr() {
 }
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
-  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden }) {
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe }) {
+  if (FEED) return feedSzene(browser, { name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = { ...args, name_or_smiles: molecule };
   const farbe = THEMES[theme];
@@ -190,7 +206,8 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
     const b = await locator.boundingBox();
     if (!b || b.y < 0 || b.y + b.height > hoehe) throw new Error(`ROT ${name}-${theme}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${hoehe})`);
   };
-  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke });
+  const fahreZu = async (x, y) => { await zeiger(x, y); await page.mouse.move(x, y, { steps: 4 }); };
+  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu });
   const ende = uhr.jetzt();
   marke("ende");
   aufnahme = false;
@@ -206,6 +223,182 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
   if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(MODUS.ausgabe, `demo-${name}.gif`));
   return { szene: name, theme, ...werte };
+}
+
+// Feed-Clip mit gesteuerter Uhr: ein Bild = Uhr 1/60 s weiter, CSS-Übergänge 1/60 s weiter, Screenshot.
+// Gewartet (Server, PubChem) wird mit tickender Uhr, aber ohne Aufnahme.
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf }) {
+  if (molecule) args = { ...args, name_or_smiles: molecule };
+  const farbe = THEMES.light;
+  const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
+  const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
+  const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
+  if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
+  const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
+
+  const context = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: MODUS.scale, colorScheme: "light" });
+  await context.clock.install({ time: 0 });
+  await context.clock.pauseAt(1000);
+  const page = await context.newPage();
+  await page.exposeFunction("__callTool", async (p) => {
+    if (p.name === "export_anki_deck") p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
+    return neutral(await client.callTool(p));
+  });
+  // Uhr tickt (16 ms je Runde), bis `fertig` erfüllt ist — Timer im Panel laufen weiter, aufgenommen wird nichts
+  const mitTick = async (versprechen, ms = 60000) => {
+    let da = false, fehler = null;
+    versprechen.then(() => { da = true; }, (e) => { fehler = e; da = true; });
+    const bis = Date.now() + ms;
+    while (!da) {
+      if (Date.now() > bis) throw new Error(`${name}: Zeitüberschreitung beim Warten`);
+      await context.clock.runFor(16);
+      await page.waitForTimeout(10);
+    }
+    if (fehler) throw fehler;
+  };
+  await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
+  await page.addScriptTag({ path: hostJs });
+  await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult });
+  await page.locator("iframe").evaluate((el, [w, h, r]) => { Object.assign(el.style, { width: `${w}px`, height: `${h}px`, display: "block", marginLeft: `${r}px` }); }, [BREITE, H, rand]);
+  const frame = page.frames().find((f) => f !== page.mainFrame());
+  await mitTick(frame.locator(panel).first().waitFor({ timeout: 60000 }));
+  await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  await page.evaluate((stil) => {
+    const c = document.createElement("div");
+    c.id = "cursor";
+    c.style.cssText = `position:fixed;left:-40px;top:-40px;width:18px;height:18px;border-radius:50%;${stil};pointer-events:none;z-index:9;transition:none`;
+    document.body.appendChild(c);
+  }, farbe.zeiger);
+  await mitTick(page.waitForTimeout(500)); // Schriften und Theme setzen sich
+  if (vorlauf) await mitTick(vorlauf({ frame, page }));
+
+  const dir = mkdtempSync(join(tmpdir(), `feed-${name}-`));
+  let nr = 0, sollMs = 0;
+  // CSS-Übergänge und -Animationen: neu entdeckte anhalten, dann alle um dt vorrücken
+  const schritt = (dt) => {
+    for (const a of document.getAnimations()) {
+      if (a.__t === undefined) { a.pause(); a.__t = 0; }
+      a.__t += dt;
+      const ende = a.effect?.getComputedTiming().endTime;
+      if (Number.isFinite(ende) && a.__t >= ende) a.finish(); else a.currentTime = a.__t;
+    }
+  };
+  const bild = async () => {
+    const neu = Math.round(((nr + 1) * 1000) / MODUS.fps), dt = neu - sollMs;
+    sollMs = neu;
+    await context.clock.runFor(dt);
+    await page.evaluate(schritt, dt);
+    await frame.evaluate(schritt, dt);
+    await page.screenshot({ path: join(dir, `f${String(nr).padStart(5, "0")}.jpg`), clip: { x: 0, y: 0, width: W, height: H }, ...MODUS.screenshot });
+    nr++;
+  };
+  const halten = async (ms) => { for (let i = Math.round((ms * MODUS.fps) / 1000); i > 0; i--) await bild(); };
+  const beats = [{ art: "panel", t: 0 }], bewegungen = [];
+  const marke = (art, ziel) => beats.push({ art, t: Number((nr / MODUS.fps).toFixed(3)), ...(ziel ? { ziel } : {}) });
+  let pos = [W + 30, H * 0.6]; // Zeiger kommt von rechts ins Bild
+  const zeiger = (x, y) => { pos = [x, y]; return page.evaluate(([x, y]) => { const s = document.getElementById("cursor").style; s.left = `${x - 9}px`; s.top = `${y - 9}px`; }, [x, y]); };
+  // Zeigerfahrt Bild für Bild; 70 % Ease + 30 % linear, damit auch die letzten Bilder sich sichtbar bewegen
+  const fahreZu = async (x, y) => {
+    const [x0, y0] = pos, weg = Math.hypot(x - x0, y - y0);
+    if (weg < 1) return;
+    const n = Math.round((Math.min(750, Math.max(350, weg * 1.4)) * MODUS.fps) / 1000), von = nr;
+    for (let i = 1; i <= n; i++) {
+      const a = i / n, e = 0.7 * (0.5 - Math.cos(Math.PI * a) / 2) + 0.3 * a;
+      const px = x0 + (x - x0) * e, py = y0 + (y - y0) * e;
+      await page.mouse.move(px, py);
+      await zeiger(px, py);
+      await bild();
+    }
+    bewegungen.push({ art: "zeiger", von, bis: nr });
+  };
+  const mitte = async (locator) => { const b = await locator.boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2]; };
+  const zeigeAuf = async (locator, ziel) => { await fahreZu(...(await mitte(locator))); await halten(120); if (ziel) marke("hover", ziel); };
+  const klick = async (locator, fertig, ziel) => {
+    await zeigeAuf(locator);
+    await halten(TAKT.vorKlick);
+    await page.evaluate(() => { document.getElementById("cursor").style.transform = "scale(.7)"; });
+    await halten(100);
+    marke("klick", ziel);
+    await mitTick(locator.click());
+    await page.evaluate(() => { document.getElementById("cursor").style.transform = ""; });
+    if (fertig) await mitTick(fertig());
+  };
+  // Drehzug: ein Mausschritt je Bild
+  const ziehenFeed = async (von, nach, ms, ziel) => {
+    await fahreZu(...von); await halten(320);
+    marke("klick", ziel);
+    await page.mouse.down();
+    const n = Math.round((ms * MODUS.fps) / 1000), start = nr;
+    for (let i = 1; i <= n; i++) {
+      const x = von[0] + (nach[0] - von[0]) * (i / n), y = von[1] + (nach[1] - von[1]) * (i / n);
+      await page.mouse.move(x, y);
+      await zeiger(x, y);
+      await bild();
+    }
+    await page.mouse.up();
+    bewegungen.push({ art: "drag", von: start, bis: nr });
+  };
+  // Weich scrollen, Bild für Bild (scroll-behavior: smooth liefe in Echtzeit)
+  const scrollen = async (dy, ms = 600) => {
+    const y0 = await frame.evaluate(() => window.scrollY), n = Math.round((ms * MODUS.fps) / 1000), von = nr;
+    for (let i = 1; i <= n; i++) {
+      const e = 0.5 - Math.cos((Math.PI * i) / n) / 2;
+      await frame.evaluate((y) => window.scrollTo(0, y), y0 + dy * e);
+      await bild();
+    }
+    bewegungen.push({ art: "scroll", von, bis: nr });
+  };
+  const imBild = async (locator, was) => {
+    const b = await locator.boundingBox();
+    if (!b || b.y < 0 || b.y + b.height > H) throw new Error(`ROT ${name}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${H})`);
+  };
+  try {
+    await ablauf({ feed: true, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
+    marke("ende");
+  } finally {
+    await context.close();
+  }
+  return { szene: name, theme: "light", ...feedVideo(`${slug(molecule ?? args.name_or_smiles ?? args.name)}-${name}`, dir, nr, beats, bewegungen, { tool, args }) };
+}
+
+// Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“) — dieselbe Zählung wie scripts/bilder-je-sekunde.sh
+function behalteneBilder(ziel) {
+  // mpdecimate schreibt seine Entscheidungen nach stderr
+  const r = spawnSync(FFMPEG, ["-hide_banner", "-nostats", "-loglevel", "debug", "-i", ziel, "-vf", "mpdecimate", "-f", "null", "-"], { encoding: "utf8", maxBuffer: 1 << 28 });
+  return [...r.stderr.matchAll(/keep pts:\S+ pts_time:([\d.]+)/g)].map((m) => Math.round(Number(m[1]) * MODUS.fps));
+}
+
+function feedVideo(name, dir, bilder, beats, bewegungen, quelle) {
+  const ziel = join(MODUS.ausgabe, `${name}.mp4`);
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
+    "-vf", `scale=${MODUS.breite}:${MODUS.hoehe}:flags=lanczos:out_range=tv,format=yuv420p`,
+    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", String(MODUS.fps), "-movflags", "+faststart", ziel]);
+  const werte = prüfenVideo(ziel, MODUS.hoehe);
+  // Messung: (1) je Bewegungsstrecke Anteil verschiedener Bilder, (2) volle Sekunden ganz in Bewegung ≥ mindestBilder
+  const behalten = new Set(behalteneBilder(ziel));
+  const inBewegung = (b) => bewegungen.some((s) => b >= s.von && b < s.bis);
+  const sekunden = [];
+  for (let s = 0; (s + 1) * MODUS.fps <= bilder; s++) {
+    let n = 0, voll = true;
+    for (let b = s * MODUS.fps; b < (s + 1) * MODUS.fps; b++) { if (behalten.has(b)) n++; if (!inBewegung(b)) voll = false; }
+    sekunden.push({ s, verschieden: n, bewegt: voll });
+  }
+  const strecken = bewegungen.map((st) => {
+    let n = 0;
+    for (let b = st.von; b < st.bis; b++) if (behalten.has(b)) n++;
+    return { ...st, bilder: st.bis - st.von, verschieden: n };
+  });
+  const fehler = sekunden.filter((x) => x.bewegt && x.verschieden < MODUS.mindestBilder).map((x) => `Sekunde ${x.s}: ${x.verschieden} verschiedene Bilder`);
+  const kontakt = ziel.replace(/\.mp4$/, ".kontakt.png");
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-i", ziel, "-vf", `fps=${(12 / werte.sekunden).toFixed(4)},scale=270:-2:flags=lanczos,tile=4x3:padding=6:color=white`, "-frames:v", "1", kontakt]);
+  writeFileSync(ziel.replace(/\.mp4$/, ".beats.json"), JSON.stringify({ clip: `${name}.mp4`, tool: quelle.tool, args: quelle.args,
+    video: { breite: werte.breite, hoehe: werte.hoehe, fps: MODUS.fps, sekunden: werte.sekunden, bilder },
+    beats, bewegungen: strecken, sekunden }, null, 2) + "\n");
+  console.log(`  ${name}: verschiedene Bilder je Sekunde ${sekunden.map((x) => `${x.s}:${x.verschieden}${x.bewegt ? "*" : ""}`).join(" ")} (* = ganz in Bewegung)`);
+  console.log(`  ${name}: Bewegungsstrecken ${strecken.map((x) => `${x.art} ${x.verschieden}/${x.bilder}`).join(", ")}`);
+  if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
+  return { ...werte, kontakt };
 }
 
 // concat-Demuxer: jedes Bild steht bis zum nächsten Zeitstempel, das letzte bis zum Szenenende
@@ -298,9 +491,11 @@ function prüfenVideo(ziel, sollHoehe) {
 
 // Datenblatt: CAS steht oft unter der Falz — kurz oben zeigen, nötigenfalls weich bis zur CAS-Zeile scrollen,
 // dann zeigt der Zeiger auf die Nummer (sonst schwebt er nach dem Scrollen über einer fremden Zeile)
-async function datenblattMitCas({ frame, page, halten, zeiger, marke }, gesamtMs) {
+async function datenblattMitCas(werkzeug, gesamtMs) {
+  const { frame, page, halten, zeiger, marke } = werkzeug;
   const cas = frame.getByText("CAS No.", { exact: true }).first();
   if (!(await cas.count())) throw new Error("Datenblatt ohne CAS-Zeile");
+  if (werkzeug.feed) return datenblattFeed(werkzeug, cas, gesamtMs);
   await halten(600);
   marke("schluss", "data sheet");
   // Erst nur so weit, dass der Panel-Titel oben anliegt (über ihm steht nach einer
@@ -330,8 +525,25 @@ async function datenblattMitCas({ frame, page, halten, zeiger, marke }, gesamtMs
   await halten(Math.max(800, gesamtMs - 600 - gewartet));
 }
 
+// Feed: dieselbe Folge mit Bild-für-Bild-Scrollen (Titel oben anlegen oder CAS mittig), dann Zeiger auf die Nummer
+async function datenblattFeed({ frame, page, halten, marke, scrollen, fahreZu }, cas, gesamtMs) {
+  await halten(600);
+  marke("schluss", "data sheet");
+  const höhe = page.viewportSize().height;
+  const vorab = await cas.boundingBox();
+  const panelOben = (await frame.locator(".molecule-panel").boundingBox()).y - 8;
+  let dy = 0;
+  if (vorab.y + vorab.height + 24 > höhe) dy = panelOben > 0 && vorab.y + vorab.height + 24 - panelOben <= höhe ? panelOben : vorab.y + vorab.height / 2 - höhe / 2;
+  if (dy > 0) await scrollen(dy);
+  const b = await cas.boundingBox();
+  await fahreZu(b.x + b.width + 190, b.y + b.height / 2);
+  await halten(Math.max(800, gesamtMs - 600));
+}
+
 // Drehzug per Pointer-Drag, mit sichtbarem Zeiger
-async function ziehen({ page, halten, zeiger, marke }, von, nach, ms, ziel) {
+async function ziehen(werkzeug, von, nach, ms, ziel) {
+  if (werkzeug.feed) return werkzeug.ziehenFeed(von, nach, ms, ziel);
+  const { page, halten, zeiger, marke } = werkzeug;
   await zeiger(...von); await page.mouse.move(...von, { steps: 6 }); await halten(320);
   marke("klick", ziel);
   await page.mouse.down();
@@ -407,7 +619,8 @@ const SZENEN = {
   // Hero rechts, Thalidomid: 3D-Chip → Einblend-Drehung → zwei Drehzüge per Pointer-Drag → Ruhe
   "3d": {
     tool: "generate_molecule", args: { name_or_smiles: "thalidomide" }, hoehe: HERO.hoehe, fps: 12, hero: true,
-    async ablauf({ frame, page, halten, klick, zeiger, mitte, imBild, marke }) {
+    async ablauf(werkzeug) {
+      const { frame, halten, klick, mitte, imBild, marke } = werkzeug;
       await frame.locator(".structure-canvas svg").first().waitFor();
       await halten(TAKT.start);
       await klick(frame.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
@@ -415,9 +628,11 @@ const SZENEN = {
       await imBild(frame.locator("[data-view-axis]"), "Ansicht-Achse");
       await imBild(frame.locator(".key-facts"), "Kennwerte");
       await imBild(frame.locator(".molecule-panel"), "Panel samt Drag-Hinweis");
+      // Feed-Posts zeigen am Ende den Knopf „Quiz me on …“ (S6)
+      if (werkzeug.feed) await imBild(frame.getByRole("button", { name: /^Quiz me on / }), "Knopf „Quiz me on …“");
       await halten(TAKT.vor3D); // Einblend-Drehung (1200 ms) läuft zu Ende
       const [cx, cy] = await mitte(frame.locator("[data-view-3d]"));
-      const zug = (von, nach, ms, ziel) => ziehen({ page, halten, zeiger, marke }, von, nach, ms, ziel);
+      const zug = (von, nach, ms, ziel) => ziehen(werkzeug, von, nach, ms, ziel);
       await zug([cx - 150, cy], [cx + 150, cy + 20], 1800, "drag horizontal"); // waagerecht: um die senkrechte Achse
       if (TAKT.zwischenZügen) await halten(TAKT.zwischenZügen);
       await zug([cx + 20, cy - 130], [cx - 20, cy + 130], 1600, "drag vertical"); // senkrecht: um die waagerechte Achse
@@ -630,7 +845,7 @@ const SZENEN = {
   anki: {
     ...BLUESKY, datei: "anki", hoehe: 900,
     tool: "generate_molecule", args: { name_or_smiles: "aspirin" },
-    async ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild }) {
+    async ablauf({ frame, halten, zeigeAuf, klick, mitte, imBild, fahreZu }) {
       const gruppen = frame.locator("button.functional-group");
       await gruppen.first().waitFor();
       const anki = frame.locator("button.add-to-anki");
@@ -645,20 +860,75 @@ const SZENEN = {
       await klick(anki, () => frame.locator("button.add-to-anki", { hasText: "Saved" }).waitFor({ timeout: 30000 }), "Add to Anki");
       // Zeiger vom Knopf weg, damit „Saved“ lesbar ist
       const [ax, ay] = await mitte(anki);
-      await zeiger(ax - 40, ay - 46); await page.mouse.move(ax - 40, ay - 46, { steps: 4 });
+      await fahreZu(ax - 40, ay - 46);
       await halten(1600); // „Saved“ steht 2,5 s ab dem Klick (Echtzeit), danach setzt der Knopf zurück
       if (!(await anki.innerText()).includes("Saved")) throw new Error("ROT anki: am Ende kein „Saved“ mehr");
+    },
+  },
+  // Study-Reiter: zwei verdeckte Kennwerte, dann eine Gruppe einzeln aufdecken, zum Schluss „Reveal all“
+  study: {
+    ...BLUESKY, datei: "study", hoehe: 900,
+    tool: "generate_molecule", args: { name_or_smiles: "serotonin" },
+    async ablauf({ frame, halten, klick, imBild }) {
+      const reiter = frame.getByRole("tab", { name: "Study", exact: true });
+      await reiter.waitFor();
+      await halten(TAKT.start);
+      await klick(reiter, () => frame.locator('[data-view="study"]').waitFor({ timeout: 10000 }), "Study");
+      const ansicht = frame.locator('[data-view="study"]');
+      await imBild(frame.locator(".study-actions"), "Reveal all");
+      await imBild(ansicht.locator('[aria-label="Key facts"]'), "Kennwerte");
+      await imBild(ansicht.locator('[aria-label="Functional groups"]'), "Gruppen");
+      await halten(900);
+      // aufdecken und warten, bis die Zahl der verdeckten Felder sinkt
+      const aufdecken = async (verdeckt, ziel) => {
+        const n = await verdeckt.count();
+        if (!n) throw new Error(`study: nichts verdeckt für ${ziel}`);
+        await klick(verdeckt.first(), async () => { while ((await verdeckt.count()) >= n) await new Promise((r) => setTimeout(r, 20)); }, ziel);
+        await halten(900);
+      };
+      const decken = ansicht.locator("button.study-cover");
+      await aufdecken(decken, "fact");
+      await aufdecken(decken, "fact");
+      await aufdecken(ansicht.locator("button.functional-group.is-covered"), "group");
+      await klick(frame.getByRole("button", { name: "Reveal all", exact: true }),
+        () => frame.locator("button.study-name").waitFor({ state: "detached", timeout: 10000 }), "Reveal all");
+      if (await decken.count()) throw new Error("ROT study: nach Reveal all noch verdeckte Felder");
+      await halten(2000);
     },
   },
 };
 
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
-const themes = optionen.theme ? [optionen.theme] : Object.keys(THEMES);
+if (FEED && optionen.theme && optionen.theme !== "light") throw new Error("--feed gibt es nur hell");
+const themes = FEED ? ["light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
+if (FEED && !gewählt.length) throw new Error("--feed braucht Szenen, z. B. 3d@geosmin");
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
-for (const name of szenen) if (!SZENEN[name]) throw new Error(`unbekannte Szene: ${name} (${Object.keys(SZENEN).join(", ")})`);
+for (const name of szenen) if (!SZENEN[FEED ? name.split("@")[0] : name]) throw new Error(`unbekannte Szene: ${name} (${Object.keys(SZENEN).join(", ")})`);
 mkdirSync(MODUS.ausgabe, { recursive: true });
 const browser = await chromium.launch();
 const ergebnisse = [];
+if (FEED) {
+  // Feed: je Clip eigener Browser (sauberer Kontext); ein roter Clip wird gemeldet, der Lauf geht weiter
+  const rot = [];
+  try {
+    for (const eintrag of szenen) {
+      const [name, mol] = eintrag.split("@");
+      console.log(`▶ feed ${name} (${mol ?? optionen.molecule ?? "Standard"})`);
+      try {
+        ergebnisse.push(await szene(browser, { name, theme: "light", ...SZENEN[name], molecule: mol ?? optionen.molecule }));
+      } catch (e) {
+        console.error(String(e.message ?? e));
+        rot.push(eintrag);
+      }
+    }
+  } finally {
+    await browser.close();
+    await client.close();
+  }
+  console.table(ergebnisse.map(({ datei, kontakt, ...w }) => ({ datei: datei.replace(MODUS.ausgabe + "/", ""), ...w })));
+  if (rot.length) { console.error(`ROT: ${rot.join(", ")}`); process.exit(1); }
+  process.exit(0);
+}
 try {
   for (const theme of themes) {
     for (const name of szenen) {

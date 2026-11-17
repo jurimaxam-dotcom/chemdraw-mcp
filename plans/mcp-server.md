@@ -1,5 +1,19 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Feed-Clips mit 60 Bildern/s (Tisch-Faden 20261117-121756, Auftrag der Vermarktung, 17.11.2026)
+
+- **Gebaut:** `readme-gifs.mjs --feed szene@molekül …` nimmt mit gesteuerter Uhr auf (Playwright `context.clock` greift auch im
+  srcdoc-iframe; CSS-Übergänge per `getAnimations()` je Bild 1/60 s weiter; Zeiger, Drehzug und Scrollen je Bild gerechnet).
+  Ausgabe 1080×1350 (4:5), H.264 yuv420p 60/1, 6–12 s, nur hell, `<molekül>-<szene>.mp4` + `.beats.json` + `.kontakt.png` nach
+  `CLIP_AUSGABE` (sonst `chemdraw-vermarktung/out/clips-60fps-0.11.0/`). Neue Szene `study`. Messung im Skript und als
+  `scripts/bilder-je-sekunde.sh` (mpdecimate „keep pts“ je Sekunde; geeicht am alten `3d-light.mp4`: 5–20 Bilder/s im Drehzug).
+- **Erledigt:** sechs Clips S1–S6 aufgenommen, alle Bewegungsstrecken mit 100 % verschiedenen Bildern (außer dem Einflug des
+  Zeigers von außerhalb), volle Drehsekunden 60/60. Bericht im Faden.
+- **Offen (Befund, nicht Teil des Auftrags):** Cuban/Adamantan melden 8 bzw. 4 „unspecified stereocenters“ —
+  `generator.find_unspecified_stereo` nutzt `Chem.FindPotentialStereo`, das Käfig-Brückenköpfe als mögliche Zentren
+  zählt; `EnumerateStereoisomers(unique=True)` liefert je genau 1 Isomer. Fix-Idee: nur melden, wenn die Aufzählung > 1
+  eindeutiges Isomer ergibt (TDD, Fälle Cuban/Adamantan/Carvon). Cuban zusätzlich in 2D als drei Vierringe (RDKit-Layout).
+
 ## Weiter bei — Codex-Handlauf abgeschlossen (17.11.2026)
 
 - **Nächster Schritt für diese Codex-Session:** kein Bauauftrag offen. Nach Kontext-Neustart nur neue Tisch-Aufträge prüfen; den Handlauf nicht wiederholen und Claudes laufende Aufnahme nicht übernehmen. Claude ist Owner der Folgearbeit.
