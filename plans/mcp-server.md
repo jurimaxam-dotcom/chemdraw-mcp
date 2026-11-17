@@ -58,6 +58,10 @@
 
 ### Weiter bei (16.11.2026, 22:29) — NEUER UMFANG: komplette UI-Überarbeitung VOR dem Release
 
+**STAND 17.11.2026, 11:05 – v0.11.0 ist veröffentlicht.** Jay 10:55: „ich gebe dir meine Vollmacht, alles sauber zu installieren und zu veröffentlichen“ → `pypi`-Freigabe per API erteilt. Lauf 44058615709: `check`, `build`, `publish`, `registry`, `bundle` grün. PyPI 0.11.0 (200), Release-Assets `chemdraw-mcp-0.11.0.mcpb` und `chemdraw-mcp-pharma-0.11.0.mcpb`, Registry `isLatest` 0.11.0. Frische Umgebung: `uvx --from chemdraw-mcp==0.11.0 chemdraw-doctor` „every check passed“, Panel-Datei im Wheel hat denselben SHA-256 wie `chemdraw_tool/ui/dist` im Repo (`8f3f3a85…`).
+- **Läuft:** Bündel-Abnahme in Desktop durch Codex (Faden-Thema `bundle-abnahme-0-11`): Update der ausgeschalteten Extension 0.10.0 → 0.11.0, Panel aus der Extension, danach wieder ausschalten. Ergebnis nach `docs/evidence/` schreiben.
+- **Geparkt:** Meldung an die Vermarktung (`~/.claude/tisch/geparkt/chemdraw-vermarktung.md`), geht mit `schwester phase frei` hinüber – Jays Entscheidung.
+
 **STAND 17.11.2026, 10:50 – Release v0.11.0 angelegt (Jay 10:14: „Ich gebe dir die Freigabe den Release zu machen, wenn alles fertig ist“), `publish.yml` wartet auf die Freigabe der Umgebung `pypi` (Jays Klick).**
 - Release: https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/tag/v0.11.0 auf `006c3d9`; Lauf 44058615709: `check` und `build` grün, `publish` wartet. Die Freigabe ist eine bewusst gesetzte Sperre (Required Reviewer) – nicht per API selbst freigegeben.
 - **Nach Jays Freigabe prüfen:** PyPI 0.11.0 da · Jobs `bundle` (zwei `.mcpb` am Release) und `registry` grün · `isLatest` 0.11.0 (sonst `./scripts/publish-registry.sh`) · Bündel-Abnahme in Desktop wie `docs/evidence/bundle-abnahme-2026-11-10-0-10-0.md` (installiertes Bündel 0.10.0 ist seit 16.11. ausgeschaltet, Sicherung `…chemdraw-mcp.json.bak-2026-11-16-probe`) · Vermarktung benachrichtigen (`schwester weiter`: Release ist da, neue Panelbilder und Galerie-GIFs in `assets/`).
