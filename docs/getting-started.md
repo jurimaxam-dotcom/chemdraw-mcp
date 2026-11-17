@@ -58,9 +58,15 @@ names, the AnkiConnect add-on) are in [installation.md](installation.md).
 ## Your first prompt
 
 Open a **new chat**, make sure the `chemdraw` connector is switched on in the
-connector menu, and type:
+connector menu of that chat (installed as an extension it is listed as
+"ChemDraw MCP (unofficial)"), and type:
 
 > Draw thalidomide
+
+If Claude answers that no such extension or tool is available although the
+extension shows "Running" in the settings, it is switched off for this chat:
+open the connector menu below the message box, tick it, and send the prompt
+again.
 
 <img src="images/panel-molecule.png" alt="Thalidomide panel: drawing, 2D / All H / 3D buttons, formula C13H10N2O4, molar mass 258.23 g/mol, CAS 50-35-1, one unspecified stereocenter with a Show variants button, functional groups Amide and Aromatic ring" width="420">
 
