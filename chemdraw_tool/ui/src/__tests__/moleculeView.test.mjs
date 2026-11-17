@@ -280,7 +280,7 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(buttonByText(bar, "Reset view") && /Drag to rotate/.test(bar.textContent),
     "Hinweis und Reset view stehen nicht in der StageBar über dem Modell");
   const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
-  assert.ok(follows(viewer(), body.querySelector(":scope > .key-facts")), "Kernwerte nicht unter der Kuhle");
+  assert.ok(follows(viewer(), body.querySelector(".key-facts")), "Kernwerte nicht unter der Kuhle");
 
   await click(buttonByText(container, "3D"));
   assert.equal(Boolean(viewer()), false, "Rückweg zur Zeichnung fehlt");

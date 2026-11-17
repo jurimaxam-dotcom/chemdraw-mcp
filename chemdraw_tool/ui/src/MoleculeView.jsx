@@ -385,7 +385,13 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
                 hoveredGroup={hoveredGroup || (pinned?.kind === "group" ? pinned.name : null)}
                 pinnedAtom={pinned?.kind === "atom" ? pinned.idx : undefined}
                 onHoverGroup={setHoveredGroup} onPickAtom={pickAtom} highlightAtoms={stereo.highlightAtoms} />}
-          <Facts aria-label="Molecule details" items={facts} />
+          {/* Kernwerte und Stereo-Satz teilen eine umbrechende Zeile: im Chat steht der Satz rechts neben
+              den Werten (spart eine Zeile, Methylphenidat 741 → ~693 px bei 860), schmal bricht er darunter um. */}
+          <div className="facts-line">
+            <Facts aria-label="Molecule details" items={facts} />
+            {!is3d && <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
+              variantsBusy={variantsLoading} />}
+          </div>
           {drawingFailed && <Note>{VIEW_LOAD_ERROR}</Note>}
           {conformerFailed && <Note>{CONFORMER_LOAD_ERROR}</Note>}
           {/* Stereo, Gruppen und der Projektionssatz beziehen sich auf die 2D-Zeichnung — in 3D aus.
@@ -393,8 +399,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
               Kette), ohne ihn unter Haworth (Glykosid: warum es keine Fischer-Projektion gibt). */}
           {!is3d && shown === (views.includes("fischer") ? "fischer" : "haworth") && data.projectionNote
             && <Note>{data.projectionNote}</Note>}
-          {!is3d && <StereoNote {...stereo.noteProps} onShowVariants={canShowVariants ? openVariants : undefined}
-            variantsBusy={variantsLoading} />}
+
           {!is3d && variantsFailed && <Note>{VARIANTS_LOAD_ERROR}</Note>}
           {/* Fischer eines Ringzuckers zeigt die offene Kette; die Gruppen stammen aus der
               Ringform (Halbacetal statt Aldehyd) und stünden dort falsch. Das Etikett
