@@ -2,6 +2,7 @@
 
 Ausführender: Claude-Agent (Opus 5.5) per AX-Steuerung (`scripts/ax-claude.sh`), nicht Codex.
 Screenshots: `/tmp/chemdraw-desktop-test/2026-11-07/verifiziert/` (Vollbild, Retina 3456×2234).
+Die Vollbild-Screenshots liegen seit 17.11.2026 nicht mehr im Repo; die Dateinamen unten sind nur noch Bezeichner.
 Jeder Prompt lief in einem **neuen Chat** (Sidebar → „New“), Modell Opus 5.5 Medium, Modus „Manual“.
 
 ## Schritt 0 — Neustart + Handshake
