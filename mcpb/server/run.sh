@@ -67,13 +67,24 @@ fi
 
 # Sperre: Desktop startet zwei Instanzen gleichzeitig (Chat + Cowork/Code). Ohne
 # sie riss die zweite --force-Installation der ersten die Umgebung unter dem
-# laufenden Server weg (02.10.2026). mkdir ist atomar und braucht kein flock.
-# Verwaist die Sperre (Desktop bricht den Start ab, 02.10.2026 21:08), erkennt der
-# Nächste das an der PID in der Sperre: tot heißt sofort übernehmen.
+# laufenden Server weg (02.10.2026). Verwaist die Sperre (Desktop bricht den Start
+# ab, 02.10.2026 21:08), erkennt der Nächste das an der PID in der Sperre: tot
+# heißt sofort übernehmen.
+#
+# Wer die Sperre hält, entscheidet allein das exklusive Anlegen von $LOCK/pid:
+# `set -C` lässt die Shell selbst mit O_CREAT|O_EXCL öffnen. Bis 0.11.0 entschied
+# `mkdir "$LOCK"` — auf ubuntu-latest kamen damit zwei von drei gleichzeitigen
+# Starts durch (CI 17.11.2026, Ablaufspur: beide mkdir mit Exit 0), weil das
+# mkdir des Systems ein vorhandenes Verzeichnis nicht verlässlich meldet.
 mkdir -p "$BASE"
 LOCK="$BASE/.install.lock"
 HALTE_ICH=0
 KIND=""
+
+nimm_sperre() {
+  mkdir -p "$LOCK" 2>/dev/null || return 1
+  ( set -C; printf '%s\n' "$$" > "$LOCK/pid" ) 2>/dev/null
+}
 
 gib_frei() {
   if [ "$HALTE_ICH" = 1 ]; then
@@ -93,7 +104,7 @@ bei_abbruch() {
 }
 trap bei_abbruch TERM INT HUP
 
-# Sperre eines toten Halters oder (ohne PID) eines abgestürzten Starts
+# Sperre eines toten Halters oder (leere PID-Datei) eines abgestürzten Starts
 # (älter als 10 min) wegräumen. mv ist atomar: nur einer von zwei gleichzeitigen
 # Aufräumern gewinnt.
 sperre_verwaist() {
@@ -101,12 +112,12 @@ sperre_verwaist() {
   if [ -n "$pid" ]; then
     ! kill -0 "$pid" 2>/dev/null
   else
-    [ -n "$(find "$LOCK" -maxdepth 0 -mmin +10 2>/dev/null)" ]
+    [ -n "$(find "$LOCK/pid" -maxdepth 0 -mmin +10 2>/dev/null)" ]
   fi
 }
 
 versuche=0
-while ! mkdir "$LOCK" 2>/dev/null; do
+while ! nimm_sperre; do
   if sperre_verwaist; then
     if mv "$LOCK" "$LOCK.alt.$$" 2>/dev/null; then
       rm -rf "$LOCK.alt.$$"
@@ -120,10 +131,7 @@ while ! mkdir "$LOCK" 2>/dev/null; do
   fi
   sleep 0.2
 done
-if [ -d "$LOCK" ] && [ "$versuche" -le 900 ]; then
-  printf '%s\n' "$$" > "$LOCK/pid"
-  HALTE_ICH=1
-fi
+[ "$versuche" -le 900 ] && HALTE_ICH=1
 
 if installiert; then  # ein paralleler Start war schneller
   gib_frei

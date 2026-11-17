@@ -6,6 +6,10 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- `.mcpb` bundle start: the first-start install lock no longer relies on `mkdir` being exclusive. On systems whose `mkdir` reports an existing directory unreliably (uutils coreutils, e.g. current Ubuntu), two simultaneous cold starts could both install. The lock is now the exclusive creation of its PID file by the shell itself. macOS was not affected.
+
 ## [0.11.0] — 2026-11-17
 
 ### Added

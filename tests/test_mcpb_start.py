@@ -228,6 +228,40 @@ def test_parallele_kaltstarts_installieren_nur_einmal(tmp_path):
     )
 
 
+def test_sperre_haelt_auch_wenn_mkdir_nicht_exklusiv_ist(tmp_path):
+    """CI 17.11.2026 (ubuntu-latest, Lauf 44075170173): zwei Starts kamen beide durch
+    `mkdir "$LOCK"` und installierten gleichzeitig. Die Ablaufspur zeigte beide
+    mkdir mit Exit 0, keiner lief durch die Warteschleife — das mkdir des Runners
+    meldet ein schon vorhandenes Verzeichnis nicht verlässlich. Die Sperre darf
+    deshalb nicht an der Exklusivität eines externen Programms hängen. Hier ein
+    mkdir, das sich immer wie `mkdir -p` verhält: so ist das Rennen sicher, nicht
+    nur unter Last."""
+    fake_bin = tmp_path / "fakebin"
+    fake_bin.mkdir()
+    mkdir = fake_bin / "mkdir"
+    mkdir.write_text('#!/bin/sh\nexec /bin/mkdir -p "$@"\n')
+    mkdir.chmod(0o755)
+    run_sh = _bundle(tmp_path, "9.9.1")
+    env = _env(tmp_path, STUB_INSTALL_SLEEP="1")
+    env["PATH"] = f"{fake_bin}:{env['PATH']}"
+    procs = [
+        subprocess.Popen(
+            ["/bin/sh", str(run_sh)], env=env, stdout=subprocess.PIPE, text=True
+        )
+        for _ in range(3)
+    ]
+    outs = [p.communicate(timeout=60)[0].strip() for p in procs]
+    assert outs == ["SERVER ==9.9.1"] * 3
+    marken = [
+        z
+        for z in (tmp_path / "calls.log").read_text().splitlines()
+        if z.startswith("install-")
+    ]
+    assert marken == ["install-start", "install-end"], (
+        f"Installationen überlappen: {marken}"
+    )
+
+
 def test_installation_fragt_pypi_frisch(tmp_path):
     """Direkt nach einem Release kennt uvs zwischengespeicherter Index die neue
     Version noch nicht: 'there is no version of chemdraw-mcp==0.4.3' (Desktop-Log
