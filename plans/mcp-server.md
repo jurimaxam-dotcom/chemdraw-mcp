@@ -58,6 +58,11 @@
 
 ### Weiter bei (16.11.2026, 22:29) — NEUER UMFANG: komplette UI-Überarbeitung VOR dem Release
 
+**STAND 17.11.2026, 11:20 – Thema abgeschlossen: v0.11.0 veröffentlicht und abgenommen, Session geschlossen.**
+- Bündel-Abnahme 0.11.0 bestanden (`cc62ed5`, `docs/evidence/bundle-abnahme-2026-11-17-0-11-0.md`); Extension 0.11.0 bleibt in Desktop installiert und ausgeschaltet, `chemdraw` und `chemdraw-pharma` laufen aus dem Repo.
+- Vermarktung ist frei (Jay 11:00) und arbeitet selbst weiter (Session auf Fable 5.2, Faden `20261117-105714-weitergeleitet-aus-chemdraw-mcp`); Jay 11:05: Bluesky und Show HN heute, Bluesky zuerst. Berichte gehen ab jetzt direkt an Jay.
+- **Offen beim Bau (nicht dringend):** Schalter für einen Marketing-Lauf der Desktop-Probe in `run.sh` (englische Prompts je Tool, Seitenleiste zu, Werkzeugzeile mit Gerätename nicht im Bild, 3D als ein Bild; Bedarf: `chemdraw-vermarktung/docs/material-desktop-0.11.0-2026-11-17.md`, letzter Abschnitt) · Erstinstallation des Bündels in leerem Profil (schaltet Desktop die Extension im ersten Chat ein?) · Dunkel-Prüfungen `karte`/`scaffold.bg` in `host.e2e.mjs` einmal rot sehen · CLAUDE.md nennt 57 Identitätseinträge, `stoffe.json` hat 67 mit InChIKey.
+
 **STAND 17.11.2026, 11:05 – v0.11.0 ist veröffentlicht.** Jay 10:55: „ich gebe dir meine Vollmacht, alles sauber zu installieren und zu veröffentlichen“ → `pypi`-Freigabe per API erteilt. Lauf 44058615709: `check`, `build`, `publish`, `registry`, `bundle` grün. PyPI 0.11.0 (200), Release-Assets `chemdraw-mcp-0.11.0.mcpb` und `chemdraw-mcp-pharma-0.11.0.mcpb`, Registry `isLatest` 0.11.0. Frische Umgebung: `uvx --from chemdraw-mcp==0.11.0 chemdraw-doctor` „every check passed“, Panel-Datei im Wheel hat denselben SHA-256 wie `chemdraw_tool/ui/dist` im Repo (`8f3f3a85…`).
 - **Läuft:** Bündel-Abnahme in Desktop durch Codex (Faden-Thema `bundle-abnahme-0-11`): Update der ausgeschalteten Extension 0.10.0 → 0.11.0, Panel aus der Extension, danach wieder ausschalten. Ergebnis nach `docs/evidence/` schreiben.
 - **Geparkt:** Meldung an die Vermarktung (`~/.claude/tisch/geparkt/chemdraw-vermarktung.md`), geht mit `schwester phase frei` hinüber – Jays Entscheidung.
