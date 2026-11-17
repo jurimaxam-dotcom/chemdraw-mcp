@@ -1,5 +1,21 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Regeln und Sperre für das öffentliche Repo (17.11.2026, abgeschlossen)
+
+- **Erledigt:** `NOTICE` (Inhaber: Handle, Jays Wahl) und `THIRD_PARTY_LICENSES` um die sieben Panel-Pakete ergänzt, beide in
+  sdist und Wheel, `tests/test_lizenzhinweise.py` (`66640d8`). Regelabschnitt „Public repo: what may be committed“ in `CLAUDE.md`.
+  Sperre `scripts/oeffentlich_pruefen.py` mit 26 Fällen in `tests/test_oeffentlich_pruefen.py`, ausgeführt von den globalen
+  Hooks bei Commit, Merge, Commit-Nachricht und Push (`62ab3b4`, `13822a3`, `f47c1ee`; CI grün bei `f47c1ee`). Alle Wege in
+  einem Wegwerf-Repo ausprobiert: Commit, Nachricht, Schlüssel, Fast-Forward-Merge + Push, Merge ohne Fast-Forward,
+  Worktree auf altem Stand, sauberer Commit + Push.
+- **Entschieden (Jay, 17.11.):** Die Historie wird nicht umgeschrieben; die Regeln gelten ab jetzt. Vollbild-Aufnahmen der
+  Abnahme vom 07.11. liegen nicht mehr im Repo (`49f94d4`), der Handtest bleibt als Text.
+- **Für jeden Helfer:** ein neues oder geändertes Bild committet nur, wer es angesehen hat —
+  `OEFFENTLICH_GESEHEN="pfad:pfad" git commit …`. Textbefunde haben keine Freigabe: Zeile ändern.
+- **Offen, nur Jays Hand:** in den GitHub-Kontoeinstellungen unter Emails die beiden Schalter für private Commit-Adressen
+  setzen (die Sperre sieht Commits nicht, die GitHub über den Merge-Knopf selbst anlegt).
+- **Nächster Schritt:** keiner aus diesem Thema; weiter mit dem Block darunter.
+
 ## Feed-Clips mit 60 Bildern/s (Tisch-Faden 20261117-121756, Auftrag der Vermarktung, 17.11.2026)
 
 - **Gebaut:** `readme-gifs.mjs --feed szene@molekül …` nimmt mit gesteuerter Uhr auf (Playwright `context.clock` greift auch im
