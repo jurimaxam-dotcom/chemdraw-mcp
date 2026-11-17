@@ -197,6 +197,30 @@ for (const [file, name, input, opt = {}] of A_FAELLE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, opt.klick, opt]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, opt.klick, opt]);
 }
+// Panelbilder der Nutzerdoku (docs/images/, nur hell; nach dem Panel-Umbau 17.11.2026 neu):
+// SHOTS_ONLY=doku-* node src/host/panel-shots.mjs <ordner>, dann <name>-light.png nach docs/images/<datei>.png.
+// Breite und Skalierung wie die Bilder vom 10.11.: 700-px-Panel, als 1400 px (scale 2), 700 px (scale 1) oder
+// 1000 px (scale 1000/700, die zwei Proteinbilder) gespeichert.
+// klicks laufen nacheinander, warte ist der Selektor, der danach stehen muss (sonst rot statt Ladebild).
+const DOKU = [
+  // docs/images/panel-chair.png
+  ["doku-sessel", "generate_molecule", { name_or_smiles: "beta-D-glucose" }, 700,
+    { scale: 2, klicks: ["[data-view-axis] button:has-text('Chair')"], warte: "[data-view-axis] button[aria-pressed='true']:has-text('Chair')" }],
+  // docs/images/panel-mechanism-step1.png
+  ["doku-mechanismus-schritt1", "generate_mechanism", { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] }, 700,
+    { scale: 2, klicks: ["[role=tab]:has-text('Step by step')"], warte: "[role=tab][aria-selected='true']:has-text('Step by step')" }],
+  // docs/images/panel-reaction.png und panel-reaction-applied.png
+  ["doku-reaktion", "generate_reaction", { reactants: ["hydrogen", "oxygen"], products: ["water"] }, 700,
+    { scale: 2, warte: "[data-testid='balance-badge'][data-state='unbalanced']" }],
+  ["doku-reaktion-angewandt", "generate_reaction", { reactants: ["hydrogen", "oxygen"], products: ["water"] }, 700,
+    { scale: 1, klicks: ["button:has-text('Apply coefficients')"], warte: "[data-testid='balance-badge'][data-state='balanced']" }],
+  // docs/images/protein-panel-lysozyme.png und panel-igg-scheme.png (Mol*: warten, bis die Engine steht)
+  ["doku-protein-lysozym", "generate_protein_or_antibody", { name: "lysozyme" }, 700,
+    { scale: 1000 / 700, warte: "[data-protein-viewer='ready']", nachlauf: 2500 }],
+  ["doku-igg-schema", "generate_protein_or_antibody", { name: "trastuzumab" }, 700,
+    { scale: 1000 / 700, klicks: ["[role=tab]:has-text('Scheme')"], warte: "svg[data-igg-scheme]" }],
+];
+for (const [file, name, input, width, opt] of DOKU) CASES.push([file, name, input, width, undefined, undefined, { ...opt, themes: ["light"] }]);
 const fixedCtx = (width, height) => ({ displayMode: "fullscreen", availableDisplayModes: ["inline", "fullscreen"],
   platform: "desktop", containerDimensions: { width, height } });
 const inlineCtx = (width) => ({ displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"],
@@ -254,8 +278,8 @@ try {
     const result = await client.callTool({ name, arguments: input });
     if (result.isError && !opt.fehler) { console.log(`✘ ${file}: ${JSON.stringify(result.content).slice(0, 300)}`); continue; }
     const html = (await client.readResource({ uri: tool._meta.ui.resourceUri })).contents[0].text;
-    for (const colorScheme of ["light", "dark"]) {
-      const page = await browser.newPage({ viewport: { width: width + 20, height: 1400 }, colorScheme });
+    for (const colorScheme of opt.themes || ["light", "dark"]) {
+      const page = await browser.newPage({ viewport: { width: width + 20, height: 1400 }, colorScheme, deviceScaleFactor: opt.scale || 1 });
       await page.setContent('<body style="margin:0;background:#888"></body>');
       await page.addScriptTag({ path: out });
       await page.exposeFunction("__callTool", (req) => client.callTool(req));
@@ -272,6 +296,13 @@ try {
         await frame.locator(klick).first().click();
         await page.waitForTimeout(2500);
       }
+      // Doku-Bilder: Klickfolge, dann muss der Zielzustand stehen — fehlt ein Element, ist der Fall rot.
+      for (const k of opt.klicks || []) {
+        await frame.locator(k).first().click({ timeout: 30000 });
+        await page.waitForTimeout(800);
+      }
+      if (opt.warte) await frame.locator(opt.warte).first().waitFor({ timeout: 60000 });
+      if (opt.nachlauf) await page.waitForTimeout(opt.nachlauf);
       if (fixed) {
         const m = await frame.evaluate(isA ? aMetrics : plotMetrics);
         await page.setViewportSize({ width: width + 20, height: fixed + 20 });

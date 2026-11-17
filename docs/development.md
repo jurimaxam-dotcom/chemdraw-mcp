@@ -38,12 +38,17 @@ guard which tool the model picks.
 
 The README images in `assets/` come from `scripts/readme_bilder.py`, not from
 hand edits; `tests/test_readme.py` pins their hashes.
-The three panel GIFs (`demo-views`, `demo-3d`, `demo-molecule`) are recorded in the
-panel test host at 600 px, each in a light and a dark version (`assets/demo-<scene>-light.gif`,
-`-dark.gif`; the README picks one via `<picture>`/`prefers-color-scheme`):
-`npm --prefix chemdraw_tool/ui run readme:gifs` records all scenes in both themes;
+The panel GIFs are recorded in the panel test host (600 px wide, `hero-capsaicin` 800 px):
+`npm --prefix chemdraw_tool/ui run readme:gifs` records `demo-views`, `demo-3d` and
+`demo-molecule` in a light and a dark version (`assets/demo-<scene>-light.gif`, `-dark.gif`;
+the README picks one via `<picture>`/`prefers-color-scheme`) plus `hero-capsaicin`,
+`hero-caffeine-3d` and `lysozyme-cartoon` in light only. The README shows `demo-views`,
+`demo-3d` and `lysozyme-cartoon`.
 `-- views 3d --theme dark` limits scenes and theme, `--molecule NAME` swaps the molecule.
-The two hero scenes share one fixed 600×880 crop. The script needs network and turns red
+The panel screenshots in `docs/images/` (`panel-*.png`, `protein-panel-lysozyme.png`) come from
+`SHOTS_ONLY='doku-*' node src/host/panel-shots.mjs <folder>` in `chemdraw_tool/ui`; copy each
+`doku-*-light.png` by hand to its name under `docs/images/` (the mapping is noted in the script).
+The two hero scenes share one fixed 600×936 crop. The script needs network and turns red
 on width, duration, size, frame rate, a cut-off panel part or unequal hero sizes. The old
 names `demo-views.gif`, `demo-3d.gif` and `demo-molecule.gif` stay as copies of the light
 versions because PyPI and older release notes link them.

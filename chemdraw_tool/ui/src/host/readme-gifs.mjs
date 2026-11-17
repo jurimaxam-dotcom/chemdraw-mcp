@@ -40,9 +40,10 @@ const THEMES = {
   light: { hintergrund: "#fafbf9", zeiger: "background:rgba(30,36,33,.28);border:2px solid #1e2421;box-shadow:0 1px 4px rgba(0,0,0,.25)" },
   dark: { hintergrund: "#202724", zeiger: "background:rgba(240,240,240,.45);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.6)" },
 };
-// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 880 px = 3D-Panel
-// mit Kuhle, Achse, Kennwerten, Drag-Hinweis und Fußzeile (seit E3) plus 12 px Rand unten wie oben.
-const HERO = { breite: BREITE_DESKTOP, hoehe: Number(process.env.HERO_HOEHE || 880) };
+// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 936 px = 3D-Panel
+// nach dem Umbau 17.11.2026 (Bühne über die volle Breite, Kennwerte darunter, Fußzeile; endet bei
+// ~923 px) plus 12 px Rand unten wie oben; vorher 880.
+const HERO = { breite: BREITE_DESKTOP, hoehe: Number(process.env.HERO_HOEHE || 936) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
 // Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert), --video
@@ -437,7 +438,7 @@ const SZENEN = {
   // Hero A: Capsaicin — fertige Struktur, Maus über Ether und Amid (Atome leuchten), dann Export-Knopf.
   // Die beiden Chips liegen nebeneinander: der Weg kreuzt keinen dritten Chip, der sonst kurz aufleuchtet.
   "hero-capsaicin": {
-    ...README_010, datei: "hero-capsaicin", breite: 800, hoehe: 692,
+    ...README_010, datei: "hero-capsaicin", breite: 800, hoehe: 730, // 730 seit dem Umbau 17.11. (Export-Knopf endet bei ~717 px; vorher 692)
     tool: "generate_molecule", args: { name_or_smiles: "capsaicin" },
     async ablauf({ frame, page, halten, zeigeAuf, zeiger, mitte, imBild }) {
       // Chip-Text samt Zähler („Amide1“): Klasse + Teiltext, Eindeutigkeit wird unten geprüft
@@ -463,7 +464,7 @@ const SZENEN = {
   // Hero B (Kandidat): Koffein — 2D, Klick auf 3D, ein Drehzug. 3D ist ein Quadrat über die volle
   // Panelbreite (styles.css), flacher als hoch geht deshalb nur mit Abschneiden — also 600 breit.
   "hero-caffeine-3d": {
-    ...README_010, datei: "hero-caffeine-3d", breite: 600, hoehe: 860, fps: 12,
+    ...README_010, datei: "hero-caffeine-3d", breite: 600, hoehe: HERO.hoehe, fps: 12, // 3D-Panel seit dem Umbau 17.11. wie die Hero-Szenen (vorher 860)
     tool: "generate_molecule", args: { name_or_smiles: "caffeine" },
     async ablauf(werkzeug) {
       const { frame, halten, klick, mitte, imBild } = werkzeug;

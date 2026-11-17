@@ -11,10 +11,29 @@
 [![Release](https://img.shields.io/github/v/release/jurimaxam-dotcom/chemdraw-mcp)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/chemdraw-mcp)](https://pypi.org/project/chemdraw-mcp/)
+[![GitHub stars](https://img.shields.io/github/stars/jurimaxam-dotcom/chemdraw-mcp?style=flat&label=stars)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers)
 
-**Draw chemical structures in Claude Desktop, explore them in the chat, and export PNG or SVG.**
+<p align="center"><b>Ask Claude for a molecule. Get a drawing you can turn, click and export.</b></p>
 
-An MCP server for chemistry, with interactive panels in Claude Desktop.
+chemdraw-mcp gives Claude Desktop a chemistry panel. Type *"Draw caffeine"* and
+the structure appears in the chat: a clean skeletal formula, a 3D model you
+rotate with the mouse, the PubChem data sheet one tab away, PNG and SVG on
+disk. The same works for reaction mechanisms with electron-flow arrows,
+proteins and antibodies from the PDB, spectra, TLC plates and titration
+curves.
+
+<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D button swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
+</p>
+<p align="center"><sub>Prompt: <i>"Draw thalidomide"</i>. Left: skeletal formula, all hydrogens, the (S) isomer, the data sheet. Right: the same molecule in 3D, turned by dragging.</sub></p>
+
+- **Interactive, not a picture.** 13 of the 18 tools open a panel in the chat: switch views, pin a functional group, step through a mechanism, rotate a protein.
+- **Drawn on your machine.** RDKit renders every structure locally. A SMILES you type stays there; only its InChIKey, a hash, is looked up.
+- **Made for studying.** A Study tab that covers name and groups, follow-up buttons that ask Claude about what you see, and Anki cards with the structure on the front.
+- **Checked before it ships.** About 10,000 tests, 67 names pinned to their InChIKey, and a scripted run in the real Claude Desktop before every release.
+- **Free.** No additional API key, no ChemDraw licence. Apache-2.0; unofficial, not affiliated with Revvity.
 
 **Install in Claude Desktop (macOS, Linux):** download
 `chemdraw-mcp-<version>.mcpb` from the
@@ -26,23 +45,18 @@ double-click it, confirm, and restart Claude Desktop once.
 uv tool install chemdraw-mcp && chemdraw-install
 ```
 
-No additional API key or ChemDraw licence. Structures are drawn locally with
-RDKit; names, data sheets and proteins are looked up online. Free and open
-source (Apache-2.0); unofficial, not affiliated with Revvity.
-
-<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
-<p align="center">
-  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
-  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D chip swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
-</p>
+Names, data sheets and proteins are looked up online; drawing from a SMILES
+works offline. If chemdraw-mcp saves you an afternoon of drawing, a
+[star on GitHub](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers) helps other students find it.
 
 ## Quick start
 
 1. Install as above and restart Claude Desktop once.
 2. Open a **new chat** and ask *"Draw caffeine"*.
-3. In the panel, hover a functional group, click **3D** for a rotatable
-   model, **Data** for the PubChem data sheet, or **Export PNG** to save the
-   drawing to `~/ChemDraw-Output/png/`.
+3. In the panel, click a functional group to pin it, switch to **3D** for a
+   rotatable model, **Data** for the PubChem data sheet or **Study** to quiz
+   yourself, use **Continue in chat** for a follow-up, or **Export PNG** to
+   save the drawing to `~/ChemDraw-Output/png/`.
 
 Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
 rotatable in the panel:
@@ -105,7 +119,7 @@ Draw hydrogen + oxygen → water
 as a reaction scheme
 ```
 
-<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-reaction.png" alt="Reaction panel: hydrogen plus oxygen to water, badge 'not balanced: left: +1 O', the suggestion 2 H2 + O2 → 2 H2O and the Apply coefficients button" width="400">
+<img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/docs/images/panel-reaction.png" alt="Reaction panel: hydrogen plus oxygen to water, the note 'not balanced: left: +1 O' with the suggestion 2 H2 + O2 → 2 H2O and the Apply coefficients button" width="400">
 
 </td>
 </tr>

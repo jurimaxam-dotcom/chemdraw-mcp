@@ -21,10 +21,11 @@ direct hit is cross-checked against the other source (free form over salt
 unless the name says salt, the more defined stereo form wins); a pinned
 identity test checks 67 inputs against their InChIKey, and family names such
 as "xylene" return an isomer picker instead of a silent guess. The panel
-shows properties, functional groups and the Lipinski rule of five, with
-buttons for the data sheet, PNG export, an Anki card and a rotatable 3D
-model; when the name was found under another spelling, a "Found as" line
-says which. Fischer and Haworth projections, the chair conformation of a
+shows formula, molar mass and CAS number (with copy buttons) and the
+functional groups; tabs switch between Structure, Data (the PubChem data
+sheet) and Study, the drawing bar offers a rotatable 3D model, and the footer
+holds PNG export and an Anki card. When the name was found under another
+spelling, a "Found as" line says which. Fischer and Haworth projections, the chair conformation of a
 cyclohexane or pyranose ring and all-H drawings are a `view` option and
 panel buttons.
 
@@ -184,7 +185,8 @@ conditions above and below a forward (→), equilibrium (⇌) or retrosynthetic
 
 **Mechanisms — three families, drawn with your molecules.** `generate_mechanism`
 draws SN2, SN1 and Fischer esterification with the substrates you name, with
-curved electron-flow arrows and **Next / Back** through the intermediates. SN2
+curved electron-flow arrows, an **Overview** of all steps and a **Step by step**
+tab with **Back / Next** through the intermediates. SN2
 takes a methyl, primary or secondary alkyl halide with one anionic nucleophile
 (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻) and inverts a stereocentre; SN1 takes a
 tertiary or benzylic halide with water, an alcohol or one of those anions (an
@@ -199,8 +201,9 @@ reason. Other mechanisms are not available.
 <p align="center"><img src="../assets/wave1-mechanisms.png" alt="Second step of SN1, SN2 and Fischer esterification, each with curved electron-flow arrows, drawn from the step SVGs that generate_mechanism returns" width="960"></p>
 
 **3D.** `generate_3d` embeds one conformer (ETKDGv3, then MMFF or UFF), opens a
-ball-and-stick panel you drag to rotate and writes an SDF file; the same model
-is behind the `3D` button of every molecule panel:
+ball-and-stick panel you drag to rotate (with **Reset view**, formula and molar
+mass) and writes an SDF file; the same model is behind the `3D` button of every
+molecule panel:
 
 <p align="center"><img src="../assets/wave1-3d.png" alt="Ball-and-stick projection of the caffeine conformer that generate_3d embeds; the panel shows the same atoms and lets you rotate them" width="420"></p>
 
@@ -241,9 +244,10 @@ species across pH 0–14:
   (ChEBI classification, UniProt entries; for a protein name a UniProt data
   sheet with function, EC number, length, mass and PDB IDs) or `pathway`
   (KEGG pathways).
-- **`lookup_molecule_data`** builds the PubChem + GHS data sheet in the panel.
-  The molecule panel's **Data** button calls it too, so a drawn structure is
-  one click away from its data sheet.
+- **`lookup_molecule_data`** opens the molecule panel with its **Data** tab
+  open: the PubChem + GHS data sheet, with structure, 3D and export one click
+  away. The **Data** tab of every molecule panel calls it too, so a drawn
+  structure is one click away from its data sheet.
 - **`predict_spectrum`** lists the IR bands a structure should show (intensity,
   band shape), what a measured wavenumber could belong to, and how many ¹H
   signals to expect with their integral ratio. It is rule-based: no chemical
@@ -277,8 +281,8 @@ identity reactions and spectrum band assignments, with tags and
 `Parent::Child` subdecks. Re-exporting a deck updates its cards instead of
 duplicating them. With the AnkiConnect add-on the cards go straight into the
 running Anki. `curated_deck_id` picks a small bundled starter deck instead of
-your own cards. The molecule panel's **Add to Anki** button adds a single
-structure card.
+your own cards. The panel previews every card with front, back and picture.
+The molecule panel's **Add to Anki** button adds a single structure card.
 
 <p align="center"><img src="../assets/anki-card.png" alt="An Anki card from export_anki_deck: the front asks to name the aspirin structure, the back repeats the structure and answers Aspirin (acetylsalicylic acid)" width="760"></p>
 

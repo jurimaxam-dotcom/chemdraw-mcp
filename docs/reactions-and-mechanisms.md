@@ -35,8 +35,8 @@ The panel counts atoms and charge on both sides of the drawn equation
 
 | Prompt | Panel |
 |---|---|
-| *"Draw H2 + O2 → H2O as a reaction scheme"* | <img src="images/panel-reaction.png" alt="Badge 'not balanced: left: +1 O', suggestion 2 H2 + O2 → 2 H2O, Apply coefficients button" width="420"> |
-| click **Apply coefficients** | <img src="images/panel-reaction-applied.png" alt="2 H2 + O2 → 2 H2O with the badge balanced" width="420"> |
+| *"Draw H2 + O2 → H2O as a reaction scheme"* | <img src="images/panel-reaction.png" alt="Note 'not balanced: left: +1 O' with the suggestion 2 H2 + O2 → 2 H2O and the Apply coefficients button" width="420"> |
+| click **Apply coefficients** | <img src="images/panel-reaction-applied.png" alt="2 H2 + O2 → 2 H2O, marked balanced, with an Undo button" width="420"> |
 
 The badge only checks; it never changes the drawing on its own. If you ask
 for "a balanced equation", Claude often passes the coefficients itself, and

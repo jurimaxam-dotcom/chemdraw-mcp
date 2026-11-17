@@ -6,14 +6,31 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Continue in chat.** Under each panel, buttons send a ready follow-up to Claude (explain the structure, predict the IR bands, compare with a related compound, quiz me; explain this plot or spectrum). They appear only in hosts that let a panel send a message. Clicking a functional group pins it, so the buttons ask about that group; **Clear** releases it.
+- **Study tab** in the molecule panel: name, key facts and groups are covered for self-testing, with **Reveal all** and **Cover again**.
+- Four prompts in the `chemdraw` connector: *Study a compound*, *Practise a mechanism*, *Exam flashcards*, *Compare compounds*.
+- `batch_generate` panel: a grid of compact cards; a click opens the full molecule view of one structure, **Back to all structures** returns.
+- `export_anki_deck` panel: a preview of every card with front, back and picture.
+- `generate_3d` panel: formula and molar mass, computed from the structure itself (isotopes and charge count: D₂O shows 20.03 g/mol), and **Reset view**.
+- Mechanism panel: an **Overview** tab with all steps next to **Step by step**.
+
 ### Changed
+
+- **Panels redesigned on one shared frame.** Every panel now has the same order: a header with title, tabs and Expand; the picture across the full width; a facts row (formula, molar mass, CAS with copy buttons); the follow-up buttons; and a footer with a collapsible **Files** list instead of written-out paths, next to **Export PNG** and **Add to Anki**. The 3D model uses the full width and up to 720 px of height.
+- Lab graphics and the structure comparison use the full panel width and follow the dark theme; the written files stay light.
+- While a tool is still running, the panel shows a placeholder built from the request instead of "Waiting for data…".
+- Every tool carries a readable title and annotations for the host. `export_anki_deck` is marked as destructive because it updates existing notes in Anki; a host may ask for confirmation accordingly.
 
 - **`chemdraw-pharma` now adds only the pharmacy tools.** The second connector starts with a new profile, `pharma`: the seven tools the default profile lacks (`generate_scope_table`, `generate_calibration_curve`, `generate_pk_curve`, `generate_dose_response`, `calculate_solution`, `calculate_content`, `calculate_pharmacokinetics`) plus the panel's two internal helpers — 9 tools, 4 with a panel. Before, it started with the `full` profile, so with both connectors on the model saw 18 tools twice, and calls landed on either connector at random, each with its own permissions. Now both can be on at once and every tool appears once. If you used only `chemdraw-pharma`, enable `chemdraw` as well, or set `CHEMDRAW_PROFILE=full` in a config entry of your own. Re-run `./install.sh` or `chemdraw-install` to update an existing entry (`chemdraw-doctor` points out an old one); the extension bundle `chemdraw-mcp-pharma-<version>.mcpb` starts with `pharma` from this release on. The learning prompts stay with `chemdraw`.
 - Panel layout follows the size Claude reports. In the side panel and in full screen the drawing area grows to fill the height (2D, All H, 3D, protein stage) instead of staying 320 px tall, and the panel may use up to 1600 px of width. In the conversation nothing changes. Down to 320 px width no view scrolls sideways; a reaction scheme that would become too small stacks instead.
-- Molecule panel: an Expand button appears where the host offers a larger display and the panel sits in the conversation.
+- Every panel with a picture has an Expand button at the right of its header where the host offers a larger display and the panel sits in the conversation.
 
 ### Fixed
 
+- Spectra: labels of neighbouring bands sit above the curve instead of between the band walls.
+- Mechanisms: substrates with caged stereocentres (morphine with acetic acid, Fischer esterification) are drawn with your molecules instead of the textbook example.
 - Large results show their panel again. A big molecule (Vancomycin), a long batch or a comparison of large structures produced a tool result of 200,000 to over 1,000,000 characters, above the ~150,000 at which Claude Desktop stops showing the panel. Results now stay under 120,000: the text block carries compact instead of indented JSON, and a result that is still too large holds its images back, which the panel fetches piece by piece through a new internal tool, `load_panel_part` (never called by the model, like `save_png`). The held-back images are kept in `~/Library/Caches/chemdraw-mcp/panel-parts/` (`~/.cache/…` elsewhere; the last 200 results), so a reopened conversation still shows them after a restart. Default profile 18 tools (13 with a panel), full profile 25 (17). Smaller results are unchanged apart from the indentation.
 - All H view: hydrogens in bridged ring systems (morphine, camphor, adamantane, steroids) no longer land on top of each other or on a heavy atom. Crowded hydrogens are placed again around their atom; the heavy-atom skeleton stays where the skeletal formula has it, and drawings that were already clean do not change.
 - Molecule panel: for ring sugars the sentence explaining that the Fischer projection shows the open-chain form now appears under the Fischer view instead of under Haworth. Glycosides, which have no Fischer view, keep their explanation under Haworth.
