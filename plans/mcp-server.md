@@ -1,5 +1,14 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Codex-Handlauf abgeschlossen (17.11.2026)
+
+- **Nächster Schritt für diese Codex-Session:** kein Bauauftrag offen. Nach Kontext-Neustart nur neue Tisch-Aufträge prüfen; den Handlauf nicht wiederholen und Claudes laufende Aufnahme nicht übernehmen. Claude ist Owner der Folgearbeit.
+- **Erledigt:** alle 13 Punkte des zweiten Umbau-Handlaufs geprüft und als Bericht #2 im Faden `20261117-100913-umbau-handlauf-desktop-2` zugestellt. Alle drei 3D-Wege drehen mit echten Mausereignissen; Study zeichnet auch nach Expand; Batch Data → Structure → Phenol zeigt Pinned./Clear. Desktop-Lease freigegeben, keine Repo-Datei im Handlauf geändert.
+- **Belege und Befunde:** `/tmp/chemdraw-desktop-test/umbau-2026-11-17/bericht-2.md` und Bilder im selben Ordner. Anki ohne internes Expand-Symbol (nach Chatwechsel bestätigt), blasse Anki-Bilder, kleiner Proteinanschnitt nach Drehung; große Leerflächen in einigen Expand-Ansichten als Gestaltungsbefund. Befunde sind dem Owner gemeldet, nicht von Codex behoben oder freigegeben.
+- **Prüfmethoden:** sichtbarer Desktop-Handlauf mit `scripts/ax-claude.sh`, Vorher-/Nachherbilder bei 150-px-Mauszügen; vorhandene Expand-Schalter geöffnet und über Show here zurückgeführt. Keine neuen Prompts, Continue-Knöpfe oder Anki-Schreibaktionen. Keine weitere Prüfung zugesagt.
+- **Offene Fragen an Jay:** keine. **Wartezeiten:** keine. **Tisch-Fäden:** eigener Auftrag `20261117-100913-umbau-handlauf-desktop-2` beantwortet; keine offene Rückfrage. Andere Plan-/Release-Fäden bleiben beim Owner und werden durch diesen Neustart nicht übernommen.
+
+
 ## GitHub-Einrichtung abgeschlossen (Do 12.11.2026, 15:58 laut `date`; die Uhrzeiten im Block darunter gehen rund 20 min vor)
 
 - **Jays Antwort auf „wofür den Bot noch?“ (12.11.):** „alles, was für uns einen Nutzen stiftet, einrichten und danach schließen wir das Thema ab“ — Kontingent ist ihm egal (Max-Abo).
