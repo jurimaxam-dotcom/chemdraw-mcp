@@ -12,8 +12,9 @@
   Abnahme vom 07.11. liegen nicht mehr im Repo (`49f94d4`), der Handtest bleibt als Text.
 - **Für jeden Helfer:** ein neues oder geändertes Bild committet nur, wer es angesehen hat —
   `OEFFENTLICH_GESEHEN="pfad:pfad" git commit …`. Textbefunde haben keine Freigabe: Zeile ändern.
-- **Offen, nur Jays Hand:** in den GitHub-Kontoeinstellungen unter Emails die beiden Schalter für private Commit-Adressen
-  setzen (die Sperre sieht Commits nicht, die GitHub über den Merge-Knopf selbst anlegt).
+- **Erledigt (17.11.2026):** in den GitHub-Kontoeinstellungen unter Emails stehen „Keep my email addresses private“ und
+  „Block command line pushes that expose my email“ auf On (am Bildschirm geprüft); Commits über den Merge-Knopf tragen
+  damit die noreply-Adresse.
 - **Nächster Schritt:** keiner aus diesem Thema; weiter mit dem Block darunter.
 
 ## Feed-Clips mit 60 Bildern/s (Tisch-Faden 20261117-121756, Auftrag der Vermarktung, 17.11.2026)
