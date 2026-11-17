@@ -598,14 +598,14 @@
     "titel": "Species fraction α"
    },
    {
-    "name": "Spezies neutral",
+    "name": "Spezies neutral (Legende nennt die Säureform)",
     "typ": "staticText",
-    "titel": "R–COOH (neutral)"
+    "eines": ["COOH", "HA", "(neutral)"]
    },
    {
-    "name": "Spezies Anion",
+    "name": "Spezies Anion (Legende nennt das Carboxylat)",
     "typ": "staticText",
-    "titel": "R–COO⁻ (Anion)"
+    "eines": ["COO⁻", "A⁻", "(Anion)", "COO-"]
    },
    {
     "name": "Knopf Export as PNG vorhanden",

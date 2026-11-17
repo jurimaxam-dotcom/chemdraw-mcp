@@ -21,6 +21,11 @@ final class StufeB: ProbeFall {
     else if let t = s["beginnt"] as? String { format = "title BEGINSWITH %@ OR label BEGINSWITH %@ OR value BEGINSWITH %@"; wert = t }
     else if let t = s["enthaelt"] as? String { format = "title CONTAINS[c] %@ OR label CONTAINS[c] %@ OR value CONTAINS[c] %@"; wert = t }
     let q = panel.descendants(matching: typ)
+    // "eines": Text, den das Modell mitbestimmt (Legende aus seinen Argumenten) – eine der Schreibweisen genügt.
+    if let liste = s["eines"] as? [String], !liste.isEmpty {
+      let teile = liste.map { NSPredicate(format: "title CONTAINS[c] %@ OR label CONTAINS[c] %@ OR value CONTAINS[c] %@", $0, $0, $0) }
+      return q.matching(NSCompoundPredicate(orPredicateWithSubpredicates: teile)).firstMatch
+    }
     if format.isEmpty { return q.firstMatch }
     return q.matching(NSPredicate(format: format, wert, wert, wert)).firstMatch
   }
