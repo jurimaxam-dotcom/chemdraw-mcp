@@ -85,12 +85,19 @@ final class StufeB: ProbeFall {
         // Antwortfeld über dem Chat, und ein Klick am Rand trifft dann das Falsche.
         let fenster = app.windows.firstMatch.frame
         let mitte = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-        var runden = 0, still = 0
+        var runden = 0, still = 0, ruettler = 0
         while runden < 25 {
           let vorher = el.frame.midY
           let abstand = vorher - fenster.midY
-          if abs(abstand) < fenster.height * 0.22 && el.isHittable { break }
-          mitte.scroll(byDeltaX: 0, deltaY: max(-400, min(400, -abstand)))
+          let mittig = abs(abstand) < fenster.height * 0.22
+          if mittig && el.isHittable { break }
+          // Mittig und trotzdem nicht treffbar (gemessen 17.11.2026, Batch-Detail): nach einem Höhenwechsel
+          // des Panels meldet Desktop für den Chat-Text darunter noch die alten Rahmen, der Treffertest
+          // landet dann in einer Tabellenzeile, die im Bild 300 px tiefer steht. Ein spürbarer Rollschritt
+          // lässt den Baum neu melden; höchstens viermal, abwechselnd hin und zurück.
+          if mittig { if ruettler >= 4 { break }; ruettler += 1 }
+          let schritt: CGFloat = mittig ? (ruettler % 2 == 1 ? -160 : 160) : max(-400, min(400, -abstand))
+          mitte.scroll(byDeltaX: 0, deltaY: schritt)
           runden += 1; Thread.sleep(forTimeInterval: 0.4)
           // Am Anfang oder Ende des Chats bewegt sich nichts mehr: dann reicht "treffbar". Erst nach
           // drei Runden ohne Bewegung aufgeben – direkt nach dem Rollen ist der Rahmen oft noch der alte.
