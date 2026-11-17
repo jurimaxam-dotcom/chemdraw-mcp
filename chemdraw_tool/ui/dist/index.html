@@ -168,9 +168,22 @@ hostContext: ${JSON.stringify(s,null,2)}`}function S2({app:e,hostContext:t,child
 Third-party software bundled with chemdraw-mcp
 ==============================================
 
-The protein panel (chemdraw_tool/ui/dist/index.html) embeds a cartoon renderer
-built from the packages below. Their code is loaded only when a protein is
-shown. Exact versions are pinned in chemdraw_tool/ui/package-lock.json.
+The panel (chemdraw_tool/ui/dist/index.html) is a single file that contains
+the packages below. Exact versions are pinned in
+chemdraw_tool/ui/package-lock.json. Python dependencies are not bundled; pip
+or uv installs them under their own licences.
+
+Panel:
+
+- React (react) 18.3.1 — MIT License — https://react.dev
+- React DOM (react-dom) 18.3.1 — MIT License
+- Scheduler (scheduler) 0.23.2 — MIT License
+- Zod (zod) 4.6.7 — MIT License — https://zod.dev
+- MCP TypeScript SDK (@modelcontextprotocol/client) 2.3.0 — Apache License 2.0
+- MCP TypeScript SDK (@modelcontextprotocol/core) 2.3.0 — Apache License 2.0
+- MCP Apps SDK (@modelcontextprotocol/ext-apps) 2.0.3 — MIT License
+
+Protein cartoon renderer, loaded only when a protein is shown:
 
 - Mol* (molstar) 5.13.1 — MIT License — https://molstar.org
   Sehnal D. et al., "Mol* Viewer: modern web app for 3D visualization and
@@ -473,7 +486,276 @@ rxjs — Apache License 2.0
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
+-------------------------------------------------------------------------------
+react, react-dom, scheduler — MIT License
+-------------------------------------------------------------------------------
+MIT License
+
+Copyright (c) Facebook, Inc. and its affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+zod — MIT License
+-------------------------------------------------------------------------------
+MIT License
+
+Copyright (c) 2025 Colin McDonnell
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+@modelcontextprotocol/client, core, ext-apps — licence file of the MCP project
+-------------------------------------------------------------------------------
+The MCP project is undergoing a licensing transition from the MIT License to the Apache License, Version 2.0 ("Apache-2.0"). All new code and specification contributions to the project are licensed under Apache-2.0. Documentation contributions (excluding specifications) are licensed under CC-BY-4.0.
+
+Contributions for which relicensing consent has been obtained are licensed under Apache-2.0. Contributions made by authors who originally licensed their work under the MIT License and who have not yet granted explicit permission to relicense remain licensed under the MIT License.
+
+No rights beyond those granted by the applicable original license are conveyed for such contributions.
+
+---
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to the Licensor for inclusion in the Work by the copyright
+      owner or by an individual or Legal Entity authorized to submit on behalf
+      of the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+---
+
+MIT License
+
+Copyright (c) 2024-2025 Model Context Protocol a Series of LF Projects, LLC.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Creative Commons Attribution 4.0 International (CC-BY-4.0)
+
+Documentation in this project (excluding specifications) is licensed under
+CC-BY-4.0. See https://creativecommons.org/licenses/by/4.0/legalcode for
+the full license text.
 */
 (()=>{var EZ=Object.create;var NT=Object.defineProperty;var DZ=Object.getOwnPropertyDescriptor;var BZ=Object.getOwnPropertyNames;var MZ=Object.getPrototypeOf,FZ=Object.prototype.hasOwnProperty;var UM=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),Of=(e,t)=>{for(var r in t)NT(e,r,{get:t[r],enumerable:!0})},RZ=(e,t,r,n)=>{if(t&&typeof t=="object"||typeof t=="function")for(let o of BZ(t))!FZ.call(e,o)&&o!==r&&NT(e,o,{get:()=>t[o],enumerable:!(n=DZ(t,o))||n.enumerable});return e};var kZ=(e,t,r)=>(r=e!=null?EZ(MZ(e)):{},RZ(t||!e||!e.__esModule?NT(r,"default",{value:e,enumerable:!0}):r,e));var Zq=UM(hc=>{"use strict";var Wo={Remove:"remove",Replace:"replace",Add:"add"},Gq=Symbol.for("__MUTATIVE_PROXY_DRAFT__"),qq=Symbol("__MUTATIVE_RAW_RETURN_SYMBOL__"),TS=Symbol.iterator,gc={mutable:"mutable",immutable:"immutable"},LE={};function Xx(e,t){return e instanceof Map?e.has(t):Object.prototype.hasOwnProperty.call(e,t)}function Nq(e,t){if(t in e){let r=Reflect.getPrototypeOf(e);for(;r;){let n=Reflect.getOwnPropertyDescriptor(r,t);if(n)return n;r=Reflect.getPrototypeOf(r)}}}function NE(e){return Object.getPrototypeOf(e)===Set.prototype}function zE(e){return Object.getPrototypeOf(e)===Map.prototype}function Lc(e){var t;return(t=e.copy)!==null&&t!==void 0?t:e.original}function ud(e){return!!In(e)}function In(e){return typeof e!="object"?null:e?.[Gq]}function UE(e){var t;let r=In(e);return r?(t=r.copy)!==null&&t!==void 0?t:r.original:e}function bu(e,t){if(!e||typeof e!="object")return!1;let r;return Object.getPrototypeOf(e)===Object.prototype||Array.isArray(e)||e instanceof Map||e instanceof Set||!!t?.mark&&((r=t.mark(e,gc))===gc.immutable||typeof r=="function")}function Hq(e,t=[]){if(Object.hasOwnProperty.call(e,"key")){let r=e.parent.copy,n=In(ld(r,e.key));if(n!==null&&n?.original!==e.original)return null;let o=e.parent.type===3,i=o?Array.from(e.parent.setMap.keys()).indexOf(e.key):e.key;if(!(o&&r.size>i||Xx(r,i)))return null;t.push(i)}if(e.parent)return Hq(e.parent,t);t.reverse();try{(function(r,n){for(let o=0;o<n.length-1;o+=1){let i=n[o];if(typeof(r=ld(cf(r)===3?Array.from(r):r,i))!="object")throw new Error(`Cannot resolve patch at '${n.join("/")}'.`)}})(e.copy,t)}catch{return null}return t}function cf(e){return Array.isArray(e)?1:e instanceof Map?2:e instanceof Set?3:0}function ld(e,t){return cf(e)===2?e.get(t):e[t]}function Zx(e,t,r){cf(e)===2?e.set(t,r):e[t]=r}function EE(e,t){let r=In(e);return(r?Lc(r):e)[t]}function sf(e,t){return e===t?e!==0||1/e==1/t:e!=e&&t!=t}function DE(e){if(e)for(;e.finalities.revoke.length>0;)e.finalities.revoke.pop()()}function Gp(e,t){return t?e:[""].concat(e).map((r=>{let n=`${r}`;return n.indexOf("/")===-1&&n.indexOf("~")===-1?n:n.replace(/~/g,"~0").replace(/\//g,"~1")})).join("/")}var Ode=Object.prototype.propertyIsEnumerable;function jq(e,t){let r;if(Array.isArray(e))return Array.prototype.concat.call(e);if(e instanceof Set)return NE(e)?Set.prototype.difference?Set.prototype.difference.call(e,new Set):new Set(e.values()):new(Object.getPrototypeOf(e)).constructor(e.values());if(e instanceof Map)return zE(e)?new Map(e):new(Object.getPrototypeOf(e)).constructor(e);if(t?.mark&&(r=t.mark(e,gc),r!==void 0)&&r!==gc.mutable){if(r===gc.immutable)return(function(n){let o=Object.create(Object.getPrototypeOf(n));return Reflect.ownKeys(n).forEach((i=>{let a=Reflect.getOwnPropertyDescriptor(n,i);a.enumerable&&a.configurable&&a.writable?o[i]=n[i]:(a.writable||(a.writable=!0,a.configurable=!0),(a.get||a.set)&&(a={configurable:!0,writable:!0,enumerable:a.enumerable,value:n[i]}),Reflect.defineProperty(o,i,a))})),o})(e);if(typeof r=="function")return r();throw new Error(`Unsupported mark result: ${r}`)}if(typeof e=="object"&&Object.getPrototypeOf(e)===Object.prototype){let n={};return Object.keys(e).forEach((o=>{n[o]=e[o]})),Object.getOwnPropertySymbols(e).forEach((o=>{Ode.call(e,o)&&(n[o]=e[o])})),n}throw new Error("Please check mark() to ensure that it is a stable marker draftable function.")}function Zs(e){e.copy||(e.copy=jq(e.original,e.options))}function Ng(e){if(!bu(e))return UE(e);if(Array.isArray(e))return e.map(Ng);if(e instanceof Map){let r=Array.from(e.entries()).map((([n,o])=>[n,Ng(o)]));return zE(e)?new Map(r):new(Object.getPrototypeOf(e)).constructor(r)}if(e instanceof Set){let r=Array.from(e).map(Ng);return NE(e)?new Set(r):new(Object.getPrototypeOf(e)).constructor(r)}let t=Object.create(Object.getPrototypeOf(e));for(let r in e)t[r]=Ng(e[r]);return t}function CS(e){return ud(e)?Ng(e):e}function cd(e){var t;e.assignedMap=(t=e.assignedMap)!==null&&t!==void 0?t:new Map,e.operated||(e.operated=!0,e.parent&&cd(e.parent))}function zq(){throw new Error("Cannot modify frozen object")}function Kx(e){return e&&typeof e=="object"&&!Object.isFrozen(e)}function Lg(e,t,r,n,o){if(!(Object.isFrozen(e)||ud(e)))switch(cf(e)){case 2:for(let[i,a]of e)Kx(i)&&Lg(i),Kx(a)&&Lg(a);e.set=e.clear=e.delete=zq;break;case 3:for(let i of e)Kx(i)&&Lg(i);e.add=e.clear=e.delete=zq;break;case 1:Object.freeze(e);for(let i of e)Kx(i)&&Lg(i);break;default:Object.freeze(e),Object.keys(e).forEach((i=>{let a=e[i];Kx(a)&&Lg(a)}))}}function VE(e,t){let r=cf(e);if(r===0)Reflect.ownKeys(e).forEach((n=>{t(n,e[n],e)}));else if(r===1){let n=0;for(let o of e)t(n,o,e),n+=1}else e.forEach(((n,o)=>t(o,n,e)))}function Wq(e,t,r){if(ud(e)||!bu(e,r)||t.has(e)||Object.isFrozen(e))return;let n=e instanceof Set,o=n?new Map:void 0;if(t.add(e),VE(e,((i,a)=>{var s;if(ud(a)){let c=In(a);Zs(c);let u=!((s=c.assignedMap)===null||s===void 0)&&s.size||c.operated?c.copy:c.original;Zx(n?o:e,i,u)}else Wq(a,t,r)})),o){let i=e,a=Array.from(i);i.clear(),a.forEach((s=>{i.add(o.has(s)?o.get(s):s)}))}}function Lde(e,t){let r=e.type===3?e.setMap:e.copy;e.finalities.revoke.length>1&&e.assignedMap.get(t)&&r&&Wq(ld(r,t),e.finalities.handledSet,e.options)}function BE(e){e.type===3&&e.copy&&(e.copy.clear(),e.setMap.forEach((t=>{e.copy.add(UE(t))})))}function ME(e,t,r,n){if(e.operated&&e.assignedMap&&e.assignedMap.size>0&&!e.finalized){if(r&&n){let o=Hq(e);o&&t(e,o,r,n)}e.finalized=!0}}function GE(e,t,r,n){let o=In(r);o&&(o.callbacks||(o.callbacks=[]),o.callbacks.push(((i,a)=>{let s=e.type===3?e.setMap:e.copy;if(sf(ld(s,t),r)){let c=o.original;o.copy&&(c=o.copy),BE(e),ME(e,n,i,a),Zx(s,t,c)}})),e.options.enableAutoFreeze&&o.finalities!==e.finalities&&(e.options.enableAutoFreeze=!1)),bu(r,e.options)&&e.finalities.draft.push((()=>{sf(ld(e.type===3?e.setMap:e.copy,t),r)&&Lde(e,t)}))}function Yx(e,t,r,n){let{pathAsArray:o=!0}=e.options.enablePatches;switch(e.type){case 0:case 2:return(function({original:i,copy:a,assignedMap:s},c,u,l,d){s.forEach(((m,f)=>{let h=ld(i,f),p=CS(ld(a,f)),g=m?Xx(i,f)?Wo.Replace:Wo.Add:Wo.Remove;if(sf(h,p)&&g===Wo.Replace)return;let x=Gp(c.concat(f),d);u.push(g===Wo.Remove?{op:g,path:x}:{op:g,path:x,value:p}),l.push(g===Wo.Add?{op:Wo.Remove,path:x}:g===Wo.Remove?{op:Wo.Add,path:x,value:h}:{op:Wo.Replace,path:x,value:h})}))})(e,t,r,n,o);case 1:return(function(i,a,s,c,u){let{original:l,assignedMap:d,options:m}=i,f=i.copy;f.length<l.length&&([l,f]=[f,l],[s,c]=[c,s]);for(let h=0;h<l.length;h+=1)if(d.get(h.toString())&&f[h]!==l[h]){let p=Gp(a.concat([h]),u);s.push({op:Wo.Replace,path:p,value:CS(f[h])}),c.push({op:Wo.Replace,path:p,value:CS(l[h])})}for(let h=l.length;h<f.length;h+=1){let p=Gp(a.concat([h]),u);s.push({op:Wo.Add,path:p,value:CS(f[h])})}if(l.length<f.length){let{arrayLengthAssignment:h=!0}=m.enablePatches;if(h){let p=Gp(a.concat(["length"]),u);c.push({op:Wo.Replace,path:p,value:l.length})}else for(let p=f.length;l.length<p;p-=1){let g=Gp(a.concat([p-1]),u);c.push({op:Wo.Remove,path:g})}}})(e,t,r,n,o);case 3:return(function({original:i,copy:a},s,c,u,l){let d=0;i.forEach((m=>{if(!a.has(m)){let f=Gp(s.concat([d]),l);c.push({op:Wo.Remove,path:f,value:m}),u.unshift({op:Wo.Add,path:f,value:m})}d+=1})),d=0,a.forEach((m=>{if(!i.has(m)){let f=Gp(s.concat([d]),l);c.push({op:Wo.Add,path:f,value:m}),u.unshift({op:Wo.Remove,path:f,value:m})}d+=1}))})(e,t,r,n,o)}}var FE=!1,AS=(e,t,r=!1)=>{if(typeof e=="object"&&e!==null&&(!bu(e,t)||r)&&!FE)throw new Error("Strict mode: Mutable data cannot be accessed directly, please use 'unsafe(callback)' wrap.")},RE={get size(){return Lc(In(this)).size},has(e){return Lc(In(this)).has(e)},set(e,t){let r=In(this),n=Lc(r);return n.has(e)&&sf(n.get(e),t)||(Zs(r),cd(r),r.assignedMap.set(e,!0),r.copy.set(e,t),GE(r,e,t,Yx)),this},delete(e){if(!this.has(e))return!1;let t=In(this);return Zs(t),cd(t),t.original.has(e)?t.assignedMap.set(e,!1):t.assignedMap.delete(e),t.copy.delete(e),!0},clear(){let e=In(this);if(this.size){Zs(e),cd(e),e.assignedMap=new Map;for(let[t]of e.original)e.assignedMap.set(t,!1);e.copy.clear()}},forEach(e,t){Lc(In(this)).forEach(((r,n)=>{e.call(t,this.get(n),n,this)}))},get(e){var t,r;let n=In(this),o=Lc(n).get(e),i=((r=(t=n.options).mark)===null||r===void 0?void 0:r.call(t,o,gc))===gc.mutable;if(n.options.strict&&AS(o,n.options,i),i||n.finalized||!bu(o,n.options)||o!==n.original.get(e))return o;let a=LE.createDraft({original:o,parentDraft:n,key:e,finalities:n.finalities,options:n.options});return Zs(n),n.copy.set(e,a),a},keys(){return Lc(In(this)).keys()},values(){let e=this.keys();return{[TS]:()=>this.values(),next:()=>{let t=e.next();return t.done?t:{done:!1,value:this.get(t.value)}}}},entries(){let e=this.keys();return{[TS]:()=>this.entries(),next:()=>{let t=e.next();if(t.done)return t;let r=this.get(t.value);return{done:!1,value:[t.value,r]}}}},[TS](){return this.entries()}},Nde=Reflect.ownKeys(RE),Uq=(e,t,{isValuesIterator:r})=>()=>{var n,o;let i=t.next();if(i.done)return i;let a=i.value,s=e.setMap.get(a),c=In(s),u=((o=(n=e.options).mark)===null||o===void 0?void 0:o.call(n,s,gc))===gc.mutable;if(e.options.strict&&AS(a,e.options,u),u||c||!bu(a,e.options)||e.finalized||!e.original.has(a))c&&(s=c.proxy);else{let l=LE.createDraft({original:a,parentDraft:e,key:a,finalities:e.finalities,options:e.options});e.setMap.set(a,l),s=l}return{done:!1,value:r?s:[s,s]}},wS={get size(){return In(this).setMap.size},has(e){let t=In(this);if(t.setMap.has(e))return!0;Zs(t);let r=In(e);return!(!r||!t.setMap.has(r.original))},add(e){let t=In(this);return this.has(e)||(Zs(t),cd(t),t.assignedMap.set(e,!0),t.setMap.set(e,e),GE(t,e,e,Yx)),this},delete(e){if(!this.has(e))return!1;let t=In(this);Zs(t),cd(t);let r=In(e);return r&&t.setMap.has(r.original)?(t.assignedMap.set(r.original,!1),t.setMap.delete(r.original)):(!r&&t.setMap.has(e)?t.assignedMap.set(e,!1):t.assignedMap.delete(e),t.setMap.delete(e))},clear(){if(!this.size)return;let e=In(this);Zs(e),cd(e);for(let t of e.original)e.assignedMap.set(t,!1);e.setMap.clear()},values(){let e=In(this);Zs(e);let t=e.setMap.keys();return{[Symbol.iterator]:()=>this.values(),next:Uq(e,t,{isValuesIterator:!0})}},entries(){let e=In(this);Zs(e);let t=e.setMap.keys();return{[Symbol.iterator]:()=>this.entries(),next:Uq(e,t,{isValuesIterator:!1})}},keys(){return this.values()},[TS](){return this.values()},forEach(e,t){let r=this.values(),n=r.next();for(;!n.done;)e.call(t,n.value,n.value,this),n=r.next()}};Set.prototype.difference&&Object.assign(wS,{intersection(e){return Set.prototype.intersection.call(new Set(this.values()),e)},union(e){return Set.prototype.union.call(new Set(this.values()),e)},difference(e){return Set.prototype.difference.call(new Set(this.values()),e)},symmetricDifference(e){return Set.prototype.symmetricDifference.call(new Set(this.values()),e)},isSubsetOf(e){return Set.prototype.isSubsetOf.call(new Set(this.values()),e)},isSupersetOf(e){return Set.prototype.isSupersetOf.call(new Set(this.values()),e)},isDisjointFrom(e){return Set.prototype.isDisjointFrom.call(new Set(this.values()),e)}});var zde=Reflect.ownKeys(wS),Kq={get(e,t,r){var n,o;let i=(n=e.copy)===null||n===void 0?void 0:n[t];if(i&&e.finalities.draftsCache.has(i))return i;if(t===Gq)return e;let a;if(e.options.mark){let u=t==="size"&&(e.original instanceof Map||e.original instanceof Set)?Reflect.get(e.original,t):Reflect.get(e.original,t,r);if(a=e.options.mark(u,gc),a===gc.mutable)return e.options.strict&&AS(u,e.options,!0),u}let s=Lc(e);if(s instanceof Map&&Nde.includes(t))return t==="size"?Object.getOwnPropertyDescriptor(RE,"size").get.call(e.proxy):RE[t].bind(e.proxy);if(s instanceof Set&&zde.includes(t))return t==="size"?Object.getOwnPropertyDescriptor(wS,"size").get.call(e.proxy):wS[t].bind(e.proxy);if(!Xx(s,t)){let u=Nq(s,t);return u?"value"in u?u.value:(o=u.get)===null||o===void 0?void 0:o.call(e.proxy):void 0}let c=s[t];if(e.options.strict&&AS(c,e.options),e.finalized||!bu(c,e.options))return c;if(c===EE(e.original,t)){if(Zs(e),e.copy[t]=qE({original:e.original[t],parentDraft:e,key:e.type===1?Number(t):t,finalities:e.finalities,options:e.options}),typeof a=="function"){let u=In(e.copy[t]);return Zs(u),cd(u),u.copy}return e.copy[t]}return ud(c)&&e.finalities.draftsCache.add(c),c},set(e,t,r){var n;if(e.type===3||e.type===2)throw new Error("Map/Set draft does not support any property assignment.");let o;if(e.type===1&&t!=="length"&&(!(Number.isInteger(o=Number(t))&&o>=0)||t!==0&&o!==0&&String(o)!==String(t)))throw new Error("Only supports setting array indices and the 'length' property.");let i=Nq(Lc(e),t);if(i?.set)return i.set.call(e.proxy,r),!0;let a=EE(Lc(e),t),s=In(a);return s&&sf(s.original,r)?(e.copy[t]=r,e.assignedMap=(n=e.assignedMap)!==null&&n!==void 0?n:new Map,e.assignedMap.set(t,!1),!0):(sf(r,a)&&(r!==void 0||Xx(e.original,t))||(Zs(e),cd(e),Xx(e.original,t)&&sf(r,e.original[t])?e.assignedMap.delete(t):e.assignedMap.set(t,!0),e.copy[t]=r,GE(e,t,r,Yx)),!0)},has:(e,t)=>t in Lc(e),ownKeys:e=>Reflect.ownKeys(Lc(e)),getOwnPropertyDescriptor(e,t){let r=Lc(e),n=Reflect.getOwnPropertyDescriptor(r,t);return n&&{writable:!0,configurable:e.type!==1||t!=="length",enumerable:n.enumerable,value:r[t]}},getPrototypeOf:e=>Reflect.getPrototypeOf(e.original),setPrototypeOf(){throw new Error("Cannot call 'setPrototypeOf()' on drafts")},defineProperty(){throw new Error("Cannot call 'defineProperty()' on drafts")},deleteProperty(e,t){var r;return e.type===1?Kq.set.call(this,e,t,void 0,e.proxy):(EE(e.original,t)!==void 0||t in e.original?(Zs(e),cd(e),e.assignedMap.set(t,!1)):(e.assignedMap=(r=e.assignedMap)!==null&&r!==void 0?r:new Map,e.assignedMap.delete(t)),e.copy&&delete e.copy[t],!0)}};function qE(e){let{original:t,parentDraft:r,key:n,finalities:o,options:i}=e,a=cf(t),s={type:a,finalized:!1,parent:r,original:t,copy:null,proxy:null,finalities:o,options:i,setMap:a===3?new Map(t.entries()):void 0};(n||"key"in e)&&(s.key=n);let{proxy:c,revoke:u}=Proxy.revocable(a===1?Object.assign([],s):s,Kq);if(o.revoke.push(u),s.proxy=c,r){let l=r;l.finalities.draft.push(((d,m)=>{var f;let h=In(c),p=l.type===3?l.setMap:l.copy,g=ld(p,n),x=In(g);if(x){let v=x.original;x.operated&&(v=UE(g)),BE(x),ME(x,Yx,d,m),Zx(p,n,v)}(f=h.callbacks)===null||f===void 0||f.forEach((v=>{v(d,m)}))}))}else{let l=In(c);l.finalities.draft.push(((d,m)=>{BE(l),ME(l,Yx,d,m)}))}return c}function Ude(e,t,r,n,o){var i;let a=In(e),s=(i=a?.original)!==null&&i!==void 0?i:e,c=!!t.length;if(a?.operated)for(;a.finalities.draft.length>0;)a.finalities.draft.pop()(r,n);let u=c?t[0]:a?a.operated?a.copy:a.original:e;return a&&DE(a),o&&Lg(u,0,a==null||a.options.updatedValues),[u,r&&c?[{op:Wo.Replace,path:[],value:t[0]}]:r,n&&c?[{op:Wo.Replace,path:[],value:s}]:n]}function kE(e){let{rootDraft:t,value:r,useRawReturn:n=!1,isRoot:o=!0}=e;VE(r,((i,a,s)=>{let c=In(a);if(c&&t&&c.finalities===t.finalities){e.isContainDraft=!0;let u=c.original;if(s instanceof Set){let l=Array.from(s);s.clear(),l.forEach((d=>s.add(i===d?u:d)))}else Zx(s,i,u)}else typeof a=="object"&&a!==null&&(e.value=a,e.isRoot=!1,kE(e))}))}function Xq(e){var t;let r=In(e);if(!bu(e,r?.options))return e;let n=cf(e);if(r&&!r.operated)return r.original;let o;function i(){o=n===2?zE(e)?new Map(e):new(Object.getPrototypeOf(e)).constructor(e):n===3?Array.from(r.setMap.values()):jq(e,r?.options)}if(r){r.finalized=!0;try{i()}finally{r.finalized=!1}}else o=e;if(VE(o,((a,s)=>{if(r&&sf(ld(r.original,a),s))return;let c=Xq(s);c!==s&&(o===e&&i(),Zx(o,a,c))})),n===3){let a=(t=r?.original)!==null&&t!==void 0?t:o;return NE(a)?new Set(o):new(Object.getPrototypeOf(a)).constructor(o)}return o}function OE(e){if(!ud(e))throw new Error(`current() is only used for Draft, parameter: ${e}`);return Xq(e)}LE.createDraft=qE;var Yq=e=>function t(r,n,o){var i,a,s;if(typeof r=="function"&&typeof n!="function")return function(S,...b){return t(S,(C=>r.call(this,C,...b)),n)};let c=r,u=n,l=o;typeof n!="function"&&(l=n),l=Object.assign(Object.assign({},e),l);let d=ud(c)?OE(c):c,m=Array.isArray(l.mark)?(S,b)=>{for(let C of l.mark){let A=C(S,b);if(A)return A}}:l.mark,f=(i=l.enablePatches)!==null&&i!==void 0&&i,h=(a=l.strict)!==null&&a!==void 0&&a,p={enableAutoFreeze:(s=l.enableAutoFreeze)!==null&&s!==void 0&&s,mark:m,strict:h,enablePatches:f};if(!bu(d,p)&&typeof d=="object"&&d!==null)throw new Error("Invalid base state: create() only supports plain objects, arrays, Set, Map or using mark() to mark the state as immutable.");let[g,x]=(function(S,b){var C;let A={draft:[],revoke:[],handledSet:new WeakSet,draftsCache:new WeakSet},P,D;b.enablePatches&&(P=[],D=[]);let k=((C=b.mark)===null||C===void 0?void 0:C.call(b,S,gc))!==gc.mutable&&bu(S,b)?qE({original:S,parentDraft:null,finalities:A,options:b}):S;return[k,(B=[])=>{let[F,I,M]=Ude(k,B,P,D,b.enableAutoFreeze);return b.enablePatches?[F,I,M]:F}]})(d,p);if(typeof n!="function"){if(!bu(d,p))throw new Error("Invalid base state: create() only supports plain objects, arrays, Set, Map or using mark() to mark the state as immutable.");return[g,x]}let v;try{v=u(g)}catch(S){throw DE(In(g)),S}let _=S=>{let b=In(g);if(!ud(S)){if(S!==void 0&&!sf(S,g)&&b?.operated)throw new Error("Either the value is returned as a new non-draft value, or only the draft is modified without returning any value.");let A=S?.[qq];if(A){let P=A[0];return p.strict&&typeof S=="object"&&S!==null&&kE({rootDraft:b,value:S,useRawReturn:!0}),x([P])}if(S!==void 0)return typeof S=="object"&&S!==null&&kE({rootDraft:b,value:S}),x([S])}if(S===g||S===void 0)return x([]);let C=In(S);if(p===C.options){if(C.operated)throw new Error("Cannot return a modified child draft.");return x([OE(S)])}return x([S])};return v instanceof Promise?v.then(_,(S=>{throw DE(In(g)),S})):_(v)},Vq=Yq(),Vde=Object.prototype.constructor.toString();hc.apply=function(e,t,r){let n;for(n=t.length-1;n>=0;n-=1){let{value:i,op:a,path:s}=t[n];if(!s.length&&a===Wo.Replace||s===""&&a===Wo.Add){e=i;break}}n>-1&&(t=t.slice(n+1));let o=i=>{t.forEach((a=>{let{path:s,op:c}=a,u=(function(h){return Array.isArray(h)?h:h.split("/").map((p=>p.replace(/~1/g,"/").replace(/~0/g,"~"))).slice(1)})(s),l=i;for(let h=0;h<u.length-1;h+=1){let p=cf(l),g=u[h];if(typeof g!="string"&&typeof g!="number"&&(g=String(g)),(p===0||p===1)&&(g==="__proto__"||g==="constructor")||typeof l=="function"&&g==="prototype")throw new Error("Patching reserved attributes like __proto__ and constructor is not allowed.");if(l=ld(p===3?Array.from(l):l,g),typeof l!="object")throw new Error(`Cannot apply patch at '${u.join("/")}'.`)}let d=cf(l),m=Ng(a.value),f=u[u.length-1];switch(c){case Wo.Replace:switch(d){case 2:return l.set(f,m);case 3:throw new Error("Cannot apply replace patch to set.");default:return l[f]=m}case Wo.Add:switch(d){case 1:return f==="-"?l.push(m):l.splice(f,0,m);case 2:return l.set(f,m);case 3:return l.add(m);default:return l[f]=m}case Wo.Remove:switch(d){case 1:return l.splice(f,1);case 2:return l.delete(f);case 3:return l.delete(a.value);default:return delete l[f]}default:throw new Error(`Unsupported patch operation: ${c}.`)}}))};if(!r?.mutable){if(ud(e)){if(r!==void 0)throw new Error("Cannot apply patches with options to a draft.");return o(e),e}return Vq(e,o,Object.assign(Object.assign({},r),{enablePatches:!1}))}o(e)},hc.castDraft=function(e){return e},hc.castImmutable=function(e){return e},hc.castMutable=function(e){return e},hc.create=Vq,hc.current=OE,hc.isDraft=ud,hc.isDraftable=bu,hc.makeCreator=Yq,hc.markSimpleObject=e=>{if((t=>{if(!t||typeof t!="object")return!1;let r=Object.getPrototypeOf(t);if(r===null)return!0;let n=Object.hasOwnProperty.call(r,"constructor")&&r.constructor;return n===Object||typeof n=="function"&&Function.toString.call(n)===Vde})(e))return gc.immutable},hc.original=function(e){let t=In(e);if(!t)throw new Error(`original() is only used for a draft, parameter: ${e}`);return t.original},hc.rawReturn=function(e){if(arguments.length===0)throw new Error("rawReturn() must be called with a value.");if(arguments.length>1)throw new Error("rawReturn() must be called with one argument.");return{[qq]:[e]}},hc.unsafe=function(e){let t;FE=!0;try{t=e()}finally{FE=!1}return t}});var $q=UM((Qst,Qq)=>{"use strict";Qq.exports=Zq()});var zT=function(e,t){return zT=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(r,n){r.__proto__=n}||function(r,n){for(var o in n)Object.prototype.hasOwnProperty.call(n,o)&&(r[o]=n[o])},zT(e,t)};function hs(e,t){if(typeof t!="function"&&t!==null)throw new TypeError("Class extends value "+String(t)+" is not a constructor or null");zT(e,t);function r(){this.constructor=e}e.prototype=t===null?Object.create(t):(r.prototype=t.prototype,new r)}function VM(e,t,r,n){function o(i){return i instanceof r?i:new r(function(a){a(i)})}return new(r||(r=Promise))(function(i,a){function s(l){try{u(n.next(l))}catch(d){a(d)}}function c(l){try{u(n.throw(l))}catch(d){a(d)}}function u(l){l.done?i(l.value):o(l.value).then(s,c)}u((n=n.apply(e,t||[])).next())})}function Gb(e,t){var r={label:0,sent:function(){if(i[0]&1)throw i[1];return i[1]},trys:[],ops:[]},n,o,i,a=Object.create((typeof Iterator=="function"?Iterator:Object).prototype);return a.next=s(0),a.throw=s(1),a.return=s(2),typeof Symbol=="function"&&(a[Symbol.iterator]=function(){return this}),a;function s(u){return function(l){return c([u,l])}}function c(u){if(n)throw new TypeError("Generator is already executing.");for(;a&&(a=0,u[0]&&(r=0)),r;)try{if(n=1,o&&(i=u[0]&2?o.return:u[0]?o.throw||((i=o.return)&&i.call(o),0):o.next)&&!(i=i.call(o,u[1])).done)return i;switch(o=0,i&&(u=[u[0]&2,i.value]),u[0]){case 0:case 1:i=u;break;case 4:return r.label++,{value:u[1],done:!1};case 5:r.label++,o=u[1],u=[0];continue;case 7:u=r.ops.pop(),r.trys.pop();continue;default:if(i=r.trys,!(i=i.length>0&&i[i.length-1])&&(u[0]===6||u[0]===2)){r=0;continue}if(u[0]===3&&(!i||u[1]>i[0]&&u[1]<i[3])){r.label=u[1];break}if(u[0]===6&&r.label<i[1]){r.label=i[1],i=u;break}if(i&&r.label<i[2]){r.label=i[2],r.ops.push(u);break}i[2]&&r.ops.pop(),r.trys.pop();continue}u=t.call(e,r)}catch(l){u=[6,l],o=0}finally{n=i=0}if(u[0]&5)throw u[1];return{value:u[0]?u[1]:void 0,done:!0}}}function Ed(e){var t=typeof Symbol=="function"&&Symbol.iterator,r=t&&e[t],n=0;if(r)return r.call(e);if(e&&typeof e.length=="number")return{next:function(){return e&&n>=e.length&&(e=void 0),{value:e&&e[n++],done:!e}}};throw new TypeError(t?"Object is not iterable.":"Symbol.iterator is not defined.")}function Dd(e,t){var r=typeof Symbol=="function"&&e[Symbol.iterator];if(!r)return e;var n=r.call(e),o,i=[],a;try{for(;(t===void 0||t-- >0)&&!(o=n.next()).done;)i.push(o.value)}catch(s){a={error:s}}finally{try{o&&!o.done&&(r=n.return)&&r.call(n)}finally{if(a)throw a.error}}return i}function Bd(e,t,r){if(r||arguments.length===2)for(var n=0,o=t.length,i;n<o;n++)(i||!(n in t))&&(i||(i=Array.prototype.slice.call(t,0,n)),i[n]=t[n]);return e.concat(i||Array.prototype.slice.call(t))}function tp(e){return this instanceof tp?(this.v=e,this):new tp(e)}function GM(e,t,r){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var n=r.apply(e,t||[]),o,i=[];return o=Object.create((typeof AsyncIterator=="function"?AsyncIterator:Object).prototype),s("next"),s("throw"),s("return",a),o[Symbol.asyncIterator]=function(){return this},o;function a(f){return function(h){return Promise.resolve(h).then(f,d)}}function s(f,h){n[f]&&(o[f]=function(p){return new Promise(function(g,x){i.push([f,p,g,x])>1||c(f,p)})},h&&(o[f]=h(o[f])))}function c(f,h){try{u(n[f](h))}catch(p){m(i[0][3],p)}}function u(f){f.value instanceof tp?Promise.resolve(f.value.v).then(l,d):m(i[0][2],f)}function l(f){c("next",f)}function d(f){c("throw",f)}function m(f,h){f(h),i.shift(),i.length&&c(i[0][0],i[0][1])}}function qM(e){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var t=e[Symbol.asyncIterator],r;return t?t.call(e):(e=typeof Ed=="function"?Ed(e):e[Symbol.iterator](),r={},n("next"),n("throw"),n("return"),r[Symbol.asyncIterator]=function(){return this},r);function n(i){r[i]=e[i]&&function(a){return new Promise(function(s,c){a=e[i](a),o(s,c,a.done,a.value)})}}function o(i,a,s,c){Promise.resolve(c).then(function(u){i({value:u,done:s})},a)}}function Kn(e){return typeof e=="function"}function qb(e){var t=function(n){Error.call(n),n.stack=new Error().stack},r=e(t);return r.prototype=Object.create(Error.prototype),r.prototype.constructor=r,r}var Hb=qb(function(e){return function(r){e(this),this.message=r?r.length+` errors occurred during unsubscription:
 `+r.map(function(n,o){return o+1+") "+n.toString()}).join(`

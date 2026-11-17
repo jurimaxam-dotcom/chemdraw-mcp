@@ -4,6 +4,7 @@ version = "0.11.0"
 description = "Chemical structures, comparisons and reaction schemes as PNG/SVG via RDKit, with interactive data sheets. MVP by default; full profile optional. Unofficial, not affiliated with Revvity."
 readme = "README.md"
 license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES"]
 authors = [{ name = "jurimaxam-dotcom" }]
 keywords = ["mcp", "chemistry", "rdkit", "smiles", "structure-drawing", "claude"]
 classifiers = [
@@ -60,7 +61,7 @@ exclude = [
 [tool.hatch.build.targets.sdist]
 # Erlaubnisliste statt Sperrliste: das sdist ist öffentlich, und hatchling packt sonst
 # alles ein, was nicht gitignored ist — auch ungetrackte interne Dateien (Audit 20.10.2026).
-only-include = ["chemdraw_tool", "README.md", "LICENSE", "THIRD_PARTY_LICENSES", "CHANGELOG.md"]
+only-include = ["chemdraw_tool", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md"]
 exclude = ["chemdraw_tool/ui/node_modules"]
 
 [tool.pytest.ini_options]

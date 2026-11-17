@@ -44,6 +44,45 @@ work package that touches both sides (GIFs, recordings, README header), read `~/
 claim it with `~/.claude/bin/schwester reserviere <name>`. Marketing status lives only in the sister
 plan; `plans/mcp-server.md` carries at most a pointer line.
 
+## Public repo: what may be committed (Jay, 17.11.2026)
+
+Every commit is a publication: the post-commit hook pushes at once, and what was pushed stays reachable in history,
+tags and forks even after it is deleted. So these rules are hard, for every helper and every worker brief:
+
+1. **Images and recordings show the panel or one cropped app window, nothing else.** No full screen, no Claude Desktop
+   sidebar, no terminal, no desktop, dock or menu bar. Look at every image with your own eyes before `git add` — a
+   file name proves nothing. Evidence of a Desktop run goes into this repo as text (checkpoint, result, version);
+   full-screen captures stay outside the repo.
+2. **No personal data:** real name, e-mail, account or plan name, addresses, meeting links, calendar or daily routine,
+   names of other projects, titles of other chats. Paths are written with `~`, never with the home directory spelled out.
+3. **Nothing about third parties** — no person, lab, employer or research topic. Examples, fixtures, image names and
+   tool texts use textbook cases.
+4. **Plans and evidence texts carry the technical state only.** What Jay was doing meanwhile is not part of it.
+5. **Commit identity is the GitHub noreply address.** Check `git config user.email` in every new clone or worktree
+   before the first commit.
+6. **No secrets, ever.** `gitleaks git` over the whole history is part of every release check.
+7. **A slip is reported, not papered over.** A follow-up commit does not remove anything from history; tell Jay what
+   went out and where. Rewriting history and force-pushing is Jay's decision alone.
+
+**Licence and copyright.** The project is Apache-2.0; the holder line is `Copyright 2026 jurimaxam-dotcom` in `NOTICE`.
+Released versions stay under that licence for good; only a future version could change it, and only Jay decides that.
+
+- **Every package that ends up inside the panel file** needs its entry, version and licence text in
+  `THIRD_PARTY_LICENSES` in the same commit (`tests/test_lizenzhinweise.py`; the file is embedded into the panel as a
+  banner, so rebuild the bundle). Before adding a dependency read its licence. Inside what we ship as one file
+  (panel, `.mcpb`): MIT, BSD, ISC, Apache-2.0 and 0BSD only. As a Python dependency that pip installs separately,
+  LGPL and MPL are acceptable too (`frozendict`, LGPL-3.0, comes with `genanki`). GPL, AGPL, "non-commercial" and
+  anything without a licence file are out on both sides.
+- **No third-party material in the tree:** figures, tables or text from textbooks, lecture slides, papers, pharmacopoeias
+  or other repos are not committed, not even as a test fixture. Facts and public-domain data are fine; record the
+  source and its terms in the README section "License and third-party data".
+- **Code copied from elsewhere** keeps its copyright header and gets a `THIRD_PARTY_LICENSES` entry; code without a
+  clear licence is not copied.
+- **Names are not licensed.** Apache-2.0 grants no trademark rights. "ChemDraw" belongs to Revvity; every public
+  description keeps the "unofficial, not affiliated" line.
+- **Outside contributions** come in under Apache-2.0 (section 5 of the licence). Never merge a PR whose author states
+  another licence or whose origin is unclear.
+
 ## Helpers: what differs from the global rule (11.11.2026)
 
 Who builds, who helps and when a second session is worth it follows the global helper-routing rule

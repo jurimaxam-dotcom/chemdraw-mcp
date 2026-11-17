@@ -1,0 +1,13 @@
+chemdraw-mcp
+Copyright 2026 jurimaxam-dotcom
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The interactive panel (chemdraw_tool/ui/dist/index.html) bundles third-party
+software. Their copyright notices and licence texts are in
+THIRD_PARTY_LICENSES.
+
+The licence does not grant permission to use the project's names or logos
+(Apache License 2.0, section 6). "ChemDraw" is a trademark of Revvity Signals
+Software, Inc.; this project is unofficial and not affiliated with or endorsed
+by Revvity.
