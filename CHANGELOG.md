@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-11-17
+
 ### Added
 
 - **Continue in chat.** Under most panels (not the standalone 3D model and the Anki deck), buttons send a ready follow-up to Claude (explain the structure, predict the IR bands, compare with a related compound, quiz me; explain this plot or spectrum). They appear only in hosts that let a panel send a message. Clicking a functional group pins it, so the buttons ask about that group; **Clear** releases it.
