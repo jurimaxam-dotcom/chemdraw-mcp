@@ -1,10 +1,11 @@
 import React from "react";
-import SectionHeader from "./components/SectionHeader";
-import PanelFooter from "./components/PanelFooter";
+import { Facts, Hint, Panel, PanelHead } from "./components/Panel";
+import { displayPath } from "./utils/displayPath";
 import { useModelContextReport } from "./ModelContext";
 import { genericContext } from "./utils/modelContext.js";
 
-const MAX_FRONTS = 10;
+// Höchstens vier Karten, dann „+ N more cards“ (Spezifikation §5.13) — gilt für beide Vorschauformen.
+const MAX_CARDS = 4;
 
 // Kartenvorderseiten sind Anki-HTML (<i>, <br>, &amp;). Die Vorschau zeigt den
 // Text, ohne das HTML einzusetzen: <template>-Inhalt ist inert — er lädt keine
@@ -48,19 +49,23 @@ function Side({ side, label, text, image }) {
 
 // Etappe 5 (16.11.2026): Deckname, Kartenzahl, Vorschau der ersten Karten (Vorder- und
 // Rückseite nebeneinander, mit dem Kartenbild), „+ n more“ und der Ablageort der .apkg.
-// Vorher: Titel und die Vorderseiten als Liste — bei Strukturkarten zweimal dieselbe Frage.
+// Umbau C (17.11.2026, §5.13): höchstens vier Karten; die .apkg ist das Ergebnis selbst und
+// steht deshalb sichtbar als Kernwert-Zeile (Etikett APKG, Pfad, Kopierknopf) statt hinter dem
+// Files-Schalter. Sie bildet die letzte Zone und trägt den Fuß-Haken (data-testid panel-footer),
+// weil Desktop-Probe und test:host den Pfad dort suchen.
 // Bewusst keine Aktion hier: nichts startet Anki oder ändert dort etwas.
 export default function AnkiDeckView({ data }) {
   useModelContextReport(genericContext("anki_deck", data), data.name || "anki_deck");
-  const previews = data.previews || [];
+  const previews = (data.previews || []).slice(0, MAX_CARDS);
   const fronts = data.fronts || [];
-  const shown = previews.length ? previews.length : Math.min(fronts.length, MAX_FRONTS);
-  const total = Math.max(data.cards ?? 0, previews.length ? fronts.length : 0, shown);
+  const allPreviews = data.previews?.length || 0;
+  const shown = previews.length ? previews.length : Math.min(fronts.length, MAX_CARDS);
+  const total = Math.max(data.cards ?? 0, allPreviews ? Math.max(fronts.length, allPreviews) : 0, shown);
   const more = total - shown;
 
   return (
-    <div className="anki-panel">
-      <SectionHeader
+    <Panel kind="anki" className="anki-panel">
+      <PanelHead
         title={data.name || "Anki deck"}
         subtitle={`${plural(data.cards ?? 0, "card")} · ${plural(data.media ?? 0, "image")} · ${delivered(data.delivery)}`}
       />
@@ -72,13 +77,19 @@ export default function AnkiDeckView({ data }) {
                 <Side side="back" label="Back" text={p.back} image={p.back_image} />
               </li>
             ))
-          : fronts.slice(0, MAX_FRONTS).map((front, i) => (
+          : fronts.slice(0, MAX_CARDS).map((front, i) => (
               <li key={i} className="anki-front" data-anki-card="">{frontText(front)}</li>
             ))}
       </ol>
-      {more > 0 && <p className="anki-more">+ {plural(more, "more card")}</p>}
-      {/* Fußzeile (E3): die .apkg-Datei mit Präfix und Kopierknopf; eine Aktion gibt es hier nicht. */}
-      <PanelFooter files={data.file ? [{ label: "APKG", path: data.file }] : []} />
-    </div>
+      {more > 0 && <Hint className="anki-more">+ {plural(more, "more card")}</Hint>}
+      {data.file && (
+        <Facts className="anki-file" data-testid="panel-footer" items={[{
+          label: "APKG",
+          value: <span className="panel-footer-path" title={data.file}><span dir="ltr">{displayPath(data.file)}</span></span>,
+          copy: data.file,
+          copyLabel: "Copy path",
+        }]} />
+      )}
+    </Panel>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import BackboneCanvas from "./components/BackboneCanvas";
-import SectionHeader from "./components/SectionHeader";
 import Tabs from "./components/Tabs";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
 import ExportPngButton from "./components/ExportPngButton";
 import IgGScheme, { SCHEME_LEGEND } from "./components/IgGScheme";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import { fileEntries } from "./components/PanelFooter";
+import { Button, Hint, Panel, PanelFoot, PanelHead, Stage, StageBar } from "./components/Panel";
 import ContinueRow from "./components/ContinueRow";
 import { useModelContextReport } from "./ModelContext";
 import { proteinFollowUps } from "./utils/followUps.js";
@@ -22,6 +23,11 @@ import { ELEMENT_COLOR, PLDDT_COLOR, PLDDT_NAME, SS_COLOR, SS_NAME, rainbow, res
 // Ladens ohnehin schon zu sehen ist — nie eine leere Fläche.
 // Umschalter: Farbe nach Sekundärstruktur / Kette / Regenbogen N→C /
 // Konfidenz (nur AlphaFold); Darstellung Cartoon / Spur; Ansicht zurücksetzen.
+//
+// Umbau C (17.11.2026, Spezifikation §5.12): Hauptreiter Structure/Scheme im Kopf, die Achsen
+// als Unterreiter und „Reset“ als ruhiger Knopf in der StageBar, Bühne volle Breite × 520 (Chat)
+// in Struktur und Schema gleich, darunter Legende als Zeile und genau eine Hint-Zeile
+// (Bildunterschrift des Schemas, Herkunft). Maße und Farben der Flächen: styles/c-protein-3d-anki.css.
 
 const MODES = [
   ["ss", "Secondary"],
@@ -88,6 +94,17 @@ export function frameOf(segs, ligands = []) {
   return { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, halfW: (x1 - x0) / 2 + 2.5, halfH: (y1 - y0) / 2 + 2.5 };
 }
 
+/**
+ * Untertitel des Servers → { origin, note }: der Untertitel nennt nur die Herkunft (PDB, Ketten,
+ * Reste); „from the complex with … ; the antigen is not shown“ wandert in die Hint-Zeile (§5.12).
+ */
+export function splitSubtitle(text = "") {
+  const parts = String(text || "").split(" · ");
+  const at = parts.findIndex((p) => /^from the /i.test(p));
+  if (at < 0) return { origin: String(text || ""), note: "" };
+  return { origin: parts.slice(0, at).concat(parts.slice(at + 1)).join(" · "), note: parts[at] };
+}
+
 function sceneColors(segs, mode) {
   const colorOf = residueColorer(segs, mode);
   const colors = new Map();
@@ -119,7 +136,9 @@ export default function ProteinView({ data }) {
   const hint = ready
     ? "Drag to rotate · pinch or ⌘/Ctrl+scroll to zoom · right-drag to move"
     : "Drag to rotate";
-  const subtitle = `${protein.subtitle || ""}${isModel && !(protein.subtitle || "").includes("predicted") ? " · predicted" : ""}`;
+  const { origin, note } = splitSubtitle(protein.subtitle);
+  const subtitle = `${origin}${isModel && !(protein.subtitle || "").includes("predicted") ? " · predicted" : ""}`;
+  const canExpand = useCanExpand();
 
   // Engine starten — einmal je Datensatz; Fehlschlag = SVG-Spur bleibt.
   useEffect(() => {
@@ -215,80 +234,77 @@ export default function ProteinView({ data }) {
     return serializeLiveSvg(viewer.current?.querySelector("svg[data-backbone]"));
   }
 
+  // Eine Hint-Zeile unter der Legende: Bildunterschrift (Schema), „from the complex …“, dann die Quelle.
+  const sentence = (t) => (t && !/[.!?]$/.test(t) ? `${t}.` : t);
+  const noteText = [sentence(scheme?.caption), sentence(note ? note[0].toUpperCase() + note.slice(1) : ""), protein.citation]
+    .filter(Boolean).join(" ");
+  const legend = onScheme ? SCHEME_LEGEND : legendFor(mode, protein);
+
   return (
-    <div
-      className="protein-panel"
-      style={{
-        // keine feste Höhe (E19): die Bildfläche bemisst sich selbst
-        // (.protein-stage), der Host bemisst das iframe am Inhalt
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "12px 16px",
-      }}
-    >
-      <SectionHeader title={protein.title || data.name} subtitle={subtitle} expand />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center", marginBottom: 6 }}>
-        {scheme && (
+    <Panel kind="protein" fill className="protein-panel">
+      <PanelHead
+        title={protein.title || data.name}
+        subtitle={subtitle}
+        tabs={scheme ? (
           <Tabs label="View" value={pane} onChange={setPane}
             tabs={[{ key: "structure", label: "Structure" }, { key: "scheme", label: "Scheme" }]} />
+        ) : null}
+        expand={canExpand ? <ExpandButton /> : null}
+      />
+      {/* Die StageBar bleibt auch im Schema stehen (dann nur der Hinweis), damit die Bühne beim
+          Reiterwechsel weder in der Höhe noch in der Lage springt. */}
+      <StageBar
+        className="protein-bar"
+        left={onScheme ? null : (
+          <>
+            {modes.length > 1 && (
+              <Tabs label="Colour by" size="sm" value={mode} onChange={setMode} tabs={modes.map(([key, label]) => ({ key, label }))} />
+            )}
+            {ready && (
+              <Tabs label="Representation" size="sm" value={style} onChange={setStyle} tabs={STYLES.map(([key, label]) => ({ key, label }))} />
+            )}
+          </>
         )}
-        {!onScheme && modes.length > 1 && (
-          <Tabs label="Colour by" value={mode} onChange={setMode} tabs={modes.map(([key, label]) => ({ key, label }))} />
+        hint={onScheme ? "Domain scheme, not to scale" : "Drag to rotate"}
+        right={onScheme ? null : (
+          <Button className="protein-reset" onClick={resetView} title="Back to the starting view">Reset</Button>
         )}
-        {ready && !onScheme && (
-          <Tabs label="Representation" value={style} onChange={setStyle} tabs={STYLES.map(([key, label]) => ({ key, label }))} />
-        )}
-        {!onScheme && <div className="seg">
-          <button type="button" onClick={resetView} title="Back to the starting view">Reset</button>
-        </div>}
-      </div>
-      <div ref={viewer} data-protein-viewer={engine} className="protein-stage">
+      />
+      <Stage ref={viewer} data-protein-viewer={engine} className="protein-stage" title={onScheme ? undefined : hint}>
         {!ready && <BackboneCanvas key={resetKey} chains={protein.chains} colorBy={mode} {...stageSize} />}
-        <div
-          ref={host}
-          data-cartoon-host=""
-          style={{ position: "absolute", inset: 0, visibility: ready && !onScheme ? "visible" : "hidden" }}
-        />
+        <div ref={host} data-cartoon-host="" className="protein-cartoon-host" data-shown={ready && !onScheme ? "" : undefined} />
         {onScheme && (
-          <div style={{ position: "absolute", inset: 0, background: "var(--bg)" }}>
+          <div className="protein-scheme">
             <IgGScheme highlight={scheme.highlight} caption={scheme.caption} />
           </div>
         )}
-      </div>
-      {!onScheme && <p className="panel-note-quiet protein-hint">{hint}</p>}
-      {engine === "failed" && (
-        <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>
-          3D cartoon unavailable here (no WebGL) — showing the backbone trace.
+      </Stage>
+      <div className="protein-extras">
+        <div className="protein-legend">
+          {legend.map(([color, text]) => (
+            <span key={text} className="legend-item">
+              <span className="legend-swatch" style={{ background: color }} />
+              {text}
+            </span>
+          ))}
+          {!onScheme && ligands.map(({ color, text }) => (
+            <span key={`lig-${text}`} data-ligand="" className="legend-item">
+              <span className="legend-swatch is-dot" style={{ background: color }} />
+              {text}
+            </span>
+          ))}
         </div>
-      )}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 14px", fontSize: 12, color: "var(--fg-muted)", margin: "6px 0 2px" }}>
-        {(onScheme ? SCHEME_LEGEND : legendFor(mode, protein)).map(([color, text]) => (
-          <span key={text} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 16, height: 5, borderRadius: 3, background: color }} />
-            {text}
-          </span>
-        ))}
-        {!onScheme && ligands.map(({ color, text }) => (
-          <span key={`lig-${text}`} data-ligand="" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 8, height: 8, borderRadius: 4, background: color }} />
-            {text}
-          </span>
-        ))}
+        {engine === "failed" && !onScheme && (
+          <Hint tone="warn">3D cartoon unavailable here (no WebGL) — showing the backbone trace.</Hint>
+        )}
+        {noteText && <Hint className="protein-note" data-scheme-caption={scheme?.caption ? "" : undefined} title={noteText}>{noteText}</Hint>}
       </div>
-      {scheme?.caption && (
-        <div data-scheme-caption="" style={{ fontSize: 11, color: "var(--fg-muted)" }}>{scheme.caption}</div>
-      )}
-      {protein.citation && (
-        <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>{protein.citation}</div>
-      )}
       <ContinueRow actions={proteinFollowUps(data)} flush={flush} />
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         <ExportPngButton size="sm" filename={`${data.name || "protein"}-cartoon`}
           getSvg={exportSource}
           background={() => panelBackground(viewer.current)} />
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

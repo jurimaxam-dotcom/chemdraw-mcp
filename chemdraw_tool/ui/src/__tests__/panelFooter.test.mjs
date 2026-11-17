@@ -365,7 +365,7 @@ test("Mechanismus im Schrittmodus exportiert den gezeigten Schritt", async () =>
   try {
     await click(container.querySelector("button.export-png"));
     assert.match(mock.seen[0] || "", /M1 1/, "nicht der gezeigte Schritt 1");
-    await click(buttonByText(container, "Next →"));
+    await click(buttonByText(container, "Next")); // Paket B: Chevron-Symbol statt „→“ im Namen
     await click(container.querySelector("button.export-png"));
     assert.match(mock.seen.at(-1) || "", /M2 2/, "Export folgt dem Schritt nicht");
   } finally {

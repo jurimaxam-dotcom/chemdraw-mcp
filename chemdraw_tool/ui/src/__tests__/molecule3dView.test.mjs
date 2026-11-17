@@ -28,23 +28,57 @@ test("Summenformel nach Hill und Molmasse aus den Atomen", () => {
   assert.equal(massOfAtoms([{ symbol: "Xx" }]), null, "unbekanntes Element: keine Masse statt einer falschen");
 });
 
-test("Kopf: Formel und Molmasse im Untertitel, der mit „3D conformer“ beginnt", () => {
+// Umbau C (17.11.2026, Spezifikation §5.11): Formel und Molmasse wandern aus dem Untertitel
+// in die Kernwert-Zeile unter der Bühne; der Untertitel beginnt weiter mit „3D conformer“ (Probe).
+test("Kopf: Untertitel beginnt mit „3D conformer“, Formel und Molmasse stehen als Kernwerte darunter", () => {
   const { container, unmount } = render(React.createElement(Molecule3DView, { data: ETHANOL }));
   const sub = container.querySelector(".panel-subtitle");
   assert.match(sub.textContent, /^3D conformer/);
-  assert.match(sub.textContent, /C2H6O · 46\.07 g\/mol/);
-  assert.equal(sub.querySelectorAll("sub").length, 2, "Indizes tiefgestellt");
+  assert.doesNotMatch(sub.textContent, /C2H6O|g\/mol/, "Formel und Masse gehören in die Kernwerte");
+  const facts = container.querySelector(".panel-facts");
+  assert.ok(facts, "Kernwert-Zeile fehlt");
+  assert.match(facts.textContent, /Formula\s*C2H6O/);
+  assert.match(facts.textContent, /Molar mass\s*46\.07 g\/mol/);
+  assert.equal(facts.querySelectorAll("sub").length, 2, "Indizes tiefgestellt");
   unmount();
 });
 
-test("Kopf nimmt Formel und Molmasse des Servers, nicht die aus den Atomen (Isotope, Ladung)", () => {
+test("Kernwerte nehmen Formel und Molmasse des Servers, nicht die aus den Atomen (Isotope, Ladung)", () => {
   // Codex-Review 16.11.2026: schweres Wasser stand mit 18,02 statt 20,03 g/mol im Kopf.
   const data = { ...ETHANOL, formula: "H2O", molar_mass: 20.03 };
   const { container, unmount } = render(React.createElement(Molecule3DView, { data }));
-  const sub = container.querySelector(".panel-subtitle");
-  assert.match(sub.textContent, /H2O · 20\.03 g\/mol/);
-  assert.equal(/46\.07/.test(sub.textContent), false);
+  const facts = container.querySelector(".panel-facts");
+  assert.match(facts.textContent, /H2O/);
+  assert.match(facts.textContent, /20\.03 g\/mol/);
+  assert.equal(/46\.07/.test(container.textContent), false);
   unmount();
+});
+
+test("Zonen nach §2: Kopf → StageBar (Hinweis, Reset view) → 3D-Bühne → Kernwerte → Fuß", () => {
+  const { container, unmount } = render(React.createElement(Molecule3DView, { data: ETHANOL }));
+  const panel = container.firstElementChild;
+  assert.ok(panel.matches("article.panel.m3d-panel[data-fill]"), panel.outerHTML.slice(0, 120));
+  const zones = [...panel.children].map((el) => el.classList.contains("panel-head") ? "head"
+    : el.classList.contains("stage-bar") ? "bar" : el.classList.contains("stage") ? "stage"
+      : el.classList.contains("panel-facts") ? "facts" : el.classList.contains("panel-foot") ? "foot" : el.className);
+  assert.deepEqual(zones, ["head", "bar", "stage", "facts", "foot"]);
+  const stage = panel.querySelector(".stage");
+  assert.ok(stage.classList.contains("stage-3d") && stage.classList.contains("m3d-stage"), "Bühne variant 3d mit Haken .m3d-stage");
+  assert.ok(stage.querySelector("svg[aria-label='3D model, drag to rotate']"));
+  const bar = panel.querySelector(".stage-bar");
+  assert.ok(buttonByText(bar, "Reset view"), "Reset view steht in der StageBar");
+  assert.match(bar.textContent, /Drag to rotate/);
+  assert.equal(panel.querySelector(".rotate-row"), null, "alte Zeile unter dem Modell entfällt");
+  assert.equal(panel.style.padding, "", "kein Inline-Polster mehr");
+  unmount();
+});
+
+test("Stylesheet: keine 640-px-Kappe, in Fill höchstens so hoch wie breit (Rest unter dem Fuß)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const css = readFileSync(new URL("../styles/c-protein-3d-anki.css", import.meta.url), "utf8");
+  assert.doesNotMatch(css, /max-height:\s*640px/, "3D nie kleiner als 720 im Chat");
+  assert.match(css, /\.m3d-panel[^{]*\{[^}]*container-type:\s*inline-size/);
+  assert.match(css, /data-host-height[^{]*\.m3d-stage[^{]*\{[^}]*max-height:\s*100cqw/);
 });
 
 const geometry = (c) => JSON.stringify([...c.querySelectorAll("circle[fill^='url(#atom-']")].map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));

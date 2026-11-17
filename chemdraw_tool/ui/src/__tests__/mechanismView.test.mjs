@@ -69,8 +69,14 @@ test("Untertitel: lesbare Familie und Schrittzahl statt des Rohwerts, ohne den T
 
 test("Übersicht: die Bühne rollt nicht selbst (kein Rollbereich im Rollbereich)", () => {
   const { container, unmount } = show({});
+  // Seit dem Panel-Umbau (17.11.2026) ist die Bühne ein Stage-Baustein; ihr Überlauf steht nur noch in
+  // CSS (b-graphics.css prüft bGraphics.test.mjs auf auto/scroll). Hier: kein Inline-Rollbereich an der
+  // Bühne oder einem Kind, und die Übersicht steht ohne Zwischenkarte direkt in der Bühne.
   const stage = container.querySelector(".mech-stage");
-  assert.ok(!/auto|scroll/.test(stage.style.overflow + stage.style.overflowY), `overflow: ${stage.style.overflow}`);
+  assert.equal(stage.classList.contains("stage"), true, "Bühne ist kein Stage-Baustein");
+  const scrollers = [stage, ...stage.querySelectorAll("[style]")].filter((el) => /overflow[^;]*:\s*(auto|scroll)/.test(el.getAttribute("style") || ""));
+  assert.equal(scrollers.length, 0, "Inline-Rollbereich in der Bühne");
+  assert.equal(stage.firstElementChild?.classList.contains("mech-overview"), true, "Übersicht nicht direkt in der Bühne");
   assert.equal(container.querySelectorAll("[aria-label^='Open step']").length, 3);
   unmount();
 });

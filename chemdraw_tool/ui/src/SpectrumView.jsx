@@ -1,9 +1,10 @@
 import React from "react";
-import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
 import PlotFigure from "./components/PlotFigure";
+import { Panel, PanelFoot, PanelHead, PanelState } from "./components/Panel";
 import { useModelContextReport } from "./ModelContext";
 import { spectrumFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -24,28 +25,27 @@ const TYPE_LABELS = {
 export default function SpectrumView({ data }) {
   const { flush } = useModelContextReport(genericContext("spectrum", data), data.name || "spectrum");
   const typeLabel = TYPE_LABELS[data.spectrum_type] || data.spectrum_type;
-  const pngPath = data.files?.png;
+  const canExpand = useCanExpand();
+  const title = data.name || `${typeLabel} spectrum`;
+  const subtitle = `${typeLabel} · schematic, drawn from the given peak list`;
 
   if (!data.svg) {
     return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No spectrum data available.
-      </div>
+      <Panel kind="spectrum" className="plot-panel">
+        <PanelHead title={title} subtitle={subtitle} />
+        <PanelState kind="empty" message="No spectrum data available." />
+      </Panel>
     );
   }
 
   return (
-    <div className="plot-panel">
-      <SectionHeader
-        title={data.name || `${typeLabel} spectrum`}
-        subtitle={`${typeLabel} · schematic, drawn from the given peak list`}
-        expand
-      />
+    <Panel kind="spectrum" fill className="plot-panel">
+      <PanelHead title={title} subtitle={subtitle} expand={canExpand ? <ExpandButton /> : null} />
       <PlotFigure svg={data.svg} kind="spectrum" />
       <ContinueRow actions={spectrumFollowUps(data)} flush={flush} />
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "spectrum"} size="sm" />
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

@@ -1,103 +1,62 @@
 import React from "react";
-import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import { fileEntries } from "./components/PanelFooter";
+import { Facts, Hint, Panel, PanelFoot, PanelHead, PanelState, Stage } from "./components/Panel";
 import { useModelContextReport } from "./ModelContext";
 import { genericContext } from "./utils/modelContext.js";
+import { naturalHeight, naturalWidth } from "./utils/svgSize";
 
-// Der Bezeichner ist die Angabe, nach der in einer Scope-Figur gesucht wird —
-// er steht deshalb auch in der Liste vorn und fett.
+// Ausbeute und Notiz eines Eintrags — der Bezeichner (1a, 1b …) ist das Etikett der Kernwert-Zeile.
 function entrySummary(entry) {
   return [entry.yield_text, entry.notes].filter(Boolean).join(" · ");
 }
 
 export default function ScopeView({ data }) {
   useModelContextReport(genericContext("scope", data), data.name || "scope");
+  const canExpand = useCanExpand();
   const entries = data.entries || [];
   const failed = data.failed || [];
-
-  if (!data.svg) {
-    return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No scope figure available.
-      </div>
-    );
-  }
-
+  const title = data.name || "Substrate scope";
   const subtitle =
     data.conditions ||
     `${entries.length} ${entries.length === 1 ? "entry" : "entries"}` +
       (data.columns ? ` · ${data.columns} columns` : "");
 
+  if (!data.svg) {
+    return (
+      <Panel kind="scope" className="scope-panel">
+        <PanelHead title={title} subtitle={subtitle} />
+        <PanelState kind="empty" message="No scope figure available." />
+      </Panel>
+    );
+  }
+
+  // Einträge ohne Ausbeute oder Notiz tragen nichts bei, das nicht schon in der Figur steht.
+  const facts = entries
+    .map((entry, i) => ({ key: `${i}:${entry.label}`, label: entry.label, value: entrySummary(entry) }))
+    .filter((f) => f.label && f.value);
+  // Seitenverhältnis der Figur: in Fill wird die Papierbühne höchstens so hoch wie die Figur bei voller
+  // Breite (b-graphics.css) — sonst stünde im Seitenpanel ein 70 px hohes Raster auf 560 px Papier.
+  const w = naturalWidth(data.svg), h = naturalHeight(data.svg);
   return (
-    <div
-      className="scope-panel"
-      style={{
-        height: 560, // intrinsisch — der Host bemisst das iframe am Inhalt
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "12px 16px",
-      }}
-    >
-      <SectionHeader title={data.name || "Substrate scope"} subtitle={subtitle} expand />
-      <div
-        className="scope-svg"
-        style={{
-          background: "#ffffff",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-md)",
-          overflow: "hidden",
-          padding: 8,
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        dangerouslySetInnerHTML={{ __html: data.svg }}
-      />
-      {/* RDKit liefert feste px-Maße — auf die Panelbreite herunterskalieren */}
-      <style>{`.scope-svg svg { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }`}</style>
-      {entries.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "4px 14px",
-            marginTop: 8,
-            fontSize: 11,
-            color: "var(--fg-muted)",
-          }}
-        >
-          {entries.map((entry, i) => (
-            <span key={entry.label || entry.structure || i}>
-              <span style={{ color: "var(--fg)", fontWeight: 600 }}>
-                {entry.label}
-              </span>
-              {entrySummary(entry) && (
-                <>
-                  {": "}
-                  <span style={{ fontFamily: "ui-monospace, monospace" }}>
-                    {entrySummary(entry)}
-                  </span>
-                </>
-              )}
-            </span>
-          ))}
-        </div>
-      )}
+    <Panel kind="scope" fill className="scope-panel">
+      <PanelHead title={title} subtitle={subtitle} expand={canExpand ? <ExpandButton /> : null} />
+      {/* Papierbühne (Spezifikation §5.10): die Figur ist eine Druckvorlage mit festem Weiß und bekommt
+          eine bewusste Papierkante. scope-svg nimmt sie von der dunklen RDKit-Umfärbung aus (styles.css). */}
+      <Stage variant="paper" className="scope-svg"
+        style={w && h ? { "--scope-aspect": (h / w).toFixed(4) } : undefined} dangerouslySetInnerHTML={{ __html: data.svg }} />
+      <Facts items={facts} className="scope-entries" />
       {failed.length > 0 && (
         // Ausgelassene Einträge müssen sichtbar sein: die Figur sieht sonst
         // vollständig aus, obwohl ein Substrat fehlt.
-        <div style={{ fontSize: 11, color: "#c0392b", marginTop: 6 }}>
+        <Hint tone="warn" className="scope-failed">
           Not resolved, left out of the figure: {failed.join(", ")}
-        </div>
+        </Hint>
       )}
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "scope"} size="sm" />
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

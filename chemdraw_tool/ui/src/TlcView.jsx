@@ -1,9 +1,10 @@
 import React from "react";
-import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
 import PlotFigure from "./components/PlotFigure";
+import { Facts, Panel, PanelFoot, PanelHead, PanelState } from "./components/Panel";
 import { useModelContextReport } from "./ModelContext";
 import { tlcFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -19,7 +20,7 @@ function laneSummary(lane) {
   const spots = lane.spots || [];
   if (spots.length === 0) return "—";
   return spots
-    .map((s) => (s.label && !same(s.label, lane.name) ? `${fmtRf(s.rf)} ${s.label}` : fmtRf(s.rf)))
+    .map((s) => (s.label && !same(s.label, lane.name) ? `${fmtRf(s.rf)} ${String(s.label).trim()}` : fmtRf(s.rf)))
     .join(" · ");
 }
 
@@ -32,53 +33,30 @@ export default function TlcView({ data }) {
     .filter(Boolean)
     .join(" · ");
   const lanes = data.lanes || [];
+  const canExpand = useCanExpand();
+  const title = data.name || "TLC plate";
+  const subtitle = conditions || "Schematic plate, drawn from the given Rf values";
 
   if (!data.svg) {
     return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No TLC data available.
-      </div>
+      <Panel kind="tlc" className="plot-panel">
+        <PanelHead title={title} subtitle={subtitle} />
+        <PanelState kind="empty" message="No TLC data available." />
+      </Panel>
     );
   }
 
+  // Rf-Werte als Kernwert-Zeile (Spezifikation §5.9): Bahn als Etikett, Werte 15/400, keine Mono-Schrift.
+  const rf = lanes.map((lane, i) => ({ key: `${i}:${lane.name}`, label: lane.name, value: laneSummary(lane) }));
   return (
-    <div className="plot-panel">
-      <SectionHeader
-        title={data.name || "TLC plate"}
-        subtitle={
-          conditions || "Schematic plate, drawn from the given Rf values"
-        }
-        expand
-      />
+    <Panel kind="tlc" fill className="plot-panel">
+      <PanelHead title={title} subtitle={subtitle} expand={canExpand ? <ExpandButton /> : null} />
       <PlotFigure svg={data.svg} kind="tlc" />
-      {lanes.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "4px 14px",
-            marginTop: 8,
-            fontSize: 11,
-            color: "var(--fg-muted)",
-          }}
-        >
-          {lanes.map((lane, i) => (
-            <span key={lane.name || i}>
-              <span style={{ color: "var(--fg)", fontWeight: 600 }}>
-                {lane.name}
-              </span>
-              {": "}
-              <span style={{ fontFamily: "ui-monospace, monospace" }}>
-                {laneSummary(lane)}
-              </span>
-            </span>
-          ))}
-        </div>
-      )}
+      <Facts items={rf} className="tlc-rf" />
       <ContinueRow actions={tlcFollowUps(data)} flush={flush} />
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "tlc"} size="sm" />
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

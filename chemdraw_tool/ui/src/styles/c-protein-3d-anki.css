@@ -1,39 +1,57 @@
-/* Paket C: 3D-Einzelansicht, Protein, Anki-Deck.
-   A0 (17.11.2026): die Regeln .m3d-*, .protein-*, .anki-* und .rotate-row unverändert aus styles.css
-   hierher verschoben (samt [data-host-height]-Varianten). Eine .bowl-Klasse gibt es nicht — die Kuhle
-   färbt sich über die Variablen --bowl-*, und die bleiben in styles.css. */
-/* E19: Proteinbild als Quadrat, höchstens 720 px hoch (bis Etappe 3 der Maßstab der 3D-Kuhle),
-   Breite die ganze Zeile, weil Proteine im Ansichtsrahmen quer liegen. Eigene Größe statt
-   Rest einer festen Panelhöhe; Cartoon, Spur und Schema teilen dieselbe Fläche. */
-/* Etappe 5: im Chat eine feste Höhe statt des Quadrats — so bleibt das Panel samt Reitern,
-   Legende, Weiter-Zeile und vier Dateizeilen (Antikörper) bei 1000 px unter 700 px (vorher
-   1171 px, die Fläche 720 px hoch). Mehr Fläche gibt Expand. */
-.protein-stage { position: relative; display: flex; width: 100%; height: 280px; min-height: 0; flex-shrink: 0; }
-/* A0: :where() hält die Spezifität bei 0 — in styles.css stand die Regel vor .panel-note-quiet (margin 6px 0 0)
-   und verlor dort; hinter styles.css würde sie sonst gewinnen und den Hinweis um 2 px verschieben. */
-:where(.protein-hint) { margin: 4px 0 0; }
-/* Etappe 6: im Chat ein Quadrat über die Inhaltsbreite, höchstens 640 px (vorher Panel 500 px, Fläche 864×329). */
-.m3d-stage { display: flex; min-height: 0; flex: none; width: 100%; aspect-ratio: 1 / 1; max-height: 640px; }
-/* Chat-Einstieg 3D (generate_3d) und Protein: Bildfläche füllt die Höhe statt 500 px bzw. Quadrat. */
-:root[data-host-height] .panel-root > .m3d-panel { flex: 1 0 auto; height: auto; min-height: 320px; }
-/* Etappe 3: das quadratische Kuhlen-SVG gibt die Höhe nicht vor (vorher 1095 px in 700) — die Fläche nimmt den Rest. */
-:root[data-host-height] .panel-root > .m3d-panel .m3d-stage { contain: size; flex: 1 1 0; aspect-ratio: auto; max-height: none; }
-:root[data-host-height] .panel-root > .protein-panel { flex: 1 0 auto; }
-:root[data-host-height] .panel-root > .protein-panel .protein-stage { flex: 1 0 auto; height: auto; min-height: 240px; }
-/* Anki-Deck (Etappe 5): Karten als Raster, je Karte Vorder- und Rückseite nebeneinander.
-   Die Kartenbilder (transparente PNGs mit dunklen Bindungen, wie im Deck) liegen auf einem
-   hellen Kartengrund — auch im Dunkeln, wie eine Anki-Karte. */
-.anki-panel { padding: 16px; }
-.anki-cards { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: 12px; padding-top: 16px; }
-.anki-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.anki-side { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; padding: 10px 12px; }
-.anki-side + .anki-side { border-left: 1px solid var(--border); background: var(--bg-alt); }
-.anki-side-label { font-size: 12px; color: var(--fg-muted); }
-.anki-side-text { font-size: 13px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
-.anki-thumb { display: block; max-width: 100%; max-height: 140px; width: auto; height: auto; padding: 4px; border-radius: 6px; background: var(--card-paper); }
+/* Paket C: 3D-Einzelansicht, Protein, Anki-Deck (docs/design/panel-ueberarbeitung-2026-11-17.md, §5.11–5.13).
+   Lädt als letztes Stylesheet. Nur Tokens aus tokens.css; wörtliche Farben nur dort, wo Daten gefärbt
+   werden (Legendenmarken tragen ihre Datenfarbe inline). Rahmen, Kopf, StageBar, Bühne, Facts und Fuß
+   kommen aus frame.css — hier stehen nur die Abweichungen dieser drei Panels.
+   Umbau C (17.11.2026): die alten Regeln (.m3d-stage als Quadrat bis 640 px, .protein-stage 280 px,
+   .rotate-row, Inline-Polster) sind ersetzt. Eine .bowl-Klasse gibt es nicht — die Kuhle färbt sich
+   über --bowl-* aus styles.css. */
+
+/* --- 3D-Einzelansicht (generate_3d, §5.11) -------------------------------------------------------
+   Chat: .stage-3d aus frame.css (volle Inhaltsbreite, Höhe min(Breite, 720)).
+   Fill: die Bühne wächst in den Rest, aber nie höher als breit (100cqw = Inhaltsbreite des Panels) —
+   die Kuhle ist rund, ein höherer Kasten ließe nur Leerstreifen über und unter ihr. Was übrig bleibt,
+   fällt unter den Fuß (§2: „Der Rest fällt unter den Fuß, nie zwischen Bühne und Kernwerte“). */
+.m3d-panel { container-type: inline-size; }
+:root[data-host-height] .panel[data-fill].m3d-panel > .stage-3d.m3d-stage { max-height: 100cqw; }
+
+/* --- Protein und Antikörper (§5.12) -----------------------------------------------------------
+   Struktur zählt als 3D: im Chat volle Breite × 520, Schema dieselbe Fläche (kein Sprung beim
+   Reiterwechsel). In Fill nimmt die Bühne den Rest (frame.css), nie unter 240 px. */
+.protein-stage { position: relative; display: flex; width: 100%; height: 520px; min-height: 0; flex-shrink: 0; }
+:root[data-host-height] .panel[data-fill].protein-panel > .stage.protein-stage { min-height: 240px; }
+/* Cartoon (Mol*-Canvas) und Schema liegen über der SVG-Spur in derselben Fläche. */
+.protein-cartoon-host { position: absolute; inset: 0; visibility: hidden; }
+.protein-cartoon-host[data-shown] { visibility: visible; }
+.protein-scheme { position: absolute; inset: 0; background: var(--surface-0); }
+/* Legende und die eine Hint-Zeile gehören zusammen: enger Abstand statt des Zonen-Abstands 16. */
+.protein-extras { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; color: var(--text-2); }
+.protein-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.protein-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.protein-legend .legend-swatch { flex: none; width: 16px; height: 4px; border-radius: var(--radius-s); }
+.protein-legend .legend-swatch.is-dot { width: 8px; height: 8px; border-radius: 50%; }
+/* Achsen und Reset fließen in einer Reihe: breit eine Zeile, schmal Colour by allein und darunter
+   Representation mit Reset rechts daneben — zusammen mit den Hauptreitern höchstens drei Zeilen (§5.12).
+   32 px Mindesthöhe in beiden Reitern: im Schema steht nur der Hinweis, die Bühne springt trotzdem nicht. */
+.protein-bar { min-height: 32px; }
+.protein-bar > .stage-bar-start { display: contents; }
+
+/* --- Anki-Deck (§5.13) ------------------------------------------------------------------------
+   Karten als Raster, je Karte Vorder- und Rückseite nebeneinander. Die Kartenbilder (transparente
+   PNGs mit dunklen Bindungen, wie im Deck) liegen auf --paper — auch im Dunkeln, wie eine Anki-Karte. */
+.anki-cards { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); gap: var(--space-3); margin: 0; padding: 0; }
+.anki-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: var(--line-w) solid var(--line); border-radius: var(--radius-m); overflow: hidden; }
+.anki-side { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); min-width: 0; padding: var(--space-3); }
+.anki-side + .anki-side { border-left: var(--line-w) solid var(--line); }
+.anki-side-label { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.anki-side-text { margin: 0; font-size: var(--text-body); line-height: var(--lh-body); white-space: pre-line; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
+.anki-thumb { display: block; max-width: 100%; max-height: 120px; width: auto; height: auto; padding: var(--space-1); border-radius: var(--radius-s); background: var(--paper); }
 /* Ältere Ergebnisse ohne Vorschau: nur die Vorderseiten, nummeriert wie bisher. */
-.anki-cards.is-fronts { display: block; list-style: decimal; padding: 12px 0 0 22px; font-size: 13px; line-height: 1.7; }
-.anki-more { margin-top: 10px; font-size: 12px; color: var(--fg-muted); }
-/* Etappe 5: Bedienhinweis und „Reset view“ direkt unter jedem drehbaren 3D-Modell. */
-.rotate-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 6px; flex-shrink: 0; }
-.rotate-row > .panel-note-quiet { margin: 0; }
+.anki-cards.is-fronts { display: block; list-style: decimal; padding-left: 22px; font-size: var(--text-body); line-height: var(--lh-body); }
+/* Die .apkg als sichtbare Zeile: Etikett 12/600, Pfad Mono 12 (links gekürzt, voll im title), Kopierknopf.
+   Sie ist die letzte Zone und trägt die Haarlinie des Fußes (§2: eine Linie, über dem Fuß). */
+.panel-facts.anki-file { display: flex; padding-top: var(--space-2); border-top: var(--line-w) solid var(--line); }
+.anki-file > .fact { display: flex; align-items: center; gap: var(--space-2); min-width: 0; flex: 1 1 auto; min-height: 32px; }
+.anki-file dt { flex: none; font-weight: var(--weight-strong); color: var(--text); }
+.anki-file dd { min-width: 0; font-size: var(--text-meta); line-height: var(--lh-meta); }
+.anki-file .fact-value { min-width: 0; }
+.anki-file .panel-footer-path { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }

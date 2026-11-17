@@ -191,11 +191,12 @@ try {
       await fitChat(page);
       const h = await page.evaluate(() => window.__panelSizes.at(-1)?.height);
       const p = await f.evaluate(() => ({ sub: document.querySelector(".panel-subtitle")?.textContent,
-        hinweis: document.querySelector("[data-protein-viewer] + .protein-hint")?.textContent,
+        hinweis: document.querySelector(".stage-bar:has(+ [data-protein-viewer]) .stage-bar-hint, .stage-bar .stage-bar-hint")?.textContent,
         sh: document.documentElement.scrollHeight, ih: innerHeight }));
       messwerte["e5-protein-chat1000"] = JSON.stringify({ h, ...p });
-      check(h <= 700 && p.sh <= p.ih + 1, `E5 Protein Chat 1000: Panel ${h} ≤ 700 px`);
-      check(!/drag/i.test(p.sub) && /^Drag to rotate/.test(p.hinweis || ""), `E5 Protein: Untertitel ohne Bedienhinweis, Hinweis unter der Fläche (${p.sub} | ${p.hinweis})`);
+      // Umbau 17.11.2026: die Protein-Bühne zählt als 3D (520 px), das Panel darf bis 810 px.
+      check(h <= 810 && p.sh <= p.ih + 1, `E5 Protein Chat 1000: Panel ${h} ≤ 810 px`);
+      check(!/drag/i.test(p.sub) && /^Drag to rotate/.test(p.hinweis || ""), `E5 Protein: Untertitel ohne Bedienhinweis, Hinweis in der Leiste über der Fläche (${p.sub} | ${p.hinweis})`);
       await page.close();
       const [page2, f2] = await open("generate_protein_or_antibody", TRASTUZUMAB, full(1000, 700), { viewport: { width: 1000, height: 700 } });
       await f2.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 30000 });
@@ -641,7 +642,7 @@ try {
             const fleck = [...svg.querySelectorAll('text[style*="font-size: 8px"]')].find((t) => t.textContent.trim() === "Edukt");
             const platte = svg.querySelector('path[style*="fill: #fbfaf6"]');
             return { fleck: fleck ? lum(cs(fleck, "fill")) : null, platte: platte ? lum(cs(platte, "fill")) : null,
-              karte: lum(cs(card, "backgroundColor")), text: text ? lum(cs(text, "fill")) : null, ink: ink ? lum(cs(ink, "stroke")) : null,
+              karte: (() => { let e = card; while (e) { const c = cs(e, "backgroundColor"); const m = c.match(/[\d.]+/g); if (m && (m.length < 4 || Number(m[3]) > 0)) return lum(c); e = e.parentElement; } return 1; })(), text: text ? lum(cs(text, "fill")) : null, ink: ink ? lum(cs(ink, "stroke")) : null,
               papier: bg ? cs(bg, "fill") : null, rot: red ? (red.getAttribute("style").includes("FF7F7F") ? cs(red, "fill") : cs(red, "stroke")) : null };
           });
           messwerte[`e1-${tag}-dunkel`] = JSON.stringify(d);
@@ -1061,9 +1062,9 @@ try {
     check(await f.locator('svg path').count() > 0 && body.includes("Reactants"), `${type}: Übersicht enthält gezeichnete Strukturen und Schritte`);
     await f.getByRole("tab", { name: "Step by step", exact: true }).click();
     await f.getByText(`Step 1 / ${count}`, { exact: true }).waitFor();
-    check(await f.getByRole("button", { name: "← Back", exact: true }).isDisabled(), `${type}: erster Schritt sperrt Zurück`);
+    check(await f.getByRole("button", { name: "Back", exact: true }).isDisabled(), `${type}: erster Schritt sperrt Zurück`);
     const first = await f.locator(".mech-step-svg").innerHTML();
-    await f.getByRole("button", { name: "Next →", exact: true }).click();
+    await f.getByRole("button", { name: "Next", exact: true }).click();
     await f.getByText(`Step 2 / ${count}`, { exact: true }).waitFor();
     check(await f.locator(".mech-step-svg").innerHTML() !== first, `${type}: Weiter zeigt eine andere Zeichnung`);
 
@@ -1084,7 +1085,7 @@ try {
     "3D: sichtbare SVG-Zeichenfläche enthält Caffeins 24 Atome und Bindungen");
   check(/drag to rotate/i.test(await spatialFrame.locator("body").innerText()), "3D: Bedienhinweis sichtbar");
   // Etappe 5: Formel und Molmasse aus den Atomen im Untertitel
-  check(/C8H10N4O2 · 194\.19 g\/mol/.test(await spatialFrame.locator(".panel-subtitle").innerText()), "3D: Summenformel und Molmasse im Untertitel (Koffein)");
+  check(/C8H10N4O2[\s\S]*194\.19 g\/mol/.test(await spatialFrame.locator(".panel-facts").innerText()), "3D: Summenformel und Molmasse in den Kernwerten (Koffein)");
   const geometry = () => canvas.locator('circle[fill^="url(#atom-"]').evaluateAll((atoms) => atoms.map((a) => [a.getAttribute("cx"), a.getAttribute("cy")]));
   // E2: Einblend-Drehung — die Lage ändert sich ohne Zutun und kommt dann zur Ruhe.
   const ersteLage = JSON.stringify(await geometry());
@@ -1368,8 +1369,8 @@ try {
     groß[`cartoon-${width}`] = m;
     const inhalt = width - 64; // body 16 + Panel 16 je Seite
     // Etappe 5: feste Höhe im Chat statt Quadrat (vorher bis 720 px — Panel 1171 px bei 1000 px)
-    check(m.stage.w >= inhalt - 2 && m.stage.h === 280,
-      `E19 lysozyme ${width}px: Bildfläche volle Breite, im Chat 280 px hoch — ${m.stage.w}×${m.stage.h}`);
+    check(m.stage.w >= inhalt - 2 && m.stage.h === 520,
+      `E19 lysozyme ${width}px: Bildfläche volle Breite, im Chat 520 px hoch — ${m.stage.w}×${m.stage.h}`);
     check(m.canvas && m.canvas.w === m.stage.w && m.canvas.h === m.stage.h, `E19 lysozyme ${width}px: Cartoon füllt die Fläche (${m.canvas?.w}×${m.canvas?.h})`);
     await page.waitForTimeout(1500);
     await page.screenshot({ path: join(sizeShots, `e19-cartoon-lysozyme-${width}.png`), fullPage: true });
@@ -1990,7 +1991,7 @@ try {
       n: paths.length,
       maxStroke: Math.max(0, ...paths.map((p) => lum(getComputedStyle(p).stroke))),
       maxFill: Math.max(0, ...texts.map((t) => lum(getComputedStyle(t).fill))),
-      bg: lum(getComputedStyle(document.querySelector(".plot-svg")).backgroundColor),
+      bg: (() => { let e = document.querySelector(".plot-svg"); while (e) { const c = getComputedStyle(e).backgroundColor; const m = c.match(/[\d.]+/g); if (m && (m.length < 4 || Number(m[3]) > 0)) return lum(c); e = e.parentElement; } return 1; })(),
     };
   });
   check(scaffold.n > 0 && scaffold.bg < 0.3 && scaffold.maxStroke > 0.6 && (scaffold.maxFill === 0 || scaffold.maxFill > 0.6),

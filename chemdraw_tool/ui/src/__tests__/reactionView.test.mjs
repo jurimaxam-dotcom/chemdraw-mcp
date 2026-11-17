@@ -202,3 +202,14 @@ test("ohne request (alte Payloads) kein Knopf", () => {
   assert.ok(!buttonByText(container, "Apply coefficients"));
   unmount();
 });
+
+// Panel-Umbau B (17.11.2026): ohne die 16-px-Polster der alten Karte ist die Bühne 32 px breiter. Die
+// Veresterung (~680 px Zeile) stand im Seitenpanel (296 px) danach mit Maßstab 0,44 nebeneinander —
+// Namen um 6 px. Kleine Reaktionen stapeln deshalb unter Maßstab 0,5, nicht erst unter 0,4.
+test("kleine Reaktion stapelt im Seitenpanel, bleibt bei 420 px Breite nebeneinander", async () => {
+  const { shouldStack } = await import("../ReactionView.jsx");
+  assert.equal(shouldStack(296, 680, false), true, "320-px-Seitenpanel: Zeile unlesbar klein");
+  assert.equal(shouldStack(388, 680, false), false, "420 px: Zeile bleibt (Host-Test misst dort die Verkleinerung)");
+  assert.equal(shouldStack(968, 680, false), false);
+  assert.equal(shouldStack(800, 1000, true), true, "große Stoffe stapeln weiter unter 0,85");
+});

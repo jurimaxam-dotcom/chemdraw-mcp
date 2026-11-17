@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
+import { PanelState } from "./Panel";
 
 // Drehbare Rückgratspur eines Proteins (E8) — seit E13 der Rückfall, wenn die
 // Cartoon-Engine (WebGL) nicht startet, und Grundlage der Panel-Tests ohne
@@ -98,7 +99,7 @@ export default function BackboneCanvas({ chains = [], colorBy = "ss", width = 48
   }, [curves, width, height]);
 
   if (!curves.length) {
-    return <div style={{ color: "var(--fg-muted)", padding: 16 }}>No backbone data available.</div>;
+    return <PanelState kind="empty" message="No backbone data available." />;
   }
 
   const sin = { x: Math.sin(rot.x), y: Math.sin(rot.y) };
@@ -187,7 +188,7 @@ export default function BackboneCanvas({ chains = [], colorBy = "ss", width = 48
       })}
       {termini.map(({ key, p, text }) => (
         <text key={key} x={sx(p) + 6} y={sy(p) - 6} fontSize="12" fontWeight="600"
-          style={{ fill: "var(--fg)", paintOrder: "stroke", stroke: "var(--bg, #fff)", strokeWidth: 3 }}>
+          style={{ fill: "var(--fg)", paintOrder: "stroke", stroke: "var(--bg)", strokeWidth: 3 }}>
           {text}
         </text>
       ))}

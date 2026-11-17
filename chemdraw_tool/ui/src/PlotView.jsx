@@ -1,9 +1,10 @@
 import React from "react";
-import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import { fileEntries } from "./components/PanelFooter";
 import ContinueRow from "./components/ContinueRow";
 import PlotFigure from "./components/PlotFigure";
+import { Facts, Hint, Panel, PanelFoot, PanelHead, PanelState } from "./components/Panel";
 import { useModelContextReport } from "./ModelContext";
 import { plotFollowUps } from "./utils/followUps.js";
 import { genericContext } from "./utils/modelContext.js";
@@ -16,41 +17,52 @@ export function noteParts(note) {
     .map((text, i) => (i % 2 ? <strong key={i}>{text}</strong> : text));
 }
 
+// „t½ = 6 h · CL = 4.62 L/h“: jedes Stück „Name = Wert“ mit kurzem Namen ist ein Kernwert
+// (Spezifikation §5.8: Notizen als Facts-Zeile). Ein Satz („Signal 0.47 → 4.616 (x = …)“,
+// „90 % of steady state after …“) bleibt ganz — er wird ein Hinweis, nie halb zerlegt.
+const FACT = /^([^=→()]{1,24}?)\s+=\s+(.+)$/;
+
+/** Notizen → { facts: [{label, value}], sentences: [note] } */
+export function splitNotes(notes) {
+  const facts = [];
+  const sentences = [];
+  for (const note of notes || []) {
+    const pieces = String(note ?? "").split(" · ").map((p) => FACT.exec(p.trim()));
+    if (pieces.length > 0 && pieces.every(Boolean)) {
+      for (const [, label, value] of pieces) facts.push({ label, value: noteParts(value), key: `${facts.length}:${label}` });
+    } else {
+      sentences.push(note);
+    }
+  }
+  return { facts, sentences };
+}
+
 export default function PlotView({ data }) {
   const { flush } = useModelContextReport(genericContext("plot", data), data.name || "plot");
+  const canExpand = useCanExpand();
   if (!data.svg) {
     return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No diagram data available.
-      </div>
+      <Panel kind="plot" className="plot-panel">
+        <PanelHead title={data.name} subtitle={data.subtitle} />
+        <PanelState kind="empty" message="No diagram data available." />
+      </Panel>
     );
   }
 
+  const { facts, sentences } = splitNotes(data.notes);
+  // Jede Zeile unter der Figur (Kalibrierung, PK, Dosis-Wirkung) kostet Höhe — um so viel
+  // wird die Figur im Chat flacher (b-graphics.css), damit das Panel in 700 px bleibt.
+  const lines = (facts.length ? 1 : 0) + sentences.length;
   return (
-    // Jede Zeile unter der Figur (Kalibrierung, PK, Dosis-Wirkung) kostet ~20 px —
-    // um so viel wird die Figur flacher, damit das Panel im Chat in 700 px bleibt.
-    <div className="plot-panel" style={{ "--plot-notes": data.notes?.length || 0 }}>
-      <SectionHeader title={data.name} subtitle={data.subtitle} expand />
+    <Panel kind="plot" fill className="plot-panel" style={{ "--plot-notes": lines }}>
+      <PanelHead title={data.name} subtitle={data.subtitle} expand={canExpand ? <ExpandButton /> : null} />
       <PlotFigure svg={data.svg} />
-      {data.notes?.length > 0 && (
-        <ul
-          style={{
-            fontSize: 11,
-            color: "var(--fg-muted)",
-            margin: "8px 0 0",
-            paddingLeft: 18,
-            lineHeight: 1.45,
-          }}
-        >
-          {data.notes.map((note, i) => (
-            <li key={i}>{noteParts(note)}</li>
-          ))}
-        </ul>
-      )}
+      <Facts items={facts} className="plot-notes" />
+      {sentences.map((note, i) => <Hint key={i} className="plot-note">{noteParts(note)}</Hint>)}
       <ContinueRow actions={plotFollowUps(data)} flush={flush} />
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         <ExportPngButton svg={data.svg} filename={data.name || "plot"} size="sm" />
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

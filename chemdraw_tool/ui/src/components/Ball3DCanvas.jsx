@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { PanelState } from "./Panel";
 
 // Leichtgewichtiger Ball-and-Stick-Viewer: Rotationsmatrix + Painter's
 // Algorithm in purem SVG. Bewusst kein WebGL/3Dmol — die Single-File-App
@@ -161,11 +162,7 @@ export default function Ball3DCanvas({ atoms = [], bonds = [], style }) {
   }, [atoms, bonds]);
 
   if (!atoms.length) {
-    return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No 3D data available.
-      </div>
-    );
+    return <PanelState kind="empty" message="No 3D data available." />;
   }
 
   const size = 480;

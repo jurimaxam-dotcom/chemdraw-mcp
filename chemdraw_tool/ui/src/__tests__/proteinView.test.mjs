@@ -6,7 +6,7 @@ import { test } from "node:test";
 
 import React, { act } from "react";
 
-import ProteinView, { viewerDeps } from "../ProteinView";
+import ProteinView, { splitSubtitle, viewerDeps } from "../ProteinView";
 import BackboneCanvas from "../components/BackboneCanvas";
 import App from "../App";
 import { AppContext, HostContext } from "../AppContext";
@@ -318,17 +318,16 @@ test("E19: Panel ohne feste Höhe, eine Bildfläche für Cartoon, Spur und Schem
   unmount();
 });
 
-// Etappe 3: die 3D-Kuhle im Molekülpanel ist kein 720-px-Quadrat mehr (sie teilt die Fläche
-// mit 2D). Etappe 5 (16.11.2026): auch die Proteinfläche nicht — im Chat eine feste Höhe,
-// damit das Panel bei 1000 px unter 700 px bleibt (vorher Quadrat bis 720 px, Panel 1171 px).
-test("Etappe 5: das Protein-Stylesheet gibt der Proteinfläche im Chat volle Breite und eine feste Höhe", async () => {
+// Etappe 5 (16.11.2026): im Chat eine feste Höhe statt eines Quadrats bis 720 px. Umbau C
+// (17.11.2026, Spezifikation §5.12): Struktur zählt als 3D — 520 px statt 280, volle Breite.
+test("Umbau C: das Protein-Stylesheet gibt der Proteinfläche im Chat volle Breite und 520 px Höhe", async () => {
   const { readFileSync } = await import("node:fs");
   // A0 (17.11.2026): die Protein-Regeln stehen in styles/c-protein-3d-anki.css.
   const css = readFileSync(new URL("../styles/c-protein-3d-anki.css", import.meta.url), "utf8");
   const rule = /\.protein-stage \{([^}]*)\}/.exec(css);
   assert.ok(rule, ".protein-stage fehlt");
   assert.ok(!rule[1].includes("aspect-ratio"), ".protein-stage: kein Quadrat mehr");
-  for (const decl of ["width: 100%", "height: 280px", "position: relative"]) {
+  for (const decl of ["width: 100%", "height: 520px", "position: relative"]) {
     assert.ok(rule[1].includes(decl), `.protein-stage: ${decl}`);
   }
   assert.ok(!/\d+vh/.test(rule[1]), "keine vh-Höhe — die Größenmeldung misst max-content");
@@ -350,14 +349,101 @@ test("Etappe 3: Expand rechts im Kopf, wenn der Host den Vollbildmodus anbietet"
   unmount();
 });
 
-// Etappe 5 (16.11.2026): Untertitel = was man sieht; der Bedienhinweis steht knapp an der
-// Fläche, nicht mehr als zweite Zeile im Kopf.
-test("Untertitel ohne Bedienhinweis; der Hinweis steht direkt unter der Bildfläche", () => {
+// Etappe 5 (16.11.2026): Untertitel = was man sieht. Umbau C (17.11.2026, §5.12): der
+// Bedienhinweis steht rechts in der StageBar über der Fläche, die volle Bedienhilfe im title.
+test("Untertitel ohne Bedienhinweis; der Hinweis steht in der StageBar über der Bildfläche", () => {
   const { container, unmount } = render(React.createElement(ProteinView, { data: PROTEIN }));
   assert.equal(container.querySelector(".panel-subtitle").textContent, "PDB 3I40, chains A/B · smoothed Cα trace · 51 residues");
   const stage = container.querySelector("[data-protein-viewer]");
-  const hint = stage.nextElementSibling;
-  assert.ok(hint?.classList.contains("protein-hint"), "Hinweis steht nicht direkt unter der Fläche");
-  assert.match(hint.textContent, /^Drag to rotate/);
+  const bar = stage.previousElementSibling;
+  assert.ok(bar?.classList.contains("stage-bar"), "StageBar steht nicht direkt über der Fläche");
+  assert.match(bar.querySelector(".stage-bar-hint").textContent, /^Drag to rotate/);
+  assert.match(stage.getAttribute("title") || "", /^Drag to rotate/, "Bedienhilfe im title der Bühne");
+  unmount();
+});
+
+const zonesOf = (panel) => [...panel.children].map((el) => ["panel-head", "stage-bar", "stage", "protein-extras", "continue-row", "panel-foot"]
+  .find((c) => el.classList.contains(c)) || el.className);
+
+test("Umbau C: Hauptreiter im Kopf, Achsen und Reset in der StageBar, Zonen nach §2", async () => {
+  const { container, unmount } = render(React.createElement(ProteinView, {
+    data: antibody({ start: "structure", highlight: "fab", caption: "The structure shown (PDB 1N8Z) is one Fab arm of the IgG." }),
+  }));
+  const panel = container.firstElementChild;
+  assert.ok(panel.matches("article.panel.protein-panel[data-fill]"));
+  assert.equal(panel.style.padding, "", "kein Inline-Polster mehr");
+  assert.deepEqual(zonesOf(panel).filter((z) => z !== "continue-row"), ["panel-head", "stage-bar", "stage", "protein-extras", "panel-foot"]);
+  const head = panel.querySelector(".panel-head");
+  assert.ok(head.querySelector("[role=tablist][aria-label='View']"), "Structure/Scheme sitzt im Kopf");
+  const bar = panel.querySelector(".stage-bar");
+  assert.ok(bar.querySelector("[aria-label='Colour by']"), "Colour by in der StageBar");
+  const reset = buttonByText(bar, "Reset");
+  assert.ok(reset && reset.classList.contains("btn") && !reset.closest(".seg"), "Reset ist ein ruhiger Knopf außerhalb einer Spur");
+  // Scheme: StageBar bleibt (ohne Achsen), damit die Bühne beim Wechsel nicht springt
+  await click(buttonByText(container, "Scheme"));
+  assert.ok(panel.querySelector(".stage")?.previousElementSibling?.classList.contains("stage-bar"), "StageBar fehlt im Schema");
+  assert.equal(panel.querySelector("[aria-label='Colour by']"), null);
+  unmount();
+});
+
+test("Umbau C: Legende als Zeile, Herkunft und Bildunterschrift als eine Hint-Zeile, keine Oberflächen-Inline-Farbe", () => {
+  const { container, unmount } = render(React.createElement(ProteinView, {
+    data: antibody({ start: "structure", highlight: "fab", caption: "The structure shown (PDB 1N8Z) is one Fab arm of the IgG." }),
+  }));
+  const extras = container.querySelector(".protein-extras");
+  assert.ok(extras.querySelector(".protein-legend"), "Legende fehlt");
+  const hints = [...extras.querySelectorAll("p.hint")];
+  assert.equal(hints.length, 1, "genau eine Hint-Zeile");
+  assert.match(hints[0].textContent, /one Fab arm of the IgG/);
+  assert.match(hints[0].textContent, /Structure: PDB 3I40 \(wwPDB, CC0\)/);
+  // Inline-Farben nur an Legendenmarken (Daten), nie an Flächen oder Text — geprüft wird, was
+  // ProteinView selbst baut (Fuß und Weiter-Zeile sind gemeinsame Bausteine aus Paket A).
+  for (const el of container.querySelectorAll("[style]")) {
+    if (el.closest(".panel-foot, .continue-row")) continue;
+    const st = el.getAttribute("style");
+    if (!/background|color/.test(st)) continue;
+    assert.ok(el.matches(".legend-swatch") || el.closest("svg"), `Inline-Farbe an ${el.outerHTML.slice(0, 100)}`);
+  }
+  unmount();
+});
+
+test("Umbau C: ohne WebGL ist der Rückfall-Satz ein Hint „warn“", async () => {
+  const original = viewerDeps.loadEngine;
+  viewerDeps.loadEngine = async () => ({ create: async () => { throw new Error("no WebGL"); } });
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    const { container, unmount } = render(React.createElement(ProteinView, { data: PROTEIN }));
+    await flush();
+    const hint = [...container.querySelectorAll("p.hint-warn")].find((p) => p.textContent.includes("3D cartoon unavailable here"));
+    assert.ok(hint, "Rückfall-Satz nicht als Hint warn");
+    assert.equal(hint.textContent, "3D cartoon unavailable here (no WebGL) — showing the backbone trace.");
+    unmount();
+  } finally {
+    viewerDeps.loadEngine = original;
+    console.warn = warn;
+  }
+});
+
+test("Umbau C: Spur ohne Daten zeigt PanelState „empty“ statt Inline-Farbe", () => {
+  const { container, unmount } = render(React.createElement(BackboneCanvas, { chains: [] }));
+  const state = container.querySelector(".panel-state[data-state='empty']");
+  assert.ok(state, container.innerHTML);
+  assert.match(state.textContent, /No backbone data available/);
+  unmount();
+});
+
+test("Umbau C: „from the complex …“ wandert aus dem Untertitel in die Hint-Zeile, neben Bildunterschrift und Quelle", () => {
+  assert.deepEqual(splitSubtitle("PDB 1N8Z, chains A/B · cartoon · 434 residues · from the complex with HER2; the antigen is not shown"),
+    { origin: "PDB 1N8Z, chains A/B · cartoon · 434 residues", note: "from the complex with HER2; the antigen is not shown" });
+  assert.deepEqual(splitSubtitle("PDB 1LYZ"), { origin: "PDB 1LYZ", note: "" });
+  const data = antibody({ start: "structure", highlight: "fab", caption: "The structure shown (PDB 1N8Z) is one Fab arm of the IgG." });
+  data.protein.subtitle = "PDB 1N8Z, chains A/B · cartoon · 434 residues · from the complex with HER2; the antigen is not shown";
+  const { container, unmount } = render(React.createElement(ProteinView, { data }));
+  assert.equal(container.querySelector(".panel-subtitle").textContent, "PDB 1N8Z, chains A/B · cartoon · 434 residues");
+  const hint = container.querySelector(".protein-extras p.hint");
+  assert.match(hint.textContent, /one Fab arm of the IgG\./);
+  assert.match(hint.textContent, /From the complex with HER2; the antigen is not shown\./);
+  assert.match(hint.textContent, /Structure: PDB 3I40/);
   unmount();
 });

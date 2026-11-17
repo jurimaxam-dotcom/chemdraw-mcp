@@ -34,3 +34,107 @@
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="stroke: #1a1a1a"] { stroke: var(--fg) !important; }
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #1a1a1a"] { fill: var(--fg) !important; }
 :root[data-theme="dark"] .plot-svg[data-svg-source="matplotlib"]:not([data-plot-kind="tlc"]) [style*="fill: #555555"] { fill: var(--fg-muted) !important; }
+
+/* ===== Panel-Umbau Paket B (17.11.2026, Spezifikation §5.5–5.10) ===========================================
+   Die Grafik-Panels stehen im gemeinsamen Rahmen (components/Panel.jsx, frame.css). Hier nur, was die Bühnen
+   der Grafiken anders brauchen, und das Zurücksetzen alter Regeln aus styles.css (Rahmen, Polster, Fläche).
+   Nur Tokens; Hex-Werte stehen ausschließlich in den SVG-Umfärberegeln. */
+
+/* Plotgrund: färbt sich in beiden Themen mit dem Panel — die Bühne hat keine eigene Fläche (§5.8). Die
+   DC-Platte selbst bleibt hell (eigene Füllung im SVG), der Export bleibt das helle Original. */
+:root { --plot-paper: var(--surface-0); }
+
+/* --- Diagramm-Bühne (Spektrum, DC, Titration, Spezies, Pharma-Kurven, Vergleich) ------------------------- */
+.panel.plot-panel { padding: 0; }
+/* Chat: volle Inhaltsbreite, Höhe aus dem Seitenverhältnis bis --plot-max-h; jede Notizzeile darunter macht
+   die Figur 24 px flacher (PlotView setzt --plot-notes), damit das Panel in 700 px bleibt. */
+.panel > .stage.plot-svg { height: auto; padding: 0; border: 0; border-radius: 0; background: none; overflow: hidden; }
+.stage.plot-svg > svg { display: block; width: 100%; height: auto; max-height: max(240px, calc(var(--plot-max-h) - var(--plot-notes, 0) * 24px)); }
+/* Vergleich (§5.5, RDKit, Querformat 1000 × 450): 360 px reichen für zwei bis drei Strukturen und halten
+   das Panel im Chat unter 560 px; die Bildunterschriften stehen im SVG. */
+.stage.plot-svg[data-svg-source="rdkit"] > svg { max-height: 360px; }
+/* DC (§5.9): Bühne in Plothöhe, die hochformatige Platte steht mittig („meet“ der viewBox). Die Rf-Zeile
+   darunter kostet ~52 px — die Bühne gibt einen Teil davon ab, damit das Panel im Chat unter 640 px bleibt. */
+.panel > .stage.plot-svg[data-plot-kind="tlc"] { height: calc(var(--plot-max-h) - 24px); }
+.stage.plot-svg[data-plot-kind="tlc"] > svg { height: 100%; max-height: none; }
+/* matplotlib-Titel wiederholt den Panel-Titel (B8): in der Anzeige aus, sobald der Renderer die Marke setzt.
+   Heute setzt er sie nicht — die Regel ist vorbereitet, der Export behält den Titel ohnehin. */
+.plot-svg[data-svg-source="matplotlib"] [data-plot-title] { display: none; }
+
+/* Fill (Seitenpanel, Vollbild): die Bühne nimmt den Rest (frame.css), das SVG füllt sie ohne Rand.
+   Die Selektoren übertreffen die alten aus styles.css (inset 8 px, schmal 4 px). */
+:root[data-host-height] .panel-root > .panel.plot-panel > .stage.plot-svg > svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+/* Höchstens so hoch wie die Figur bei voller Breite — sonst stünde im Seitenpanel (320 px) ein 192 px hoher
+   Plot in einer 490 px hohen Bühne; der Rest fällt unter den Fuß, nie zwischen Bühne und Kernwerte (§2).
+   Querformat nur schmal (unter 620 px) und nie unter 240 px (§2): breit füllt die Figur die Höhe (test:host U5,
+   Vergleich bei 1400 × 900 > 600 px). Die DC-Platte immer nach ihrem Hochformat. container-type setzt styles.css. */
+@media (max-width: 619px) {
+  :root[data-host-height] .panel-root > .panel.plot-panel > .stage.plot-svg { max-height: max(240px, calc(100cqw * var(--plot-aspect, 10))); }
+}
+:root[data-host-height] .panel-root > .panel.plot-panel > .stage.plot-svg[data-plot-kind="tlc"] { max-height: calc(100cqw * var(--plot-aspect, 10)); }
+
+/* Notizen, die keine Kernwerte sind (Kalibrier-Ergebnis, LOD/LOQ, PK-Satz), sind Daten: der Hinweis-Baustein
+   kappt nach zwei Zeilen — hier nicht, schmal bräche sonst der abgelesene Wert ab. Untereinander 4 px statt 16. */
+.panel > .hint.plot-note { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.panel > .hint.plot-note + .hint.plot-note { margin-top: calc(var(--space-1) - var(--space-4)); }
+
+/* --- Scope (§5.10): Papierbühne ---------------------------------------------------------------------- */
+/* Höhe: --stage-h, aber nie höher als die Figur bei voller Breite plus Papierrand (ScopeView setzt
+   --scope-aspect) — ein breites Raster steht sonst auf einem leeren weißen Blatt, im Dunkeln die hellste Fläche. */
+.panel.scope-panel { container-type: inline-size; }
+.panel > .stage.scope-svg { height: min(var(--stage-h), calc((100cqw - 2 * var(--space-3)) * var(--scope-aspect, 1) + 2 * var(--space-3))); overflow: hidden; }
+:root[data-host-height] .panel-root > .panel.scope-panel > .stage.scope-svg { max-height: max(240px, calc((100cqw - 2 * var(--space-3)) * var(--scope-aspect, 1) + 2 * var(--space-3))); }
+.stage.scope-svg > svg { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; }
+/* RDKits weiße Grundfläche nimmt den Papierton an — keine zweite, hellere Kante in der Bühne. */
+.stage.scope-svg svg rect[style*="fill:#FFFFFF"] { fill: var(--paper) !important; }
+
+/* --- Reaktion (§5.6): Bühne plain, inhaltsgroß ------------------------------------------------------- */
+/* Block statt Flex: die Zeile ist 100/scale % breit und links oben verankert; zentriert liefe sie links hinaus. */
+.panel > .stage.rxn-stage { display: block; height: auto; overflow: hidden; }
+.panel > .stage.rxn-stage[data-scroll] { overflow-x: auto; }
+.rxn-conditions { max-width: 200px; font-size: var(--text-body); line-height: 1.3; color: var(--text); text-align: center; white-space: pre-wrap; }
+.rxn-conditions[data-conditions="above"] { padding-bottom: var(--space-1); }
+.rxn-conditions[data-conditions="below"] { padding-top: var(--space-1); }
+.rxn-arrow { color: var(--text-2); }
+/* Plus und Koeffizient gehören zur Zeichnung (skalieren mit der Zeile), daher Zeichengröße statt Schriftleiter. */
+.rxn-plus { flex-shrink: 0; align-self: center; padding: 0 14px; font-size: 22px; font-weight: 300; color: var(--text-2); }
+.rxn-coefficient { flex-shrink: 0; align-self: center; padding: 0 6px 0 2px; font-size: 22px; color: var(--text); }
+.rxn-name { max-width: 160px; font-size: var(--text-body); line-height: 1.3; color: var(--text-2); text-align: center; }
+.rxn-missing { display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: var(--radius-s); background: var(--surface-1); font-size: var(--text-meta); color: var(--text-2); }
+/* Bilanz: ausgeglichen = Text mit Häkchen in --success; sonst Warnhinweis, daneben ruhige Knöpfe. */
+.panel .balance-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); font-size: var(--text-body); line-height: var(--lh-body); }
+.panel .balance-badge { display: inline; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; }
+.panel .balance-badge.balance-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--text); }
+.panel .balance-ok > .icon { color: var(--success); }
+/* Befund und vorgeschlagene Gleichung sind Daten — kein Abschneiden nach zwei Zeilen wie beim übrigen Hinweis. */
+.panel .balance-hint { flex: 0 1 auto; min-width: 0; display: block; -webkit-line-clamp: unset; overflow: visible; }
+.panel .balance-error { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+
+/* --- Mechanismus (§5.7) ------------------------------------------------------------------------------ */
+/* Übersicht: inhaltsgroß, keine Karte; Schritt: feste Bühne, die Zeichnung füllt sie. */
+.panel > .stage.mech-stage[data-mode="overview"] { height: auto; }
+.panel > .stage.mech-stage[data-mode="step"] { height: 360px; }
+.mech-step-svg { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 0; }
+.mech-step-svg > svg { width: 100%; height: 100%; max-width: 100%; max-height: 100%; }
+/* Fill: die Übersicht ist nie kleiner als ihr Inhalt (frame.css setzt contain: size an jede Bühne) —
+   passt sie lesbar nicht, wächst das Panel und die Seite rollt, nie ein Bereich im Bereich. */
+:root[data-host-height] .panel-root > .panel.mechanism-panel > .stage.mech-stage[data-mode="overview"] { flex: 1 0 auto; contain: none; }
+.mech-arrow { color: var(--text-2); }
+.mech-tile-caption { font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); }
+.mech-tile-caption.is-ts { color: var(--accent); font-weight: var(--weight-strong); }
+/* Schrittleiste: Back links, Zähler · Bezeichnung · Punkte in der Mitte, Next rechts — beide immer sichtbar.
+   StageBar hat keinen Mittel-Platz; die Mitte steht im linken Teil und nimmt dort den Rest. */
+.stage-bar.mech-nav { flex-wrap: nowrap; }
+.mech-nav > .stage-bar-start { flex: 1 1 auto; flex-wrap: nowrap; min-width: 0; }
+.mech-nav > .stage-bar-end { flex: none; margin-left: 0; }
+.mech-nav .btn { flex: none; }
+.mech-nav-center { display: flex; flex: 1 1 0; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px var(--space-2); min-width: 0; font-size: var(--text-meta); line-height: var(--lh-meta); color: var(--text-2); text-align: center; }
+.mech-counter { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mech-step-label { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-weight: var(--weight-strong); }
+.mech-step-label.is-ts { color: var(--accent); }
+.mech-dots { display: inline-flex; align-items: center; }
+.mech-dot { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; min-height: 16px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.mech-dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); }
+.mech-dot[aria-current="step"]::before { width: 8px; height: 8px; background: var(--accent); }
+.mech-dot:hover::before { background: var(--text-2); }
+.mech-dot[aria-current="step"]:hover::before { background: var(--accent); }

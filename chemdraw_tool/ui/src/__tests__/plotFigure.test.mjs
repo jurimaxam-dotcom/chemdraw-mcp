@@ -44,7 +44,8 @@ test("Notizen: **…** wird fett gesetzt, keine Sterne im Panel", () => {
   const data = { type: "plot", name: "Calibration curve", svg: "<svg viewBox='0 0 10 10'></svg>",
     notes: ["Signal 0.47 → **4.61612** (x = (y − b) / a)", "a * b ohne Fettdruck", "**offen"] };
   const { container, unmount } = render(React.createElement(PlotView, { data }));
-  const items = [...container.querySelectorAll("li")];
+  // Seit dem Panel-Umbau (17.11.2026) stehen Satz-Notizen als Hinweis (p.hint), je Notiz eine Zeile.
+  const items = [...container.querySelectorAll("p.hint")];
   assert.equal(items[0].textContent, "Signal 0.47 → 4.61612 (x = (y − b) / a)");
   assert.equal(items[0].querySelector("strong")?.textContent, "4.61612");
   assert.equal(items[1].textContent, "a * b ohne Fettdruck", "einzelne Sterne bleiben");

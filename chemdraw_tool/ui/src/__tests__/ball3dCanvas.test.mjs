@@ -286,3 +286,14 @@ test("pointercancel beendet das Ziehen; Cursor grabbing nur während des Ziehens
   assert.equal(geometry(container), after, "nach pointercancel dreht eine Mausbewegung ohne Taste weiter");
   unmount();
 });
+
+// Umbau C (17.11.2026, §4 PanelState): ohne Atome der gemeinsame leere Zustand statt eines
+// Inline-gefärbten Kastens; er nimmt die Bühnenhöhe ein (kein Sprung).
+test("ohne Atome: PanelState „empty“ statt Inline-Farbe", () => {
+  const { container, unmount } = render(React.createElement(Ball3DCanvas, { atoms: [], bonds: [] }));
+  const state = container.querySelector(".panel-state[data-state='empty']");
+  assert.ok(state, container.innerHTML);
+  assert.match(state.textContent, /No 3D data available/);
+  assert.equal(container.querySelector("[style]"), null, "keine Inline-Farbe");
+  unmount();
+});

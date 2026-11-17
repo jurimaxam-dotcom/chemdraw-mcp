@@ -1,7 +1,8 @@
 import React, { useRef, useState, useLayoutEffect, useCallback } from "react";
-import SectionHeader from "./components/SectionHeader";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter, { fileEntries } from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
+import { fileEntries } from "./components/PanelFooter";
+import { Button, Hint, Icon, Panel, PanelFoot, PanelHead, Stage } from "./components/Panel";
 import ContinueRow from "./components/ContinueRow";
 import { useModelContextReport } from "./ModelContext";
 import { reactionFollowUps } from "./utils/followUps.js";
@@ -22,6 +23,15 @@ const MIN_SCALE = 0.4;
 const READABLE_SCALE = 0.85; // N-Glyphe 10,6 px × 0,85 ≈ 9 px
 // Was auf RDKits 250×200-Fläche passt, ist nach dem Zuschnitt höchstens 250+2·22 breit
 // bzw. 200+2·22 hoch (svg_renderer.SVG_PADDING) — alles darüber kam von der größeren Fläche.
+// Kleine Reaktionen stapeln unter diesem Maßstab (Panel-Umbau 17.11.2026): ohne die alten 16-px-Polster
+// lag die Veresterung im 320-px-Seitenpanel bei 0,44 knapp über MIN_SCALE — Namen um 6 px, unlesbar.
+const STACK_SCALE = 0.5;
+
+/** Stapeln statt nebeneinander? rowW = Zeilenbreite mit waagrechtem Pfeil. */
+export function shouldStack(containerW, rowW, canStack = false) {
+  return rowW > 0 && containerW / rowW < (canStack ? READABLE_SCALE : STACK_SCALE);
+}
+
 const LARGE_W = 294;
 const LARGE_H = 244;
 
@@ -31,8 +41,9 @@ function isLarge(molecule) {
 
 // Pfeilformen im 110×18-Raster. Vorwaerts bleibt der bisherige Pfeil;
 // Gleichgewicht = zwei Halbpfeile (⇌), Retro = Doppelschaft mit offener Spitze (⇒).
+// Farbe über currentColor: das SVG trägt die Klasse rxn-arrow (b-graphics.css, --text-2).
 function ArrowGlyph({ kind }) {
-  const stroke = "var(--fg-muted)";
+  const stroke = "currentColor";
   if (kind === "equilibrium") {
     return (
       <>
@@ -63,18 +74,7 @@ function ArrowGlyph({ kind }) {
 function ArrowText({ text, position }) {
   if (!text) return null;
   return (
-    <div
-      data-conditions={position}
-      style={{
-        fontSize: 13,
-        color: "var(--fg)",
-        textAlign: "center",
-        whiteSpace: "pre-wrap",
-        lineHeight: 1.3,
-        maxWidth: 200,
-        padding: position === "above" ? "0 0 4px" : "4px 0 0",
-      }}
-    >
+    <div className="rxn-conditions" data-conditions={position}>
       {text}
     </div>
   );
@@ -87,7 +87,7 @@ function VerticalArrow({ kind, above, below }) {
       style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", flexShrink: 0 }}>
       <div style={{ position: "relative", width: 18, height: 64, flexShrink: 0 }}>
         {/* 64×18 um die Mitte gedreht: Mittelpunkt (32,9) → (9,32) */}
-        <svg data-arrow={kind} width="64" height="18" viewBox="0 0 110 18" preserveAspectRatio="none"
+        <svg className="rxn-arrow" data-arrow={kind} width="64" height="18" viewBox="0 0 110 18" preserveAspectRatio="none"
           style={{ position: "absolute", left: -23, top: 23, transform: "rotate(90deg)", maxWidth: "none" }}>
           <ArrowGlyph kind={kind} />
         </svg>
@@ -121,6 +121,7 @@ function ReactionArrow({ kind, above, below, vertical = false }) {
     >
       <ArrowText text={above} position="above" />
       <svg
+        className="rxn-arrow"
         data-arrow={known}
         width="110"
         height="18"
@@ -135,28 +136,14 @@ function ReactionArrow({ kind, above, below, vertical = false }) {
 }
 
 function Plus() {
-  return (
-    <div
-      style={{
-        fontSize: 22,
-        fontWeight: 300,
-        color: "var(--fg-muted)",
-        padding: "0 14px",
-        alignSelf: "center",
-        flexShrink: 0,
-      }}
-    >
-      +
-    </div>
-  );
+  return <div className="rxn-plus">+</div>;
 }
 
 // Stoechiometrischer Koeffizient vor dem Molekuel; 1 schreibt niemand hin.
 function Coefficient({ value }) {
   if (!value || value === 1) return null;
   return (
-    <div data-coefficient style={{ fontSize: 22, color: "var(--fg)", padding: "0 6px 0 2px",
-      alignSelf: "center", flexShrink: 0 }}>
+    <div className="rxn-coefficient" data-coefficient>
       {value}
     </div>
   );
@@ -184,32 +171,12 @@ function MoleculeCard({ molecule }) {
           }}
         />
       ) : (
-        <div
-          style={{
-            width: 80,
-            height: 80,
-            background: "var(--bg-alt)",
-            borderRadius: "var(--radius-sm)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--fg-muted)",
-            fontSize: 12,
-          }}
-        >
+        <div className="rxn-missing">
           {molecule.name || "?"}
         </div>
       )}
       {molecule.name && (
-        <div
-          style={{
-            fontSize: 13,
-            color: "var(--fg-muted)",
-            textAlign: "center",
-            maxWidth: 160,
-            lineHeight: 1.3,
-          }}
-        >
+        <div className="rxn-name">
           {molecule.name}
         </div>
       )}
@@ -251,7 +218,8 @@ function ScaledRow({ children, canStack = false }) {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (!outer || !inner) return;
-    const containerW = outer.clientWidth - 32;
+    // Bühne ohne Polster (Panel-Umbau 17.11.2026, vorher 16 px je Seite in der gefüllten Karte).
+    const containerW = outer.clientWidth;
     // Restore the actual value afterwards — setting "" here clears React's
     // inline style, and a state bailout (same scale) would never re-render
     // to put it back, leaving the row permanently unscaled.
@@ -268,9 +236,7 @@ function ScaledRow({ children, canStack = false }) {
     // Gestapelt wird nur gemessen, wenn die Zeile nebeneinander unter die Lesegrenze fiele —
     // die Zeilenbreite muss dafür im Zeilenmodus gemessen werden, egal wie gerade gezeigt.
     let stack = false;
-    // Kleine Reaktionen stapeln erst, wenn die Zeile sonst unter MIN_SCALE fiele und
-    // waagrecht scrollen müsste (U2: Seitenpanel bis ~320 px breit) — darüber nie.
-    const stackBelow = canStack ? READABLE_SCALE : MIN_SCALE;
+    // Kleine Reaktionen stapeln erst unter STACK_SCALE (U2: Seitenpanel bis ~320 px breit), große unter READABLE_SCALE.
     {
       const prevDir = inner.style.flexDirection;
       inner.style.flexDirection = "row";
@@ -278,7 +244,7 @@ function ScaledRow({ children, canStack = false }) {
       // Gestapelt ist der Pfeil senkrecht und ~116 px schmaler — mit ihm gemessen stimmte
       // jeder Zustand für den anderen, die Ansicht pendelte (Host-Test, Breitenband).
       const rowW = inner.scrollWidth + horizontalArrowExtra(inner);
-      if (rowW > 0 && containerW / rowW < stackBelow) {
+      if (shouldStack(containerW, rowW, canStack)) {
         inner.style.flexDirection = "column";
         stack = true;
         naturalW = inner.scrollWidth;
@@ -317,13 +283,11 @@ function ScaledRow({ children, canStack = false }) {
   const scaledH = !needsScroll && naturalH > 0 ? naturalH * scale : undefined;
 
   return (
-    <div
+    <Stage
       ref={outerRef}
-      style={{
-        overflow: needsScroll ? "auto" : "hidden",
-        padding: 16,
-        height: scaledH !== undefined ? scaledH + 32 : undefined,
-      }}
+      className="rxn-stage"
+      data-scroll={needsScroll || undefined}
+      style={{ height: scaledH !== undefined ? Math.ceil(scaledH) : undefined }}
     >
       <div
         ref={innerRef}
@@ -340,34 +304,46 @@ function ScaledRow({ children, canStack = false }) {
       >
         {typeof children === "function" ? children(stacked) : children}
       </div>
-    </div>
+    </Stage>
   );
 }
 
-// Stoffbilanz der gezeichneten Gleichung. Befund und Vorschlag stehen
-// getrennt: der Vorschlag ist nicht gezeichnet, die Zeichnung bleibt.
-function BalanceBadge({ balance, onApply, applying, failed }) {
+// Stoffbilanz der gezeichneten Gleichung (Spezifikation §5.6). Ausgeglichen: Text mit Häkchen.
+// Sonst ein Warnhinweis mit Befund und Vorschlag — der Vorschlag ist nicht gezeichnet, die
+// Zeichnung bleibt —, daneben „Apply coefficients“ und nach dem Übernehmen „Undo“.
+function BalanceRow({ balance, onApply, onUndo, applying, failed }) {
   if (!balance) return null;
   const ok = Boolean(balance.balanced);
+  const state = ok ? "balanced" : "unbalanced";
   return (
     <div className="balance-row" role="note" title={balance.note || undefined}>
-      <span
-        className={`balance-badge ${ok ? "balance-ok" : "balance-off"}`}
-        data-testid="balance-badge"
-        data-state={ok ? "balanced" : "unbalanced"}
-      >
-        {ok ? "balanced" : `not balanced: ${balance.summary || ""}`}
-      </span>
-      {!ok && balance.suggestedEquation && (
-        <span className="balance-badge balance-suggest" data-testid="balance-suggestion">
-          {`suggested: ${balance.suggestedEquation}`}
+      {ok ? (
+        <span className="balance-badge balance-ok" data-testid="balance-badge" data-state={state}>
+          <Icon name="check" />balanced
         </span>
+      ) : (
+        <Hint tone="warn" className="balance-hint">
+          <span className="balance-badge balance-off" data-testid="balance-badge" data-state={state}>
+            {`not balanced: ${balance.summary || ""}`}
+          </span>
+          {balance.suggestedEquation && (
+            <>
+              {" · "}
+              <span className="balance-badge balance-suggest" data-testid="balance-suggestion">
+                {`suggested: ${balance.suggestedEquation}`}
+              </span>
+            </>
+          )}
+        </Hint>
       )}
       {!ok && onApply && balance.suggestedCoefficients && (
-        <button type="button" className="chip-toggle" onClick={onApply} disabled={applying}
-          aria-busy={applying || undefined} title="Redraw the equation with the suggested coefficients">
+        <Button onClick={onApply} disabled={applying} aria-busy={applying || undefined}
+          title="Redraw the equation with the suggested coefficients">
           Apply coefficients
-        </button>
+        </Button>
+      )}
+      {onUndo && (
+        <Button onClick={onUndo} title="Show the equation as it was drawn first">Undo</Button>
       )}
       {failed && <span className="balance-error" role="status">{APPLY_ERROR}</span>}
     </div>
@@ -398,6 +374,11 @@ export default function ReactionView({ data: initial }) {
   const [failed, setFailed] = useState(false);
   const data = applied || initial;
   const { flush } = useModelContextReport(reactionContext(data), data.name || "reaction");
+  const canExpand = useCanExpand();
+  const handleUndo = useCallback(() => {
+    setApplied(null);
+    setFailed(false);
+  }, []);
 
   const handleApply = useCallback(async () => {
     const coefficients = data.balance?.suggestedCoefficients;
@@ -427,34 +408,25 @@ export default function ReactionView({ data: initial }) {
   const name = data.name || null;
 
   return (
-    <div className="reaction-panel">
-      <SectionHeader title={name} expand />
-      <div
-        style={{
-          borderRadius: "var(--radius-md)",
-          boxShadow: "var(--shadow-card)",
-          background: "var(--bg-alt)",
-          overflow: "hidden",
-        }}
-      >
-        <ScaledRow canStack={[...reactants, ...products].some(isLarge)}>
-          {(stacked) => (
-            <>
-              {reactants.length > 0 && <MoleculeGroup molecules={reactants} />}
-              <ReactionArrow kind={data.arrow} above={conditions} below={conditionsBelow} vertical={stacked} />
-              {products.length > 0 && <MoleculeGroup molecules={products} />}
-            </>
-          )}
-        </ScaledRow>
-      </div>
-      <BalanceBadge balance={data.balance} onApply={data.request ? handleApply : null}
-        applying={applying} failed={failed} />
-      {/* Fußzeile (E3): Dateien und Export folgen der gezeigten Gleichung (nach Apply die neue). */}
+    <Panel kind="reaction" className="reaction-panel">
+      <PanelHead title={name} expand={canExpand ? <ExpandButton /> : null} />
+      <ScaledRow canStack={[...reactants, ...products].some(isLarge)}>
+        {(stacked) => (
+          <>
+            {reactants.length > 0 && <MoleculeGroup molecules={reactants} />}
+            <ReactionArrow kind={data.arrow} above={conditions} below={conditionsBelow} vertical={stacked} />
+            {products.length > 0 && <MoleculeGroup molecules={products} />}
+          </>
+        )}
+      </ScaledRow>
+      <BalanceRow balance={data.balance} onApply={data.request ? handleApply : null}
+        onUndo={applied ? handleUndo : null} applying={applying} failed={failed} />
+      {/* Fuß (E3): Dateien und Export folgen der gezeigten Gleichung (nach Apply die neue). */}
       <ContinueRow actions={reactionFollowUps(data)} flush={flush} />
-      <PanelFooter files={fileEntries(data.files)}>
+      <PanelFoot files={fileEntries(data.files)}>
         {(reactants.length > 0 || products.length > 0) &&
           <ExportPngButton size="sm" getSvg={() => reactionSvg(data)} filename={name || "reaction"} />}
-      </PanelFooter>
-    </div>
+      </PanelFoot>
+    </Panel>
   );
 }

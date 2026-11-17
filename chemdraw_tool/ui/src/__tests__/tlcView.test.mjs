@@ -23,11 +23,12 @@ const DATA = {
 
 test("Fleck mit dem Namen der Bahn: Name nur einmal", () => {
   const { container, unmount } = render(React.createElement(TlcView, { data: DATA }));
-  const text = container.textContent;
-  assert.ok(text.includes("Edukt: 0.30"), text);
-  assert.ok(!text.includes("0.30 Edukt"), `Name doppelt: ${text}`);
+  // Seit dem Panel-Umbau (17.11.2026) eine Kernwert-Zeile: Bahn als Etikett, Rf-Werte als Wert.
+  const rows = [...container.querySelectorAll("dl.panel-facts .fact")].map((f) =>
+    [f.querySelector("dt").textContent, f.querySelector(".fact-value").textContent]);
+  assert.deepEqual(rows[0], ["Edukt", "0.30"], `Name doppelt: ${JSON.stringify(rows)}`);
   // Ein anderer Fleckname bleibt stehen (Co-Spot zeigt, welcher Fleck welcher ist).
-  assert.match(text, /Co-Spot: 0\.30 edukt\s*· 0\.65 Produkt/);
+  assert.deepEqual(rows[1], ["Co-Spot", "0.30 edukt · 0.65 Produkt"]);
   unmount();
 });
 

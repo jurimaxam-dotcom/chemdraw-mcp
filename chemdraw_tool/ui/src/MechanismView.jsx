@@ -1,11 +1,10 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
-import SectionHeader from "./components/SectionHeader";
 import Tabs from "./components/Tabs";
 import ExportPngButton from "./components/ExportPngButton";
-import PanelFooter from "./components/PanelFooter";
+import ExpandButton, { useCanExpand } from "./components/ExpandButton";
 import ContinueRow from "./components/ContinueRow";
-import { hostCan, useModelContextReport } from "./ModelContext";
-import { useAppBridge } from "./AppContext";
+import { Button, Hint, Icon, Panel, PanelFoot, PanelHead, PanelState, Stage, StageBar } from "./components/Panel";
+import { useModelContextReport } from "./ModelContext";
 import { mechanismFollowUps } from "./utils/followUps.js";
 import { mechanismContext } from "./utils/modelContext.js";
 import { composeSvg } from "./utils/composeSvg";
@@ -23,37 +22,21 @@ export function mechanismSubtitle(data, total) {
     data.reversible ? "each step an equilibrium" : null].filter(Boolean).join(" · ");
 }
 
+// Punkte je Schritt: Name „Step n“ (Tests, Probe), der gezeigte trägt aria-current. Aussehen in b-graphics.css.
 function StepIndicator({ current, total, onStepClick }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 6,
-        marginTop: 8,
-      }}
-    >
+    <span className="mech-dots">
       {Array.from({ length: total }, (_, i) => (
         <button
           key={i}
           type="button"
+          className="mech-dot"
           aria-label={`Step ${i + 1}`}
           aria-current={current === i ? "step" : undefined}
           onClick={() => onStepClick(i)}
-          style={{
-            width: current === i ? 10 : 6,
-            height: current === i ? 10 : 6,
-            borderRadius: "50%",
-            border: "none",
-            background: current === i ? "var(--accent)" : "var(--border)",
-            cursor: "pointer",
-            padding: 0,
-            transition: "all 0.15s",
-          }}
         />
       ))}
-    </div>
+    </span>
   );
 }
 
@@ -61,9 +44,10 @@ function StepIndicator({ current, total, onStepClick }) {
 // reversible (Fischer): jeder Schritt ist ein Gleichgewicht — zwei Halbpfeile ⇌ statt eines
 // einfachen Pfeils (Etappe E2). Maße wie ARROW_W/ARROW_H in utils/mechanismLayout.js.
 function StepArrow({ reversible, down = false }) {
-  const stroke = { stroke: "var(--fg-muted)", strokeWidth: 1.5, fill: "none" };
+  const stroke = { stroke: "currentColor", strokeWidth: 1.5, fill: "none" };
   return (
     <div
+      className="mech-arrow"
       data-arrow={reversible ? "equilibrium" : "forward"}
       data-arrow-dir={down ? "down" : "right"}
       title={reversible ? "equilibrium" : undefined}
@@ -81,7 +65,7 @@ function StepArrow({ reversible, down = false }) {
         ) : (
           <svg width="20" height="26" viewBox="0 0 20 26">
             <line x1="10" y1="2" x2="10" y2="16" {...stroke} />
-            <polygon points="6,16 10,24 14,16" fill="var(--fg-muted)" />
+            <polygon points="6,16 10,24 14,16" fill="currentColor" />
           </svg>
         )
       ) : reversible ? (
@@ -94,7 +78,7 @@ function StepArrow({ reversible, down = false }) {
       ) : (
         <svg width="26" height="20" viewBox="0 0 26 20">
           <line x1="2" y1="10" x2="16" y2="10" {...stroke} />
-          <polygon points="16,6 24,10 16,14" fill="var(--fg-muted)" />
+          <polygon points="16,6 24,10 16,14" fill="currentColor" />
         </svg>
       )}
     </div>
@@ -155,97 +139,34 @@ function OverviewMode({ steps, reversible, layout, onStepClick }) {
   );
 }
 
-function StepMode({ steps, currentStep: wantedStep, setCurrentStep }) {
-  // Begrenzen: ein Index jenseits der Liste ließ das ganze Panel weiß werden.
-  const currentStep = Math.min(Math.max(0, wantedStep), steps.length - 1);
-  const step = steps[currentStep];
+// Schrittmodus (Spezifikation §5.7): Back/Next als ruhige Knöpfe mit Chevron in der StageBar,
+// dazwischen Zähler „Step n / N“ (eigenes Element — test:host sucht den Text exakt), Bezeichnung
+// und Punkte; darunter die Bühne ohne Karte.
+function StepBar({ steps, current, setCurrentStep }) {
+  const step = steps[current];
   const total = steps.length;
-
+  const label = step.is_transition_state ? `[${step.label}]‡` : step.label;
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        flex: 1,
-        minHeight: 0,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexShrink: 0,
-        }}
-      >
-        <button
-          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-          disabled={currentStep === 0}
-          style={{
-            background: "none",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm, 6px)",
-            color: currentStep === 0 ? "var(--border)" : "var(--fg-muted)",
-            cursor: currentStep === 0 ? "default" : "pointer",
-            padding: "4px 10px",
-            fontSize: 11,
-            fontFamily: "var(--font)",
-          }}
-        >
-          ← Back
-        </button>
-        <div style={{ fontSize: 11, color: "var(--fg-muted)" }}>
-          Step {currentStep + 1} / {total}
-        </div>
-        <button
-          onClick={() => setCurrentStep(Math.min(total - 1, currentStep + 1))}
-          disabled={currentStep === total - 1}
-          style={{
-            background: "none",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm, 6px)",
-            color: currentStep === total - 1 ? "var(--border)" : "var(--fg-muted)",
-            cursor: currentStep === total - 1 ? "default" : "pointer",
-            padding: "4px 10px",
-            fontSize: 11,
-            fontFamily: "var(--font)",
-          }}
-        >
-          Next →
-        </button>
-      </div>
-
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: step.is_transition_state ? "var(--accent)" : "var(--fg)",
-          textAlign: "center",
-        }}
-      >
-        {step.is_transition_state ? `[${step.label}]‡` : step.label}
-      </div>
-
-      <div
-        className="mech-step-svg"
-        dangerouslySetInnerHTML={{ __html: step.svg }}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-          minHeight: 0,
-        }}
-      />
-      <style>{`.mech-step-svg svg { width: 100%; height: 100%; max-width: 100%; max-height: 100%; }`}</style>
-
-      <StepIndicator
-        current={currentStep}
-        total={total}
-        onStepClick={setCurrentStep}
-      />
-    </div>
+    <StageBar
+      className="mech-nav"
+      left={(
+        <>
+          <Button icon="chevron-left" onClick={() => setCurrentStep(Math.max(0, current - 1))} disabled={current === 0}>
+            Back
+          </Button>
+          <div className="mech-nav-center">
+            <span className="mech-counter">Step {current + 1} / {total}</span>
+            <span className={step.is_transition_state ? "mech-step-label is-ts" : "mech-step-label"} title={label}>{label}</span>
+            <StepIndicator current={current} total={total} onStepClick={setCurrentStep} />
+          </div>
+        </>
+      )}
+      right={(
+        <Button className="mech-next" onClick={() => setCurrentStep(Math.min(total - 1, current + 1))} disabled={current === total - 1}>
+          Next<Icon name="chevron-right" />
+        </Button>
+      )}
+    />
   );
 }
 
@@ -261,7 +182,10 @@ function overviewSvg(steps, reversible) {
   return composeSvg(parts, { direction: "column", gap: 6 });
 }
 
-const STAGE_PAD = 12;
+// Höhenbudget der Übersicht im Chat (Panel-Umbau 17.11.2026): eine feste Zahl, nicht aus der
+// eigenen Panelhöhe abgeleitet — das Panel ist inhaltsgroß, sonst entstünde eine Mess-Schleife.
+// 440 px Bühne + Kopf, Hinweis, Continue-Zeile und Fuß bleiben unter 700 px.
+export const OVERVIEW_CHAT_H = 440;
 
 export default function MechanismView({ data }) {
   const steps = data.steps || [];
@@ -270,16 +194,11 @@ export default function MechanismView({ data }) {
     data.current_step > 0 ? data.current_step - 1 : 0
   );
   const { flush } = useModelContextReport(mechanismContext(data, { mode, step: currentStep }), data.name || "mechanism");
-  // Die Weiter-Zeile (U3) sitzt in der festen Höhe: um sie wächst das Panel,
-  // damit die Schrittkarte nicht schrumpft.
-  const withRow = hostCan(useAppBridge(), "message");
-  // Intrinsisch — der Host bemisst das iframe am Inhalt. Etappe 5: 668 statt 680, damit das
-  // Panel samt body-Rand im Chat 700 px hoch ist (vorher 712).
-  const chatHeight = withRow ? 668 : 528;
+  const canExpand = useCanExpand();
 
-  // Übersicht (Etappe 5): Platz der Bühne messen — Breite direkt, Höhe als Panelhöhe minus
-  // alles außer der Bühne. Beides hängt nicht vom Inhalt der Übersicht ab, deshalb kann die
-  // Aufteilung das Maß nicht zurückverändern (keine Mess-Schleife).
+  // Übersicht (Etappe 5): Platz der Bühne messen — Breite direkt; Höhe im Chat ein festes Budget,
+  // in Fill (Seitenpanel, Vollbild) die Fensterhöhe minus alles außer der Bühne. Beides hängt nicht
+  // vom Inhalt der Übersicht ab, deshalb kann die Aufteilung das Maß nicht zurückverändern.
   const panelRef = useRef(null);
   const stageRef = useRef(null);
   const [box, setBox] = useState({ width: 0, height: 0 });
@@ -292,14 +211,14 @@ export default function MechanismView({ data }) {
     const stage = stageRef.current;
     if (mode !== "overview" || !panel || !stage || typeof ResizeObserver === "undefined") return undefined;
     const measure = () => {
-      let total = chatHeight;
+      let height = OVERVIEW_CHAT_H;
       if (document.documentElement.hasAttribute("data-host-height")) {
         const cs = getComputedStyle(document.body);
-        total = window.innerHeight - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+        const total = window.innerHeight - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+        const rest = panel.getBoundingClientRect().height - stage.getBoundingClientRect().height;
+        height = Math.floor(total - rest);
       }
-      const rest = panel.getBoundingClientRect().height - stage.getBoundingClientRect().height;
-      const width = Math.floor(stage.clientWidth - 2 * STAGE_PAD);
-      const height = Math.floor(total - rest - 2 * STAGE_PAD);
+      const width = Math.floor(stage.clientWidth);
       setBox((b) => (b.width === width && b.height === height ? b : { width, height }));
     };
     measure();
@@ -307,95 +226,45 @@ export default function MechanismView({ data }) {
     ro.observe(panel);
     ro.observe(stage);
     return () => ro.disconnect();
-  }, [mode, chatHeight]);
+  }, [mode]);
   const layout = useMemo(() => overviewLayout(sizes, box.width, box.height), [sizes, box]);
-  const grows = mode === "overview" && layout.overflow;
 
   if (steps.length === 0) {
     return (
-      <div style={{ color: "var(--fg-muted)", padding: 16 }}>
-        No steps available.
-      </div>
+      <Panel kind="mechanism" className="mechanism-panel">
+        <PanelHead title={data.name || "Mechanismus"} />
+        <PanelState kind="empty" message="No steps available." />
+      </Panel>
     );
   }
+  // Begrenzen: ein Index jenseits der Liste ließ das ganze Panel weiß werden.
+  const shown = Math.min(Math.max(0, currentStep), steps.length - 1);
 
   return (
-    <div
-      ref={panelRef}
-      className="mechanism-panel"
-      style={{
-        // Feste Höhe im Chat; nur eine Übersicht, die lesbar nicht hineinpasst, macht das Panel höher.
-        height: grows ? "auto" : chatHeight,
-        "--mech-min-h": `${chatHeight}px`,
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "8px 12px",
-      }}
-    >
-      <SectionHeader
+    <Panel ref={panelRef} kind="mechanism" fill className="mechanism-panel" data-mode={mode}>
+      <PanelHead
         title={data.name || "Mechanismus"}
         subtitle={mechanismSubtitle(data, steps.length)}
-        className="mech-header"
-        expand
-        actions={<Tabs label="Mechanism view" value={mode} onChange={setMode}
+        tabs={<Tabs label="Mechanism view" value={mode} onChange={setMode}
           tabs={[{ key: "overview", label: "Overview" }, { key: "step", label: "Step by step" }]} />}
+        expand={canExpand ? <ExpandButton /> : null}
       />
-
-      {(data.notes || []).map((note, i) => (
-        <div
-          key={i}
-          className="mech-note"
-          style={{
-            fontSize: 11,
-            color: "var(--fg-muted)",
-            borderLeft: "2px solid var(--accent)",
-            padding: "2px 8px",
-            marginBottom: 6,
-            flexShrink: 0,
-          }}
-        >
-          {note}
-        </div>
-      ))}
-
-      <div
-        ref={stageRef}
-        className="mech-stage"
-        data-mode={mode}
-        style={{
-          background: "var(--bg-alt)",
-          borderRadius: "var(--radius, 10px)",
-          boxShadow: "var(--shadow)",
-          padding: STAGE_PAD,
-          // Step-Modus füllt die feste Fläche; die Übersicht ist nie kleiner als ihr Inhalt
-          // und rollt nie selbst (Etappe 5: vorher eigener Rollbalken in der Karte).
-          flex: mode === "step" ? "1 1 0" : "1 0 auto",
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: mode === "step" ? undefined : "center",
-          overflow: "hidden",
-        }}
-      >
+      {mode === "step" && <StepBar steps={steps} current={shown} setCurrentStep={setCurrentStep} />}
+      <Stage ref={stageRef} className="mech-stage" data-mode={mode}>
         {mode === "overview" ? (
           <OverviewMode steps={steps} reversible={!!data.reversible} layout={layout}
             onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
         ) : (
-          <StepMode
-            steps={steps}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-          />
+          <div className="mech-step-svg" dangerouslySetInnerHTML={{ __html: steps[shown].svg }} />
         )}
-      </div>
+      </Stage>
+      {(data.notes || []).map((note, i) => <Hint key={i} className="mech-note">{note}</Hint>)}
       <ContinueRow actions={mechanismFollowUps(data, { mode, step: currentStep })} flush={flush} />
-      {/* Fußzeile (E3): der Server schreibt für Mechanismen keine Datei — nur die Aktion. */}
-      <PanelFooter>
+      {/* Fuß (E3): der Server schreibt für Mechanismen keine Datei — nur die Aktion. */}
+      <PanelFoot>
         <ExportPngButton size="sm" filename={data.name || "mechanism"}
-          getSvg={() => (mode === "step" ? steps[currentStep]?.svg : overviewSvg(steps, !!data.reversible))} />
-      </PanelFooter>
-    </div>
+          getSvg={() => (mode === "step" ? steps[shown]?.svg : overviewSvg(steps, !!data.reversible))} />
+      </PanelFoot>
+    </Panel>
   );
 }
