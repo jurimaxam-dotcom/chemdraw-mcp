@@ -111,7 +111,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe }) {
   if (FEED) return feedSzene(browser, { name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
-  if (molecule) args = { ...args, name_or_smiles: molecule };
+  if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES[theme];
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
   const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
@@ -228,8 +228,10 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
 // Feed-Clip mit gesteuerter Uhr: ein Bild = Uhr 1/60 s weiter, CSS-Übergänge 1/60 s weiter, Screenshot.
 // Gewartet (Server, PubChem) wird mit tickender Uhr, aber ohne Aufnahme.
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// `szene@name`: das Protein-Werkzeug liest `name`, alle anderen `name_or_smiles`
+const mitName = (tool, args, name) => (tool === "generate_protein_or_antibody" ? { ...args, name } : { ...args, name_or_smiles: name });
 async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf }) {
-  if (molecule) args = { ...args, name_or_smiles: molecule };
+  if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES.light;
   const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
@@ -240,6 +242,14 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   const context = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: MODUS.scale, colorScheme: "light" });
   await context.clock.install({ time: 0 });
   await context.clock.pauseAt(1000);
+  // Griff auf die Mol*-Engine im Panel (nur Aufnahme): create() wird umwickelt, sobald das Engine-Script
+  // window.__chemCartoon setzt — so setzt die Szene `protein` die Kamera Bild für Bild selbst
+  await context.addInitScript(() => {
+    let engine;
+    Object.defineProperty(window, "__chemCartoon", { configurable: true, get: () => engine, set(v) {
+      engine = { ...v, async create(...a) { const h = await v.create(...a); (window.__cartoonGriffe ||= []).push(h); return h; } };
+    } });
+  });
   const page = await context.newPage();
   await page.exposeFunction("__callTool", async (p) => {
     if (p.name === "export_anki_deck") p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
@@ -294,9 +304,13 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     nr++;
   };
   const halten = async (ms) => { for (let i = Math.round((ms * MODUS.fps) / 1000); i > 0; i--) await bild(); };
-  const beats = [{ art: "panel", t: 0 }], bewegungen = [];
-  const marke = (art, ziel) => beats.push({ art, t: Number((nr / MODUS.fps).toFixed(3)), ...(ziel ? { ziel } : {}) });
   let pos = [W + 30, H * 0.6]; // Zeiger kommt von rechts ins Bild
+  // Clip-Pixel = CSS-Pixel × Ausgabebreite / Seitenbreite (der 2×-Master: × deviceScaleFactor)
+  const k = MODUS.breite / W, px = (v) => Math.round(v * k);
+  const rechtecke = {};
+  const rechteck = (schlüssel, b) => { if (b) rechtecke[schlüssel] = { x: px(b.x), y: px(b.y), width: px(b.width), height: px(b.height) }; };
+  const beats = [{ art: "panel", t: 0, zeiger: pos.map(px) }], bewegungen = [];
+  const marke = (art, ziel) => beats.push({ art, t: Number((nr / MODUS.fps).toFixed(3)), ...(ziel ? { ziel } : {}), zeiger: pos.map(px) });
   const zeiger = (x, y) => { pos = [x, y]; return page.evaluate(([x, y]) => { const s = document.getElementById("cursor").style; s.left = `${x - 9}px`; s.top = `${y - 9}px`; }, [x, y]); };
   // Zeigerfahrt Bild für Bild; 70 % Ease + 30 % linear, damit auch die letzten Bilder sich sichtbar bewegen
   const fahreZu = async (x, y) => {
@@ -339,6 +353,14 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     await page.mouse.up();
     bewegungen.push({ art: "drag", von: start, bis: nr });
   };
+  // Bewegung ohne Zeiger (z. B. Mol*-Spin): Bilder aufnehmen und als Bewegungsstrecke zählen
+  // jeBild(anteil) setzt den Zustand vor dem Bild (anteil 0 … (n−1)/n), nachBild() misst danach
+  const drehen = async (ms, jeBild, nachBild) => {
+    const von = nr, n = Math.round((ms * MODUS.fps) / 1000);
+    for (let i = 0; i < n; i++) { await jeBild?.(i / n); await bild(); await nachBild?.(); }
+    bewegungen.push({ art: "drehung", von, bis: nr });
+  };
+  const zeigerStart = [...pos];
   // Weich scrollen, Bild für Bild (scroll-behavior: smooth liefe in Echtzeit)
   const scrollen = async (dy, ms = 600) => {
     const y0 = await frame.evaluate(() => window.scrollY), n = Math.round((ms * MODUS.fps) / 1000), von = nr;
@@ -354,12 +376,12 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     if (!b || b.y < 0 || b.y + b.height > H) throw new Error(`ROT ${name}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${H})`);
   };
   try {
-    await ablauf({ feed: true, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
+    await ablauf({ feed: true, drehen, zeigerStart, rechteck, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
     marke("ende");
   } finally {
     await context.close();
   }
-  return { szene: name, theme: "light", ...feedVideo(`${slug(molecule ?? args.name_or_smiles ?? args.name)}-${name}`, dir, nr, beats, bewegungen, { tool, args }) };
+  return { szene: name, theme: "light", ...feedVideo(`${slug(molecule ?? args.name_or_smiles ?? args.name)}-${name}`, dir, nr, beats, bewegungen, { tool, args }, rechtecke) };
 }
 
 // Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“) — dieselbe Zählung wie scripts/bilder-je-sekunde.sh
@@ -369,12 +391,19 @@ function behalteneBilder(ziel) {
   return [...r.stderr.matchAll(/keep pts:\S+ pts_time:([\d.]+)/g)].map((m) => Math.round(Number(m[1]) * MODUS.fps));
 }
 
-function feedVideo(name, dir, bilder, beats, bewegungen, quelle) {
+function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}) {
   const ziel = join(MODUS.ausgabe, `${name}.mp4`);
+  // 2×-Master in nativer Screenshot-Größe für Ausschnitte in der Montage (Vermarktung 18.11.: aus 1080 gezoomt wird es weich)
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
+    "-vf", "scale=out_range=tv,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "12", "-pix_fmt", "yuv420p",
+    "-r", String(MODUS.fps), "-movflags", "+faststart", ziel.replace(/\.mp4$/, ".master.mp4")]);
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
     "-vf", `scale=${MODUS.breite}:${MODUS.hoehe}:flags=lanczos:out_range=tv,format=yuv420p`,
     "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", String(MODUS.fps), "-movflags", "+faststart", ziel]);
   const werte = prüfenVideo(ziel, MODUS.hoehe);
+  const [mb, mh] = execFileSync(FFPROBE, ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0",
+    ziel.replace(/\.mp4$/, ".master.mp4")]).toString().trim().split(",").map(Number);
+  const master = { breite: mb, hoehe: mh };
   // Messung: (1) je Bewegungsstrecke Anteil verschiedener Bilder, (2) volle Sekunden ganz in Bewegung ≥ mindestBilder
   const behalten = new Set(behalteneBilder(ziel));
   const inBewegung = (b) => bewegungen.some((s) => b >= s.von && b < s.bis);
@@ -394,7 +423,8 @@ function feedVideo(name, dir, bilder, beats, bewegungen, quelle) {
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-i", ziel, "-vf", `fps=${(12 / werte.sekunden).toFixed(4)},scale=270:-2:flags=lanczos,tile=4x3:padding=6:color=white`, "-frames:v", "1", kontakt]);
   writeFileSync(ziel.replace(/\.mp4$/, ".beats.json"), JSON.stringify({ clip: `${name}.mp4`, tool: quelle.tool, args: quelle.args,
     video: { breite: werte.breite, hoehe: werte.hoehe, fps: MODUS.fps, sekunden: werte.sekunden, bilder },
-    beats, bewegungen: strecken, sekunden }, null, 2) + "\n");
+    master: { datei: `${name}.master.mp4`, ...master, faktor: Number((master.breite / werte.breite).toFixed(4)) }, // Master-Pixel = Clip-Pixel × faktor
+    rechtecke, beats, bewegungen: strecken, sekunden }, null, 2) + "\n");
   console.log(`  ${name}: verschiedene Bilder je Sekunde ${sekunden.map((x) => `${x.s}:${x.verschieden}${x.bewegt ? "*" : ""}`).join(" ")} (* = ganz in Bewegung)`);
   console.log(`  ${name}: Bewegungsstrecken ${strecken.map((x) => `${x.art} ${x.verschieden}/${x.bilder}`).join(", ")}`);
   if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
@@ -841,6 +871,97 @@ const SZENEN = {
       await halten(1000);
     },
   },
+  // Feed-Protein (18.11.2026, für Autoplay in Schleife): eine volle Drehung um die Hochachse ab dem
+  // ersten Bild, dann Färbung wechseln (mehrere Ketten: Chain, sonst Rainbow N→C) und zurück, Zeiger
+  // zurück an den Startpunkt — letztes Bild ≈ erstes. Name per `protein@<name>`.
+  protein: {
+    ...BLUESKY, datei: "protein", hoehe: 840, feedHoehe: 840, eigenerBrowser: true,
+    tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
+    async vorlauf({ frame, page }) {
+      // Antikörper starten teils im Schema: unaufgenommen auf Structure, dann wie immer auf die Engine warten
+      const struktur = frame.getByRole("tab", { name: "Structure", exact: true });
+      if (await struktur.count() && await struktur.getAttribute("aria-selected") !== "true") await struktur.click();
+      await proteinBereit({ frame, page });
+    },
+    async ablauf(werkzeug) {
+      if (!werkzeug.feed) throw new Error("Szene protein gibt es nur mit --feed");
+      const { frame, page, halten, klick, imBild, fahreZu, marke } = werkzeug;
+      // Die Einblend-Drehung muss zu Ende sein: läuft ein Kameraübergang noch, nimmt Mol* setState(…, 0) nicht sofort,
+      // sondern führt den Übergang weiter — Anlauf-Rampe und Bild 0 ≠ Ruhelage (Messung der Vermarktung, 18.11.)
+      for (let i = 0; ; i++) {
+        const z = await frame.evaluate(() => {
+          const g = window.__cartoonGriffe || [], tr = g[0]?.canvas3d.camera.transition;
+          return { griffe: g.length, läuft: tr?.inTransition, t: tr?.t, start: tr?.start, dauer: tr?.durationMs, jetzt: performance.now() };
+        });
+        if (z.griffe === 1 && !z.läuft) break;
+        if (i > 100) throw new Error(`ROT protein: Kameraübergang endet nicht ${JSON.stringify(z)}`);
+        await page.clock.runFor(50); // Uhr selbst vorspulen: proteinBereit wartet in Echtzeit, die Uhr kam dabei nur ~50 ms weit
+      }
+      const leinwand = frame.locator('[data-protein-viewer="ready"] [data-cartoon-host] canvas');
+      if (await leinwand.count() !== 1) throw new Error("ROT protein: kein Cartoon-Canvas (Rückfallspur?)");
+      await imBild(frame.locator(".panel-title"), "Titel");
+      await imBild(frame.locator(".panel-subtitle"), "Unterzeile");
+      await imBild(frame.locator(".protein-legend"), "Legende");
+      await imBild(leinwand, "Cartoon-Fläche");
+      // Eine volle Drehung um die Hochachse: Kamera je Bild um 360°·i/n um die y-Achse durch das Ziel gedreht
+      // (exakter Winkel je Bild; Mols* eigener Spin kam im ersten Versuch auf ~270°, gemessen bei noch laufender Einblendung).
+      const DREH_MS = 3600;
+      const griffe = await frame.evaluate(() => (window.__cartoonGriffe || []).length);
+      if (griffe !== 1) throw new Error(`ROT protein: ${griffe} Engine-Griffe statt 1`);
+      await frame.evaluate(() => { window.__ruhe = window.__cartoonGriffe[0].canvas3d.camera.getSnapshot(); });
+      marke("drehung", "360°");
+      // Bild 0 = Ruhelage, gleicher Winkelschritt je Bild; das letzte Drehbild steht einen Schritt vor 360°,
+      // danach Ruhelage = Bild 0 — in Schleife läuft die Drehung ohne Naht weiter.
+      // Nebenbei die Hülle des Proteins auf der Fläche über die ganze Drehung (Nicht-Hintergrund-Pixel)
+      const hülle = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+      let schrittNr = 0;
+      await werkzeug.drehen(DREH_MS, async (anteil) => {
+        await frame.evaluate((w) => {
+          const r = window.__ruhe, c = window.__cartoonGriffe[0].canvas3d;
+          const ex = r.position[0] - r.target[0], ez = r.position[2] - r.target[2], cos = Math.cos(w), sin = Math.sin(w);
+          const position = [r.target[0] + ex * cos + ez * sin, r.position[1], r.target[2] - ex * sin + ez * cos];
+          c.camera.setState({ ...r, position }, 0);
+          c.requestDraw();
+        }, 2 * Math.PI * anteil);
+      }, async () => {
+        if (schrittNr++ % 4) return;
+        const h = await frame.evaluate(() => {
+          const gl = window.__cartoonGriffe[0].canvas, w = gl.clientWidth, hh = gl.clientHeight;
+          const k = document.createElement("canvas"); k.width = w; k.height = hh;
+          const g = k.getContext("2d", { willReadFrequently: true }); g.drawImage(gl, 0, 0, w, hh);
+          const d = g.getImageData(0, 0, w, hh).data, bg = [d[0], d[1], d[2]];
+          let x0 = w, y0 = hh, x1 = -1, y1 = -1;
+          for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
+            const i = (y * w + x) * 4;
+            if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > 24) {
+              if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+            }
+          }
+          return x1 < 0 ? null : { x0, y0, x1, y1 };
+        });
+        if (h) { hülle.x0 = Math.min(hülle.x0, h.x0); hülle.y0 = Math.min(hülle.y0, h.y0); hülle.x1 = Math.max(hülle.x1, h.x1); hülle.y1 = Math.max(hülle.y1, h.y1); }
+      });
+      await frame.evaluate(() => { const c = window.__cartoonGriffe[0].canvas3d; c.camera.setState(window.__ruhe, 0); c.requestDraw(); });
+      const fläche = await leinwand.boundingBox();
+      if (!Number.isFinite(hülle.x0)) throw new Error("ROT protein: kein Protein auf der Fläche gefunden");
+      werkzeug.rechteck("buehne", { x: fläche.x + hülle.x0, y: fläche.y + hülle.y0, width: hülle.x1 - hülle.x0 + 1, height: hülle.y1 - hülle.y0 + 1 });
+      werkzeug.rechteck("panel", await frame.locator(".protein-panel").boundingBox());
+      werkzeug.rechteck("reiter", await frame.locator(".protein-bar").boundingBox());
+      werkzeug.rechteck("legende", await frame.locator(".protein-legend").boundingBox());
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      const gewählt = (text) => () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: text }).first().waitFor();
+      const start = (await frame.locator('[role="tablist"][aria-label="Colour by"] [role="tab"][aria-selected="true"]').innerText()).trim();
+      const mehrereKetten = (await reiter("Chain").count()) > 0;
+      const ziel = mehrereKetten && start !== "Chain" ? "Chain" : "Rainbow N→C";
+      await halten(150);
+      await klick(reiter(ziel), gewählt(ziel), ziel);
+      await halten(1700);
+      await klick(reiter(start), gewählt(start), start);
+      await halten(500);
+      await fahreZu(...werkzeug.zeigerStart); // Zeiger rechts aus dem Bild: letztes Bild ≈ erstes
+      await halten(150);
+    },
+  },
   // Aspirin: zwei Gruppen-Chips, dann „Add to Anki“ → „Saved“ (Testhost: deliver apkg, kein Anki)
   anki: {
     ...BLUESKY, datei: "anki", hoehe: 900,
@@ -914,11 +1035,15 @@ if (FEED) {
     for (const eintrag of szenen) {
       const [name, mol] = eintrag.split("@");
       console.log(`▶ feed ${name} (${mol ?? optionen.molecule ?? "Standard"})`);
+      // WebGL-Szenen in eigenem Browser: im gemeinsamen lief GFP nach Insulin mit ~7 s je Bild (18.11.)
+      const eigener = SZENEN[name].eigenerBrowser ? await chromium.launch() : null;
       try {
-        ergebnisse.push(await szene(browser, { name, theme: "light", ...SZENEN[name], molecule: mol ?? optionen.molecule }));
+        ergebnisse.push(await szene(eigener ?? browser, { name, theme: "light", ...SZENEN[name], molecule: mol ?? optionen.molecule }));
       } catch (e) {
         console.error(String(e.message ?? e));
         rot.push(eintrag);
+      } finally {
+        await eigener?.close();
       }
     }
   } finally {

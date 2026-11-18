@@ -17,6 +17,24 @@
   damit die noreply-Adresse.
 - **Nächster Schritt:** keiner aus diesem Thema; weiter mit dem Block darunter.
 
+## Protein-Feed-Clips (Tisch-Faden 20261118-141424, Auftrag der Vermarktung, 18.11.2026)
+
+- **Gebaut in `readme-gifs.mjs`:** `szene@name` setzt beim Protein-Werkzeug `args.name` (vorher nur `name_or_smiles`, also
+  immer Lysozym). Neue Feed-Szene `protein`: 360° um die Hochachse ab Bild 0, Kamera je Bild selbst gesetzt (Griff auf die
+  Mol*-Engine per `addInitScript`, keine Produktänderung), dann Färbung wechseln (mehrere Ketten → Chain, sonst Rainbow N→C)
+  und zurück, Zeiger rechts aus dem Bild. Bild 0 = Ruhelage, gleicher Winkelschritt bis zum letzten Drehbild.
+  Je Feed-Clip zusätzlich `<name>.master.mp4` (2×, 1344×1680, CRF 12) und in `.beats.json` `rechtecke` (buehne = Hülle des
+  Proteins über die Drehung, panel, reiter, legende; Clip-Pixel) sowie `zeiger` je Beat. Feed-Clips mit `eigenerBrowser`
+  laufen in eigenem Browser (im gemeinsamen kam GFP nach Insulin auf ~7 s je Bild).
+- **Ursache der Anlauf-Rampe (Messung der Vermarktung):** `proteinBereit` wartet 1,8 s Echtzeit, die gesteuerte Uhr kam
+  dabei nur ~50 ms weit — die Einblend-Drehung (1,2 s) lief in die Aufnahme, und Mol* nimmt `setState(…, 0)` während eines
+  Übergangs nicht sofort. Jetzt spult die Szene die Uhr vor, bis `camera.transition.inTransition` false ist.
+- **Nicht gebaut:** Zoom auf gebundene Gruppen — Strg+Rad zoomt auf die Bildmitte, nicht auf den Liganden; dafür bräuchte
+  das Panel einen Fokus-Aufruf.
+- [ ] **Ligandenfilter-Lücke** (nur gemeldet): `_SKIP_LIGANDS` in `chemdraw_tool/protein_structure.py:278` kennt `FRU`
+  (Pembrolizumab 5DK3, „beta-D-fructofuranose ×3") und `AKR` (Acrylsäure, COX-2 5F1A) nicht; beide sind Kristallisations-
+  Beiwerk, kein Ligand. Fix mit rotem Test zuerst; vorher prüfen, ob FRU in 5DK3 Teil eines Glykans ist.
+
 ## Feed-Clips mit 60 Bildern/s (Tisch-Faden 20261117-121756, Auftrag der Vermarktung, 17.11.2026)
 
 - **Gebaut:** `readme-gifs.mjs --feed szene@molekül …` nimmt mit gesteuerter Uhr auf (Playwright `context.clock` greift auch im
