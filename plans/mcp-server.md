@@ -28,13 +28,13 @@
 - **Erledigt:** fünf Clips samt Master, Beats und Kontaktbogen in `chemdraw-vermarktung/out/clips-60fps-0.11.0-kerntools/`,
   je 60/1, 8,07–9,6 s, Naht 0 (3D: 0,0005 bei Bewegungsschritt 1,0); die 360°-Drehung 240/240 verschiedene Bilder.
 - **Abweichungen vom Auftrag:** `generate_3d` hat keinen Stilwechsel (nur „Reset view“) — zweite Interaktion ist ein
-  Kippzug hin und zurück. `compare_molecules` ist ein stehendes Bild — der Zeiger zeigt auf die zwei Stellen. Die
+  Kippzug im Kreis. `compare_molecules` ist ein stehendes Bild — der Zeiger zeigt auf die zwei Stellen. Die
   Veresterung ist ausgeglichen — statt „Apply coefficients“ zeigt der Clip „balanced“ und Export PNG. „menthol“ löst
   ohne Stereochemie auf (`C1(CC(C(CC1)C(C)C)O)C`), deshalb `(-)-menthol`.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
-  der Pfeil liegt über „oxygen“. Vermutung: `ScaledRow` in `ui/src/ReactionView.jsx` misst nach dem Übernehmen nicht
-  neu. Roter Test zuerst (`test:host`, Breite der Gleichung ≤ Bühne nach Apply); danach die Szene ausliefern.
+  der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der
+  gewollte `needsScroll`-Zweig (dann fehlt im Bild der Hinweis, dass es weitergeht). Roter Test zuerst (`test:host`, Breite der Gleichung ≤ Bühne nach Apply); danach die Szene ausliefern.
 - [ ] **Strukturvergleich richtet die Moleküle nicht am gemeinsamen Gerüst aus** (Befund 20.11.2026): Morphin und
   Codein stehen in verschiedener Lage nebeneinander, markiert ist nur die Methylgruppe von Codein; Morphin trägt keine
   Markierung. Prüfen, ob `compare_molecules` die Koordinaten am MCS ausrichten kann (`GenerateDepictionMatching2DStructure`).

@@ -955,7 +955,7 @@ const SZENEN = {
     },
   },
   // generate_3d, (−)-Menthol: volle Drehung um die Hochachse ab Bild 0 (ein Drehzug über 2π/0,01 px, ohne
-  // sichtbaren Zeiger — wie die Proteinserie), dann mit Zeiger kippen und im selben Zug zurück. Einen
+  // sichtbaren Zeiger — wie die Proteinserie), dann mit Zeiger in einem Kreiszug kippen und zurück. Einen
   // Stilwechsel hat das Panel nicht (nur „Reset view“; der spränge 40° zurück und gleitet dann — keine Schleife).
   "kern-3d": {
     ...KERN, clip: "menthol-3d", feedHoehe: 840, panel: ".m3d-panel",
@@ -992,18 +992,19 @@ const SZENEN = {
       await page.mouse.move(x0 + WEG, cy);
       await page.mouse.up();
       await page.mouse.move(werkzeug.zeigerStart[0], werkzeug.zeigerStart[1]);
-      // Kippen: ein Zug nach unten und im selben Zug zurück (dy = 0 am Ende → exakt die Lage davor)
-      const start = [cx + 60, cy - 70], HUB = 120, KIPP_MS = 2300;
+      // Kippen: ein geschlossener Kreis in einem Zug, gleichmäßig schnell (kein Umkehrpunkt, an dem das Bild steht);
+      // am Ende dx = dy = 0 → exakt die Lage davor
+      const start = [cx + 60, cy - 70], RADIUS = 60, KIPP_MS = 2300;
       await halten(200);
       await fahreZu(...start);
       await halten(250);
       marke("klick", "drag tilt");
       await page.mouse.down();
       await drehen(KIPP_MS, async (anteil) => {
-        const a = (anteil * 60 * KIPP_MS / 1000 + 1) / (60 * KIPP_MS / 1000); // letztes Bild steht wieder bei dy = 0
-        const y = start[1] + HUB * Math.sin(Math.PI * a) ** 2;
-        await page.mouse.move(start[0], y);
-        await zeiger(start[0], y);
+        const a = (anteil * 60 * KIPP_MS / 1000 + 1) / (60 * KIPP_MS / 1000); // letztes Bild steht wieder am Startpunkt
+        const x = start[0] + RADIUS * Math.sin(2 * Math.PI * a), y = start[1] + RADIUS * (1 - Math.cos(2 * Math.PI * a));
+        await page.mouse.move(x, y);
+        await zeiger(x, y);
       });
       await page.mouse.move(...start);
       await page.mouse.up();
