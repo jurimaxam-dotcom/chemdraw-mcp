@@ -90,6 +90,13 @@
   Panel des Chat-Standbilds angesehen: Titel, Unterzeile, Beschriftung, Umbruch und Ansicht stimmen. Abweichungen:
   das 3D-Standbild liegt noch in der Einblend-Drehung, Bild 0 ist die Ruhelage; die Schrift ist die des Rechners,
   nicht die vom Host gelieferte; niedrige Panels stehen im 4:5-Bild senkrecht mittig.
+- **Hell im Chat-Stil (Tisch-Faden 20261120-194937, Auftrag der Vermarktung, 20.11.2026 abends):** Jay tauscht die
+  dunklen Tool-Shorts gegen helle; die hellen Chat-Aufnahmen liegen in `chemdraw-vermarktung/out/chat-2026-11-20-hell/`.
+  Neu: `--feed --chat` = hell mit Desktops Host-Stil (`FEED_CHAT.light`, an den fünf hellen Standbildern gemessen:
+  Fläche 253, Reitergruppe 242, Trennlinie 178, Titel ~10, Nebentext ~48) und 622 px wie dunkel (Reitergruppe in
+  beiden Themen bei x 797–1209). Hell ohne `--chat` bleibt wie vorher. `args` der `kern-*`-Szenen = heller Chat,
+  `argsDunkel` hält die abweichenden Argumente des dunklen Chats (Menthol-SMILES/Label, Vergleichs-Labels/Titel).
+  `kern-mechanism` zeigt die fachkorrigierte Fassung (Views), das Chat-Panel noch „3 steps“ — gewollt.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der

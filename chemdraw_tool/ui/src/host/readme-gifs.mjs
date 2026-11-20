@@ -25,7 +25,7 @@
 // Drehzüge rechnet das Skript je Bild. Dadurch ist jedes Bild ein eigener Zustand, egal wie lange der
 // Screenshot dauert. 1080×1350 (4:5), Panel 600 px mittig, Rand in Panelfarbe, 6–12 s. Ohne --theme hell.
 // --feed --theme dark (20.11.2026): dunkel wie im Chat von Claude Desktop — der Host meldet Desktops Flächen-
-// und Textfarben als Stilvariablen (FEED_DUNKEL, an Chat-Standbildern gemessen) und den Modus `inline`
+// und Textfarben als Stilvariablen (FEED_CHAT.dark, an Chat-Standbildern gemessen) und den Modus `inline`
 // (Vergrößern-Knopf im Panelkopf). --bild0 schreibt je Szene nur <clip>.bild0.png (Ruhelage, zum Vergleich
 // mit einem Standbild) und nimmt keinen Clip auf.
 // Szene mit Molekül als `szene@molekül`; Ausgabe <molekül>-<szene>.mp4 (+ .beats.json, .kontakt.png) nach
@@ -33,8 +33,10 @@
 //   npm run readme:gifs -- --feed anki@"penicillin G" 3d@geosmin study@serotonin
 // Kerntool-Schleifen (kern-molecule, kern-3d, kern-compare, kern-reaction, kern-mechanism): feste Argumente,
 // Bild 0 = Ruhelage = letztes Bild; die Naht wird an den Quellbildern gemessen und steht in .beats.json.
-//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed [--theme dark] kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
-// Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort).
+//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed [--chat | --theme dark] kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
+// Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort):
+// `args` aus dem hellen Chat (abends), `argsDunkel` aus dem dunklen (morgens), wo sie abweichen. --chat: hell im
+// Desktop-Stil (Stilvariablen, 622 px) — so blendet der Schnitt vom hellen Chat-Panel nahtlos auf Bild 0.
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -65,11 +67,16 @@ const THEMES = {
 // Hosts (--font-sans) wird nicht nachgebildet.
 // `breite`: so breit stand das Panel im Chat (1244 Gerätepixel bei 2×). Über 619 px gilt das breite Layout
 // (Kennwerte in einer Zeile, Bühne 320 px) — mit 600 px zeigte der Clip das schmale, das Desktop dort nicht zeigt.
-const FEED_DUNKEL = {
-  breite: 622,
-  hintergrund: "#2e2e2c",
-  variablen: { "--color-background-primary": "#2e2e2c", "--color-background-secondary": "#383836",
-    "--color-text-primary": "#ffffff", "--color-text-secondary": "#cbcbc9", "--color-border-primary": "#737370" },
+// Feed hell im Chat-Stil (--chat, 20.11.2026): dasselbe für den hellen Chat, gemessen an fünf hellen
+// Chat-Standbildern vom 20.11.2026 (Panelfläche 253, Reitergruppe 242, Trennlinie 178, Titel ~10, Nebentext ~48);
+// das Panel steht dort genauso breit (Reitergruppe x 797–1209 in beiden Themen).
+const FEED_CHAT = {
+  dark: { breite: 622, hintergrund: "#2e2e2c", flaeche: "rgb(46, 46, 44)",
+    variablen: { "--color-background-primary": "#2e2e2c", "--color-background-secondary": "#383836",
+      "--color-text-primary": "#ffffff", "--color-text-secondary": "#cbcbc9", "--color-border-primary": "#737370" } },
+  light: { breite: 622, hintergrund: "#fdfdfd", flaeche: "rgb(253, 253, 253)",
+    variablen: { "--color-background-primary": "#fdfdfd", "--color-background-secondary": "#f2f2f2",
+      "--color-text-primary": "#0a0a0a", "--color-text-secondary": "#303030", "--color-border-primary": "#b2b2b2" } },
 };
 const HERO = { breite: BREITE_DESKTOP, hoehe: Number(process.env.HERO_HOEHE || 936) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
@@ -83,7 +90,8 @@ for (let i = 2; i < process.argv.length; i++) {
   else if (a === "--video") optionen.video = true;
   else if (a === "--feed") optionen.feed = true;
   else if (a === "--bild0") optionen.bild0 = true;
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0)`);
+  else if (a === "--chat") optionen.chat = true;
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0, --chat)`);
   else gewählt.push(a);
 }
 
@@ -132,7 +140,8 @@ function filmuhr() {
 }
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
-  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos }) {
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos, argsDunkel }) {
+  if (FEED && theme === "dark" && argsDunkel) args = argsDunkel; // dunkler Chat vom 20.11. hatte andere Argumente
   if (FEED) return feedSzene(browser, { theme, nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = mitName(tool, args, molecule);
@@ -259,12 +268,13 @@ const mitName = (tool, args, name) => (tool === "generate_protein_or_antibody" ?
 // niedriger ist als der 4:5-Ausschnitt — es steht dann senkrecht mittig statt oben mit leerer Fläche darunter.
 async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos, theme = "light" }) {
   if (molecule) args = mitName(tool, args, molecule);
-  const dunkel = theme === "dark";
-  if (dunkel) { BREITE = FEED_DUNKEL.breite; hoehe = Math.max(hoehe, (BREITE * 5) / 4); } // 4:5 muss das Panel in der Breite fassen
-  const farbe = dunkel ? { ...THEMES.dark, hintergrund: FEED_DUNKEL.hintergrund } : THEMES.light;
-  // Dunkel: Host-Kontext wie Desktop im Chat (Stilvariablen, `inline` mit Vergrößern-Knopf). Hell bleibt ohne Kontext.
-  const hostContext = dunkel ? { theme: "dark", displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], platform: "desktop",
-    containerDimensions: { width: BREITE, maxHeight: 6000 }, styles: { variables: FEED_DUNKEL.variablen } } : undefined;
+  // Chat-Stil: dunkel immer, hell mit --chat. Hell ohne --chat bleibt wie bisher (600 px, ohne Host-Kontext).
+  const chat = theme === "dark" || optionen.chat ? FEED_CHAT[theme] : null;
+  if (chat) { BREITE = chat.breite; hoehe = Math.max(hoehe, (BREITE * 5) / 4); } // 4:5 muss das Panel in der Breite fassen
+  const farbe = chat ? { ...THEMES[theme], hintergrund: chat.hintergrund } : THEMES.light;
+  // Host-Kontext wie Desktop im Chat (Stilvariablen, `inline` mit Vergrößern-Knopf)
+  const hostContext = chat ? { theme, displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], platform: "desktop",
+    containerDimensions: { width: BREITE, maxHeight: 6000 }, styles: { variables: chat.variablen } } : undefined;
   const clipName = clip ?? `${slug(molecule ?? args.name_or_smiles ?? args.name ?? tool)}-${name}`;
   const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
@@ -309,9 +319,9 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   const frame = page.frames().find((f) => f !== page.mainFrame());
   await mitTick(frame.locator(panel).first().waitFor({ timeout: 60000 }));
   await frame.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
-  if (dunkel) {
+  if (chat) {
     const bg = await frame.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    if (bg !== "rgb(46, 46, 44)") throw new Error(`ROT ${name}: Panelfläche ${bg} statt rgb(46, 46, 44) — Host-Stilvariablen nicht angekommen`);
+    if (bg !== chat.flaeche) throw new Error(`ROT ${name}: Panelfläche ${bg} statt ${chat.flaeche} — Host-Stilvariablen nicht angekommen`);
   }
   await page.evaluate((stil) => {
     const c = document.createElement("div");
@@ -1051,7 +1061,8 @@ const SZENEN = {
   // Stilwechsel hat das Panel nicht (nur „Reset view“; der spränge 40° zurück und gleitet dann — keine Schleife).
   "kern-3d": {
     ...KERN, clip: "menthol-3d", feedHoehe: 840, panel: ".m3d-panel",
-    tool: "generate_3d", args: { name_or_smiles: "CC(C)[C@@H]1CC[C@@H](C)C[C@H]1O", label: "(−)-Menthol" },
+    tool: "generate_3d", args: { name_or_smiles: "C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C", label: "(−)-Menthol (1R,2S,5R)" },
+    argsDunkel: { name_or_smiles: "CC(C)[C@@H]1CC[C@@H](C)C[C@H]1O", label: "(−)-Menthol" },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-3d");
       const { frame, page, halten, mitte, imBild, rechteck, marke, drehen, fahreZu, zeiger, bild } = werkzeug;
@@ -1112,7 +1123,8 @@ const SZENEN = {
   // Der Zeiger zeigt erst auf das phenolische OH von Morphin, dann auf die markierte Methylgruppe von Codein.
   "kern-compare": {
     ...KERN, clip: "morphine-codeine-compare", feedHoehe: 750, inhalt: 460, panel: ".plot-panel",
-    tool: "compare_molecules", args: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine"], title: "Morphine vs. Codeine" },
+    tool: "compare_molecules", args: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine (3-O-methylmorphine)"], title: "Morphine vs. codeine: one methyl group" },
+    argsDunkel: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine"], title: "Morphine vs. Codeine" },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-compare");
       const { frame, page, halten, fahreZu, imBild, rechteck, marke } = werkzeug;
@@ -1620,6 +1632,7 @@ const SZENEN = {
 
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 if (optionen.bild0 && !FEED) throw new Error("--bild0 gibt es nur mit --feed");
+if (optionen.chat && !FEED) throw new Error("--chat gibt es nur mit --feed");
 const themes = FEED ? [optionen.theme ?? "light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
 if (FEED && !gewählt.length) throw new Error("--feed braucht Szenen, z. B. 3d@geosmin");
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
