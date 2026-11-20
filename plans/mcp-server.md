@@ -1,5 +1,18 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — SN2-Fachprüfung (20.11.2026)
+
+- [x] SN2 fachlich geprüft. Für Brommethan und Hydroxid zeigen die drei Ansichten Edukte, Übergangszustand und Produkte
+  desselben konzertierten Schritts. `chemdraw_tool/ui/src/MechanismView.jsx:18` und die Navigation nennen die Ansichten
+  entsprechend. Fix inklusive Panel-Bundle, Aufnahme-Selektoren und Modell-Kontext in `d1f25c0`.
+- [x] `./test.sh`, `test:host`, `test:inspector` und `scripts/handshake.sh` bestanden. Den neu aufgenommenen Master und
+  die lokale Endfassung anhand von Vollbildern und Kontaktbogen geprüft. Naproxen (2D, 14 H, S-Konfiguration in 3D),
+  Lidocain, Procain und Bupivacain gegen PubChem-Strukturdaten abgeglichen.
+- **Nächster Schritt:** Auf Freigabe warten. Nach Freigabe an die Vermarktung reichen und das veröffentlichte Ergebnis
+  anhand der sichtbaren Beschriftung und der Video-ID prüfen. Stand der Endfassung im Tisch-Faden
+  `20261120-095031-fachpruefung-der-videos` #6.
+- **Offen:** „Für die Veröffentlichung der korrigierten Version brauche ich deine Freigabe.“ Unbeantwortet — nicht bauen.
+
 ## Weiter bei — Regeln und Sperre für das öffentliche Repo (17.11.2026, abgeschlossen)
 
 - **Erledigt:** `NOTICE` (Inhaber: Handle, Jays Wahl) und `THIRD_PARTY_LICENSES` um die sieben Panel-Pakete ergänzt, beide in
