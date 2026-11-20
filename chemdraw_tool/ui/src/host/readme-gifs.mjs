@@ -113,7 +113,10 @@ const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "readme-home-"));
 const client = new Client({ name: "readme-gifs", version: "0.0.0" });
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp" }, cwd: repo }));
+// Matplotlib baut im Wegwerf-HOME seinen Schriftcache neu (35 s, 20.11.2026: erster Toolaufruf lief ins 60-s-Limit);
+// der vorhandene Cache des Rechners wird nur gelesen
+const mplCache = process.env.MPLCONFIGDIR || (existsSync(join(homedir(), ".matplotlib")) ? join(homedir(), ".matplotlib") : undefined);
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp", ...(mplCache ? { MPLCONFIGDIR: mplCache } : {}) }, cwd: repo }));
 // Im Bild soll kein Wegwerf-Pfad stehen
 const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
@@ -409,10 +412,10 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   };
   // Bewegung ohne Zeiger (z. B. Mol*-Spin): Bilder aufnehmen und als Bewegungsstrecke zählen
   // jeBild(anteil) setzt den Zustand vor dem Bild (anteil 0 … (n−1)/n), nachBild() misst danach
-  const drehen = async (ms, jeBild, nachBild) => {
+  const drehen = async (ms, jeBild, nachBild, art = "drehung") => {
     const von = nr, n = Math.round((ms * MODUS.fps) / 1000);
     for (let i = 0; i < n; i++) { await jeBild?.(i / n); await bild(); await nachBild?.(); }
-    bewegungen.push({ art: "drehung", von, bis: nr });
+    bewegungen.push({ art, von, bis: nr });
   };
   const zeigerStart = [...pos];
   // Weich scrollen, Bild für Bild (scroll-behavior: smooth liefe in Echtzeit)
@@ -430,7 +433,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     if (!b || b.y < oben || b.y + b.height > oben + (inhalt ?? H)) throw new Error(`ROT ${name}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt ${oben}…${oben + (inhalt ?? H)})`);
   };
   try {
-    await ablauf({ feed: true, drehen, zeigerStart, rechteck, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
+    await ablauf({ feed: true, oben, hoeheAusschnitt: inhalt ?? H, drehen, zeigerStart, rechteck, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
     marke("ende");
   } catch (e) {
     if (e !== NUR_BILD0) throw e;
@@ -683,6 +686,59 @@ async function zoomen({ page, halten, zeiger, marke }, [x, y], richtung, rasten,
 async function proteinBereit({ frame, page }) {
   await frame.locator('[data-protein-viewer="ready"]').waitFor({ timeout: 60000 });
   await page.waitForTimeout(1800);
+}
+
+// Protein-Feed: warten, bis die Einblend-Drehung zu Ende ist. Läuft ein Kameraübergang noch, nimmt Mol*
+// setState(…, 0) nicht sofort, sondern führt den Übergang weiter — Anlauf-Rampe und Bild 0 ≠ Ruhelage
+// (Messung der Vermarktung, 18.11.). proteinBereit wartet in Echtzeit, die Uhr kam dabei nur ~50 ms weit.
+async function cartoonSteht({ frame, page }, name) {
+  for (let i = 0; ; i++) {
+    const z = await frame.evaluate(() => {
+      const g = window.__cartoonGriffe || [], tr = g[0]?.canvas3d.camera.transition;
+      return { griffe: g.length, läuft: tr?.inTransition, t: tr?.t, start: tr?.start, dauer: tr?.durationMs, jetzt: performance.now() };
+    });
+    if (z.griffe === 1 && !z.läuft) return;
+    if (i > 100) throw new Error(`ROT ${name}: Kameraübergang endet nicht ${JSON.stringify(z)}`);
+    await page.clock.runFor(50);
+  }
+}
+
+// Hülle des Proteins auf der Mol*-Fläche im jetzigen Bild (Nicht-Hintergrund-Pixel, CSS-Pixel der Fläche)
+const cartoonHülleJetzt = (frame) => frame.evaluate(() => {
+  const gl = window.__cartoonGriffe[0].canvas, w = gl.clientWidth, hh = gl.clientHeight;
+  const k = document.createElement("canvas"); k.width = w; k.height = hh;
+  const g = k.getContext("2d", { willReadFrequently: true }); g.drawImage(gl, 0, 0, w, hh);
+  const d = g.getImageData(0, 0, w, hh).data, bg = [d[0], d[1], d[2]];
+  let x0 = w, y0 = hh, x1 = -1, y1 = -1;
+  for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4;
+    if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > 24) {
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+  }
+  return x1 < 0 ? null : { x0, y0, x1, y1 };
+});
+
+// Sichtbarer Zug im Feed: Zeiger hin, greifen (Zeiger kleiner, solange die Taste unten ist), je Bild ein
+// Mausschritt — das erste Zugbild ist schon einen Schritt weiter, das letzte steht genau auf `nach`.
+// Beats „greifen“ und „loslassen“; die Strecke zählt als Bewegung `drag`.
+async function zugFeed({ page, fahreZu, halten, marke, zeiger, drehen }, von, nach, ms, ziel, nachBild) {
+  await fahreZu(...von);
+  await halten(200);
+  const gedrückt = (an) => page.evaluate((an) => { document.getElementById("cursor").style.transform = an ? "scale(.72)" : ""; }, an);
+  await gedrückt(true);
+  await page.mouse.down();
+  await halten(100);
+  marke("greifen", ziel);
+  const n = Math.round((ms * MODUS.fps) / 1000);
+  await drehen(ms, async (anteil) => {
+    const a = (Math.round(anteil * n) + 1) / n, x = von[0] + (nach[0] - von[0]) * a, y = von[1] + (nach[1] - von[1]) * a;
+    await page.mouse.move(x, y);
+    await zeiger(x, y);
+  }, nachBild, "drag");
+  await page.mouse.up();
+  marke("loslassen", ziel);
+  await gedrückt(false);
 }
 
 // Bluesky-Folgeposts (0.10.0): nur hell, nur auf Ansage, 6–12 s, Ausgabe über GIF_AUSGABE
@@ -1238,17 +1294,7 @@ const SZENEN = {
     async ablauf(werkzeug) {
       if (!werkzeug.feed) throw new Error("Szene protein gibt es nur mit --feed");
       const { frame, page, halten, klick, imBild, fahreZu, marke } = werkzeug;
-      // Die Einblend-Drehung muss zu Ende sein: läuft ein Kameraübergang noch, nimmt Mol* setState(…, 0) nicht sofort,
-      // sondern führt den Übergang weiter — Anlauf-Rampe und Bild 0 ≠ Ruhelage (Messung der Vermarktung, 18.11.)
-      for (let i = 0; ; i++) {
-        const z = await frame.evaluate(() => {
-          const g = window.__cartoonGriffe || [], tr = g[0]?.canvas3d.camera.transition;
-          return { griffe: g.length, läuft: tr?.inTransition, t: tr?.t, start: tr?.start, dauer: tr?.durationMs, jetzt: performance.now() };
-        });
-        if (z.griffe === 1 && !z.läuft) break;
-        if (i > 100) throw new Error(`ROT protein: Kameraübergang endet nicht ${JSON.stringify(z)}`);
-        await page.clock.runFor(50); // Uhr selbst vorspulen: proteinBereit wartet in Echtzeit, die Uhr kam dabei nur ~50 ms weit
-      }
+      await cartoonSteht(werkzeug, "protein");
       const leinwand = frame.locator('[data-protein-viewer="ready"] [data-cartoon-host] canvas');
       if (await leinwand.count() !== 1) throw new Error("ROT protein: kein Cartoon-Canvas (Rückfallspur?)");
       await imBild(frame.locator(".panel-title"), "Titel");
@@ -1277,20 +1323,7 @@ const SZENEN = {
         }, 2 * Math.PI * anteil);
       }, async () => {
         if (schrittNr++ % 4) return;
-        const h = await frame.evaluate(() => {
-          const gl = window.__cartoonGriffe[0].canvas, w = gl.clientWidth, hh = gl.clientHeight;
-          const k = document.createElement("canvas"); k.width = w; k.height = hh;
-          const g = k.getContext("2d", { willReadFrequently: true }); g.drawImage(gl, 0, 0, w, hh);
-          const d = g.getImageData(0, 0, w, hh).data, bg = [d[0], d[1], d[2]];
-          let x0 = w, y0 = hh, x1 = -1, y1 = -1;
-          for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
-            const i = (y * w + x) * 4;
-            if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > 24) {
-              if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
-            }
-          }
-          return x1 < 0 ? null : { x0, y0, x1, y1 };
-        });
+        const h = await cartoonHülleJetzt(frame);
         if (h) { hülle.x0 = Math.min(hülle.x0, h.x0); hülle.y0 = Math.min(hülle.y0, h.y0); hülle.x1 = Math.max(hülle.x1, h.x1); hülle.y1 = Math.max(hülle.y1, h.y1); }
       });
       await frame.evaluate(() => { const c = window.__cartoonGriffe[0].canvas3d; c.camera.setState(window.__ruhe, 0); c.requestDraw(); });
@@ -1312,6 +1345,221 @@ const SZENEN = {
       await halten(500);
       await fahreZu(...werkzeug.zeigerStart); // Zeiger rechts aus dem Bild: letztes Bild ≈ erstes
       await halten(150);
+    },
+  },
+  // ── Folgeauftrag der Vermarktung (Tisch-Faden 20261120-080521, 20.11.2026): Ziehen sichtbar machen.
+  // Protein mit Zeiger-Zug, hell wie `protein` (gleiche Argumente, Startlage und Rechtecke): ein echter
+  // waagerechter Zug über die Mol*-Fläche (Trackball, kein selbst gesetzter Winkel) dreht das Modell genau
+  // 360° — die Pixel je Umdrehung werden vor der Aufnahme gemessen. Danach Rainbow N→C und zurück auf die
+  // Startfärbung, Zeiger hinaus; letztes Bild → Bild 0 ohne Sprung. Name per `protein-ziehen@<name>`.
+  "protein-ziehen": {
+    ...BLUESKY, datei: "protein-ziehen", hoehe: 840, feedHoehe: 840, eigenerBrowser: true, nahtlos: true,
+    tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
+    async vorlauf({ frame, page }) {
+      const struktur = frame.getByRole("tab", { name: "Structure", exact: true });
+      if (await struktur.count() && await struktur.getAttribute("aria-selected") !== "true") await struktur.click();
+      await proteinBereit({ frame, page });
+    },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "protein-ziehen");
+      const { frame, page, halten, klick, imBild, fahreZu, rechteck } = werkzeug;
+      await cartoonSteht(werkzeug, "protein-ziehen");
+      const leinwand = frame.locator('[data-protein-viewer="ready"] [data-cartoon-host] canvas');
+      if (await leinwand.count() !== 1) throw new Error("ROT protein-ziehen: kein Cartoon-Canvas (Rückfallspur?)");
+      await imBild(frame.locator(".panel-title"), "Titel");
+      await imBild(frame.locator(".panel-subtitle"), "Unterzeile");
+      await imBild(frame.locator(".protein-legend"), "Legende");
+      await imBild(leinwand, "Cartoon-Fläche");
+      const griffe = await frame.evaluate(() => (window.__cartoonGriffe || []).length);
+      if (griffe !== 1) throw new Error(`ROT protein-ziehen: ${griffe} Engine-Griffe statt 1`);
+      await frame.evaluate(() => { window.__ruhe = window.__cartoonGriffe[0].canvas3d.camera.getSnapshot(); });
+      const kamera = () => frame.evaluate(() => { const s = window.__cartoonGriffe[0].canvas3d.camera.getSnapshot(); return { p: [...s.position], t: [...s.target], u: [...s.up] }; });
+      // Winkel zwischen zwei Blickrichtungen und zwischen den Oben-Vektoren (rad)
+      const winkel = (a, b) => {
+        const w = (x, y) => { const d = x[0] * y[0] + x[1] * y[1] + x[2] * y[2], n = Math.hypot(...x) * Math.hypot(...y); return Math.acos(Math.max(-1, Math.min(1, d / n))); };
+        const e = (k) => k.p.map((v, i) => v - k.t[i]);
+        return { blick: w(e(a), e(b)), oben: w(a.u, b.u) };
+      };
+      const zurRuhe = async () => {
+        await frame.evaluate(() => { const c = window.__cartoonGriffe[0].canvas3d; c.camera.setState(window.__ruhe, 0); c.requestDraw(); });
+        await page.clock.runFor(50);
+      };
+      // Messung vor der Aufnahme: 100 px waagerecht ziehen, Drehwinkel ablesen, zurück in die Ruhelage
+      const f = await leinwand.boundingBox(), cx = f.x + f.width / 2, cy = f.y + f.height / 2;
+      const r0 = await kamera();
+      await page.mouse.move(cx - 50, cy);
+      await page.mouse.down();
+      for (let i = 1; i <= 10; i++) { await page.mouse.move(cx - 50 + 10 * i, cy); await page.clock.runFor(17); }
+      await page.mouse.up();
+      await page.clock.runFor(50);
+      const probe = winkel(r0, await kamera()), radProPx = probe.blick / 100;
+      await zurRuhe();
+      const zurück = winkel(r0, await kamera());
+      if (zurück.blick > 1e-5 || zurück.oben > 1e-5) throw new Error(`ROT protein-ziehen: Ruhelage nach der Messung nicht wiederhergestellt ${JSON.stringify(zurück)}`);
+      if (probe.oben > 1e-3) throw new Error(`ROT protein-ziehen: waagerechter Zug kippt die Hochachse (${probe.oben} rad)`);
+      const WEG = (2 * Math.PI) / radProPx;
+      console.log(`  protein-ziehen: Trackball ${radProPx.toFixed(5)} rad/px → 360° = ${WEG.toFixed(1)} px (Fläche ${f.width.toFixed(0)} px)`);
+      if (WEG > f.width - 40) throw new Error(`ROT protein-ziehen: 360° brauchen ${WEG.toFixed(0)} px, die Fläche hat ${f.width.toFixed(0)}`);
+      await page.mouse.move(...werkzeug.zeigerStart);
+      // Aufnahme: Bild 0 = Ruhelage, Zeiger von rechts, ein Zug über genau 360°, Hülle über den Zug
+      await halten(250);
+      const hülle = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+      let schrittNr = 0;
+      const ZUG_MS = 4000, schrittWinkel = (WEG / Math.round((ZUG_MS * MODUS.fps) / 1000)) * radProPx;
+      await zugFeed(werkzeug, [cx - WEG / 2, cy], [cx + WEG / 2, cy], ZUG_MS, "drag 360°", async () => {
+        if (schrittNr++ % 4) return;
+        const h = await cartoonHülleJetzt(frame);
+        if (h) { hülle.x0 = Math.min(hülle.x0, h.x0); hülle.y0 = Math.min(hülle.y0, h.y0); hülle.x1 = Math.max(hülle.x1, h.x1); hülle.y1 = Math.max(hülle.y1, h.y1); }
+      });
+      // Nach 360° muss die Kamera dort stehen, wo sie anfing (höchstens ein Bildschritt daneben), dann einrasten
+      const rest = winkel(r0, await kamera());
+      console.log(`  protein-ziehen: Restwinkel nach dem Zug ${rest.blick.toFixed(5)} rad (Bildschritt ${schrittWinkel.toFixed(5)}), Oben ${rest.oben.toFixed(5)}`);
+      if (rest.blick > schrittWinkel || rest.oben > schrittWinkel) throw new Error(`ROT protein-ziehen: nach dem Zug ${JSON.stringify(rest)} rad neben der Ruhelage`);
+      await frame.evaluate(() => { const c = window.__cartoonGriffe[0].canvas3d; c.camera.setState(window.__ruhe, 0); c.requestDraw(); });
+      if (!Number.isFinite(hülle.x0)) throw new Error("ROT protein-ziehen: kein Protein auf der Fläche gefunden");
+      await rechteck("buehne", { x: f.x + hülle.x0, y: f.y + hülle.y0, width: hülle.x1 - hülle.x0 + 1, height: hülle.y1 - hülle.y0 + 1 });
+      await rechteck("panel", await frame.locator(".protein-panel").boundingBox());
+      await rechteck("reiter", await frame.locator(".protein-bar").boundingBox());
+      await rechteck("legende", await frame.locator(".protein-legend").boundingBox());
+      await rechteck("flaeche", f);
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      const gewählt = (text) => () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: text }).first().waitFor();
+      const start = (await frame.locator('[role="tablist"][aria-label="Colour by"] [role="tab"][aria-selected="true"]').innerText()).trim();
+      if (start === "Rainbow N→C") throw new Error("ROT protein-ziehen: startet schon in Rainbow N→C");
+      await halten(200);
+      await klick(reiter("Rainbow N→C"), gewählt("Rainbow"), "Rainbow N→C");
+      await halten(1500);
+      await klick(reiter(start), gewählt(start), start);
+      await halten(400);
+      await fahreZu(...werkzeug.zeigerStart);
+      await frame.evaluate(() => document.activeElement?.blur());
+      await halten(150);
+    },
+  },
+  // generate_molecule dunkel, Naproxen (ein Stereozentrum): 2D → All H → 3D → Zug mit Zeiger (halbe Drehung) → 2D.
+  // Der 3D-Zustand verfällt beim Rückweg, Ende = Anfang.
+  "kern-darstellungen": {
+    ...KERN, clip: "naproxen-views", feedHoehe: 960,
+    tool: "generate_molecule", args: { name_or_smiles: "naproxen", label: "Naproxen" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-darstellungen");
+      const { frame, halten, klick, imBild, rechteck, mitte } = werkzeug;
+      const achse = frame.locator("[data-view-axis]");
+      const knopf = (t) => achse.getByRole("button", { name: t, exact: true });
+      const gedrückt = (t) => () => achse.locator('button[aria-pressed="true"][aria-busy="false"]', { hasText: t }).waitFor({ timeout: 30000 });
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      if (await frame.locator('[data-testid="stereo-note"]').count()) throw new Error("ROT kern-darstellungen: Stereo-Hinweis im Panel (Stereozentrum offen?)");
+      for (const v of ["2D", "All H", "3D"]) if (!(await knopf(v).count())) throw new Error(`ROT kern-darstellungen: kein Knopf ${v}`);
+      await imBild(achse, "Ansicht-Achse");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile (2D)");
+      await rechteck("panel", frame.locator(".molecule-panel"));
+      await rechteck("buehne", frame.locator(".structure-canvas"));
+      await rechteck("reiter", achse);
+      await rechteck("legende", frame.locator(".group-section"));
+      await halten(800);
+      await klick(knopf("All H"), gedrückt("All H"), "All H");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile (All H)");
+      await halten(1100);
+      await klick(knopf("3D"), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
+      const fläche = frame.locator("[data-view-3d]");
+      await imBild(fläche, "3D-Fläche");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile (3D)");
+      await rechteck("buehne_3d", fläche);
+      await rechteck("panel_3d", frame.locator(".molecule-panel"));
+      await halten(1300); // Einblend-Drehung (1,2 s) läuft sichtbar zu Ende
+      const [cx, cy] = await mitte(fläche);
+      const HALB = Math.PI / 0.01; // 0,01 rad je Pixel (Ball3DCanvas) → halbe Drehung
+      await zugFeed(werkzeug, [cx - HALB / 2, cy + 20], [cx + HALB / 2, cy + 20], 2600, "drag 3D");
+      await halten(600);
+      await klick(knopf("2D"), gedrückt("2D"), "2D");
+      await halten(500);
+      await raus(werkzeug);
+      await frame.evaluate(() => document.activeElement?.blur());
+      await halten(300);
+    },
+  },
+  // generate_molecule dunkel, Lidocain: „Add to Anki“ → Rückmeldung (Testhost: deliver apkg → „Saved“, Desktop zeigt
+  // „Added“) → Study-Reiter, ein Feld aufdecken → zurück auf Structure. Ende = Anfang (Knopf wieder „Add to Anki“).
+  "kern-anki": {
+    ...KERN, clip: "lidocaine-anki", feedHoehe: 900,
+    tool: "generate_molecule", args: { name_or_smiles: "lidocaine", label: "Lidocaine" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-anki");
+      const { frame, halten, klick, imBild, rechteck, mitte, fahreZu, marke } = werkzeug;
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      const anki = frame.locator("button.add-to-anki");
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      await imBild(anki, "Anki-Knopf");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      const ruhe = (await anki.innerText()).trim();
+      if (ruhe !== "Add to Anki") throw new Error(`ROT kern-anki: Knopf zeigt „${ruhe}“`);
+      await rechteck("panel", frame.locator(".molecule-panel"));
+      await rechteck("buehne", frame.locator(".structure-canvas"));
+      await rechteck("reiter", frame.locator(".panel-head [role=tablist]"));
+      await rechteck("legende", frame.locator(".group-section"));
+      await rechteck("anki_knopf", anki);
+      await halten(900);
+      await klick(anki, () => frame.locator("button.add-to-anki", { hasText: /^(Saved|Added)$/ }).waitFor({ timeout: 30000 }), "Add to Anki");
+      marke("schluss", (await anki.innerText()).trim());
+      const [ax, ay] = await mitte(anki);
+      await fahreZu(ax - 40, ay - 46); // Zeiger vom Knopf weg, damit die Rückmeldung lesbar ist
+      await halten(1300);
+      await klick(reiter("Study"), () => frame.locator('[data-view="study"]').waitFor({ timeout: 10000 }), "Study");
+      const ansicht = frame.locator('[data-view="study"]');
+      await imBild(frame.locator(".study-actions"), "Reveal all");
+      await rechteck("study", ansicht);
+      await halten(700);
+      const decken = ansicht.locator("button.study-cover"), n = await decken.count();
+      if (!n) throw new Error("ROT kern-anki: im Study-Reiter nichts verdeckt");
+      await klick(decken.first(), async () => { while ((await decken.count()) >= n) await new Promise((r) => setTimeout(r, 20)); }, "reveal");
+      await halten(1300);
+      await klick(reiter("Structure"), () => frame.locator('[data-view="structure"] .structure-canvas svg').first().waitFor({ timeout: 10000 }), "Structure");
+      for (let i = 0; (await anki.innerText()).trim() !== ruhe; i++) {
+        if (i > 400) throw new Error("ROT kern-anki: Knopf kehrt nicht zu „Add to Anki“ zurück");
+        await werkzeug.bild();
+      }
+      await halten(300);
+      await raus(werkzeug);
+      await frame.evaluate(() => document.activeElement?.blur());
+      await halten(300);
+    },
+  },
+  // export_anki_deck dunkel: Deck aus drei Lokalanästhetika (Struktur → Name und Typ). Das Panel ist eine
+  // stehende Vorschau ohne Bedienelement an den Karten: der Zeiger fährt die drei Karten ab, dann die APKG-Zeile.
+  "kern-anki-deck": {
+    ...KERN, clip: "local-anesthetics-anki-deck", feedHoehe: 780, panel: ".anki-panel",
+    tool: "export_anki_deck", args: { deck_name: "Local anesthetics", deliver: "apkg", cards: [
+      { front: { structure: "lidocaine", text: "Name this local anesthetic" }, back: { text: "Lidocaine<br>amide type" } },
+      { front: { structure: "procaine", text: "Name this local anesthetic" }, back: { text: "Procaine<br>ester type" } },
+      { front: { structure: "bupivacaine", text: "Name this local anesthetic" }, back: { text: "Bupivacaine<br>amide type" } },
+    ] },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-anki-deck");
+      const { frame, halten, imBild, rechteck, fahreZu, marke } = werkzeug;
+      const karten = frame.locator("li.anki-card");
+      await karten.first().waitFor();
+      if (await karten.count() !== 3) throw new Error(`ROT kern-anki-deck: ${await karten.count()} Karten statt 3`);
+      const datei = frame.locator(".anki-file");
+      await imBild(frame.locator(".anki-panel"), "Panel");
+      await rechteck("panel", frame.locator(".anki-panel"));
+      await rechteck("buehne", frame.locator(".anki-cards"));
+      await rechteck("reiter", frame.locator(".panel-head"));
+      await rechteck("legende", datei);
+      for (let i = 0; i < 3; i++) await rechteck(`karte${i + 1}`, karten.nth(i));
+      await halten(900);
+      for (let i = 0; i < 3; i++) {
+        const b = await karten.nth(i).locator('[data-side="back"]').boundingBox();
+        await fahreZu(b.x + 30, b.y + b.height / 2 + 18); // links auf die Rückseite, Text bleibt lesbar
+        marke("hover", `card ${i + 1}`);
+        await halten(950);
+      }
+      const d = await datei.boundingBox();
+      await fahreZu(d.x + d.width * 0.45, d.y + d.height + 14);
+      marke("hover", "APKG");
+      await halten(1200);
+      await raus(werkzeug);
+      await halten(300);
     },
   },
   // Aspirin: zwei Gruppen-Chips, dann „Add to Anki“ → „Saved“ (Testhost: deliver apkg, kein Anki)

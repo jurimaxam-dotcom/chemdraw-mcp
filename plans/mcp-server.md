@@ -17,6 +17,33 @@
   damit die noreply-Adresse.
 - **Nächster Schritt:** keiner aus diesem Thema; weiter mit dem Block darunter.
 
+## Ziehen, Darstellungen, Anki (Tisch-Faden 20261120-080521, dritter Auftrag der Vermarktung, 20.11.2026)
+
+- **Auftrag** (wörtlich im Faden): A) Insulin, GFP, cyclooxygenase-2, pembrolizumab hell mit sichtbarem Zeiger-Zug
+  (≥ halbe Drehung), Rainbow N→C und zurück, Bild 0 deckungsgleich mit `chemdraw-vermarktung/out/clips-60fps-0.11.0-proteine/`,
+  Ablage `out/clips-60fps-0.11.0-proteine-ziehen/`. B) Darstellungen dunkel (Naproxen). C) Anki dunkel (Lidocain) plus
+  Deck-Panel mit drei Lokalanästhetika. B und C nach `out/clips-60fps-0.11.0-kerntools-dunkel/` (die fünf vorhandenen
+  Clips dort nicht anfassen). Bericht in den Faden; keine Desktop-Aufnahme, nichts nach außen.
+- **Gebaut in `readme-gifs.mjs`:** Szenen `protein-ziehen` (echter Trackball-Zug über genau 360°, rad/px wird vor der
+  Aufnahme gemessen, Restwinkel nach dem Zug ≤ ein Bildschritt sonst rot, Hülle über den Zug als `buehne`, zusätzlich
+  `flaeche`), `kern-darstellungen` (`naproxen-views`: 2D → All H → 3D → halbe Drehung per Zug → 2D), `kern-anki`
+  (`lidocaine-anki`: Add to Anki → Saved → Study, ein Feld aufdecken → Structure, wartet bis der Knopf wieder „Add to
+  Anki“ zeigt), `kern-anki-deck` (`local-anesthetics-anki-deck`: Zeiger über drei Karten und die APKG-Zeile). Helfer
+  `zugFeed` (Zeiger gedrückt, Beats `greifen`/`loslassen`, Bewegung `drag`), `cartoonSteht`/`cartoonHülleJetzt` aus
+  `protein` herausgelöst (unverändert im Verhalten), `drehen(…, art)`. Der Server bekommt den Matplotlib-Cache des
+  Rechners (`MPLCONFIGDIR`, sonst 35 s Fontcache im Wegwerf-HOME → 60-s-Zeitlimit beim ersten Toolaufruf).
+- **Gemessen:** Bild 0 `protein@insulin` heute gegen den alten Master: YAVG 0,17 (ein Drehschritt 2,05) — deckungsgleich.
+  Mol*-Trackball 0,01731 rad/px → 360° = 363 px bei 576 px Fläche (ein Zug). Bild 0 der drei dunklen Szenen angesehen:
+  Naproxen mit Keil und ohne Stereo-Hinweis (PubChem CID 156391, (S)), Lidocain, Deck mit drei Karten, Pfad
+  `~/ChemDraw-Output/anki/local-anesthetics.apkg`. A bleibt bei 600 px hell (622 px widerspräche „Bild 0 deckungsgleich“).
+- **Befund:** zweimal hintereinander hing der Panelstart der Proteinszenen (auch `protein`) an `locator('iframe')`,
+  danach zweimal grün ohne Änderung — Last von außen vermutet, nicht belegt.
+  Der erste volle Lauf `protein-ziehen@insulin` brach während des Zugs mit „browserContext.close: Target … has been closed“
+  ab, parallel lief `./test.sh` (Playwright) — Zusammenhang nicht belegt; einzeln wiederholen.
+- [ ] **Übergeben an Codex (Jay 20.11.: Session voll):** Clips aufnehmen und prüfen, Bericht in den Faden. Befehle:
+  `cd chemdraw_tool/ui && CLIP_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/clips-60fps-0.11.0-proteine-ziehen node src/host/readme-gifs.mjs --feed protein-ziehen@insulin protein-ziehen@GFP protein-ziehen@cyclooxygenase-2 protein-ziehen@pembrolizumab`
+  (je Protein >10 min) und `CLIP_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/clips-60fps-0.11.0-kerntools-dunkel node src/host/readme-gifs.mjs --feed --theme dark kern-darstellungen kern-anki kern-anki-deck`.
+
 ## Kerntool-Feed-Clips (Tisch-Faden 20261120-054403, Auftrag der Vermarktung, 20.11.2026)
 
 - **Gebaut in `readme-gifs.mjs`:** fünf Schleifen-Szenen `kern-molecule` (Atorvastatin), `kern-3d` ((−)-Menthol),
