@@ -1473,7 +1473,6 @@ const SZENEN = {
       await zugFeed(werkzeug, [cx - HALB / 2, cy + 20], [cx + HALB / 2, cy + 20], 2600, "drag 3D");
       await halten(600);
       await klick(knopf("2D"), gedrückt("2D"), "2D");
-      await halten(500);
       await raus(werkzeug);
       await frame.evaluate(() => document.activeElement?.blur());
       await halten(300);

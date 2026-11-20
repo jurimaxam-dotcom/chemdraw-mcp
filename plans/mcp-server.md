@@ -36,13 +36,16 @@
   Mol*-Trackball 0,01731 rad/px → 360° = 363 px bei 576 px Fläche (ein Zug). Bild 0 der drei dunklen Szenen angesehen:
   Naproxen mit Keil und ohne Stereo-Hinweis (PubChem CID 156391, (S)), Lidocain, Deck mit drei Karten, Pfad
   `~/ChemDraw-Output/anki/local-anesthetics.apkg`. A bleibt bei 600 px hell (622 px widerspräche „Bild 0 deckungsgleich“).
-- **Befund:** zweimal hintereinander hing der Panelstart der Proteinszenen (auch `protein`) an `locator('iframe')`,
-  danach zweimal grün ohne Änderung — Last von außen vermutet, nicht belegt.
-  Der erste volle Lauf `protein-ziehen@insulin` brach während des Zugs mit „browserContext.close: Target … has been closed“
-  ab, parallel lief `./test.sh` (Playwright) — Zusammenhang nicht belegt; einzeln wiederholen.
-- [ ] **Übergeben an Codex (Jay 20.11.: Session voll):** Clips aufnehmen und prüfen, Bericht in den Faden. Befehle:
-  `cd chemdraw_tool/ui && CLIP_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/clips-60fps-0.11.0-proteine-ziehen node src/host/readme-gifs.mjs --feed protein-ziehen@insulin protein-ziehen@GFP protein-ziehen@cyclooxygenase-2 protein-ziehen@pembrolizumab`
-  (je Protein >10 min) und `CLIP_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/clips-60fps-0.11.0-kerntools-dunkel node src/host/readme-gifs.mjs --feed --theme dark kern-darstellungen kern-anki kern-anki-deck`.
+- **Umfang korrigiert:** Der Auftrag für neue Proteinaufnahmen entfiel. Für die Abnahme zählen die Darstellungen und die
+  beiden Anki-Szenen in Dunkel. Der begonnene Insulin-Probelauf wurde vor dem Videoexport abgebrochen.
+- **Naproxen:** Der erste Lauf ergab 728 Bilder (12,13 s) bei höchstens 720 Bildern. Die halbe Sekunde nach der Rückkehr
+  zu 2D entfällt. Nach dem 2,6-s-Zug und dem Wechsel zurück zu 2D fährt der Zeiger aus dem Bild.
+- [x] **Aufgenommen und geprüft:** `naproxen-views` (11,63 s), `lidocaine-anki` (10,52 s) und
+  `local-anesthetics-anki-deck` (7,70 s) in `out/clips-60fps-0.11.0-kerntools-dunkel/`.
+  Exporte und Master je 60/1, Exporte 1080×1350. Naht jeweils YAVG 0 bei Median 0,1338 / 0,1187 / 0,1414.
+  Beim Naproxen-Zug 156/156 verschiedene Bilder, Zeiger in allen 156 Masterbildern gemessen und vier Vollbilder angesehen.
+  Lidocain zeigt „Saved“ im Testhost (`deliver: apkg`) und deckt im Study-Reiter die Formel auf. Das Deck-Panel zeigt
+  drei stehende Kartenvorschauen und den APKG-Pfad. Argumente, Beats und Rechtecke liegen je Clip in `.beats.json`.
 
 ## Kerntool-Feed-Clips (Tisch-Faden 20261120-054403, Auftrag der Vermarktung, 20.11.2026)
 
