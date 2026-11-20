@@ -34,6 +34,8 @@
 // Kerntool-Schleifen (kern-molecule, kern-3d, kern-compare, kern-reaction, kern-mechanism): feste Argumente,
 // Bild 0 = Ruhelage = letztes Bild; die Naht wird an den Quellbildern gemessen und steht in .beats.json.
 //   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed [--chat | --theme dark] kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
+// Andere Argumente aus einer Datei: --args <datei.json> mit { "<clip>": toolArguments }, genau eine Kern-Szene:
+//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed --chat --args wirkstoffe.json kern-3d   → <clip>-3d.*
 // Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort):
 // `args` aus dem hellen Chat (abends), `argsDunkel` aus dem dunklen (morgens), wo sie abweichen. --chat: hell im
 // Desktop-Stil (Stilvariablen, 622 px) — so blendet der Schnitt vom hellen Chat-Panel nahtlos auf Bild 0.
@@ -43,7 +45,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync, readFileSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { execFileSync, spawnSync } from "node:child_process";
 
@@ -85,13 +87,13 @@ const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 const gewählt = [], optionen = {};
 for (let i = 2; i < process.argv.length; i++) {
   const a = process.argv[i];
-  const m = a.match(/^--(theme|molecule)(?:=(.*))?$/);
+  const m = a.match(/^--(theme|molecule|args)(?:=(.*))?$/);
   if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
   else if (a === "--video") optionen.video = true;
   else if (a === "--feed") optionen.feed = true;
   else if (a === "--bild0") optionen.bild0 = true;
   else if (a === "--chat") optionen.chat = true;
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0, --chat)`);
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0, --chat, --args)`);
   else gewählt.push(a);
 }
 
@@ -1633,6 +1635,20 @@ const SZENEN = {
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 if (optionen.bild0 && !FEED) throw new Error("--bild0 gibt es nur mit --feed");
 if (optionen.chat && !FEED) throw new Error("--chat gibt es nur mit --feed");
+// --args DATEI (20.11.2026, Wirkstoff-3D- und Proteinserie): JSON-Objekt { "<clip>": { …toolArguments } } — eine
+// Szene läuft einmal je Eintrag, Ausgabe <clip>-<szene ohne kern->, z. B. caffeine-3d, luciferase-protein. So kommen die
+// Argumente, die Desktop im Chat übergeben hat, unverändert in den Clip (auch SMILES mit @).
+let argsDatei = null;
+if (optionen.args) {
+  if (!FEED) throw new Error("--args gibt es nur mit --feed");
+  argsDatei = JSON.parse(readFileSync(optionen.args, "utf8"));
+  if (!argsDatei || typeof argsDatei !== "object" || Array.isArray(argsDatei) || !Object.keys(argsDatei).length) throw new Error("--args: JSON-Objekt { clip: toolArguments } erwartet");
+  if (gewählt.length !== 1 || gewählt[0].includes("@") || !SZENEN[gewählt[0]]) throw new Error("--args braucht genau eine Szene ohne @, z. B. kern-3d oder protein");
+  for (const [clip, a] of Object.entries(argsDatei)) {
+    if (!/^[a-z0-9-]+$/.test(clip)) throw new Error(`--args: Clipname „${clip}“ nur aus a–z, 0–9, -`);
+    if (!a || typeof a !== "object" || Array.isArray(a)) throw new Error(`--args: Argumente für ${clip} sind kein Objekt`);
+  }
+}
 const themes = FEED ? [optionen.theme ?? "light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
 if (FEED && !gewählt.length) throw new Error("--feed braucht Szenen, z. B. 3d@geosmin");
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
@@ -1644,13 +1660,15 @@ if (FEED) {
   // Feed: je Clip eigener Browser (sauberer Kontext); ein roter Clip wird gemeldet, der Lauf geht weiter
   const rot = [];
   try {
-    for (const eintrag of szenen) {
-      const [name, mol] = eintrag.split("@");
-      console.log(`▶ feed ${name} (${mol ?? optionen.molecule ?? "Standard"}, ${themes[0]})`);
+    const läufe = argsDatei
+      ? Object.entries(argsDatei).map(([clip, a]) => ({ eintrag: `${szenen[0]}:${clip}`, name: szenen[0], extra: { args: a, argsDunkel: undefined, clip: `${clip}-${szenen[0].replace(/^kern-/, "")}` } }))
+      : szenen.map((eintrag) => { const [name, mol] = eintrag.split("@"); return { eintrag, name, mol, extra: {} }; });
+    for (const { eintrag, name, mol, extra } of läufe) {
+      console.log(`▶ feed ${name} (${extra.clip ?? mol ?? optionen.molecule ?? "Standard"}, ${themes[0]})`);
       // WebGL-Szenen in eigenem Browser: im gemeinsamen lief GFP nach Insulin mit ~7 s je Bild (18.11.)
       const eigener = SZENEN[name].eigenerBrowser ? await chromium.launch() : null;
       try {
-        ergebnisse.push(await szene(eigener ?? browser, { name, ...SZENEN[name], theme: themes[0], molecule: mol ?? optionen.molecule }));
+        ergebnisse.push(await szene(eigener ?? browser, { name, ...SZENEN[name], ...extra, theme: themes[0], molecule: mol ?? optionen.molecule }));
       } catch (e) {
         console.error(String(e.message ?? e));
         rot.push(eintrag);

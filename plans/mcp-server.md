@@ -97,6 +97,14 @@
   beiden Themen bei x 797–1209). Hell ohne `--chat` bleibt wie vorher. `args` der `kern-*`-Szenen = heller Chat,
   `argsDunkel` hält die abweichenden Argumente des dunklen Chats (Menthol-SMILES/Label, Vergleichs-Labels/Titel).
   `kern-mechanism` zeigt die fachkorrigierte Fassung (Views), das Chat-Panel noch „3 steps“ — gewollt.
+- **Zehn neue Short-Master (Tisch-Faden 20261120-202610, Auftrag der Vermarktung, 20.11.2026 abends):** fünf Proteine
+  nach dem Rezept vom 18.11. (`protein`, hell, ohne `--chat`) nach `out/clips-60fps-0.11.0-proteine-2/`, fünf
+  Wirkstoff-3D (`kern-3d --feed --chat`) nach `out/clips-60fps-0.11.0-wirkstoffe-3d/`. Neu: `--args <datei.json>`
+  mit `{ "<clip>": toolArguments }` für genau eine Szene ohne `@` — Ausgabe `<clip>-<szene ohne kern->`; so kommen
+  die Chat-Argumente wörtlich in den Clip (SMILES mit `@` passt nicht in `szene@name`). Argumente aus
+  `out/chat-2026-11-21-hell/<ordner>/mit-tippen.marks.json`; Bild 0 der fünf 3D-Master deckt sich mit dem letzten
+  Chatbild (Konformer und Lage), Hämoglobin mit „hemoglobin“ gleich „human hemoglobin“ (Titel, Unterzeile, Chain).
+  Protein-Aufnahme rendert WebGL in Software: ~2,5 s je Bild, ~20 min je Protein.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der
