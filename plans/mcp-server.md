@@ -31,6 +31,22 @@
   Kippzug im Kreis. `compare_molecules` ist ein stehendes Bild — der Zeiger zeigt auf die zwei Stellen. Die
   Veresterung ist ausgeglichen — statt „Apply coefficients“ zeigt der Clip „balanced“ und Export PNG. „menthol“ löst
   ohne Stereochemie auf (`C1(CC(C(CC1)C(C)C)O)C`), deshalb `(-)-menthol`.
+- **Dunkle Fassung (Tisch-Faden 20261120-065241, Folgeauftrag der Vermarktung, 20.11.2026):** `--feed --theme dark`
+  zeigt das Panel wie im dunklen Chat von Claude Desktop — der Aufnahme-Host meldet Flächen-, Text- und Linienfarben
+  als Stilvariablen (`FEED_DUNKEL`, an fünf Chat-Standbildern gemessen: Fläche 46/46/44), den Modus `inline`
+  (Vergrößern-Knopf) und 622 px Breite. Grund für 622: unter 620 px schaltet das Panel auf das schmale Layout
+  (Kennwerte zweispaltig, Bühne 260 px), das Desktop im Chat nicht zeigt — die hellen Clips (600 px) haben es.
+  `styles.css` ist unverändert. Neu: `--bild0` schreibt nur `<clip>.bild0.png` zum Vergleich mit einem Standbild.
+  Die fünf `kern-*`-Szenen tragen jetzt die Argumente aus dem Chat (u. a. `annotate_stereo`, Menthol als SMILES,
+  `title`, `conditions_below`); `kern-mechanism` beginnt und endet auf „Overview“ (Step by step → Next → Next →
+  Overview), Rechtecke der Schrittansicht unter `panel_schritte`, `buehne_schritte`, `navigation`, `schrittanzeige`.
+  Ein heller Lauf ergibt damit nicht mehr die Clips vom Vormittag (Stand dafür: `7a88fac`).
+- **Erledigt:** fünf dunkle Clips samt Master, Beats und Kontaktbogen in
+  `chemdraw-vermarktung/out/clips-60fps-0.11.0-kerntools-dunkel/`, je 60/1, 8,12–10,15 s, Naht 0 (3D: 0,0004 bei
+  Bewegungsschritt 1,29; Drehung 240/240, Kippzug 138/138 verschiedene Bilder). Bild 0 jedes Masters neben dem
+  Panel des Chat-Standbilds angesehen: Titel, Unterzeile, Beschriftung, Umbruch und Ansicht stimmen. Abweichungen:
+  das 3D-Standbild liegt noch in der Einblend-Drehung, Bild 0 ist die Ruhelage; die Schrift ist die des Rechners,
+  nicht die vom Host gelieferte; niedrige Panels stehen im 4:5-Bild senkrecht mittig.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der

@@ -23,13 +23,18 @@
 // Echtzeit-Screenshots: Playwrights page.clock fälscht Timer, rAF und Date auch im srcdoc-iframe, CSS-
 // Übergänge werden über document.getAnimations() angehalten und je Bild um 1/60 s vorgerückt, Zeiger und
 // Drehzüge rechnet das Skript je Bild. Dadurch ist jedes Bild ein eigener Zustand, egal wie lange der
-// Screenshot dauert. 1080×1350 (4:5), Panel 600 px mittig, Rand in Panelfarbe, 6–12 s, nur hell.
+// Screenshot dauert. 1080×1350 (4:5), Panel 600 px mittig, Rand in Panelfarbe, 6–12 s. Ohne --theme hell.
+// --feed --theme dark (20.11.2026): dunkel wie im Chat von Claude Desktop — der Host meldet Desktops Flächen-
+// und Textfarben als Stilvariablen (FEED_DUNKEL, an Chat-Standbildern gemessen) und den Modus `inline`
+// (Vergrößern-Knopf im Panelkopf). --bild0 schreibt je Szene nur <clip>.bild0.png (Ruhelage, zum Vergleich
+// mit einem Standbild) und nimmt keinen Clip auf.
 // Szene mit Molekül als `szene@molekül`; Ausgabe <molekül>-<szene>.mp4 (+ .beats.json, .kontakt.png) nach
 // CLIP_AUSGABE (sonst chemdraw-vermarktung/out/clips-60fps-0.11.0). Ein roter Clip bricht den Lauf nicht ab.
 //   npm run readme:gifs -- --feed anki@"penicillin G" 3d@geosmin study@serotonin
 // Kerntool-Schleifen (kern-molecule, kern-3d, kern-compare, kern-reaction, kern-mechanism): feste Argumente,
 // Bild 0 = Ruhelage = letztes Bild; die Naht wird an den Quellbildern gemessen und steht in .beats.json.
-//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
+//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed [--theme dark] kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
+// Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort).
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -54,6 +59,18 @@ const THEMES = {
 // Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 936 px = 3D-Panel
 // nach dem Umbau 17.11.2026 (Bühne über die volle Breite, Kennwerte darunter, Fußzeile; endet bei
 // ~923 px) plus 12 px Rand unten wie oben; vorher 880.
+// Feed dunkel: was Claude Desktop dem Panel im dunklen Chat als Host-Stil mitgibt — gemessen an fünf
+// Chat-Standbildern vom 20.11.2026 (Panelfläche 46/46/44, Reitergruppe 56/56/54, Nebentext ~203, Linien ~115).
+// Gehört in die Aufnahme, nicht ins Panel: styles.css behält seine eigenen Ersatzfarben. Die Schrift des
+// Hosts (--font-sans) wird nicht nachgebildet.
+// `breite`: so breit stand das Panel im Chat (1244 Gerätepixel bei 2×). Über 619 px gilt das breite Layout
+// (Kennwerte in einer Zeile, Bühne 320 px) — mit 600 px zeigte der Clip das schmale, das Desktop dort nicht zeigt.
+const FEED_DUNKEL = {
+  breite: 622,
+  hintergrund: "#2e2e2c",
+  variablen: { "--color-background-primary": "#2e2e2c", "--color-background-secondary": "#383836",
+    "--color-text-primary": "#ffffff", "--color-text-secondary": "#cbcbc9", "--color-border-primary": "#737370" },
+};
 const HERO = { breite: BREITE_DESKTOP, hoehe: Number(process.env.HERO_HOEHE || 936) };
 const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
@@ -65,7 +82,8 @@ for (let i = 2; i < process.argv.length; i++) {
   if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
   else if (a === "--video") optionen.video = true;
   else if (a === "--feed") optionen.feed = true;
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed)`);
+  else if (a === "--bild0") optionen.bild0 = true;
+  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0)`);
   else gewählt.push(a);
 }
 
@@ -112,7 +130,7 @@ function filmuhr() {
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
   breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos }) {
-  if (FEED) return feedSzene(browser, { nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt });
+  if (FEED) return feedSzene(browser, { theme, nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES[theme];
@@ -230,21 +248,28 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
 
 // Feed-Clip mit gesteuerter Uhr: ein Bild = Uhr 1/60 s weiter, CSS-Übergänge 1/60 s weiter, Screenshot.
 // Gewartet (Server, PubChem) wird mit tickender Uhr, aber ohne Aufnahme.
+const NUR_BILD0 = Symbol("nur Bild 0");
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 // `szene@name`: das Protein-Werkzeug liest `name`, alle anderen `name_or_smiles`
 const mitName = (tool, args, name) => (tool === "generate_protein_or_antibody" ? { ...args, name } : { ...args, name_or_smiles: name });
 // `clip`: fester Dateiname (Szenen ohne `name_or_smiles`); `inhalt`: Höhe des Panel-iframes, wenn das Panel
 // niedriger ist als der 4:5-Ausschnitt — es steht dann senkrecht mittig statt oben mit leerer Fläche darunter.
-async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos }) {
+async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos, theme = "light" }) {
   if (molecule) args = mitName(tool, args, molecule);
-  const farbe = THEMES.light;
+  const dunkel = theme === "dark";
+  if (dunkel) { BREITE = FEED_DUNKEL.breite; hoehe = Math.max(hoehe, (BREITE * 5) / 4); } // 4:5 muss das Panel in der Breite fassen
+  const farbe = dunkel ? { ...THEMES.dark, hintergrund: FEED_DUNKEL.hintergrund } : THEMES.light;
+  // Dunkel: Host-Kontext wie Desktop im Chat (Stilvariablen, `inline` mit Vergrößern-Knopf). Hell bleibt ohne Kontext.
+  const hostContext = dunkel ? { theme: "dark", displayMode: "inline", availableDisplayModes: ["inline", "fullscreen"], platform: "desktop",
+    containerDimensions: { width: BREITE, maxHeight: 6000 }, styles: { variables: FEED_DUNKEL.variablen } } : undefined;
+  const clipName = clip ?? `${slug(molecule ?? args.name_or_smiles ?? args.name ?? tool)}-${name}`;
   const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
   const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
   if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
   const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
 
-  const context = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: MODUS.scale, colorScheme: "light" });
+  const context = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: MODUS.scale, colorScheme: theme });
   await context.clock.install({ time: 0 });
   await context.clock.pauseAt(1000);
   // Griff auf die Mol*-Engine im Panel (nur Aufnahme): create() wird umwickelt, sobald das Engine-Script
@@ -274,13 +299,17 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   };
   await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
   await page.addScriptTag({ path: hostJs });
-  await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult });
+  await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult, hostContext });
   const oben = inhalt ? Math.round((H - inhalt) / 2) : 0;
   if (oben < 0) throw new Error(`${name}: inhalt ${inhalt} höher als der Ausschnitt ${H}`);
   await page.locator("iframe").evaluate((el, [w, h, r, o]) => { Object.assign(el.style, { width: `${w}px`, height: `${h}px`, display: "block", marginLeft: `${r}px`, marginTop: `${o}px` }); }, [BREITE, inhalt ?? H, rand, oben]);
   const frame = page.frames().find((f) => f !== page.mainFrame());
   await mitTick(frame.locator(panel).first().waitFor({ timeout: 60000 }));
-  await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  await frame.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
+  if (dunkel) {
+    const bg = await frame.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    if (bg !== "rgb(46, 46, 44)") throw new Error(`ROT ${name}: Panelfläche ${bg} statt rgb(46, 46, 44) — Host-Stilvariablen nicht angekommen`);
+  }
   await page.evaluate((stil) => {
     const c = document.createElement("div");
     c.id = "cursor";
@@ -315,6 +344,10 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     await page.evaluate(schritt, dt);
     await frame.evaluate(schritt, dt);
     await page.screenshot({ path: join(dir, `f${String(nr).padStart(5, "0")}.jpg`), clip: { x: 0, y: 0, width: W, height: H }, ...MODUS.screenshot });
+    if (optionen.bild0) {
+      await page.screenshot({ path: join(MODUS.ausgabe, `${clipName}.bild0.png`), clip: { x: 0, y: 0, width: W, height: H } });
+      throw NUR_BILD0;
+    }
     nr++;
   };
   const halten = async (ms) => { for (let i = Math.round((ms * MODUS.fps) / 1000); i > 0; i--) await bild(); };
@@ -399,10 +432,13 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   try {
     await ablauf({ feed: true, drehen, zeigerStart, rechteck, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
     marke("ende");
+  } catch (e) {
+    if (e !== NUR_BILD0) throw e;
+    return { szene: name, theme, datei: join(MODUS.ausgabe, `${clipName}.bild0.png`) };
   } finally {
     await context.close();
   }
-  return { szene: name, theme: "light", ...feedVideo(clip ?? `${slug(molecule ?? args.name_or_smiles ?? args.name ?? tool)}-${name}`, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos) };
+  return { szene: name, theme, ...feedVideo(clipName, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos) };
 }
 
 // Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“) — dieselbe Zählung wie scripts/bilder-je-sekunde.sh
@@ -924,7 +960,7 @@ const SZENEN = {
   // generate_molecule, Atorvastatin: zwei Gruppen-Chips (Atome leuchten), Data und zurück auf Structure
   "kern-molecule": {
     ...KERN, clip: "atorvastatin-molecule", feedHoehe: 770,
-    tool: "generate_molecule", args: { name_or_smiles: "atorvastatin", label: "Atorvastatin" },
+    tool: "generate_molecule", args: { name_or_smiles: "atorvastatin", label: "Atorvastatin", annotate_stereo: true },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-molecule");
       const { frame, halten, zeigeAuf, klick, imBild, rechteck } = werkzeug;
@@ -959,7 +995,7 @@ const SZENEN = {
   // Stilwechsel hat das Panel nicht (nur „Reset view“; der spränge 40° zurück und gleitet dann — keine Schleife).
   "kern-3d": {
     ...KERN, clip: "menthol-3d", feedHoehe: 840, panel: ".m3d-panel",
-    tool: "generate_3d", args: { name_or_smiles: "(-)-menthol", label: "(−)-Menthol" },
+    tool: "generate_3d", args: { name_or_smiles: "CC(C)[C@@H]1CC[C@@H](C)C[C@H]1O", label: "(−)-Menthol" },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-3d");
       const { frame, page, halten, mitte, imBild, rechteck, marke, drehen, fahreZu, zeiger, bild } = werkzeug;
@@ -1019,8 +1055,8 @@ const SZENEN = {
   // compare_molecules, Morphin gegen Codein: das Panel ist ein stehendes Bild (kein Bedienelement an der Figur).
   // Der Zeiger zeigt erst auf das phenolische OH von Morphin, dann auf die markierte Methylgruppe von Codein.
   "kern-compare": {
-    ...KERN, clip: "morphine-codeine-compare", feedHoehe: 750, inhalt: 440, panel: ".plot-panel",
-    tool: "compare_molecules", args: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine"] },
+    ...KERN, clip: "morphine-codeine-compare", feedHoehe: 750, inhalt: 460, panel: ".plot-panel",
+    tool: "compare_molecules", args: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine"], title: "Morphine vs. Codeine" },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-compare");
       const { frame, page, halten, fahreZu, imBild, rechteck, marke } = werkzeug;
@@ -1075,7 +1111,7 @@ const SZENEN = {
   "kern-reaction": {
     ...KERN, clip: "esterification-reaction", feedHoehe: 750, inhalt: 330, panel: ".reaction-panel",
     tool: "generate_reaction", args: { reactants: ["benzoic acid", "methanol"], products: ["methyl benzoate", "water"],
-      conditions: "H⁺", arrow: "equilibrium", name: "Fischer esterification" },
+      arrow: "equilibrium", conditions: "H2SO4 (cat.)", conditions_below: "reflux", name: "Fischer esterification of benzoic acid" },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-reaction");
       const { frame, halten, fahreZu, klick, imBild, rechteck, marke } = werkzeug;
@@ -1146,37 +1182,44 @@ const SZENEN = {
       await halten(300);
     },
   },
-  // generate_mechanism, SN2 Brommethan + Hydroxid: Ruhelage = Schritt 1 (unaufgenommen eingestellt),
-  // mit Next durch alle Schritte, über den ersten Punkt der Schrittanzeige zurück zu Schritt 1.
+  // generate_mechanism, SN2 Brommethan + Hydroxid: Ruhelage = Overview (so öffnet das Panel im Chat bei
+  // current_step 0), dann „Step by step“, mit Next durch alle Schritte, über den Reiter zurück zur Overview.
+  // Rechtecke der Schrittansicht unter eigenen Schlüsseln (panel_schritte, buehne_schritte, navigation, schrittanzeige).
   "kern-mechanism": {
     ...KERN, clip: "sn2-mechanism", feedHoehe: 750, inhalt: 610, panel: ".mechanism-panel",
-    tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["bromomethane", "hydroxide"] },
-    async vorlauf({ frame }) {
-      await frame.getByRole("tab", { name: "Step by step", exact: true }).click();
-      await frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 });
-      await frame.evaluate(() => document.activeElement?.blur()); // Fokusrahmen des Reiters gehört nicht zur Ruhelage
-    },
+    tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["bromomethane", "hydroxide"], current_step: 0 },
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-mechanism");
       const { frame, halten, klick, imBild, rechteck } = werkzeug;
+      const feld = frame.locator(".mechanism-panel");
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      if (await feld.getAttribute("data-mode") !== "overview") throw new Error("ROT kern-mechanism: Panel öffnet nicht auf Overview");
+      await frame.locator(".mech-overview").waitFor();
+      await imBild(feld, "Panel (Overview)");
+      await rechteck("panel", feld);
+      await rechteck("buehne", frame.locator(".mech-stage"));
+      await rechteck("reiter", frame.locator(".panel-head [role=tablist]"));
+      await rechteck("legende", frame.locator(".panel-subtitle"));
+      await halten(1000);
+      await klick(reiter("Step by step"), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
       const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
       if (!(gesamt >= 2)) throw new Error(`ROT kern-mechanism: ${gesamt} Schritte`);
       const schritt = (i) => () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 });
-      await imBild(frame.locator(".mechanism-panel"), "Panel (Schritt 1)");
-      await rechteck("panel", frame.locator(".mechanism-panel"));
-      await rechteck("buehne", frame.locator(".mech-stage"));
-      await rechteck("reiter", frame.locator(".mech-nav"));
-      await rechteck("legende", frame.locator(".mech-nav-center"));
-      await halten(1000);
+      await imBild(feld, "Panel (Schritt 1)");
+      await rechteck("panel_schritte", feld);
+      await rechteck("buehne_schritte", frame.locator(".mech-stage"));
+      await rechteck("navigation", frame.locator(".mech-nav"));
+      await rechteck("schrittanzeige", frame.locator(".mech-nav-center"));
+      await halten(1300);
       for (let i = 2; i <= gesamt; i++) {
         await klick(frame.locator("button.mech-next"), schritt(i), `Next → step ${i}`);
-        await imBild(frame.locator(".mechanism-panel"), `Panel (Schritt ${i})`);
-        await halten(i === gesamt ? 2000 : 1700);
+        await imBild(feld, `Panel (Schritt ${i})`);
+        await halten(i === gesamt ? 1700 : 1400);
       }
-      await klick(frame.getByRole("button", { name: "Step 1", exact: true }), schritt(1), "Step 1");
+      await klick(reiter("Overview"), () => frame.locator('.mechanism-panel[data-mode="overview"] .mech-overview').waitFor({ timeout: 5000 }), "Overview");
       await halten(600);
       await raus(werkzeug);
-      await frame.evaluate(() => document.activeElement?.blur());
+      await frame.evaluate(() => document.activeElement?.blur()); // Fokusrahmen des Reiters gehört nicht zur Ruhelage
       await halten(300);
     },
   },
@@ -1329,8 +1372,8 @@ const SZENEN = {
 };
 
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
-if (FEED && optionen.theme && optionen.theme !== "light") throw new Error("--feed gibt es nur hell");
-const themes = FEED ? ["light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
+if (optionen.bild0 && !FEED) throw new Error("--bild0 gibt es nur mit --feed");
+const themes = FEED ? [optionen.theme ?? "light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
 if (FEED && !gewählt.length) throw new Error("--feed braucht Szenen, z. B. 3d@geosmin");
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
 for (const name of szenen) if (!SZENEN[FEED ? name.split("@")[0] : name]) throw new Error(`unbekannte Szene: ${name} (${Object.keys(SZENEN).join(", ")})`);
@@ -1343,11 +1386,11 @@ if (FEED) {
   try {
     for (const eintrag of szenen) {
       const [name, mol] = eintrag.split("@");
-      console.log(`▶ feed ${name} (${mol ?? optionen.molecule ?? "Standard"})`);
+      console.log(`▶ feed ${name} (${mol ?? optionen.molecule ?? "Standard"}, ${themes[0]})`);
       // WebGL-Szenen in eigenem Browser: im gemeinsamen lief GFP nach Insulin mit ~7 s je Bild (18.11.)
       const eigener = SZENEN[name].eigenerBrowser ? await chromium.launch() : null;
       try {
-        ergebnisse.push(await szene(eigener ?? browser, { name, theme: "light", ...SZENEN[name], molecule: mol ?? optionen.molecule }));
+        ergebnisse.push(await szene(eigener ?? browser, { name, ...SZENEN[name], theme: themes[0], molecule: mol ?? optionen.molecule }));
       } catch (e) {
         console.error(String(e.message ?? e));
         rot.push(eintrag);
