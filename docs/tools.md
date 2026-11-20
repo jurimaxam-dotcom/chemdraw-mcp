@@ -185,8 +185,9 @@ conditions above and below a forward (→), equilibrium (⇌) or retrosynthetic
 
 **Mechanisms — three families, drawn with your molecules.** `generate_mechanism`
 draws SN2, SN1 and Fischer esterification with the substrates you name, with
-curved electron-flow arrows, an **Overview** of all steps and a **Step by step**
-tab with **Back / Next** through the intermediates. SN2
+curved electron-flow arrows and an **Overview**. **Back / Next** navigates
+the **Views** tab for SN2 and **Step by step** for the other mechanisms.
+SN2 shows one concerted step across views of the reactants, transition state and products. It
 takes a methyl, primary or secondary alkyl halide with one anionic nucleophile
 (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻) and inverts a stereocentre; SN1 takes a
 tertiary or benzylic halide with water, an alcohol or one of those anions (an

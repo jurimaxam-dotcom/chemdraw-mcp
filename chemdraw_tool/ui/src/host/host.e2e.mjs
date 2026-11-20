@@ -98,7 +98,7 @@ try {
       const SN2 = { reaction_type: "sn2", substrates: ["C[C@@H](Br)CC", "[C-]#N"] };
       const FISCHER = { reaction_type: "fischer_ester", substrates: ["CCCCCCCCCCCCCCCCCC(=O)O", "CCO"] };
       const uebersicht = (f) => f.evaluate(() => {
-        const tiles = [...document.querySelectorAll("[aria-label^='Open step']")].map((t) => {
+        const tiles = [...document.querySelectorAll(".mech-tile")].map((t) => {
           const b = t.getBoundingClientRect(), svg = t.querySelector("svg"), vb = svg.viewBox.baseVal;
           return { top: Math.round(b.top), bottom: Math.round(b.bottom), left: Math.round(b.left), right: Math.round(b.right),
             massstab: +(svg.getBoundingClientRect().width / vb.width).toFixed(2) };
@@ -122,10 +122,10 @@ try {
         check(u.tiles.length === 3 && new Set(u.tiles.map((t) => t.top)).size === 1, `E5 Mechanismus Chat 1000: drei Schritte nebeneinander (${JSON.stringify(u.tiles)})`);
         check(u.tiles.every((t) => t.massstab >= 0.62 && t.bottom <= u.stageBottom), `E5 Mechanismus Chat 1000: jeder Schritt ganz sichtbar, Maßstab ≥ 0,62 (${JSON.stringify(u.tiles)})`);
         check(u.inner.length === 0 && h <= 700, `E5 Mechanismus Chat 1000: kein innerer Rollbereich, Panel ${h} ≤ 700 px (${u.inner})`);
-        check(u.sub === "3 steps", `E5 Mechanismus: Untertitel lesbar statt Rohwert („${u.sub}“)`);
-        await f.locator("[aria-label^='Open step 2']").click();
-        check(await f.getByRole("tab", { name: "Step by step", exact: true }).getAttribute("aria-selected") === "true"
-          && /Step 2 \/ 3/.test(await f.locator("body").innerText()), "E5 Mechanismus: Klick auf Schritt 2 öffnet ihn in Step by step");
+        check(u.sub === "One concerted step · 3 views", `E5 Mechanismus: Untertitel lesbar statt Rohwert („${u.sub}“)`);
+        await f.locator("[aria-label^='Open view 2']").click();
+        check(await f.getByRole("tab", { name: "Views", exact: true }).getAttribute("aria-selected") === "true"
+          && /View 2 \/ 3/.test(await f.locator("body").innerText()), "E5 Mechanismus: Klick auf Ansicht 2 öffnet den Übergangszustand unter Views");
         await page.close();
       }
       for (const [w, h] of [[1000, 700], [320, 700]]) {
@@ -480,7 +480,7 @@ try {
       const [page, f] = await open(name, input, full(320, 900));
       await ready(f);
       await page.waitForTimeout(500);
-      const views = tag === "mechanism" ? ["Overview", "Step by step"] : tag === "protein" ? ["Structure", "Scheme"] : [null];
+      const views = tag === "mechanism" ? ["Overview", "Views"] : tag === "protein" ? ["Structure", "Scheme"] : [null];
       for (const v of views) {
         if (v) await f.getByRole("tab", { name: v, exact: true }).click();
         await page.waitForTimeout(300);
@@ -1060,12 +1060,13 @@ try {
     check(!body.includes("textbook example") && body.includes(example), `${type}: sichtbarer Titel nennt die gezeichneten Substrate`);
     // Pfeile und Struktur kommen aus echten Renderer-SVGs, nicht aus einem Text-Platzhalter.
     check(await f.locator('svg path').count() > 0 && body.includes("Reactants"), `${type}: Übersicht enthält gezeichnete Strukturen und Schritte`);
-    await f.getByRole("tab", { name: "Step by step", exact: true }).click();
-    await f.getByText(`Step 1 / ${count}`, { exact: true }).waitFor();
+    const item = type === "sn2" ? "View" : "Step";
+    await f.getByRole("tab", { name: type === "sn2" ? "Views" : "Step by step", exact: true }).click();
+    await f.getByText(`${item} 1 / ${count}`, { exact: true }).waitFor();
     check(await f.getByRole("button", { name: "Back", exact: true }).isDisabled(), `${type}: erster Schritt sperrt Zurück`);
     const first = await f.locator(".mech-step-svg").innerHTML();
     await f.getByRole("button", { name: "Next", exact: true }).click();
-    await f.getByText(`Step 2 / ${count}`, { exact: true }).waitFor();
+    await f.getByText(`${item} 2 / ${count}`, { exact: true }).waitFor();
     check(await f.locator(".mech-step-svg").innerHTML() !== first, `${type}: Weiter zeigt eine andere Zeichnung`);
 
   }

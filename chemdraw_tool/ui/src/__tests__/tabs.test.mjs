@@ -85,13 +85,13 @@ test("Datenblatt: PubChem/GHS sind Reiter des Bauteils, keine aria-pressed-Knöp
   view.unmount();
 });
 
-test("Mechanismus: Overview/Step by step sind Reiter des Bauteils", async () => {
+test("SN2: Overview/Views sind Reiter des Bauteils", async () => {
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><rect width="10" height="10"/></svg>';
   const data = { type: "mechanism", name: "SN2", reaction_type: "sn2", steps: [{ svg, label: "a" }, { svg, label: "b" }] };
   const view = render(React.createElement(MechanismView, { data }));
   const list = view.container.querySelector('[role="tablist"]');
   assert.ok(list, "keine Tabliste im Mechanismus");
-  const step = [...list.querySelectorAll('[role="tab"]')].find((t) => t.textContent === "Step by step");
+  const step = [...list.querySelectorAll('[role="tab"]')].find((t) => t.textContent === "Views");
   assert.ok(step);
   await click(step);
   assert.equal(step.getAttribute("aria-selected"), "true");

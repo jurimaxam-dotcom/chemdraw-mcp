@@ -259,15 +259,15 @@
     "beginnt": "Nucleophilic Substitution (SN2)"
    },
    {
-    "name": "Drei Schritte in der Übersicht",
+    "name": "Drei Ansichten in der Übersicht",
     "typ": "button",
-    "beginnt": "Open step 3"
+    "beginnt": "Open view 3"
    },
    {
-    "name": "Schritt 2 öffnen",
+    "name": "Übergangszustand öffnen",
     "typ": "button",
     "aktion": "klick",
-    "beginnt": "Open step 2",
+    "beginnt": "Open view 2",
     "pause": 1.5,
     "bild": "schritt2"
    },
@@ -278,15 +278,15 @@
     "titel": "Overview",
     "dann": {
      "typ": "button",
-     "beginnt": "Open step 1"
+     "beginnt": "Open view 1"
     },
     "wert": "1"
    },
    {
-    "name": "Ansicht Step by step",
+    "name": "Reiter Views",
     "typ": "tab",
     "aktion": "klick",
-    "titel": "Step by step",
+    "titel": "Views",
     "pause": 1.5,
     "bild": "schrittweise",
     "wert": "1"
@@ -298,7 +298,7 @@
     "titel": "Overview",
     "dann": {
      "typ": "button",
-     "beginnt": "Open step 1"
+     "beginnt": "Open view 1"
     },
     "wert": "1"
    },

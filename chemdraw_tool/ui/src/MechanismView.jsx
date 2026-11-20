@@ -18,12 +18,15 @@ const FAMILY_LABEL = { sn2: "SN2", sn1: "SN1", fischer_ester: "Fischer esterific
 export function mechanismSubtitle(data, total) {
   const label = FAMILY_LABEL[data.reaction_type];
   const named = label && String(data.name || "").toLowerCase().includes(label.toLowerCase());
-  return [label && !named ? label : null, `${total} step${total === 1 ? "" : "s"}`,
+  const count = data.reaction_type === "sn2"
+    ? `One concerted step · ${total} view${total === 1 ? "" : "s"}`
+    : `${total} step${total === 1 ? "" : "s"}`;
+  return [label && !named ? label : null, count,
     data.reversible ? "each step an equilibrium" : null].filter(Boolean).join(" · ");
 }
 
 // Punkte je Schritt: Name „Step n“ (Tests, Probe), der gezeigte trägt aria-current. Aussehen in b-graphics.css.
-function StepIndicator({ current, total, onStepClick }) {
+function StepIndicator({ current, total, onStepClick, itemLabel }) {
   return (
     <span className="mech-dots">
       {Array.from({ length: total }, (_, i) => (
@@ -31,7 +34,7 @@ function StepIndicator({ current, total, onStepClick }) {
           key={i}
           type="button"
           className="mech-dot"
-          aria-label={`Step ${i + 1}`}
+          aria-label={`${itemLabel} ${i + 1}`}
           aria-current={current === i ? "step" : undefined}
           onClick={() => onStepClick(i)}
         />
@@ -85,7 +88,7 @@ function StepArrow({ reversible, down = false }) {
   );
 }
 
-function StepTile({ step, index, scale, onStepClick }) {
+function StepTile({ step, index, scale, onStepClick, itemLabel }) {
   const w = naturalWidth(step.svg) || 300;
   const h = naturalHeight(step.svg) || 200;
   const caption = step.is_transition_state ? `[${step.label}]‡` : step.label;
@@ -94,7 +97,7 @@ function StepTile({ step, index, scale, onStepClick }) {
       role="button"
       tabIndex={0}
       className="mech-tile"
-      aria-label={`Open step ${index + 1}: ${step.label}`}
+      aria-label={`Open ${itemLabel.toLowerCase()} ${index + 1}: ${step.label}`}
       onClick={() => onStepClick(index)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -119,7 +122,7 @@ function StepTile({ step, index, scale, onStepClick }) {
 // Übersicht (Etappe 5): Zeilen aus Schritten mit Pfeilen dazwischen, so wenige Zeilen wie die
 // Breite in lesbarer Größe erlaubt (utils/mechanismLayout.js). Kein eigener Rollbereich:
 // passt es nicht in die Höhe, wächst das Panel.
-function OverviewMode({ steps, reversible, layout, onStepClick }) {
+function OverviewMode({ steps, reversible, layout, onStepClick, itemLabel }) {
   return (
     <div className="mech-overview" data-rows={layout.rows.length}>
       {layout.rows.map((row, r) => (
@@ -129,7 +132,7 @@ function OverviewMode({ steps, reversible, layout, onStepClick }) {
             {row.map((i, k) => (
               <React.Fragment key={i}>
                 {k > 0 && <StepArrow reversible={reversible} />}
-                <StepTile step={steps[i]} index={i} scale={layout.scale} onStepClick={onStepClick} />
+                <StepTile step={steps[i]} index={i} scale={layout.scale} onStepClick={onStepClick} itemLabel={itemLabel} />
               </React.Fragment>
             ))}
           </div>
@@ -142,7 +145,7 @@ function OverviewMode({ steps, reversible, layout, onStepClick }) {
 // Schrittmodus (Spezifikation §5.7): Back/Next als ruhige Knöpfe mit Chevron in der StageBar,
 // dazwischen Zähler „Step n / N“ (eigenes Element — test:host sucht den Text exakt), Bezeichnung
 // und Punkte; darunter die Bühne ohne Karte.
-function StepBar({ steps, current, setCurrentStep }) {
+function StepBar({ steps, current, setCurrentStep, itemLabel }) {
   const step = steps[current];
   const total = steps.length;
   const label = step.is_transition_state ? `[${step.label}]‡` : step.label;
@@ -155,9 +158,9 @@ function StepBar({ steps, current, setCurrentStep }) {
             Back
           </Button>
           <div className="mech-nav-center">
-            <span className="mech-counter">Step {current + 1} / {total}</span>
+            <span className="mech-counter">{itemLabel} {current + 1} / {total}</span>
             <span className={step.is_transition_state ? "mech-step-label is-ts" : "mech-step-label"} title={label}>{label}</span>
-            <StepIndicator current={current} total={total} onStepClick={setCurrentStep} />
+            <StepIndicator current={current} total={total} onStepClick={setCurrentStep} itemLabel={itemLabel} />
           </div>
         </>
       )}
@@ -189,6 +192,8 @@ export const OVERVIEW_CHAT_H = 440;
 
 export default function MechanismView({ data }) {
   const steps = data.steps || [];
+  const concerted = data.reaction_type === "sn2";
+  const itemLabel = concerted ? "View" : "Step";
   const [mode, setMode] = useState(data.current_step === 0 ? "overview" : "step");
   const [currentStep, setCurrentStep] = useState(
     data.current_step > 0 ? data.current_step - 1 : 0
@@ -246,13 +251,13 @@ export default function MechanismView({ data }) {
         title={data.name || "Mechanismus"}
         subtitle={mechanismSubtitle(data, steps.length)}
         tabs={<Tabs label="Mechanism view" value={mode} onChange={setMode}
-          tabs={[{ key: "overview", label: "Overview" }, { key: "step", label: "Step by step" }]} />}
+          tabs={[{ key: "overview", label: "Overview" }, { key: "step", label: concerted ? "Views" : "Step by step" }]} />}
         expand={canExpand ? <ExpandButton /> : null}
       />
-      {mode === "step" && <StepBar steps={steps} current={shown} setCurrentStep={setCurrentStep} />}
+      {mode === "step" && <StepBar steps={steps} current={shown} setCurrentStep={setCurrentStep} itemLabel={itemLabel} />}
       <Stage ref={stageRef} className="mech-stage" data-mode={mode}>
         {mode === "overview" ? (
-          <OverviewMode steps={steps} reversible={!!data.reversible} layout={layout}
+          <OverviewMode steps={steps} reversible={!!data.reversible} layout={layout} itemLabel={itemLabel}
             onStepClick={(i) => { setCurrentStep(i); setMode("step"); }} />
         ) : (
           <div className="mech-step-svg" dangerouslySetInnerHTML={{ __html: steps[shown].svg }} />

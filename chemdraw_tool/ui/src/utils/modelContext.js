@@ -203,9 +203,12 @@ export function mechanismContext(data, { mode, step } = {}) {
   const steps = data.steps || [];
   const lines = [HEAD, `Mechanism: ${data.name || "unnamed"} (${data.reaction_type || "?"})`];
   if (data.substrates_drawn === false) lines.push("Drawn with the textbook example, not the user's substrates.");
+  const concerted = data.reaction_type === "sn2";
+  const item = concerted ? "view" : "step";
+  if (concerted) lines.push("The views show a single concerted substitution step.");
   lines.push(mode === "step" && steps[step]
-    ? `Showing: step ${step + 1} of ${steps.length} — ${steps[step].label}`
-    : `Showing: overview of all ${steps.length} steps`);
+    ? `Showing: ${item} ${step + 1} of ${steps.length} — ${steps[step].label}`
+    : `Showing: overview of all ${steps.length} ${item}s`);
   return clip(lines.join("\n"));
 }
 

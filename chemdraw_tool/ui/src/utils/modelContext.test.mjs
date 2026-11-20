@@ -81,7 +81,7 @@ test("Datenblatt, Reaktion, Mechanismus: knappe Fassungen", () => {
   assert.match(r, /H2SO4/);
   assert.match(r, /balanced/);
   const m = mechanismContext({ name: "SN2", reaction_type: "sn2", steps: [{ label: "A" }, { label: "B" }] }, { mode: "step", step: 1 });
-  assert.match(m, /step 2 of 2/);
+  assert.match(m, /view 2 of 2/);
   assert.match(m, /B/);
   assert.match(genericContext("spectrum", { name: "Aspirin", spectrum_type: "IR" }), /IR spectrum/);
 });

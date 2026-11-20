@@ -1,5 +1,5 @@
 {
- "geprueft": "2026-11-16",
+ "geprueft": "2026-11-20",
  "hinweis": "Fingerabdrücke und Titel — die Texte liegen lokal in .cache/anthropic/ und gehören Anthropic.",
  "seiten": {
   "https://claude.com/docs/build/overview.md": {
@@ -30,7 +30,7 @@
    "titel": "Enterprise Managed Auth for connectors",
    "beschreibung": "Support auto-connect in Claude by accepting identity assertions from a customer's identity provider or from Claude, so users skip the OAuth consent step.",
    "quelle": "claude-docs",
-   "hash": "127aea703439bff4"
+   "hash": "7c680b3b0da7ebca"
   },
   "https://claude.com/docs/connectors/building/index.md": {
    "titel": "Build an MCP server for Claude",
@@ -204,7 +204,7 @@
    "titel": "Changelog",
    "beschreibung": "Release notes for Claude Desktop",
    "quelle": "claude-docs",
-   "hash": "44bb5bce4b446fa1"
+   "hash": "3511b51ccc80dcb2"
   },
   "https://claude.com/docs/directory/publish.md": {
    "titel": "Publish to the directory",
@@ -372,13 +372,13 @@
    "titel": "stdio",
    "beschreibung": "",
    "quelle": "mcp-standard",
-   "hash": "d9edd3aba3fa86f2"
+   "hash": "f83a9be9d5b01dda"
   },
   "https://modelcontextprotocol.io/specification/2026-07-28/changelog.md": {
    "titel": "Key Changes",
    "beschreibung": "",
    "quelle": "mcp-standard",
-   "hash": "c572c929a8ddb6c9"
+   "hash": "a47da6834a6398b3"
   },
   "https://modelcontextprotocol.io/specification/2026-07-28/deprecated.md": {
    "titel": "Deprecated Features",
@@ -390,19 +390,19 @@
    "titel": "Resources",
    "beschreibung": "",
    "quelle": "mcp-standard",
-   "hash": "51ae16e72db1fe05"
+   "hash": "86b2ca2c934b2924"
   },
   "https://modelcontextprotocol.io/specification/2026-07-28/server/tools.md": {
    "titel": "Tools",
    "beschreibung": "",
    "quelle": "mcp-standard",
-   "hash": "9900af2f838e4b0d"
+   "hash": "a5ed6e78537f3d20"
   },
   "https://platform.claude.com/docs/en/about-claude/model-deprecations.md": {
    "titel": "Model deprecations",
    "beschreibung": "",
    "quelle": "claude-plattform",
-   "hash": "91cf99cfc3b7908a"
+   "hash": "7f1961b8024b883c"
   },
   "https://platform.claude.com/docs/en/models/overview.md": {
    "titel": "Models overview",
@@ -414,7 +414,7 @@
    "titel": "Overview",
    "beschreibung": "Claude Platform release notes",
    "quelle": "claude-plattform",
-   "hash": "3765708c8c004443"
+   "hash": "cd6c51a9260eac9f"
   }
  }
 }

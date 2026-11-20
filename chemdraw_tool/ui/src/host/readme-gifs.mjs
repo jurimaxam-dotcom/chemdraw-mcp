@@ -914,17 +914,17 @@ const SZENEN = {
       }
     },
   },
-  // SN2 mit (R)-2-Brombutan + Cyanid: Overview → Step by step → mit Next durch alle Schritte
+  // SN2 mit (R)-2-Brombutan + Cyanid: Overview → Views → mit Next durch alle drei Ansichten
   "mechanism-steps": {
-    ...GALERIE, datei: "mechanism-steps", hoehe: 610, panel: "button:has-text(\"Step by step\")",
+    ...GALERIE, datei: "mechanism-steps", hoehe: 610, panel: ".mechanism-panel",
     tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] },
     async ablauf({ frame, halten, klick, imBild }) {
       await halten(1500);
-      await klick(frame.getByRole("tab", { name: "Step by step", exact: true }), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
-      const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
+      await klick(frame.getByRole("tab", { name: "Views", exact: true }), () => frame.getByText(/^View 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Views");
+      const gesamt = Number((await frame.getByText(/^View 1 \/ \d+$/).innerText()).split("/")[1]);
       await halten(1600);
       for (let i = 2; i <= gesamt; i++) {
-        await klick(frame.getByRole("button", { name: "Next", exact: true }), () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 }), "Next");
+        await klick(frame.getByRole("button", { name: "Next", exact: true }), () => frame.getByText(`View ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 }), "Next");
         await imBild(frame.locator(".panel-footer"), `Fußzeile (Schritt ${i})`);
         await halten(i === gesamt ? 2200 : 1600);
       }
@@ -1239,7 +1239,7 @@ const SZENEN = {
     },
   },
   // generate_mechanism, SN2 Brommethan + Hydroxid: Ruhelage = Overview (so öffnet das Panel im Chat bei
-  // current_step 0), dann „Step by step“, mit Next durch alle Schritte, über den Reiter zurück zur Overview.
+  // current_step 0), dann „Views“, mit Next durch alle Ansichten, über den Reiter zurück zur Overview.
   // Rechtecke der Schrittansicht unter eigenen Schlüsseln (panel_schritte, buehne_schritte, navigation, schrittanzeige).
   "kern-mechanism": {
     ...KERN, clip: "sn2-mechanism", feedHoehe: 750, inhalt: 610, panel: ".mechanism-panel",
@@ -1257,10 +1257,10 @@ const SZENEN = {
       await rechteck("reiter", frame.locator(".panel-head [role=tablist]"));
       await rechteck("legende", frame.locator(".panel-subtitle"));
       await halten(1000);
-      await klick(reiter("Step by step"), () => frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Step by step");
-      const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
-      if (!(gesamt >= 2)) throw new Error(`ROT kern-mechanism: ${gesamt} Schritte`);
-      const schritt = (i) => () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 });
+      await klick(reiter("Views"), () => frame.getByText(/^View 1 \/ \d+$/).waitFor({ timeout: 5000 }), "Views");
+      const gesamt = Number((await frame.getByText(/^View 1 \/ \d+$/).innerText()).split("/")[1]);
+      if (!(gesamt >= 2)) throw new Error(`ROT kern-mechanism: ${gesamt} Ansichten`);
+      const schritt = (i) => () => frame.getByText(`View ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 });
       await imBild(feld, "Panel (Schritt 1)");
       await rechteck("panel_schritte", feld);
       await rechteck("buehne_schritte", frame.locator(".mech-stage"));
@@ -1268,7 +1268,7 @@ const SZENEN = {
       await rechteck("schrittanzeige", frame.locator(".mech-nav-center"));
       await halten(1300);
       for (let i = 2; i <= gesamt; i++) {
-        await klick(frame.locator("button.mech-next"), schritt(i), `Next → step ${i}`);
+        await klick(frame.locator("button.mech-next"), schritt(i), `Next → view ${i}`);
         await imBild(feld, `Panel (Schritt ${i})`);
         await halten(i === gesamt ? 1700 : 1400);
       }

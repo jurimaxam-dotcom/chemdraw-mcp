@@ -137,7 +137,7 @@ const KALIBRIERUNG = { concentrations: [0, 2, 4, 6, 8, 10], signals: [0.01, 0.21
 const FUENFTE = [
   ["e5-mechanismus", "generate_mechanism", SN2],
   ["e5-mechanismus-fischer", "generate_mechanism", { reaction_type: "fischer_ester", substrates: ["CCCCCCCCCCCCCCCCCC(=O)O", "CCO"] }],
-  ["e5-mechanismus-schritt2", "generate_mechanism", SN2, "[aria-label^='Open step 2']"],
+  ["e5-mechanismus-schritt2", "generate_mechanism", SN2, "[aria-label^='Open view 2']"],
   ["e5-anki", "export_anki_deck", ANKI],
   ["e5-anki-viele", "export_anki_deck", ANKI_VIELE],
   ["e5-3d", "generate_3d", { name_or_smiles: "Cn1c(=O)c2c(ncn2C)n(C)c1=O", label: "Caffeine" }],
@@ -159,7 +159,7 @@ const SECHSTE = [
   ["e6-study", "generate_molecule", { name_or_smiles: "aspirin" }, "[role=tab]:has-text('Study')"],
   ["e6-datenblatt-study", "lookup_molecule_data", { name: "paracetamol" }, "[role=tab]:has-text('Study')"],
   ["e6-mechanismus-sn2", "generate_mechanism", SN2],
-  ["e6-mechanismus-sn2-schritt2", "generate_mechanism", SN2, "[aria-label^='Open step 2']"],
+  ["e6-mechanismus-sn2-schritt2", "generate_mechanism", SN2, "[aria-label^='Open view 2']"],
   ["e6-mechanismus-sn1", "generate_mechanism", { reaction_type: "sn1", substrates: ["CC(C)(C)Cl", "O"] }],
   ["e6-mechanismus-sn1-iod", "generate_mechanism", { reaction_type: "sn1", substrates: ["CC(C)(C)I", "[OH-]"] }],
   ["e6-mechanismus-fischer", "generate_mechanism", { reaction_type: "fischer_ester", substrates: ["CC(=O)O", "CCO"] }],
@@ -208,7 +208,7 @@ const DOKU = [
     { scale: 2, klicks: ["[data-view-axis] button:has-text('Chair')"], warte: "[data-view-axis] button[aria-pressed='true']:has-text('Chair')" }],
   // docs/images/panel-mechanism-step1.png
   ["doku-mechanismus-schritt1", "generate_mechanism", { reaction_type: "sn2", substrates: ["(R)-2-bromobutane", "cyanide"] }, 700,
-    { scale: 2, klicks: ["[role=tab]:has-text('Step by step')"], warte: "[role=tab][aria-selected='true']:has-text('Step by step')" }],
+    { scale: 2, klicks: ["[role=tab]:has-text('Views')"], warte: "[role=tab][aria-selected='true']:has-text('Views')" }],
   // docs/images/panel-reaction.png und panel-reaction-applied.png
   ["doku-reaktion", "generate_reaction", { reactants: ["hydrogen", "oxygen"], products: ["water"] }, 700,
     { scale: 2, warte: "[data-testid='balance-badge'][data-state='unbalanced']" }],

@@ -51,7 +51,7 @@ const B = [
   ["b-reaktion-bilanziert", "generate_reaction", { reactants: ["CC(=O)O", "CCO"], products: ["CC(=O)OCC", "O"], conditions: "H2SO4", name: "Fischer esterification" }],
   ["b-reaktion-unbilanziert", "generate_reaction", { reactants: ["[H][H]", "O=O"], products: ["O"], name: "Oxyhydrogen" }],
   ["b-mech-uebersicht", "generate_mechanism", SN2],
-  ["b-mech-schritt", "generate_mechanism", SN2, "[aria-label^='Open step 2']"],
+  ["b-mech-schritt", "generate_mechanism", SN2, "[aria-label^='Open view 2']"],
   ["b-scope", "generate_scope_table", { entries: [{ structure: "CC(=O)c1ccccc1" }, { structure: "CC(=O)c1ccc(Cl)cc1" }, { structure: "CC(=O)c1ccc(OC)cc1" }, { structure: "CC(=O)c1ccc(F)cc1" }] }],
 ];
 // Gegenproben zu host.e2e: U5 (Vollbild 1400×900, Figur > 600 px) und E5 Fischer (acht Schritte im Chat).

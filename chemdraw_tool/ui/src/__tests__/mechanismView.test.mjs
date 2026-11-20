@@ -61,10 +61,23 @@ test("Untertitel: lesbare Familie und Schrittzahl statt des Rohwerts, ohne den T
     return t;
   };
   assert.equal(sub({ name: "Test", reaction_type: "sn1" }), "SN1 · 3 steps");
-  assert.equal(sub({ name: "Nucleophilic Substitution (SN2) — X", reaction_type: "sn2" }), "3 steps");
+  assert.equal(sub({ name: "Nucleophilic Substitution (SN2) — X", reaction_type: "sn2" }), "One concerted step · 3 views");
   assert.equal(sub({ name: "Fischer esterification — A + B", reaction_type: "fischer_ester", reversible: true }), "3 steps · each step an equilibrium");
   assert.equal(sub({ name: "Test", reaction_type: "fischer_ester" }), "Fischer esterification · 3 steps");
   assert.equal(sub({}), "3 steps", "unbekannte Familie: nur die Schrittzahl");
+});
+
+test("SN2 nennt den Übergangszustand eine Ansicht desselben konzertierten Schritts", async () => {
+  const sn2 = steps.map((entry, index) => index === 1
+    ? { ...entry, label: "Transition state", is_transition_state: true }
+    : entry);
+  const { container, unmount } = show({ reaction_type: "sn2", steps: sn2 });
+  const { click } = await import("./harness.mjs");
+  await click(container.querySelector('[aria-label="Open view 2: Transition state"]'));
+  assert.equal(container.querySelector(".mech-counter")?.textContent, "View 2 / 3");
+  assert.equal(container.querySelector("[role=tab][aria-selected='true']")?.textContent, "Views");
+  assert.equal(container.querySelector('[aria-label="View 2"]')?.getAttribute("aria-current"), "step");
+  unmount();
 });
 
 test("Übersicht: die Bühne rollt nicht selbst (kein Rollbereich im Rollbereich)", () => {

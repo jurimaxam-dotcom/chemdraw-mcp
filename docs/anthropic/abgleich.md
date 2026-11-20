@@ -1,5 +1,12 @@
 # Abgleich: was Anthropic veröffentlicht — und wo wir stehen
 
+Stand 20.11.2026: `--check` 0 neu, 8 geändert, 0 weg. Die MCP-Diffs korrigieren Links, Schreibweisen
+und die SEP-Referenz zum bereits dokumentierten Ressourcenfehler. Claude Desktop präzisiert die MCP-Listen
+in verwalteten Installationen und behebt unter anderem das Entfernen von Servern bei laufender App.
+Die weiteren Änderungen betreffen Enterprise-Identitätsnachweise, den Sonnet-4.5-Abschalttermin samt Alias,
+verknüpfte API-Abrechnung und Wasserzeichen. Die SN2-Beschriftung ist lokaler Paneltext. Der gebündelte SDK-Stand
+und die Host-Anbindung bleiben für diesen Fix wie bisher.
+
 Stand 12.11.2026: `--check` 6 neu (ausgewertet in Abschnitt 6), 10 geändert — ausgewertet in Abschnitt 7;
 ext-apps 2.0.4 und 2.1.0 gelesen, kein Bump nötig (Abschnitt 1).
 Davor: Stand 06.11.2026 (Etappe E2, Mechanismus-Panel): `--check` 0 neu, 19 geändert, 0 weg — gelesen:

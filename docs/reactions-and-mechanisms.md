@@ -46,15 +46,14 @@ then there is no button to click.
 
 *"Show the SN2 mechanism of (R)-2-bromobutane with cyanide step by step"*:
 
-<img src="images/panel-mechanism-step1.png" alt="Mechanism panel in Step by step mode, step 1 of 3: cyanide attacks (R)-2-bromobutane from the back; Back, Next and step dots" width="420">
+<img src="images/panel-mechanism-step1.png" alt="Earlier mechanism panel showing cyanide attacking (R)-2-bromobutane from the back" width="420">
 
-The panel has two modes: **Overview** lists every step below each other,
-**Step by step** shows one at a time with **Back / Next** and step dots. The
-drawings use your substrates:
+The **Overview** shows the whole sequence. **Views** (SN2) or **Step by step**
+shows one drawing at a time with **Back / Next**. The drawings use your substrates:
 
-| Family | What it takes | Steps |
+| Family | What it takes | Drawings |
 |---|---|---|
-| SN2 | a methyl, primary or secondary alkyl halide and one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻); a stereocentre is inverted | 3: reactants with backside attack, transition state, products (here (S)) |
+| SN2 | a methyl, primary or secondary alkyl halide and one anionic nucleophile (OH⁻, CN⁻, I⁻, Br⁻, RO⁻, N₃⁻, RS⁻/HS⁻); a stereocentre is inverted | One concerted step shown as reactants with backside attack, the transition state and the products (here (S)) |
 | SN1 | a tertiary or benzylic halide with water, an alcohol or one of those anions | 6: reactants, leaving group departs, carbocation, nucleophilic attack, deprotonation of the oxonium ion, products |
 | Fischer esterification | one carboxylic acid and one primary or secondary alcohol | 8, joined by ⇌; a second solvent molecule carries the proton instead of a free H⁺ |
 

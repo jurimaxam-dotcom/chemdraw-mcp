@@ -209,10 +209,13 @@ export function reactionFollowUps(data) {
 export function mechanismFollowUps(data, { mode, step }) {
   const steps = data.steps || [];
   const name = data.name || "this reaction";
+  const concerted = data.reaction_type === "sn2";
+  const item = concerted ? "view" : "step";
   const first = mode === "step" && steps[step]
-    ? { id: "step", label: "Explain this step",
-        text: `Explain step ${step + 1} of ${steps.length} in the mechanism "${name}": ${steps[step].label}.` }
-    : { id: "overview", label: "Explain this mechanism", text: `Explain the mechanism "${name}" step by step.` };
+    ? { id: "step", label: `Explain this ${item}`,
+        text: `Explain ${item} ${step + 1} of ${steps.length} in the mechanism "${name}": ${steps[step].label}.` }
+    : { id: "overview", label: "Explain this mechanism",
+        text: concerted ? `Explain the concerted step in "${name}" using the views shown.` : `Explain the mechanism "${name}" step by step.` };
   return [
     first,
     { id: "quiz", label: "Quiz me on this mechanism",
