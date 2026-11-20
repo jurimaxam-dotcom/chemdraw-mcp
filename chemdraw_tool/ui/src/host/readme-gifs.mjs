@@ -27,6 +27,9 @@
 // Szene mit Molekül als `szene@molekül`; Ausgabe <molekül>-<szene>.mp4 (+ .beats.json, .kontakt.png) nach
 // CLIP_AUSGABE (sonst chemdraw-vermarktung/out/clips-60fps-0.11.0). Ein roter Clip bricht den Lauf nicht ab.
 //   npm run readme:gifs -- --feed anki@"penicillin G" 3d@geosmin study@serotonin
+// Kerntool-Schleifen (kern-molecule, kern-3d, kern-compare, kern-reaction, kern-mechanism): feste Argumente,
+// Bild 0 = Ruhelage = letztes Bild; die Naht wird an den Quellbildern gemessen und steht in .beats.json.
+//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed kern-molecule kern-3d kern-compare kern-reaction kern-mechanism
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -108,8 +111,8 @@ function filmuhr() {
 }
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
-  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe }) {
-  if (FEED) return feedSzene(browser, { name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf });
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos }) {
+  if (FEED) return feedSzene(browser, { nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES[theme];
@@ -230,7 +233,9 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 // `szene@name`: das Protein-Werkzeug liest `name`, alle anderen `name_or_smiles`
 const mitName = (tool, args, name) => (tool === "generate_protein_or_antibody" ? { ...args, name } : { ...args, name_or_smiles: name });
-async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf }) {
+// `clip`: fester Dateiname (Szenen ohne `name_or_smiles`); `inhalt`: Höhe des Panel-iframes, wenn das Panel
+// niedriger ist als der 4:5-Ausschnitt — es steht dann senkrecht mittig statt oben mit leerer Fläche darunter.
+async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos }) {
   if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES.light;
   const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
@@ -270,7 +275,9 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
   await page.addScriptTag({ path: hostJs });
   await page.evaluate((a) => window.__startHost(a), { html, toolInput: args, toolResult });
-  await page.locator("iframe").evaluate((el, [w, h, r]) => { Object.assign(el.style, { width: `${w}px`, height: `${h}px`, display: "block", marginLeft: `${r}px` }); }, [BREITE, H, rand]);
+  const oben = inhalt ? Math.round((H - inhalt) / 2) : 0;
+  if (oben < 0) throw new Error(`${name}: inhalt ${inhalt} höher als der Ausschnitt ${H}`);
+  await page.locator("iframe").evaluate((el, [w, h, r, o]) => { Object.assign(el.style, { width: `${w}px`, height: `${h}px`, display: "block", marginLeft: `${r}px`, marginTop: `${o}px` }); }, [BREITE, inhalt ?? H, rand, oben]);
   const frame = page.frames().find((f) => f !== page.mainFrame());
   await mitTick(frame.locator(panel).first().waitFor({ timeout: 60000 }));
   await frame.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
@@ -281,7 +288,14 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     document.body.appendChild(c);
   }, farbe.zeiger);
   await mitTick(page.waitForTimeout(500)); // Schriften und Theme setzen sich
-  if (vorlauf) await mitTick(vorlauf({ frame, page }));
+  if (vorlauf) {
+    await mitTick(vorlauf({ frame, page }));
+    // Übergänge, die der Vorlauf angestoßen hat, auslaufen lassen: sonst hält `schritt` sie beim ersten Bild an
+    // und spielt sie von vorn — Bild 0 wäre nicht die Ruhelage (kern-mechanism: Naht 0,096 statt 0)
+    const auslaufen = () => { for (const a of document.getAnimations()) { try { a.finish(); } catch { /* endlose Animation */ } } };
+    await frame.evaluate(auslaufen);
+    await page.evaluate(auslaufen);
+  }
 
   const dir = mkdtempSync(join(tmpdir(), `feed-${name}-`));
   let nr = 0, sollMs = 0;
@@ -308,7 +322,14 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   // Clip-Pixel = CSS-Pixel × Ausgabebreite / Seitenbreite (der 2×-Master: × deviceScaleFactor)
   const k = MODUS.breite / W, px = (v) => Math.round(v * k);
   const rechtecke = {};
-  const rechteck = (schlüssel, b) => { if (b) rechtecke[schlüssel] = { x: px(b.x), y: px(b.y), width: px(b.width), height: px(b.height) }; };
+  // Rechteck aus einer boundingBox oder einem Locator (fehlt das Element, ist die Szene rot — die Montage schneidet danach)
+  const rechteck = async (schlüssel, b) => {
+    if (b && typeof b.boundingBox === "function") {
+      if (await b.count() < 1) throw new Error(`ROT ${name}: Rechteck ${schlüssel} ohne Element`);
+      b = await b.first().boundingBox();
+    }
+    if (b) rechtecke[schlüssel] = { x: px(b.x), y: px(b.y), width: px(b.width), height: px(b.height) };
+  };
   const beats = [{ art: "panel", t: 0, zeiger: pos.map(px) }], bewegungen = [];
   const marke = (art, ziel) => beats.push({ art, t: Number((nr / MODUS.fps).toFixed(3)), ...(ziel ? { ziel } : {}), zeiger: pos.map(px) });
   const zeiger = (x, y) => { pos = [x, y]; return page.evaluate(([x, y]) => { const s = document.getElementById("cursor").style; s.left = `${x - 9}px`; s.top = `${y - 9}px`; }, [x, y]); };
@@ -373,7 +394,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   };
   const imBild = async (locator, was) => {
     const b = await locator.boundingBox();
-    if (!b || b.y < 0 || b.y + b.height > H) throw new Error(`ROT ${name}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${H})`);
+    if (!b || b.y < oben || b.y + b.height > oben + (inhalt ?? H)) throw new Error(`ROT ${name}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt ${oben}…${oben + (inhalt ?? H)})`);
   };
   try {
     await ablauf({ feed: true, drehen, zeigerStart, rechteck, frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu, ziehenFeed, scrollen, bild, mitTick });
@@ -381,7 +402,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   } finally {
     await context.close();
   }
-  return { szene: name, theme: "light", ...feedVideo(`${slug(molecule ?? args.name_or_smiles ?? args.name)}-${name}`, dir, nr, beats, bewegungen, { tool, args }, rechtecke) };
+  return { szene: name, theme: "light", ...feedVideo(clip ?? `${slug(molecule ?? args.name_or_smiles ?? args.name ?? tool)}-${name}`, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos) };
 }
 
 // Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“) — dieselbe Zählung wie scripts/bilder-je-sekunde.sh
@@ -391,8 +412,25 @@ function behalteneBilder(ziel) {
   return [...r.stderr.matchAll(/keep pts:\S+ pts_time:([\d.]+)/g)].map((m) => Math.round(Number(m[1]) * MODUS.fps));
 }
 
-function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}) {
+// Helligkeitsmittel (YAVG, 0–255) des Differenzbilds — je Bildpaar der Folge und für die Naht letztes Bild → Bild 0.
+// Gemessen an den Quellbildern, nicht am kodierten Clip.
+const yavg = (args) => [...spawnSync(FFMPEG, ["-hide_banner", "-nostats", "-loglevel", "error", ...args, "-f", "null", "-"], { encoding: "utf8", maxBuffer: 1 << 28 })
+  .stdout.matchAll(/YAVG=([\d.]+)/g)].map((m) => Number(m[1]));
+const DRUCK = "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-";
+function nahtMessen(dir, bilder, bewegungen) {
+  const bildpfad = (n) => join(dir, `f${String(n).padStart(5, "0")}.jpg`);
+  // schritte[i] = Unterschied Bild i → i+1
+  const schritte = yavg(["-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"), "-vf", `tblend=all_mode=difference,${DRUCK}`]);
+  const [naht] = yavg(["-i", bildpfad(bilder - 1), "-i", bildpfad(0), "-filter_complex", `blend=all_mode=difference,${DRUCK}`]);
+  const bewegt = schritte.filter((_, i) => bewegungen.some((s) => i >= s.von && i + 1 < s.bis)).sort((a, b) => a - b);
+  if (naht === undefined || !bewegt.length) throw new Error(`Nahtmessung ohne Werte (naht ${naht}, ${bewegt.length} Schritte)`);
+  const r = (v) => Number(v.toFixed(4));
+  return { naht: r(naht), schrittMedian: r(bewegt[bewegt.length >> 1]), schrittMax: r(bewegt.at(-1)), einheit: "YAVG des Differenzbilds, 0–255, Quellbilder" };
+}
+
+function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}, nahtlos = false) {
   const ziel = join(MODUS.ausgabe, `${name}.mp4`);
+  const naht = nahtMessen(dir, bilder, bewegungen);
   // 2×-Master in nativer Screenshot-Größe für Ausschnitte in der Montage (Vermarktung 18.11.: aus 1080 gezoomt wird es weich)
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
     "-vf", "scale=out_range=tv,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "12", "-pix_fmt", "yuv420p",
@@ -424,11 +462,14 @@ function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {})
   writeFileSync(ziel.replace(/\.mp4$/, ".beats.json"), JSON.stringify({ clip: `${name}.mp4`, tool: quelle.tool, args: quelle.args,
     video: { breite: werte.breite, hoehe: werte.hoehe, fps: MODUS.fps, sekunden: werte.sekunden, bilder },
     master: { datei: `${name}.master.mp4`, ...master, faktor: Number((master.breite / werte.breite).toFixed(4)) }, // Master-Pixel = Clip-Pixel × faktor
-    rechtecke, beats, bewegungen: strecken, sekunden }, null, 2) + "\n");
+    naht, rechtecke, beats, bewegungen: strecken, sekunden }, null, 2) + "\n");
   console.log(`  ${name}: verschiedene Bilder je Sekunde ${sekunden.map((x) => `${x.s}:${x.verschieden}${x.bewegt ? "*" : ""}`).join(" ")} (* = ganz in Bewegung)`);
   console.log(`  ${name}: Bewegungsstrecken ${strecken.map((x) => `${x.art} ${x.verschieden}/${x.bilder}`).join(", ")}`);
+  console.log(`  ${name}: Naht letztes Bild → Bild 0 ${naht.naht}, Bewegungsschritt Median ${naht.schrittMedian} / Max ${naht.schrittMax}`);
+  // Schleife: die Naht darf nicht größer sein als ein gewöhnlicher Bewegungsschritt
+  if (nahtlos && naht.naht > naht.schrittMedian) fehler.push(`Naht ${naht.naht} > Bewegungsschritt (Median ${naht.schrittMedian})`);
   if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
-  return { ...werte, kontakt };
+  return { ...werte, naht: naht.naht, schritt: naht.schrittMedian, kontakt };
 }
 
 // concat-Demuxer: jedes Bild steht bis zum nächsten Zeitstempel, das letzte bis zum Szenenende
@@ -619,6 +660,12 @@ const README_010 = { themes: ["light"], fps: 15, nurGif: true };
 // <picture> nach dem Thema des Lesers. Ausgabe assets/<datei>-<theme>.gif, die helle zusätzlich als
 // <datei>.gif. Nur auf Ansage; für Bluesky dieselben Szenen mit --theme light und GIF_AUSGABE.
 const GALERIE = { themes: ["light", "dark"], fps: 12, nurGif: true, aufAnsage: true, sekunden: [5, 12], breite: 600 };
+
+// Kerntool-Schleifen: nur --feed, feste Argumente (kein `szene@name`), Naht letztes Bild → Bild 0 wird geprüft
+const KERN = { themes: ["light"], nurGif: true, aufAnsage: true, festeArgs: true, nahtlos: true };
+const nurFeed = (werkzeug, name) => { if (!werkzeug.feed) throw new Error(`Szene ${name} gibt es nur mit --feed`); };
+// Zeiger zurück an den Startpunkt rechts außerhalb des Bilds: letztes Bild = erstes
+const raus = async ({ fahreZu, halten, zeigerStart }) => { await fahreZu(...zeigerStart); await halten(150); };
 
 const SZENEN = {
   // Hero links, Thalidomid: 2D → All H → 2D → Show variants → (S) mit Keil → Datenblatt
@@ -871,11 +918,272 @@ const SZENEN = {
       await halten(1000);
     },
   },
+  // ── Kerntool-Schleifen (20.11.2026, Auftrag der Vermarktung): je Werkzeug ein Feed-Clip, 8–10 s, Bild 0 =
+  // Ruhelage, das letzte Bild führt ohne Sprung auf Bild 0 zurück (Naht wird gemessen, `nahtlos`). Feste
+  // Argumente und fester Clipname; nur mit --feed. Rechtecke je Clip: panel, buehne, reiter, legende (+ Extras).
+  // generate_molecule, Atorvastatin: zwei Gruppen-Chips (Atome leuchten), Data und zurück auf Structure
+  "kern-molecule": {
+    ...KERN, clip: "atorvastatin-molecule", feedHoehe: 770,
+    tool: "generate_molecule", args: { name_or_smiles: "atorvastatin", label: "Atorvastatin" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-molecule");
+      const { frame, halten, zeigeAuf, klick, imBild, rechteck } = werkzeug;
+      const gruppen = frame.locator("button.functional-group");
+      await gruppen.first().waitFor();
+      const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await imBild(frame.locator(".group-section"), "Gruppen");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      await rechteck("panel", frame.locator(".molecule-panel"));
+      await rechteck("buehne", frame.locator(".structure-canvas"));
+      await rechteck("reiter", frame.locator(".panel-head [role=tablist]"));
+      await rechteck("legende", frame.locator(".group-section"));
+      await halten(700);
+      // Erst über die Kennwerte, dann senkrecht auf den ersten Chip: der direkte Weg von rechts streift fremde Chips
+      const [gx, gy] = await werkzeug.mitte(gruppen.nth(0));
+      await werkzeug.fahreZu(gx + 20, gy - 70);
+      for (const i of [0, 1]) {
+        await zeigeAuf(gruppen.nth(i), (await gruppen.nth(i).innerText()).trim().split("\n")[0]);
+        await halten(1150);
+      }
+      await klick(reiter("Data"), () => frame.getByText("IUPAC name", { exact: true }).first().waitFor({ timeout: 30000 }), "Data");
+      await rechteck("datenblatt", frame.locator('[data-view="data"]'));
+      await halten(1700);
+      await klick(reiter("Structure"), () => frame.locator('[data-view="structure"] .structure-canvas svg').first().waitFor({ timeout: 10000 }), "Structure");
+      await halten(350);
+      await raus(werkzeug);
+    },
+  },
+  // generate_3d, (−)-Menthol: volle Drehung um die Hochachse ab Bild 0 (ein Drehzug über 2π/0,01 px, ohne
+  // sichtbaren Zeiger — wie die Proteinserie), dann mit Zeiger kippen und im selben Zug zurück. Einen
+  // Stilwechsel hat das Panel nicht (nur „Reset view“; der spränge 40° zurück und gleitet dann — keine Schleife).
+  "kern-3d": {
+    ...KERN, clip: "menthol-3d", feedHoehe: 840, panel: ".m3d-panel",
+    tool: "generate_3d", args: { name_or_smiles: "(-)-menthol", label: "(−)-Menthol" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-3d");
+      const { frame, page, halten, mitte, imBild, rechteck, marke, drehen, fahreZu, zeiger, bild } = werkzeug;
+      const modell = frame.locator(".m3d-stage svg").first();
+      await modell.waitFor();
+      // Einblend-Drehung (1,2 s, rAF) läuft auf der gesteuerten Uhr: vorspulen, bis das Modell steht
+      const lage = () => modell.evaluate((el) => el.innerHTML.length + ":" + el.querySelector("circle:last-of-type, line")?.outerHTML + el.innerHTML.slice(-400));
+      for (let i = 0, vorher = null; ; i++) {
+        await page.clock.runFor(100);
+        const jetzt = await lage();
+        if (i >= 14 && jetzt === vorher) break;
+        if (i > 80) throw new Error("ROT kern-3d: Einblend-Drehung endet nicht");
+        vorher = jetzt;
+      }
+      await imBild(frame.locator(".panel-title"), "Titel");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await imBild(frame.locator(".panel-footer"), "Fußzeile");
+      await rechteck("panel", frame.locator(".m3d-panel"));
+      await rechteck("buehne", modell);
+      await rechteck("reiter", frame.locator(".stage-bar"));
+      await rechteck("legende", frame.locator(".key-facts"));
+      const ruhe = await modell.evaluate((el) => el.innerHTML);
+      const [cx, cy] = await mitte(modell);
+      // 2π bei 0,01 rad je Pixel = 628,32 px. Start links in der Fläche; die Maus bleibt per Pointer-Capture gefangen.
+      const WEG = (2 * Math.PI) / 0.01, x0 = cx - 250, DREH_MS = 4000;
+      await page.mouse.move(x0, cy);
+      await page.mouse.down();
+      marke("drehung", "360°");
+      await drehen(DREH_MS, (anteil) => page.mouse.move(x0 + WEG * anteil, cy));
+      await page.mouse.move(x0 + WEG, cy);
+      await page.mouse.up();
+      await page.mouse.move(werkzeug.zeigerStart[0], werkzeug.zeigerStart[1]);
+      // Kippen: ein Zug nach unten und im selben Zug zurück (dy = 0 am Ende → exakt die Lage davor)
+      const start = [cx + 60, cy - 70], HUB = 120, KIPP_MS = 2300;
+      await halten(200);
+      await fahreZu(...start);
+      await halten(250);
+      marke("klick", "drag tilt");
+      await page.mouse.down();
+      await drehen(KIPP_MS, async (anteil) => {
+        const a = (anteil * 60 * KIPP_MS / 1000 + 1) / (60 * KIPP_MS / 1000); // letztes Bild steht wieder bei dy = 0
+        const y = start[1] + HUB * Math.sin(Math.PI * a) ** 2;
+        await page.mouse.move(start[0], y);
+        await zeiger(start[0], y);
+      });
+      await page.mouse.move(...start);
+      await page.mouse.up();
+      await halten(250);
+      await raus(werkzeug);
+      await bild();
+      // 2π-Lage = Ruhelage? Koordinaten auf 0,1 px vergleichen (Gleitkomma nach einer vollen Drehung)
+      const runden = (h) => h.replace(/-?\d+\.\d+/g, (z) => Number(z).toFixed(1));
+      if (runden(await modell.evaluate((el) => el.innerHTML)) !== runden(ruhe)) throw new Error("ROT kern-3d: Endlage ≠ Ruhelage (Drehung nicht genau 360°)");
+    },
+  },
+  // compare_molecules, Morphin gegen Codein: das Panel ist ein stehendes Bild (kein Bedienelement an der Figur).
+  // Der Zeiger zeigt erst auf das phenolische OH von Morphin, dann auf die markierte Methylgruppe von Codein.
+  "kern-compare": {
+    ...KERN, clip: "morphine-codeine-compare", feedHoehe: 750, inhalt: 440, panel: ".plot-panel",
+    tool: "compare_molecules", args: { structures: ["morphine", "codeine"], labels: ["Morphine", "Codeine"] },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-compare");
+      const { frame, page, halten, fahreZu, imBild, rechteck, marke } = werkzeug;
+      const figur = frame.locator(".plot-svg svg").first();
+      await figur.waitFor();
+      await imBild(frame.locator(".plot-panel"), "Panel");
+      // Markierung (Codein, O–CH3) und das O, das in Morphin an derselben Stelle ein H trägt: in der Figur
+      // das rote Atomlabel der linken Hälfte, das am weitesten rechts liegt (phenolisches OH)
+      const orte = await figur.evaluate((svg) => {
+        const kasten = (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; };
+        const huelle = (els) => { const k = els.map(kasten); const x = Math.min(...k.map((b) => b.x)), y = Math.min(...k.map((b) => b.y));
+          return { x, y, width: Math.max(...k.map((b) => b.x + b.width)) - x, height: Math.max(...k.map((b) => b.y + b.height)) - y }; };
+        const rot = (el) => /#ff7f7f/i.test(el.getAttribute("style") || "") || /#ff7f7f/i.test(el.getAttribute("fill") || "") || /#ff7f7f/i.test(el.getAttribute("stroke") || "");
+        const marken = [...svg.querySelectorAll("path, ellipse, circle, rect")].filter(rot);
+        const mitteX = kasten(svg).x + kasten(svg).width / 2;
+        const labels = {};
+        for (const p of svg.querySelectorAll('path[class^="atom-"]')) {
+          if (!/#ff0000/i.test(p.getAttribute("fill") || "")) continue;
+          const b = kasten(p);
+          if (b.x + b.width / 2 < mitteX) (labels[p.getAttribute("class")] ||= []).push(p);
+        }
+        const o = Object.values(labels).map(huelle).sort((a, b) => b.x - a.x)[0];
+        return { marke: marken.length ? huelle(marken) : null, markenZahl: marken.length, morphinOH: o ?? null, figur: kasten(svg) };
+      });
+      if (!orte.marke || !orte.morphinOH) throw new Error(`ROT kern-compare: Markierung/OH nicht gefunden ${JSON.stringify(orte)}`);
+      const versatz = await frame.frameElement().then((el) => el.boundingBox()); // Figur-Koordinaten sind iframe-Koordinaten
+      const aufSeite = (b) => ({ x: b.x + versatz.x, y: b.y + versatz.y, width: b.width, height: b.height });
+      const m = aufSeite(orte.morphinOH), c = aufSeite(orte.marke), f = aufSeite(orte.figur);
+      await rechteck("panel", frame.locator(".plot-panel"));
+      await rechteck("buehne", figur);
+      await rechteck("reiter", frame.locator(".panel-head"));
+      await rechteck("legende", frame.locator(".panel-subtitle"));
+      await rechteck("unterschied", c);
+      await rechteck("morphin_oh", m);
+      await rechteck("links", { x: f.x, y: f.y, width: f.width / 2, height: f.height });
+      await rechteck("rechts", { x: f.x + f.width / 2, y: f.y, width: f.width / 2, height: f.height });
+      await halten(900);
+      // Zeiger knapp unter das Ziel, damit er es nicht verdeckt
+      await fahreZu(m.x + m.width / 2 + 4, m.y + m.height + 14);
+      marke("hover", "morphine: phenol OH");
+      await halten(2400);
+      await fahreZu(c.x + c.width / 2, c.y + c.height + 14);
+      marke("hover", "codeine: O–CH3 (highlighted)");
+      await halten(2900);
+      await raus(werkzeug);
+      await halten(350);
+    },
+  },
+  // generate_reaction, Fischer-Veresterung Benzoesäure + Methanol: als Gleichgewicht gezeichnet und schon
+  // ausgeglichen (kein „Apply coefficients“). Zeiger auf „balanced“, dann Export PNG → Rückmeldung in der
+  // Fußzeile, die nach 4 s von selbst wieder verschwindet — Ende = Anfang.
+  "kern-reaction": {
+    ...KERN, clip: "esterification-reaction", feedHoehe: 750, inhalt: 330, panel: ".reaction-panel",
+    tool: "generate_reaction", args: { reactants: ["benzoic acid", "methanol"], products: ["methyl benzoate", "water"],
+      conditions: "H⁺", arrow: "equilibrium", name: "Fischer esterification" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-reaction");
+      const { frame, halten, fahreZu, klick, imBild, rechteck, marke } = werkzeug;
+      const badge = frame.locator('[data-testid="balance-badge"]');
+      await badge.waitFor();
+      if (await badge.getAttribute("data-state") !== "balanced") throw new Error("ROT kern-reaction: Gleichung nicht ausgeglichen");
+      const fuss = frame.locator(".panel-footer"), exportKnopf = frame.locator("button.export-png");
+      await imBild(frame.locator(".reaction-panel"), "Panel");
+      await rechteck("panel", frame.locator(".reaction-panel"));
+      await rechteck("buehne", frame.locator(".reaction-panel .stage"));
+      await rechteck("reiter", fuss);
+      await rechteck("legende", frame.locator(".balance-row"));
+      const ruhe = (await fuss.innerText()).trim();
+      await halten(900);
+      const b = await badge.boundingBox();
+      await fahreZu(b.x + b.width / 2, b.y + b.height + 12);
+      marke("hover", "balanced");
+      await halten(1300);
+      const rückmeldung = frame.locator(".export-feedback");
+      await klick(exportKnopf, () => rückmeldung.waitFor({ timeout: 30000 }), "Export PNG");
+      const text = (await rückmeldung.innerText()).trim();
+      if (/failed/i.test(text)) throw new Error(`ROT kern-reaction: ${text}`);
+      marke("schluss", text);
+      // Die Rückmeldung steht 4 s (Timer auf der gesteuerten Uhr); Zeiger vom Knopf weg, dann hinaus
+      const k = await exportKnopf.boundingBox();
+      await fahreZu(k.x - 60, k.y - 40);
+      await halten(1500);
+      await raus(werkzeug);
+      for (let i = 0; (await rückmeldung.count()) > 0; i++) {
+        if (i > 400) throw new Error("ROT kern-reaction: Rückmeldung verschwindet nicht");
+        await werkzeug.bild();
+      }
+      await halten(400);
+      if ((await fuss.innerText()).trim() !== ruhe) throw new Error("ROT kern-reaction: Fußzeile am Ende anders als am Anfang");
+    },
+  },
+  // generate_reaction, Zugabe: Verbrennung von Propan, so gezeichnet nicht ausgeglichen → „Apply coefficients“
+  // → „Undo“ (Ende = Anfang). Zeigt, was die Veresterung nicht zeigen kann.
+  // NICHT AUSLIEFERN, solange der Panel-Fehler offen ist (20.11.2026, plans/mcp-server.md): nach „Apply“
+  // läuft die Gleichung bei 600 px rechts aus der Bühne (H2O abgeschnitten, Pfeil über „oxygen“).
+  "kern-reaction-balance": {
+    ...KERN, clip: "propane-combustion-reaction", feedHoehe: 750, inhalt: 330, panel: ".reaction-panel",
+    tool: "generate_reaction", args: { reactants: ["propane", "oxygen"], products: ["carbon dioxide", "water"], name: "Combustion of propane" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-reaction-balance");
+      const { frame, halten, fahreZu, klick, imBild, rechteck, marke } = werkzeug;
+      const badge = frame.locator('[data-testid="balance-badge"]');
+      await badge.waitFor();
+      if (await badge.getAttribute("data-state") !== "unbalanced") throw new Error("ROT kern-reaction-balance: Badge nicht „not balanced“");
+      await imBild(frame.locator(".reaction-panel"), "Panel");
+      await rechteck("panel", frame.locator(".reaction-panel"));
+      await rechteck("buehne", frame.locator(".reaction-panel .stage"));
+      await rechteck("reiter", frame.locator(".panel-footer"));
+      await rechteck("legende", frame.locator(".balance-row"));
+      await halten(900);
+      const b = await frame.locator('[data-testid="balance-suggestion"]').boundingBox();
+      await fahreZu(b.x + b.width / 2, b.y + b.height + 12);
+      marke("hover", "suggested coefficients");
+      await halten(1300);
+      await klick(frame.getByRole("button", { name: "Apply coefficients" }),
+        () => frame.locator('[data-testid="balance-badge"][data-state="balanced"]').waitFor({ timeout: 30000 }), "Apply coefficients");
+      await imBild(frame.locator(".reaction-panel"), "Panel nach Apply");
+      await halten(2300);
+      await klick(frame.getByRole("button", { name: "Undo", exact: true }),
+        () => frame.locator('[data-testid="balance-badge"][data-state="unbalanced"]').waitFor({ timeout: 10000 }), "Undo");
+      await halten(500);
+      await raus(werkzeug);
+      await halten(300);
+    },
+  },
+  // generate_mechanism, SN2 Brommethan + Hydroxid: Ruhelage = Schritt 1 (unaufgenommen eingestellt),
+  // mit Next durch alle Schritte, über den ersten Punkt der Schrittanzeige zurück zu Schritt 1.
+  "kern-mechanism": {
+    ...KERN, clip: "sn2-mechanism", feedHoehe: 750, inhalt: 610, panel: ".mechanism-panel",
+    tool: "generate_mechanism", args: { reaction_type: "sn2", substrates: ["bromomethane", "hydroxide"] },
+    async vorlauf({ frame }) {
+      await frame.getByRole("tab", { name: "Step by step", exact: true }).click();
+      await frame.getByText(/^Step 1 \/ \d+$/).waitFor({ timeout: 5000 });
+      await frame.evaluate(() => document.activeElement?.blur()); // Fokusrahmen des Reiters gehört nicht zur Ruhelage
+    },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-mechanism");
+      const { frame, halten, klick, imBild, rechteck } = werkzeug;
+      const gesamt = Number((await frame.getByText(/^Step 1 \/ \d+$/).innerText()).split("/")[1]);
+      if (!(gesamt >= 2)) throw new Error(`ROT kern-mechanism: ${gesamt} Schritte`);
+      const schritt = (i) => () => frame.getByText(`Step ${i} / ${gesamt}`, { exact: true }).waitFor({ timeout: 5000 });
+      await imBild(frame.locator(".mechanism-panel"), "Panel (Schritt 1)");
+      await rechteck("panel", frame.locator(".mechanism-panel"));
+      await rechteck("buehne", frame.locator(".mech-stage"));
+      await rechteck("reiter", frame.locator(".mech-nav"));
+      await rechteck("legende", frame.locator(".mech-nav-center"));
+      await halten(1000);
+      for (let i = 2; i <= gesamt; i++) {
+        await klick(frame.locator("button.mech-next"), schritt(i), `Next → step ${i}`);
+        await imBild(frame.locator(".mechanism-panel"), `Panel (Schritt ${i})`);
+        await halten(i === gesamt ? 2000 : 1700);
+      }
+      await klick(frame.getByRole("button", { name: "Step 1", exact: true }), schritt(1), "Step 1");
+      await halten(600);
+      await raus(werkzeug);
+      await frame.evaluate(() => document.activeElement?.blur());
+      await halten(300);
+    },
+  },
   // Feed-Protein (18.11.2026, für Autoplay in Schleife): eine volle Drehung um die Hochachse ab dem
   // ersten Bild, dann Färbung wechseln (mehrere Ketten: Chain, sonst Rainbow N→C) und zurück, Zeiger
   // zurück an den Startpunkt — letztes Bild ≈ erstes. Name per `protein@<name>`.
   protein: {
-    ...BLUESKY, datei: "protein", hoehe: 840, feedHoehe: 840, eigenerBrowser: true,
+    ...BLUESKY, datei: "protein", hoehe: 840, feedHoehe: 840, eigenerBrowser: true, nahtlos: true,
     tool: "generate_protein_or_antibody", args: { name: "lysozyme" }, panel: "[data-protein-viewer]",
     async vorlauf({ frame, page }) {
       // Antikörper starten teils im Schema: unaufgenommen auf Structure, dann wie immer auf die Engine warten
@@ -944,10 +1252,10 @@ const SZENEN = {
       await frame.evaluate(() => { const c = window.__cartoonGriffe[0].canvas3d; c.camera.setState(window.__ruhe, 0); c.requestDraw(); });
       const fläche = await leinwand.boundingBox();
       if (!Number.isFinite(hülle.x0)) throw new Error("ROT protein: kein Protein auf der Fläche gefunden");
-      werkzeug.rechteck("buehne", { x: fläche.x + hülle.x0, y: fläche.y + hülle.y0, width: hülle.x1 - hülle.x0 + 1, height: hülle.y1 - hülle.y0 + 1 });
-      werkzeug.rechteck("panel", await frame.locator(".protein-panel").boundingBox());
-      werkzeug.rechteck("reiter", await frame.locator(".protein-bar").boundingBox());
-      werkzeug.rechteck("legende", await frame.locator(".protein-legend").boundingBox());
+      await werkzeug.rechteck("buehne", { x: fläche.x + hülle.x0, y: fläche.y + hülle.y0, width: hülle.x1 - hülle.x0 + 1, height: hülle.y1 - hülle.y0 + 1 });
+      await werkzeug.rechteck("panel", await frame.locator(".protein-panel").boundingBox());
+      await werkzeug.rechteck("reiter", await frame.locator(".protein-bar").boundingBox());
+      await werkzeug.rechteck("legende", await frame.locator(".protein-legend").boundingBox());
       const reiter = (text) => frame.getByRole("tab", { name: text, exact: true });
       const gewählt = (text) => () => frame.locator('[role="tab"][aria-selected="true"]', { hasText: text }).first().waitFor();
       const start = (await frame.locator('[role="tablist"][aria-label="Colour by"] [role="tab"][aria-selected="true"]').innerText()).trim();

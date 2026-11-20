@@ -17,6 +17,30 @@
   damit die noreply-Adresse.
 - **Nächster Schritt:** keiner aus diesem Thema; weiter mit dem Block darunter.
 
+## Kerntool-Feed-Clips (Tisch-Faden 20261120-054403, Auftrag der Vermarktung, 20.11.2026)
+
+- **Gebaut in `readme-gifs.mjs`:** fünf Schleifen-Szenen `kern-molecule` (Atorvastatin), `kern-3d` ((−)-Menthol),
+  `kern-compare` (Morphin/Codein), `kern-reaction` (Fischer-Veresterung Benzoesäure + Methanol), `kern-mechanism`
+  (SN2 Brommethan + Hydroxid) — feste Argumente, fester Clipname (`clip`), niedrige Panels senkrecht mittig (`inhalt`).
+  Neu für alle Feed-Clips: Nahtmessung letztes Bild → Bild 0 an den Quellbildern (`naht` in `.beats.json`; mit
+  `nahtlos` ist eine Naht über dem mittleren Bewegungsschritt rot), `rechteck` nimmt Locator und ist rot ohne Element,
+  Übergänge aus dem Vorlauf laufen vor Bild 0 aus (sonst spielt die gesteuerte Uhr sie im ersten Bild von vorn).
+- **Erledigt:** fünf Clips samt Master, Beats und Kontaktbogen in `chemdraw-vermarktung/out/clips-60fps-0.11.0-kerntools/`,
+  je 60/1, 8,07–9,6 s, Naht 0 (3D: 0,0005 bei Bewegungsschritt 1,0); die 360°-Drehung 240/240 verschiedene Bilder.
+- **Abweichungen vom Auftrag:** `generate_3d` hat keinen Stilwechsel (nur „Reset view“) — zweite Interaktion ist ein
+  Kippzug hin und zurück. `compare_molecules` ist ein stehendes Bild — der Zeiger zeigt auf die zwei Stellen. Die
+  Veresterung ist ausgeglichen — statt „Apply coefficients“ zeigt der Clip „balanced“ und Export PNG. „menthol“ löst
+  ohne Stereochemie auf (`C1(CC(C(CC1)C(C)C)O)C`), deshalb `(-)-menthol`.
+- [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
+  Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
+  der Pfeil liegt über „oxygen“. Vermutung: `ScaledRow` in `ui/src/ReactionView.jsx` misst nach dem Übernehmen nicht
+  neu. Roter Test zuerst (`test:host`, Breite der Gleichung ≤ Bühne nach Apply); danach die Szene ausliefern.
+- [ ] **Strukturvergleich richtet die Moleküle nicht am gemeinsamen Gerüst aus** (Befund 20.11.2026): Morphin und
+  Codein stehen in verschiedener Lage nebeneinander, markiert ist nur die Methylgruppe von Codein; Morphin trägt keine
+  Markierung. Prüfen, ob `compare_molecules` die Koordinaten am MCS ausrichten kann (`GenerateDepictionMatching2DStructure`).
+- [ ] **„menthol“ zeichnet ein 3D-Modell ohne festgelegte Stereochemie** (Befund 20.11.2026): `generate_3d("menthol")`
+  bettet ein beliebiges Stereoisomer ein und sagt es nicht. Klären: Hinweis im Panel wie `stereoWarnings` im Molekül-Panel.
+
 ## Protein-Feed-Clips (Tisch-Faden 20261118-141424, Auftrag der Vermarktung, 18.11.2026)
 
 - **Gebaut in `readme-gifs.mjs`:** `szene@name` setzt beim Protein-Werkzeug `args.name` (vorher nur `name_or_smiles`, also
