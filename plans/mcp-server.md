@@ -19,11 +19,36 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
 - [ ] 5 — Desktop-Probe `scripts/desktop-probe/run.sh A` (≈ 10 min) und `B` (≈ 6 min), zweimal hintereinander ohne
   Änderung am Testcode; nimmt Maus und Tastatur, Dauer vorher ansagen. `checkpoints.json` auf „Step by step“ → „Views“
   beim SN2-Fall prüfen.
-- [ ] 6 — Prüfung vor dem Gang nach außen: `codex exec review --commit <sha> < /dev/null`; jeden Befund am Code prüfen.
+- [x] 6 — `codex exec review --base review-basis-0.11.0` (lokaler Hilfszweig auf `v0.11.0`, 39 Commits, nach dem Release
+  löschen): 7 Befunde, je am Code geprüft. **Kein Release-Hindernis.** Einziger Befund im ausgelieferten Bundle,
+  `mcpb/server/run.sh` (P1, Sperre `mkdir -p` + `set -C` verträgt sich nicht mit dem `mkdir`-Sperren von ≤ 0.11.0):
+  abgelehnt. Ein installiertes altes Bundle kommt nie in den Sperrpfad (`installiert` → `starte`), nur zwei gleichzeitig
+  *kalt* startende Bundles verschiedener Version überschneiden sich. Das Aufräumen löscht dann höchstens eine noch
+  ungestempelte Umgebung, und der nächste Start installiert neu. Die Sperre selbst ist in `tests/test_mcpb_start.py`
+  geprüft (parallele Kaltstarts, nicht-exklusives `mkdir`, tote/lebende PID). Die übrigen sechs betreffen Werkzeuge im
+  Repo und stehen unter „Folge aus dem Codex-Review 0.11.1“.
+- **Probe-Befund (◆, kein Hindernis):** „3D-Modell dreht sich beim Ziehen“ meldet beim XCUI-Zug Bildabstand 0.00 wie
+  seit 16.11.; der 3D-Viewer ist seit `v0.11.0` unverändert.
 - [ ] 7 — `gh release create v0.11.1`; Job `publish` wartet auf die Umgebung `pypi` — Freigabe ist mit Jays Auftrag
   erteilt; danach zwei `.mcpb`-Assets, PyPI-Version und Registry `isLatest` prüfen (`./scripts/publish-registry.sh`).
 - [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
 - Danach: ein Durchgang `plan-pflegen` über diese Datei und die Nebendateien in `plans/`.
+
+## Folge aus dem Codex-Review 0.11.1 (21.11.2026)
+
+Sechs Befunde, am Code bestätigt, nicht im Wheel oder `.mcpb`. In diesem Release hat keine der Lücken etwas
+durchgelassen (geprüft über `v0.11.0..HEAD`: keine Umlaut-Pfade, keine Typwechsel, keine `#`-Zeilen in Nachrichten;
+die einzigen dazwischen gelöschten Dateien lagen schon in `v0.11.0`).
+
+- [ ] `scripts/oeffentlich_pruefen.py:238` — der Push prüft Inhalt und Bildfreigabe nur am Diff der zwei Endstände;
+  eine Datei, die im Bereich hinzukommt und wieder geht, wird veröffentlicht, ohne geprüft zu sein. Je neuem Commit prüfen.
+- [ ] `scripts/oeffentlich_pruefen.py:105` — Pfade mit Umlaut kommen als `+++ "b/…"` (core.quotepath) und werden übersprungen.
+- [ ] `scripts/oeffentlich_pruefen.py:172/177` — Typwechsel (`T`, Symlink → Datei) fehlen im Filter `AMR`.
+- [ ] `scripts/oeffentlich_pruefen.py:151` — `#`-Zeilen werden auch in gespeicherten Nachrichten (Push) übersprungen.
+- [ ] `chemdraw_tool/ui/src/host/readme-gifs.mjs:282` — der erste Tool-Aufruf reicht `deliver` aus `--args` ungefiltert
+  durch (Anki könnte sich öffnen); nur der Panel-Aufruf ist auf `apkg` begrenzt.
+- [ ] `chemdraw_tool/ui/src/host/readme-gifs.mjs:450` — Feed-Einzelbilder bleiben im Temp-Ordner liegen.
+- Je Punkt erst ein roter Test (`tests/test_oeffentlich_pruefen.py`), dann der Fix.
 
 ## Weiter bei — Repo aufgeräumt (21.11.2026)
 
