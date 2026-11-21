@@ -60,6 +60,9 @@ tags and forks even after it is deleted. So these rules are hard, for every help
 4. **Plans and evidence texts carry the technical state only.** What Jay was doing meanwhile is not part of it.
 5. **Commit identity is the GitHub noreply address.** Check `git config user.email` in every new clone or worktree
    before the first commit.
+   **No `Claude-Session:` line in commit messages or PR texts** (Jay, 21.11.2026: the session link is account-private
+   and has no place in a public repo). `Co-Authored-By` stays. 817 older commits carry it; only a history rewrite,
+   Jay's call, would remove them.
 6. **No secrets, ever.** `gitleaks git` over the whole history is part of every release check.
 7. **A slip is reported, not papered over.** A follow-up commit does not remove anything from history; tell Jay what
    went out and where. Rewriting history and force-pushing is Jay's decision alone.
