@@ -112,6 +112,9 @@
 - **Fakten-Short Geosmin (Tisch-Faden 20261121-111243, 21.11.2026):** `kern-3d --feed --chat --args` mit
   `{"geosmin": {"name_or_smiles": "geosmin"}}` nach `out/clips-60fps-0.11.0-fakten/geosmin-3d.*`; ohne Codeänderung.
   Server löst auf CID 29746 auf (InChIKey JLPUXFOGCDVKGO-TUAOUCFPSA-N, aus den 3D-Koordinaten 4S,4aS,8aR).
+- **README-Kopf auf Logo „Drei Kugeln“ (Tisch-Faden 20261121-142011, 21.11.2026):** `assets/readme-kopf-hell.png`
+  und `-dunkel.png` aus `chemdraw-vermarktung/out/marke-2026-11-21/` übernommen (1200×300 RGBA, md5-gleich),
+  Kommentar in `README.md` Z. 1 nachgezogen; kein Release, PyPI zeigt den Kopf erst mit dem nächsten.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der
