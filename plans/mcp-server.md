@@ -39,6 +39,18 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
 - [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
 - Danach: ein Durchgang `plan-pflegen` über diese Datei und die Nebendateien in `plans/`.
 
+## Öffentliches Repo: Einstellungen und Pläne (21.11.2026)
+
+- [x] GitHub-Sicherheit eingeschaltet (vorher aus): Secret Scanning + Push-Schutz, Dependabot-Warnungen und
+  -Sicherheits-Updates, private Schwachstellenmeldung, CodeQL-Standard-Setup (erster Lauf 44933188254). Nicht verfügbar
+  ohne Advanced Security: non-provider patterns, validity checks.
+- [ ] Erste Befunde von Secret Scanning, Dependabot und CodeQL ansehen und je am Code einordnen.
+- [ ] `SECURITY.md` (Meldeweg = private Schwachstellenmeldung) — öffentlicher Text, vorher Prüfung (3).
+- [x] Keine `Claude-Session:`-Zeile mehr in Commits (Regel in `CLAUDE.md`); 817 ältere Commits tragen sie.
+- [ ] `plans/` aus dem öffentlichen Repo nehmen (Advisor-Empfehlung, Jays Entscheidung offen): erst klären, was `plans/`
+  liest (Tests, CI, `plaene.py`, Stand-Karte, Schwester) und wo die Pläne privat versioniert werden. sdist 0.11.1
+  geprüft: enthält kein `plans/`, `docs/`, `CLAUDE.md`.
+
 ## Chemie-Befunde aus der Vermarktung für 0.11.2 (Jay 21.11.2026)
 
 Jays Liste kam während des Releases; keiner der Punkte ist in 0.11.1 neu (Generator, Renderer und Vergleich seit `v0.11.0`
