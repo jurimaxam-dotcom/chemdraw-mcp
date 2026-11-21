@@ -15,7 +15,7 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
   zum (S)-Produkt. GIFs stehen nicht im Hash-Manifest (nur Skriptbilder aus `scripts/readme_bilder.py`).
 - [x] 3 — Auf `a672a6e`: `./test.sh` grün, `test:host` grün, `test:inspector` 12/12 (Anki bewusst ausgelassen, in
   `test:host` abgedeckt), Handshake grün für beide Konnektoren (18/13 und 9/4). CI für `a672a6e` grün.
-- [ ] 4 — `uv run python evals/tool-routing/run_claude.py --echt` und der Stub-Lauf der Routing-Fälle.
+- [x] 4 — `run_claude.py --echt` 12/12 grün (0 gelb, 0 rot), Stub-Lauf der Routing-Fälle 70/70 grün (21.11.).
 - [ ] 5 — Desktop-Probe `scripts/desktop-probe/run.sh A` (≈ 10 min) und `B` (≈ 6 min), zweimal hintereinander ohne
   Änderung am Testcode; nimmt Maus und Tastatur, Dauer vorher ansagen. `checkpoints.json` auf „Step by step“ → „Views“
   beim SN2-Fall prüfen.
