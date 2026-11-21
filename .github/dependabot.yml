@@ -20,3 +20,10 @@ updates:
     groups:
       python:
         patterns: ["*"]
+    # Playwright ist doppelt gepinnt (pyproject.toml und ui/package.json, exakt
+    # gleich, tests/test_dependency_pins.py). Dependabot hebt nur die Python-Seite,
+    # und PyPI und npm zaehlen verschieden: 1.65.2 gibt es nur auf PyPI, und bei
+    # 1.65.1 laden beide Seiten verschiedene Chromium-Builds (gemessen 21.11.2026).
+    # Der Pin wird deshalb von Hand auf beiden Seiten gehoben.
+    ignore:
+      - dependency-name: playwright

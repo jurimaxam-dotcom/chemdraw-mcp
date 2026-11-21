@@ -85,8 +85,10 @@ dev = [
     # tests/screenshot_ui.py benutzt (kein Test, nicht im Gate); ihn ganz zu
     # entfernen wäre die Alternative — dafür müsste screenshot_ui.py aber sauber
     # degradieren, und ein Pin kostet nichts. Version hier ändern ⇒ package.json
-    # mitziehen.
-    "playwright==1.64.1",
+    # mitziehen. Gleiche Nummer heißt nicht gleicher Build: bei 1.65.1 lud npm
+    # Chromium 1255, PyPI 1254, und 1.65.2 gibt es nur auf PyPI (21.11.2026) —
+    # nach dem Heben die Revision in beiden browsers.json vergleichen.
+    "playwright==1.65.0",
     "pytest",
     "ruff>=0.15.16",
 ]
