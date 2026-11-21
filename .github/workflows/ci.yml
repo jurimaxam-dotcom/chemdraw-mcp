@@ -30,35 +30,17 @@ jobs:
           node-version: 22
 
       - name: Install backend dependencies
-        run: uv sync
+        run: uv sync --locked
 
       - name: Install frontend dependencies
-        run: npm --prefix chemdraw_tool/ui install
+        run: npm --prefix chemdraw_tool/ui ci
 
       - name: Install Playwright Chromium
         working-directory: chemdraw_tool/ui
         run: npx playwright install --with-deps chromium
 
-      # The pixel snapshot is platform-specific (see svgToPng.e2e.mjs). On the
-      # very first CI run the linux golden file doesn't exist yet — generate it
-      # so ./test.sh below can run, and publish it as an artifact. Download that
-      # artifact and commit it as
-      #   chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.linux.png
-      # — from then on this step is a no-op and the comparison is a real
-      # regression check. Never regenerate it just to make a diff disappear.
-      - name: Bootstrap linux snapshot (first run only)
-        run: |
-          if [ ! -f chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.linux.png ]; then
-            echo "::warning::linux golden file missing — bootstrapping (commit the artifact!)"
-            UPDATE_SNAPSHOTS=1 npm --prefix chemdraw_tool/ui run test:e2e
-          fi
+      - name: Require the reviewed Linux reference image
+        run: test -s chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.linux.png
 
       - name: Run the gate (backend + frontend)
         run: ./test.sh
-
-      - name: Upload fixtures (for snapshot bootstrap)
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: ui-fixtures-py${{ matrix.python }}
-          path: chemdraw_tool/ui/src/utils/__fixtures__/

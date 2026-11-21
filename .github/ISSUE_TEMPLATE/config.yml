@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions
     about: Questions, ideas that are not a bug, and what you used it for — in Discussions.
   - name: Installation help
-    url: https://github.com/jurimaxam-dotcom/chemdraw-mcp#something-not-working-run-the-doctor
-    about: The README section on chemdraw-doctor solves most start-up problems.
+    url: https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/getting-started.md#troubleshooting
+    about: Diagnose installation and connection problems with chemdraw-doctor.

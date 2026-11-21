@@ -1,4 +1,3 @@
-<!-- Kopf: Marke chempane (Logo „Drei Kugeln“, 21.11.2026); Paket und Repo heißen weiter chemdraw-mcp. PNG statt SVG, damit die Schrift überall gleich aussieht. -->
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/readme-kopf-dunkel.png"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/readme-kopf-hell.png" alt="chempane (chemdraw-mcp): An MCP server for chemistry, with interactive panels in Claude Desktop. Unofficial, not affiliated with Revvity." width="800"></picture>
 </p>
@@ -15,7 +14,7 @@
 
 <p align="center"><b>Ask Claude for a molecule. Get a drawing you can turn, click and export.</b></p>
 
-chemdraw-mcp gives Claude Desktop a chemistry panel. Type *"Draw caffeine"* and
+chempane is the chemistry panel for Claude Desktop. Its Python package and repository are named chemdraw-mcp. Type *"Draw caffeine"* and
 the structure appears in the chat: a clean skeletal formula, a 3D model you
 rotate with the mouse, the PubChem data sheet one tab away, PNG and SVG on
 disk. The same works for reaction mechanisms with electron-flow arrows,
@@ -46,8 +45,7 @@ uv tool install chemdraw-mcp && chemdraw-install
 ```
 
 Names, data sheets and proteins are looked up online; drawing from a SMILES
-works offline. If chemdraw-mcp saves you an afternoon of drawing, a
-[star on GitHub](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers) helps other students find it.
+works offline.
 
 ## Quick start
 
@@ -62,7 +60,7 @@ works offline. If chemdraw-mcp saves you an afternoon of drawing, a
 Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
 rotatable in the panel:
 
-<!-- Aufnahme: `npm --prefix chemdraw_tool/ui run readme:gifs -- lysozyme-cartoon` (Mol*-Cartoon, WebGL) -->
+<!-- Recorded with `npm --prefix chemdraw_tool/ui run readme:gifs -- lysozyme-cartoon` (Mol* cartoon, WebGL) -->
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-light.gif" alt="The lysozyme panel: hen egg-white lysozyme, PDB 1LYZ, as a cartoon with red helices, yellow strands and grey loops; after two seconds a drag turns it about the vertical axis" width="480"></picture></p>
 <p align="center"><sub>Prompt: <i>"Draw lysozyme"</i>. Drag to rotate; colouring, Cartoon/Trace and Reset sit above the picture.</sub></p>
 
@@ -326,3 +324,6 @@ Each protein image carries the source line of its structure.
 - **Questions and things you made with it:** [Discussions](https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions).
 - **Code:** [CONTRIBUTING.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/CONTRIBUTING.md)
   and [docs/for-developers.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/for-developers.md).
+
+If chemdraw-mcp saves you an afternoon of drawing, a
+[star on GitHub](https://github.com/jurimaxam-dotcom/chemdraw-mcp/stargazers) helps other students find it.

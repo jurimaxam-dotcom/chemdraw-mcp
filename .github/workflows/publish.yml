@@ -20,8 +20,22 @@ jobs:
   # mechanisch pruefen laesst, steht als Checkliste in docs/registry-publish.md.
   check:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Require successful main CI for the release commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(git rev-parse HEAD)
+          conclusion=$(gh run list --workflow ci.yml --event push --branch main \
+            --commit "$sha" --limit 1 --json conclusion --jq '.[0].conclusion // "missing"')
+          if [ "$conclusion" != success ]; then
+            echo "::error::CI for $sha: $conclusion"
+            exit 1
+          fi
       - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       # Tag ueber env statt ${{ }} in der Shell-Zeile (Sicherheitsscan B5);
       # bei workflow_dispatch leer, dann prueft das Skript den Tag nicht.
@@ -122,8 +136,10 @@ jobs:
 
       - name: Verify the entry is live
         run: |
-          VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
-          LATEST=$(curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=jurimaxam" \
-            | python3 -c "import json,sys;print(next((s['server']['version'] for s in json.load(sys.stdin)['servers'] if s['_meta']['io.modelcontextprotocol.registry/official']['isLatest']), 'keine'))")
-          [ "$LATEST" = "$VERSION" ] || { echo "::error::Registry meldet $LATEST statt $VERSION"; exit 1; }
-          echo "Registry liefert $LATEST aus"
+          set -o pipefail
+          name=$(jq -r .name server.json)
+          version=$(jq -r .version server.json)
+          encoded=$(jq -nr --arg name "$name" '$name | @uri')
+          curl -fsS "https://registry.modelcontextprotocol.io/v0.1/servers/$encoded/versions/latest" \
+            | jq -es --arg name "$name" --arg version "$version" \
+              'length == 1 and .[0].server.name == $name and .[0].server.version == $version'
