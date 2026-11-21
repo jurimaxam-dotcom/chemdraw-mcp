@@ -46,6 +46,15 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
   ohne Advanced Security: non-provider patterns, validity checks.
 - [ ] Erste Befunde von Secret Scanning, Dependabot und CodeQL ansehen und je am Code einordnen.
 - [ ] `SECURITY.md` (Meldeweg = private Schwachstellenmeldung) — öffentlicher Text, vorher Prüfung (3).
+- [ ] **`doku-waechter.yml`: Modell-Job liest fremde Seiten (`WebFetch`) und darf im selben Job Issues kommentieren**
+  (`issues: write`, `Bash(gh issue comment:*)`, Z. 14–16/100) — gegen das Zwei-Job-Muster in `CLAUDE.md`; wie
+  `zustandsbericht.yml` trennen: Modell schreibt Datei, Job ohne Modell postet (Codex-Zweitmeinung 21.11., am Code bestätigt).
+- [ ] Umgebung `pypi`: Freigabe nötig, aber keine Tag-Regel (`deployment_branch_policy: null`); `publish.yml` hat
+  `workflow_dispatch`. Nur Tags `v*` zulassen oder den Handstart streichen.
+- [ ] Pläne mit privater Prosa (Codex-Fundstellen, nicht wörtlich hier): `plans/notebooklm-zweitmeinung.md:3`,
+  `plans/mcp-server.md` (Chat-Titel, laufender Anruf; Zeilen um 761/809), `plans/readme-showcase.md:13`,
+  `plans/archiv/studi-funktionen.md:80`. Codex empfiehlt wie der Advisor Option (b) privat weiterführen; Tests, CI und
+  Skripte lesen keine Planinhalte, nur `~/.claude/bin/plaene.py` erwartet `plans/` am Ort.
 - [x] Keine `Claude-Session:`-Zeile mehr in Commits (Regel in `CLAUDE.md`); 817 ältere Commits tragen sie.
 - [ ] `plans/` aus dem öffentlichen Repo nehmen (Advisor-Empfehlung, Jays Entscheidung offen): erst klären, was `plans/`
   liest (Tests, CI, `plaene.py`, Stand-Karte, Schwester) und wo die Pläne privat versioniert werden. sdist 0.11.1
