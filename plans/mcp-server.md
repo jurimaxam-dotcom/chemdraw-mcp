@@ -1,5 +1,17 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Repo aufgeräumt (21.11.2026)
+
+- [x] Lokale Altbranches und 16 Worktrees entfernt; alle Branch-Spitzen vorher als geprüftes Bundle im lokalen Archiv
+  (`chemdraw-mcp-altbranches-2026-11-21.bundle`). Nie mergen: sie hängen an der Historie vor dem 10.11.
+- [x] Dependabot-PRs 14, 15 und 19 erledigt: claude-code-action 1.0.281 mit festem `--permission-mode` in vier Workflows
+  (`d278c58`, Modell-Schritt einmal erfolgreich gelaufen), RDKit 2026.9.2, ruff 0.17.6, Playwright 1.65.0 beidseitig
+  (`7a4afe0`; Dependabot lässt Playwright aus, Begründung in `.github/dependabot.yml`). Gate, `test:host`, Handshake, CI grün.
+- [x] Doku-Abgleich vom 21.11. (`docs/anthropic/abgleich.md` §10), Issue 18 geschlossen.
+- **Ungeprüft:** `--permission-mode acceptEdits` im `@claude`-Workflow läuft erst bei der nächsten Erwähnung.
+- **Nächster Schritt:** SN2-Block darunter (Veröffentlichung der korrigierten Fassung), danach ein Durchgang `plan-pflegen`
+  über diese Datei und die Nebendateien in `plans/`.
+
 ## Weiter bei — SN2-Fachprüfung (20.11.2026)
 
 - [x] SN2 fachlich geprüft. Für Brommethan und Hydroxid zeigen die drei Ansichten Edukte, Übergangszustand und Produkte
