@@ -30,10 +30,32 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
   Repo und stehen unter „Folge aus dem Codex-Review 0.11.1“.
 - **Probe-Befund (◆, kein Hindernis):** „3D-Modell dreht sich beim Ziehen“ meldet beim XCUI-Zug Bildabstand 0.00 wie
   seit 16.11.; der 3D-Viewer ist seit `v0.11.0` unverändert.
-- [ ] 7 — `gh release create v0.11.1`; Job `publish` wartet auf die Umgebung `pypi` — Freigabe ist mit Jays Auftrag
-  erteilt; danach zwei `.mcpb`-Assets, PyPI-Version und Registry `isLatest` prüfen (`./scripts/publish-registry.sh`).
+- [ ] 7 — Release `v0.11.1` auf `7a16843` angelegt (21.11., 18:5x). Vorher, nach Jays Halt und Advisor-Rat: Zeichnungen
+  0.11.0 (RDKit 2026.9.1) gegen HEAD (2026.9.2) für Cholesterin, (−)-Menthol, Atorvastatin, β-D-Glucose bytegleich;
+  Morphin/Codein setzen den Keil am C13 anders (Strich zum Aromaten statt Keil zum CH₂), Zeichnung zurückgelesen ergibt
+  in beiden denselben richtigen InChIKey (`BQJCRHHNABKAKU-KBQPJGBKSA-N`). `identitaet.py` 84 grün, 0 gelb, 0 rot.
+  `publish.yml`: `check` und `build` grün, **`publish` wartet auf die Umgebung `pypi` — die Freigabe per API wurde der
+  Session verweigert, Jay klickt.** Danach: zwei `.mcpb`-Assets, PyPI-Version, `./scripts/publish-registry.sh` (`isLatest`).
 - [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
 - Danach: ein Durchgang `plan-pflegen` über diese Datei und die Nebendateien in `plans/`.
+
+## Chemie-Befunde aus der Vermarktung für 0.11.2 (Jay 21.11.2026)
+
+Jays Liste kam während des Releases; keiner der Punkte ist in 0.11.1 neu (Generator, Renderer und Vergleich seit `v0.11.0`
+unverändert, Zeichnungen bis auf die gleichwertige Keilwahl bei Morphin/Codein bytegleich). Je Punkt erst am Code prüfen,
+dann roter Test, dann Fix.
+
+- [ ] **Cholesterin C17:** gestrichelte Ringbindung statt eines H — neu, stand bisher nirgends. Erst nachstellen.
+- [ ] **Cuban/Adamantan:** falsche „unspecified stereocenters“, Cuban 2D als drei Vierringe (Fix-Idee im Block „Geplant“ weiter unten).
+- [ ] **Gruppen-Chips ohne Alken und Thioether** (Cholesterin, Carvon, Penicillin G; Bauplan weiter unten).
+- [ ] **Vergleich starr und nicht ausgerichtet:** `compare_molecules` liefert ein fertiges Bild (`PlotPayload`, `server.py:2237`),
+  kein Hover wie `StructureCanvas`; Morphin/Codein in verschiedener Lage. Ausrichtung am gemeinsamen Gerüst prüfen; die
+  Desktop-Probe prüft beim Vergleich nur Bild und drei Knöpfe — ein Checkpoint für Hover/Markierung gehört dazu.
+- [ ] **Fischer-Hinweis unter Haworth** bei den Zuckeransichten und **Fischer-Knopf bei Morphin** (Glucose-Knopf ist seit
+  `6c26f1d` behoben, in 0.11.0) — am heutigen Stand nachprüfen.
+- [ ] **Routing:** „What is the difference between morphine and codeine?“ öffnete kein Panel → Fall in `evals/tool-routing/cases.yaml`.
+- [ ] **Menthol** ohne Stereochemie (Punkt „menthol“ weiter unten).
+- Was davon nach außen gesagt werden darf, entscheidet die Schwester (`chemdraw-vermarktung`).
 
 ## Folge aus dem Codex-Review 0.11.1 (21.11.2026)
 
