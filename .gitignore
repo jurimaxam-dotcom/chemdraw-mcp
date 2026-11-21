@@ -38,3 +38,6 @@ evals/tool-routing/promptfooconfig.yaml
 
 # Anthropic-Doku: lokale Textkopien gehören Anthropic und bleiben aus dem Repo
 .cache/
+
+# Private Arbeitspläne: eigenes Repo an dieser Stelle (21.11.2026)
+/plans/

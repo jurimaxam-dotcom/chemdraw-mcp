@@ -44,6 +44,15 @@ work package that touches both sides (GIFs, recordings, README header), read `~/
 claim it with `~/.claude/bin/schwester reserviere <name>`. Marketing status lives only in the sister
 plan; `plans/mcp-server.md` carries at most a pointer line.
 
+## `plans/` is a separate private repo (Jay, 21.11.2026)
+
+Plans hold working prose that does not belong in a public repo, so `plans/` is no longer tracked here: it is its own
+private git repository at the same place (ignored by this one). Commit plan changes with `git -C plans add … && git -C
+plans commit …`; the global post-commit hook pushes it. Worktrees, CI and cloud agents see no plans. **Never check out
+an old commit or tag in the main checkout** (only in a worktree): git treats ignored files as expendable and would
+silently overwrite `plans/` with the old tracked state and delete it again on switching back. Plan files committed
+before 21.11.2026 stay readable in this repo's public history.
+
 ## Public repo: what may be committed (Jay, 17.11.2026)
 
 Every commit is a publication: the post-commit hook pushes at once, and what was pushed stays reachable in history,
