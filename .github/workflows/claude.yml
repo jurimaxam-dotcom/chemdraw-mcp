@@ -37,10 +37,8 @@ jobs:
         with:
           fetch-depth: 1
 
-      # Pull Requests aus fremden Forks nie mit Claude bearbeiten, auch nicht auf Zuruf des Eigentümers:
-      # die Action arbeitet im PR-Stand, und der Sitzungsstart-Hook dieses Repos (.claude/settings.json)
-      # startet ein Skript aus dem Arbeitsbaum — bei einem fremden PR wäre das fremder Code neben dem
-      # Zugangsschlüssel (docs/security.md der Action, „Which files come from the base branch“).
+      # Keep the authenticated action off fork-controlled checkouts. A fork can
+      # supply its own project configuration and executable tooling.
       - name: Herkunft des Pull Requests prüfen
         id: herkunft
         env:

@@ -27,7 +27,7 @@ Claude Desktop after changing server code — it keeps the old process alive.
   `uv run python scripts/identitaet.py` (needs network).
 - **Tool descriptions are tested text.** The model picks a tool from its name
   and description alone. A new tool must be entered in
-  `tests/test_server_taxonomy.py` (one of the five areas in `CLAUDE.md`).
+  `tests/test_server_taxonomy.py` (see [tool registration](docs/development.md#tool-registration)).
   If you change a description on purpose, bless the snapshot in the same
   commit: `UPDATE_TOOLSNAPS=1 uv run pytest tests/test_tool_snapshots.py`.
 - **Frozen renderings are not regenerated to make a diff disappear.**

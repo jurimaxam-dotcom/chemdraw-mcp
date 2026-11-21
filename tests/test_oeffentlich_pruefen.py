@@ -1,8 +1,7 @@
 """Die Sperre vor dem Commit: was nicht ins öffentliche Repo darf, bleibt hängen.
 
-`scripts/oeffentlich_pruefen.py` läuft als pre-commit-Hook über den Index. Die
-Regeln stehen in CLAUDE.md („Public repo: what may be committed"); hier steht,
-was davon eine Maschine prüfen kann. Jeder Fall legt ein Wegwerf-Repo an.
+`scripts/oeffentlich_pruefen.py` läuft als pre-commit-Hook über den Index.
+Die Fälle prüfen die automatisch durchsetzbaren Regeln. Jeder Fall legt ein Wegwerf-Repo an.
 """
 
 from __future__ import annotations

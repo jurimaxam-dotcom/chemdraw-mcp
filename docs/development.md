@@ -23,6 +23,14 @@ The lab graphics (`spectrum.py`, `tlc.py`, `ph_plots.py`) render with
 matplotlib; the panel is a React app served by the server as an MCP App
 resource.
 
+## Tool registration
+
+Register each public tool in `chemdraw_tool/server.py` and in its matching
+area in `tests/test_server_taxonomy.py`: drawing, lab graphics, lookup,
+calculation or Anki. The tool description should distinguish its inputs
+and output from nearby tools. Update its routing cases and schema snapshot
+when changing how clients select or call it.
+
 ## Setup and tests
 
 ```bash
@@ -63,5 +71,5 @@ without border (views 1080×1602, 3d 1080×1584, molecule 1080×1494), longer ho
 (1.2 s before each click, 3 s final state), 12–25 s. Next to each `<scene>-<theme>.mp4` it writes
 `<scene>-<theme>.beats.json` (click and hover times in seconds, as a flat map and as the `Beat[]`
 list the Remotion montage reads) and a 360 px preview still at 40 %. Set `CLIP_AUSGABE` to choose the output directory.
-By default, clips go into `chemdraw-panel-clips` under the system temporary directory. The script checks
+By default, clips go into `chemdraw-panel-clips/` under the system temporary directory. The script checks
 codec, pixel format, frame rate, size and duration with ffprobe and turns red on any deviation.

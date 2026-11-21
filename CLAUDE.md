@@ -1,145 +1,11 @@
 # chemdraw-mcp
 
-## Current focus: general chemistry MVP (14.10.2026)
-
-The default server profile is `mvp`: `generate_molecule`, `batch_generate`,
-`compare_molecules`, `generate_reaction`, `export_anki_deck` (since 21.10.2026,
-for the panel's Add to Anki button and the chat route), plus
-`lookup_molecule_data`, `save_png` and (since 12.11.2026) `load_panel_part` for panel support, and since 30.10.2026 `generate_mechanism`, `generate_3d`, `lookup` and (Welle 2) `predict_spectrum`, `generate_spectrum`, `generate_tlc`, `generate_titration_curve`, `generate_species_distribution`, `calculate_ph`, and since 10.11.2026 `generate_protein_or_antibody` (18 tools, 13 with a panel). Set `CHEMDRAW_PROFILE=full`
-and restart to restore the full catalog (25 tools, 17 with a panel).
-Since 16.11.2026 a third profile, `pharma` (9 tools, 4 with a panel), is what
-the second connector `chemdraw-pharma` starts with: exactly FULL − MVP (7, derived
-in `create_server`, not listed) plus `save_png` and `load_panel_part`, which its
-panels call on their own connector; own `instructions`, no prompts. Reason: with
-`chemdraw-pharma` on `full` next to `chemdraw`, the model saw 18 tools twice and
-calls spread across both connectors (Desktop, 14.11.2026: 10 vs 2, one surprise
-permission dialog).
-Other tools remain implemented and tested, but are not registered in the MVP.
-The immediate goal is a reliable input → correct structure → usable export
-workflow for general chemistry. Specialized pharmacy, trainer, quiz and payment
-expansion is paused. The existing browser trainer remains separate.
-`tests/server_catalog.py` explicitly builds the full profile for the historical
-taxonomy, snapshots and payload checks; `tests/test_server_profiles.py` verifies
-the actual default and explicit profiles in fresh processes. The stdio handshake
-derives its expected counts from the selected profile.
-
-Helfer reports are claims to verify, not acceptance evidence (Jay, 14.10.2026).
-Independently inspect the diff and run the relevant checks before confirming
-completion. Distinguish repository code, installed package/dependencies and the
-running Desktop process; matching tool counts alone do not establish matching code.
+Maintainer process rules live in `plans/regeln-intern.md`, a private repo; helpers must read it before working.
 
 MCP server for Claude Desktop that turns molecule names or SMILES into
 publication-style 2D structure drawings. PNG/SVG are the primary outputs
 (rendered offline via RDKit) — ChemDraw CDXML is an optional extra format,
 never a runtime requirement.
-
-## Scope: this repo builds, the sister repo markets (Jay, 11.11.2026)
-
-This repo owns server code, tools, panel, tests, releases and the files in this tree (README, `docs/`). Everything
-outward-facing — posts, profiles, directory listings, videos, clips, logo, channel research — belongs to the private
-sister repo `~/Documents/projects/chemdraw-vermarktung`; its `docs/zustaendigkeit.md` is the single ownership table.
-If Jay asks for marketing work here, do not do it and do not track it in this plan: hand it over at once with
-`~/.claude/bin/schwester weiter "<request verbatim + context>"` and tell Jay in one line where it went. Before a
-work package that touches both sides (GIFs, recordings, README header), read `~/.claude/bin/schwester stand` and
-claim it with `~/.claude/bin/schwester reserviere <name>`. Marketing status lives only in the sister
-plan; `plans/mcp-server.md` carries at most a pointer line.
-
-## `plans/` is a separate private repo (Jay, 21.11.2026)
-
-Plans hold working prose that does not belong in a public repo, so `plans/` is no longer tracked here: it is its own
-private git repository at the same place (ignored by this one). Commit plan changes with `git -C plans add … && git -C
-plans commit …`; the global post-commit hook pushes it. Worktrees, CI and cloud agents see no plans. **Never check out
-an old commit or tag in the main checkout** (only in a worktree): git treats ignored files as expendable and would
-silently overwrite `plans/` with the old tracked state and delete it again on switching back. Plan files committed
-before 21.11.2026 stay readable in this repo's public history.
-
-## Public repo: what may be committed (Jay, 17.11.2026)
-
-Every commit is a publication: the post-commit hook pushes at once, and what was pushed stays reachable in history,
-tags and forks even after it is deleted. So these rules are hard, for every helper and every worker brief:
-
-1. **Images and recordings show the panel or one cropped app window, nothing else.** No full screen, no Claude Desktop
-   sidebar, no terminal, no desktop, dock or menu bar. Look at every image with your own eyes before `git add` — a
-   file name proves nothing. Evidence of a Desktop run goes into this repo as text (checkpoint, result, version);
-   full-screen captures stay outside the repo.
-2. **No personal data:** real name, e-mail, account or plan name, addresses, meeting links, calendar or daily routine,
-   names of other projects, titles of other chats. Paths are written with `~`, never with the home directory spelled out.
-3. **Nothing about third parties** — no person, lab, employer or research topic. Examples, fixtures, image names and
-   tool texts use textbook cases.
-4. **Plans and evidence texts carry the technical state only.** What Jay was doing meanwhile is not part of it.
-5. **Commit identity is the GitHub noreply address.** Check `git config user.email` in every new clone or worktree
-   before the first commit.
-   **No `Claude-Session:` line in commit messages or PR texts** (Jay, 21.11.2026: the session link is account-private
-   and has no place in a public repo). `Co-Authored-By` stays. 817 older commits carry it; only a history rewrite,
-   Jay's call, would remove them.
-6. **No secrets, ever.** `gitleaks git` over the whole history is part of every release check.
-7. **A slip is reported, not papered over.** A follow-up commit does not remove anything from history; tell Jay what
-   went out and where. Rewriting history and force-pushing is Jay's decision alone.
-
-**Enforced by `scripts/oeffentlich_pruefen.py`** (`tests/test_oeffentlich_pruefen.py`), which the global git hooks
-run at four points: `pre-commit` and `pre-merge-commit` on the index, `commit-msg` on the message, and `pre-push` on
-everything the push would publish. The push check is the net under the others — a fast-forward merge, a rebase and a
-cherry-pick fire no commit hook. A worktree on an older branch uses the script of the main checkout. It blocks:
-
-- a commit or committer address other than the noreply one;
-- in newly added lines and in commit messages: a spelled-out home directory, an e-mail address, a meeting link, or a
-  hit from the private term list (a file outside the repo — the report names the place, never the term);
-- a secret found by `gitleaks`;
-- **every new or changed image, video or other binary file outside `__fixtures__/`.** The script can measure a picture
-  but not look into it, so a file passes only when someone has looked at it and names it:
-  `OEFFENTLICH_GESEHEN="assets/a.gif:assets/b.png" git commit …`. The release is stored by content, so it also holds
-  at push time; the same path with new content is a new file to look at.
-
-Naming a file you have not opened, or `--no-verify`, is a breach of rule 1, not a shortcut. A text finding has no
-override: change the line. **What the lock cannot do:** see what a picture shows, judge prose that describes a person
-without a listed term, or check commits GitHub creates itself (a merge button uses the account's e-mail — the account
-settings "Keep my email addresses private" and "Block command line pushes that expose my email" cover that, and only
-Jay can set them). A blocked background push is reported by a notification and in `~/.claude/logs/oeffentlich-gesperrt.log`.
-
-**Licence and copyright.** The project is Apache-2.0; the holder line is `Copyright 2026 jurimaxam-dotcom` in `NOTICE`.
-Released versions stay under that licence for good; only a future version could change it, and only Jay decides that.
-
-- **Every package that ends up inside the panel file** needs its entry, version and licence text in
-  `THIRD_PARTY_LICENSES` in the same commit (`tests/test_lizenzhinweise.py`; the file is embedded into the panel as a
-  banner, so rebuild the bundle). Before adding a dependency read its licence. Inside what we ship as one file
-  (panel, `.mcpb`): MIT, BSD, ISC, Apache-2.0 and 0BSD only. As a Python dependency that pip installs separately,
-  LGPL and MPL are acceptable too (`frozendict`, LGPL-3.0, comes with `genanki`). GPL, AGPL, "non-commercial" and
-  anything without a licence file are out on both sides.
-- **No third-party material in the tree:** figures, tables or text from textbooks, lecture slides, papers, pharmacopoeias
-  or other repos are not committed, not even as a test fixture. Facts and public-domain data are fine; record the
-  source and its terms in the README section "License and third-party data".
-- **Code copied from elsewhere** keeps its copyright header and gets a `THIRD_PARTY_LICENSES` entry; code without a
-  clear licence is not copied.
-- **Names are not licensed.** Apache-2.0 grants no trademark rights. "ChemDraw" belongs to Revvity; every public
-  description keeps the "unofficial, not affiliated" line.
-- **Outside contributions** come in under Apache-2.0 (section 5 of the licence). Never merge a PR whose author states
-  another licence or whose origin is unclear.
-
-## Helpers: what differs from the global rule (11.11.2026)
-
-Who builds, who helps and when a second session is worth it follows the global helper-routing rule
-(`~/.claude/CLAUDE.md`, section Arbeitsweise); the three-session split of early November is gone. The owner
-session builds itself. Only this differs or adds here:
-
-- **The scripted Desktop check is `scripts/desktop-probe`** (stage 5 below, since 14.11.2026): the owner runs it,
-  no helper needed. **Screen recordings and anything the probe cannot judge stay with Codex** — one Tisch order
-  per run with all steps, no status messages in between, and the `claude-desktop` lease as described under Auto-Gate.
-- **A Desktop run is due only before a release and after a host-specific change** (Jay, 12.11.2026) — not per
-  tool or feature. Host-specific means: manifest/bundle/install path, `_meta.ui`, host capabilities, CSP, ext-apps
-  SDK bump, or a Desktop update that the doku-waechter flags. Everything else is accepted on the fixed
-  workflow below (stages 1–4). What the hand tests of 07.11. found were routing and permission cases (model
-  called no tool in 3 of 9, missing "Always allow"), not panel bugs — and **`run_claude.py` does not predict those**:
-  the `desktop-*` cases (same questions, wording of the 02.11. acceptance) were green in one stub run with Opus
-  on 12.11.2026. Whether Desktop's model calls the tool is what stage A of the probe measures, in Desktop itself.
-- **Desktop cannot be driven over CDP** (measured 12.11.2026): started with `--remote-debugging-port=9222` it
-  exits with "refusing to start — a debugging or network-override switch is present on the command line". So
-  Playwright cannot attach. The accessibility tree is the only way in: XCUIAutomation for checks
-  (`scripts/desktop-probe`), `scripts/ax-claude.sh` for recordings (it moves a visible pointer). DevTools (`⌘⌥I`,
-  `allowDevTools` is on) is for diagnosis of a failing panel, never an acceptance step.
-- **Review before a release** runs without a pane: `codex exec review --commit <sha> < /dev/null`. The reviewer
-  only reports; the owner checks every finding against the code before taking or rejecting it.
-- **A test report that found a bug is a result**, not an abort: `status: erledigt` with the finding under
-  `befunde:`; what to do about it is the owner's call.
 
 ## Build / Run
 
@@ -165,34 +31,7 @@ signature errors. Restart it yourself after such changes (`osascript -e 'quit
 app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
 (initialize → tools/list) is the hard proof that the registered command works.
 
-## Anthropic-Doku im Blick (Pflicht vor Panel-/Architekturarbeit)
-
-Was Claude Desktop für MCP-Apps, Extensions und Panels anbietet, ändert sich laufend (ext-apps 2.0, neue
-MCP-Fassung, neue Leitfaden-Seiten). Deshalb: **vor Panel-, Manifest- oder Architekturarbeit**
-`uv run python scripts/anthropic_sync.py --check` — es meldet NEU/GEÄNDERT/WEG und neue Paketversionen. Bei
-Änderungen die Seiten lesen (`--diff URL`), `docs/anthropic/abgleich.md` anpassen, **dann** bauen, dann `--update`.
-Die Textkopien liegen nur lokal (`.cache/`, Anthropics Urheberrecht); im Repo stehen Fingerabdrücke und unsere
-Auswertung. Ein Sitzungsstart-Hook meldet, wenn der Stand älter als 7 Tage ist.
-Seit 12.11.2026 läuft derselbe Check täglich auf GitHub (`.github/workflows/doku-waechter.yml`, `--check --exit-code`): bei
-einer Änderung öffnet er ein Issue mit dem Label `doku-waechter` (ein Issue je offenem Stand, schließt sich nach
-`--update` + Push von selbst). Beobachtet werden auch das Desktop-Changelog, die Modellübersicht, die
-Modell-Abkündigungen und die Plattform-Release-Notes (`docs/anthropic/quellen.json`); Nebenversionen von Paketen
-lösen keine Meldung aus, eine neue Hauptversion schon. Der Wächter lässt Claude die Änderung gleich im Issue einordnen
-(`anthropics/claude-code-action`, Geheimnis `CLAUDE_CODE_OAUTH_TOKEN`, nur lesen und kommentieren). `.github/workflows/claude.yml`
-beantwortet `@claude` in Issues und PRs — nur vom Eigentümer; ein automatisches Review fremder PRs gibt es bewusst nicht.
-Zwei weitere Workflows nutzen denselben Zugang nach Zeitplan (12.11.2026): `abhaengigkeiten.yml` kommentiert täglich jeden
-offenen Dependabot-PR einmal je Stand (was ändert sich, trifft es einen Pin, mergen ja/nein — der Merge bleibt Handarbeit),
-`zustandsbericht.yml` legt montags ein Issue mit dem Label `zustandsbericht` an, wenn etwas offen ist (rote CI, PRs, Issues;
-fremde Issues werden dort eingeordnet, nie öffentlich beantwortet). **Muster für jeden weiteren Claude-Workflow:** zwei Jobs —
-der mit `CLAUDE_CODE_OAUTH_TOKEN` hat nur Leserechte, Tools `Read,Grep,Glob,Write`, und schreibt eine Datei; der mit
-Schreibrecht hat kein Modell, prüft die Datei (Länge, `@` entschärft, Stand unverändert) und postet. Kein
-`pull_request_target`, eine Shell-Vorprüfung entscheidet, ob das Modell überhaupt startet.
-
-## Fixed workflow: which check when (Jay, 12.11.2026)
-
-No mouse until stage 5, and none of Jay's or a helper's hands until stage 6. Research behind it (12.11.2026): the ext-apps repo itself tests panels with Playwright
-behind a reference host, none of five surveyed server repos tests against a real client, and Anthropic's own
-guidance ends in a manual check in the real client.
+## Verification workflow
 
 1. **While editing:** `npm --prefix chemdraw_tool/ui run test:ui:watch`, and for the panel
    `npm --prefix chemdraw_tool/ui run build:watch` — `chem_app_ui()` reads `dist/` on every `resources/read`,
@@ -211,20 +50,13 @@ guidance ends in a manual check in the real client.
    (one new prompt per panel tool: does the model call the tool, is there a permission dialog, does the panel
    appear) and `scripts/desktop-probe/run.sh B` (the checkpoints of `checkpoints.json` on the chats A left
    behind: the panel is rebuilt when a chat is reopened, tabs and toggles respond). XCUIAutomation drives the
-   installed Claude Desktop; measured 14.11.2026 with Xcode 27.2: A 617 s, B 375 s for 13 tools. The run takes
-   the screen and the `claude-desktop` lease (the script reserves it) — switching to another app turns
-   checkpoints red. A costs one chat per tool in Jay's account and its result varies with the model, so one red
-   routing checkpoint is a finding to repeat, not yet a bug; B is deterministic. Rules learnt from false-green
-   runs are in `scripts/desktop-probe/README.md`. After a panel change that renames or removes a control, update
+   installed Claude Desktop. Update the accessibility names in
    `checkpoints.json` in the same commit — it searches by accessibility name, not by visible text.
    **Rules for a probe run:** (a) The probe counts as green only after two complete runs in a row with no
    change to the test code in between — a run that needed a fix to the probe proves the fix, not the product.
    (b) Every checkpoint must prove what its name says: a checkpoint called "rotatable 3D model" has to drag and
-   compare the picture before and after, not just find the canvas. (c) The model in Claude Desktop is Opus 5.5
-   at Medium effort — the default of `run.sh A`; another model only when Jay asks for it explicitly "in
-   Desktop" (`--modell`). (d) Before any run that takes mouse and keyboard, announce how long it will take.
-6. **Only for what the probe cannot judge, by hand:** one Codex run in Desktop (see Helpers) — whether the panel
-   *looks* right, a first-time permission dialog on a fresh install, and screen recordings.
+   compare the image before and after the drag.
+6. Check panel appearance, first-install permissions and recordings manually.
 
 `evals/panel-beispiele.json` feeds stages 3, 4 and 5 (arguments, prompt and a ready selector per panel tool);
 `tests/test_panel_beispiele.py` keeps it in sync with the registration, so a new panel tool needs an entry.
@@ -248,8 +80,7 @@ Inspector. It is the only check that starts the server the way Claude Desktop
 does — the absolute command out of `claude_desktop_config.json` — and asserts
 the numbers the Python side predicts per registered connector (default MVP: 18 tools, 13 with a panel; pharma: 9, 4;
 full profile: 25 tools, 17 with a panel).
-`test:host` is the stand-in for "type it into Claude Desktop and look": it embeds the built UI the way Desktop does (srcdoc iframe, `sandbox="allow-scripts"`), connects through the SDK's `AppBridge`, runs the real server, clicks Data for methylphenidate (CAS 113-45-1, cache on second switch) and Add to Anki (the host rewrites `deliver` from `open` to `apkg`, so no Anki starts; the file lands in a throwaway HOME). It cannot see which tool the model picks (`evals/tool-routing`) or Desktop's own host quirks. **What only Desktop shows (the hand test) goes to Codex, not Jay** (Jay, 26.10.2026): one `tisch auftrag codex` per test run, carrying every step at once — prompt, clicks, expected result per step and screenshots to `/tmp/chemdraw-desktop-test/` (see "Helpers" below); Codex drives the GUI via `scripts/ax-claude.sh` (needs the private sister repo `~/Documents/projects/chemdraw-vermarktung`, which holds `ax-claude.swift` and the marketing material since 05.11.2026). Jay gets the result, not the chore. **Claude Desktop is one shared resource: one driver at a time** (Jay, 10.11.2026, after two helpers typed into the same window and spoiled a take). Before any GUI action on Desktop — `ax-claude`, typing, clicks, window or settings changes, restart — run `~/.claude/bin/tisch leases` in `~/Documents/projects/chemdraw-vermarktung` and reserve there: `tisch reserviere claude-desktop --minuten <n>`; a foreign lease on `claude-desktop` or on a recording folder under `out/` means hands off, ask through the Tisch instead. Check every helper session in both repos (`herdr agent list`), not only the own pane. Release with `tisch gib-frei` when done. In-process tests cannot see the two failure modes that have actually cost time
-here: a stale server process and a GUI PATH that cannot find `uv`.
+The host test runs the panel in a sandboxed iframe against the real server. The Desktop check covers model routing and host-specific behavior.
 
 The gate is built against two failure modes that cost more than a real test
 failure:
@@ -348,9 +179,6 @@ sharper fence but a stated default: `generate_molecule` claims the bare name in
 writing, and the server's `instructions=` says so once before any tool
 description is read. Both are test-enforced.
 
-Two more rules follow from the same measurements
-([research report](https://claude.ai/code/artifact/6fa21f2d-6223-4637-90e1-ad4b1cf99ea7)):
-
 - **Describe, never advertise.** A superlative moves a tool's usage share
   measurably (7.48 : 1 for one appended sales sentence, arXiv:2505.18135)
   *without* improving accuracy — it steals calls from its neighbours. The
@@ -434,8 +262,6 @@ chemdraw_tool/
 │                            exam_flashcards, compare_compounds); mvp tools only
 ├── privacy.py             — may a typed structure go online? (CHEMDRAW_SMILES_LOOKUP,
 │                            default off; read on every call)
-├── chemdraw.py            — macOS AppleScript bridge (no tool right now; CDXML
-│                            stays available as an output format)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
 ├── doctor.py              — installation diagnosis (chemdraw-doctor)
 ├── server.py              — MCPServer (mcp 2.x, stdio) + tool definitions;
@@ -554,3 +380,23 @@ scheme belongs in both.
   new dependency against what it drags in: `molmass` earned its place with
   zero required dependencies of its own, while `chempy`, `pint` and `mendeleev`
   were rejected for pulling in scipy/pandas/sympy-sized trees.
+
+## Licence and copyright
+
+**Licence and copyright.** The project is Apache-2.0; the holder line is `Copyright 2026 jurimaxam-dotcom` in `NOTICE`.
+
+- **Every package that ends up inside the panel file** needs its entry, version and licence text in
+  `THIRD_PARTY_LICENSES` in the same commit (`tests/test_lizenzhinweise.py`; the file is embedded into the panel as a
+  banner, so rebuild the bundle). Before adding a dependency read its licence. Inside what we ship as one file
+  (panel, `.mcpb`): MIT, BSD, ISC, Apache-2.0 and 0BSD only. As a Python dependency that pip installs separately,
+  LGPL and MPL are acceptable too (`frozendict`, LGPL-3.0, comes with `genanki`). GPL, AGPL, "non-commercial" and
+  anything without a licence file are out on both sides.
+- **No third-party material in the tree:** figures, tables or text from textbooks, lecture slides, papers, pharmacopoeias
+  or other repos are not committed, not even as a test fixture. Facts and public-domain data are fine; record the
+  source and its terms in the README section "License and third-party data".
+- **Code copied from elsewhere** keeps its copyright header and gets a `THIRD_PARTY_LICENSES` entry; code without a
+  clear licence is not copied.
+- **Names are not licensed.** Apache-2.0 grants no trademark rights. "ChemDraw" belongs to Revvity; every public
+  description keeps the "unofficial, not affiliated" line.
+- **Outside contributions** come in under Apache-2.0 (section 5 of the licence). Never merge a PR whose author states
+  another licence or whose origin is unclear.
