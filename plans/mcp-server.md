@@ -37,6 +37,14 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
   `publish.yml`: `check` und `build` grün, **`publish` wartet auf die Umgebung `pypi` — die Freigabe per API wurde der
   Session verweigert, Jay klickt.** Danach: zwei `.mcpb`-Assets, PyPI-Version, `./scripts/publish-registry.sh` (`isLatest`).
 - [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
+- **Nächster Schritt nach Kontext-Neustart (21.11.):** `gh run view 44932551149 --json status,conclusion,jobs`. Steht
+  `publish` noch auf `waiting`: Jay die Freigabe nennen (Link `…/actions/runs/44932551149` → Review deployments → `pypi` →
+  Approve and deploy); per API ist sie der Session verweigert, nicht umgehen. Ist der Lauf fertig: Schritt 7 zu Ende
+  (zwei `.mcpb`-Assets am Release, `pip index versions chemdraw-mcp` bzw. PyPI-JSON = 0.11.1, `./scripts/publish-registry.sh`
+  mit `isLatest`), dann Schritt 8, dann lokalen Hilfszweig `review-basis-0.11.0` löschen.
+- **Offene Fragen an Jay — unbeantwortet — nicht bauen:** „Antworte mit 1, 2 oder 3“ (Pläne: 1 öffentlich lassen und
+  säubern · 2 privat weiterführen, Empfehlung von Advisor und Codex · 3 zusätzlich Historie umschreiben) · API-Schlüssel als
+  Repo-Secret `ANTHROPIC_API_KEY` für einen wöchentlichen Chemie-Check und Routing-Lauf (je eigenes Thema, neue Session).
 - Danach: ein Durchgang `plan-pflegen` über diese Datei und die Nebendateien in `plans/`.
 
 ## Öffentliches Repo: Einstellungen und Pläne (21.11.2026)
