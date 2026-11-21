@@ -41,6 +41,12 @@ def test_sdist_ships_only_the_allowlist(tmp_path):
     sdists = list(tmp_path.glob("*.tar.gz"))
     assert len(sdists) == 1, sdists
     with tarfile.open(sdists[0]) as tar:
+        ui_members = [
+            m.name.split("/", 1)[1]
+            for m in tar.getmembers()
+            if m.isfile() and "/chemdraw_tool/ui/" in m.name
+        ]
+        assert ui_members == ["chemdraw_tool/ui/dist/index.html"]
         # erster Pfadteil ist chemdraw_mcp-<version>/
         tops = {n.split("/", 2)[1] for n in tar.getnames() if n.count("/") >= 1}
     erlaubt = {"chemdraw_tool", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}

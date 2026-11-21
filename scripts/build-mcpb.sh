@@ -26,6 +26,7 @@ STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
 
 cp -R mcpb/. "$STAGE/"
+cp LICENSE NOTICE "$STAGE/"
 rm -f "$STAGE/manifest.json"
 sed -i.bak "s/@@VERSION@@/$VERSION/g" "$STAGE/server/run.sh"
 rm -f "$STAGE"/server/run.sh.bak
@@ -59,5 +60,8 @@ for PROFILE in mvp pharma; do
   NAME=$(python3 -c "import json;print(json.load(open('$STAGE/manifest.json'))['name'])")
   OUT="$PWD/dist/$NAME-$VERSION.mcpb"
   (cd "$STAGE" && npx -y @anthropic-ai/mcpb@2.1.2 validate manifest.json && npx -y @anthropic-ai/mcpb@2.1.2 pack . "$OUT")
+  for document in LICENSE NOTICE; do
+    unzip -p "$OUT" "$document" | cmp - "$document"
+  done
   echo "Bundle: $OUT ($(du -h "$OUT" | cut -f1))"
 done
