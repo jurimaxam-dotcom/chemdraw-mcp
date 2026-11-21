@@ -98,7 +98,7 @@ def test_the_bare_compound_name_is_covered():
     )
 
 
-# --- Der Alltagsfall ohne Zeichen-Verb (Auftrag Jay, 15.08.2026) -------------
+# --- Der Alltagsfall ohne Zeichen-Verb (15.08.2026) -------------
 #
 # Bis hier ging es darum, den richtigen aus mehreren Kandidaten zu treffen.
 # Die zweite Haelfte ist, ueberhaupt zuzugreifen: „erklaer mir Ibuprofen",
@@ -154,7 +154,7 @@ def test_every_proactive_tool_has_an_implicit_case(tool):
     )
 
 
-# --- Argumente, die das Modell NICHT setzen darf (Jay 26.10.2026) -----------
+# --- Argumente, die das Modell NICHT setzen darf (26.10.2026) -----------
 #
 # Manche Fehlgriffe sind kein falsches Tool, sondern ein ungefragtes Argument:
 # „coefficients“ gleicht eine Gleichung aus, die der Nutzer so nicht bestellt
@@ -203,7 +203,7 @@ def test_config_turns_forbidden_args_into_not_contains():
     } in asserts
 
 
-# --- Argumente, die das Modell setzen MUSS (Jay 26.10.2026) -----------------
+# --- Argumente, die das Modell setzen MUSS (26.10.2026) -----------------
 #
 # Gegenstück zu `forbidden_args`: „Zeige die Haworth-Projektion von …“ ging in
 # Desktop an das eingebaute visualize. Der Fall prüft, dass das Modell mit

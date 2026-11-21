@@ -11,8 +11,9 @@ scripts/desktop-probe/run.sh B generate_molecule generate_3d   # einzelne Tools
 
 Braucht Xcode (gemessen mit 27.2), `xcodegen` und ein laufendes Claude Desktop mit dem
 chemdraw-Konnektor. Während des Laufs gehört der Bildschirm dem Test: Ein Wechsel in eine andere
-App macht Checkpoints rot. `run.sh` reserviert die Lease `claude-desktop` im Schwester-Repo und gibt
-sie am Ende frei; bei fremder Lease startet es nicht.
+App macht Checkpoints rot. Für gemeinsam genutzte Rechner mit dem Lease-Werkzeug setzt man
+`CHEMDRAW_DESKTOP_LEASE_DIR` oder die lokale Git-Einstellung `chemdraw.desktopLeaseDir` auf das
+gemeinsame Arbeitsverzeichnis. `run.sh` hält die Lease `claude-desktop` für die Laufzeit.
 
 ## Die zwei Stufen
 
@@ -51,16 +52,14 @@ in beiden Stufen, die Schritte in `checkpoints.json`.
 - **Vor jedem Klick in den sichtbaren Bereich rollen.** Ein Klick auf ein nicht treffbares Element
   bricht den ganzen Test ab. Einträge unterhalb des sichtbaren Bereichs stehen mit 1 px Höhe im Baum.
 - **Knöpfe über den exakten Titel und innerhalb ihres Behälters suchen, nie über ein Teilwort in der
-  ganzen App.** `title CONTAINS 'once'` traf statt „Allow once“ den Seitenleisten-Chat „… plasma
-  c*once*ntration …“; der Rechte-Dialog blieb offen und der Lauf meldete „Antwort ohne Tool-Aufruf“
-  (14.11.2026, Fable-Lauf, Protein-Tool). Der Dialog ist die Gruppe `Permission request: …`; bedient
-  wird „Always allow“ (Jay 16.11.2026: für die Tools dieses Servers ausdrücklich erlaubt), sonst
+  ganzen App.** `title CONTAINS 'once'` traf statt „Allow once“ einen Chat-Titel mit demselben Teilwort; der Rechte-Dialog blieb offen und der Lauf meldete „Antwort ohne Tool-Aufruf“
+  (14.11.2026, Protein-Tool). Der Dialog ist die Gruppe `Permission request: …`; bedient
+  wird „Always allow“ (16.11.2026: für die Tools dieses Servers ausdrücklich erlaubt), sonst
   „Allow once“ — und nur, wenn der Dialog ein Tool von `chemdraw` oder `chemdraw-pharma` nennt.
 - **Nie klicken:** die Knöpfe unter „Continue in chat“ (jeder schreibt eine Nachricht) und
   „Add a flashcard to the Anki deck …“ (ändert Anki).
 - **Aufnahmen nie ins Repo.** Videos und Bäume zeigen die Seitenleiste mit privaten Chat-Titeln.
-  Für draußen taugen nur die Bilder unter `bilder/` (Ausschnitt des Panels); die Verwertung gehört
-  dem Schwester-Repo.
+  Für draußen taugen nur die Bilder unter `bilder/` (Ausschnitt des Panels).
 
 - **Ziehen in der WebView kommt nicht an.** `press(forDuration:thenDragTo:)` – schnell, langsam mit Halten,
   über Element- und über Fensterkoordinaten – drehte das 3D-Modell in Desktop nicht (16.11.2026, Bildabstand

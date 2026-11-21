@@ -1,4 +1,4 @@
-"""Mechanismus mit den Molekülen des Nutzers (Etappe B, docs/mechanismus-substrate-design.md).
+"""Mechanismus mit den Molekülen des Nutzers.
 
 Netzfrei: alle Eingaben sind SMILES. Erwartete Produkte stehen als eigene SMILES hier
 (zweite Formulierung), Stereochemie wird per CIP geprüft, nicht am SVG.

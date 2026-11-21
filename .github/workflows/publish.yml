@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Vorab-Pruefung (Jay 06.11.2026): Doku und CHANGELOG passen zum Code, bevor
+  # Vorab-Pruefung (06.11.2026): Doku und CHANGELOG passen zum Code, bevor
   # etwas auf PyPI landet. Rot hier = kein Build, kein Upload. Was sich nicht
   # mechanisch pruefen laesst, steht als Checkliste in docs/registry-publish.md.
   check:

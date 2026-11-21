@@ -299,7 +299,7 @@ MVP_TOOLS = frozenset({
     # pH-Kurven gemeinsam: teilen ph_plots.exact_ph.
     "generate_titration_curve",
     "generate_species_distribution",
-    # Jay 31.10.2026: der pH als Zahl gehört in Welle 2 — dieselbe
+    # 31.10.2026: der pH als Zahl gehört in Welle 2 — dieselbe
     # Ladungsbilanz wie die Kurve, also stimmen Zahl und Bild überein.
     "calculate_ph",
     # 10.11.2026: Desktop routet vor der Tool-Suche nur über Toolnamen — ein
@@ -634,7 +634,7 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
     gleiche Struktur, gleicher InChIKey, aber ohne CAS. Ueber den InChIKey
     steht der Stammdatensatz an erster Stelle.
 
-    Der SMILES-Weg ist seit E12 (Jay 10.11.2026, „Weg 1“) Opt-in: Kennt
+    Der SMILES-Weg ist seit E12 (10.11.2026) Opt-in: Kennt
     PubChem den Schlüssel nicht, geht das SMILES nur mit CHEMDRAW_SMILES_LOOKUP=1
     (Häkchen in den Extension-Einstellungen) per POST hinaus — sonst bleibt der
     Datensatz leer. Eine unveröffentlichte Struktur verlässt den Rechner so nie,
@@ -4205,7 +4205,7 @@ def _species_label(raw: str, resolved: str, mol: Chem.Mol) -> str:
     """Beschriftung eines Reaktionsstoffs: der Name, wie eingegeben — oder,
     wenn die Eingabe ein SMILES war, die Summenformel mit Tiefziffern (H₂O).
     Bei einem einzigen Schweratom zeigt die Zeichnung die Formel schon selbst
-    (H₂O, NH₃) — dann keine Beschriftung, sonst stünde sie doppelt (Jay 26.10.)."""
+    (H₂O, NH₃) — dann keine Beschriftung, sonst stünde sie doppelt (26.10.)."""
     if resolved != raw.strip():
         return raw
     if mol.GetNumHeavyAtoms() == 1:

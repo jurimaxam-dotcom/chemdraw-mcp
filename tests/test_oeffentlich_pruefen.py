@@ -80,7 +80,7 @@ def test_gerenderte_test_fixtures_sind_frei(repo):
 @pytest.mark.parametrize(
     "zeile, stichwort",
     [
-        ("Config unter /Users/erika/Library/x.json", "Heimatverzeichnis"),
+        ("Config unter /Users/alex/Library/x.json", "Heimatverzeichnis"),
         ("Kontakt: erika.muster@example.org", "E-Mail"),
         ("Link: https://uni-x.zoom-x.de/j/123456", "Besprechung"),
         ("Meeting-ID: 635 0000 0000", "Besprechung"),
@@ -92,31 +92,40 @@ def test_personenbezug_im_text_wird_gesperrt(repo, zeile, stichwort):
     assert stichwort in r.stdout and "docs/notiz.md" in r.stdout
 
 
+def test_lokal_konfigurierter_name_und_genitiv_bleiben_privat(repo):
+    subprocess.run(["git", "config", "publicguard.privateName", "Beispielname"], cwd=repo, check=True)
+    assert _pruefe(repo, {"README.md": "Beispielnamenliste"}).returncode == 0
+    for zeile in ("Entscheidung (Beispielname)", "Beispielnames Vorschlag"):
+        r = _pruefe(repo, {"README.md": zeile})
+        assert r.returncode == 1 and "privaten Begriffsliste" in r.stdout
+        assert "Beispielname" not in r.stdout
+
+
 def test_erlaubte_adressen_und_platzhalter_gehen_durch(repo):
-    text = "noreply@anthropic.com\n1+x@users.noreply.github.com\n/Users/<name>/x\n/Users/runner/work\n"
+    text = "noreply@anthropic.com\n1+x@users.noreply.github.com\n/home/<name>/x\n/home/runner/work\n"
     assert _pruefe(repo, {"docs/ok.md": text}).returncode == 0
 
 
 def test_testdateien_duerfen_erfundene_pfade_tragen_aber_nie_den_echten(repo):
-    zeile = 'pfad = "/Users/erika/ChemDraw-Output/a.png"\n'
+    zeile = 'pfad = "/Users/alex/ChemDraw-Output/a.png"\n'
     assert _pruefe(repo, {"tests/test_x.py": zeile, "ui/src/__tests__/a.test.mjs": zeile}).returncode == 0
-    r = _pruefe(repo, {"tests/test_y.py": zeile}, {"USER": "erika", "LOGNAME": "erika"})
+    r = _pruefe(repo, {"tests/test_y.py": zeile}, {"USER": "alex", "LOGNAME": "alex"})
     assert r.returncode == 1 and "tests/test_y.py:1" in r.stdout
 
 
 def test_binaerdateien_liefern_keine_textbefunde(repo):
     """Gemessen an 150 Commits: GIF-Bytes sahen dreimal wie eine E-Mail-Adresse aus."""
-    daten = _png(400, 300) + b"\nn@p.AX /Users/erika/x\n\0"
+    daten = _png(400, 300) + b"\nn@p.AX /Users/alex/x\n\0"
     r = _pruefe(repo, {"assets/klein.png": daten}, {"OEFFENTLICH_GESEHEN": "assets/klein.png"})
     assert r.returncode == 0, r.stdout
 
 
 def test_nur_neue_zeilen_zaehlen(repo):
     """Altbestand macht keinen Commit rot — sonst wäre die Sperre am ersten Tag abgeschaltet."""
-    (repo / "alt.md").write_text("Pfad /Users/erika/x\n")
+    (repo / "alt.md").write_text("Pfad /Users/alex/x\n")
     subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
     subprocess.run(["git", "commit", "-qm", "alt", "--no-verify"], cwd=repo, check=True)
-    r = _pruefe(repo, {"alt.md": "Pfad /Users/erika/x\nneue Zeile ohne Befund\n"})
+    r = _pruefe(repo, {"alt.md": "Pfad /Users/alex/x\nneue Zeile ohne Befund\n"})
     assert r.returncode == 0, r.stdout
 
 
@@ -144,7 +153,7 @@ def test_angesehenes_bild_geht_mit_ausdruecklicher_freigabe_durch(repo):
 
 
 def test_freigabe_hebt_keinen_textbefund_auf(repo):
-    r = _pruefe(repo, {"docs/n.md": "/Users/erika/x\n"}, {"OEFFENTLICH_GESEHEN": "docs/n.md"})
+    r = _pruefe(repo, {"docs/n.md": "/Users/alex/x\n"}, {"OEFFENTLICH_GESEHEN": "docs/n.md"})
     assert r.returncode == 1
 
 
@@ -198,10 +207,10 @@ def test_umbenannte_und_geaenderte_datei_wird_gelesen(repo):
 
 def test_commit_betreff_wird_geprueft(repo, tmp_path):
     nachricht = tmp_path / "MSG"
-    nachricht.write_text("Fix für erika.muster@example.org\n\n# Kommentar mit /Users/erika/x zählt nicht\n")
+    nachricht.write_text("Fix für erika.muster@example.org\n\n# Kommentar mit /Users/alex/x zählt nicht\n")
     r = _lauf(repo, "--nachricht", str(nachricht))
     assert r.returncode == 1 and "E-Mail" in r.stdout
-    nachricht.write_text("Panel: Knopf sitzt jetzt rechts\n\n# /Users/erika/x\n")
+    nachricht.write_text("Panel: Knopf sitzt jetzt rechts\n\n# /Users/alex/x\n")
     assert _lauf(repo, "--nachricht", str(nachricht)).returncode == 0
 
 
@@ -209,7 +218,7 @@ def test_bereich_findet_was_an_pre_commit_vorbeikam(repo):
     """Fast-Forward-Merge, Rebase und Cherry-Pick lösen keinen pre-commit aus —
     der Push ist die letzte Stelle vor der Veröffentlichung."""
     basis = _commit(repo, {"a.py": "x = 1\n"})
-    spitze = _commit(repo, {"docs/n.md": "Config unter /Users/erika/x\n", "assets/p.png": _png(600, 400)})
+    spitze = _commit(repo, {"docs/n.md": "Config unter /Users/alex/x\n", "assets/p.png": _png(600, 400)})
     r = _lauf(repo, "--bereich", basis, spitze)
     assert r.returncode == 1
     assert "docs/n.md:1" in r.stdout and "assets/p.png" in r.stdout

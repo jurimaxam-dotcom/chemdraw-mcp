@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Tool-Wahl-Lauf über Claude Code (`claude -p`) — ohne API-Schlüssel.
 
-Gleiche Fälle wie promptfoo (`cases.yaml`), aber das Modell ist das, was Jay in
-Claude Code/Desktop benutzt, und es sieht den Server so, wie er sich beim Verbinden
+Gleiche Fälle wie promptfoo (`cases.yaml`). Das gewählte Modell sieht den Server so, wie er sich beim Verbinden
 meldet (die Tools des gewählten Profils + `instructions`). Der Server ist eine Attrappe
 (`stub_server.py`): es wird nichts ausgeführt, nur gemessen, WELCHES Tool gerufen wird.
 Die eingebauten Claude-Code-Tools sind abgeschaltet (`--tools ""`), sonst wählt das
@@ -54,7 +53,7 @@ def befehl(prompt: str, config: str, modell: str | None, erlaubt: list[str], max
     cmd = [
         "claude", "-p", prompt,
         "--mcp-config", config, "--strict-mcp-config", "--tools", os.environ.get("BUILTIN_TOOLS", ""),
-        # Ohne Isolation leaken Jays Hooks und CLAUDE.md (CWD-Wächter, Antwortstil) in die Wahl
+        # Isolation verhindert, dass lokale Hooks und Anweisungen die Toolwahl beeinflussen.
         "--setting-sources", "project", "--disable-slash-commands",
         "--output-format", "stream-json", "--verbose",
         "--max-turns", str(max_turns), "--no-session-persistence",

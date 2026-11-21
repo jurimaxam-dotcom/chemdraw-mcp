@@ -128,7 +128,7 @@ def test_rejects_bad_coefficients(_, bad):
 
 
 def test_description_keeps_coefficients_the_users_choice():
-    # Jay 26.10.: Ausgleichen entscheidet der Nutzer — per Knopf oder Bitte.
+    # 26.10.: Ausgleichen entscheidet der Nutzer — per Knopf oder Bitte.
     doc = generate_reaction.__doc__ or ""
     assert "only when the user" in doc
     assert "Apply coefficients" in doc

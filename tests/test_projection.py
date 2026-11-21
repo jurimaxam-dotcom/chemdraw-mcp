@@ -2,8 +2,7 @@
 
 Die Seiten werden ohne CIP und ohne 3D bestimmt: aus dem Chiralitätstag in
 einer festen Nachbarreihenfolge, verglichen mit einer Referenz (D-Glycerin-
-aldehyd für Fischer, β-D-Glucopyranose für Haworth). Die Fälle sind die
-Lehrbuchbilder, gegen die der Prototyp gemessen wurde (plans/anhang/).
+aldehyd für Fischer, β-D-Glucopyranose für Haworth). Die Fälle prüfen beide Projektionen an festen Referenzen.
 """
 
 import re

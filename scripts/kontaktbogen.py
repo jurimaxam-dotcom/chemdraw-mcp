@@ -4,7 +4,7 @@
 
 Zeichnet jeden Fall aus tests/mechanism_matrix.py über generate_mechanism (der echte Tool-Weg),
 schreibt je Schritt SVG + PNG und setzt daraus kontakt-<familie>.png zusammen — das Bild für die
-Sichtung durch einen Gutachter oder Jays 10-Sekunden-Blick. Hinweise (E1/E2) stehen hinter dem Titel,
+Sichtung durch einen Gutachter oder für die visuelle Stichprobe. Hinweise (E1/E2) stehen hinter dem Titel,
 reversible Mechanismen bekommen ⇌ zwischen den Schritten — beides wie im Panel. Braucht rsvg-convert und ImageMagick
 (`magick`). Die Schrift muss „⁺“ und „δ“ kennen (Arial zeigte „H  regenerated“ ohne ⁺).
 """

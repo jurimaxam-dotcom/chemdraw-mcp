@@ -84,7 +84,7 @@ class MoleculePayload(BaseModel):
     # Zusatzansichten des Panels ("all_h", "fischer", "haworth"): nur, OB es
     # sie gibt. Die Zeichnungen holt das Panel beim ersten Klick per
     # generate_molecule(**viewRequest, view=…) — eager machten sie 55–60 % der
-    # Antwort aus, und das Modell liest den ganzen Text mit (Jay 26.10.2026).
+    # Antwort aus, und das Modell liest den ganzen Text mit (26.10.2026).
     views: list[str] = []
     # Aufruf, der dieselbe Zeichnung wiederholt: das SMILES aus resolve()
     # (gleiche Atomreihenfolge → Highlights bleiben gültig) plus Zeichenoptionen.

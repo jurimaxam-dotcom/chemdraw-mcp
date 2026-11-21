@@ -1,4 +1,4 @@
-"""Mechanismus-Schritte aus den Molekülen des Nutzers (Design: docs/mechanismus-substrate-design.md).
+"""Mechanismus-Schritte aus den Molekülen des Nutzers.
 
 Ablauf je Familie:
 1. Eingaben in Fragmente zerlegen, Gegenionen und Katalysatoren verwerfen.

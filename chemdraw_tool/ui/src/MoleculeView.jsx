@@ -56,7 +56,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
   const [studyFocus, setStudyFocus] = useState(null);
   // Skelettformel ⇄ alle H ⇄ Fischer ⇄ Haworth — eine eigene Achse neben
   // Struktur/Daten. Das Payload sagt nur, welche Ansichten es gibt; der erste
-  // Klick holt die Zeichnung, danach Cache wie beim Datenblatt (Jay 26.10.:
+  // Klick holt die Zeichnung, danach Cache wie beim Datenblatt (26.10.:
   // eager waren sie mehr als die Hälfte jeder Antwort). Ein zweiter Klick auf
   // denselben Knopf führt zur Skelettformel zurück.
   // Hat das Modell eine Ansicht selbst angefordert (view=…), liegt sie schon

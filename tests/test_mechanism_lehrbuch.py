@@ -1,5 +1,5 @@
 """Lehrbuch-Fälle: erwartetes Produkt samt Deskriptor aus einer veröffentlichten Quelle, nicht aus
-unserer eigenen Ableitung (Jay 05.11.2026: „wie können wir mit Sicherheit sagen, ob es stimmt?").
+unserer eigenen Ableitung (05.11.2026).
 
 Die Matrix in tests/mechanism_matrix.py trägt Deskriptoren, die die Bau-Session selbst
 hergeleitet hat; hier steht je Familie mindestens ein Fall, dessen Ergebnis ein Lehrbuch nennt.

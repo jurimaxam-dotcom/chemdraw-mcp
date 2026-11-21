@@ -214,7 +214,7 @@ def test_install_refuses_corrupt_config_without_touching_it(tmp_path):
     assert not cfg.with_suffix(".json.bak").exists()
 
 
-# --- Zwei Konnektoren (Welle 3, Jay-Entscheid 06.11.2026) ------------------
+# --- Zwei Konnektoren (Welle 3, Entscheidung 06.11.2026) ------------------
 # Claude Desktop bekommt zwei Einträge aus demselben Paket: `chemdraw` mit dem
 # Standardprofil (18 Tools) und `chemdraw-pharma` mit dem Profil `pharma`
 # (seit 16.11.2026: nur die 7 Zusatz-Tools plus die 2 Panel-Helfer, vorher das

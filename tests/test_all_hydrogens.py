@@ -85,7 +85,7 @@ def test_abbreviated_drawing_has_no_hydrogen_view():
 
 
 def test_molecule_answer_stays_small():
-    """Jay 26.10.: Ibuprofen war 29,4 KB, das Modell liest alles mit."""
+    """26.10.: Ibuprofen war 29,4 KB, das Modell liest alles mit."""
     import json
 
     payload = srv.generate_molecule(IBUPROFEN_S)

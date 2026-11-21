@@ -370,8 +370,7 @@ try {
         messwerte["f-chat"] = `Achse 2D ${JSON.stringify(a2)} → 3D ${JSON.stringify(a3)}; 3D ${lage(g3)}; gemeldet ${h3}`;
         check(a2?.ueber && a3?.ueber, `E3 (f) Chat: Schalter über der Zeichenfläche (2D ${JSON.stringify(a2)}, 3D ${JSON.stringify(a3)})`);
         check(a2 && a3 && a2.top === a3.top && a2.left === a3.left, `E3 (f) Chat: Schalter bleibt beim Umschalten stehen (${a2?.top}/${a2?.left} → ${a3?.top}/${a3?.left})`);
-        // Etappe 6, bewusst zurückgedreht (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer
-        // werden“): vorher (Etappe 3) teilte 3D die 320-px-Fläche der 2D-Zeichnung und das Panel blieb
+        // Etappe 6, bewusst zurückgedreht (16.11.2026): vorher (Etappe 3) teilte 3D die 320-px-Fläche der 2D-Zeichnung und das Panel blieb
         // ≤ 700 px. Jetzt wieder volle Breite wie am 07.11., Kernwerte darunter; die 700-px-Grenze
         // im Chat gilt für 3D nicht mehr.
         // Panel-Umbau A: die Zonen-Spalte des Reiters ([data-view="structure"]) ist die Inhaltsbreite (vorher .structure-layout).
@@ -420,7 +419,7 @@ try {
         check(g.sh <= g.ih, `E3 (f) generate_3d 1000×700: ohne Rollen (${lage(g)})`);
         await page.close();
       }
-      // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): im Chat war die
+      // Etappe 6 (16.11.2026): im Chat war die
       // Modellfläche 864×329 px (Panel 500 px hoch). Jetzt ein Quadrat über die Inhaltsbreite, höchstens 640 px;
       // 320×700 im Seitenpanel skaliert weiter ohne Abschneiden.
       for (const [w, h] of [[1000, 0], [320, 700]]) {
@@ -1807,7 +1806,7 @@ try {
   await frame.getByRole("button", { name: "Back to the structure" }).click();
   prüfe((await text()).includes("CID 4158"), "Zurück zeigt wieder Methylphenidate");
 
-  // 3d. Zusatzansichten erst auf Klick (Jay 26.10.): Antwort schlank, All H kommt per Bridge in < 1 s
+  // 3d. Zusatzansichten erst auf Klick (26.10.): Antwort schlank, All H kommt per Bridge in < 1 s
   // Gezählt wird der Text, den das Modell liest (Desktop verwirft structuredContent).
   const antwortKB = toolResult.content.map((c) => c.text || "").join("").length / 1024;
   prüfe(antwortKB < 15, `Modell liest ${antwortKB.toFixed(1)} KB statt vorher 29,4 KB`);
@@ -1827,7 +1826,7 @@ try {
   const breite2d = (await frame.locator(".structure-canvas").boundingBox())?.width ?? 0;
   await frame.getByRole("button", { name: "3D", exact: true }).click();
   await frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 15000 });
-  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“): wieder wie am
+  // Etappe 6 (16.11.2026): wieder wie am
   // 07.11. — die Kuhle nimmt die volle Breite (höchstens 720 px hoch), die Kernwerte rücken darunter.
   // Etappe 3 hatte sie in die 320-px-Fläche der 2D-Zeichnung gelegt.
   const box3d = (await frame.locator("[data-view-3d]").boundingBox()) ?? { width: 0, height: 0 };

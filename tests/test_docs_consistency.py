@@ -1,8 +1,7 @@
 """Doku-Gate: was README, docs/ und CHANGELOG behaupten, gegen den echten Code.
 
 tests/test_readme.py prüft Toolliste, Toolzahlen und Bilder. Hier steht der Rest
-dessen, was sich mechanisch prüfen lässt (Jay 06.11.2026: „bei jedem Release
-dauerhaft auf Aktualität prüfen“):
+dessen, was sich mechanisch prüfen lässt (Releaseprüfung seit 06.11.2026):
 
 (a) jeder Toolname in der Nutzerdoku ist registriert (kein umbenanntes,
     gestrichenes Tool, das im Text weiterlebt),

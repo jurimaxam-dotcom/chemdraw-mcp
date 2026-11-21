@@ -53,7 +53,7 @@ def test_smiles_input_is_labelled_with_its_formula(_):
 
 @patch("chemdraw_tool.server.resolve", side_effect=_resolve)
 def test_single_heavy_atom_gets_no_formula_label(_):
-    # Jay 26.10.: Die Zeichnung von „O“ ist schon „H₂O“ — die Formel darunter
+    # 26.10.: Die Zeichnung von „O“ ist schon „H₂O“ — die Formel darunter
     # stünde doppelt. Ein Schweratom = keine Beschriftung; H–H und O=O behalten sie.
     result = generate_reaction(
         reactants=["[H][H]", "O=O", "N", "Cl"], products=["O", "C"]

@@ -343,7 +343,7 @@ def test_kein_curl_pipe_sh_mehr():
         assert not [z for z in code if re.search(r"curl[^|]*\|\s*(ba)?sh", z)], datei
 
 
-# --- verwaiste Startsperre (02.10.2026, 21:08 bei Jay) ----------------------------
+# --- verwaiste Startsperre (02.10.2026) ----------------------------
 # Desktop bricht einen Start mitten in der Installation ab (TERM) oder killt ihn hart.
 # Die Sperre blieb liegen; der nächste Start wartete bis zu 10 min darauf.
 

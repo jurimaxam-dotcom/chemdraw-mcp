@@ -262,7 +262,7 @@ def test_chair_svg_labels_do_not_overlap():
     ],
 )
 def test_no_label_touches_a_bond_or_another_label(smiles):
-    """Befund Auftraggeber 10.11.2026: in β-/α-Glcp lief die Ringbindung
+    """Befund 10.11.2026: in β-/α-Glcp lief die Ringbindung
     C5–O durch das „OH" von CH2OH. Kein Beschriftungsrechteck (mit
     Helvetica-Breiten, nicht der knappen Schätzung) schneidet eine fremde
     Strecke oder eine andere Beschriftung."""

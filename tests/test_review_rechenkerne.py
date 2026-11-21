@@ -76,7 +76,7 @@ def test_ester_band_only_for_esters(smiles, present, absent):
 
 
 def test_signal_count_stays_topological_and_names_the_vinyl_case():
-    """Zählweise ist eine didaktische Festlegung (Jay-Entscheid offen, 09.11.2026):
+    """Zählweise ist eine didaktische Festlegung (Entscheidung offen, 09.11.2026):
     =CH₂ bleibt ein Signal, der Limitation-Text nennt den Fall."""
     result = spectro.proton_signals("CC=C")
     assert result["count"] == 3

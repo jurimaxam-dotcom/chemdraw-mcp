@@ -1,7 +1,6 @@
 """E12: Ein eingegebenes SMILES verlässt den Rechner standardmäßig nie.
 
-Zielgruppe sind Doktoranden mit unveröffentlichten Strukturen (Jay 10.11.2026,
-„Weg 1“). Der Test fängt JEDEN HTTP-Aufruf auf `requests`-Ebene ab
+Unveröffentlichte Strukturen bleiben lokal (10.11.2026). Der Test fängt jeden HTTP-Aufruf auf `requests`-Ebene ab
 (`Session.send` — darüber laufen auch `requests.get/post` und die eigene
 IPv4-Session des NCI-Wegs) und sperrt Sockets als Rückfallnetz. Für jedes Tool,
 das eine Struktur annimmt, wird ein Fantasie-SMILES eingegeben und geprüft, dass

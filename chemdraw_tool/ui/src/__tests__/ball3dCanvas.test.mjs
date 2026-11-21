@@ -1,7 +1,7 @@
 // Das Molekül füllt die Kuhle: der Maßstab richtet sich nach dem
 // Bindungsradius (Abstand vom Ursprung), nicht nach dem größten Achsenwert —
 // sonst ragt ein diagonal liegendes Molekül aus der Kuhle, und ein flaches
-// verschenkt die halbe Fläche (Jay 07.11.: „3D ist der Hebel — größer“).
+// verschenkt die halbe Fläche (07.11.).
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";

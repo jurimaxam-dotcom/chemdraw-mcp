@@ -6,7 +6,7 @@ prüft jede Substrat-Kombination der Matrix und die drei Vorlagen über den echt
 (`generate_mechanism`). Die Geometrie liest er aus dem Datensatz, den der Renderer ins SVG
 legt (`geometry_of`), statt Pfadkoordinaten zurückzurechnen.
 
-Regeln (docs/mechanismus-substrate-design.md, „Pfeil-Geometrie“):
+Regeln:
 - kein Punkt des Pfeilkörpers (ohne die ersten/letzten 3 px) in einer Beschriftung;
 - Spitze: höchstens 0,35 Bindungslängen vor der Beschriftung des Ziels, nie darin;
   unbeschriftetes Ziel → höchstens 0,35 Bindungslängen vom Atom;

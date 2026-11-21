@@ -1,12 +1,10 @@
 """Elektronen-Buchführung: jeder gebogene Pfeil muss genau die Bindungsänderung beschreiben, die
 zwischen zwei Schritten tatsächlich passiert — und jede Änderung braucht ihren Pfeil.
 
-Hintergrund (Jay 05.11.2026): Jay kann die Chemie der Kontaktbögen nicht selbst prüfen. Was ein
-Dozent am Bogen abhakt — „der Pfeil geht vom freien Paar zum richtigen Atom, die Bindung, die
-bricht, hat einen Pfeil, nichts entsteht aus dem Nichts" — wird hier maschinell über die ganze
-Substrat-Matrix geprüft, netzfrei an den gemappten Schritt-SMILES (nicht am SVG).
+Seit 05.11.2026 prüft der Test Pfeilursprung, Pfeilziel und Bindungsänderungen
+für die ganze Substrat-Matrix an den gemappten Schritt-SMILES.
 
-Regeln, die ein Pfeil bedeutet (docs/mechanismus-substrate-design.md (g) 1–4):
+Regeln, die ein Pfeil bedeutet:
 - (a, lone_pair) → (b, atom):          Bindung a–b entsteht (Ordnung +1)
 - (a, bond_to, b) → (a|b, atom):       Bindung a–b bricht (Ordnung −1), Paar geht zum Ziel
 - (a, lone_pair) → (a, bond_to, b):    Bindung a–b wird um eins höher (z. B. C–O → C=O)

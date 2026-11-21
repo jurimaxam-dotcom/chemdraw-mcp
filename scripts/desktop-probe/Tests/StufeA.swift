@@ -78,7 +78,7 @@ final class StufeA: ProbeFall {
           // „Claude wants to use <Tool> from <Konnektor>“ — sagt, welcher Konnektor fragt.
           let wer = anfrage.buttons.matching(NSPredicate(format: "title BEGINSWITH 'Claude wants to use'")).firstMatch
           dialog = "Dialog: \(wer.exists ? wer.title : anfrage.title)"
-          // „Always allow“ (Jay 16.11.2026: ausdrücklich erlaubt, für die Tools dieses Servers); fehlt
+          // „Always allow“ (16.11.2026: ausdrücklich erlaubt, für die Tools dieses Servers); fehlt
           // der Knopf, die einmalige Freigabe. Geklickt wird nur im Dialog selbst, nie per Teilwort.
           let immer = anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Always allow'")).firstMatch
           let once = immer.exists ? immer : anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Allow once'")).firstMatch

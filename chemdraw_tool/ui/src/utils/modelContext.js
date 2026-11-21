@@ -2,7 +2,7 @@
 // Host mit der nächsten Nachricht mitschickt (app.updateModelContext). Er nennt,
 // was gezeigt und ausgewählt ist — gebaut nur aus Payload und Nutzerzustand,
 // nie aus Größe oder Anzeigemodus: ein abgelöstes Panel (Seitenpanel → Chat)
-// ändert damit seinen Text nicht und bleibt still (abgleich.md Nr. 17).
+// ändert damit seinen Text nicht und bleibt still.
 //
 // Der Host behält nur das letzte Update, also trägt jeder Text den vollen Zustand.
 import { groupInfo } from "./groupInfo.js";

@@ -170,7 +170,7 @@ def test_anker_und_registry_kennung_bleiben():
 
 
 def test_readme_erklaert_beide_konnektoren():
-    """Welle 3 (Jay 06.11.2026): zwei Konnektoren aus einer Installation. Seit
+    """Welle 3 (06.11.2026): zwei Konnektoren aus einer Installation. Seit
     16.11.2026 ergänzen sie sich (Profil `pharma`) — die alte Regel „einer je
     Chat, sonst alles doppelt“ darf nicht stehen bleiben."""
     profile = _section("### Profiles", "\n## ", README)

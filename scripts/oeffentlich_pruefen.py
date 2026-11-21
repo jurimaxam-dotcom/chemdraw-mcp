@@ -122,9 +122,12 @@ def private_begriffe() -> list[re.Pattern]:
     if not pfad:
         pfad = str(Path.home() / ".claude" / "oeffentlich-begriffe" / f"{gemeinsames_git_verzeichnis().parent.name}.txt")
     p = Path(pfad)
+    # Der Name bleibt in der lokalen Git-Konfiguration, die Wortgrenzen lassen
+    # längere Fachbegriffe durch. Der deutsche Genitiv zählt ebenfalls.
+    name = git("config", "--local", "--default", "", "--get", "publicguard.privateName").strip()
+    muster = [re.compile(rf"\b{re.escape(name)}s?\b", re.I)] if name else []
     if not p.is_file():
-        return []
-    muster = []
+        return muster
     for z in p.read_text(encoding="utf-8").splitlines():
         z = z.strip()
         if z and not z.startswith("#"):

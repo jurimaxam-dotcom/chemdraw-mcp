@@ -29,7 +29,7 @@ MVP = {
     # pH-Kurven, gemeinsam (teilen ph_plots.exact_ph).
     "generate_titration_curve",
     "generate_species_distribution",
-    # Jay 31.10.2026: der pH als Zahl gehört in Welle 2, neben die Kurven.
+    # 31.10.2026: der pH als Zahl gehört in Welle 2, neben die Kurven.
     "calculate_ph",
     # 10.11.2026: Desktop routet vor der Tool-Suche nur über Toolnamen.
     "generate_protein_or_antibody",

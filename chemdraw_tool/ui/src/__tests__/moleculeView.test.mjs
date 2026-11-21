@@ -200,7 +200,7 @@ test("funktionelle Gruppen sind per Tastatur fokussierbar und markieren die Stru
 
 // Zusatzansichten (All H, Fischer, Haworth): das Payload sagt nur, OB es sie
 // gibt. Der erste Klick holt die Zeichnung per generate_molecule(view=…), der
-// zweite kommt aus dem Cache (Jay 26.10.: „Erst auf Klick“).
+// zweite kommt aus dem Cache (26.10.).
 const SVG_ALL_H = "<svg viewBox='0 0 40 20'><path d='M1 1' data-all-h='1'/></svg>";
 const SVG_FISCHER = "<svg viewBox='0 0 40 20'><text data-fischer='1'>CHO</text></svg>";
 const SVG_HAWORTH = "<svg viewBox='0 0 40 20'><text data-haworth='1'>O</text></svg>";
@@ -269,7 +269,7 @@ test("„3D“ holt das Konformer per generate_3d beim ersten Klick, danach aus 
   assert.ok(viewer().querySelectorAll("circle").length >= 2, "Atome fehlen im Viewer");
   assert.equal(buttonByText(container, "3D").getAttribute("aria-pressed"), "true");
   assert.equal(container.querySelector(".structure-drawing"), null, "2D-Zeichnung bleibt neben 3D stehen");
-  // Etappe 6 (Jay 16.11.2026: „3D ist zu klein, das muss wieder größer werden“) und Panel-Umbau A (§5.1):
+  // Etappe 6 (16.11.2026) und Panel-Umbau A (§5.1):
   // die Kuhle ist eine 3D-Bühne über die volle Breite; darüber die StageBar mit Achse links und
   // „Drag to rotate“ + „Reset view“ rechts, die Kernwerte als Zeile darunter.
   const body = container.querySelector("[data-view='structure']");

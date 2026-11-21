@@ -1,4 +1,4 @@
-"""Ob eine eingegebene Struktur an Datenbanken gehen darf (E12, Jay 10.11.2026: „Weg 1“).
+"""Ob eine eingegebene Struktur an Datenbanken gehen darf (E12, 10.11.2026).
 
 Standard: nein. Ein SMILES (oder InChI), das der Nutzer eintippt, geht an keine
 Quelle; gefragt wird nur mit dem InChIKey, den RDKit lokal rechnet — einem Hash,

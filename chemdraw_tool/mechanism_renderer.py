@@ -4,7 +4,7 @@ Takes pre-positioned RDKit Mol objects and CurvedArrow definitions,
 renders the molecules to SVG, then overlays curved Bezier arrow paths and
 partial-bond dashed lines.
 
-Pfeil-Geometrie (Etappe E, 05.11.2026, docs/mechanismus-substrate-design.md „Pfeil-Geometrie“):
+Pfeil-Geometrie (05.11.2026):
 Pfeilenden sitzen am Rand der Atombeschriftung, nicht am Atommittelpunkt; der Pfeilkörper meidet
 jede Beschriftung. Jedes SVG trägt einen Geometrie-Datensatz (`data-geometry`, `geometry_of`),
 gegen den tests/test_mechanism_geometry.py prüft.

@@ -13,13 +13,13 @@
 // festen Ausschnitt (HERO), damit sie im README nebeneinander auf gleicher Höhe enden.
 // Bluesky-Szenen (sugar-views, mechanism-steps, reaction-balance, antibody-scheme, lysozyme-zoom, anki): nur hell,
 // nur auf Ansage (nie im Lauf ohne Szenennamen), Ausgabe nach GIF_AUSGABE=<ordner> (sonst assets/), z. B.
-//   GIF_AUSGABE=~/Documents/projects/chemdraw-vermarktung/out/bluesky-0.10.0 npm run readme:gifs -- sugar-views
+//   GIF_AUSGABE=/tmp/panel-gifs npm run readme:gifs -- sugar-views
 // --video: dieselben Szenen und Klickfolgen als mp4 (H.264, yuv420p, 30 fps, 1080 px breit) für die
-// Remotion-Montage in chemdraw-vermarktung — aufgenommen mit deviceScaleFactor 2 (600 → 1200 px, auf
+// Remotion-Montage — aufgenommen mit deviceScaleFactor 2 (600 → 1200 px, auf
 // 1080 skaliert, damit die Schrift im 1080×1920-Short scharf bleibt), längere Haltezeiten, keine
 // 10-s-Kappe. Je Clip <szene>-<theme>.mp4, .beats.json (Klickzeiten in Sekunden) und .png (Standbild bei
-// 40 %) nach ~/Documents/projects/chemdraw-vermarktung/out/panel-clips/ (dort nicht versioniert).
-// --feed: Clips für Feed-Posts (Jay 17.11.2026: „mindestens 60 FPS“, hell, 4:5). Gesteuerte Uhr statt
+// 40 %) nach CLIP_AUSGABE (Standard: Ausgabeordner im System-Temp-Verzeichnis).
+// --feed: Clips für Feed-Posts (17.11.2026, 60 FPS, hell, 4:5). Gesteuerte Uhr statt
 // Echtzeit-Screenshots: Playwrights page.clock fälscht Timer, rAF und Date auch im srcdoc-iframe, CSS-
 // Übergänge werden über document.getAnimations() angehalten und je Bild um 1/60 s vorgerückt, Zeiger und
 // Drehzüge rechnet das Skript je Bild. Dadurch ist jedes Bild ein eigener Zustand, egal wie lange der
@@ -29,7 +29,7 @@
 // (Vergrößern-Knopf im Panelkopf). --bild0 schreibt je Szene nur <clip>.bild0.png (Ruhelage, zum Vergleich
 // mit einem Standbild) und nimmt keinen Clip auf.
 // Szene mit Molekül als `szene@molekül`; Ausgabe <molekül>-<szene>.mp4 (+ .beats.json, .kontakt.png) nach
-// CLIP_AUSGABE (sonst chemdraw-vermarktung/out/clips-60fps-0.11.0). Ein roter Clip bricht den Lauf nicht ab.
+// CLIP_AUSGABE (Standard: Ausgabeordner im System-Temp-Verzeichnis). Ein roter Clip bricht den Lauf nicht ab.
 //   npm run readme:gifs -- --feed anki@"penicillin G" 3d@geosmin study@serotonin
 // Kerntool-Schleifen (kern-molecule, kern-3d, kern-compare, kern-reaction, kern-mechanism): feste Argumente,
 // Bild 0 = Ruhelage = letztes Bild; die Naht wird an den Quellbildern gemessen und steht in .beats.json.
@@ -37,7 +37,7 @@
 // Andere Argumente aus einer Datei: --args <datei.json> mit { "<clip>": toolArguments }, genau eine Kern-Szene:
 //   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed --chat --args wirkstoffe.json kern-3d   → <clip>-3d.*
 // Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort):
-// `args` aus dem hellen Chat (abends), `argsDunkel` aus dem dunklen (morgens), wo sie abweichen. --chat: hell im
+// `args` aus dem hellen Chat, `argsDunkel` aus dem dunklen, wo sie abweichen. --chat: hell im
 // Desktop-Stil (Stilvariablen, 622 px) — so blendet der Schnitt vom hellen Chat-Panel nahtlos auf Bild 0.
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
@@ -60,7 +60,7 @@ const THEMES = {
   light: { hintergrund: "#fafbf9", zeiger: "background:rgba(30,36,33,.28);border:2px solid #1e2421;box-shadow:0 1px 4px rgba(0,0,0,.25)" },
   dark: { hintergrund: "#202724", zeiger: "background:rgba(240,240,240,.45);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.6)" },
 };
-// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (Jay 07.11.). 936 px = 3D-Panel
+// Fester Ausschnitt der Hero-Szenen: beide GIFs exakt gleich groß (07.11.). 936 px = 3D-Panel
 // nach dem Umbau 17.11.2026 (Bühne über die volle Breite, Kennwerte darunter, Fußzeile; endet bei
 // ~923 px) plus 12 px Rand unten wie oben; vorher 880.
 // Feed dunkel: was Claude Desktop dem Panel im dunklen Chat als Host-Stil mitgibt — gemessen an fünf
@@ -103,11 +103,11 @@ for (let i = 2; i < process.argv.length; i++) {
 const MODI = {
   gif: { scale: 1, ausgabe: process.env.GIF_AUSGABE || assets, bild: "png", screenshot: {},
     takt: { vorKlick: 120, start: 800, startViews: 1000, nachAllH: 1000, nach2D: 800, nachS: 1500, hover: 800, vor3D: 1300, zwischenZügen: 0, schluss3d: 1500, schlussDaten: 2000 } },
-  video: { scale: 2, fps: 30, bild: "jpg", screenshot: { type: "jpeg", quality: 95 }, ausgabe: join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "panel-clips"),
+  video: { scale: 2, fps: 30, bild: "jpg", screenshot: { type: "jpeg", quality: 95 }, ausgabe: process.env.CLIP_AUSGABE || join(tmpdir(), "chemdraw-panel-clips"),
     breite: 1080, sekunden: [12, 25],
     takt: { vorKlick: 1200, start: 1500, startViews: 1500, nachAllH: 1200, nach2D: 1200, nachS: 1500, hover: 1200, vor3D: 2000, zwischenZügen: 1200, schluss3d: 3000, schlussDaten: 3000 } },
   feed: { scale: 2, fps: 60, bild: "jpg", screenshot: { type: "jpeg", quality: 95 },
-    ausgabe: process.env.CLIP_AUSGABE || join(homedir(), "Documents", "projects", "chemdraw-vermarktung", "out", "clips-60fps-0.11.0"),
+    ausgabe: process.env.CLIP_AUSGABE || join(tmpdir(), "chemdraw-feed-clips"),
     breite: 1080, hoehe: 1350, sekunden: [6, 12], mindestBilder: 55,
     takt: { vorKlick: 250, start: 700, startViews: 800, nachAllH: 900, nach2D: 600, nachS: 1200, hover: 700, vor3D: 1300, zwischenZügen: 300, schluss3d: 1500, schlussDaten: 1800 } },
 };
@@ -456,7 +456,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   return { szene: name, theme, ...feedVideo(clipName, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos) };
 }
 
-// Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“) — dieselbe Zählung wie scripts/bilder-je-sekunde.sh
+// Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“)
 function behalteneBilder(ziel) {
   // mpdecimate schreibt seine Entscheidungen nach stderr
   const r = spawnSync(FFMPEG, ["-hide_banner", "-nostats", "-loglevel", "debug", "-i", ziel, "-vf", "mpdecimate", "-f", "null", "-"], { encoding: "utf8", maxBuffer: 1 << 28 });

@@ -58,7 +58,7 @@ def test_instructions_are_english():
         assert german not in text, f"Deutscher Text in den instructions: {german!r}"
 
 
-# --- Proaktives Auslösen (Auftrag Jay, 15.08.2026) ---------------------------
+# --- Proaktives Auslösen (15.08.2026) ---------------------------
 #
 # Zweite Haelfte des Routing-Problems: Das Modell greift zu selten zu, nicht nur
 # manchmal daneben. Ein Pharmazie-Alltag besteht aus Erklaerfragen — „erklaer

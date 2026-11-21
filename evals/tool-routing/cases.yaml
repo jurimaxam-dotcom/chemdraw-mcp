@@ -97,7 +97,7 @@ cases:
     forbidden_args: [coefficients]
     why: >
       Befund Desktop-Test 26.10.2026: das Modell setzte `coefficients` schon beim
-      ersten Aufruf. Jay: Ausgleichen entscheidet der Nutzer — gezeichnet wird wie
+      ersten Aufruf. Ausgleichen entscheidet der Nutzer — gezeichnet wird wie
       eingegeben, der Knopf „Apply coefficients" im Panel übernimmt den Vorschlag.
 
   - id: draw-sugar-as-typed

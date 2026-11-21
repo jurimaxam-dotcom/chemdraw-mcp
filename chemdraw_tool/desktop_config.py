@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Registriert die zwei ChemDraw-Konnektoren in der Claude-Desktop-Config.
 
-Zwei Einträge aus demselben Paket (Jay-Entscheid 06.11.2026, Welle 3):
+Zwei Einträge aus demselben Paket (Entscheidung 06.11.2026, Welle 3):
     chemdraw         CHEMDRAW_PROFILE=mvp     (Standardprofil, 18 Tools)
     chemdraw-pharma  CHEMDRAW_PROFILE=pharma  (Zusatz-Tools, 9 Tools)
 Seit 16.11.2026 ergänzen sich beide: `pharma` hat genau, was das Vollprofil
