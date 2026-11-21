@@ -133,7 +133,7 @@ def test_nur_neue_zeilen_zaehlen(repo):
     [
         ("assets/gross.png", _png(3456, 2234), "Vollbild"),
         ("assets/klein-vollbild.png", _png(2000, 1293), "Vollbild"),   # verkleinert, gleiches Seitenverhältnis
-        ("docs/evidence/lauf/01.png", _png(800, 600), "docs/evidence"),
+        ("docs/evidence/lauf/01.png", _png(800, 600), "Belege gehören ins private Archiv"),
         ("assets/clip.mp4", b"\0\0\0\x18ftypmp42", "Video"),
         ("assets/unbekannt.webp", b"RIFF0000WEBP", "nicht lesbar"),
     ],

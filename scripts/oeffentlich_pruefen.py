@@ -195,7 +195,7 @@ def pruefe_inhalt(quelle: list[str], blob_von: str, begriffe: list[re.Pattern], 
         if endung in VIDEO:
             befunde.append(f"{datei}: Video{hinweis}")
         elif datei.startswith("docs/evidence/"):
-            befunde.append(f"{datei}: Datei unter docs/evidence/ — Belege gehören als Text ins Repo{hinweis}")
+            befunde.append(f"{datei}: Datei unter docs/evidence/ — Belege gehören ins private Archiv{hinweis}")
         elif FIXTURE.search(datei):
             continue  # von unserem Code erzeugt, nie eine Aufnahme
         elif endung not in BILD:

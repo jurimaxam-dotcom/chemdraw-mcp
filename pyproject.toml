@@ -1,7 +1,7 @@
 [project]
 name = "chemdraw-mcp"
 version = "0.11.1"
-description = "Chemistry panel for Claude Desktop. Draw structures, 3D models and mechanisms with RDKit, explore spectra and lab plots, view proteins from the PDB or AlphaFold, and export Anki cards. Unofficial, not affiliated with Revvity."
+description = "Chemistry panel for Claude Desktop (MCP server): ask for a molecule, get a drawing you can turn, click and export. Structures, 3D models, mechanisms and Anki cards drawn locally with RDKit, plus spectra and lab plots; proteins from the PDB or AlphaFold. Unofficial, not affiliated with Revvity."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES"]
