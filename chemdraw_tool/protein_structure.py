@@ -271,7 +271,7 @@ _THREE_TO_ONE = {
 }
 _BACKBONE = ("N", "CA", "C", "O")
 
-# Liganden: was im Kristall nur Lösungsmittel, Puffer oder Kryoschutz ist, und
+# Liganden: was im Kristall nur Lösungsmittel, Puffer, Detergens oder Kryoschutz ist, und
 # Zucker der Glykosylierung (1HZH: 221 Atome NAG/MAN/…) bleiben weg; ebenso
 # freie Aminosäuren und Halogenid-/Alkaliionen (meist aus dem Puffer).
 _WATER = {"HOH", "DOD", "WAT", "H2O"}
@@ -281,6 +281,8 @@ _SKIP_LIGANDS = _WATER | set(_THREE_TO_ONE) | {
     "ACT", "ACY", "ACE", "FMT", "TRS", "EPE", "MES", "CIT", "FLC", "BME", "IMD", "NO3", "NH4",
     "IPA", "EOH", "MOH", "BU3", "PEO", "SCN", "AZI", "TAR", "MLI", "CAC", "BCT", "IOD", "BR",
     "CL", "NA", "K", "LI", "CS", "RB", "F", "UNX", "UNL",
+    # Detergenzien aus der Kristallisation (1TAU: Octylglucosid BGL)
+    "BGL", "BOG", "LDA", "LMT",
     # Glykane
     "NAG", "NDG", "MAN", "BMA", "GAL", "GLA", "FUC", "FUL", "SIA", "GLC", "BGC", "XYP",
 }

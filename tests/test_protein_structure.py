@@ -5,7 +5,7 @@ RCSB ModelServer `/full` (Modell 1) für 1LYZ, 2PTN, 3I40, 4INS, 1N8Z, 1HZH,
 2PRK, 1GFL, 2HHB, 3OXC, 1WLA, 3KS3 und die AlphaFold-Modelle AF-P13518 (CsrD,
 E. coli) und AF-P60716 (LipA, E. coli; beide ohne PDB-Eintrag),
 mit scripts/protein_fixtures.py auf Rückgratatome N/CA/C/O + HETATM ohne
-Wasser gekürzt; PDBe best_structures für P00698 auf drei Einträge gekürzt, für
+Wasser gekürzt (1TAU dazu am 21.11.2026); PDBe best_structures für P00698 auf drei Einträge gekürzt, für
 P60716 die 404-Antwort (best_P60716_404.json).
 """
 
@@ -192,6 +192,13 @@ def test_ligands_of_other_chains_stay_out():
     # Trypsin: das strukturelle Ca²⁺ bleibt und wird nicht zum Cα
     trypsin = ps.backbone_from_mmcif(cif("2PTN"), ["A"])
     assert [lig.name for lig in trypsin.ligands] == ["Ca²⁺"]
+
+
+def test_detergent_from_crystallization_stays_out():
+    # 1TAU (Taq-Polymerase): Octylglucosid (BGL) ist Kristallisationshilfe;
+    # das Zn²⁺ an Asp18/119/142 im 5′-Nuklease-Zentrum bleibt
+    taq = ps.backbone_from_mmcif(cif("1TAU"), ["A"])
+    assert [lig.code for lig in taq.ligands] == ["ZN"]
 
 
 def test_entry_without_annotation_gets_its_secondary_structure_computed():
