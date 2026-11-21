@@ -16,9 +16,10 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
 - [x] 3 — Auf `a672a6e`: `./test.sh` grün, `test:host` grün, `test:inspector` 12/12 (Anki bewusst ausgelassen, in
   `test:host` abgedeckt), Handshake grün für beide Konnektoren (18/13 und 9/4). CI für `a672a6e` grün.
 - [x] 4 — `run_claude.py --echt` 12/12 grün (0 gelb, 0 rot), Stub-Lauf der Routing-Fälle 70/70 grün (21.11.).
-- [ ] 5 — Desktop-Probe `scripts/desktop-probe/run.sh A` (≈ 10 min) und `B` (≈ 6 min), zweimal hintereinander ohne
-  Änderung am Testcode; nimmt Maus und Tastatur, Dauer vorher ansagen. `checkpoints.json` auf „Step by step“ → „Views“
-  beim SN2-Fall prüfen.
+- [x] 5 — Desktop-Probe nach Desktop-Neustart (Opus 5.5 Medium). Der erste B-Lauf war rot (13/14 „kein Eintrag in der
+  Seitenleiste“): Die Tagesgruppe „Today“ war eingeklappt, dann fehlen ihre Chats im Elementbaum. Fix `23e2ec3` (Stufe B
+  klappt die Gruppe nur auf, wenn der Eintrag fehlt). Danach zwei Runden in Folge ohne Änderung am Testcode: A 168/0 und
+  B 179/0 (`18:13`/`18:21`), A 168/0 und B 179/0 (`18:29`/`18:37`). `checkpoints.json` nutzt beim SN2-Fall schon „Views“.
 - [x] 6 — `codex exec review --base review-basis-0.11.0` (lokaler Hilfszweig auf `v0.11.0`, 39 Commits, nach dem Release
   löschen): 7 Befunde, je am Code geprüft. **Kein Release-Hindernis.** Einziger Befund im ausgelieferten Bundle,
   `mcpb/server/run.sh` (P1, Sperre `mkdir -p` + `set -C` verträgt sich nicht mit dem `mkdir`-Sperren von ≤ 0.11.0):
