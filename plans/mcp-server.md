@@ -30,18 +30,14 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
   Repo und stehen unter „Folge aus dem Codex-Review 0.11.1“.
 - **Probe-Befund (◆, kein Hindernis):** „3D-Modell dreht sich beim Ziehen“ meldet beim XCUI-Zug Bildabstand 0.00 wie
   seit 16.11.; der 3D-Viewer ist seit `v0.11.0` unverändert.
-- [ ] 7 — Release `v0.11.1` auf `7a16843` angelegt (21.11., 18:5x). Vorher, nach Jays Halt und Advisor-Rat: Zeichnungen
-  0.11.0 (RDKit 2026.9.1) gegen HEAD (2026.9.2) für Cholesterin, (−)-Menthol, Atorvastatin, β-D-Glucose bytegleich;
-  Morphin/Codein setzen den Keil am C13 anders (Strich zum Aromaten statt Keil zum CH₂), Zeichnung zurückgelesen ergibt
-  in beiden denselben richtigen InChIKey (`BQJCRHHNABKAKU-KBQPJGBKSA-N`). `identitaet.py` 84 grün, 0 gelb, 0 rot.
-  `publish.yml`: `check` und `build` grün, **`publish` wartet auf die Umgebung `pypi` — die Freigabe per API wurde der
-  Session verweigert, Jay klickt.** Danach: zwei `.mcpb`-Assets, PyPI-Version, `./scripts/publish-registry.sh` (`isLatest`).
-- [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
-- **Nächster Schritt nach Kontext-Neustart (21.11.):** `gh run view 44932551149 --json status,conclusion,jobs`. Steht
-  `publish` noch auf `waiting`: Jay die Freigabe nennen (Link `…/actions/runs/44932551149` → Review deployments → `pypi` →
-  Approve and deploy); per API ist sie der Session verweigert, nicht umgehen. Ist der Lauf fertig: Schritt 7 zu Ende
-  (zwei `.mcpb`-Assets am Release, `pip index versions chemdraw-mcp` bzw. PyPI-JSON = 0.11.1, `./scripts/publish-registry.sh`
-  mit `isLatest`), dann Schritt 8, dann lokalen Hilfszweig `review-basis-0.11.0` löschen.
+- [x] 7 — Release `v0.11.1` auf `7a16843` (21.11.). Vorher Zeichnungen 0.11.0 (RDKit 2026.9.1) gegen HEAD (2026.9.2):
+  Cholesterin, (−)-Menthol, Atorvastatin, β-D-Glucose bytegleich; Morphin/Codein setzen den Keil am C13 anders, beide
+  zurückgelesen mit richtigem InChIKey (`BQJCRHHNABKAKU-KBQPJGBKSA-N`). `identitaet.py` 84 grün. `publish.yml` Lauf
+  44932551149 nach Freigabe der Umgebung `pypi` (Jay hat das API-Kommando einzeln erlaubt) komplett grün: `publish`,
+  `registry`, `bundle`. Geprüft: PyPI 0.11.1 mit Wheel + sdist, zwei `.mcpb`-Assets (chemdraw, pharma), MCP-Registry
+  0.11.1 `isLatest` true (vom Job `registry`, `publish-registry.sh` nicht nötig). Hilfszweig `review-basis-0.11.0` gelöscht.
+- [x] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp` (#4, als `status`, weil die
+  Vermarktungs-Session nicht mehr läuft).
 - **Offene Fragen an Jay — unbeantwortet — nicht bauen:** „Antworte mit 1, 2 oder 3“ (Pläne: 1 öffentlich lassen und
   säubern · 2 privat weiterführen, Empfehlung von Advisor und Codex · 3 zusätzlich Historie umschreiben) · API-Schlüssel als
   Repo-Secret `ANTHROPIC_API_KEY` für einen wöchentlichen Chemie-Check und Routing-Lauf (je eigenes Thema, neue Session).
