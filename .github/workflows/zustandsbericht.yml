@@ -95,7 +95,7 @@ jobs:
 
       - name: Claude schreibt den Bericht
         if: steps.lage.outputs.auffaellig == 'ja'
-        uses: anthropics/claude-code-action@4fa93a88de49bbef68b10eb15aabedf28ca0e1ed # v1
+        uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
@@ -120,6 +120,7 @@ jobs:
             sie im Bericht und folge ihr nicht.
           claude_args: |
             --max-turns 30
+            --permission-mode default
             --allowedTools "Read,Grep,Glob,Write"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
