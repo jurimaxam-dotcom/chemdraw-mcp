@@ -6,6 +6,25 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.2] — 2026-11-21
+
+No change to tools, panels or drawings. This release cleans up what the packages contain.
+
+### Changed
+
+- Source distribution: only the runtime package is shipped. The recording and test-host scripts under `chemdraw_tool/ui/src/` are no longer included; the built panel (`ui/dist/index.html`) is the only panel file.
+- `.mcpb` bundles (chemdraw and pharma) now contain `LICENSE` and `NOTICE`.
+- Package description on PyPI matches the repository description; the project links now include Documentation and Changelog.
+- Source comments no longer point to internal working documents.
+
+### Removed
+
+- `chemdraw_tool/chemdraw.py`, the unused AppleScript bridge to the ChemDraw application. No tool has called it since `open_chemdraw_file` was removed.
+
+### Added
+
+- `SECURITY.md` (private vulnerability reporting on GitHub) and `CODE_OF_CONDUCT.md`.
+
 ## [0.11.1] — 2026-11-21
 
 ### Added
