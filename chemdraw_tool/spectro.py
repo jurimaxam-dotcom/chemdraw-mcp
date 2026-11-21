@@ -280,7 +280,6 @@ _IR_TABLE: list[dict] = [
 ]
 
 # Ergänzung 06.11.2026: nur mit abgerufener Lehrbuch-Bandentabelle.
-# Quellen und bewusst offene Klassen: docs/evidence/masse-eval-2026-11/ir-quellen.md.
 # LibreTexts/York: Halogene, Azid und Sulfonamid; NIU: Imin/Oxim;
 # Reusch (MSU/ACS): Sulfon, Sulfoxid, Thiocarbonyl und Phosphor-Funktionen.
 # Für jede dieser Zeilen ist die kompakte Darstellung dieselbe Tabelle wie oben.

@@ -1025,7 +1025,7 @@ def test_name_without_salt_word_gets_the_free_form(_opsin, name):
 
 
 # Schnitt 3 = Variante A>= (Chef-Entscheid 07.11.2026, Kippmessung
-# docs/evidence/masse-eval-2026-11/kippmessung-stereo/): Gleiches Stammmolekül,
+# Messung vom November 2026): Gleiches Stammmolekül,
 # aber Block 1+2 des InChIKeys weicht ab — einer der beiden PubChem-Records
 # trägt die Stereochemie unvollständig oder falsch. Die Variante gewinnt nur,
 # wenn sie mindestens so viele definierte Stereoelemente hat (≥ gezählt).

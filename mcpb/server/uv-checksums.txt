@@ -1,6 +1,6 @@
 # Feste uv-Version für Bundle-Start und install.sh, SHA-256 der Release-Assets
 # (github.com/astral-sh/uv/releases). Anheben: scripts/uv-pruefsummen.sh <version>,
-# siehe docs/uv-version.md. Sicherheitsscan B4.
+# Release des uv-Projekts.
 version 0.13.6
 60fbd5c8a1ed681845eea28d9d622fcde03c51e91a43465b64a1e17db1ed3472  uv-aarch64-apple-darwin.tar.gz
 63ba17fdda55ad1a230d4b37fc6017ffa10c23688c83818bd3bfdf914c652a02  uv-x86_64-apple-darwin.tar.gz

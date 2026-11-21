@@ -6,7 +6,7 @@
 # Holt die .sha256-Dateien der vier unterstützten Release-Assets von GitHub,
 # lädt jedes Asset einmal und prüft es dagegen, dann schreibt es die Datei neu.
 # Danach: uv run pytest tests/test_mcpb_start.py, Bundle bauen, Handshake —
-# siehe docs/uv-version.md.
+# siehe mcpb/server/uv-checksums.txt.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -29,7 +29,7 @@ done
 cat > mcpb/server/uv-checksums.txt <<EOF
 # Feste uv-Version für Bundle-Start und install.sh, SHA-256 der Release-Assets
 # (github.com/astral-sh/uv/releases). Anheben: scripts/uv-pruefsummen.sh <version>,
-# siehe docs/uv-version.md. Sicherheitsscan B4.
+# Release des uv-Projekts.
 version $V
 EOF
 printf '%s' "$ZEILEN" >> mcpb/server/uv-checksums.txt

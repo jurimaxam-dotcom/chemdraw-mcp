@@ -325,7 +325,7 @@ def test_too_large_name_that_is_a_protein_is_drawn(structures, monkeypatch):
 
 # --- generate_protein_or_antibody: eigener Eingang mit „protein" im Namen (10.11.2026) -----
 # Desktop zeigt dem Modell vor der Tool-Suche nur Toolnamen (Messung 10.11.2026,
-# docs/evidence/desktop-routing-2026-11-10.md: 0 von 8 Protein-Aufträgen kamen
+# Messung vom November 2026: 0 von 8 Protein-Aufträgen kamen
 # hier an). Dasselbe Ergebnis wie generate_molecule, nur ein erkennbarer Name.
 
 

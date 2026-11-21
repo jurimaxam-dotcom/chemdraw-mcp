@@ -1,4 +1,4 @@
-// A0 der Panel-Überarbeitung (docs/design/panel-ueberarbeitung-2026-11-17.md, §4): die gemeinsamen
+// A0 der Panel-Überarbeitung: die gemeinsamen
 // Bausteine aus components/Panel.jsx. Sie sind der Vertrag für die Pakete A, B und C — geprüft
 // werden Zonen, Klassen (auch die alten Haken, auf die Tests und Probe zielen), der Files-Schalter
 // und die Bühnen-Varianten. DOM-Elemente nie direkt vergleichen (Boolean(...)), sonst hängt der Lauf.

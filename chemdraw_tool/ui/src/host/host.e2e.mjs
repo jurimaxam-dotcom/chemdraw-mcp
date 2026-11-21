@@ -832,7 +832,7 @@ try {
         check(size && size.height <= grenze, `A: Koffein 2D im Chat (${width} px) höchstens ${grenze} px hoch (${size?.height})`);
         await page.close();
       }
-      // Panel-Umbau A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §7): Abnahme-Maße der Pakets A.
+      // Panel-Umbau A (17.11.2026): Abnahme-Maße der Pakets A.
       {
         const KOFFEIN = { name_or_smiles: "caffeine" };
         const hoehe = (page) => page.evaluate(() => window.__panelSizes.at(-1)?.height);

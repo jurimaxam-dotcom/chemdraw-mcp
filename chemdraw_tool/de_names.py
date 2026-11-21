@@ -3,7 +3,7 @@
 PubChem führt viele Arzneistoffe nur unter dem englischen INN: "Amilorid",
 "Dexamethason" oder "Maleinsäure" findet keine Quelle, "amiloride",
 "dexamethasone" und "maleinic acid" schon. Die Masse-Evaluation 11/2026
-(docs/evidence/masse-eval-2026-11/identitaet.md) zählte 75 solche Eingaben.
+vom November 2026 zählte 75 solche Eingaben.
 
 Nur Regeln, die in der Messung gegen PubChem getroffen haben, stehen hier —
 eine Regel, die nichts auflöst, kostet bei jedem Fehlschlag einen Netzaufruf.
@@ -34,7 +34,7 @@ _CATIONS = {
 # Anion hinten, zusammengeschrieben, mit Bindestrich oder Leerzeichen.
 # Längere zuerst: "dihydrochlorid" vor "hydrochlorid" vor "chlorid" — sonst
 # bleibt "hydro" am Stamm ("Bendamustinhydro chloride" kennt keine Quelle;
-# Salznamen-Messung 06.11.2026, docs/evidence/masse-eval-2026-11/README.md).
+# Salznamen-Messung 06.11.2026).
 _ANIONS = {
     "dihydrochlorid": "dihydrochloride",
     "hydrochlorid": "hydrochloride",

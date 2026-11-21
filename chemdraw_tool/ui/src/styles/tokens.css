@@ -1,4 +1,4 @@
-/* Gestaltungs-Tokens der Panel-Überarbeitung (docs/design/panel-ueberarbeitung-2026-11-17.md, §3).
+/* Gestaltungs-Tokens der Panel-Überarbeitung.
    Diese Datei lädt als erste (main.jsx): Abstände, Radien, Schriftleiter, Linien, Flächen, Akzent, Bühnenmaße.
    Flächen und Linien leiten sich aus den Host-Variablen ab (--bg, --fg, --fg-muted, --border aus styles.css,
    die Desktops --color-* übernehmen); die Hex-Werte sind nur Rückfall für den Referenz-Host.

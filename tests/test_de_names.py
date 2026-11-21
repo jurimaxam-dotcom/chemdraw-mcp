@@ -88,7 +88,7 @@ def test_english_names_do_not_grow_twice():
     assert english_variant("maleic acid") is None
 
 
-# Salznamen-Messung (06.11.2026, docs/evidence/masse-eval-2026-11/salznamen_mess.json):
+# Salznamen-Messung (06.11.2026):
 # PubChem kennt manche Salze nur mit dem INN ohne Endungs-e ("Cefalotin sodium",
 # "Anamorelin hydrochloride"). salt_variant übersetzt nur das Gegenion und lässt
 # den Stamm stehen; None, wenn kein Gegenion am Ende steht oder die Variante

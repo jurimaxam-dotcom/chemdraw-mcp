@@ -133,7 +133,7 @@ def test_tool_count_stays_reviewable():
     Modell vor der Tool-Suche nur die Toolnamen (Server-`instructions` kommen
     nicht an, Beschreibungen erst nach dem Laden). Mit Proteinen nur als
     Faehigkeit von generate_molecule kamen 0 von 8 Protein- und
-    Antikoerper-Auftraegen hier an (docs/evidence/desktop-routing-2026-11-10.md)
+    Antikoerper-Auftraegen hier an (Messung vom November 2026)
     — ein Parameter hilft dort nicht, nur ein Name.
     Am 12.11.2026 auf 25 fuer `load_panel_part` (M2): kein Kandidat fuer eine
     Anfrage, sondern Infrastruktur des Panels wie save_png (visibility app,

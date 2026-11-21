@@ -171,7 +171,7 @@ for (const [file, name, input, klick] of SECHSTE) {
   CASES.push([`${file}-1000x700`, name, input, 1000, 700, klick]);
   CASES.push([`${file}-320x700`, name, input, 320, 700, klick]);
 }
-// Panel-Umbau Paket A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §7): Molekül (2D, 3D,
+// Panel-Umbau Paket A (17.11.2026): Molekül (2D, 3D,
 // Data, Study), Datenblatt, Batch (Raster, Detail), Auswahl, Platzhalter und Fehler in Chat 1000 und 860
 // (inline-Kontext wie Desktop, damit Expand erscheint), Seitenpanel 320×700 und Vollbild 1000×700.
 // Je Bild eine Messzeile (aMetrics): Panelhöhe, Bühne, Inhaltsbreite, waagrechtes Rollen.

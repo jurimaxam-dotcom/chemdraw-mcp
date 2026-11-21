@@ -1,4 +1,4 @@
-/* Paket C: 3D-Einzelansicht, Protein, Anki-Deck (docs/design/panel-ueberarbeitung-2026-11-17.md, §5.11–5.13).
+/* Paket C: 3D-Einzelansicht, Protein, Anki-Deck.
    Lädt als letztes Stylesheet. Nur Tokens aus tokens.css; wörtliche Farben nur dort, wo Daten gefärbt
    werden (Legendenmarken tragen ihre Datenfarbe inline). Rahmen, Kopf, StageBar, Bühne, Facts und Fuß
    kommen aus frame.css — hier stehen nur die Abweichungen dieser drei Panels.

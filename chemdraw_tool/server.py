@@ -2359,7 +2359,7 @@ def generate_3d(name_or_smiles: str, label: str = "") -> Molecule3DPayload:
 # Claude Desktop zeigt dem Modell vor der Tool-Suche nur die Toolnamen; Server-
 # `instructions` kommen dort nicht an. Mit Proteinen nur als Fähigkeit von
 # generate_molecule kamen 0 von 8 Protein- und Antikörperaufträgen hier an
-# (docs/evidence/desktop-routing-2026-11-10.md). Dieses Tool ist deshalb nur ein
+# (Messung vom November 2026). Dieses Tool ist deshalb nur ein
 # Name: derselbe Resolver-Weg und dieselbe _protein_payload wie generate_molecule.
 
 

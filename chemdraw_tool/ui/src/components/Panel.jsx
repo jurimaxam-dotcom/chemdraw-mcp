@@ -4,7 +4,7 @@ import FoundAs from "./FoundAs";
 import { FooterStatus } from "./PanelFooter";
 import { displayPath } from "../utils/displayPath";
 
-// Gemeinsame Bausteine des Panels (docs/design/panel-ueberarbeitung-2026-11-17.md, §4) — der Vertrag
+// Gemeinsame Bausteine des Panels — der Vertrag
 // für die Pakete A, B und C: Kopf-, Bühnen-, Kernwert-, Knopf- und Fußformen gibt es nur hier.
 // Aussehen in styles/frame.css, ausschließlich unter eigenen Klassen (.panel, .panel-head, .stage …);
 // die alten Haken (.panel-header, .panel-title, .key-facts, .panel-footer …) stehen zusätzlich am

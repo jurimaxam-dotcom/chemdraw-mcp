@@ -1,4 +1,4 @@
-# Registry-Publish: warum er zweimal vergessen wurde und wie er automatisch wird
+# Publishing to the MCP Registry
 
 Der Eintrag in der offiziellen MCP-Registry ist ein **Snapshot**. Ein Edit an
 `server.json` plus Commit ändert ihn nicht — nur ein expliziter Publish-Lauf tut

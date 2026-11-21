@@ -1,4 +1,4 @@
-// Panel-Umbau Paket B (docs/design/panel-ueberarbeitung-2026-11-17.md, §5.5–5.10): die Grafik-Panels
+// Panel-Umbau Paket B: die Grafik-Panels
 // stehen im gemeinsamen Rahmen (Panel, PanelHead, Stage, Facts, Hint, PanelFoot). Geprüft wird die
 // Form, die ohne CSS im DOM sichtbar ist: Bühnen-Variante je Panel, keine Inline-Farbe, keine
 // eingebetteten <style>-Blöcke, Bilanz und Mechanismus-Navigation als ruhige Knöpfe.

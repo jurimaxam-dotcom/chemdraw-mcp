@@ -276,7 +276,7 @@ cases:
   # --- Proteine (E6/E8, eigenes Tool seit 10.11.2026) ------------------------
   # Desktop zeigt dem Modell vor der Tool-Suche nur Toolnamen; mit Proteinen nur
   # als Fähigkeit von generate_molecule kamen 0 von 8 Aufträgen hier an
-  # (docs/evidence/desktop-routing-2026-11-10.md). Erwartung jetzt generate_protein_or_antibody;
+  # (Messung vom November 2026). Erwartung jetzt generate_protein_or_antibody;
   # generate_molecule und generate_3d zeichnen Proteinnamen weiterhin.
   - id: protein-bare-name
     prompt: "Show me trastuzumab"
@@ -643,7 +643,7 @@ cases:
     why: Erklaerfrage der Rezeptortheorie — das Diagramm gehoert daneben (wie bei den Strukturen).
 
   # --- Desktop-Abnahme 0.7.0 (02.11.2026): Fragen, die das Modell ohne Tool beantwortet
-  # Wortlaut aus docs/desktop-abnahme-2026-11-02.md. In Desktop je einmal rot: das Modell
+  # Desktop-Test vom 02.11.2026. In Desktop je einmal rot: das Modell
   # rechnet oder erinnert selbst, statt das Tool zu rufen.
   - id: desktop-loeslichkeit
     prompt: "Was ist die Löslichkeit von Paracetamol?"

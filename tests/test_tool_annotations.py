@@ -1,7 +1,7 @@
 """Tool-`title` und Annotationen: was der Host Menschen zeigt und wie er fragt.
 
 Claude entscheidet an `readOnlyHint`, ob ein Tool ohne Freigabe-Klick laufen
-darf (Anthropic-Leitfaden, siehe docs/anthropic/moeglichkeiten.md §1). Ein
+darf (Anthropic-Leitfaden). Ein
 lesend markiertes Tool, das doch Dateien schreibt, wäre also eine stille
 Rechteausweitung. Deshalb steht die Liste der schreibenden Tools hier
 ausdrücklich — ein neues Tool oder eine umgedeutete Markierung fällt im Review

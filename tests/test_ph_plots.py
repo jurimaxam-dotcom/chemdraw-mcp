@@ -156,7 +156,7 @@ def test_speziesverteilung_legende_liegt_ausserhalb_der_kurven():
 
 @pytest.mark.parametrize("pka_values", [[4.76], [2.15, 7.2, 12.35]])
 def test_pufferpunkte_liegen_auf_der_kurve(pka_values):
-    """Desktop-Befund 30.10.2026 (docs/welle2-ph-desktop-2026-10-30.md): bei
+    """Desktop-Befund 30.10.2026: bei
     Phosphorsäure saß der dritte Pufferpunkt auf pKa 12.35, die Kurve aber bei
     pH 11.86 — Wasser puffert dort mit. Der Marker muss den exakten pH tragen."""
     from chemdraw_tool.ph_plots import build_titration_figure, exact_ph

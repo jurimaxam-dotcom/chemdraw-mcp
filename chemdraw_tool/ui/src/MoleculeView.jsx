@@ -325,7 +325,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
     );
   }
 
-  // Panel-Umbau A (17.11.2026, docs/design/panel-ueberarbeitung-2026-11-17.md §5.1): eine Spalte aus den
+  // Panel-Umbau A (17.11.2026): eine Spalte aus den
   // Bausteinen in components/Panel.jsx — Kopf, StageBar (Achse; in 3D Hinweis und Reset view), Bühne über
   // die volle Breite, Kernwerte als Zeile darunter, Hinweise, Gruppen, Continue, Fuß mit Files-Schalter.
   // Die rechte Kernwert-Spalte, der Bühnenrahmen und die Linie unter dem Kopf entfallen.

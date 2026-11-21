@@ -1,4 +1,4 @@
-/* Rahmen und Bausteine des Panels (docs/design/panel-ueberarbeitung-2026-11-17.md, §2–§4), gebaut
+/* Rahmen und Bausteine des Panels, gebaut
    aus components/Panel.jsx. Lädt nach styles.css. Nur Tokens aus tokens.css, keine wörtlichen Farben.
    A0 (17.11.2026): Jede Regel hängt an einer neuen Klasse (.panel, .panel-head, .stage, .btn, .chip …)
    oder an .panel als Vorfahr. Die alten Haken (.seg, .key-facts, .panel-footer, .copy-button,

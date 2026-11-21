@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-// Layout nach dem, was der Host meldet (U2, M10 — docs/anthropic/abgleich.md Abschnitt 6).
+// Layout nach dem, was der Host meldet.
 // Claude Desktop meldet im Chat `inline` mit containerDimensions {width, maxHeight},
 // im Seitenpanel und im Vollbild `fullscreen` mit {width, height}. Entschieden wird
 // nach den Maßen, nicht nach dem Modus: nur eine gemeldete feste Höhe lässt das

@@ -11,8 +11,7 @@ Quellen: die maschinenlesbaren Indizes `llms.txt` von claude.com/docs und modelc
 zu einem Muster passt.
 
 Urheberrecht: Die Texte bleiben LOKAL (`.cache/anthropic/`, nicht im Git). Ins Repository kommen nur
-Fingerabdrücke, Titel und Links (`docs/anthropic/stand.json`) und die eigene Auswertung
-(`docs/anthropic/abgleich.md`).
+Fingerabdrücke, Titel und Links (`docs/anthropic/stand.json`).
 
     uv run python scripts/anthropic_sync.py --check         # holen und vergleichen, nichts speichern
     uv run python scripts/anthropic_sync.py --diff URL      # Textunterschied einer Seite
@@ -268,7 +267,7 @@ def main() -> int:
     if a.update:
         print(f"\nStand übernommen: {STAND.relative_to(ROOT)} (Texte lokal in .cache/anthropic/)")
     elif r["neu"] or r["geaendert"] or r["weg"]:
-        print("\nNächster Schritt: Seiten lesen (`--diff URL`), `docs/anthropic/abgleich.md` anpassen, dann `--update`.")
+        print("\nNächster Schritt: Seiten lesen (`--diff URL`) und Auswirkungen auf das Panel prüfen, dann `--update`.")
     if r["abruf_fehler"]:
         print(f"\n{len(r['abruf_fehler'])} Seite(n) nicht abrufbar (kein Befund): " + ", ".join(r["abruf_fehler"]))
     if a.exit_code and meldepflichtig(r, versionen):

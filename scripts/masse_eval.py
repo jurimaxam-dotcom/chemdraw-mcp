@@ -11,8 +11,8 @@ Auflösungskette.
 Unterbefehle (alle außerhalb des Auto-Gates; `liste` braucht Netz):
 
     uv run python scripts/masse_eval.py liste   # tests/identity/stoffe-masse.json neu bauen
-    uv run python scripts/masse_eval.py ir      # IR-Regelabdeckung → docs/evidence/…/ir-abdeckung.md
-    uv run python scripts/masse_eval.py ph      # pH-Aufgaben → docs/evidence/…/ph.md
+    uv run python scripts/masse_eval.py ir      # IR-Regelabdeckung → .cache/masse-eval/ir-abdeckung.md
+    uv run python scripts/masse_eval.py ph      # pH-Aufgaben → .cache/masse-eval/ph.md
     uv run --with sympy python scripts/masse_eval.py ph-referenz   # Referenzwerte neu rechnen
 
 Der Identitätslauf selbst bleibt in scripts/identitaet.py:
@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import sys
 import tempfile
 import time
@@ -39,7 +40,7 @@ sys.path.insert(0, str(REPO))
 LISTE = REPO / "tests" / "identity" / "stoffe-masse.json"
 KURATIERT = REPO / "tests" / "identity" / "stoffe.json"
 PH_AUFGABEN = REPO / "tests" / "identity" / "ph-aufgaben.json"
-EVIDENZ = REPO / "docs" / "evidence" / "masse-eval-2026-11"
+EVIDENZ = Path(os.environ.get("CHEMDRAW_EVAL_OUTPUT", REPO / ".cache" / "masse-eval"))
 
 UA = "chemdraw-mcp-masse-eval/0.1 (https://github.com/jurimaxam-dotcom/chemdraw-mcp)"
 SPARQL = "https://query.wikidata.org/sparql"
@@ -116,7 +117,7 @@ REFERENZ_KORREKTUREN = {
     # Stereo-Audit 06.11.2026: Wikidata/ChEMBL bestätigten teils einen
     # InChIKey mit fehlenden Zentren. Diese benannten Hauptrecords sind durch
     # PubChem und ChEMBL, bei den Naturstoffen zusätzlich ChEBI, gegengeprüft.
-    # Quellen und Begründung: docs/evidence/masse-eval-2026-11/stereo-referenzen/.
+    # Referenzen für die Stereochemie.
     # Chef-Referenzentscheid 07.11.: beide Namen = (S)-Nicotin; vier Quellen
     # und vollständige Stereo in kippmessung-stereo/fixture_check.json belegt.
     "nicotine": {
@@ -643,7 +644,7 @@ def ir_abdeckung(_: argparse.Namespace) -> int:
         "",
         "**Lücke** = Gruppe mit diagnostischer Bande ist im Molekül, aber keine passende Regel der "
         "Tabelle feuert. Gruppen ohne diagnostische Bande (tertiäres Amin, Thioether, Azo, "
-        "quartäres Ammonium) zählen nie als Lücke. Kuratierte Ergänzungen und begründet offene Klassen: [Quellen](ir-quellen.md).",
+        "quartäres Ammonium) zählen nie als Lücke. Quellen für die kuratierten Ergänzungen stehen in chemdraw_tool/spectro.py.",
         "",
         "## Lücken der Tabelle (nach Zahl betroffener Moleküle)",
         "",
@@ -1171,7 +1172,7 @@ def identitaet_bericht(args: argparse.Namespace) -> int:
         "",
         f"Lauf {dt.date.fromtimestamp(PROTOKOLL.stat().st_mtime).isoformat()} · "
         "`uv run python scripts/identitaet.py --datei tests/identity/stoffe-masse.json "
-        "--protokoll docs/evidence/masse-eval-2026-11/identitaet-lauf.json`, Bericht: "
+        f"--protokoll {PROTOKOLL}`, Bericht: "
         "`uv run python scripts/masse_eval.py identitaet`",
         "",
         f"**{len(lauf)} Eingaben ({stoffe} Wikidata-Stoffe, {keys} unterschiedliche InChIKeys): "
