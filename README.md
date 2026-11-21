@@ -94,7 +94,7 @@ Show the SN2 mechanism of
 (R)-2-bromobutane with cyanide, step by step
 ```
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-light.gif" alt="Mechanism panel: Step by step through the SN2 reaction of (R)-2-bromobutane with cyanide, from the backside attack over the transition state to the inverted (S) product" width="400"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/mechanism-steps-light.gif" alt="Mechanism panel: the three views of the concerted SN2 reaction of (R)-2-bromobutane with cyanide, from the backside attack over the transition state to the inverted (S) product" width="400"></picture>
 
 </td>
 </tr>
@@ -274,7 +274,7 @@ typed SMILES or InChI to PubChem, ChEBI, UniProt or KEGG. Details:
 
 - Lab graphics draw the numbers they are given. For a named compound Claude supplies literature values from memory; check them.
 - Curved-arrow mechanisms exist for SN1, SN2 and Fischer esterification only; other reactions get the net scheme.
-- Proteins: cartoon without side chains, up to 3000 residues; bound groups such as heme or an inhibitor are shown, water and buffer are not. Peptides from a sequence take up to 20 residues.
+- Proteins: cartoon without side chains, up to 3000 residues; bound groups such as heme or an inhibitor are shown, water, buffer and detergents are not. Peptides from a sequence take up to 20 residues.
 - Names, data sheets and proteins need the internet; without Java, systematic IUPAC names do too.
 - Claude Desktop often answers knowledge questions from memory; add "use ChemDraw" to the prompt. The extension targets macOS and Linux; Windows is untested.
 

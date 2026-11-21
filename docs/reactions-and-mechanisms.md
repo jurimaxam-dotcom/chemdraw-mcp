@@ -69,7 +69,8 @@ reaction (Diels–Alder, aldol …) Claude draws the net scheme with
 `generate_reaction` and says that the arrow mechanism is not drawn.
 
 Mechanisms are drawn in the panel only and write no files; **Export PNG**
-saves the current step, or in Overview all steps in one picture.
+saves the current step (for SN2, the current view), or in Overview all of
+them in one picture.
 
 ## Worked example: benzene to acetanilide
 

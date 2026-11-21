@@ -64,7 +64,7 @@ the C-terminus, loops as a thin tube. It is built from the backbone atoms
 there are several), and turned so that the longest extent lies horizontal.
 Bound groups near the protein (heme, metal ions, bound inhibitors) are drawn
 as sticks and spheres and named in the legend; water, buffer components,
-simple salts and glycans are left out. The panel rotates; `generate_molecule`
+detergents, simple salts and glycans are left out. The panel rotates; `generate_molecule`
 and `generate_3d` give the same answer for a protein name. A protein
 cartoon has no CDXML: `formats` takes `png` and `svg` here. Title, subtitle and image always name
 protein, organism and source.
@@ -165,7 +165,7 @@ and which structure is drawn. Details: [Data and lookup](data-and-lookup.md).
 
 - Proteins: no side chains. Bound groups (heme, metal ions, inhibitors) up to
   16 per structure, none from other copies of the crystal; water, buffer,
-  simple salts and glycans are left out. One model, one copy of a multi-copy
+  detergents, simple salts and glycans are left out. One model, one copy of a multi-copy
   crystal, up to 3000 residues. 3₁₀- and π-helices are drawn as loops.
 - Without network a protein is not drawn; the message keeps the reason.
 - `batch_generate` and `compare_molecules` draw no proteins.

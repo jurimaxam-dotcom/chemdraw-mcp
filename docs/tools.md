@@ -56,7 +56,8 @@ left, tilted when that shows less overlap; a rotation, never a mirror
 image), coloured by secondary structure or — for several chains — by chain.
 Bound groups near the protein (heme, metal ions, bound inhibitors)
 are drawn as sticks and spheres and named in the
-legend; water, buffer components, simple salts and glycans are left out.
+legend; water, buffer components, detergents, simple salts and glycans are
+left out.
 Secondary structure comes from the entry's HELIX/SHEET records; an entry
 without them (some NMR and cryo-EM files) gets its own DSSP-style
 assignment (Kabsch & Sander), and the message says so. Old entries whose

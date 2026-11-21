@@ -1,5 +1,30 @@
 # MCP-Server: Panel, Werkzeuge, Releases
 
+## Weiter bei — Release 0.11.1 (Jay 21.11.2026: „SN2-Short und Release“, autonom veröffentlichen)
+
+Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0 nicht hat. Reihenfolge nach
+`docs/registry-publish.md` § Release-Reihenfolge und dem festen Ablauf in `CLAUDE.md`:
+
+- [x] 1 — Version 0.11.1 in `pyproject.toml`, `server.json`, `plugin.json`, `uv.lock`; CHANGELOG-Abschnitt datiert;
+  `scripts/release_check.py --tag v0.11.1` ok.
+- [x] 1a — Doku-Sichtung durch einen frischen Opus-Agenten: drei Befunde am Code geprüft und eingearbeitet (Changelog
+  „Explain this view“, SN2-Wortlaut in README-Alt-Text und `docs/reactions-and-mechanisms.md`, Detergenzien in vier Sätzen).
+- [x] `gitleaks git`: 977 Commits, kein Fund.
+- [ ] 2 — README-GIF `mechanism-steps` (hell und dunkel) neu aufnehmen: es zeigt noch „Step by step“.
+  `npm --prefix chemdraw_tool/ui run readme:gifs -- mechanism-steps`, beide GIFs ansehen, mit `OEFFENTLICH_GESEHEN=…`
+  committen, Hashes in `tests/test_readme.py` nachziehen. Arbeitspaket bei der Schwester reserviert
+  (`arbeit/readme-gif-mechanism-steps`, bis 18:30 — bei Bedarf neu reservieren).
+- [ ] 3 — `./test.sh`, `test:host`, `test:inspector`, `scripts/handshake.sh` auf dem Endstand; committen, CI abwarten.
+- [ ] 4 — `uv run python evals/tool-routing/run_claude.py --echt` und der Stub-Lauf der Routing-Fälle.
+- [ ] 5 — Desktop-Probe `scripts/desktop-probe/run.sh A` (≈ 10 min) und `B` (≈ 6 min), zweimal hintereinander ohne
+  Änderung am Testcode; nimmt Maus und Tastatur, Dauer vorher ansagen. `checkpoints.json` auf „Step by step“ → „Views“
+  beim SN2-Fall prüfen.
+- [ ] 6 — Prüfung vor dem Gang nach außen: `codex exec review --commit <sha> < /dev/null`; jeden Befund am Code prüfen.
+- [ ] 7 — `gh release create v0.11.1`; Job `publish` wartet auf die Umgebung `pypi` — Freigabe ist mit Jays Auftrag
+  erteilt; danach zwei `.mcpb`-Assets, PyPI-Version und Registry `isLatest` prüfen (`./scripts/publish-registry.sh`).
+- [ ] 8 — Meldung in den Tisch-Faden `20261121-172744-weitergeleitet-aus-chemdraw-mcp`, dass 0.11.1 auf PyPI liegt.
+- Danach: ein Durchgang `plan-pflegen` über diese Datei und die Nebendateien in `plans/`.
+
 ## Weiter bei — Repo aufgeräumt (21.11.2026)
 
 - [x] Lokale Altbranches und 16 Worktrees entfernt; alle Branch-Spitzen vorher als geprüftes Bundle im lokalen Archiv
@@ -9,8 +34,7 @@
   (`7a4afe0`; Dependabot lässt Playwright aus, Begründung in `.github/dependabot.yml`). Gate, `test:host`, Handshake, CI grün.
 - [x] Doku-Abgleich vom 21.11. (`docs/anthropic/abgleich.md` §10), Issue 18 geschlossen.
 - **Ungeprüft:** `--permission-mode acceptEdits` im `@claude`-Workflow läuft erst bei der nächsten Erwähnung.
-- **Nächster Schritt:** SN2-Block darunter (Veröffentlichung der korrigierten Fassung), danach ein Durchgang `plan-pflegen`
-  über diese Datei und die Nebendateien in `plans/`.
+- **Nächster Schritt:** Block „Release 0.11.1“ darüber.
 
 ## Weiter bei — SN2-Fachprüfung (20.11.2026)
 
@@ -20,10 +44,11 @@
 - [x] `./test.sh`, `test:host`, `test:inspector` und `scripts/handshake.sh` bestanden. Den neu aufgenommenen Master und
   die lokale Endfassung anhand von Vollbildern und Kontaktbogen geprüft. Naproxen (2D, 14 H, S-Konfiguration in 3D),
   Lidocain, Procain und Bupivacain gegen PubChem-Strukturdaten abgeglichen.
-- **Nächster Schritt:** Auf Freigabe warten. Nach Freigabe an die Vermarktung reichen und das veröffentlichte Ergebnis
-  anhand der sichtbaren Beschriftung und der Video-ID prüfen. Stand der Endfassung im Tisch-Faden
-  `20261120-095031-fachpruefung-der-videos` #6.
-- **Offen:** „Für die Veröffentlichung der korrigierten Version brauche ich deine Freigabe.“ Unbeantwortet — nicht bauen.
+- [x] **Veröffentlicht und geprüft (21.11.2026):** Freigabe erteilt. Öffentlich ist die helle fachkorrigierte Fassung,
+  Video-ID `ipfRkGnKSiA`, Titel „SN2 mechanism: one concerted step in three views“. Zwei Bilder aus dem öffentlichen
+  Video angesehen: „One concerted step · 3 views“, Reiter „Overview | Views“, „View 2 / 3 [Transition state]‡“. Der alte
+  Upload `dGTllf9Q2d4` ist öffentlich nicht mehr abrufbar (oEmbed 403). Tisch-Faden `20261121-172744`.
+- **Folge:** Das Video zeigt den Reiter „Views“, den PyPI 0.11.0 noch nicht hat — Release 0.11.1 bringt ihn.
 
 ## Weiter bei — Regeln und Sperre für das öffentliche Repo (17.11.2026, abgeschlossen)
 

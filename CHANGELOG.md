@@ -6,6 +6,8 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.1] — 2026-11-21
+
 ### Added
 
 - `NOTICE` file with the copyright line and the trademark note. `THIRD_PARTY_LICENSES` now also lists the packages built into the panel itself (React, React DOM, Scheduler, Zod, the MCP TypeScript and Apps SDKs) with their licence texts; before, it covered only the protein renderer. Both files ship in the sdist and the wheel.
@@ -13,6 +15,12 @@ this project uses [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - `.mcpb` bundle start: the first-start install lock no longer relies on `mkdir` being exclusive. On systems whose `mkdir` reports an existing directory unreliably (uutils coreutils, e.g. current Ubuntu), two simultaneous cold starts could both install. The lock is now the exclusive creation of its PID file by the shell itself. macOS was not affected.
+- `generate_mechanism` panel, SN2: the reaction is shown as what it is, one concerted step. The header reads "One concerted step · 3 views", the second tab is **Views**, and the counter reads "View 1 / 3" (reactants, transition state, products). Before, it said "3 steps" and "Step 2 / 3". The follow-up button reads "Explain this view", and the overview prompt asks about the concerted step. Other mechanisms keep their step wording.
+- `generate_protein_or_antibody`: detergents left over from crystallisation (the PDB components BOG, BGL, LMT and LDA, i.e. octyl glucoside, dodecyl maltoside and LDAO) are no longer drawn as bound ligands, like buffer and cryoprotectant before.
+
+### Changed
+
+- Locked dependencies: RDKit 2026.9.2 (was 2026.9.1). The drawings of the layout probes are unchanged.
 
 ## [0.11.0] — 2026-11-17
 
