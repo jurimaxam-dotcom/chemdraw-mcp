@@ -13,7 +13,8 @@ Anlass: Der öffentliche SN2-Short zeigt den Reiter „Views“, den PyPI 0.11.0
 - [x] 2 — README-GIF `mechanism-steps` hell und dunkel neu aufgenommen (je 600×610, 8,66 s, 104 Bilder). Jedes vierte
   Bild beider Fassungen angesehen: nur Panel, Reiter „Overview | Views“, „One concerted step · 3 views“, View 1 → 3 bis
   zum (S)-Produkt. GIFs stehen nicht im Hash-Manifest (nur Skriptbilder aus `scripts/readme_bilder.py`).
-- [ ] 3 — `./test.sh`, `test:host`, `test:inspector`, `scripts/handshake.sh` auf dem Endstand; committen, CI abwarten.
+- [x] 3 — Auf `a672a6e`: `./test.sh` grün, `test:host` grün, `test:inspector` 12/12 (Anki bewusst ausgelassen, in
+  `test:host` abgedeckt), Handshake grün für beide Konnektoren (18/13 und 9/4). CI für `a672a6e` grün.
 - [ ] 4 — `uv run python evals/tool-routing/run_claude.py --echt` und der Stub-Lauf der Routing-Fälle.
 - [ ] 5 — Desktop-Probe `scripts/desktop-probe/run.sh A` (≈ 10 min) und `B` (≈ 6 min), zweimal hintereinander ohne
   Änderung am Testcode; nimmt Maus und Tastatur, Dauer vorher ansagen. `checkpoints.json` auf „Step by step“ → „Views“
