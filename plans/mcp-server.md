@@ -109,6 +109,9 @@
   `{"taq": {"name": "Taq polymerase"}}` nach `out/clips-60fps-0.11.0-fakten/taq-protein.*`. Dabei gefunden: 1TAU
   brachte Octylglucosid (BGL) in die Legende — Detergenzien BGL/BOG/LDA/LMT stehen seit 8281d90 auf der Skip-Liste,
   das Zn²⁺ an Asp18/119/142 (5′-Nuklease) bleibt.
+- **Fakten-Short Geosmin (Tisch-Faden 20261121-111243, 21.11.2026):** `kern-3d --feed --chat --args` mit
+  `{"geosmin": {"name_or_smiles": "geosmin"}}` nach `out/clips-60fps-0.11.0-fakten/geosmin-3d.*`; ohne Codeänderung.
+  Server löst auf CID 29746 auf (InChIKey JLPUXFOGCDVKGO-TUAOUCFPSA-N, aus den 3D-Koordinaten 4S,4aS,8aR).
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der
