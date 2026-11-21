@@ -145,16 +145,33 @@ final class StufeB: ProbeFall {
       let zeigen = app.buttons["Show sidebar"].firstMatch
       if zeigen.exists { zeigen.click() }
       let eintrag = app.buttons.matching(NSPredicate(format: "title == %@ OR title == %@", titel, titel + " Unread response")).firstMatch
-      guard eintrag.waitForExistence(timeout: 8) else { return (false, "kein Eintrag '\(titel)' in der Seitenleiste") }
       // Einträge unterhalb des sichtbaren Bereichs stehen mit 1 px Höhe im Baum; ein Klick ginge ins
       // Leere. Deshalb die Seitenleiste rollen, bis der Eintrag echte Höhe hat.
       let leiste = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.6))
+      var aufgeklappt = ""
+      if !eintrag.waitForExistence(timeout: 8) {
+        // Desktop gruppiert die Seitenleiste nach Tagen, und eine Gruppe lässt sich einklappen. Eingeklappt
+        // steht nur ihr Kopf im Baum („Today Unread response“), die Chats darunter fehlen ganz (21.11.2026:
+        // 13 von 14 Chats aus Stufe A unauffindbar). Also die Gruppe aufklappen, aber nur, wenn der Eintrag fehlt
+        // – ein Klick auf eine offene Gruppe klappte sie zu.
+        for tag in ["Today", "Yesterday"] {
+          let gruppe = app.buttons.matching(NSPredicate(format: "title == %@ OR title BEGINSWITH %@", tag, tag + " ")).firstMatch
+          guard gruppe.exists else { continue }
+          var r = 0
+          while gruppe.frame.height < 10 && r < 40 { leiste.scroll(byDeltaX: 0, deltaY: -300); r += 1; Thread.sleep(forTimeInterval: 0.15) }
+          guard gruppe.frame.height >= 10 else { continue }
+          gruppe.click()
+          if eintrag.waitForExistence(timeout: 4) { aufgeklappt = " (Gruppe \(tag) aufgeklappt)"; break }
+          if gruppe.isHittable { gruppe.click() }  // nicht hier: Gruppe wieder so wie vorgefunden
+        }
+      }
+      guard eintrag.exists else { return (false, "kein Eintrag '\(titel)' in der Seitenleiste") }
       var runden = 0
       while eintrag.frame.height < 10 && runden < 40 { leiste.scroll(byDeltaX: 0, deltaY: -300); runden += 1; Thread.sleep(forTimeInterval: 0.15) }
       guard eintrag.frame.height >= 10 else { return (false, "Eintrag bleibt außerhalb des sichtbaren Bereichs") }
       eintrag.click()
       let kopf = irgendwo(app, .button, "title == %@", titel + ", rename session")
-      return (kopf.waitForExistence(timeout: 15), "über die Seitenleiste")
+      return (kopf.waitForExistence(timeout: 15), "über die Seitenleiste" + aufgeklappt)
     }
     guard offen else { return }
 
