@@ -105,6 +105,10 @@
   `out/chat-2026-11-21-hell/<ordner>/mit-tippen.marks.json`; Bild 0 der fünf 3D-Master deckt sich mit dem letzten
   Chatbild (Konformer und Lage), Hämoglobin mit „hemoglobin“ gleich „human hemoglobin“ (Titel, Unterzeile, Chain).
   Protein-Aufnahme rendert WebGL in Software: ~2,5 s je Bild, ~20 min je Protein.
+- **Fakten-Short Taq (Tisch-Faden 20261121-104811, 21.11.2026):** `protein --feed --args` mit
+  `{"taq": {"name": "Taq polymerase"}}` nach `out/clips-60fps-0.11.0-fakten/taq-protein.*`. Dabei gefunden: 1TAU
+  brachte Octylglucosid (BGL) in die Legende — Detergenzien BGL/BOG/LDA/LMT stehen seit 8281d90 auf der Skip-Liste,
+  das Zn²⁺ an Asp18/119/142 (5′-Nuklease) bleibt.
 - [ ] **Reaktions-Panel läuft nach „Apply coefficients“ über** (Befund 20.11.2026, Szene `kern-reaction-balance`,
   Propan + O₂ → CO₂ + H₂O bei 600 px): mit Koeffizienten ragt die Gleichung rechts aus der Bühne (H₂O abgeschnitten),
   der Pfeil liegt über „oxygen“. Zu klären: misst `ScaledRow` in `ui/src/ReactionView.jsx` nach dem Übernehmen nicht neu, oder ist es der
