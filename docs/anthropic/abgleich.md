@@ -283,3 +283,18 @@ und `docs/getting-started.md` treffen die aktuelle Wortwahl; nichts umzubenennen
   ist, ob Desktop es bei lokalen Erweiterungen zeigt; ein Symbol wäre eine hostspezifische Änderung mit eigenem
   Desktop-Lauf.
 - Pakete: ext-apps 2.0.4/2.1.0 weiter kein Bump (siehe §8).
+
+## 10. Nachprüfung am 21.11.2026: 17 geänderte Seiten, keine Folge für den Bau
+
+Alle 17 per `--diff` gelesen. Keine Änderung an den MCP-Apps-Schnittstellen, am Manifest, an der Größengrenze oder an
+den Regeln für lokale Erweiterungen.
+
+| Seite | Was sich geändert hat | Folge für uns |
+|---|---|---|
+| connectors: getting-started, directory, verification, testing, troubleshooting, lazy-authentication, what-to-build, directory-vs-custom, custom/add-unlisted; mcp-apps: entry-points, troubleshooting | Menünamen: aus „Customize > Connectors“ wird „Connectors directory“ bzw. „your connectors“ (`claude.ai/customize/connectors/yours`); das Etikett heißt „labeled as custom“ statt **Custom**; im Plus-Menü des Chats steht ein Konnektor unter **Connectors** oder **Plugins**; in Desktop kann die Seitenleiste **Plugins** statt **Connectors** zeigen | ohne Folge: README und `docs/` nennen keinen dieser Menüpfade (geprüft per `grep`); die Desktop-Probe sucht nach Namen aus `checkpoints.json`, nicht nach diesen Menüs — beim nächsten Lauf (Stufe 5) zeigt sich, ob ein Schritt daran hängt |
+| cowork/changelog | Desktop v6.28899.6 (20.11.2026): keine Änderung für Nutzer im Chat; Code-Tab (Plugin-Themes, SSH-Hosts brauchen Claude Code 2.1.330), Cowork (EFS-Anhänge unter Windows, verbundene Ordner) | kein Eintrag zu MCP-Apps oder lokalen Konnektoren; neue Hauptversion der App, der Desktop-Lauf vor dem nächsten Release deckt sie ab |
+| directory/publish | Verified-Status für die Organisation lässt sich im Entwicklerportal anfragen (bezahlter Plan, belegte Domain) | ohne Folge (keine Einreichung geplant) |
+| plugins/submit, directory/submission-status | Neuer Abschnitt zum Einspruch gegen eine abgelehnte Fassung oder Einreichung | ohne Folge |
+| platform: model-deprecations, models/overview | nur die Tabellen neu gesetzt; nach Bereinigung der Spaltenbreiten kein inhaltlicher Unterschied | ohne Folge: `evals/tool-routing` nutzt `claude-opus-5`, weiter aktiv |
+
+Pakete: unverändert zu §8 (ext-apps 2.0.4/2.1.0 Nebenversionen, kein Bump ohne eigenen Desktop-Lauf).
