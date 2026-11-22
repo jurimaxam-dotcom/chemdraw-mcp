@@ -247,3 +247,16 @@ def test_einmal_angesehen_gilt_auch_beim_push(repo):
     # derselbe Pfad mit anderem Inhalt ist ein anderes Bild
     neu = _commit(repo, {"assets/p.png": _png(640, 400)})
     assert _lauf(repo, "--bereich", spitze, neu).returncode == 1
+
+
+def test_session_zeile_in_der_commit_nachricht_wird_gesperrt(repo, tmp_path):
+    # Regel 5 (21.11.2026): der Session-Link ist kontoprivat; die Sperre ließ ihn am 22.11. durch.
+    nachricht = tmp_path / "MSG"
+    nachricht.write_text(
+        "Fix\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n"
+        "Claude-Session: https://claude.ai/code/session_01ABC\n"
+    )
+    r = _lauf(repo, "--nachricht", str(nachricht))
+    assert r.returncode == 1 and "Session" in r.stdout
+    nachricht.write_text("Fix\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n")
+    assert _lauf(repo, "--nachricht", str(nachricht)).returncode == 0

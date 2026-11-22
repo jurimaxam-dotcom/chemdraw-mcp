@@ -60,6 +60,8 @@ TESTDATEI = re.compile(r"(^|/)(tests|__tests__)/|\.(test|e2e)\.mjs$")
 BESPRECHUNG = re.compile(
     r"zoom(?:-x)?\.(?:us|de)/|meet\.google\.com/|teams\.microsoft\.com/l/|Meeting[- ]ID|Kenncode", re.I
 )
+# Regel 5 (Jay 21.11.2026): Session-Links sind kontoprivat — weder in Nachricht noch in Dateien.
+SITZUNG = re.compile(r"^\s*Claude-Session:|claude\.ai/code/session_", re.I | re.M)
 
 FIXTURE = re.compile(r"(^|/)__fixtures__/")
 BILD = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".heic"}
@@ -145,6 +147,8 @@ def textbefunde(text: str, datei: str, begriffe: list[re.Pattern], ich: str) -> 
         funde.append("E-Mail-Adresse")
     if BESPRECHUNG.search(text):
         funde.append("Besprechungs-Link oder -Kennung")
+    if SITZUNG.search(text):
+        funde.append("Claude-Session-Link (kontoprivat) — Zeile streichen")
     if any(b.search(text) for b in begriffe):
         funde.append("Treffer der privaten Begriffsliste")
     return funde
