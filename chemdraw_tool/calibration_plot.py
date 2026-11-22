@@ -66,11 +66,21 @@ def build_figure(
         ax.scatter(
             [conc], [sig], s=52, color=UNKNOWN_COLOR, marker="D", zorder=4
         )
+        # Die Zahl gehört in die Ecke, in die die Gerade nicht weiterläuft:
+        # steigt sie, rechts unten bzw. links oben; fällt sie, rechts oben bzw.
+        # links unten. In der rechten Hälfte nach links, damit nichts über den
+        # Achsenrand hinausragt. (Vorher immer rechts oben → Zahl auf der Geraden.)
+        right_half = conc > (line_x[0] + line_x[1]) / 2
+        rising = regression["slope"] >= 0
+        dx = -8 if right_half else 8
+        dy = 8 if right_half == rising else -8
         ax.annotate(
             f"{conc:.4g}" + (" (extrapolated)" if u.get("extrapolated") else ""),
             xy=(conc, sig),
-            xytext=(6, 6),
+            xytext=(dx, dy),
             textcoords="offset points",
+            ha="right" if right_half else "left",
+            va="bottom" if dy > 0 else "top",
             fontsize=9,
             color=UNKNOWN_COLOR,
         )
