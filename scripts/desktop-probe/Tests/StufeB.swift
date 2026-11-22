@@ -141,8 +141,9 @@ final class StufeB: ProbeFall {
 
     let offen = checkpoint("Chat geöffnet") {
       if chatTitel == titel { return (true, "war schon offen") }
-      // Öffnet ein Chat eine Dateivorschau, klappt Desktop die Seitenleiste ein.
-      let zeigen = app.buttons["Show sidebar"].firstMatch
+      // Öffnet ein Chat eine Dateivorschau oder ist das Fenster schmal, klappt Desktop die Seitenleiste ein.
+      // Mit Statuszusatz heißt der Knopf z. B. „Show sidebar, Code, awaiting your input“.
+      let zeigen = app.buttons.matching(NSPredicate(format: "title == 'Show sidebar' OR title BEGINSWITH 'Show sidebar,'")).firstMatch
       if zeigen.exists { zeigen.click() }
       let eintrag = app.buttons.matching(NSPredicate(format: "title == %@ OR title == %@", titel, titel + " Unread response")).firstMatch
       // Einträge unterhalb des sichtbaren Bereichs stehen mit 1 px Höhe im Baum; ein Klick ginge ins

@@ -179,8 +179,14 @@ class ProbeFall: XCTestCase {
   var panel: XCUIElement { chat.webViews["MCP-UI Proxy"].firstMatch }
   var panelInhalt: XCUIElement { panel.webViews["Chem-MCP"].firstMatch }
   /// Name des Konnektors, der geantwortet hat (steht im Tool-Kopf vor dem Toolnamen).
+  /// Bevorzugt die Gruppe um unser iframe „Chem-MCP“, damit ein zusätzliches Host-Widget (z. B. visualize)
+  /// im selben Chat nicht als Konnektor unseres Panels gelesen wird.
   var server: String {
-    let g = chat.groups.containing(.webView, identifier: "MCP-UI Proxy").allElementsBoundByIndex.last
+    let mitInhalt = chat.groups.containing(.webView, identifier: "Chem-MCP").allElementsBoundByIndex
+      .last { !$0.title.isEmpty && !$0.title.hasPrefix("Message ") }
+    if let t = mitInhalt?.title { return t }
+    let g = chat.groups.containing(.webView, identifier: "MCP-UI Proxy").allElementsBoundByIndex
+      .last { !$0.title.isEmpty && !$0.title.hasPrefix("Message ") }
     return g?.title ?? ""
   }
 
