@@ -17,12 +17,12 @@ const out = join(mkdtempSync(join(tmpdir(), "panel-host-")), "host.js");
 await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: "iife", outfile: out, logLevel: "error" });
 
 const client = new Client({ name: "panel-e2e", version: "0.0.0" });
-// HOME zeigt auf einen Wegwerf-Ordner: der Server schreibt seine Dateien nach ~/ChemDraw-Output,
+// HOME zeigt auf einen Wegwerf-Ordner: der Server schreibt seine Dateien nach ~/chempane-output (frisches HOME: kein alter ~/ChemDraw-Output),
 // und der Test soll den echten Ordner des Nutzers nicht füllen. Dafür direkt die venv-Binärdatei (uv bräuchte das echte HOME).
 const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
 if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
 const wegwerfHome = mkdtempSync(join(tmpdir(), "panel-home-"));
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp" }, cwd: repo }));
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMPANE_PROFILE: "mvp" }, cwd: repo }));
 let browser;
 const rote = [];
 try {
@@ -177,7 +177,7 @@ try {
       }));
       messwerte["e5-anki"] = JSON.stringify(a);
       check(a.karten === 2 && a.bilder.length === 2 && a.bilder.every(Boolean), `E5 Anki: zwei Karten mit Vorder-/Rückseite, beide Bilder geladen (${JSON.stringify(a.bilder)})`);
-      check(/^2 cards/.test(a.sub) && /APKG/.test(a.fuss) && /ChemDraw-Output\/anki\//.test(a.fuss), `E5 Anki: Kartenzahl und .apkg-Pfad (${a.sub})`);
+      check(/^2 cards/.test(a.sub) && /APKG/.test(a.fuss) && /chempane-output\/anki\//.test(a.fuss), `E5 Anki: Kartenzahl und .apkg-Pfad (${a.sub})`);
       check(a.knoepfe.every((k) => ["Copy path", "Expand"].includes(k)), `E5 Anki: nur Kopieren/Expand, kein Knopf, der Anki startet (${a.knoepfe})`);
       await page.close();
     }
@@ -757,7 +757,7 @@ try {
         const leak = await f.evaluate(() => {
           const attrs = [...document.querySelectorAll("*")].flatMap((el) => [...el.attributes].map((a) => a.value));
           const all = `${document.body.innerText} ${document.body.textContent} ${attrs.join(" ")} ${document.title}`;
-          return ["aspirin", "acetylsalicyl", "50-78-2", "ChemDraw-Output"].filter((w) => all.toLowerCase().includes(w.toLowerCase()));
+          return ["aspirin", "acetylsalicyl", "50-78-2", "ChemDraw-Output", "chempane-output"].filter((w) => all.toLowerCase().includes(w.toLowerCase()));
         });
         check(leak.length === 0, `U4b: Lernmodus verrät nichts im DOM (${leak.join(", ") || "keine Treffer"})`);
         await page.screenshot({ path: join(uiShots, "study-covered-1000x1200.png") });
@@ -1510,7 +1510,7 @@ try {
     }
     const png = f.locator('span[title$=".png"]');
     const path = await png.getAttribute("title");
-    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "spektren") + "/") &&
+    check(path.startsWith(join(wegwerfHome, "chempane-output", "spektren") + "/") &&
       readFileSync(path).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
       `${spectrum_type}: sichtbarer PNG-Pfad verweist auf echte PNG-Datei in spektren/`);
     await p.screenshot({ path: join(tmpdir(), `panel-host-wave2-${spectrum_type}.png`) });
@@ -1522,7 +1522,7 @@ try {
       `${spectrum_type}: sandboxed Export ruft save_png genau einmal über die Bridge`);
     const savedTitle = await f.getByRole("button", { name: /Saved:/ }).getAttribute("title");
     const savedPath = savedTitle.replace(/^Saved: /, "");
-    check(savedPath.startsWith(join(wegwerfHome, "ChemDraw-Output", "png") + "/") &&
+    check(savedPath.startsWith(join(wegwerfHome, "chempane-output", "png") + "/") &&
       readFileSync(savedPath).subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
       `${spectrum_type}: Export-Rückfall schreibt echte PNG-Datei in png/`);
     await p.close();
@@ -1567,7 +1567,7 @@ try {
       `${title}: Flecken sind den richtigen Bahnen zugeordnet, einschließlich Co-Spot`);
     if (solvent) check(labels.some((label) => label.includes(solvent)), `${title}: Laufmittel steht auch in der exportierten SVG`);
     const path = await f.locator('span[title$=".png"]').getAttribute("title");
-    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "dc-platten") + "/") && existsSync(path),
+    check(path.startsWith(join(wegwerfHome, "chempane-output", "dc-platten") + "/") && existsSync(path),
       `${title}: echte PNG-Datei in dc-platten/`);
     const exportButton = f.getByRole("button", { name: "Export as PNG" });
     await exportButton.click();
@@ -1610,7 +1610,7 @@ try {
       check(Math.abs(await centerX("EP") - await centerX("25")) < 1, "Essigsäure: EP-Linie bei 25 mL");
     }
     const path = await f.locator('span[title$=".png"]').getAttribute("title");
-    check(path.startsWith(join(wegwerfHome, "ChemDraw-Output", "diagramme") + "/") && existsSync(path),
+    check(path.startsWith(join(wegwerfHome, "chempane-output", "diagramme") + "/") && existsSync(path),
       `${input.substance} ${name}: echte PNG-Datei in diagramme/`);
     await f.getByRole("button", { name: "Export as PNG" }).click();
     await f.getByRole("button", { name: /Saved:/ }).waitFor();
@@ -1791,7 +1791,7 @@ try {
     "Anki-Knopf löst genau einen export_anki_deck (deliver=open, Deck ChemDraw) aus");
   prüfe(anki.cards?.length === 1 && anki.cards[0].front.structure && /Methylphenidate/i.test(anki.cards[0].back.text),
     "Eine Karte: Struktur per SMILES vorn, Name hinten");
-  const apkg = join(wegwerfHome, "ChemDraw-Output", "anki", "chemdraw.apkg");
+  const apkg = join(wegwerfHome, "chempane-output", "anki", "chemdraw.apkg");
   prüfe(existsSync(apkg), `Server hat ${apkg} geschrieben`);
 
   // 3c. Show variants (Etappe 3): Panel → echter Server zählt die Stereoisomere auf,
@@ -1856,10 +1856,10 @@ try {
   prüfe(serverCalls.slice(vorExport3d).join() === "save_png", "3D-Export ruft save_png genau einmal über die Bridge");
   const pfad3d = (await frame.getByRole("button", { name: /Saved:/ }).getAttribute("title")).replace(/^Saved: /, "");
   const png3d = readFileSync(pfad3d);
-  prüfe(pfad3d.startsWith(join(wegwerfHome, "ChemDraw-Output", "png") + "/") && png3d.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+  prüfe(pfad3d.startsWith(join(wegwerfHome, "chempane-output", "png") + "/") && png3d.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
     `3D-Export schreibt eine echte PNG-Datei nach png/ (${pfad3d})`);
   const rückmeldung3d = await frame.locator("[data-testid='panel-footer'] .export-feedback").innerText();
-  prüfe(rückmeldung3d.startsWith("Saved: ") && rückmeldung3d.includes("ChemDraw-Output/png/"), `Fußzeile meldet sichtbar: ${rückmeldung3d}`);
+  prüfe(rückmeldung3d.startsWith("Saved: ") && rückmeldung3d.includes("chempane-output/png/"), `Fußzeile meldet sichtbar: ${rückmeldung3d}`);
   // Pixel am linken Kuhlenrand (x = 20/480, y = Mitte): heller Verlauf, nicht Schwarz.
   const randLum = await page.evaluate(async (b64) => {
     const img = new Image();

@@ -14,8 +14,9 @@ HTTP ohne Anmeldung ist deshalb kein Produktmerkmal. Die Adresse ist fest Loopba
 import os
 
 from chempane.server import create_server
+from chempane.settings import env
 
 if __name__ == "__main__":
-    create_server(os.environ.get("CHEMDRAW_PROFILE", "mvp")).run(
+    create_server(env("PROFILE", "mvp")).run(
         transport="streamable-http", host="127.0.0.1", port=int(os.environ.get("PORT", "8791"))
     )
