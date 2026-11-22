@@ -11,7 +11,7 @@ Häkchen in den Extension-Einstellungen von Claude Desktop die Variable über
 "false" an (@anthropic-ai/mcpb 2.1.2, dist/shared/config.js). Alles außerhalb der
 Liste gilt als aus — auch ein nicht ersetzter Platzhalter "${user_config.…}".
 
-Eigenes Modul ohne RDKit-Import, damit `chemdraw-doctor` es billig laden kann.
+Eigenes Modul ohne RDKit-Import, damit `chempane-doctor` es billig laden kann.
 Gelesen bei jedem Aufruf, nicht beim Import: Tests und ein Neustart mit anderer
 Umgebung sehen sofort den neuen Stand.
 """
@@ -38,7 +38,7 @@ def smiles_lookup_enabled() -> bool:
 
 
 def status_line() -> str:
-    """Ein Satz für server.log und chemdraw-doctor."""
+    """Ein Satz für server.log und chempane-doctor."""
     if smiles_lookup_enabled():
         return (
             f"SMILES lookup: on ({ENV_VAR}) — a structure you type is sent to PubChem when "

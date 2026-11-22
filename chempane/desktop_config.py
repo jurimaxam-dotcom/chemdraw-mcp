@@ -288,6 +288,12 @@ def install_entries(entries: dict[str, dict], config_path: Path | None = None) -
         backup = path.with_suffix(path.suffix + ".bak")
         if not backup.exists():
             backup.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+        elif any(name in (existing.get("mcpServers") or {}) for name in RENAMED_CONNECTORS):
+            # Die erste .bak stammt von einer früheren Installation; die Umbenennung löscht
+            # aber Einträge (chemdraw → chempane). Deren Stand gesondert sichern, einmal.
+            renamed_backup = path.with_suffix(path.suffix + ".vor-chempane.bak")
+            if not renamed_backup.exists():
+                renamed_backup.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
 
     merged = merge_connectors(existing, entries)
 

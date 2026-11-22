@@ -212,3 +212,42 @@ def test_server_info_name_is_chempane():
     from chempane.server import create_server
 
     assert create_server("mvp").name == "chempane"
+
+
+# --- Doctor-Rat für Upgrader (Advisor 22.11.2026) ----------------------------------------
+# Nach `uv tool upgrade chemdraw-mcp` liegen in ~/.local/bin nur die vier chemdraw-*-Befehle
+# (gemessen); chempane-install gibt es dort nicht. Der Doctor muss den vorhandenen Befehl nennen.
+
+
+def test_install_command_names_the_old_installer_when_only_it_is_on_path(monkeypatch):
+    from chempane import desktop_config, doctor
+
+    monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
+    monkeypatch.setattr(doctor.shutil, "which", lambda name: "/x/bin/chemdraw-install" if name == "chemdraw-install" else None)
+    assert doctor._install_command() == "chemdraw-install"
+
+
+def test_install_command_prefers_chempane_install(monkeypatch):
+    from chempane import desktop_config, doctor
+
+    monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
+    monkeypatch.setattr(doctor.shutil, "which", lambda name: f"/x/bin/{name}")
+    assert doctor._install_command() == "chempane-install"
+
+
+def test_reinstall_fix_names_the_tool_the_user_installed(monkeypatch):
+    from chempane import desktop_config, doctor
+
+    monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
+    monkeypatch.setattr(doctor.sys, "prefix", "/h/.local/share/uv/tools/chemdraw-mcp")
+    assert "uv tool install --reinstall chemdraw-mcp" in doctor._reinstall_fix()
+    monkeypatch.setattr(doctor.sys, "prefix", "/h/.local/share/uv/tools/chempane")
+    assert "uv tool install --reinstall chempane" in doctor._reinstall_fix()
+
+
+def test_doctor_help_names_chempane():
+    from chempane import doctor
+
+    source = Path(doctor.__file__).read_text(encoding="utf-8")
+    assert 'prog="chempane-doctor"' in source
+    assert "Check a chemdraw-mcp installation" not in source

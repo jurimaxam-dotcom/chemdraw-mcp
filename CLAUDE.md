@@ -12,15 +12,27 @@ never a runtime requirement.
 ```bash
 ./install.sh                 # one-command setup: uv + deps + Claude Desktop config
 uv sync                      # deps only
-uv run chemdraw-tool-server  # run the MCP server (stdio) manually
-uv run chemdraw-doctor       # diagnose the installation (env, paths, network)
+uv run chempane              # run the MCP server (stdio) manually
+uv run chempane-doctor       # diagnose the installation (env, paths, network)
 ```
+
+**Renamed from chemdraw-mcp (22.11.2026, plan `plans/umbenennung-chempane.md`).** Distribution and import package are
+`chempane`; the commands `chempane`, `chempane-install`, `chempane-doctor` are new, the four old ones
+(`chemdraw-mcp`, `chemdraw-tool-server`, `chemdraw-install`, `chemdraw-doctor`) stay as aliases until 1.0. Desktop
+connectors are `chempane` and `chempane-pharma`; the installer replaces `chemdraw`/`chemdraw-pharma` and keeps the
+user's own env values. Rule for everything the user sees: **write new, read old, move nothing** —
+`chempane/settings.py` is the only place that reads `CHEMPANE_*` (falls back to `CHEMDRAW_*`) and picks the output
+folder (`~/chempane-output`, an existing `~/ChemDraw-Output` stays in use). `huelle/chemdraw-mcp` is the old PyPI
+package as a shell: only the shim `chemdraw_tool` (three `main` re-exports) and the four old commands, depending on
+`chempane>=<version>` (`tests/test_huelle.py`; measured upgrade paths in the plan). **User docs (README, `docs/` except
+the developer pages) keep the old names until release 0.12.0** — `main` is live while PyPI still has 0.11.3, which
+reads only `CHEMDRAW_*`; the switch is a release step in the plan.
 
 `install.sh` registers the server via `chempane/desktop_config.py`
 (idempotent merge, writes a `.bak` backup, never touches other configured MCP
 servers). The config logic lives in the package, not in `scripts/`, because the
-wheel ships only `chempane` — PyPI users get `chemdraw-install` and a fully
-working `chemdraw-doctor` from it. Claude Desktop launches MCP servers with a
+wheel ships only `chempane` — PyPI users get `chempane-install` and a fully
+working `chempane-doctor` from it. Claude Desktop launches MCP servers with a
 minimal GUI PATH, so `command` must be an absolute path; the installer resolves
 it and prints what it wrote.
 
@@ -262,8 +274,10 @@ chempane/
 │                            exam_flashcards, compare_compounds); mvp tools only
 ├── privacy.py             — may a typed structure go online? (CHEMPANE_SMILES_LOOKUP,
 │                            default off; read on every call)
-├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
-├── doctor.py              — installation diagnosis (chemdraw-doctor)
+├── settings.py            — names after the rename: CHEMPANE_*/CHEMDRAW_* env, output
+│                            folder, cache name (the only reader of these)
+├── desktop_config.py      — Claude Desktop registration (chempane-install)
+├── doctor.py              — installation diagnosis (chempane-doctor)
 ├── server.py              — MCPServer (mcp 2.x, stdio) + tool definitions;
 │                            `_INSTRUCTIONS` is the area map the client may put
 │                            in the system prompt — the one place the five
@@ -272,7 +286,7 @@ chempane/
 ```
 
 Pipeline: input (name/SMILES) → resolver → RDKit 2D → image_export (PNG/SVG)
-[→ cdxml_writer if requested] → `~/ChemDraw-Output/`
+[→ cdxml_writer if requested] → `~/chempane-output/` (or an existing `~/ChemDraw-Output/`)
 
 Output formats: `generate_*` tools accept `formats=["png","svg","cdxml"]`,
 default `["png","svg"]`. CDXML only on explicit request, and only for actual
@@ -315,7 +329,7 @@ only, opt-in) covers name, key facts and groups — nothing in that mode may lea
 `toolresult` (placeholder in `components/ToolPlaceholder.jsx`).
 
 **Tool titles, annotations and prompts live next to the registration.** `_TOOL_LABELS` in `server.py` gives
-every tool a human `title` and honest `ToolAnnotations` (a tool that writes under `~/ChemDraw-Output` is not
+every tool a human `title` and honest `ToolAnnotations` (a tool that writes under the output folder is not
 read-only; `export_anki_deck` is destructive because it updates notes in Anki); a new tool needs an entry, and
 `tests/test_tool_annotations.py` lists the writing tools explicitly. `save_png` and `load_panel_part` carry
 `_meta.ui.visibility: ["app"]` without a `resourceUri`, so they stay registered and counted but are not panel
@@ -328,7 +342,7 @@ tools.
 `result_budget.py` (wrapped in `create_server`): compact JSON instead of indented, and above 55,000 characters
 per copy the biggest strings (SVGs), then lists, are replaced by `""`/`[]` and noted under `_deferred`; the panel
 fetches them as one block in pieces via `load_panel_part` (`loadToolData`, used by `main.jsx` and every
-`callServerTool` site). The block lives in memory and on disk (`~/Library/Caches/chemdraw-mcp/panel-parts/`,
+`callServerTool` site). The block lives in memory and on disk (`~/Library/Caches/chempane/panel-parts/`,
 last 200, token = content hash), because Desktop may hand old results to a fresh panel when a chat is reopened (unmeasured),
 also after a server restart; if the block is gone the panel names the written files instead of an empty area.
 Tests redirect `result_budget.STORE_DIR` (autouse fixture in `tests/conftest.py`). `tests/test_result_size.py` holds every panel tool plus large cases under 120,000 and
@@ -344,7 +358,7 @@ wrapped too.
 
 Test output paths are redirected with `monkeypatch.setattr` against
 `chempane.server.<DIR>`. `tests/conftest.py` compares the real
-`~/ChemDraw-Output` before and after the suite, so a redirect that points
+`~/chempane-output` and `~/ChemDraw-Output` before and after the suite, so a redirect that points
 nowhere fails loudly instead of quietly writing into the user's folder.
 
 **The protein panel carries a 3D engine — and a fallback that must survive.**

@@ -1,4 +1,6 @@
-"""`chemdraw-doctor` — diagnose a chemdraw-mcp installation before it fails silently.
+"""`chempane-doctor` — diagnose a chempane installation before it fails silently.
+
+(Bis 1.0 auch als `chemdraw-doctor` erreichbar; Paket bis 0.11.3: chemdraw-mcp.)
 
 Every problem this project actually has in the field looks identical from the
 chat window: "the server does nothing". This command makes the difference
@@ -109,8 +111,11 @@ def _installer_helpers():
 def _reinstall_fix() -> str:
     if _installer_helpers().running_from_repo():
         return "uv sync   (then quit and restart Claude Desktop completely)"
+    # Wer 0.11.3 per `uv tool install chemdraw-mcp` hatte, läuft nach dem Upgrade weiter im
+    # Tool-venv der Hülle — dann muss der Rat die Hülle neu installieren, nicht chempane.
+    tool = "chemdraw-mcp" if Path(sys.prefix).name == "chemdraw-mcp" else "chempane"
     return (
-        "uv tool install --reinstall chemdraw-mcp   "
+        f"uv tool install --reinstall {tool}   "
         "(then quit and restart Claude Desktop completely)"
     )
 
@@ -253,7 +258,20 @@ def check_uv(*, resolve: Callable[[], str] | None = None) -> CheckResult:
 
 def _install_command() -> str:
     """Der Installer, den dieser Nutzer hat: `./install.sh` gibt es nur im Clone."""
-    return "./install.sh" if _installer_helpers().running_from_repo() else "chempane-install"
+    if _installer_helpers().running_from_repo():
+        return "./install.sh"
+    return _installer_name()
+
+
+def _installer_name() -> str:
+    """chempane-install, außer der Nutzer hat nur den alten Befehl auf dem PATH.
+
+    Nach `uv tool upgrade chemdraw-mcp` liegen in ~/.local/bin nur die alten Befehle der Hülle
+    (gemessen 22.11.2026) — dann den nennen, den der Nutzer wirklich hat.
+    """
+    if shutil.which("chempane-install") is None and shutil.which("chemdraw-install") is not None:
+        return "chemdraw-install"
+    return "chempane-install"
 
 
 def _bundle_dir() -> Path:
@@ -355,7 +373,7 @@ def check_desktop_config(
                     "file at an absolute path. Claude Desktop launches MCP servers with the "
                     "minimal GUI PATH and will fail to start it without any message."
                 ),
-                fix="chempane-install   (rewrites the entry with the absolute launcher path)",
+                fix=f"{_installer_name()}   (rewrites the entry with the absolute launcher path)",
             )
         # Clone verschoben oder gelöscht: uv ist da, das Projekt nicht mehr.
         if gone := _missing_project_dir(servers[connector]):
@@ -732,9 +750,9 @@ def main(
     checks: Iterable[Callable[[], CheckResult]] | None = None,
 ) -> int:
     parser = argparse.ArgumentParser(
-        prog="chemdraw-doctor",
+        prog="chempane-doctor",
         description=(
-            "Check a chemdraw-mcp installation and print, for every problem, the exact "
+            "Check a chempane installation and print, for every problem, the exact "
             "command that fixes it. Exit code 0 means usable (limitations included)."
         ),
     )

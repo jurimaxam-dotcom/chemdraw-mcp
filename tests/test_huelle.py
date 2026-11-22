@@ -65,7 +65,9 @@ def test_shim_entry_points_lead_to_chempane():
 def huelle_wheel(tmp_path_factory) -> zipfile.ZipFile:
     out = tmp_path_factory.mktemp("huelle")
     subprocess.run(
-        ["uv", "build", "--wheel", "--out-dir", str(out), str(HUELLE)],
+        # Wie publish.yml: ohne --wheel baut uv erst das sdist und daraus das Wheel — so fällt
+        # auf, wenn das sdist kaputt ist (Symlinks auf ../../LICENSE zeigten aus dem Tarball).
+        ["uv", "build", "--out-dir", str(out), str(HUELLE)],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
     wheels = list(out.glob("*.whl"))
@@ -100,3 +102,11 @@ def test_main_wheel_and_sdist_do_not_contain_the_huelle(tmp_path):
     sdist = next(tmp_path.glob("*.tar.gz"))
     with tarfile.open(sdist) as tar:
         assert not any("/huelle/" in n or "/chemdraw_tool/" in n for n in tar.getnames())
+
+
+def test_huelle_license_files_are_copies_of_the_root_files():
+    """Echte Dateien statt Symlinks (sdist), inhaltsgleich mit der Wurzel."""
+    for name in ("LICENSE", "NOTICE"):
+        path = HUELLE / name
+        assert not path.is_symlink(), name
+        assert path.read_bytes() == (ROOT / name).read_bytes(), f"{name} der Hülle weicht ab"

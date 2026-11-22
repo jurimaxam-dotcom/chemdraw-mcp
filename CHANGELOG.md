@@ -6,6 +6,17 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+The project is renamed from chemdraw-mcp to **chempane**. No tool, schema or drawing change.
+
+### Changed
+
+- Package and import name `chempane`; new commands `chempane`, `chempane-install` and `chempane-doctor`. The old commands `chemdraw-mcp`, `chemdraw-tool-server`, `chemdraw-install` and `chemdraw-doctor` keep working until 1.0.
+- `pip install -U chemdraw-mcp`, `uv tool upgrade chemdraw-mcp` and `uvx chemdraw-mcp` install chempane through a small `chemdraw-mcp` package that only keeps the old commands; existing Claude Desktop configurations keep starting.
+- Claude Desktop connectors are called `chempane` and `chempane-pharma`. Running `chempane-install` again replaces the old `chemdraw` and `chemdraw-pharma` entries, keeps your own environment values and saves the previous file as `claude_desktop_config.json.vor-chempane.bak`. Claude Desktop treats renamed connectors as new, so check their tool permissions once.
+- Environment variables are `CHEMPANE_PROFILE`, `CHEMPANE_SMILES_LOOKUP`, `CHEMPANE_VAULT_PATH` and `CHEMPANE_LOG_LEVEL`; the `CHEMDRAW_` names are still read until 1.0 (the new one wins), and `chempane-doctor` lists old ones it finds.
+- New installations write to `~/chempane-output`; an existing `~/ChemDraw-Output` stays in use and nothing is moved.
+- The `.mcpb` extensions keep their identity (they update in place) and are shown as "chempane".
+
 ## [0.11.3] — 2026-11-22
 
 Drawing and figure fixes. No tool, schema or panel change.

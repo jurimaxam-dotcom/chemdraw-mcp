@@ -424,3 +424,18 @@ def test_installed_entry_prefers_the_chempane_launcher(tmp_path, monkeypatch):
     monkeypatch.setattr(desktop_config.sys, "executable", str(venv_bin / "python"))
     entry = desktop_config.build_installed_entry(profile="mvp")
     assert entry["command"] == str(venv_bin / "chempane")
+
+
+def test_migration_backs_up_the_old_entries_even_when_a_bak_exists(tmp_path):
+    """Wer schon einmal installiert hat, hat eine .bak von damals — sie wird bewusst nicht
+    überschrieben. Die Umbenennung löscht aber Einträge; die müssen trotzdem gesichert sein."""
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    _old_config(cfg, uv)
+    alt_bak = cfg.with_suffix(".json.bak")
+    alt_bak.write_text('{"mcpServers": {}}', encoding="utf-8")
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    assert alt_bak.read_text(encoding="utf-8") == '{"mcpServers": {}}', "erste .bak bleibt"
+    sicherung = cfg.with_suffix(".json.vor-chempane.bak")
+    assert sicherung.exists(), "Stand vor der Umbenennung fehlt"
+    assert {"chemdraw", "chemdraw-pharma"} <= set(json.loads(sicherung.read_text())["mcpServers"])
