@@ -569,3 +569,39 @@ def test_substance_names_are_not_taken_for_the_method(spectrum_type, title):
 
     shown, _ = _title_and_labels(spectrum_type, title)
     assert shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
+
+
+@pytest.mark.parametrize(
+    "raw",
+    # Zweitmeinung Gemini 22.11.: Ladung ohne Hochzeichen und Kürzel aus
+    # Elementbuchstaben sind keine Summenformeln.
+    ["SO42-", "PO43-", "NH4+", "UV254", "CYP2C9", "PS2", "SN2", "SN1", "E2"],
+)
+def test_charges_and_acronyms_stay_as_typed(raw):
+    _, labels = _title_and_labels("ir", "", [raw])
+    assert labels == [raw]
+
+
+@pytest.mark.parametrize(
+    ("spectrum_type", "title", "named"),
+    [
+        ("cd", "Quinine in β-CD", False),
+        ("fluorescence", "Green Fluorescent Protein (GFP)", False),
+        ("ir", "FTIR Aspirin", True),
+        ("ms", "HRMS Paracetamol", True),
+        ("ms", "LC-MS Paracetamol", True),
+    ],
+)
+def test_method_detection_edge_cases(spectrum_type, title, named):
+    from chemdraw_tool.spectrum import _title_names_method
+
+    assert _title_names_method(spectrum_type, title) is named
+
+
+@pytest.mark.parametrize(
+    ("raw", "shown"),
+    [("CH3-CO", "CH₃-CO"), ("H2SO4-solution", "H₂SO₄-solution")],
+)
+def test_hyphen_after_a_formula_is_not_a_charge(raw, shown):
+    _, labels = _title_and_labels("ir", "", [raw])
+    assert labels == [shown]

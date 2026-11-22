@@ -98,16 +98,16 @@ SPECTRUM_TYPES: dict[str, SpectrumConfig] = {
 # Kürzel groß und mit Wortgrenze (sonst wären „Ir(ppy)3“ und „Cd complex“ eine
 # Methode), Wörter englisch und deutsch, ohne Groß-/Kleinschreibung.
 _METHOD_IN_TITLE: dict[str, str] = {
-    "ir": r"\bIR\b|(?i:infrared|infrarot)",
+    "ir": r"\b(?:FT-?)?IR\b|(?i:infrared|infrarot)",
     "nir": r"\bNIR\b|(?i:near[- ]infrared|nahinfrarot)",
     "raman": r"(?i:raman)",
     "uv_vis": r"(?i:\bUV\s*[/\-]?\s*Vis)",
-    "fluorescence": r"(?i:fluorescen(?:ce|t)\b|fluoreszenz)",
+    "fluorescence": r"(?i:fluorescence|fluoreszenz)",
     "ord": r"\bORD\b|(?i:optical rotatory|rotationsdispersion)",
-    "cd": r"\bCD\b|(?i:circular dichroism|zirkulardichroismus)",
+    "cd": r"(?<![\w\-])CD\b|(?i:circular dichroism|zirkulardichroismus)",
     "nmr_1h": r"(?i:\b1H[\s\-]*NMR\b|proton(?:en)?[\s\-]*NMR)",
     "nmr_13c": r"(?i:\b13C[\s\-]*NMR\b|carbon[\s\-]*NMR)",
-    "ms": r"\bMS\b|(?i:mass spec|massenspektr)",
+    "ms": r"\b(?:HR)?MS\b|(?i:mass spec|massenspektr)",
 }
 _SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 
@@ -126,9 +126,13 @@ _ELEMENTS = frozenset(
     "Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac "
     "Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr D".split()
 )
+# Direkt folgendes +/− heißt Ladung ohne Hochzeichen („SO42-“): dann ist
+# nicht zu entscheiden, welche Ziffer Ladung ist — der Text bleibt, wie getippt.
 _FORMULA = re.compile(
-    r"(?<![A-Za-z0-9])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*)+)(?![A-Za-z0-9])"
+    r"(?<![A-Za-z0-9])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*)+)(?![A-Za-z0-9]|[+\-−](?![A-Za-z0-9(]))"
 )
+# Kürzel aus Elementbuchstaben (SN2, PS2, CYP2C9, UV254) sind keine Formeln.
+_NOT_FORMULA = re.compile(r"^(?:S[NE]\d|E\d|PS\d|CYP|UV)|\d{3}")
 # Nur vor „NMR“: in einem ¹H-Spektrum heißt „2H“ zwei Protonen, nicht Deuterium.
 _ISOTOPE = re.compile(r"(?<![A-Za-z0-9])(1|2|13|15|19|31)(H|C|N|F|P)(?=[\s\-]*(?i:nmr)\b)")
 _DEUTERATED = re.compile(r"(?<=-d)(\d+)\b")
@@ -140,6 +144,8 @@ def _subscript_formula(match: re.Match) -> str:
     # Erst ab zwei Elementen und mit Ziffer eine Summenformel — „C2“ oder „S1“
     # sind Atomnummern bzw. Zustände und bleiben, wie getippt.
     if len(symbols) < 2 or not any(c.isdigit() for c in token):
+        return token
+    if _NOT_FORMULA.search(token):
         return token
     if not all(s in _ELEMENTS for s in symbols):
         return token
