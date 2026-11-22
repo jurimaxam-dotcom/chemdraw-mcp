@@ -493,7 +493,7 @@ function nahtMessen(dir, bilder, bewegungen) {
 function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}, nahtlos = false) {
   const ziel = join(MODUS.ausgabe, `${name}.mp4`);
   const naht = nahtMessen(dir, bilder, bewegungen);
-  // 2×-Master in nativer Screenshot-Größe für Ausschnitte in der Montage (Vermarktung 18.11.: aus 1080 gezoomt wird es weich)
+  // 2×-Master in nativer Screenshot-Größe für Ausschnitte in der Montage (Montage 18.11.: aus 1080 gezoomt wird es weich)
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
     "-vf", "scale=out_range=tv,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "12", "-pix_fmt", "yuv420p",
     "-r", String(MODUS.fps), "-movflags", "+faststart", ziel.replace(/\.mp4$/, ".master.mp4")]);
@@ -585,7 +585,7 @@ function videoBauen(name, bilder, endeMs, dir, hoehe, beats, quelle, breite) {
   const vorschau = ziel.replace(/\.mp4$/, ".png");
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-ss", (werte.sekunden * 0.4).toFixed(2), "-i", ziel,
     "-frames:v", "1", "-vf", "scale=360:-2:flags=lanczos", vorschau]);
-  // Flach für Menschen, `beats` in der Form von vermarktung/video/src/lib/beats.ts (Beat[])
+  // Flach für Menschen, `beats` in der Form von video/src/lib/beats.ts im Clip-Repo (Beat[])
   const flach = {};
   for (const b of beats) {
     const basis = b.art === "panel" || b.art === "ende" ? b.art : b.ziel ?? b.art;
@@ -713,7 +713,7 @@ async function proteinBereit({ frame, page }) {
 
 // Protein-Feed: warten, bis die Einblend-Drehung zu Ende ist. Läuft ein Kameraübergang noch, nimmt Mol*
 // setState(…, 0) nicht sofort, sondern führt den Übergang weiter — Anlauf-Rampe und Bild 0 ≠ Ruhelage
-// (Messung der Vermarktung, 18.11.). proteinBereit wartet in Echtzeit, die Uhr kam dabei nur ~50 ms weit.
+// (Messung beim Clip-Schnitt, 18.11.). proteinBereit wartet in Echtzeit, die Uhr kam dabei nur ~50 ms weit.
 async function cartoonSteht({ frame, page }, name) {
   for (let i = 0; ; i++) {
     const z = await frame.evaluate(() => {
@@ -1033,7 +1033,7 @@ const SZENEN = {
       await halten(1000);
     },
   },
-  // ── Kerntool-Schleifen (20.11.2026, Auftrag der Vermarktung): je Werkzeug ein Feed-Clip, 8–10 s, Bild 0 =
+  // ── Kerntool-Schleifen (20.11.2026, Clip-Auftrag): je Werkzeug ein Feed-Clip, 8–10 s, Bild 0 =
   // Ruhelage, das letzte Bild führt ohne Sprung auf Bild 0 zurück (Naht wird gemessen, `nahtlos`). Feste
   // Argumente und fester Clipname; nur mit --feed. Rechtecke je Clip: panel, buehne, reiter, legende (+ Extras).
   // generate_molecule, Atorvastatin: zwei Gruppen-Chips (Atome leuchten), Data und zurück auf Structure
@@ -1417,7 +1417,7 @@ const SZENEN = {
       await halten(150);
     },
   },
-  // ── Folgeauftrag der Vermarktung (Tisch-Faden 20261120-080521, 20.11.2026): Ziehen sichtbar machen.
+  // ── Folgeauftrag (Tisch-Faden 20261120-080521, 20.11.2026): Ziehen sichtbar machen.
   // Protein mit Zeiger-Zug, hell wie `protein` (gleiche Argumente, Startlage und Rechtecke): ein echter
   // waagerechter Zug über die Mol*-Fläche (Trackball, kein selbst gesetzter Winkel) dreht das Modell genau
   // 360° — die Pixel je Umdrehung werden vor der Aufnahme gemessen. Danach Rainbow N→C und zurück auf die
