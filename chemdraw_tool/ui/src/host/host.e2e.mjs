@@ -1484,8 +1484,14 @@ try {
     const f = await mount(p, "generate_spectrum", { spectrum_type, title, peaks });
     await f.locator(".spectrum-svg svg").waitFor();
     const labels = await f.locator(".spectrum-svg svg text").allTextContents();
-    check(labels.some((t) => t.includes(axis)) && peaks.every((peak) => labels.includes(peak.label)),
+    // Der Server stellt Formeln tief (CH3 → CH₃, 0.11.3); verglichen wird mit der getippten Fassung.
+    const typed = labels.map((t) => t.replace(/[₀-₉]/g, (d) => String(d.charCodeAt(0) - 0x2080)));
+    check(labels.some((t) => t.includes(axis)) && peaks.every((peak) => typed.includes(peak.label)),
       `${spectrum_type}: echte SVG mit Achseneinheit und allen Peakbeschriftungen`);
+    if (spectrum_type === "nmr_1h") {
+      check(labels.includes("CH₃ triplet") && labels.includes("CH₂ quartet"),
+        "nmr_1h: Formeln in Peakbeschriftungen tiefgestellt (CH₃, CH₂)");
+    }
     if (spectrum_type !== "ms") {
       const [left, right] = spectrum_type === "ir" ? ["4000", "500"] : ["12", "0"];
       const tickX = async (label) => f.locator(".spectrum-svg svg text").filter({ hasText: new RegExp(`^${label}$`) }).first()
