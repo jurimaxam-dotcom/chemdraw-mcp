@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -1288,11 +1288,11 @@ wheels = [
 
 [[package]]
 name = "py2opsin"
-version = "1.2.0"
+version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5b/dd/fbd0583551e53b32fad093367422d722117d55d06d813acfa2f071c57d00/py2opsin-1.2.0.tar.gz", hash = "sha256:6e1fb22cc7ecaf9622dd770811ccaaced0348a011d6cb6e847dc3c82fd346147", size = 13382561, upload-time = "2026-03-16T13:08:34.732Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/64/53/d99695bb995f2634b45fa08e3b96371f3410a152909e3acfe9046b37bb39/py2opsin-1.3.0.tar.gz", hash = "sha256:a42849f39e960939da08b14123e3fbe7a9be0e7b0b7777efeaafae89381990d2", size = 13721596, upload-time = "2026-11-19T03:22:18.305Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/7a/18e4043d62ec93d4062c3ad489103a5f71698b8230102d16320a6332d3b8/py2opsin-1.2.0-py3-none-any.whl", hash = "sha256:56c925f211b6a90979da2c322bbf70edbe0d33a9b977ec8a12747c06847bd2e9", size = 13377795, upload-time = "2026-03-16T13:08:32.327Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/e3/c215f036223fab9602719b1732057c897945d7112f35c508b27592c41a17/py2opsin-1.3.0-py3-none-any.whl", hash = "sha256:0c43b2b8dfd16a9d4ae625f00a348fd5ba1877d14571251b00a5bc537a0ebdc4", size = 13716533, upload-time = "2026-11-19T03:22:15.619Z" },
 ]
 
 [[package]]
