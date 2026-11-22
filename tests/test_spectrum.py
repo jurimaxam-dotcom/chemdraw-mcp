@@ -605,3 +605,9 @@ def test_method_detection_edge_cases(spectrum_type, title, named):
 def test_hyphen_after_a_formula_is_not_a_charge(raw, shown):
     _, labels = _title_and_labels("ir", "", [raw])
     assert labels == [shown]
+
+
+def test_charged_group_stays_whole():
+    # Codex-Review 22.11.: die Teilformel in der Klammer wurde einzeln tiefgestellt.
+    _, labels = _title_and_labels("ms", "", ["(CH3)3Si+"])
+    assert labels == ["(CH3)3Si+"]

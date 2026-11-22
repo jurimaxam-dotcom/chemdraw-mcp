@@ -14,8 +14,8 @@ Drawing and figure fixes. No tool, schema or panel change.
 
 - Quinine and other quinuclidine cages: the bridgehead nitrogen is no longer reported as an unspecified stereocentre when its partner carbon fixes it.
 - Cage molecules whose default 2D layout puts an atom on top of a bond are laid out with CoordGen instead, so no bond crosses another (quinine).
-- Calibration curve: the sample value is placed on the side the line does not run into, so it no longer sits on the line.
-- Spectra: formulas in titles and peak labels are subscripted (H₂SO₄, CH₃, CDCl₃, DMSO-d₆) and NMR isotopes superscripted (¹H NMR). Proton counts such as "2H", charges typed without superscripts and acronyms such as SN2 stay as typed.
+- Calibration curve: the sample value is placed on the side the line does not run into, so it no longer sits on the line or on a standard.
+- Spectra: formulas in titles and peak labels are subscripted (H₂SO₄, CH₃, CDCl₃, DMSO-d₆) and NMR isotopes superscripted (¹H NMR). Proton counts such as "2H", charged groups typed without superscripts and acronyms such as SN2 stay as typed.
 - Spectra: a title that already names the method ("Paracetamol 1H NMR") is no longer prefixed a second time.
 
 ## [0.11.2] — 2026-11-21

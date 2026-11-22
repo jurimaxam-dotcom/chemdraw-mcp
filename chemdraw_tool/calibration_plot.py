@@ -42,6 +42,7 @@ def build_figure(
 
     ax.scatter(x, y, s=42, color=POINT_COLOR, zorder=3, label="Standards")
 
+    labels: list = []
     for u in unknowns:
         conc = u["concentration"]
         sig = u["signal"]
@@ -66,24 +67,7 @@ def build_figure(
         ax.scatter(
             [conc], [sig], s=52, color=UNKNOWN_COLOR, marker="D", zorder=4
         )
-        # Die Zahl gehört in die Ecke, in die die Gerade nicht weiterläuft:
-        # steigt sie, rechts unten bzw. links oben; fällt sie, rechts oben bzw.
-        # links unten. In der rechten Hälfte nach links, damit nichts über den
-        # Achsenrand hinausragt. (Vorher immer rechts oben → Zahl auf der Geraden.)
-        right_half = conc > (line_x[0] + line_x[1]) / 2
-        rising = regression["slope"] >= 0
-        dx = -8 if right_half else 8
-        dy = 8 if right_half == rising else -8
-        ax.annotate(
-            f"{conc:.4g}" + (" (extrapolated)" if u.get("extrapolated") else ""),
-            xy=(conc, sig),
-            xytext=(dx, dy),
-            textcoords="offset points",
-            ha="right" if right_half else "left",
-            va="bottom" if dy > 0 else "top",
-            fontsize=9,
-            color=UNKNOWN_COLOR,
-        )
+        labels.append((u, conc, sig))
 
     subtitle = f"{regression['equation']}    R² = {regression['r_squared']:.5f}"
     ax.set_title(f"{title}\n{subtitle}" if title else subtitle, fontsize=11)
@@ -95,7 +79,70 @@ def build_figure(
         ax.scatter([], [], s=52, color=UNKNOWN_COLOR, marker="D", label="Samples")
     ax.legend(frameon=False, loc="best")
     fig.tight_layout()
+    _place_sample_labels(fig, ax, regression, x, y, line_x, labels)
     return fig
+
+
+def _corners(conc: float, line_x: list, rising: bool) -> list[tuple[int, int]]:
+    """Ecken (dx, dy in Punkten), bevorzugte zuerst.
+
+    Die Zahl gehört dorthin, wohin die Gerade nicht weiterläuft: steigt sie,
+    rechts unten bzw. links oben; fällt sie, rechts oben bzw. links unten. In
+    der rechten Hälfte nach links, damit nichts über den Achsenrand ragt.
+    """
+    right_half = conc > (line_x[0] + line_x[1]) / 2
+    dx = -8 if right_half else 8
+    dy = 8 if right_half == rising else -8
+    return [(dx, dy), (-dx, -dy), (dx, -dy), (-dx, dy)]
+
+
+def _place_sample_labels(fig, ax, regression, x, y, line_x, labels) -> None:
+    """Probenzahlen setzen und im gerenderten Bild prüfen: frei von Gerade, Standards, Rand.
+
+    Erst nach tight_layout, weil der Test in Pixeln rechnet. Passt keine Ecke,
+    bleibt die bevorzugte (vorher: immer rechts oben, oft auf der Geraden).
+    """
+    if not labels:
+        return
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+
+    renderer = FigureCanvasAgg(fig).get_renderer()
+    (line,) = [ln for ln in ax.lines if ln.get_zorder() == 1]
+    line_path = line.get_path().transformed(line.get_transform())
+    standards = ax.transData.transform(list(zip(x, y)))
+    axes_box = ax.get_window_extent(renderer)
+    marker_pad = 5 * fig.dpi / 72  # halber Markerdurchmesser plus Luft
+
+    def free(box) -> bool:
+        if line_path.intersects_bbox(box, filled=False):
+            return False
+        if box.x0 < axes_box.x0 or box.x1 > axes_box.x1 or box.y0 < axes_box.y0 or box.y1 > axes_box.y1:
+            return False
+        grown = box.padded(marker_pad)
+        return not any(grown.contains(px, py) for px, py in standards)
+
+    def put(text, conc, sig, dx, dy):
+        return ax.annotate(
+            text,
+            xy=(conc, sig),
+            xytext=(dx, dy),
+            textcoords="offset points",
+            ha="left" if dx > 0 else "right",
+            va="bottom" if dy > 0 else "top",
+            fontsize=9,
+            color=UNKNOWN_COLOR,
+        )
+
+    for u, conc, sig in labels:
+        text = f"{conc:.4g}" + (" (extrapolated)" if u.get("extrapolated") else "")
+        candidates = _corners(conc, line_x, regression["slope"] >= 0)
+        for dx, dy in candidates:
+            ann = put(text, conc, sig, dx, dy)
+            if free(ann.get_window_extent(renderer)):
+                break
+            ann.remove()
+        else:
+            put(text, conc, sig, *candidates[0])
 
 
 def render_png(**kwargs) -> bytes:

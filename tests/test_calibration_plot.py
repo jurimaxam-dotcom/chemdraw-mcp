@@ -73,3 +73,18 @@ def test_sample_label_stays_inside_the_axes():
         box = label.get_window_extent(renderer)
         assert axes_box.x0 <= box.x0 and box.x1 <= axes_box.x1, label.get_text()
         assert axes_box.y0 <= box.y0 and box.y1 <= axes_box.y1, label.get_text()
+
+
+def test_sample_label_avoids_a_standard_next_to_its_corner():
+    # Codex-Review 22.11.: Probe 1,88 → Zahl „3.1“ lag genau auf dem Standard (3, 2).
+    x, y = [1, 2, 3, 4, 5], [0, 1, 2, 3, 3]
+    fig, renderer = _rendered(x, y, [1.88])
+    ax = fig.axes[0]
+    standards = ax.transData.transform(list(zip(x, y)))
+    line = _regression_line(fig)
+    path = line.get_path().transformed(line.get_transform())
+    for label in _labels(fig):
+        box = label.get_window_extent(renderer)
+        assert not path.intersects_bbox(box, filled=False), label.get_text()
+        for px, py in standards:
+            assert not box.expanded(1.0, 1.0).padded(4).contains(px, py), (label.get_text(), px, py)

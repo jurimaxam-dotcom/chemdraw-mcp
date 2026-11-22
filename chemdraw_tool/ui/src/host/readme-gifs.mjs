@@ -46,8 +46,8 @@
 // generate_dose_response, generate_tlc). Mit kern-plot startet der Server im Profil `full` (Kalibrierung, PK und
 // Dosis-Wirkung fehlen im mvp-Profil); alle anderen Szenen laufen weiter auf `mvp`. Ausgabe <clip>-plot.*
 //   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed --args plots.json kern-plot
-//   plots.json: { "chinin-kalibrierung": { "tool": "generate_calibration_curve", "args": { "concentrations": [0.05, 0.1],
-//     "signals": [27.1, 53.0], "unknown_signals": [40.2] }, "inhalt": 640 } }
+//   plots.json: { "chinin-kalibrierung": { "tool": "generate_calibration_curve", "args": { "concentrations": [0.05, 0.1, 0.2],
+//     "signals": [27.1, 53.0, 101.4], "unknown_signals": [40.2] }, "inhalt": 640 } }
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";

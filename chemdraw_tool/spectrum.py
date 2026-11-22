@@ -133,6 +133,7 @@ _FORMULA = re.compile(
 )
 # Kürzel aus Elementbuchstaben (SN2, PS2, CYP2C9, UV254) sind keine Formeln.
 _NOT_FORMULA = re.compile(r"^(?:S[NE]\d|E\d|PS\d|CYP|UV)|\d{3}")
+_CHARGED_WORD = re.compile(r"[A-Za-z0-9)\]][+\-−][)\],.;:]*$")
 # Nur vor „NMR“: in einem ¹H-Spektrum heißt „2H“ zwei Protonen, nicht Deuterium.
 _ISOTOPE = re.compile(r"(?<![A-Za-z0-9])(1|2|13|15|19|31)(H|C|N|F|P)(?=[\s\-]*(?i:nmr)\b)")
 _DEUTERATED = re.compile(r"(?<=-d)(\d+)\b")
@@ -160,7 +161,12 @@ def chem_text(text: str) -> str:
     """
     if "$" in text:
         return text
-    text = _FORMULA.sub(_subscript_formula, text)
+    # Ein Wort, das mit einer Ladung endet („(CH3)3Si+“), bleibt ganz, wie
+    # getippt — sonst würde nur die Teilformel in der Klammer tiefgestellt.
+    text = " ".join(
+        w if _CHARGED_WORD.search(w) else _FORMULA.sub(_subscript_formula, w)
+        for w in text.split(" ")
+    )
     text = _ISOTOPE.sub(lambda m: m.group(1).translate(_SUP) + m.group(2), text)
     return _DEUTERATED.sub(lambda m: m.group(1).translate(_SUB), text)
 
