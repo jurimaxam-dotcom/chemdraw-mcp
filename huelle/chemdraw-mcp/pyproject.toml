@@ -1,0 +1,38 @@
+# Hülle des alten PyPI-Pakets chemdraw-mcp (Umbenennung in chempane, 22.11.2026).
+# Liefert keine Moduldateien von chempane — nur den Shim chemdraw_tool und die vier
+# alten Befehle. Gründe und Messungen: tests/test_huelle.py. Version und Untergrenze
+# der Abhängigkeit laufen mit der Version im Wurzel-pyproject (Test).
+[project]
+name = "chemdraw-mcp"
+version = "0.11.3"
+description = "Renamed to chempane. This package installs chempane and keeps the old commands working."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "jurimaxam-dotcom" }]
+requires-python = ">=3.11"
+dependencies = ["chempane>=0.11.3"]
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+
+[project.urls]
+Repository = "https://github.com/jurimaxam-dotcom/chemdraw-mcp"
+
+[project.scripts]
+chemdraw-mcp = "chemdraw_tool.server:main"
+chemdraw-tool-server = "chemdraw_tool.server:main"
+chemdraw-doctor = "chemdraw_tool.doctor:main"
+chemdraw-install = "chemdraw_tool.desktop_config:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["chemdraw_tool"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["chemdraw_tool", "README.md", "LICENSE", "NOTICE"]
