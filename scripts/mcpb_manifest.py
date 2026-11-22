@@ -25,15 +25,15 @@ BASE = Path(__file__).resolve().parent.parent / "mcpb" / "manifest.json"
 
 PHARMA = {
     "name": "chemdraw-mcp-pharma",
-    "display_name": "ChemDraw MCP Pharma (unofficial)",
+    "display_name": "chempane pharma (unofficial)",
     "description": (
-        "Pharmacy add-on to ChemDraw MCP: calculators for solutions, content "
+        "Pharmacy add-on to chempane: calculators for solutions, content "
         "determination and pharmacokinetics, plus calibration, pharmacology and "
         "substrate-scope figures as PNG/SVG files with an interactive panel."
     ),
     "long_description": (
-        "The second connector of chemdraw-mcp. It adds 7 tools to the default "
-        "ChemDraw MCP extension and repeats none of them: the substrate-scope figure "
+        "The second connector of chempane. It adds 7 tools to the default "
+        "chempane extension and repeats none of them: the substrate-scope figure "
         "(generate_scope_table), the calibration curve with LOD/LOQ "
         "(generate_calibration_curve), plasma-concentration and dose-response curves "
         "(generate_pk_curve, generate_dose_response), and calculators for solutions "
@@ -41,7 +41,7 @@ PHARMA = {
         "and pharmacokinetics (calculate_pharmacokinetics). Structures, reactions, "
         "spectra, pH and Anki decks come from the default extension — enable both; "
         "together they offer every tool, and they share one installation. The bundle "
-        "is a launcher: on first start it installs chemdraw-mcp from PyPI with uv, "
+        "is a launcher: on first start it installs chempane from PyPI with uv, "
         "every file checked against hashes pinned at release time (a pinned, "
         "checksum-verified uv is downloaded if none is installed). Rendering and "
         "calculations run locally; name resolution uses online databases. A SMILES "

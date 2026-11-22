@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.jurimaxam-dotcom/chemdraw-mcp",
-  "title": "ChemDraw MCP (unofficial)",
+  "name": "io.github.chempane/chempane",
+  "title": "chempane",
   "description": "Interactive chemistry panels for structures, 3D models, proteins, mechanisms, spectra and lab plots.",
   "version": "0.11.3",
   "repository": {
@@ -11,7 +11,7 @@
   "packages": [
     {
       "registryType": "pypi",
-      "identifier": "chemdraw-mcp",
+      "identifier": "chempane",
       "version": "0.11.3",
       "transport": {
         "type": "stdio"

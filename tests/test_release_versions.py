@@ -38,8 +38,8 @@ def test_bundle_sources_take_the_version_from_pyproject():
     # Seit B4 (30.10.2026) steht die gepinnte Version samt PyPI-Hashes in
     # requirements.lock, die build-mcpb.sh aus derselben VERSION schreibt.
     build = (ROOT / "scripts" / "build-mcpb.sh").read_text()
-    assert "printf 'chemdraw-mcp==%s %s\\n' \"$VERSION\" \"$HASHES\"" in build
-    assert "pypi.org/pypi/chemdraw-mcp/$VERSION/json" in build
+    assert "printf 'chempane==%s %s\\n' \"$VERSION\" \"$HASHES\"" in build
+    assert "pypi.org/pypi/chempane/$VERSION/json" in build
 
 
 def test_bundle_launcher_never_relies_on_path():

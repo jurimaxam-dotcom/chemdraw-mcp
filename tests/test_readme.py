@@ -166,7 +166,7 @@ def test_anker_und_registry_kennung_bleiben():
     # #tools/#installation verlinken Quick start, Release-Notes und Posts;
     # die mcp-name-Zeile braucht die MCP-Registry für die PyPI-Zuordnung.
     assert "\n## Tools\n" in README and "\n## Installation\n" in README
-    assert "<!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->" in README
+    assert "<!-- mcp-name: io.github.chempane/chempane -->" in README
 
 
 def test_readme_erklaert_beide_konnektoren():

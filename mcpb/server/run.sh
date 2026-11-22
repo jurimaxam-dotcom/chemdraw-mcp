@@ -1,5 +1,5 @@
 #!/bin/sh
-# Startet chemdraw-mcp aus dem .mcpb-Bundle heraus.
+# Startet chempane aus dem .mcpb-Bundle heraus (bis 0.11.3: das Paket chemdraw-mcp).
 #
 # Das Bundle enthält keine Laufzeit: RDKit ist eine native Erweiterung, ein
 # vollständig eingepacktes Bundle wäre je Plattform weit über 100 MB. Stattdessen
@@ -44,12 +44,12 @@ find_uv() {
 # --with-requirements (gemessen: falscher Hash installiert trotzdem). Nur
 # `uv pip install --require-hashes` prüft jede Datei gegen requirements.lock,
 # das der Release-Job aus uv.lock erzeugt — alle Abhängigkeiten exakt so, wie
-# sie getestet wurden, und chemdraw-mcp selbst mit den Hashes der PyPI-Dateien.
+# sie getestet wurden, und chempane selbst mit den Hashes der PyPI-Dateien.
 # Das Verzeichnis übersteht `uv cache clean` und lässt eine globale
 # `uv tool install chemdraw-mcp` des Nutzers unangetastet (02.10.2026).
 BASE="${XDG_DATA_HOME:-$HOME/.local/share}/chemdraw-mcp-bundle"
 UMGEBUNG="$BASE/env-$VERSION"
-SERVER="$UMGEBUNG/bin/chemdraw-mcp"
+SERVER="$UMGEBUNG/bin/chempane"
 STEMPEL="$UMGEBUNG/.chemdraw-mcp-installiert"
 
 installiert() { [ -x "$SERVER" ] && [ "$(cat "$STEMPEL" 2>/dev/null)" = "$VERSION" ]; }
@@ -174,14 +174,14 @@ installiere() {
   # PyPI-Index die neue Version noch nicht ("there is no version of
   # chemdraw-mcp==0.4.3", Desktop-Log 02.10.2026).
   "$UV" pip install --quiet --python "$UMGEBUNG/bin/python" \
-    --require-hashes --refresh-package chemdraw-mcp -r "$REQS" &
+    --require-hashes --refresh-package chempane -r "$REQS" &
   uvpid=$!
   wait "$uvpid" || return 1
   uvpid=""
   [ -x "$SERVER" ] && printf '%s\n' "$VERSION" > "$STEMPEL"
 }
 
-log "installing chemdraw-mcp $VERSION via $UV (once, hashes verified; later starts need neither uv nor the network)"
+log "installing chempane $VERSION via $UV (once, hashes verified; later starts need neither uv nor the network)"
 installiere >&2 &
 KIND=$!
 if wait "$KIND" && installiert; then
@@ -207,5 +207,5 @@ rm -rf "$UMGEBUNG"
 gib_frei
 
 # Kein Rückfall auf `uv tool run`: der würde ohne Hashes auflösen (B4).
-log "ERROR: installing chemdraw-mcp $VERSION failed (network? hash mismatch?). Details above."
+log "ERROR: installing chempane $VERSION failed (network? hash mismatch?). Details above."
 exit 1

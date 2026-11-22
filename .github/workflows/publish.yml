@@ -1,10 +1,12 @@
 name: Publish to PyPI
 
 # Trusted Publishing (OIDC) — no API token stored anywhere.
-# One-time setup on pypi.org: Account → Publishing → Add pending publisher
-#   PyPI project name: chemdraw-mcp
+# One-time setup on pypi.org: Account → Publishing → Add (pending) publisher, je Projekt
+#   PyPI project names: chempane (neu, Pending Publisher) und chemdraw-mcp (Hülle, besteht)
 #   Owner: jurimaxam-dotcom   Repository: chemdraw-mcp
 #   Workflow name: publish.yml   Environment: pypi
+# Nach dem Umzug nach chempane/chempane braucht jedes der beiden Projekte einen
+# zusätzlichen Publisher auf das neue Repo (Umbenennung, Etappe 0, Befund 4).
 # Der publish-Job laeuft im GitHub-Environment "pypi" (legt GitHub beim ersten
 # Lauf selbst an). Solange der Publisher auf PyPI kein Environment nennt, nimmt
 # PyPI jedes an — erst mit "pypi" dort und einem Required Reviewer in
@@ -51,6 +53,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       - run: uv build
+      # Hülle chemdraw-mcp (nur Shim + alte Befehle, hängt an chempane) im selben Release.
+      - run: uv build --out-dir dist huelle/chemdraw-mcp
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dist
@@ -104,21 +108,39 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # login github-oidc darf nur io.github.<repository_owner>/* veröffentlichen
+      # (Umbenennung, Etappe 0, Befund 6). Vor dem Umzug nach chempane/chempane passt der
+      # Namensraum io.github.chempane nicht zum Repo: dann überspringen, nicht rot werden.
+      - name: Namespace owner
+        id: ns
+        env:
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          name=$(python3 -c "import json;print(json.load(open('server.json'))['name'])")
+          if [ "${name#io.github.$OWNER/}" != "$name" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::$name gehört nicht zum Namensraum von $OWNER — Registry-Publish übersprungen (erst nach dem Repo-Umzug)."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Wait for PyPI
+        if: steps.ns.outputs.publish == 'true'
         run: |
           VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
           for _ in $(seq 1 30); do
-            if curl -sf -o /dev/null "https://pypi.org/pypi/chemdraw-mcp/$VERSION/json"; then
-              echo "chemdraw-mcp $VERSION ist auf PyPI"; exit 0
+            if curl -sf -o /dev/null "https://pypi.org/pypi/chempane/$VERSION/json"; then
+              echo "chempane $VERSION ist auf PyPI"; exit 0
             fi
             sleep 10
           done
-          echo "::error::chemdraw-mcp $VERSION nach 5 min nicht auf PyPI"; exit 1
+          echo "::error::chempane $VERSION nach 5 min nicht auf PyPI"; exit 1
 
       # Feste Version + Pruefsumme statt "latest": das Binary laeuft mit dem
       # OIDC-Token (Sicherheitsscan B3/F1). Beim Anheben beide Werte aus
       # registry_<version>_checksums.txt des Releases uebernehmen.
       - name: Install mcp-publisher
+        if: steps.ns.outputs.publish == 'true'
         env:
           MCP_PUBLISHER_VERSION: v1.8.6
           MCP_PUBLISHER_SHA256: 1fbe93fc0783c2394d8012c8d6e50a59e98cb2cc2d216264cc69f405d0e21340
@@ -130,11 +152,13 @@ jobs:
           sudo mv mcp-publisher /usr/local/bin/
 
       - name: Publish to MCP registry
+        if: steps.ns.outputs.publish == 'true'
         run: |
           mcp-publisher login github-oidc
           mcp-publisher publish
 
       - name: Verify the entry is live
+        if: steps.ns.outputs.publish == 'true'
         run: |
           set -o pipefail
           name=$(jq -r .name server.json)

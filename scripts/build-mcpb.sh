@@ -7,7 +7,7 @@
 # eingesetzt — eine Stelle, die den Wert trägt, statt vier, die auseinanderlaufen.
 #
 # Dazu kommt server/requirements.lock (Sicherheitsscan B4): alle Abhängigkeiten
-# exakt aus uv.lock mit Hashes, plus chemdraw-mcp selbst mit den SHA-256 der
+# exakt aus uv.lock mit Hashes, plus chempane selbst mit den SHA-256 der
 # Dateien, die auf PyPI liegen. run.sh installiert nur mit --require-hashes.
 # Deshalb muss die Version schon auf PyPI sein (Release-Job: nach `publish`).
 #
@@ -37,7 +37,7 @@ uv export --locked --format requirements-txt --no-default-groups --no-emit-proje
   --no-header --output-file "$REQS" >/dev/null
 # PyPI braucht nach dem Upload ein paar Sekunden — bis zu 5 min warten.
 for _ in $(seq 1 30); do
-  if HASHES=$(curl -sf "https://pypi.org/pypi/chemdraw-mcp/$VERSION/json" | python3 -c "
+  if HASHES=$(curl -sf "https://pypi.org/pypi/chempane/$VERSION/json" | python3 -c "
 import json, sys
 urls = json.load(sys.stdin)['urls']
 assert urls, 'keine Dateien'
@@ -49,10 +49,10 @@ print(' '.join('--hash=sha256:' + u['digests']['sha256'] for u in urls))
   sleep 10
 done
 if [ -z "$HASHES" ]; then
-  echo "FEHLER: chemdraw-mcp $VERSION ist nicht auf PyPI — ohne Hashes kein Bundle." >&2
+  echo "FEHLER: chempane $VERSION ist nicht auf PyPI — ohne Hashes kein Bundle." >&2
   exit 1
 fi
-printf 'chemdraw-mcp==%s %s\n' "$VERSION" "$HASHES" >> "$REQS"
+printf 'chempane==%s %s\n' "$VERSION" "$HASHES" >> "$REQS"
 
 mkdir -p dist
 for PROFILE in mvp pharma; do

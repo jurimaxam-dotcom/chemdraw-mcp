@@ -47,10 +47,10 @@ if [ "$1 $2" = "pip install" ]; then
     [ "$vor" = "-r" ] && reqs="$a"
     vor="$a"
   done
-  spec="$(sed -n 's/^chemdraw-mcp\(==[^ ]*\).*/\1/p' "$reqs")"
+  spec="$(sed -n 's/^chempane\(==[^ ]*\).*/\1/p' "$reqs")"
   bin="$(dirname "$py")"
-  printf '#!/bin/sh\necho "SERVER %s${CHEMDRAW_PROFILE:+ profile=$CHEMDRAW_PROFILE}${CHEMDRAW_SMILES_LOOKUP:+ smiles=$CHEMDRAW_SMILES_LOOKUP}"\n' "$spec" > "$bin/chemdraw-mcp"
-  chmod +x "$bin/chemdraw-mcp"
+  printf '#!/bin/sh\necho "SERVER %s${CHEMPANE_PROFILE:+ profile=$CHEMPANE_PROFILE}${CHEMPANE_SMILES_LOOKUP:+ smiles=$CHEMPANE_SMILES_LOOKUP}"\n' "$spec" > "$bin/chempane"
+  chmod +x "$bin/chempane"
   echo "install-end" >> "$STUB_LOG"
   exit 0
 fi
@@ -65,7 +65,7 @@ def _bundle(tmp_path: Path, version: str, reqs: bool = True) -> Path:
         shutil.copytree(SERVER_DIR, server)
     lock = server / "requirements.lock"
     if reqs:
-        lock.write_text(f"chemdraw-mcp=={version} \\\n    --hash=sha256:{'a' * 64}\n")
+        lock.write_text(f"chempane=={version} \\\n    --hash=sha256:{'a' * 64}\n")
     elif lock.exists():
         lock.unlink()
     return server / "run.sh"
@@ -183,7 +183,7 @@ def test_eigenes_verzeichnis_statt_globalem(tmp_path):
     _start(tmp_path, "9.9.1")
     home = tmp_path / "home"
     assert not (home / ".local" / "share" / "uv" / "tools" / "chemdraw-mcp").exists()
-    assert (_base(tmp_path) / "env-9.9.1" / "bin" / "chemdraw-mcp").exists()
+    assert (_base(tmp_path) / "env-9.9.1" / "bin" / "chempane").exists()
 
 
 def test_scheitert_die_installation_bricht_der_start_ab(tmp_path):
@@ -191,7 +191,7 @@ def test_scheitert_die_installation_bricht_der_start_ab(tmp_path):
     r = _run(tmp_path, "9.9.1", STUB_FAIL_INSTALL="1")
     assert r.returncode != 0
     assert "SERVER" not in r.stdout
-    assert "installing chemdraw-mcp 9.9.1 failed" in r.stderr
+    assert "installing chempane 9.9.1 failed" in r.stderr
     assert "tool run" not in (tmp_path / "calls.log").read_text()
     assert not (_base(tmp_path) / "env-9.9.1").exists(), "halbe Umgebung blieb liegen"
 
@@ -268,7 +268,7 @@ def test_installation_fragt_pypi_frisch(tmp_path):
     02.10.2026, 0.4.3-Bundle)."""
     _, calls = _start(tmp_path, "9.9.1")
     install = next(c for c in calls if c.startswith("pip install"))
-    assert "--refresh-package chemdraw-mcp" in install
+    assert "--refresh-package chempane" in install
 
 
 # --- uv in fester Version mit Prüfsumme statt `curl | sh` (B4) --------------------
@@ -562,9 +562,9 @@ def test_unbekanntes_profil_bricht_den_manifestbau_ab():
 
 
 def test_run_sh_reicht_das_profil_an_den_server_durch(tmp_path):
-    """Das Bundle setzt CHEMDRAW_PROFILE in mcp_config.env; run.sh darf es auf
+    """Das Bundle setzt CHEMPANE_PROFILE in mcp_config.env; run.sh darf es auf
     dem Weg zum Server weder verlieren noch überschreiben."""
-    out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="pharma").stdout.strip()
+    out = _run(tmp_path, "9.9.1", CHEMPANE_PROFILE="pharma").stdout.strip()
     assert out == "SERVER ==9.9.1 profile=pharma"
 
 
@@ -591,7 +591,7 @@ def test_beide_bundles_haben_das_haekchen_standard_aus(profile):
 
 
 def test_run_sh_reicht_das_haekchen_an_den_server_durch(tmp_path):
-    out = _run(tmp_path, "9.9.1", CHEMDRAW_PROFILE="mvp", CHEMDRAW_SMILES_LOOKUP="true").stdout.strip()
+    out = _run(tmp_path, "9.9.1", CHEMPANE_PROFILE="mvp", CHEMPANE_SMILES_LOOKUP="true").stdout.strip()
     assert out == "SERVER ==9.9.1 profile=mvp smiles=true"
 
 

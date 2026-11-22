@@ -4,7 +4,7 @@
 
 # chemdraw-mcp
 
-<!-- mcp-name: io.github.jurimaxam-dotcom/chemdraw-mcp -->
+<!-- mcp-name: io.github.chempane/chempane -->
 
 [![CI](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/jurimaxam-dotcom/chemdraw-mcp)](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases)
