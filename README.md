@@ -27,6 +27,7 @@ curves.
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D button swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
 </p>
 <p align="center"><sub>Prompt: <i>"Draw thalidomide"</i>. Left: skeletal formula, all hydrogens, the (S) isomer, the data sheet. Right: the same molecule in 3D, turned by dragging.</sub></p>
+<p align="center"><sub>If chempane saves you time, a ⭐ on GitHub helps other students and chemists find it.</sub></p>
 
 - **Interactive, not a picture.** 13 of the 18 tools open a panel in the chat: switch views, pin a functional group, step through a mechanism, rotate a protein.
 - **Drawn on your machine.** RDKit draws every molecule locally. By default a SMILES you type stays there; only its InChIKey, a hash, is looked up.
