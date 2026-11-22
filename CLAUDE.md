@@ -121,7 +121,7 @@ and the runner separates **red** (resolved to something else) from **yellow**
 hiccups is a check that gets ignored. It paid for itself on the first run:
 PubChem answered the metformin SMILES with its `[14C]` record (no CAS), which is
 why properties are now fetched by InChIKey. The SMILES route behind it is
-opt-in since E12 (`CHEMDRAW_SMILES_LOOKUP`, the bundles' `user_config` checkbox):
+opt-in since E12 (`CHEMPANE_SMILES_LOOKUP`, the bundles' `user_config` checkbox):
 by default a typed structure (SMILES, InChI) goes to no database, only its
 InChIKey does — `lookup` included. `tests/test_smiles_privacy.py` catches every
 `requests` call per tool and goes red on a SMILES or InChI in URL or body.
@@ -257,10 +257,10 @@ chempane/
 ├── payloads.py            — Pydantic models for MCP structured output;
 │                            each `type` needs a matching case in App.jsx
 ├── png_writer.py          — client-rendered PNG → file
-├── vault.py               — optional notes lookup (only if CHEMDRAW_VAULT_PATH)
+├── vault.py               — optional notes lookup (only if CHEMPANE_VAULT_PATH)
 ├── prompts.py             — MCP prompts (study_compound, practice_mechanism,
 │                            exam_flashcards, compare_compounds); mvp tools only
-├── privacy.py             — may a typed structure go online? (CHEMDRAW_SMILES_LOOKUP,
+├── privacy.py             — may a typed structure go online? (CHEMPANE_SMILES_LOOKUP,
 │                            default off; read on every call)
 ├── desktop_config.py      — Claude Desktop registration (chemdraw-install)
 ├── doctor.py              — installation diagnosis (chemdraw-doctor)

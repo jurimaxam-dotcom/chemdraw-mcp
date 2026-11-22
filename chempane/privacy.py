@@ -5,7 +5,7 @@ Quelle; gefragt wird nur mit dem InChIKey, den RDKit lokal rechnet — einem Has
 aus dem sich die Struktur nicht zurückrechnen lässt. Zielgruppe sind Doktoranden
 mit unveröffentlichten Strukturen.
 
-Opt-in: CHEMDRAW_SMILES_LOOKUP=1 (oder true/yes/on). Im .mcpb-Bundle setzt das
+Opt-in: CHEMPANE_SMILES_LOOKUP=1 (alt: CHEMDRAW_SMILES_LOOKUP) (oder true/yes/on). Im .mcpb-Bundle setzt das
 Häkchen in den Extension-Einstellungen von Claude Desktop die Variable über
 `mcp_config.env`; boolesche `user_config`-Werte kommen dort als Text "true" oder
 "false" an (@anthropic-ai/mcpb 2.1.2, dist/shared/config.js). Alles außerhalb der
@@ -18,9 +18,9 @@ Umgebung sehen sofort den neuen Stand.
 
 from __future__ import annotations
 
-import os
+from chempane.settings import env
 
-ENV_VAR = "CHEMDRAW_SMILES_LOOKUP"
+ENV_VAR = "CHEMPANE_SMILES_LOOKUP"
 _ON = frozenset({"1", "true", "yes", "on"})
 
 # Name des Häkchens in mcpb/manifest.json (user_config) — eine Quelle für Doku-Texte.
@@ -34,7 +34,7 @@ HOW_TO_ENABLE = (
 
 def smiles_lookup_enabled() -> bool:
     """Darf ein eingegebenes SMILES an PubChem & Co. gehen? Standard: nein."""
-    return os.environ.get(ENV_VAR, "").strip().lower() in _ON
+    return env("SMILES_LOOKUP").strip().lower() in _ON
 
 
 def status_line() -> str:

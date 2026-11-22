@@ -29,6 +29,8 @@ from typing import Any
 from mcp.types import CallToolResult, TextContent
 from pydantic import BaseModel
 
+from chempane.settings import CACHE_DIR_NAME
+
 # Zeichen je Kopie (kompaktes JSON). Zwei Kopien plus Hülle bleiben so unter
 # 120.000 — mit Abstand zu Desktops ~150.000 und zu den 100.000 Zeichen Text.
 BUDGET = 55_000
@@ -48,7 +50,8 @@ def _cache_root() -> Path:
     return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
 
 
-STORE_DIR = _cache_root() / "chemdraw-mcp" / "panel-parts"
+_DEFAULT_STORE_DIR = _cache_root() / CACHE_DIR_NAME / "panel-parts"
+STORE_DIR = _DEFAULT_STORE_DIR
 # Ältere Dateien als die jüngsten so vielen werden beim Schreiben gelöscht
 # (je Datei meist 50–300 kB). Fehlt ein Block, zeigt das Panel einen Hinweis
 # mit den Dateipfaden statt einer leeren Fläche.

@@ -324,14 +324,14 @@ def test_network_check_probes_both_resolver_sources():
 
 
 def test_output_dir_existing_and_writable_is_ok(tmp_path):
-    target = tmp_path / "ChemDraw-Output"
+    target = tmp_path / "chempane-output"
     target.mkdir()
     result = check_output_dir(root=target)
     assert result.status == OK
 
 
 def test_output_dir_missing_but_creatable_is_ok(tmp_path):
-    result = check_output_dir(root=tmp_path / "ChemDraw-Output")
+    result = check_output_dir(root=tmp_path / "chempane-output")
     assert result.status == OK
     assert "created" in result.detail.lower()
 
@@ -491,7 +491,8 @@ def test_default_checks_cover_every_documented_failure_mode():
     """Die sechs realen Fehlerbilder des Projekts — keins darf wegfallen.
 
     Dazu seit E12 (10.11.2026) eine reine Auskunft: ob eingegebene Strukturen an
-    Datenbanken gehen dürfen (check_smiles_lookup, nie rot)."""
+    Datenbanken gehen dürfen (check_smiles_lookup, nie rot), und seit der Umbenennung
+    (22.11.2026) welche alten CHEMDRAW_-Namen noch gesetzt sind (check_legacy_env)."""
     assert {check.__name__ for check in DEFAULT_CHECKS} == {
         "check_rendering",
         "check_java",
@@ -500,6 +501,7 @@ def test_default_checks_cover_every_documented_failure_mode():
         "check_network",
         "check_smiles_lookup",
         "check_output_dir",
+        "check_legacy_env",
     }
 
 

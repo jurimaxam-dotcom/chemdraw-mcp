@@ -1,14 +1,15 @@
 """Optional local-vault integration.
 
-Off by default. Set CHEMDRAW_VAULT_PATH to enable a single-user, on-disk
+Off by default. Set CHEMPANE_VAULT_PATH (or the older CHEMDRAW_VAULT_PATH) to enable a single-user, on-disk
 markdown knowledge base. For the default user-facing flow, materials live
 in Claude Projects — the host handles storage and search there.
 """
 
-import os
 from pathlib import Path
 
-_env_path = os.environ.get("CHEMDRAW_VAULT_PATH", "").strip()
+from chempane.settings import env
+
+_env_path = env("VAULT_PATH").strip()
 VAULT_PATH: Path | None = Path(_env_path).expanduser() if _env_path else None
 
 

@@ -147,9 +147,13 @@ def test_panelzahlen_je_profil_stimmen():
 def test_umgebungsvariablen_der_doku_gibt_es_im_code():
     code = "\n".join(p.read_text(encoding="utf-8") for p in (ROOT / "chempane").rglob("*.py"))
     code += _read("mcpb/server/run.sh")
-    genannt = {v for text in _docs().values() for v in re.findall(r"\bCHEMDRAW_[A-Z_]+\b", text)}
-    assert genannt, "keine CHEMDRAW_-Variable in der Doku — Regex kaputt?"
-    fehlt = sorted(v for v in genannt if v not in code)
+    genannt = {v for text in _docs().values() for v in re.findall(r"\bCHEM(?:DRAW|PANE)_[A-Z_]+\b", text)}
+    assert genannt, "keine CHEMPANE_-Variable in der Doku — Regex kaputt?"
+    # Produktvariablen liest chempane.settings.env unter beiden Präfixen (Umbenennung 22.11.2026).
+    from chempane.settings import PRODUCT_VARS
+
+    gelesen = {f"{p}{n}" for p in ("CHEMPANE_", "CHEMDRAW_") for n in PRODUCT_VARS}
+    fehlt = sorted(v for v in genannt if v not in code and v not in gelesen)
     assert not fehlt, f"Doku nennt Umgebungsvariablen, die der Code nicht liest: {fehlt}"
 
 

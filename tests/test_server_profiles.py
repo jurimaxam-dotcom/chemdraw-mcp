@@ -40,12 +40,13 @@ FULL = {p.stem for p in (ROOT / "tests/__snapshots__/tools").glob("*.json")}
 @lru_cache
 def _start(profile=None, vault=False):
     env = os.environ.copy()
-    env.pop("CHEMDRAW_PROFILE", None)
-    env.pop("CHEMDRAW_VAULT_PATH", None)
+    for prefix in ("CHEMPANE_", "CHEMDRAW_"):
+        env.pop(prefix + "PROFILE", None)
+        env.pop(prefix + "VAULT_PATH", None)
     if profile is not None:
-        env["CHEMDRAW_PROFILE"] = profile
+        env["CHEMPANE_PROFILE"] = profile
     if vault:
-        env["CHEMDRAW_VAULT_PATH"] = str(ROOT / "docs")
+        env["CHEMPANE_VAULT_PATH"] = str(ROOT / "docs")
     return subprocess.run(
         [sys.executable, "-c", """
 import asyncio, json
@@ -201,7 +202,7 @@ def test_mvp_instructions_route_newly_enabled_tools(tool):
 def test_invalid_profile_aborts_startup(profile):
     result = _start(profile)
     assert result.returncode != 0
-    assert "CHEMDRAW_PROFILE" in result.stderr
+    assert "CHEMPANE_PROFILE" in result.stderr
 
 
 def test_mvp_data_sheet_says_its_panel_already_draws_the_structure():

@@ -501,8 +501,8 @@ def test_basis_manifest_pinnt_das_mvp_profil():
     manifest = json.loads(MANIFEST.read_text())
     assert manifest["name"] == "chemdraw-mcp"
     assert manifest["server"]["mcp_config"]["env"] == {
-        "CHEMDRAW_PROFILE": "mvp",
-        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}",
+        "CHEMPANE_PROFILE": "mvp",
+        "CHEMPANE_SMILES_LOOKUP": "${user_config.smiles_lookup}",
     }
 
 
@@ -524,8 +524,8 @@ def test_pharma_variante_hat_eigene_id_und_festes_pharma_profil():
         "gleiche ID hieße: eine Extension überschreibt die andere"
     )
     assert pharma["server"]["mcp_config"]["env"] == {
-        "CHEMDRAW_PROFILE": "pharma",
-        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}",
+        "CHEMPANE_PROFILE": "pharma",
+        "CHEMPANE_SMILES_LOOKUP": "${user_config.smiles_lookup}",
     }
     assert pharma["display_name"] != base["display_name"]
     assert pharma["author"] == base["author"]

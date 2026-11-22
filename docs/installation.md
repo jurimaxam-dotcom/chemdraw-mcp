@@ -10,7 +10,7 @@ Every route registers two connectors from one installation: `chemdraw`
 seven pharmacy tools on top). They complement each other and can both be on at
 once; turning one on or off needs no restart. Up to 0.10.0 `chemdraw-pharma`
 carried the `full` profile — if you used only that connector, enable
-`chemdraw` as well or set `CHEMDRAW_PROFILE=full` by hand, and re-run the
+`chemdraw` as well or set `CHEMPANE_PROFILE=full` by hand, and re-run the
 installer to update the entry. See [tools.md#profiles](tools.md#profiles).
 
 ## 1. Claude Desktop extension (macOS, Linux)
@@ -63,16 +63,16 @@ Add this to `claude_desktop_config.json` under `mcpServers` (macOS:
 "chemdraw": {
   "command": "/opt/homebrew/bin/uvx",
   "args": ["chemdraw-mcp"],
-  "env": {"CHEMDRAW_PROFILE": "mvp"}
+  "env": {"CHEMPANE_PROFILE": "mvp"}
 },
 "chemdraw-pharma": {
   "command": "/opt/homebrew/bin/uvx",
   "args": ["chemdraw-mcp"],
-  "env": {"CHEMDRAW_PROFILE": "pharma"}
+  "env": {"CHEMPANE_PROFILE": "pharma"}
 }
 ```
 
-One entry is enough if you only want the default tools; `CHEMDRAW_PROFILE`
+One entry is enough if you only want the default tools; `CHEMPANE_PROFILE`
 defaults to `mvp`. For a single entry with every tool, use `"full"` instead of
 the two.
 

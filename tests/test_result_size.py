@@ -258,10 +258,10 @@ def test_pharma_speichert_den_panel_export_am_eigenen_konnektor(offline, monkeyp
 
     from tests.test_png_writer import _png_b64
 
-    monkeypatch.setattr(Path, "home", classmethod(lambda cls: tmp_path))
+    monkeypatch.setattr(srv, "REACTION_DIR", tmp_path / "chempane-output")
     antwort = asyncio.run(srv.create_server("pharma").call_tool(
         "save_png", {"png_base64": _png_b64(), "filename": "Kalibrierung"}))
     assert not antwort.is_error, antwort.content[0].text
     pfad = Path(antwort.content[0].text)
-    assert pfad.parent == tmp_path / "ChemDraw-Output" / "png"
+    assert pfad.parent == tmp_path / "chempane-output" / "png"
     assert pfad.read_bytes()[:4] == base64.b64decode(_png_b64())[:4]

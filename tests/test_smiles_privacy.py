@@ -39,7 +39,7 @@ AMID = "O=C(NC1CC2(C1)CC(F)(F)C2)c1cnc(Cl)c(OC(F)F)c1"
 CHIRAL = "N#Cc1ccc(nc1)C(F)C1CC2(C1)OCC(F)(F)CO2"  # ein unbestimmtes Stereozentrum
 STRUKTUREN = (BROMID, ALKOHOL, AMID, CHIRAL)
 
-_ENV = "CHEMDRAW_SMILES_LOOKUP"
+_ENV = "CHEMPANE_SMILES_LOOKUP"
 
 
 def _nadeln(smiles: str) -> set[str]:

@@ -17,18 +17,18 @@ and `chemdraw-install` writes both entries. **Both can be on at once**: they
 complement each other, and the model sees every tool once. Turning one on or
 off needs no restart. Up to 0.10.0, `chemdraw-pharma` started with `full`; if
 you used only that connector, enable `chemdraw` as well, or set
-`CHEMDRAW_PROFILE=full` in an entry of your own. Re-running the installer
+`CHEMPANE_PROFILE=full` in an entry of your own. Re-running the installer
 rewrites an old `chemdraw-pharma` entry; `chemdraw-doctor` points it out.
 What the seven extra tools do: [tools.md](tools.md#profiles) and
 [Lab graphics](lab-graphics.md#only-in-the-full-profile).
 
 Outside Claude Desktop, or in a config you write by hand, the profile is the
-environment variable `CHEMDRAW_PROFILE`:
+environment variable `CHEMPANE_PROFILE`:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
-CHEMDRAW_PROFILE=pharma uv run chemdraw-tool-server # the seven extra tools
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
+CHEMPANE_PROFILE=pharma uv run chemdraw-tool-server # the seven extra tools
+CHEMPANE_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
 ```
 
 An unknown profile name stops the server at start-up with an error.
@@ -37,17 +37,20 @@ An unknown profile name stops the server at start-up with an error.
 
 | Variable | Values | Effect |
 |---|---|---|
-| `CHEMDRAW_PROFILE` | `mvp` (default), `pharma`, `full` | which tools are registered |
-| `CHEMDRAW_SMILES_LOOKUP` | `1`, `true`, `yes`, `on`; anything else is off | also send a typed SMILES to PubChem and `lookup` sources ([Privacy](privacy.md#opt-in-look-up-by-smiles)) |
-| `CHEMDRAW_LOG_LEVEL` | a Python log level, e.g. `DEBUG`; default `INFO` | `DEBUG` writes every lookup URL, and so every name, to the log |
-| `CHEMDRAW_VAULT_PATH` | a folder of Markdown notes | `pharma` and `full` profiles only: adds the two tools `search_vault` and `read_vault_entry` for your own notes |
+| `CHEMPANE_PROFILE` | `mvp` (default), `pharma`, `full` | which tools are registered |
+| `CHEMPANE_SMILES_LOOKUP` | `1`, `true`, `yes`, `on`; anything else is off | also send a typed SMILES to PubChem and `lookup` sources ([Privacy](privacy.md#opt-in-look-up-by-smiles)) |
+| `CHEMPANE_LOG_LEVEL` | a Python log level, e.g. `DEBUG`; default `INFO` | `DEBUG` writes every lookup URL, and so every name, to the log |
+| `CHEMPANE_VAULT_PATH` | a folder of Markdown notes | `pharma` and `full` profiles only: adds the two tools `search_vault` and `read_vault_entry` for your own notes |
+
+The older names with the prefix `CHEMDRAW_` (from before the rename to chempane) are still read until 1.0;
+if both are set, the `CHEMPANE_` one wins, and `chempane-doctor` lists the old ones it finds.
 
 Restart the server after changing one; Claude Desktop keeps it running.
 
 ## Claude Desktop extension settings
 
 Settings → Extensions → ChemDraw MCP has one setting, **Look up typed
-structures by SMILES** (off by default). It sets `CHEMDRAW_SMILES_LOOKUP` for
+structures by SMILES** (off by default). It sets `CHEMPANE_SMILES_LOOKUP` for
 the server. Both bundles have it.
 
 ## Files and folders
@@ -68,7 +71,7 @@ absolute path (`which uvx` prints it):
 "chemdraw": {
   "command": "/opt/homebrew/bin/uvx",
   "args": ["chemdraw-mcp"],
-  "env": {"CHEMDRAW_PROFILE": "mvp"}
+  "env": {"CHEMPANE_PROFILE": "mvp"}
 }
 ```
 
@@ -80,4 +83,4 @@ More in [installation.md](installation.md#4-editing-the-config-by-hand).
 - The profile is fixed per server process; the two connectors are two
   processes.
 - The vault tools exist only in the `pharma` and `full` profiles and only with
-  `CHEMDRAW_VAULT_PATH` set.
+  `CHEMPANE_VAULT_PATH` set.

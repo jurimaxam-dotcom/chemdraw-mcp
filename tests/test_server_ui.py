@@ -223,7 +223,7 @@ def test_server_reports_its_own_version_not_the_sdk_version():
 
     Ohne explizite Angabe meldete FastMCP (mcp 1.x) die SDK-Version (gemessen:
     1.27.1), unter mcp 2 ist der Default ein Leerstring — in beiden Fällen kann
-    der Nutzer nicht erkennen, welche chemdraw-mcp-Version läuft —
+    der Nutzer nicht erkennen, welche chempane-Version läuft —
     ausgerechnet die Frage, die nach einem Registry-Eintrag mit veralteter
     Version zählt.
     """
@@ -231,4 +231,4 @@ def test_server_reports_its_own_version_not_the_sdk_version():
 
     from tests.server_catalog import mcp
 
-    assert mcp.version == version("chemdraw-mcp")
+    assert mcp.version == version("chempane")

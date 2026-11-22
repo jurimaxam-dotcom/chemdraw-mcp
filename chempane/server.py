@@ -2,7 +2,6 @@ import functools
 import hashlib
 import inspect
 import json
-import os
 import re
 from importlib.metadata import version as _pkg_version
 from pathlib import Path
@@ -95,6 +94,7 @@ from chempane.resolver import (
     structure_notation,
     unreadable_reason,
 )
+from chempane.settings import DEFAULT_PROFILE, PACKAGE, env, output_root
 from chempane.spectrum import (
     SPECTRUM_TYPES,
     render_spectrum_png,
@@ -105,15 +105,17 @@ from chempane.validator import Severity, validate_input, validate_roundtrip
 from chempane.vault import is_enabled as vault_enabled
 from chempane.vault import list_entries, read_entry, search
 
-OUTPUT_DIR = Path.home() / "ChemDraw-Output" / "einzelmolekuele"
-REACTION_DIR = Path.home() / "ChemDraw-Output"
-SPECTRUM_DIR = Path.home() / "ChemDraw-Output" / "spektren"
-TLC_DIR = Path.home() / "ChemDraw-Output" / "dc-platten"
-SCOPE_DIR = Path.home() / "ChemDraw-Output" / "scope"
-ANKI_DIR = Path.home() / "ChemDraw-Output" / "anki"
-PLOT_DIR = Path.home() / "ChemDraw-Output" / "diagramme"
-THREED_DIR = Path.home() / "ChemDraw-Output" / "3d"
-PROTEIN_DIR = Path.home() / "ChemDraw-Output" / "proteine"
+# Wurzel aller Ausgaben: ~/chempane-output, bei Bestandsnutzern weiter ~/ChemDraw-Output
+# (chempane.settings.output_root — neu schreiben, alt lesen, nichts verschieben).
+REACTION_DIR = output_root()
+OUTPUT_DIR = REACTION_DIR / "einzelmolekuele"
+SPECTRUM_DIR = REACTION_DIR / "spektren"
+TLC_DIR = REACTION_DIR / "dc-platten"
+SCOPE_DIR = REACTION_DIR / "scope"
+ANKI_DIR = REACTION_DIR / "anki"
+PLOT_DIR = REACTION_DIR / "diagramme"
+THREED_DIR = REACTION_DIR / "3d"
+PROTEIN_DIR = REACTION_DIR / "proteine"
 
 # PNG/SVG sind die Primärformate (laufen ohne ChemDraw); CDXML ist das
 # optionale Zusatzformat für Nutzer, die in ChemDraw weiterbearbeiten wollen.
@@ -554,7 +556,7 @@ _APP_ONLY_META = {"ui": {"visibility": ["app"]}}
 # --- Titel und Annotationen je Tool (Stand 12.11.2026, am Code geprüft) -------
 # Claude macht an readOnlyHint fest, ob ein Tool ohne Freigabe-Klick läuft.
 # Deshalb ehrlich:
-# - Schreibend sind alle Tools, die unter ~/ChemDraw-Output Dateien anlegen.
+# - Schreibend sind alle Tools, die unter dem Ausgabeordner Dateien anlegen.
 #   Sie überschreiben dabei ihre EIGENE frühere Ausgabe unter demselben Namen
 #   (image_export.write_files: „Regenerieren = Update“) — nichts Fremdes, und
 #   gleiche Argumente ergeben dieselbe Datei: destructive=False, idempotent=True.
@@ -614,7 +616,7 @@ _TOOL_LABELS: dict[str, tuple[str, ToolAnnotations]] = {
     # Intern (Export-Knopf des Panels)
     "save_png": ("Save panel image", _hints(writes=True, online=False, idempotent=False)),
     "load_panel_part": ("Load panel content", _hints(writes=False, online=False, idempotent=True)),
-    # Optional, nur mit CHEMDRAW_VAULT_PATH
+    # Optional, nur mit CHEMPANE_VAULT_PATH
     "search_vault": ("Search the notes vault", _hints(writes=False, online=False)),
     "read_vault_entry": ("Read a notes vault entry", _hints(writes=False, online=False)),
 }
@@ -635,7 +637,7 @@ def _pubchem_record(smiles: str) -> tuple[dict, str | None]:
     steht der Stammdatensatz an erster Stelle.
 
     Der SMILES-Weg ist seit E12 (10.11.2026) Opt-in: Kennt
-    PubChem den Schlüssel nicht, geht das SMILES nur mit CHEMDRAW_SMILES_LOOKUP=1
+    PubChem den Schlüssel nicht, geht das SMILES nur mit CHEMPANE_SMILES_LOOKUP=1
     (Häkchen in den Extension-Einstellungen) per POST hinaus — sonst bleibt der
     Datensatz leer. Eine unveröffentlichte Struktur verlässt den Rechner so nie,
     nur ihr InChIKey. Gelesen bei jedem Aufruf (chempane.privacy).
@@ -4827,7 +4829,7 @@ def save_png(png_base64: str, filename: str) -> str:
     """
     from chempane.png_writer import save_png_bytes
 
-    png_dir = Path.home() / "ChemDraw-Output" / "png"
+    png_dir = REACTION_DIR / "png"
     try:
         path = save_png_bytes(png_base64, filename, png_dir)
     except (ValueError, OSError) as exc:
@@ -4856,7 +4858,7 @@ if vault_enabled():
     def search_vault(query: str) -> str:
         """Search the configured local knowledge vault.
 
-        Optional, opt-in feature. Enabled via CHEMDRAW_VAULT_PATH env var.
+        Optional, opt-in feature. Enabled via CHEMPANE_VAULT_PATH env var.
         For most users, materials live in Claude Projects instead.
 
         Args:
@@ -4907,7 +4909,7 @@ if vault_enabled():
         return f"# {entry_name}\n\n{content}"
 
 
-# Startprofile (CHEMDRAW_PROFILE) → Bereichskarte fürs Modell.
+# Startprofile (CHEMPANE_PROFILE) → Bereichskarte fürs Modell.
 _INSTRUCTIONS = {"mvp": _MVP_INSTRUCTIONS, "pharma": _PHARMA_INSTRUCTIONS, "full": _FULL_INSTRUCTIONS}
 PROFILES = frozenset(_INSTRUCTIONS)
 
@@ -4953,16 +4955,16 @@ def _within_budget(fn):
 
 def create_server(profile: str | None = None) -> MCPServer:
     """Build a server with only the tools enabled by its startup profile."""
-    selected = os.environ.get("CHEMDRAW_PROFILE", "mvp") if profile is None else profile
+    selected = env("PROFILE", DEFAULT_PROFILE) if profile is None else profile
     if selected not in PROFILES:
-        raise ValueError("CHEMDRAW_PROFILE must be 'mvp', 'pharma' or 'full'.")
+        raise ValueError("CHEMPANE_PROFILE must be 'mvp', 'pharma' or 'full'.")
     # Der Host soll die Paketversion sehen, nicht die Version des MCP-SDK
     # (mcp 1.x meldete sonst "1.27.1", mcp 2 einen Leerstring). Seit mcp 2 ist
     # das ein Konstruktor-Argument statt eines Eingriffs in den Low-Level-Server.
     instance = MCPServer(
         "ChemDraw Tool",
         instructions=_INSTRUCTIONS[selected],
-        version=_pkg_version("chemdraw-mcp"),
+        version=_pkg_version(PACKAGE),
     )
     for fn, options in _TOOL_DEFINITIONS:
         if selected == "mvp" and fn.__name__ not in MVP_TOOLS:
@@ -5004,12 +5006,12 @@ def _configure_logging(log_dir: Path):
 
     Vorher DEBUG ohne Rotation — 8 MB in wenigen Wochen, drei Viertel davon
     matplotlibs Font-Suche, dazu jede PubChem-URL (also jeder Stoffname) aus
-    urllib3. DEBUG gibt es weiter, aber nur auf Wunsch: CHEMDRAW_LOG_LEVEL=DEBUG.
+    urllib3. DEBUG gibt es weiter, aber nur auf Wunsch: CHEMPANE_LOG_LEVEL=DEBUG.
     """
     import logging
     from logging.handlers import RotatingFileHandler
 
-    wanted = os.environ.get("CHEMDRAW_LOG_LEVEL", "").strip().upper()
+    wanted = env("LOG_LEVEL").strip().upper()
     level = logging.getLevelNamesMapping().get(wanted, logging.INFO)
 
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -5030,7 +5032,7 @@ def _configure_logging(log_dir: Path):
 def main():
     import logging
 
-    _configure_logging(Path.home() / "ChemDraw-Output")
+    _configure_logging(REACTION_DIR)
     logging.getLogger(__name__).info("MCP server starting")
     from chempane.privacy import status_line
 

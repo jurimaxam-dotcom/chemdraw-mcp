@@ -211,7 +211,7 @@ into `claude_desktop_config.json`. Turning a connector on or off in the
 connector menu needs no restart. Up to 0.10.0, `chemdraw-pharma` started with
 the `full` profile (every tool); if you used only that connector, enable
 `chemdraw` as well, or keep one connector with everything by setting
-`CHEMDRAW_PROFILE=full` in a config entry of your own. Re-run the installer to
+`CHEMPANE_PROFILE=full` in a config entry of your own. Re-run the installer to
 update an existing entry. Details:
 [docs/configuration.md](https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/configuration.md).
 
@@ -262,7 +262,7 @@ names, UniProt to resolve them; protein names and gene symbols go to UniProt,
 the UniProt accession to PDBe and the AlphaFold DB, the PDB ID to RCSB. A
 systematic IUPAC name reveals the structure as much as a SMILES does. To also
 search by the SMILES itself, turn on **Look up typed structures by SMILES** in
-the extension settings of Claude Desktop, or set `CHEMDRAW_SMILES_LOOKUP=1`.
+the extension settings of Claude Desktop, or set `CHEMPANE_SMILES_LOOKUP=1`.
 
 This holds from version 0.10.0. **Version 0.9.1 and earlier** posted a typed
 SMILES to PubChem when PubChem did not know its InChIKey, and `lookup` passed a

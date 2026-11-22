@@ -35,6 +35,15 @@ from pathlib import Path
 import requests
 
 from chempane import resolver
+from chempane.settings import (
+    LEGACY_OUTPUT_DIR_NAME,
+    OUTPUT_DIR_NAME,
+    PACKAGE,
+    PREFIX,
+    legacy_vars_in_use,
+    output_root,
+    profile_from_env,
+)
 
 # --- Einstufung ---------------------------------------------------------------
 
@@ -67,7 +76,8 @@ _PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 _PROBE_SMILES = "CCO"
 
 # Wurzel der Ausgaben; server.py legt darunter einzelmolekuele/, spektren/ usw. an.
-OUTPUT_ROOT = Path.home() / "ChemDraw-Output"
+# Dieselbe Regel wie der Server: ~/chempane-output, bei Bestandsnutzern ~/ChemDraw-Output.
+OUTPUT_ROOT = output_root()
 
 # Exakt die Toleranz des Resolvers: prüfte die Diagnose strenger, meldete sie eine
 # Einschränkung, die der Server gar nicht hat (NCI CIR antwortet real oft erst nach
@@ -385,7 +395,7 @@ def check_desktop_config(
         )
 
     def profile_of(connector: str) -> str:
-        return (servers[connector].get("env") or {}).get("CHEMDRAW_PROFILE", "mvp")
+        return profile_from_env(servers[connector].get("env"))
 
     # Seit 16.11.2026 liefert chemdraw-pharma nur die Zusatz-Tools (`pharma`).
     # Ein Eintrag von davor (`full`) startet, aber neben `chemdraw` sieht das
@@ -503,7 +513,11 @@ def check_network(*, probe: Callable[[str], None] | None = None) -> CheckResult:
 
 
 def check_output_dir(*, root: Path | None = None) -> CheckResult:
-    """Ist ~/ChemDraw-Output/ da und beschreibbar? (Legt nichts an.)"""
+    """Ist der Ausgabeordner da und beschreibbar? (Legt nichts an.)
+
+    Läuft eine Bestandsinstallation weiter mit ~/ChemDraw-Output, sagt der Bericht das
+    einmal und nennt den neuen Namen — verschoben wird nichts.
+    """
     target = Path(root) if root is not None else OUTPUT_ROOT
     name = "Output directory"
     if target.exists():
@@ -515,6 +529,17 @@ def check_output_dir(*, root: Path | None = None) -> CheckResult:
                 fix=f'mv "{target}" "{target}.bak"',
             )
         if os.access(target, os.W_OK | os.X_OK):
+            if target.name == LEGACY_OUTPUT_DIR_NAME:
+                return CheckResult(
+                    name=name,
+                    status=NOTE,
+                    detail=(
+                        f"{_short(target)} exists and is writable. It is the folder of an earlier "
+                        f"version and stays in use; new installations write to ~/{OUTPUT_DIR_NAME}. "
+                        f"Nothing is moved automatically."
+                    ),
+                    fix=f'mv "{target}" "{target.parent / OUTPUT_DIR_NAME}"   (optional: switch to the new name)',
+                )
             return CheckResult(
                 name=name, status=OK, detail=f"{_short(target)} exists and is writable."
             )
@@ -551,7 +576,7 @@ def check_smiles_lookup() -> CheckResult:
 
     where = (
         " This command sees only its own environment; the server Claude Desktop runs "
-        "records its setting at startup in ~/ChemDraw-Output/server.log."
+        f"records its setting at startup in {_short(OUTPUT_ROOT / 'server.log')}."
     )
     if smiles_lookup_enabled():
         return CheckResult(name="SMILES lookup", status=NOTE, detail=status_line() + where)
@@ -559,6 +584,20 @@ def check_smiles_lookup() -> CheckResult:
         name="SMILES lookup",
         status=OK,
         detail=status_line() + f" To also search by SMILES, {HOW_TO_ENABLE}." + where,
+    )
+
+
+def check_legacy_env() -> CheckResult:
+    """Gesetzte Umgebungsvariablen mit dem alten Präfix CHEMDRAW_ (gelten weiter)."""
+    old = legacy_vars_in_use()
+    name = "Environment variables"
+    if not old:
+        return CheckResult(name=name, status=OK, detail="No outdated variable names are set.")
+    pairs = ", ".join(f"{var} → {PREFIX}{var.split('_', 1)[1]}" for var in old)
+    return CheckResult(
+        name=name,
+        status=NOTE,
+        detail=f"Outdated names still work but will be dropped in 1.0: {pairs}.",
     )
 
 
@@ -572,6 +611,7 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_network,
     check_smiles_lookup,
     check_output_dir,
+    check_legacy_env,
 )
 
 
@@ -624,7 +664,7 @@ def _environment_header() -> str:
     from importlib.metadata import PackageNotFoundError, version
 
     try:
-        own = version("chemdraw-mcp")
+        own = version(PACKAGE)
     except PackageNotFoundError:
         own = "unknown version"
     try:
@@ -634,7 +674,7 @@ def _environment_header() -> str:
     except Exception:  # noqa: BLE001 — im Bericht ist das die Fehlermeldung
         rdkit_version = "RDKit unavailable"
     python_version = ".".join(str(p) for p in sys.version_info[:3])
-    return f"chemdraw-mcp doctor — {own} | Python {python_version} | {rdkit_version} | {sys.platform}"
+    return f"chempane doctor — {own} | Python {python_version} | {rdkit_version} | {sys.platform}"
 
 
 def format_report(results: Sequence[CheckResult], *, header: str | None = None) -> str:

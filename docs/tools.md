@@ -330,12 +330,12 @@ The `full` profile adds, and the `pharma` profile holds:
 <p align="center"><img src="../assets/pk-curve.png" alt="Plasma concentration over time for repeated oral doses, building up to steady state around Css,av 4.76 mg/L between the MEC and MTC lines of the therapeutic window" width="640"></p>
 <p align="center"><img src="../assets/dose-response.png" alt="Hill curve of an agonist and the same curve shifted to the right by a competitive antagonist" width="640"></p>
 
-To switch, set `CHEMDRAW_PROFILE` and restart the server:
+To switch, set `CHEMPANE_PROFILE` and restart the server:
 
 ```bash
 uv run chemdraw-tool-server                         # mvp, the default
-CHEMDRAW_PROFILE=pharma uv run chemdraw-tool-server # only the seven extra tools
-CHEMDRAW_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
+CHEMPANE_PROFILE=pharma uv run chemdraw-tool-server # only the seven extra tools
+CHEMPANE_PROFILE=full uv run chemdraw-tool-server   # all 25 tools
 ```
 
 In Claude Desktop two connectors come from one installation: `chemdraw`
@@ -345,16 +345,16 @@ model sees every tool once; turning one on or off needs no restart. The
 `pharma` profile carries the two internal panel helpers too, because its
 panels call them on their own connector; the model never calls them. Up to
 0.10.0, `chemdraw-pharma` started with `full`: if you used only that
-connector, enable `chemdraw` as well, or set `"env": {"CHEMDRAW_PROFILE":
+connector, enable `chemdraw` as well, or set `"env": {"CHEMPANE_PROFILE":
 "full"}` in an entry of your own for one connector with everything. An
 invalid profile name stops startup with an error. Two optional vault tools
 (`search_vault`, `read_vault_entry`) appear only in the `pharma` and `full`
-profiles and only when `CHEMDRAW_VAULT_PATH` is set.
+profiles and only when `CHEMPANE_VAULT_PATH` is set.
 
 The server keeps a small log at `~/ChemDraw-Output/server.log` (rotated at 1 MB,
 two older files kept). It records start-up, requests and errors, and a name
 when its lookup needed a second attempt or failed. Set
-`CHEMDRAW_LOG_LEVEL=DEBUG` for the full trace, which includes every lookup URL
+`CHEMPANE_LOG_LEVEL=DEBUG` for the full trace, which includes every lookup URL
 and therefore every name you asked for.
 
 ## What leaves your machine
@@ -412,7 +412,7 @@ computer. Online databases are asked for names and data. In detail:
 **Turning on the SMILES lookup.** In Claude Desktop, open Settings →
 Extensions, then the settings of the ChemDraw MCP extension, and turn on
 **Look up typed structures by SMILES** (both bundles have it). Elsewhere set
-`CHEMDRAW_SMILES_LOOKUP=1` in the server's environment (`true`, `yes` and `on`
+`CHEMPANE_SMILES_LOOKUP=1` in the server's environment (`true`, `yes` and `on`
 work too; anything else means off) and restart the server. With it on, two
 things change: when PubChem has no record for the InChIKey, the SMILES itself
 is posted to PubChem, which standardizes it itself and may find a record the

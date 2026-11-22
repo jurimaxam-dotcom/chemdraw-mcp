@@ -22,8 +22,8 @@
       "command": "/bin/sh",
       "args": ["${__dirname}/server/run.sh"],
       "env": {
-        "CHEMDRAW_PROFILE": "mvp",
-        "CHEMDRAW_SMILES_LOOKUP": "${user_config.smiles_lookup}"
+        "CHEMPANE_PROFILE": "mvp",
+        "CHEMPANE_SMILES_LOOKUP": "${user_config.smiles_lookup}"
       }
     }
   },

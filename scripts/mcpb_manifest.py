@@ -60,7 +60,7 @@ def manifest(profile: str) -> dict:
     variant = json.loads(json.dumps(base))
     variant.update(PHARMA)
     # Nur das Profil tauschen: der Rest von env (E12: das SMILES-Häkchen) gilt für beide.
-    variant["server"]["mcp_config"]["env"]["CHEMDRAW_PROFILE"] = "pharma"
+    variant["server"]["mcp_config"]["env"]["CHEMPANE_PROFILE"] = "pharma"
     return variant
 
 
