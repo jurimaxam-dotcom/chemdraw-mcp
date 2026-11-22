@@ -450,6 +450,27 @@ def _tautomeric_c_n(bond: Chem.Bond) -> bool:
     )
 
 
+def _bridgehead_n_fixed_by_partner(mol: Chem.Mol, idx: int) -> bool:
+    """Brückenkopf-N eines kleinen Bicyclus, dessen zweiter Brückenkopf angegeben ist.
+
+    Im Chinuclidin (Chinin, Chinidin) legt C4 die Lage des freien Elektronenpaars
+    am N fest; ein eigener Hinweis wäre fachlich falsch (Befund 22.11.2026).
+    """
+    atom = mol.GetAtomWithIdx(idx)
+    if atom.GetSymbol() != "N" or atom.GetFormalCharge() != 0 or atom.GetTotalNumHs():
+        return False
+    ring_info = mol.GetRingInfo()
+    rings = [set(r) for r in ring_info.AtomRings() if idx in r and len(r) <= 8]
+    if len(rings) < 2 or sum(b.IsInRing() for b in atom.GetBonds()) < 3:
+        return False
+    partners = set.intersection(*rings) - {idx}
+    return any(
+        mol.GetAtomWithIdx(p).GetChiralTag() != Chem.ChiralType.CHI_UNSPECIFIED
+        and sum(b.IsInRing() for b in mol.GetAtomWithIdx(p).GetBonds()) >= 3
+        for p in partners
+    )
+
+
 def find_unspecified_stereo(mol: Chem.Mol) -> list[dict]:
     """Return unspecified tetrahedral centers and double bonds of `mol`.
 
@@ -461,6 +482,8 @@ def find_unspecified_stereo(mol: Chem.Mol) -> list[dict]:
         if info.specified != Chem.StereoSpecified.Unspecified:
             continue
         if info.type == Chem.StereoType.Atom_Tetrahedral:
+            if _bridgehead_n_fixed_by_partner(probe, info.centeredOn):
+                continue
             kind, atoms = "atom", [info.centeredOn]
         elif info.type == Chem.StereoType.Bond_Double:
             bond = probe.GetBondWithIdx(info.centeredOn)

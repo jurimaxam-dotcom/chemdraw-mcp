@@ -219,3 +219,21 @@ def test_stereo_variants_skip_the_guanidine():
     variants = stereo_variants(Chem.MolFromSmiles("CC(F)CCNC(=N)N"))
     assert len(variants) == 2
     assert all("/" not in v["smiles"] and "\\" not in v["smiles"] for v in variants)
+
+
+# Befund Vermarktung 22.11.2026 (Faden 20261122-140414): Chinin meldete den
+# Brückenkopf-N des Chinuclidins als offenes Stereozentrum. Im kleinen Bicyclus
+# legt der zweite Brückenkopf (C4, angegeben) die Konfiguration des N fest.
+QUININE = "COC1=CC2=C(C=CN=C2C=C1)[C@H]([C@@H]3C[C@@H]4CCN3C[C@@H]4C=C)O"
+
+
+def test_bridgehead_nitrogen_fixed_by_the_cage_is_not_reported():
+    assert find_unspecified_stereo(Chem.MolFromSmiles(QUININE)) == []
+
+
+def test_bridgehead_nitrogen_stays_open_when_the_partner_is_open_too():
+    # Gleicher Käfig ohne jede Stereoangabe: dann ist wirklich etwas offen.
+    flat = Chem.MolToSmiles(Chem.MolFromSmiles(QUININE), isomericSmiles=False)
+    centers = [w for w in find_unspecified_stereo(Chem.MolFromSmiles(flat)) if w["kind"] == "atom"]
+    assert len(centers) >= 4
+
