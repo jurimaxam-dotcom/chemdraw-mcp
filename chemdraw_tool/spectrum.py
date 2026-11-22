@@ -95,24 +95,26 @@ SPECTRUM_TYPES: dict[str, SpectrumConfig] = {
 
 # Nennt der freie Titel die Methode schon („Paracetamol 1H NMR“), entfällt das
 # Präfix — sonst stand „¹H NMR spectrum: Paracetamol 1H NMR“ (Befund 22.11.2026).
+# Kürzel groß und mit Wortgrenze (sonst wären „Ir(ppy)3“ und „Cd complex“ eine
+# Methode), Wörter englisch und deutsch, ohne Groß-/Kleinschreibung.
 _METHOD_IN_TITLE: dict[str, str] = {
-    "ir": r"\bir\b|infrared",
-    "nir": r"\bnir\b|near[- ]infrared",
-    "raman": r"raman",
-    "uv_vis": r"\buv\s*[/\-]?\s*vis",
-    "fluorescence": r"fluoresc",
-    "ord": r"\bord\b|optical rotatory",
-    "cd": r"\bcd\b|circular dichroism",
-    "nmr_1h": r"\b1h[\s\-]*nmr\b|proton nmr",
-    "nmr_13c": r"\b13c[\s\-]*nmr\b|carbon nmr",
-    "ms": r"\bms\b|mass spec",
+    "ir": r"\bIR\b|(?i:infrared|infrarot)",
+    "nir": r"\bNIR\b|(?i:near[- ]infrared|nahinfrarot)",
+    "raman": r"(?i:raman)",
+    "uv_vis": r"(?i:\bUV\s*[/\-]?\s*Vis)",
+    "fluorescence": r"(?i:fluorescen(?:ce|t)\b|fluoreszenz)",
+    "ord": r"\bORD\b|(?i:optical rotatory|rotationsdispersion)",
+    "cd": r"\bCD\b|(?i:circular dichroism|zirkulardichroismus)",
+    "nmr_1h": r"(?i:\b1H[\s\-]*NMR\b|proton(?:en)?[\s\-]*NMR)",
+    "nmr_13c": r"(?i:\b13C[\s\-]*NMR\b|carbon[\s\-]*NMR)",
+    "ms": r"\bMS\b|(?i:mass spec|massenspektr)",
 }
 _SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 
 
 def _title_names_method(spectrum_type: str, title: str) -> bool:
     pattern = _METHOD_IN_TITLE.get(spectrum_type)
-    plain = title.translate(_SUPERSCRIPT_DIGITS).lower()
+    plain = title.translate(_SUPERSCRIPT_DIGITS)
     return bool(pattern and re.search(pattern, plain))
 
 
@@ -127,7 +129,8 @@ _ELEMENTS = frozenset(
 _FORMULA = re.compile(
     r"(?<![A-Za-z0-9])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*)+)(?![A-Za-z0-9])"
 )
-_ISOTOPE = re.compile(r"(?<![A-Za-z0-9])(1|2|13|15|19|31)(H|C|N|F|P)(?![A-Za-z0-9])")
+# Nur vor „NMR“: in einem ¹H-Spektrum heißt „2H“ zwei Protonen, nicht Deuterium.
+_ISOTOPE = re.compile(r"(?<![A-Za-z0-9])(1|2|13|15|19|31)(H|C|N|F|P)(?=[\s\-]*(?i:nmr)\b)")
 _DEUTERATED = re.compile(r"(?<=-d)(\d+)\b")
 
 

@@ -527,3 +527,45 @@ def test_isotope_in_the_title_is_superscripted():
 def test_plain_title_still_gets_the_method_prefix():
     shown, _ = _title_and_labels("ir", "Aspirin")
     assert shown == "IR spectrum: Aspirin"
+
+
+@pytest.mark.parametrize(
+    "raw",
+    # In einem ¹H-Spektrum heißt „2H“ zwei Protonen, nicht Deuterium.
+    ["ArH (2H)", "NH, 1H", "CH₃ (3H)", "2C", "1F"],
+)
+def test_proton_counts_are_not_isotopes(raw):
+    _, labels = _title_and_labels("nmr_1h", "", [raw])
+    assert labels == [raw]
+
+
+@pytest.mark.parametrize(
+    ("spectrum_type", "title"),
+    [
+        ("fluorescence", "Chinin Fluoreszenz"),
+        ("ms", "Massenspektrum Toluol"),
+        ("ir", "Infrarotspektrum Aspirin"),
+        ("cd", "Campher CD"),
+    ],
+)
+def test_german_title_naming_the_method_is_not_prefixed(spectrum_type, title):
+    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+
+    shown, _ = _title_and_labels(spectrum_type, title)
+    assert not shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
+
+
+@pytest.mark.parametrize(
+    ("spectrum_type", "title"),
+    [
+        ("fluorescence", "Fluorescein in 0.1 M NaOH"),
+        ("ir", "Ir(ppy)3"),
+        ("cd", "Cd complex"),
+        ("ms", "Ms. sample"),
+    ],
+)
+def test_substance_names_are_not_taken_for_the_method(spectrum_type, title):
+    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+
+    shown, _ = _title_and_labels(spectrum_type, title)
+    assert shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
