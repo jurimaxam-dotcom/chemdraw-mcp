@@ -417,6 +417,16 @@ cases:
     forbidden: [calculate_content]
     why: Gegenrichtung zu calc-content.
 
+  - id: desktop-calibration-ohne-verb
+    prompt: >
+      Calibration curve for quinine fluorescence: 0.05, 0.10, 0.20, 0.30, 0.40 mg/L
+      gave 27.1, 53.0, 101.4, 152.2, 200.6. Sample: 92.1.
+    expect: generate_calibration_curve
+    forbidden: [calculate_content]
+    why: >
+      Desktop 22.11.2026 (Opus 5.5) rechnete diesen Wortlaut in Python statt das Werkzeug zu rufen.
+      Kein Zeichen-Verb im Prompt; ob das die Ursache ist, ist eine Hypothese.
+
   # --- Spektren: vorhersagen vs. zeichnen -----------------------------------
   - id: predict-spectrum
     prompt: "Welche IR-Banden erwarte ich bei Aspirin?"
