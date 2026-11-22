@@ -85,7 +85,7 @@ The connector `chemdraw-pharma` (profile `pharma`) adds seven tools; the
 `full` profile contains them too. To use them, install the second bundle or
 run `chemdraw-install`, and turn `chemdraw-pharma` on in the connector menu
 next to `chemdraw` — both can stay on. With your own config set
-`CHEMPANE_PROFILE=pharma` for a second entry or `full` for a single one
+`CHEMDRAW_PROFILE=pharma` for a second entry or `full` for a single one
 ([Configuration](configuration.md)).
 
 - `generate_calibration_curve`: least-squares line, unknowns read back,

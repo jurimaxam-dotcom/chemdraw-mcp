@@ -205,3 +205,10 @@ def test_old_commands_stay_as_aliases_until_1_0(project):
     assert scripts["chemdraw-tool-server"] == "chempane.server:main"
     assert scripts["chemdraw-install"] == "chempane.desktop_config:main"
     assert scripts["chemdraw-doctor"] == "chempane.doctor:main"
+
+
+def test_server_info_name_is_chempane():
+    """Der Name, den der Host in serverInfo sieht, trägt kein „ChemDraw“ mehr."""
+    from chempane.server import create_server
+
+    assert create_server("mvp").name == "chempane"

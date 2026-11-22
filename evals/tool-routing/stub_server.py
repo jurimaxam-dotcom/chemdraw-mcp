@@ -56,7 +56,7 @@ async def _call(_ctx, params: types.CallToolRequestParams) -> types.CallToolResu
 
 # mcp 2: Handler gehen in den Konstruktor, die Dekoratoren gibt es nicht mehr.
 server = Server(
-    "chemdraw",
+    "chempane",
     instructions=echt.instructions,
     on_list_tools=_tools,
     on_call_tool=_call,

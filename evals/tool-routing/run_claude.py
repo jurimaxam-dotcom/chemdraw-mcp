@@ -38,9 +38,11 @@ from pathlib import Path
 
 import yaml
 
+from chempane.settings import env, output_root
+
 HIER = Path(__file__).parent
 REPO = HIER.parent.parent
-PREFIX = "mcp__chemdraw__"
+PREFIX = "mcp__chempane__"
 
 
 def gerufene_tools(prompt: str, config: str, modell: str | None, cwd: str) -> tuple[list[str], str]:
@@ -66,10 +68,10 @@ def befehl(prompt: str, config: str, modell: str | None, erlaubt: list[str], max
 
 
 def server_verbunden(events: list[dict]) -> bool:
-    """Meldet das init-Event den Server `chemdraw` als verbunden? Sonst sah das Modell kein Tool."""
+    """Meldet das init-Event den Server `chempane` als verbunden? Sonst sah das Modell kein Tool."""
     for e in events:
         if e.get("type") == "system" and e.get("subtype") == "init":
-            return any(s.get("name") == "chemdraw" and s.get("status") == "connected"
+            return any(s.get("name") == "chempane" and s.get("status") == "connected"
                        for s in e.get("mcp_servers") or [])
     return False
 
@@ -159,16 +161,16 @@ def main_echt(auswahl: list[str]) -> int:
     # als falsche Wahl erscheinen, nicht als Rechtefrage. export_anki_deck bleibt verweigert.
     erlaubt = sorted({t.name for t in asyncio.run(mcp.list_tools())} - (beispiele.keys() - offen.keys()))
     arbeit = tempfile.mkdtemp(prefix="tool-echt-")
-    echtes_output = Path.home() / "ChemDraw-Output"
+    echtes_output = output_root()
     beginn = time.time()
     try:
         heim = Path(arbeit) / "home"
         heim.mkdir()
         config_pfad = Path(arbeit) / "mcp.json"
         # venv-Binärdatei direkt (uv bräuchte das echte HOME); HOME des Servers = Wegwerf-Ordner
-        config_pfad.write_text(json.dumps({"mcpServers": {"chemdraw": {
-            "command": str(REPO / ".venv" / "bin" / "chemdraw-tool-server"),
-            "env": {"CHEMDRAW_PROFILE": os.environ.get("CHEMDRAW_PROFILE", "mvp"), "HOME": str(heim)},
+        config_pfad.write_text(json.dumps({"mcpServers": {"chempane": {
+            "command": str(REPO / ".venv" / "bin" / "chempane"),
+            "env": {"CHEMPANE_PROFILE": env("PROFILE", "mvp"), "HOME": str(heim)},
         }}}))
         modell = os.environ.get("MODEL")
 
@@ -190,7 +192,7 @@ def main_echt(auswahl: list[str]) -> int:
     # Nur Hinweis, kein Rot: ein parallel benutztes Claude Desktop schreibt in denselben Ordner (gesehen 12.11.2026)
     neu = _neu_seit(echtes_output, beginn)
     if neu:
-        print(f"⚠ ~/ChemDraw-Output: {len(neu)} Datei(en) seit Laufbeginn geändert ({', '.join(neu[:3])}). "
+        print(f"⚠ {echtes_output}: {len(neu)} Datei(en) seit Laufbeginn geändert ({', '.join(neu[:3])}). "
               "Von diesem Lauf dürfen sie nicht stammen (Wegwerf-HOME) — prüfen, ob Desktop parallel lief.")
     print(f"\n{zahl['grün']}/{len(fälle)} grün · {zahl['gelb']} gelb (Quelle) · {zahl['rot']} rot")
     return 1 if zahl["rot"] else 3 if zahl["gelb"] else 0
@@ -226,10 +228,10 @@ def main() -> int:
     except ValueError as error:
         print(f"ABBRUCH: {error}", file=sys.stderr)
         return 2
-    config = json.dumps({"mcpServers": {"chemdraw": {
+    config = json.dumps({"mcpServers": {"chempane": {
         "command": "uv",
         "args": ["run", "--directory", str(REPO), "python", str(HIER / "stub_server.py")],
-        "env": {"CHEMDRAW_PROFILE": os.environ.get("CHEMDRAW_PROFILE", "mvp")},
+        "env": {"CHEMPANE_PROFILE": env("PROFILE", "mvp")},
     }}})
     # Eigener Ordner (0700) statt des geteilten Temp-Ordners: `--setting-sources project`
     # liest .claude/settings.json aus dem CWD — in /tmp könnte ein Mitnutzer dort

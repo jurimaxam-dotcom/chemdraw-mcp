@@ -130,7 +130,7 @@ def test_stub_lauf_gibt_alle_angebotenen_tools_frei_und_bleibt_bei_zwei_zuegen()
     runner = _load("run_claude")
     cmd = runner.befehl("Draw aspirin", "/x/mcp.json", None, ["generate_molecule", "lookup"], max_turns=2)
     erlaubt = cmd[cmd.index("--allowedTools") + 1].split(",")
-    assert erlaubt == ["mcp__chemdraw__generate_molecule", "mcp__chemdraw__lookup"]
+    assert erlaubt == ["mcp__chempane__generate_molecule", "mcp__chempane__lookup"]
     assert cmd[cmd.index("--max-turns") + 1] == "2"
 
 
@@ -153,7 +153,7 @@ def test_stub_lauf_ohne_verbundenen_server_ist_keine_messung():
 
 def test_verbindungsstatus_kommt_aus_dem_init_event():
     runner = _load("run_claude")
-    init = {"type": "system", "subtype": "init", "mcp_servers": [{"name": "chemdraw", "status": "failed"}]}
+    init = {"type": "system", "subtype": "init", "mcp_servers": [{"name": "chempane", "status": "failed"}]}
     assert runner.server_verbunden([init]) is False
     init["mcp_servers"][0]["status"] = "connected"
     assert runner.server_verbunden([init]) is True

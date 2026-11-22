@@ -83,7 +83,7 @@ def test_build_server_entry_uses_uv_with_directory(tmp_path):
         "--directory",
         "/Users/x/Chem-draw-addon",
         "run",
-        "chemdraw-tool-server",
+        "chempane",
     ]
 
 
@@ -177,7 +177,7 @@ def test_install_creates_config_when_absent(tmp_path):
     cfg = tmp_path / "Claude" / "claude_desktop_config.json"
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     data = json.loads(cfg.read_text())
-    assert data["mcpServers"]["chemdraw"]["command"] == str(uv)
+    assert data["mcpServers"]["chempane"]["command"] == str(uv)
     assert not cfg.with_suffix(".json.bak").exists(), "kein Backup ohne Vorgänger"
 
 
@@ -190,7 +190,7 @@ def test_install_preserves_other_server_and_writes_backup(tmp_path):
     install("/Users/x/proj", config_path=cfg)
     data = json.loads(cfg.read_text())
     assert "concepts" in data["mcpServers"]
-    assert "chemdraw" in data["mcpServers"]
+    assert "chempane" in data["mcpServers"]
     backup = json.loads(cfg.with_suffix(".json.bak").read_text())
     assert backup == {"mcpServers": {"concepts": {"command": "python"}}}
 
@@ -225,7 +225,7 @@ def test_install_refuses_corrupt_config_without_touching_it(tmp_path):
 def test_exactly_two_connectors_with_fixed_profiles():
     from chempane.desktop_config import CONNECTORS
 
-    assert CONNECTORS == {"chemdraw": "mvp", "chemdraw-pharma": "pharma"}
+    assert CONNECTORS == {"chempane": "mvp", "chempane-pharma": "pharma"}
 
 
 def test_connector_profiles_are_profiles_the_server_knows():
@@ -245,26 +245,27 @@ def test_install_rewrites_a_pharma_connector_on_the_full_profile(tmp_path):
     cfg.write_text(json.dumps({"mcpServers": {"chemdraw-pharma": alt}}), encoding="utf-8")
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     servers = json.loads(cfg.read_text())["mcpServers"]
-    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "pharma"}
-    assert servers["chemdraw"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
+    assert servers["chempane-pharma"]["env"] == {"CHEMPANE_PROFILE": "pharma"}
+    assert servers["chempane"]["env"] == {"CHEMPANE_PROFILE": "mvp"}
+    assert "chemdraw-pharma" not in servers
 
 
 def test_build_server_entry_pins_the_profile_in_env(tmp_path):
     uv = _fake_uv(tmp_path / "bin")
     entry = build_server_entry("/Users/x/proj", uv_command=str(uv), profile="full")
-    assert entry["env"] == {"CHEMDRAW_PROFILE": "full"}
+    assert entry["env"] == {"CHEMPANE_PROFILE": "full"}
     assert entry["args"] == [
         "--directory",
         "/Users/x/proj",
         "run",
-        "chemdraw-tool-server",
+        "chempane",
     ]
 
 
 def test_build_server_entry_defaults_to_the_mvp_profile(tmp_path):
     uv = _fake_uv(tmp_path / "bin")
     assert build_server_entry("/Users/x/proj", uv_command=str(uv))["env"] == {
-        "CHEMDRAW_PROFILE": "mvp"
+        "CHEMPANE_PROFILE": "mvp"
     }
 
 
@@ -280,7 +281,7 @@ def test_build_installed_entry_pins_the_profile(tmp_path):
     launcher = _fake_uv(tmp_path / "bin")
     entry = build_installed_entry(launcher=str(launcher), profile="full")
     assert entry["command"] == str(launcher)
-    assert entry["env"] == {"CHEMDRAW_PROFILE": "full"}
+    assert entry["env"] == {"CHEMPANE_PROFILE": "full"}
 
 
 def test_install_writes_both_connectors(tmp_path):
@@ -288,16 +289,16 @@ def test_install_writes_both_connectors(tmp_path):
     cfg = tmp_path / "claude_desktop_config.json"
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     servers = json.loads(cfg.read_text())["mcpServers"]
-    assert set(servers) == {"chemdraw", "chemdraw-pharma"}
-    assert servers["chemdraw"]["env"] == {"CHEMDRAW_PROFILE": "mvp"}
-    assert servers["chemdraw-pharma"]["env"] == {"CHEMDRAW_PROFILE": "pharma"}
+    assert set(servers) == {"chempane", "chempane-pharma"}
+    assert servers["chempane"]["env"] == {"CHEMPANE_PROFILE": "mvp"}
+    assert servers["chempane-pharma"]["env"] == {"CHEMPANE_PROFILE": "pharma"}
     for entry in servers.values():
         assert entry["command"] == str(uv)
         assert entry["args"] == [
             "--directory",
             "/Users/x/proj",
             "run",
-            "chemdraw-tool-server",
+            "chempane",
         ]
 
 
@@ -323,7 +324,7 @@ def test_install_migrates_the_old_chemdraw_tool_entry(tmp_path):
     )
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     data = json.loads(cfg.read_text())
-    assert set(data["mcpServers"]) == {"chemdraw", "chemdraw-pharma", "concepts"}
+    assert set(data["mcpServers"]) == {"chempane", "chempane-pharma", "concepts"}
     assert data["mcpServers"]["concepts"] == {"command": "python", "args": ["s.py"]}
     assert data["preferences"] == {"x": 1}
     backup = json.loads(cfg.with_suffix(".json.bak").read_text())
@@ -341,3 +342,85 @@ def test_install_twice_migration_stays_stable(tmp_path):
     first = cfg.read_text()
     install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
     assert cfg.read_text() == first
+
+
+# --- Umbenennung chemdraw → chempane (22.11.2026) --------------------------
+# Die Konnektoren hießen bis 0.11.3 `chemdraw` und `chemdraw-pharma`. Der Installer
+# ersetzt sie durch `chempane`/`chempane-pharma` — sonst stünden vier Einträge mit
+# denselben Tools im Menü. Was der Nutzer selbst in den alten Eintrag geschrieben
+# hat (zusätzliche env-Werte), wandert mit; das Profil schreibt der Installer neu.
+
+
+def _old_config(cfg: Path, uv: Path) -> None:
+    cfg.write_text(
+        json.dumps(
+            {
+                "mcpServers": {
+                    "chemdraw": {
+                        "command": str(uv),
+                        "args": ["--directory", "/Users/x/proj", "run", "chemdraw-tool-server"],
+                        "env": {"CHEMDRAW_PROFILE": "mvp", "CHEMDRAW_SMILES_LOOKUP": "1"},
+                    },
+                    "chemdraw-pharma": {
+                        "command": str(uv),
+                        "args": ["--directory", "/Users/x/proj", "run", "chemdraw-tool-server"],
+                        "env": {"CHEMDRAW_PROFILE": "pharma", "CHEMDRAW_VAULT_PATH": "/notes"},
+                    },
+                    "concepts": {"command": "python", "args": ["s.py"]},
+                },
+                "preferences": {"x": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_install_replaces_the_chemdraw_connectors_with_chempane(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    _old_config(cfg, uv)
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    data = json.loads(cfg.read_text())
+    assert set(data["mcpServers"]) == {"chempane", "chempane-pharma", "concepts"}
+    assert data["mcpServers"]["concepts"] == {"command": "python", "args": ["s.py"]}
+    assert data["preferences"] == {"x": 1}
+    backup = json.loads(cfg.with_suffix(".json.bak").read_text())
+    assert {"chemdraw", "chemdraw-pharma"} <= set(backup["mcpServers"]), "Backup hält die alten Einträge"
+
+
+def test_migration_keeps_the_users_own_env_values(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    _old_config(cfg, uv)
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    servers = json.loads(cfg.read_text())["mcpServers"]
+    assert servers["chempane"]["env"] == {"CHEMPANE_PROFILE": "mvp", "CHEMDRAW_SMILES_LOOKUP": "1"}
+    assert servers["chempane-pharma"]["env"] == {"CHEMPANE_PROFILE": "pharma", "CHEMDRAW_VAULT_PATH": "/notes"}
+
+
+def test_migration_is_idempotent(tmp_path):
+    uv = _fake_uv(tmp_path / "bin")
+    cfg = tmp_path / "claude_desktop_config.json"
+    _old_config(cfg, uv)
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    first = cfg.read_text()
+    install("/Users/x/proj", config_path=cfg, uv_command=str(uv))
+    assert cfg.read_text() == first
+
+
+def test_legacy_names_cover_both_old_connectors():
+    from chempane.desktop_config import LEGACY_SERVER_NAMES
+
+    assert {"chemdraw-tool", "chemdraw", "chemdraw-pharma"} <= set(LEGACY_SERVER_NAMES)
+
+
+def test_installed_entry_prefers_the_chempane_launcher(tmp_path, monkeypatch):
+    """Im venv liegen nach der Umbenennung beide Startskripte; eingetragen wird das neue."""
+    from chempane import desktop_config
+
+    venv_bin = tmp_path / "venv" / "bin"
+    for name in ("chemdraw-mcp", "chempane", "chemdraw-tool-server"):
+        _fake_uv(venv_bin).rename(venv_bin / name)
+    monkeypatch.setattr(desktop_config.sys, "executable", str(venv_bin / "python"))
+    entry = desktop_config.build_installed_entry(profile="mvp")
+    assert entry["command"] == str(venv_bin / "chempane")

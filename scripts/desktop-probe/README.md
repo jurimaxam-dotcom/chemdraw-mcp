@@ -55,7 +55,7 @@ in beiden Stufen, die Schritte in `checkpoints.json`.
   ganzen App.** `title CONTAINS 'once'` traf statt „Allow once“ einen Chat-Titel mit demselben Teilwort; der Rechte-Dialog blieb offen und der Lauf meldete „Antwort ohne Tool-Aufruf“
   (14.11.2026, Protein-Tool). Der Dialog ist die Gruppe `Permission request: …`; bedient
   wird „Always allow“ (16.11.2026: für die Tools dieses Servers ausdrücklich erlaubt), sonst
-  „Allow once“ — und nur, wenn der Dialog ein Tool von `chemdraw` oder `chemdraw-pharma` nennt.
+  „Allow once“ — und nur, wenn der Dialog ein Tool von `chempane` oder `chempane-pharma` nennt.
 - **Nie klicken:** die Knöpfe unter „Continue in chat“ (jeder schreibt eine Nachricht) und
   „Add a flashcard to the Anki deck …“ (ändert Anki).
 - **Aufnahmen nie ins Repo.** Videos und Bäume zeigen die Seitenleiste mit privaten Chat-Titeln.

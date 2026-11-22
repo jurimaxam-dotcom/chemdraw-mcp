@@ -178,7 +178,7 @@ def test_readme_erklaert_beide_konnektoren():
         assert name in profile, name
     assert "chemdraw-mcp-pharma-<version>.mcpb" in profile
     assert "no restart" in profile
-    assert "CHEMPANE_PROFILE=full" in profile, "Weg für bisherige Nur-pharma-Nutzer"
+    assert "CHEMDRAW_PROFILE=full" in profile, "Weg für bisherige Nur-pharma-Nutzer"
     for doc in (README, TOOLS_DOC):
         assert "chemdraw-pharma" in doc
     for text in DOCS:

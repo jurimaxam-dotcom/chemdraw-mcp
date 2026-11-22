@@ -12,7 +12,7 @@ let toolNamen = [
   "generate_species_distribution", "export_anki_deck",
   "lookup", "predict_spectrum", "calculate_ph", "save_png", "load_panel_part",
 ] + pharmaTools
-/// Tools, die nur der zweite Konnektor `chemdraw-pharma` liefert (Profil pharma, seit 16.11.2026).
+/// Tools, die nur der zweite Konnektor `chempane-pharma` liefert (Profil pharma, seit 16.11.2026).
 let pharmaTools = [
   "generate_scope_table", "generate_calibration_curve", "generate_pk_curve", "generate_dose_response",
   "calculate_solution", "calculate_content", "calculate_pharmacokinetics",
@@ -155,13 +155,13 @@ class ProbeFall: XCTestCase {
     return Double(summe) / Double(x.count)
   }
 
-  /// Welcher Konnektor muss antworten? Seit 16.11.2026 liefert `chemdraw` die 18 Standard-Tools und
-  /// `chemdraw-pharma` nur die Zusatz-Tools; das installierte Bündel („ChemDraw MCP (unofficial)“) darf
+  /// Welcher Konnektor muss antworten? Seit 16.11.2026 liefert `chempane` die 18 Standard-Tools und
+  /// `chempane-pharma` nur die Zusatz-Tools (bis 0.11.3: chemdraw/chemdraw-pharma); das installierte Bündel darf
   /// in einem Probe-Lauf gar nicht antworten – es bringt einen älteren Stand mit.
   func konnektorCheckpoint() {
     checkpoint("Antwort kommt vom richtigen Konnektor") {
       let titel = server
-      let soll = pharmaTools.contains(tool) ? "chemdraw-pharma" : "chemdraw"
+      let soll = pharmaTools.contains(tool) ? "chempane-pharma" : "chempane"
       // Die Gruppe heißt "<konnektor> embed" oder "<konnektor>: <Titel>".
       let ist = titel.components(separatedBy: CharacterSet(charactersIn: " :")).first ?? ""
       return (ist == soll, "soll \(soll), Gruppe „\(titel)“")

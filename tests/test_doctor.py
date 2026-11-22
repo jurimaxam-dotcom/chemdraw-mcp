@@ -161,11 +161,11 @@ def test_desktop_config_without_our_entry_is_a_limitation(tmp_path):
 def test_desktop_entry_with_missing_command_is_an_error(tmp_path):
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw": {"command": "uv", "args": ["run"]}}},
+        {"mcpServers": {"chempane": {"command": "uv", "args": ["run"]}}},
     )
     result = check_desktop_config(config_path=path)
     assert result.status == ERROR
-    assert "chemdraw-install" in result.fix
+    assert "chempane-install" in result.fix
 
 
 def test_desktop_entry_with_non_executable_command_is_an_error(tmp_path):
@@ -175,7 +175,7 @@ def test_desktop_entry_with_non_executable_command_is_an_error(tmp_path):
     binary.chmod(stat.S_IRUSR)
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw": {"command": str(binary)}}},
+        {"mcpServers": {"chempane": {"command": str(binary)}}},
     )
     assert check_desktop_config(config_path=path).status == ERROR
 
@@ -186,15 +186,15 @@ def test_working_desktop_entry_is_ok(tmp_path):
         tmp_path / "config.json",
         {
             "mcpServers": {
-                "chemdraw": {
+                "chempane": {
                     "command": str(uv),
                     "args": ["run"],
-                    "env": {"CHEMDRAW_PROFILE": "mvp"},
+                    "env": {"CHEMPANE_PROFILE": "mvp"},
                 },
-                "chemdraw-pharma": {
+                "chempane-pharma": {
                     "command": str(uv),
                     "args": ["run"],
-                    "env": {"CHEMDRAW_PROFILE": "pharma"},
+                    "env": {"CHEMPANE_PROFILE": "pharma"},
                 },
             }
         },
@@ -202,7 +202,7 @@ def test_working_desktop_entry_is_ok(tmp_path):
     result = check_desktop_config(config_path=path)
     assert result.status == OK
     assert str(uv) in result.detail
-    assert "chemdraw-pharma" in result.detail
+    assert "chempane-pharma" in result.detail
 
 
 def test_pharma_connector_still_on_the_full_profile_asks_to_rerun_the_installer(tmp_path):
@@ -214,14 +214,14 @@ def test_pharma_connector_still_on_the_full_profile_asks_to_rerun_the_installer(
         tmp_path / "config.json",
         {
             "mcpServers": {
-                "chemdraw": {"command": str(uv), "args": ["run"], "env": {"CHEMDRAW_PROFILE": "mvp"}},
-                "chemdraw-pharma": {"command": str(uv), "args": ["run"], "env": {"CHEMDRAW_PROFILE": "full"}},
+                "chempane": {"command": str(uv), "args": ["run"], "env": {"CHEMPANE_PROFILE": "mvp"}},
+                "chempane-pharma": {"command": str(uv), "args": ["run"], "env": {"CHEMPANE_PROFILE": "full"}},
             }
         },
     )
     result = check_desktop_config(config_path=path)
     assert result.status == LIMITED
-    assert "chemdraw-pharma" in result.detail and "full" in result.detail
+    assert "chempane-pharma" in result.detail and "full" in result.detail
     assert "twice" in result.detail
     assert "install" in result.fix
 
@@ -244,11 +244,11 @@ def test_desktop_config_missing_the_pharma_connector_is_a_limitation(tmp_path):
     uv = _executable(tmp_path / "bin" / "uv")
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw": {"command": str(uv), "args": ["run"]}}},
+        {"mcpServers": {"chempane": {"command": str(uv), "args": ["run"]}}},
     )
     result = check_desktop_config(config_path=path)
     assert result.status == LIMITED
-    assert "chemdraw-pharma" in result.detail
+    assert "chempane-pharma" in result.detail
 
 
 # --- Netz ---------------------------------------------------------------------
@@ -528,7 +528,7 @@ def test_entry_pointing_at_a_moved_clone_is_an_error(tmp_path):
     entry = {"command": str(uv), "args": ["--directory", str(tmp_path / "gibt-es-nicht"), "run", "x"]}
     path = _write_config(
         tmp_path / "config.json",
-        {"mcpServers": {"chemdraw": entry, "chemdraw-pharma": entry}},
+        {"mcpServers": {"chempane": entry, "chempane-pharma": entry}},
     )
     result = check_desktop_config(config_path=path, bundle_dir=tmp_path / "kein-bundle")
     assert result.status == ERROR
@@ -541,7 +541,7 @@ def test_fix_names_the_installer_the_user_actually_has(tmp_path, monkeypatch):
     path = _write_config(tmp_path / "config.json", {"mcpServers": {"other": {}}})
     monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
     result = check_desktop_config(config_path=path, bundle_dir=tmp_path / "kein-bundle")
-    assert "chemdraw-install" in result.fix
+    assert "chempane-install" in result.fix
     assert "install.sh" not in result.fix
 
 
@@ -559,3 +559,35 @@ def _kein_echtes_bundle(tmp_path, monkeypatch):
     from chempane import doctor
 
     monkeypatch.setattr(doctor, "_bundle_dir", lambda: tmp_path / "kein-bundle-hier")
+
+
+# --- Umbenennung chemdraw → chempane (22.11.2026) ----------------------------------------
+
+
+def _renamed_config(tmp_path, command):
+    cfg = tmp_path / "claude_desktop_config.json"
+    entry = {"command": str(command), "args": [], "env": {"CHEMDRAW_PROFILE": "mvp"}}
+    pharma = {"command": str(command), "args": [], "env": {"CHEMDRAW_PROFILE": "pharma"}}
+    cfg.write_text(json.dumps({"mcpServers": {"chemdraw": entry, "chemdraw-pharma": pharma}}), encoding="utf-8")
+    return cfg
+
+
+def test_old_connector_names_work_but_the_doctor_offers_the_rename(tmp_path):
+    from chempane.doctor import NOTE
+
+    binary = tmp_path / "chemdraw-mcp"
+    binary.write_text("#!/bin/sh\n", encoding="utf-8")
+    binary.chmod(0o755)
+    result = check_desktop_config(config_path=_renamed_config(tmp_path, binary), bundle_dir=tmp_path / "none")
+    assert result.status == NOTE
+    assert "chemdraw" in result.detail and "chempane" in result.detail
+    assert "permission" in result.detail
+    assert result.fix
+
+
+def test_old_connector_names_with_a_dead_command_are_still_an_error(tmp_path):
+    result = check_desktop_config(
+        config_path=_renamed_config(tmp_path, tmp_path / "gone"), bundle_dir=tmp_path / "none"
+    )
+    assert result.status == ERROR
+    assert "'chemdraw'" in result.detail

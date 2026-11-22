@@ -348,8 +348,8 @@ write their files themselves — never call save_png, that is the panel's
 export button.
 """
 
-# Profil `pharma` (16.11.2026): der zweite Konnektor `chemdraw-pharma` liefert
-# nur, was `full` über `mvp` hinaus hat — zusammen mit `chemdraw` der volle Satz,
+# Profil `pharma` (16.11.2026): der zweite Konnektor `chempane-pharma` liefert
+# nur, was `full` über `mvp` hinaus hat — zusammen mit `chempane` der volle Satz,
 # kein Tool doppelt (vorher sah das Modell 18 Tools zweimal, und die Aufrufe
 # verteilten sich zufällig auf beide Konnektoren). Die Beschreibungen sind die
 # des Vollprofils; nur die Bereichskarte hier ist eigen und nennt bewusst kein
@@ -357,7 +357,7 @@ export button.
 _PHARMA_INSTRUCTIONS = """\
 Pharmacy bench maths and pharmacology figures as PNG/SVG files with an
 interactive panel. This connector holds seven tools that complement the
-chemdraw connector:
+chempane connector:
 
 - Several products of one reaction in a grid with labels and yields (a
   substrate-scope figure): generate_scope_table.
@@ -376,7 +376,7 @@ chemdraw connector:
   calculate_content.
 
 Single structures, reactions, mechanisms, spectra, TLC plates, pH values and
-pH curves, proteins and Anki decks come from the chemdraw connector, not from
+pH curves, proteins and Anki decks come from the chempane connector, not from
 this one.
 
 Drawing tools write their files themselves — never call save_png or
@@ -4962,7 +4962,7 @@ def create_server(profile: str | None = None) -> MCPServer:
     # (mcp 1.x meldete sonst "1.27.1", mcp 2 einen Leerstring). Seit mcp 2 ist
     # das ein Konstruktor-Argument statt eines Eingriffs in den Low-Level-Server.
     instance = MCPServer(
-        "ChemDraw Tool",
+        "chempane",
         instructions=_INSTRUCTIONS[selected],
         version=_pkg_version(PACKAGE),
     )

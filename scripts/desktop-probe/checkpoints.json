@@ -615,7 +615,7 @@
   ]
  },
  "export_anki_deck": {
-  "prompt": "Exportiere mit dem ChemDraw-Tool ein Anki-Deck mit Koffein und Paracetamol, nur als .apkg-Datei, ohne Anki zu öffnen.",
+  "prompt": "Exportiere mit chempane ein Anki-Deck mit Koffein und Paracetamol, nur als .apkg-Datei, ohne Anki zu öffnen.",
   "schritte": [
    {
     "name": "Deckname",

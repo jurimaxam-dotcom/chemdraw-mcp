@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Ein-Befehl-Installer (macOS/Linux): richtet den chemdraw-tool MCP-Server für
+# Ein-Befehl-Installer (macOS/Linux): richtet den chempane MCP-Server für
 # Claude Desktop ein — ohne dass man uv, Python oder die Config-Datei manuell
 # anfassen muss.
 #
 #   1. stellt sicher, dass uv da ist (sonst feste Version, SHA-256 geprüft)
 #   2. uv sync  (lädt Python + RDKit & Co. plattformkorrekt)
-#   3. trägt beide Konnektoren (chemdraw = mvp, chemdraw-pharma = pharma) idempotent
-#      in claude_desktop_config.json ein (mit Backup; ersetzt das alte chemdraw-tool
-#      und schreibt ein chemdraw-pharma mit full auf pharma um)
+#   3. trägt beide Konnektoren (chempane = mvp, chempane-pharma = pharma) idempotent
+#      in claude_desktop_config.json ein (mit Backup; ersetzt die alten Einträge
+#      chemdraw-tool, chemdraw und chemdraw-pharma und schreibt ein full-Profil auf pharma um)
 #   4. Smoke-Test (Import) + Hinweis zum Neustart
 #
 # Re-Run ist gefahrlos: alles idempotent, bestehende MCP-Server bleiben erhalten.
@@ -64,4 +64,4 @@ else
 fi
 
 echo ""
-echo "✅ Done. Restart Claude Desktop, enable the connector chemdraw (add chemdraw-pharma for the pharmacy tools; both can be on at once), then try e.g.: \"Draw aspirin\"."
+echo "✅ Done. Restart Claude Desktop, enable the connector chempane (add chempane-pharma for the pharmacy tools; both can be on at once), then try e.g.: \"Draw aspirin\"."

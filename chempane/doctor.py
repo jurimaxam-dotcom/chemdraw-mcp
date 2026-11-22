@@ -253,7 +253,7 @@ def check_uv(*, resolve: Callable[[], str] | None = None) -> CheckResult:
 
 def _install_command() -> str:
     """Der Installer, den dieser Nutzer hat: `./install.sh` gibt es nur im Clone."""
-    return "./install.sh" if _installer_helpers().running_from_repo() else "chemdraw-install"
+    return "./install.sh" if _installer_helpers().running_from_repo() else "chempane-install"
 
 
 def _bundle_dir() -> Path:
@@ -326,6 +326,20 @@ def check_desktop_config(
         for name in helpers.LEGACY_SERVER_NAMES
         if isinstance(servers.get(name), dict)
     ]
+    # Vor der Umbenennung (bis 0.11.3) hießen die Konnektoren chemdraw/chemdraw-pharma.
+    # Stehen nur sie in der Datei, prüft der Doctor sie unter ihrem alten Namen — sie
+    # starten weiter — und bietet am Ende das Umbenennen an.
+    label = {c: c for c in connectors}
+    renamed = {
+        new: old
+        for old, new in helpers.RENAMED_CONNECTORS.items()
+        if isinstance(servers.get(old), dict)
+    }
+    still_old = bool(renamed) and not any(isinstance(servers.get(c), dict) for c in connectors)
+    if still_old:
+        servers = {**servers, **{new: servers[old] for new, old in renamed.items()}}
+        label.update(renamed)
+        legacy = [n for n in legacy if n not in renamed.values()]
     missing = [name for name in connectors if not isinstance(servers.get(name), dict)]
 
     for connector in connectors:
@@ -337,11 +351,11 @@ def check_desktop_config(
                 name=name,
                 status=ERROR,
                 detail=(
-                    f"The '{connector}' entry starts {command!r}, which is not an executable "
+                    f"The '{label[connector]}' entry starts {command!r}, which is not an executable "
                     "file at an absolute path. Claude Desktop launches MCP servers with the "
                     "minimal GUI PATH and will fail to start it without any message."
                 ),
-                fix="chemdraw-install   (rewrites the entry with the absolute launcher path)",
+                fix="chempane-install   (rewrites the entry with the absolute launcher path)",
             )
         # Clone verschoben oder gelöscht: uv ist da, das Projekt nicht mehr.
         if gone := _missing_project_dir(servers[connector]):
@@ -349,11 +363,11 @@ def check_desktop_config(
                 name=name,
                 status=ERROR,
                 detail=(
-                    f"The '{connector}' entry runs the server from {gone}, but there is no "
+                    f"The '{label[connector]}' entry runs the server from {gone}, but there is no "
                     "project there (no pyproject.toml) — the clone was moved or deleted. "
                     "Claude Desktop fails to start it without any message."
                 ),
-                fix="./install.sh in the clone's new location   (or: uv tool install chemdraw-mcp && chemdraw-install)",
+                fix="./install.sh in the clone's new location   (or: uv tool install chempane && chempane-install)",
             )
 
     if missing:
@@ -383,7 +397,7 @@ def check_desktop_config(
             )
         else:
             detail = (
-                f"{_short(path)} has '{[n for n in connectors if n not in missing][0]}' but no "
+                f"{_short(path)} has '{label[[n for n in connectors if n not in missing][0]]}' but no "
                 f"'{missing[0]}' connector ({connectors[missing[0]]} profile), so the second "
                 "connector is missing from Claude Desktop's menu."
             )
@@ -397,8 +411,8 @@ def check_desktop_config(
     def profile_of(connector: str) -> str:
         return profile_from_env(servers[connector].get("env"))
 
-    # Seit 16.11.2026 liefert chemdraw-pharma nur die Zusatz-Tools (`pharma`).
-    # Ein Eintrag von davor (`full`) startet, aber neben `chemdraw` sieht das
+    # Seit 16.11.2026 liefert der Pharma-Konnektor nur die Zusatz-Tools (`pharma`).
+    # Ein Eintrag von davor (`full`) startet, aber neben dem Hauptkonnektor sieht das
     # Modell dann 18 Tools doppelt — und ein Paket-Update ändert die Config nicht.
     drifted = [c for c in connectors if profile_of(c) != connectors[c]]
     if drifted:
@@ -408,7 +422,7 @@ def check_desktop_config(
             status=LIMITED,
             detail=(
                 "Connector profile differs from what the installer writes: "
-                + ", ".join(f"{c} = {profile_of(c)} (expected {connectors[c]})" for c in drifted)
+                + ", ".join(f"{label[c]} = {profile_of(c)} (expected {connectors[c]})" for c in drifted)
                 + "."
                 + (
                     " With both connectors enabled, the model sees the shared tools twice "
@@ -420,10 +434,24 @@ def check_desktop_config(
             fix=f"{_install_command()}   (rewrites both entries; leaves your other MCP servers untouched)",
         )
 
+    if still_old:
+        old_names = " and ".join(renamed[c] for c in connectors if c in renamed)
+        return CheckResult(
+            name=name,
+            status=NOTE,
+            detail=(
+                f"Registered in {_short(path)} under the names from before the rename to chempane "
+                f"({old_names}). They keep working. The installer renames them to "
+                f"{' and '.join(connectors)}; Claude Desktop then treats them as new connectors, "
+                "so check their tool permissions once under Settings → Connectors."
+            ),
+            fix=f"{_install_command()}   (renames both entries; leaves your other MCP servers untouched)",
+        )
+
     main_entry = servers[_server_name()]
     command = main_entry.get("command") or ""
     args = " ".join(str(a) for a in main_entry.get("args", []))
-    profiles = ", ".join(f"{connector} = {profile_of(connector)}" for connector in connectors)
+    profiles = ", ".join(f"{label[connector]} = {profile_of(connector)}" for connector in connectors)
     return CheckResult(
         name=name,
         status=OK,

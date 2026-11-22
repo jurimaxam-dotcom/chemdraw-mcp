@@ -52,7 +52,7 @@ itself:
 
 - **Claude Desktop extension:** Settings → Extensions → ChemDraw MCP → turn on
   **Look up typed structures by SMILES** (both bundles have it).
-- **Everywhere else:** set `CHEMPANE_SMILES_LOOKUP=1` in the server's
+- **Everywhere else:** set `CHEMDRAW_SMILES_LOOKUP=1` in the server's
   environment (`true`, `yes` and `on` work too) and restart the server.
 
 With it on, a structure whose InChIKey PubChem does not know is posted to
@@ -64,7 +64,7 @@ ChEBI, UniProt or KEGG. Leave it off for unpublished structures.
 The server keeps `~/ChemDraw-Output/server.log` on your computer, rotated at
 1 MB with two older files. At the default level it records start-up, requests
 and errors, and a name when its lookup needed a second attempt or failed. With
-`CHEMPANE_LOG_LEVEL=DEBUG` it records every lookup URL and therefore every name
+`CHEMDRAW_LOG_LEVEL=DEBUG` it records every lookup URL and therefore every name
 you asked for. Nothing in the log is sent anywhere.
 
 ## How to check

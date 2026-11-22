@@ -86,7 +86,7 @@ final class StufeA: ProbeFall {
           // 14.11.2026): erst klicken, wenn er eine Runde später noch steht und treffbar ist.
           if dialogSeit == nil { dialogSeit = Date() }
           else if Date().timeIntervalSince(dialogSeit!) > 1.5, once.exists, once.isHittable,
-                  dialog.hasSuffix(" from chemdraw") || dialog.hasSuffix(" from chemdraw-pharma") {
+                  dialog.hasSuffix(" from chempane") || dialog.hasSuffix(" from chempane-pharma") {
             once.click(); dialogSeit = nil; fertigSeit = nil
           }
           Thread.sleep(forTimeInterval: 1.0); continue

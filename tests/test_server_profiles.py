@@ -273,7 +273,7 @@ def test_pharma_registers_vault_tools_like_full():
     assert {t["name"] for t in _data("pharma", vault=True)["tools"]} == PHARMA_EXTRA | APP_HELPERS | vault
 
 
-def test_pharma_instructions_name_its_tools_and_point_to_chemdraw():
+def test_pharma_instructions_name_its_tools_and_point_to_chempane():
     from tests.test_server_taxonomy import SUPERLATIVES
 
     text = _data("pharma")["instructions"]
@@ -282,7 +282,7 @@ def test_pharma_instructions_name_its_tools_and_point_to_chemdraw():
         assert tool in text, tool
     # Werkzeuge des anderen Konnektors nennt der Text nicht beim Namen — er verweist auf ihn.
     assert not (set(re.findall(r"\b[a-z]+(?:_[a-z0-9]+)+\b", text)) & (MVP - APP_HELPERS))
-    assert "`chemdraw`" in text or "chemdraw connector" in text
+    assert "chempane connector" in text and "chemdraw" not in text.lower()
     for phrase in SUPERLATIVES:
         assert phrase not in text, phrase
 

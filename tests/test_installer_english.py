@@ -46,7 +46,7 @@ def test_chemdraw_install_spricht_englisch(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(desktop_config, "claude_config_path", lambda: cfg)
     uv = _fake_uv(tmp_path / "bin")
     monkeypatch.setattr(
-        sys, "argv", ["chemdraw-install", "--project-dir", str(tmp_path), "--uv-command", str(uv)]
+        sys, "argv", ["chempane-install", "--project-dir", str(tmp_path), "--uv-command", str(uv)]
     )
     assert desktop_config.main() == 0
     out = capsys.readouterr()
@@ -118,11 +118,11 @@ def test_konfiguration_bleibt_unveraendert(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(desktop_config, "claude_config_path", lambda: cfg)
     uv = _fake_uv(tmp_path / "bin")
     monkeypatch.setattr(
-        sys, "argv", ["chemdraw-install", "--project-dir", str(tmp_path), "--uv-command", str(uv)]
+        sys, "argv", ["chempane-install", "--project-dir", str(tmp_path), "--uv-command", str(uv)]
     )
     desktop_config.main()
     servers = json.loads(cfg.read_text())["mcpServers"]
-    assert set(servers) == {"chemdraw", "chemdraw-pharma"}
+    assert set(servers) == {"chempane", "chempane-pharma"}
 
 
 def test_bundle_start_spricht_englisch():

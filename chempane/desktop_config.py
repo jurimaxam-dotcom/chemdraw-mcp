@@ -1,32 +1,34 @@
 #!/usr/bin/env python3
-"""Registriert die zwei ChemDraw-Konnektoren in der Claude-Desktop-Config.
+"""Registriert die zwei chempane-Konnektoren in der Claude-Desktop-Config.
 
 Zwei Einträge aus demselben Paket (Entscheidung 06.11.2026, Welle 3):
-    chemdraw         CHEMDRAW_PROFILE=mvp     (Standardprofil, 18 Tools)
-    chemdraw-pharma  CHEMDRAW_PROFILE=pharma  (Zusatz-Tools, 9 Tools)
+    chempane         CHEMPANE_PROFILE=mvp     (Standardprofil, 18 Tools)
+    chempane-pharma  CHEMPANE_PROFILE=pharma  (Zusatz-Tools, 9 Tools)
+Bis 0.11.3 hießen sie chemdraw und chemdraw-pharma (Umbenennung 22.11.2026); der
+Installer ersetzt die alten Einträge und nimmt zusätzliche env-Werte des Nutzers mit.
 Seit 16.11.2026 ergänzen sich beide: `pharma` hat genau, was das Vollprofil
 über `mvp` hinaus hat (7), dazu die zwei Panel-Helfer save_png und
-load_panel_part, die das Modell nicht sieht. Vorher lieferte chemdraw-pharma
+load_panel_part, die das Modell nicht sieht. Vorher lieferte der Pharma-Konnektor
 das Vollprofil (25), und mit beiden Konnektoren sah das Modell 18 Tools
 doppelt. Ein Eintrag mit `full` wird beim Installieren umgeschrieben; von Hand
-bleibt CHEMDRAW_PROFILE=full gültig (ein Konnektor mit allem).
+bleibt CHEMPANE_PROFILE=full gültig (ein Konnektor mit allem).
 
 Idempotenter Merge: fügt die Einträge hinzu bzw. aktualisiert sie und räumt
-den Eintrag der Vor-Welle-3-Installation (`chemdraw-tool`) weg, OHNE andere
+die Einträge älterer Installationen (`chemdraw-tool`, `chemdraw`, `chemdraw-pharma`) weg, OHNE andere
 bereits konfigurierte MCP-Server oder Top-Level-Einstellungen anzufassen.
 Schreibt vor dem Überschreiben ein .bak-Backup.
 
 Liegt bewusst im Paket, nicht in scripts/: das Wheel enthält nur
 `chempane`, und ausgerechnet die Nutzer, die über PyPI/die MCP-Registry
-kommen, brauchen sowohl das Eintragen (`chemdraw-install`) als auch die
-Diagnose (`chemdraw-doctor`, die dieselben Helfer benutzt).
+kommen, brauchen sowohl das Eintragen (`chempane-install`) als auch die
+Diagnose (`chempane-doctor`, die dieselben Helfer benutzt).
 
 Zwei Startarten, weil es zwei Installationswege gibt:
-    Repo-Clone   → uv --directory <repo> run chemdraw-tool-server
+    Repo-Clone   → uv --directory <repo> run chempane
     PyPI/uvx     → das installierte Console-Script direkt
 
 Aufruf:
-    chemdraw-install                                   (installiertes Paket)
+    chempane-install                                   (installiertes Paket)
     uv run python -m chempane.desktop_config      (im Repo)
 """
 
@@ -43,17 +45,24 @@ from pathlib import Path
 
 # Konnektorname → Serverprofil. Reihenfolge = Reihenfolge in der Config und im
 # Konnektor-Menü.
-CONNECTORS: dict[str, str] = {"chemdraw": "mvp", "chemdraw-pharma": "pharma"}
+CONNECTORS: dict[str, str] = {"chempane": "mvp", "chempane-pharma": "pharma"}
 # Was `create_server` in server.py annimmt (Test hält beide gleich; server.py
 # hier nicht importieren, das zöge RDKit in Installer und Doctor). `full` ist
 # kein Konnektor des Installers, aber von Hand weiter gültig.
 PROFILES: frozenset[str] = frozenset({"mvp", "pharma", "full"})
 # Hauptkonnektor: was Doctor und Handshake meinen, wenn sie von "dem" Eintrag
 # sprechen; der zweite hängt in CONNECTORS daran.
-SERVER_NAME = "chemdraw"
-# Name der einzigen Registrierung vor Welle 3 — wird beim Installieren
-# kontrolliert entfernt, sonst stünden drei ChemDraw-Einträge im Menü.
-LEGACY_SERVER_NAMES: tuple[str, ...] = ("chemdraw-tool",)
+SERVER_NAME = "chempane"
+# Namen älterer Installationen — werden beim Installieren kontrolliert entfernt,
+# sonst stünden dieselben Tools mehrfach im Menü: `chemdraw-tool` (vor Welle 3),
+# `chemdraw`/`chemdraw-pharma` (bis 0.11.3, vor der Umbenennung in chempane).
+LEGACY_SERVER_NAMES: tuple[str, ...] = ("chemdraw-tool", "chemdraw", "chemdraw-pharma")
+# Alter Name → neuer Konnektor, dessen Eintrag die eigenen env-Werte des Nutzers erbt.
+RENAMED_CONNECTORS: dict[str, str] = {"chemdraw": "chempane", "chemdraw-pharma": "chempane-pharma"}
+# Startskripte in Suchreihenfolge: das neue zuerst, die alten Aliase als Rückfall.
+LAUNCHER_NAMES: tuple[str, ...] = ("chempane", "chemdraw-mcp", "chemdraw-tool-server")
+# Profil-Schlüssel, die der Installer selbst setzt (neu) bzw. ersetzt (alt).
+_PROFILE_KEYS = frozenset({"CHEMPANE_PROFILE", "CHEMDRAW_PROFILE"})
 
 # Claude Desktop startet MCP-Server nicht in einer Login-Shell, sondern mit dem
 # minimalen GUI-/launchd-PATH. Ein blankes "uv" als command ist dort nicht
@@ -129,7 +138,7 @@ def _profile_env(profile: str) -> dict[str, str]:
             f"profile must be 'mvp', 'pharma' or 'full', got: {profile!r} "
             f"(connectors: {', '.join(f'{n}={p}' for n, p in CONNECTORS.items())})"
         )
-    return {"CHEMDRAW_PROFILE": profile}
+    return {"CHEMPANE_PROFILE": profile}
 
 
 def build_server_entry(
@@ -140,7 +149,7 @@ def build_server_entry(
         raise ValueError(f"project_dir must be absolute, got: {project_dir!r}")
     return {
         "command": resolve_uv_command(uv_command),
-        "args": ["--directory", project_dir, "run", "chemdraw-tool-server"],
+        "args": ["--directory", project_dir, "run", "chempane"],
         "env": _profile_env(profile),
     }
 
@@ -158,7 +167,7 @@ def build_installed_entry(launcher: str | None = None, profile: str = "mvp") -> 
     laufenden Interpreter installiert wurde.
     """
     if launcher is None:
-        for name in ("chemdraw-mcp", "chemdraw-tool-server"):
+        for name in LAUNCHER_NAMES:
             # Erst neben dem Interpreter, wie er aufgerufen wurde: in einer venv
             # ist sys.executable ein Symlink auf das Basis-Python, das Startskript
             # liegt aber im bin/ der venv — .resolve() suchte am falschen Ort.
@@ -175,8 +184,8 @@ def build_installed_entry(launcher: str | None = None, profile: str = "mvp") -> 
                 break
     if not launcher:
         raise RuntimeError(
-            "No chemdraw-mcp launcher script found. Is the package actually "
-            "installed? (pip install chemdraw-mcp / uv tool install chemdraw-mcp)"
+            "No chempane launcher script found. Is the package actually "
+            "installed? (pip install chempane / uv tool install chempane)"
         )
     return {"command": launcher, "args": [], "env": _profile_env(profile)}
 
@@ -216,15 +225,33 @@ def merge_server_config(existing: dict, name: str, entry: dict) -> dict:
 
 
 def merge_connectors(existing: dict, entries: dict[str, dict]) -> dict:
-    """Trägt alle Konnektoren ein und entfernt die Vor-Welle-3-Registrierung.
+    """Trägt alle Konnektoren ein und entfernt die Einträge älterer Installationen.
 
-    Fremde Server und Top-Level-Keys bleiben; `existing` wird nicht mutiert.
+    Fremde Server und Top-Level-Keys bleiben; `existing` wird nicht mutiert. Ein
+    umbenannter Konnektor (`chemdraw` → `chempane`) gibt die env-Werte, die der
+    Nutzer selbst eingetragen hat, an den neuen Eintrag weiter, und ein bestehender
+    Eintrag behält sie; nur das Profil setzt der Installer neu.
     """
     result = copy.deepcopy(existing)
     servers = result.setdefault("mcpServers", {})
+    inherited: dict[str, dict[str, str]] = {}
     for legacy in LEGACY_SERVER_NAMES:
-        servers.pop(legacy, None)
+        old = servers.pop(legacy, None)
+        target = RENAMED_CONNECTORS.get(legacy)
+        if target and isinstance(old, dict) and isinstance(old.get("env"), dict):
+            inherited[target] = {k: v for k, v in old["env"].items() if k not in _PROFILE_KEYS}
     for name, entry in entries.items():
+        # Eigene env-Werte bleiben auch beim erneuten Installieren erhalten — sonst
+        # verlöre der zweite Lauf, was die Migration gerade übernommen hat.
+        current = servers.get(name)
+        if isinstance(current, dict) and isinstance(current.get("env"), dict):
+            inherited.setdefault(name, {}).update(
+                {k: v for k, v in current["env"].items() if k not in _PROFILE_KEYS}
+            )
+        extra = inherited.get(name)
+        if extra:
+            own = entry.get("env", {})
+            entry = {**entry, "env": {**own, **{k: v for k, v in extra.items() if k not in own}}}
         servers[name] = entry
     return result
 
@@ -288,8 +315,8 @@ def install(
 def main() -> int:
     # Nicht __doc__: der Modul-Docstring ist Entwicklerdoku auf Deutsch, --help sieht der Nutzer.
     ap = argparse.ArgumentParser(
-        description="Register the two ChemDraw MCP connectors (chemdraw = default "
-        "profile, chemdraw-pharma = the pharmacy tools on top of it) in the Claude "
+        description="Register the two chempane connectors (chempane = default "
+        "profile, chempane-pharma = the pharmacy tools on top of it) in the Claude "
         "Desktop config. Both can be enabled at once; together they offer every tool. "
         "Idempotent; other MCP servers stay untouched and a .bak backup is written "
         "before the first change."

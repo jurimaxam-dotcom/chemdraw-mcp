@@ -58,9 +58,10 @@ trap 'rm -rf "$TMP"' EXIT
 # --- 1. Registrierte Konnektoren aus der Claude-Desktop-Config lesen ----------
 # Ueber die Logik des Installers, nicht ueber einen zweiten hartkodierten Pfad:
 # desktop_config.py kennt Konnektornamen, Profile und den plattformabhaengigen
-# Config-Pfad. Seit Welle 3 gibt es zwei Konnektoren (chemdraw = mvp,
-# chemdraw-pharma = pharma, bis 16.11.2026 full); eine Installation von davor heisst chemdraw-tool und
-# wird mit Warnung ebenfalls geprueft — der Desktop startet sie ja genauso.
+# Config-Pfad. Seit Welle 3 gibt es zwei Konnektoren (seit der Umbenennung 22.11.2026
+# chempane = mvp, chempane-pharma = pharma). Aeltere Eintraege (chemdraw, chemdraw-pharma bis
+# 0.11.3, chemdraw-tool vor Welle 3) werden mit Warnung ebenfalls geprueft — der Desktop
+# startet sie ja genauso.
 # Ausgabe: erste Zeile = Herkunft (config|fallback|broken <TAB> Detail), danach
 # je Konnektor eine Zeile "name <TAB> profil <TAB> argv-Elemente mit TAB getrennt".
 uv run python - >"$TMP/cmd.txt" <<'PY'
@@ -72,6 +73,7 @@ from chempane.desktop_config import (
     LEGACY_SERVER_NAMES,
     claude_config_path,
 )
+from chempane.settings import profile_from_env
 
 path = claude_config_path()
 servers = {}
@@ -87,11 +89,11 @@ found = []
 for name in (*CONNECTORS, *LEGACY_SERVER_NAMES):
     entry = servers.get(name)
     if isinstance(entry, dict) and entry.get("command"):
-        profile = (entry.get("env") or {}).get("CHEMDRAW_PROFILE", "mvp")
+        profile = profile_from_env(entry.get("env"))
         argv = [entry["command"], *(entry.get("args") or [])]
         found.append((name, profile, argv))
-        # Geprueft wird, was eingetragen ist — aber ein chemdraw-pharma mit full
-        # (Installationen vom 07.-16.11.2026) zeigt neben chemdraw 18 Tools doppelt.
+        # Geprueft wird, was eingetragen ist — aber ein Pharma-Konnektor mit full
+        # (Installationen vom 07.-16.11.2026) zeigt neben dem Hauptkonnektor 18 Tools doppelt.
         if name in CONNECTORS and profile != CONNECTORS[name]:
             print(f"⚠ {name} laeuft mit Profil {profile}, der Installer schreibt "
                   f"{CONNECTORS[name]} — ./install.sh schreibt den Eintrag um.", file=sys.stderr)
@@ -102,7 +104,7 @@ if found:
         print("\t".join([name, profile, *argv]))
 else:
     print(f"fallback\t{path}")
-    print("\t".join(["chemdraw", "mvp", "uv", "run", "chemdraw-tool-server"]))
+    print("\t".join(["chempane", "mvp", "uv", "run", "chempane"]))
 PY
 
 origin="$(head -1 "$TMP/cmd.txt" | cut -f1)"
@@ -117,9 +119,9 @@ fi
 if [ "$origin" = "config" ]; then
   echo "Registrierte Konnektoren in der Claude-Desktop-Config ($origin_detail):"
 else
-  echo "⚠ Kein Eintrag in $origin_detail — Fallback auf 'uv run chemdraw-tool-server'."
+  echo "⚠ Kein Eintrag in $origin_detail — Fallback auf 'uv run chempane'."
   echo "  Getestet wird damit NICHT der Weg, den Claude Desktop geht."
-  echo "  Eintragen mit:  ./install.sh   (oder: uv run chemdraw-install)"
+  echo "  Eintragen mit:  ./install.sh   (oder: uv run chempane-install)"
 fi
 
 # --- 2. Je Konnektor: Soll aus dem Profil ableiten, Handshake, nachzaehlen ---
@@ -136,9 +138,10 @@ while IFS=$'\t' read -r name profile rest; do
   while IFS= read -r -d $'\t' element; do CMD+=("$element"); done <<<"${rest}"$'\t'
   echo ""
   echo "== $name (Profil $profile) =="
-  if [ "$name" = "chemdraw-tool" ]; then
-    echo "⚠ Eintrag aus der Zeit vor Welle 3 — ./install.sh ersetzt ihn durch chemdraw + chemdraw-pharma."
-  fi
+  case "$name" in
+    chemdraw-tool|chemdraw|chemdraw-pharma)
+      echo "⚠ Eintrag unter altem Namen — ./install.sh ersetzt ihn durch chempane + chempane-pharma." ;;
+  esac
   printf '  Startbefehl: %s\n' "${CMD[*]}"
 
   # "tail -1", weil Bibliotheken beim ersten Start gern etwas dazwischenrufen
@@ -169,7 +172,7 @@ print(len(tools), panels)
   # (gemessen 07.11.2026: full-Eintrag lieferte 16 statt 23 Tools).
   echo "  Handshake laeuft (initialize → tools/list, Inspector via npx) …"
   set +e
-  npx -y "$INSPECTOR" --cli "${CMD[@]}" -- -e "CHEMDRAW_PROFILE=$profile" --method tools/list --app-info \
+  npx -y "$INSPECTOR" --cli "${CMD[@]}" -- -e "CHEMPANE_PROFILE=$profile" --method tools/list --app-info \
     >"$TMP/out-$name.ndjson" 2>"$TMP/err-$name.log"
   rc=$?
   set -e
