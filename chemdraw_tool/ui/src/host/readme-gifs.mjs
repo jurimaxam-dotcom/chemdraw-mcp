@@ -39,6 +39,15 @@
 // Die Argumente sind die, die Claude Desktop am 20.11.2026 im Chat übergeben hat (dieselbe Ansicht wie dort):
 // `args` aus dem hellen Chat, `argsDunkel` aus dem dunklen, wo sie abweichen. --chat: hell im
 // Desktop-Stil (Stilvariablen, 622 px) — so blendet der Schnitt vom hellen Chat-Panel nahtlos auf Bild 0.
+// kern-plot (22.11.2026): Plot-Panel mit frei wählbarem Werkzeug — nur mit --args, je Eintrag
+// { "<clip>": { "tool": "<werkzeug>", "args": { …toolArguments }, "inhalt"?: <iframe-Höhe px>, "feedHoehe"?: <px> } }.
+// Geht mit jedem Werkzeug, dessen Panel .plot-panel ist (Lab-Grafik: generate_species_distribution,
+// generate_calibration_curve, generate_titration_curve, generate_spectrum, generate_pk_curve,
+// generate_dose_response, generate_tlc). Mit kern-plot startet der Server im Profil `full` (Kalibrierung, PK und
+// Dosis-Wirkung fehlen im mvp-Profil); alle anderen Szenen laufen weiter auf `mvp`. Ausgabe <clip>-plot.*
+//   CLIP_AUSGABE=<ordner> npm run readme:gifs -- --feed --args plots.json kern-plot
+//   plots.json: { "chinin-kalibrierung": { "tool": "generate_calibration_curve", "args": { "concentrations": [0.05, 0.1],
+//     "signals": [27.1, 53.0], "unknown_signals": [40.2] }, "inhalt": 640 } }
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
@@ -126,7 +135,9 @@ const client = new Client({ name: "readme-gifs", version: "0.0.0" });
 // Matplotlib baut im Wegwerf-HOME seinen Schriftcache neu (35 s, 20.11.2026: erster Toolaufruf lief ins 60-s-Limit);
 // der vorhandene Cache des Rechners wird nur gelesen
 const mplCache = process.env.MPLCONFIGDIR || (existsSync(join(homedir(), ".matplotlib")) ? join(homedir(), ".matplotlib") : undefined);
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: "mvp", ...(mplCache ? { MPLCONFIGDIR: mplCache } : {}) }, cwd: repo }));
+// kern-plot braucht Werkzeuge außerhalb des mvp-Profils (Kalibrierung, PK, Dosis-Wirkung); die übrigen Szenen bleiben auf mvp
+const PROFIL = gewählt.includes("kern-plot") ? "full" : "mvp";
+await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: PROFIL, ...(mplCache ? { MPLCONFIGDIR: mplCache } : {}) }, cwd: repo }));
 // Im Bild soll kein Wegwerf-Pfad stehen
 const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
@@ -1175,6 +1186,51 @@ const SZENEN = {
       await halten(350);
     },
   },
+  // Plot-Panel mit Werkzeug und Argumenten aus --args (22.11.2026, Erklärvideo): das Panel hat an der Figur kein
+  // Bedienelement — ruhiges Halten, Zeiger über die Kurve, dann auf Kennwerte/Notiz unter der Figur, zurück nach rechts raus.
+  "kern-plot": {
+    ...KERN, feedHoehe: 750, panel: ".plot-panel",
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-plot");
+      const { frame, halten, fahreZu, imBild, rechteck, marke } = werkzeug;
+      const figur = frame.locator(".plot-svg svg").first();
+      await figur.waitFor();
+      await imBild(frame.locator(".plot-panel"), "Panel");
+      await imBild(figur, "Figur");
+      // Kennwerte (.panel-facts) und Notizsätze (.plot-note) gibt es nicht bei jedem Werkzeug
+      const notiz = frame.locator(".plot-panel .panel-facts, .plot-panel .plot-note").first();
+      const mitNotiz = (await notiz.count()) > 0;
+      if (mitNotiz) await imBild(notiz, "Kennwerte/Notiz");
+      await rechteck("panel", frame.locator(".plot-panel"));
+      await rechteck("buehne", figur);
+      await rechteck("reiter", frame.locator(".panel-head"));
+      await rechteck("legende", mitNotiz ? notiz : frame.locator(".panel-head"));
+      const f = await figur.boundingBox();
+      await halten(900);
+      // Zeiger von links unten nach rechts oben über die Plotfläche (knapp innerhalb der Achsen)
+      await fahreZu(f.x + f.width * 0.38, f.y + f.height * 0.62);
+      marke("hover", "plot");
+      await halten(1500);
+      await fahreZu(f.x + f.width * 0.66, f.y + f.height * 0.4);
+      await halten(1500);
+      if (mitNotiz) {
+        // rechts hinter das Ende der ersten Textzeile: darunter steht oft die nächste Notiz, die der Zeiger verdecken würde
+        const ende = await notiz.evaluate((el) => { const r = document.createRange(); r.selectNodeContents(el); const rs = [...r.getClientRects()].filter((q) => q.width > 0);
+          const zeile = rs.filter((q) => Math.abs(q.top - rs[0].top) < rs[0].height / 2); // Stücke der ersten Zeile (Text, <strong>, …)
+          return { x: Math.max(...zeile.map((q) => q.right)), y: rs[0].top + rs[0].height / 2 }; });
+        const versatz = await frame.frameElement().then((el) => el.boundingBox()); // iframe- → Seitenkoordinaten
+        await fahreZu(versatz.x + ende.x + 22, versatz.y + ende.y);
+        marke("hover", "notes");
+        await halten(2000);
+      } else {
+        // ohne Notizzeile (Speziesverteilung, Titration, Spektrum): dritter Halt rechts auf der Figur, sonst unter 6 s
+        await fahreZu(f.x + f.width * 0.78, f.y + f.height * 0.2);
+        await halten(2000);
+      }
+      await raus(werkzeug);
+      await halten(350);
+    },
+  },
   // generate_reaction, Fischer-Veresterung Benzoesäure + Methanol: als Gleichgewicht gezeichnet und schon
   // ausgeglichen (kein „Apply coefficients“). Zeiger auf „balanced“, dann Export PNG → Rückmeldung in der
   // Fußzeile, die nach 4 s von selbst wieder verschwindet — Ende = Anfang.
@@ -1635,7 +1691,8 @@ const SZENEN = {
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 if (optionen.bild0 && !FEED) throw new Error("--bild0 gibt es nur mit --feed");
 if (optionen.chat && !FEED) throw new Error("--chat gibt es nur mit --feed");
-// --args DATEI (20.11.2026, Wirkstoff-3D- und Proteinserie): JSON-Objekt { "<clip>": { …toolArguments } } — eine
+// --args DATEI (20.11.2026, Wirkstoff-3D- und Proteinserie): JSON-Objekt { "<clip>": { …toolArguments } } — bei kern-plot
+// { "<clip>": { tool, args, inhalt?, feedHoehe? } } (Kopfkommentar) — eine
 // Szene läuft einmal je Eintrag, Ausgabe <clip>-<szene ohne kern->, z. B. caffeine-3d, luciferase-protein. So kommen die
 // Argumente, die Desktop im Chat übergeben hat, unverändert in den Clip (auch SMILES mit @).
 let argsDatei = null;
@@ -1648,7 +1705,19 @@ if (optionen.args) {
     if (!/^[a-z0-9-]+$/.test(clip)) throw new Error(`--args: Clipname „${clip}“ nur aus a–z, 0–9, -`);
     if (!a || typeof a !== "object" || Array.isArray(a)) throw new Error(`--args: Argumente für ${clip} sind kein Objekt`);
   }
+  // kern-plot: Eintrag { tool, args, inhalt?, feedHoehe? }; das Werkzeug muss registriert sein und ein Panel haben
+  if (gewählt[0] === "kern-plot") {
+    const panelTools = new Map((await client.listTools()).tools.filter((t) => t._meta?.ui?.resourceUri).map((t) => [t.name, t]));
+    for (const [clip, e] of Object.entries(argsDatei)) {
+      const fremd = Object.keys(e).filter((k) => !["tool", "args", "inhalt", "feedHoehe"].includes(k));
+      if (fremd.length) throw new Error(`--args kern-plot: ${clip} hat unbekannte Schlüssel ${fremd.join(", ")} (tool, args, inhalt, feedHoehe)`);
+      if (typeof e.tool !== "string" || !e.args || typeof e.args !== "object" || Array.isArray(e.args)) throw new Error(`--args kern-plot: ${clip} braucht { "tool": "<werkzeug>", "args": { … } }`);
+      if (!panelTools.has(e.tool)) throw new Error(`--args kern-plot: ${clip}: Werkzeug ${e.tool} nicht registriert oder ohne Panel (Profil ${PROFIL})`);
+      for (const k of ["inhalt", "feedHoehe"]) if (e[k] !== undefined && !(Number.isFinite(e[k]) && e[k] > 0)) throw new Error(`--args kern-plot: ${clip}.${k} ist keine positive Zahl`);
+    }
+  }
 }
+if (gewählt.includes("kern-plot") && !argsDatei) throw new Error("kern-plot braucht --args <datei.json> mit { \"<clip>\": { \"tool\": …, \"args\": … } }");
 const themes = FEED ? [optionen.theme ?? "light"] : optionen.theme ? [optionen.theme] : Object.keys(THEMES);
 if (FEED && !gewählt.length) throw new Error("--feed braucht Szenen, z. B. 3d@geosmin");
 const szenen = gewählt.length ? gewählt : Object.keys(SZENEN).filter((n) => !SZENEN[n].aufAnsage && !(optionen.video && SZENEN[n].nurGif));
@@ -1661,7 +1730,14 @@ if (FEED) {
   const rot = [];
   try {
     const läufe = argsDatei
-      ? Object.entries(argsDatei).map(([clip, a]) => ({ eintrag: `${szenen[0]}:${clip}`, name: szenen[0], extra: { args: a, argsDunkel: undefined, clip: `${clip}-${szenen[0].replace(/^kern-/, "")}` } }))
+      ? Object.entries(argsDatei).map(([clip, a]) => {
+        const ziel = `${clip}-${szenen[0].replace(/^kern-/, "")}`;
+        // kern-plot: Werkzeug, Argumente und optionale Höhen aus dem Eintrag; sonst ist der Eintrag die Argumentliste
+        const extra = szenen[0] === "kern-plot"
+          ? { tool: a.tool, args: a.args, argsDunkel: undefined, clip: ziel, ...(a.inhalt ? { inhalt: a.inhalt } : {}), ...(a.feedHoehe ? { feedHoehe: a.feedHoehe } : {}) }
+          : { args: a, argsDunkel: undefined, clip: ziel };
+        return { eintrag: `${szenen[0]}:${clip}`, name: szenen[0], extra };
+      })
       : szenen.map((eintrag) => { const [name, mol] = eintrag.split("@"); return { eintrag, name, mol, extra: {} }; });
     for (const { eintrag, name, mol, extra } of läufe) {
       console.log(`▶ feed ${name} (${extra.clip ?? mol ?? optionen.molecule ?? "Standard"}, ${themes[0]})`);
