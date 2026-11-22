@@ -450,3 +450,80 @@ def test_close_ir_band_labels_keep_a_gap_and_stay_off_the_curve():
             if box.x0 - 2 <= x <= box.x1 + 2 and box.y0 - 2 <= y <= box.y1 + 2
         ]
         assert not inside, f"Kurve läuft durch das Etikett {box}: {inside[:3]}"
+
+
+# --- Formeln und Titel (Befunde 22.11.2026: Paracetamol-¹H-NMR, Chinin-Fluoreszenz) ---
+
+
+def _title_and_labels(spectrum_type, title, labels=()):
+    from chemdraw_tool.spectrum import _build_figure
+
+    x = _typical_position(spectrum_type)
+    peaks = [{"position": x, "intensity": 1, "label": lab} for lab in labels] or [
+        {"position": x, "intensity": 1}
+    ]
+    fig = _build_figure(spectrum_type, peaks, title, (10.0, 6.5))
+    ax = fig.axes[0]
+    return ax.get_title(), [t.get_text() for t in ax.texts]
+
+
+@pytest.mark.parametrize(
+    ("raw", "shown"),
+    [
+        ("Quinine in 0.05 M H2SO4", "Quinine in 0.05 M H₂SO₄"),
+        ("Acetanilide in CDCl3", "Acetanilide in CDCl₃"),
+        ("Ca(OH)2 suspension", "Ca(OH)₂ suspension"),
+        ("Paracetamol (DMSO-d6)", "Paracetamol (DMSO-d₆)"),
+    ],
+)
+def test_formulas_in_the_title_are_subscripted(raw, shown):
+    title, _ = _title_and_labels("fluorescence", raw)
+    assert title.endswith(shown), title
+
+
+@pytest.mark.parametrize(
+    ("raw", "shown"),
+    [("CH3", "CH₃"), ("OCH3", "OCH₃"), ("NH2", "NH₂"), ("C=O", "C=O")],
+)
+def test_formulas_in_peak_labels_are_subscripted(raw, shown):
+    _, labels = _title_and_labels("nmr_1h", "", [raw])
+    assert labels == [shown]
+
+
+@pytest.mark.parametrize(
+    "raw",
+    # Atomnummern und Banden-Namen sind keine Summenformeln.
+    ["C2", "H-3", "S1", "band 2", "C=O str.", "1650 cm⁻¹", "$CH_3$ custom"],
+)
+def test_non_formulas_stay_as_typed(raw):
+    _, labels = _title_and_labels("ir", "", [raw])
+    assert labels == [raw]
+
+
+@pytest.mark.parametrize(
+    ("spectrum_type", "title"),
+    [
+        ("nmr_1h", "Paracetamol 1H NMR (DMSO-d6)"),
+        ("nmr_1h", "¹H-NMR of ethanol"),
+        ("nmr_13c", "Ethanol 13C NMR"),
+        ("ir", "IR of aspirin"),
+        ("uv_vis", "Caffeine UV-Vis"),
+        ("fluorescence", "Quinine fluorescence"),
+        ("ms", "Mass spectrum of toluene"),
+    ],
+)
+def test_title_naming_the_method_is_not_prefixed_again(spectrum_type, title):
+    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+
+    shown, _ = _title_and_labels(spectrum_type, title)
+    assert not shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
+
+
+def test_isotope_in_the_title_is_superscripted():
+    shown, _ = _title_and_labels("nmr_1h", "Paracetamol 1H NMR (DMSO-d6)")
+    assert shown == "Paracetamol ¹H NMR (DMSO-d₆)"
+
+
+def test_plain_title_still_gets_the_method_prefix():
+    shown, _ = _title_and_labels("ir", "Aspirin")
+    assert shown == "IR spectrum: Aspirin"

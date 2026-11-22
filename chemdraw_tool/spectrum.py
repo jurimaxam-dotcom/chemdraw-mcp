@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import io
 import math
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
@@ -91,6 +92,69 @@ SPECTRUM_TYPES: dict[str, SpectrumConfig] = {
         (0, 0), False, "bars", "", 0,
     ),
 }
+
+# Nennt der freie Titel die Methode schon („Paracetamol 1H NMR“), entfällt das
+# Präfix — sonst stand „¹H NMR spectrum: Paracetamol 1H NMR“ (Befund 22.11.2026).
+_METHOD_IN_TITLE: dict[str, str] = {
+    "ir": r"\bir\b|infrared",
+    "nir": r"\bnir\b|near[- ]infrared",
+    "raman": r"raman",
+    "uv_vis": r"\buv\s*[/\-]?\s*vis",
+    "fluorescence": r"fluoresc",
+    "ord": r"\bord\b|optical rotatory",
+    "cd": r"\bcd\b|circular dichroism",
+    "nmr_1h": r"\b1h[\s\-]*nmr\b|proton nmr",
+    "nmr_13c": r"\b13c[\s\-]*nmr\b|carbon nmr",
+    "ms": r"\bms\b|mass spec",
+}
+_SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+
+
+def _title_names_method(spectrum_type: str, title: str) -> bool:
+    pattern = _METHOD_IN_TITLE.get(spectrum_type)
+    plain = title.translate(_SUPERSCRIPT_DIGITS).lower()
+    return bool(pattern and re.search(pattern, plain))
+
+
+_SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+_SUP = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+_ELEMENTS = frozenset(
+    "H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge "
+    "As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm "
+    "Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac "
+    "Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr D".split()
+)
+_FORMULA = re.compile(
+    r"(?<![A-Za-z0-9])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*)+)(?![A-Za-z0-9])"
+)
+_ISOTOPE = re.compile(r"(?<![A-Za-z0-9])(1|2|13|15|19|31)(H|C|N|F|P)(?![A-Za-z0-9])")
+_DEUTERATED = re.compile(r"(?<=-d)(\d+)\b")
+
+
+def _subscript_formula(match: re.Match) -> str:
+    token = match.group(1)
+    symbols = re.findall(r"[A-Z][a-z]?", token)
+    # Erst ab zwei Elementen und mit Ziffer eine Summenformel — „C2“ oder „S1“
+    # sind Atomnummern bzw. Zustände und bleiben, wie getippt.
+    if len(symbols) < 2 or not any(c.isdigit() for c in token):
+        return token
+    if not all(s in _ELEMENTS for s in symbols):
+        return token
+    return token.translate(_SUB)
+
+
+def chem_text(text: str) -> str:
+    """Summenformeln tief-, NMR-Isotope hochstellen (H2SO4 → H₂SO₄, 1H → ¹H).
+
+    Unicode statt Mathtext: bleibt im SVG gewöhnlicher Text. Wer selbst
+    Mathtext schreibt (`$…$`), bekommt ihn unverändert.
+    """
+    if "$" in text:
+        return text
+    text = _FORMULA.sub(_subscript_formula, text)
+    text = _ISOTOPE.sub(lambda m: m.group(1).translate(_SUP) + m.group(2), text)
+    return _DEUTERATED.sub(lambda m: m.group(1).translate(_SUB), text)
+
 
 # Label-Layout (Offsets in Punkten): Basis-Versatz über/unter dem Apex plus
 # Staffelungs-Schritt für x-nahe Nachbarn (näher als LABEL_NEAR_FRAC der
@@ -271,7 +335,13 @@ def _build_figure(
 
     ax.set_xlabel(cfg.x_label)
     ax.set_ylabel(cfg.y_label)
-    ax.set_title(f"{cfg.title}: {safe_text(title)}" if title else cfg.title)
+    shown = safe_text(chem_text(title))
+    if not title:
+        ax.set_title(cfg.title)
+    elif _title_names_method(spectrum_type, title):
+        ax.set_title(shown)
+    else:
+        ax.set_title(f"{cfg.title}: {shown}")
     ax.spines[["top", "right"]].set_visible(False)
     # Layout VOR den Labels fixieren — der Floor-Clamp unten rechnet über
     # transData in Pixel, und tight_layout würde die Achsen-Box verschieben.
@@ -309,7 +379,7 @@ def _build_figure(
             min_offset = (floor_px - anchor_px) / px_per_pt
             offset = max(offset, min_offset)
         ann = ax.annotate(
-            safe_text(p.label),
+            safe_text(chem_text(p.label)),
             xy=(lx, ly),
             xytext=(0, offset),
             textcoords="offset points",
