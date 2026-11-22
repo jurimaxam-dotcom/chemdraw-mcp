@@ -39,7 +39,49 @@ def generate_2d(mol: Chem.Mol) -> Chem.Mol:
         _scale_coordgen(mol_copy)
     else:
         AllChem.Compute2DCoords(mol_copy)
+        if _is_bridged(mol_copy) and closest_atom_to_foreign_bond(mol_copy) < BRIDGED_MIN_GAP:
+            alt = Chem.RWMol(mol)
+            rdCoordGen.AddCoords(alt)
+            _scale_coordgen(alt)
+            if closest_atom_to_foreign_bond(alt) > closest_atom_to_foreign_bond(mol_copy):
+                mol_copy = alt
     return mol_copy.GetMol()
+
+
+# Verbrückte Ringe (22.11.2026): Das Standardlayout legte im Chinuclidin des Chinins
+# ein Atom auf eine fremde Bindung (einzeln beschriftetes „C“ an der Kreuzung).
+# CoordGen zeichnet solche Käfige in der Lehrbuch-Perspektive. Umgeschaltet wird nur,
+# wenn das Standardlayout zu eng ist UND CoordGen mehr Abstand hält — Tropane
+# (Kokain, Atropin) liegen schon gut und bleiben (Vergleich in tests/test_bridged_layout.py).
+BRIDGED_MIN_GAP = 0.25  # Abstand Atom ↔ fremde Bindung in Bindungslängen
+
+
+def _is_bridged(mol: Chem.Mol) -> bool:
+    """Käfig: zwei kleinste Ringe teilen mehr als eine Bindung, oder ein Atom liegt in drei Ringen (Cuban)."""
+    info = mol.GetRingInfo()
+    rings = [set(r) for r in info.BondRings()]
+    if any(len(a & b) >= 2 for i, a in enumerate(rings) for b in rings[i + 1:]):
+        return True
+    return any(info.NumAtomRings(a.GetIdx()) >= 3 for a in mol.GetAtoms())
+
+
+def closest_atom_to_foreign_bond(mol: Chem.Mol) -> float:
+    """Kleinster Abstand eines Atoms zu einer Bindung, an der es nicht hängt, in Bindungslängen."""
+    if mol.GetNumBonds() == 0:
+        return float("inf")
+    conf = mol.GetConformer()
+    pos = [conf.GetAtomPosition(i) for i in range(mol.GetNumAtoms())]
+    bonds = [(b.GetBeginAtomIdx(), b.GetEndAtomIdx()) for b in mol.GetBonds()]
+    mean = sum((pos[i] - pos[j]).Length() for i, j in bonds) / len(bonds)
+    worst = float("inf")
+    for k, p in enumerate(pos):
+        for i, j in bonds:
+            if k in (i, j):
+                continue
+            ab = pos[j] - pos[i]
+            t = max(0.0, min(1.0, (p - pos[i]).DotProduct(ab) / ab.LengthSq()))
+            worst = min(worst, (p - (pos[i] + ab * t)).Length())
+    return worst / mean
 
 
 def _scale_coordgen(mol: Chem.Mol) -> None:
