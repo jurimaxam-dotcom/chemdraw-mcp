@@ -2,7 +2,7 @@
 
 import pytest
 
-from chemdraw_tool.calculator.titration import (
+from chempane.calculator.titration import (
     SUBSTANCE_FACTORS,
     calculate_gehalt_titration,
     calculate_titer,

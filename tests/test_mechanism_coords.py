@@ -5,7 +5,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.mechanism_coords import (
+from chempane.mechanism_coords import (
     build_atom_map_index,
     compute_step_coords,
     extract_positions,
@@ -88,7 +88,7 @@ def test_schritt_kann_eigenen_fragmentabstand_haben():
 
 
 def test_sn2_uebergangszustand_hat_drei_getrennte_fragmente_mit_platz():
-    from chemdraw_tool.templates import get_template
+    from chempane.templates import get_template
 
     ts = next(s for s in get_template("sn2").steps if s.is_transition_state)
     assert len(ts.molecules) == 3

@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/structure3d.py — 3D-Konformer für den Panel-Viewer.
+"""Tests für chempane/structure3d.py — 3D-Konformer für den Panel-Viewer.
 
 Spec (2026-06-11): ETKDGv3-Embedding + MMFF-Optimierung mit expliziten
 Wasserstoffen (die tetraedrische Geometrie ist das Lernziel). Der Payload
@@ -9,7 +9,7 @@ leichtgewichtigen SVG-Viewer der UI; die SDF-Datei ist der Datei-Export.
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.structure3d import atoms_and_bonds, embed_3d
+from chempane.structure3d import atoms_and_bonds, embed_3d
 
 
 def test_methane_becomes_tetrahedral_with_hydrogens():

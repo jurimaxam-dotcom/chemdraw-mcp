@@ -34,7 +34,7 @@ def js_playwright_pin(package_json_text: str) -> str:
 def test_playwright_is_pinned_to_the_same_version_on_both_sides():
     py = python_playwright_pin((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     js = js_playwright_pin(
-        (ROOT / "chemdraw_tool" / "ui" / "package.json").read_text(encoding="utf-8")
+        (ROOT / "chempane" / "ui" / "package.json").read_text(encoding="utf-8")
     )
     assert re.fullmatch(r"\d+\.\d+\.\d+", js), (
         f"package.json pinnt playwright nicht exakt ({js!r}) — kein ^ oder ~"

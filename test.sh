@@ -22,7 +22,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-UI_DIR="chemdraw_tool/ui"
+UI_DIR="chempane/ui"
 
 # SHA-Werkzeug: macOS bringt shasum, viele Linux-Images nur sha256sum.
 # Als Array, damit die Argumente nicht vom Word-Splitting abhängen.
@@ -80,7 +80,7 @@ uv run pytest -q
 
 echo ""
 echo "== UI-Bundle (dist/ aktuell?) =="
-# Der MCP-Server liefert das gebaute Bundle chemdraw_tool/ui/dist/index.html aus,
+# Der MCP-Server liefert das gebaute Bundle chempane/ui/dist/index.html aus,
 # nicht src/. Ohne diesen Schritt kann man App.jsx ändern, ein grünes Gate bekommen
 # und trotzdem das alte Bundle ausliefern — falsch-grün. Der Check baut neu und
 # vergleicht die dist-Bytes davor/danach. Belegt reproduzierbar: zwei aufeinander-

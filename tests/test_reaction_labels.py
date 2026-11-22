@@ -13,15 +13,15 @@ from lxml import etree
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.layout import reaction_to_cdxml
-from chemdraw_tool.server import generate_reaction
+from chempane.layout import reaction_to_cdxml
+from chempane.server import generate_reaction
 
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
-    with patch("chemdraw_tool.server._enrich_properties", return_value={}):
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
+    with patch("chempane.server._enrich_properties", return_value={}):
         yield
 
 
@@ -41,7 +41,7 @@ def _resolve(text):
     return text, _mol(text)
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_smiles_input_is_labelled_with_its_formula(_):
     result = generate_reaction(reactants=["[H][H]", "O=O"], products=["CCO"])
     assert [m.name for m in result.reactants + result.products] == [
@@ -51,7 +51,7 @@ def test_smiles_input_is_labelled_with_its_formula(_):
     ]
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_single_heavy_atom_gets_no_formula_label(_):
     # 26.10.: Die Zeichnung von „O“ ist schon „H₂O“ — die Formel darunter
     # stünde doppelt. Ein Schweratom = keine Beschriftung; H–H und O=O behalten sie.
@@ -68,7 +68,7 @@ def test_single_heavy_atom_gets_no_formula_label(_):
     ]
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_names_stay_names(_):
     result = generate_reaction(
         reactants=["acetic acid", "ethanol"], products=["ethyl acetate", "water"]
@@ -82,7 +82,7 @@ def test_names_stay_names(_):
     ]
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_request_keeps_the_raw_input(_):
     # Der Knopf „Apply coefficients“ wiederholt den Aufruf — mit dem SMILES,
     # nicht mit der Formel (H₂O ist kein gültiger Eingabewert).
@@ -90,7 +90,7 @@ def test_request_keeps_the_raw_input(_):
     assert result.request["reactants"] == ["[H][H]", "O=O"]
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_cdxml_labels_use_formula_subscripts(_, tmp_path):
     result = generate_reaction(
         reactants=["[H][H]", "O=O"], products=["CCO"], formats=["cdxml"]

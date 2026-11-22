@@ -21,7 +21,7 @@ disk. The same works for reaction mechanisms with electron-flow arrows,
 proteins and antibodies from the PDB or AlphaFold, spectra, TLC plates and titration
 curves.
 
-<!-- Hero: recorded with `npm --prefix chemdraw_tool/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
+<!-- Hero: recorded with `npm --prefix chempane/ui run readme:gifs` (panel test host, 600 px, light and dark). -->
 <p align="center">
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-views-light.gif" alt="The thalidomide panel: skeletal formula, All H, Show variants, the (S) isomer drawn with wedges, then the PubChem data sheet with the CAS number" width="49%"></picture>
   <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/demo-3d-light.gif" alt="The thalidomide panel: the 3D button swaps the drawing for a ball-and-stick model in a bowl, rotated by dragging" width="49%"></picture>
@@ -61,7 +61,7 @@ works offline.
 Proteins and antibodies come as a cartoon from the PDB or AlphaFold,
 rotatable in the panel:
 
-<!-- Recorded with `npm --prefix chemdraw_tool/ui run readme:gifs -- lysozyme-cartoon` (Mol* cartoon, WebGL) -->
+<!-- Recorded with `npm --prefix chempane/ui run readme:gifs -- lysozyme-cartoon` (Mol* cartoon, WebGL) -->
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-dark.gif"><img src="https://raw.githubusercontent.com/jurimaxam-dotcom/chemdraw-mcp/main/assets/lysozyme-cartoon-light.gif" alt="The lysozyme panel: hen egg-white lysozyme, PDB 1LYZ, as a cartoon with red helices, yellow strands and grey loops; after two seconds a drag turns it about the vertical axis" width="480"></picture></p>
 <p align="center"><sub>Prompt: <i>"Draw lysozyme"</i>. Drag to rotate; colouring, Cartoon/Trace and Reset sit above the picture.</sub></p>
 

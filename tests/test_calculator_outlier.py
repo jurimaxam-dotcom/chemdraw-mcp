@@ -12,7 +12,7 @@ bewusst nicht angeboten.
 
 import pytest
 
-from chemdraw_tool.calculator.stats import grubbs_test
+from chempane.calculator.stats import grubbs_test
 
 
 def test_clean_series_has_no_outlier():

@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 import pytest
 
-from chemdraw_tool import server
+from chempane import server
 
 
 @pytest.fixture
@@ -44,7 +44,7 @@ def test_default_level_keeps_debug_noise_out(tmp_path, root_logger, monkeypatch)
     handler = server._configure_logging(tmp_path)
     logging.getLogger("matplotlib.font_manager").debug("findfont: score(...)")
     logging.getLogger("urllib3.connectionpool").debug("GET /rest/pug/compound/name/geheim")
-    logging.getLogger("chemdraw_tool.server").info("MCP server starting")
+    logging.getLogger("chempane.server").info("MCP server starting")
     text = _flush(handler)
     assert "findfont" not in text
     assert "geheim" not in text
@@ -54,7 +54,7 @@ def test_default_level_keeps_debug_noise_out(tmp_path, root_logger, monkeypatch)
 def test_debug_is_opt_in_via_environment(tmp_path, root_logger, monkeypatch):
     monkeypatch.setenv("CHEMDRAW_LOG_LEVEL", "debug")
     handler = server._configure_logging(tmp_path)
-    logging.getLogger("chemdraw_tool.resolver").debug("cascade step 2")
+    logging.getLogger("chempane.resolver").debug("cascade step 2")
     assert "cascade step 2" in _flush(handler)
 
 

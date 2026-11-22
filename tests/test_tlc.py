@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/tlc.py — DC-Platten aus Rf-Werten.
+"""Tests für chempane/tlc.py — DC-Platten aus Rf-Werten.
 
 Zwilling von spectrum.py: aus Zahlen wird eine schematische, beschriftete
 Protokoll-Grafik (matplotlib → PNG/SVG). Kern ist die pure Funktion
@@ -14,7 +14,7 @@ Fachliche Festlegungen, die hier festgenagelt werden:
 
 import pytest
 
-from chemdraw_tool.tlc import (
+from chempane.tlc import (
     FRONT_Y,
     START_Y,
     _plate_title,
@@ -213,14 +213,14 @@ def test_svg_carries_mobile_phase_and_detection():
 def test_rf_axis_spans_only_start_to_front():
     """Die Rf-Skala existiert nur zwischen Start (0) und Front (1) — die
     Achse darf nicht in die Plattenränder hinein weiterlaufen."""
-    from chemdraw_tool.tlc import build_figure
+    from chempane.tlc import build_figure
 
     fig = build_figure(ESTER_LANES)
     assert fig.axes[0].spines["left"].get_bounds() == (START_Y, FRONT_Y)
 
 
 def test_weak_spot_is_drawn_fainter_than_strong_one():
-    from chemdraw_tool.tlc import build_figure
+    from chempane.tlc import build_figure
 
     fig = build_figure(
         [{"name": "A", "spots": [{"rf": 0.3, "intensity": 0.2}, {"rf": 0.7}]}]

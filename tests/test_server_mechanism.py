@@ -3,8 +3,8 @@
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.payloads import MechanismPayload
-from chemdraw_tool.server import generate_mechanism
+from chempane.payloads import MechanismPayload
+from chempane.server import generate_mechanism
 
 # PubChem-Titel je InChIKey — die Tests gehen nie ins Netz (autouse-Fixture unten).
 _TITLES = {
@@ -36,8 +36,8 @@ def _key(smiles: str) -> str:
 @pytest.fixture(autouse=True)
 def _kein_netz(monkeypatch):
     """Titel-Nachschlag ohne Netz: feste Antworten, unbekannte Schlüssel → None."""
-    import chemdraw_tool.databases as databases
-    import chemdraw_tool.server as server
+    import chempane.databases as databases
+    import chempane.server as server
 
     table = {_key(smi): title for smi, title in _TITLES.items()}
 
@@ -111,7 +111,7 @@ def test_generate_mechanism_wrong_substrates():
 def test_title_names_the_textbook_example_when_it_falls_back(monkeypatch):
     """Befund 30.10.2026: über CH3Br + OH⁻ stand „SN2: CCCCBr + [SH-]“. Seit Etappe B zeichnet das
     Tool die Substrate; nur im Fallback ist das Bild die Vorlage — dann nennt der Titel sie."""
-    import chemdraw_tool.mechanism_coords as coords
+    import chempane.mechanism_coords as coords
 
     echt = coords.layout_anchored
     aufrufe = []
@@ -137,7 +137,7 @@ def test_title_names_the_textbook_example_when_it_falls_back(monkeypatch):
     ("fischer_ester", "acetic acid + methanol"),
 ])
 def test_every_template_names_its_drawn_example(reaction_type, example):
-    from chemdraw_tool.templates import get_template
+    from chempane.templates import get_template
     assert get_template(reaction_type).example == example
 
 
@@ -150,8 +150,8 @@ def test_drawing_follows_the_substrates():
 
 
 def test_title_names_the_users_substances(monkeypatch):
-    import chemdraw_tool.server as server
-    from chemdraw_tool.resolver import validate_smiles
+    import chempane.server as server
+    from chempane.resolver import validate_smiles
 
     names = {"2-bromobutane": "CCC(C)Br", "sodium cyanide": "[C-]#N.[Na+]"}
     monkeypatch.setattr(server, "resolve", lambda s: (names[s], validate_smiles(names[s])))
@@ -188,7 +188,7 @@ def test_outside_the_limit_says_why():
 
 
 def test_unresolvable_name_says_so(monkeypatch):
-    import chemdraw_tool.server as server
+    import chempane.server as server
 
     def nie(s):
         raise ValueError("not found")
@@ -208,7 +208,7 @@ def test_reaction_type_lists_every_template_and_nothing_else():
     import inspect
     import typing
 
-    from chemdraw_tool.templates import list_templates
+    from chempane.templates import list_templates
     hint = inspect.signature(generate_mechanism).parameters["reaction_type"].annotation
     assert sorted(typing.get_args(hint)) == list_templates()
 
@@ -237,7 +237,7 @@ def test_title_names_fischer_smiles_input():
 
 def test_title_keeps_a_descriptor_pubchem_already_gives(monkeypatch):
     """Ein Stereozentrum: „(2R)-“ wird „(R)-“ — wie „(R)-2-bromobutane“ daneben (Kontaktbogen 05.11.)."""
-    import chemdraw_tool.databases as databases
+    import chempane.databases as databases
 
     monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: "(2R)-2-Bromobutane")
     r = generate_mechanism("sn2", ["C[C@@H](Br)CC", "[C-]#N"])
@@ -278,14 +278,14 @@ def test_title_casing_and_salts_from_real_pubchem_titles(reaction_type, substrat
     ("Propionic Acid", "propionic acid"),
 ])
 def test_pubchem_title_is_lowercased_like_running_text(title, shown):
-    from chemdraw_tool.server import _running_text_name
+    from chempane.server import _running_text_name
 
     assert _running_text_name(title) == shown
 
 
 def test_title_falls_back_to_smiles_with_descriptor_when_offline(monkeypatch):
     """Ohne Netz: kanonisches SMILES mit CIP in Klammern — nie die Summenformel, nie ein Fehler."""
-    import chemdraw_tool.databases as databases
+    import chempane.databases as databases
 
     def offline(key):
         raise ConnectionError("no network")
@@ -310,8 +310,8 @@ def test_title_lookup_is_cached_per_process_but_failures_are_not():
 def test_smiles_detection_is_parse_first_not_string_equality(monkeypatch):
     """resolve() darf ein SMILES kanonisieren — es bleibt eine SMILES-Eingabe (wie im Resolver:
     was RDKit liest, ist SMILES)."""
-    import chemdraw_tool.server as server
-    from chemdraw_tool.resolver import validate_smiles
+    import chempane.server as server
+    from chempane.resolver import validate_smiles
 
     def canonical(s):
         smi = Chem.MolToSmiles(Chem.MolFromSmiles(s))

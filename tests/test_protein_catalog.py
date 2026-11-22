@@ -10,8 +10,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from chemdraw_tool import databases
-from chemdraw_tool import protein_catalog as pc
+from chempane import databases
+from chempane import protein_catalog as pc
 
 E8 = Path(__file__).parent / "__fixtures__" / "uniprot" / "e8"
 
@@ -292,8 +292,8 @@ def test_mature_chains_rules():
 
 # --- Resolver: Tabelle und Genkürzel vor der Kaskade --------------------------------
 
-from chemdraw_tool import resolver  # noqa: E402
-from chemdraw_tool.resolver import NameResolutionError  # noqa: E402
+from chempane import resolver  # noqa: E402
+from chempane.resolver import NameResolutionError  # noqa: E402
 
 
 @pytest.fixture

@@ -22,7 +22,7 @@ import ast
 import re
 from pathlib import Path
 
-PKG = Path(__file__).resolve().parent.parent / "chemdraw_tool"
+PKG = Path(__file__).resolve().parent.parent / "chempane"
 
 # Umlaute/ß oder deutsche Wörter ohne englisches Homograph (kein "die", "an", "war").
 _GERMAN = re.compile(

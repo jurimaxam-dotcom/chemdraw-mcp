@@ -10,7 +10,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
-from chemdraw_tool.curated_decks import (
+from chempane.curated_decks import (
     CURATED_DECKS,
     VERIFIED_STRUCTURES,
     get_curated_deck,

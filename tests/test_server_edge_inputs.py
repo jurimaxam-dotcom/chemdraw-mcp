@@ -7,7 +7,7 @@ also die Erklärung, was an der Eingabe nicht stimmt.
 
 import pytest
 
-from chemdraw_tool import server as s
+from chempane import server as s
 
 DIRS = [
     "OUTPUT_DIR", "REACTION_DIR", "SPECTRUM_DIR", "TLC_DIR",
@@ -98,7 +98,7 @@ def test_3d_files_of_different_smiles_do_not_overwrite(a, b):
 def test_3d_file_of_a_name_keeps_its_readable_name(monkeypatch):
     from rdkit import Chem
 
-    from chemdraw_tool.resolver import Resolved
+    from chempane.resolver import Resolved
 
     monkeypatch.setattr(
         s, "resolve", lambda name: Resolved("CCO", Chem.MolFromSmiles("CCO"))
@@ -175,7 +175,7 @@ def test_pk_curve_refuses_a_zero_interval():
 def test_single_atom_names_are_drawn_as_one_atom(tmp_path, monkeypatch, name, formula):
     """"hydrogen atom" → [H]: ein einzelnes H ohne Nachbarn muss 2D-Layout,
     Validierung und beide Renderer überstehen (RDKit entfernt es nicht)."""
-    from chemdraw_tool import resolver
+    from chempane import resolver
 
     def forbidden(*args, **kwargs):
         raise AssertionError("kein Netz")

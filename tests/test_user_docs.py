@@ -15,7 +15,7 @@ from urllib.parse import unquote
 
 import pytest
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 from tests.test_docs_consistency import USER_DOCS, VAULT_TOOLS
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -11,7 +11,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 
 DATEI = Path(__file__).resolve().parents[1] / "evals" / "panel-beispiele.json"
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from chemdraw_tool.server import predict_spectrum
+from chempane.server import predict_spectrum
 
 
 def test_ir_bands_come_as_a_readable_table():
@@ -84,7 +84,7 @@ def test_a_compound_name_is_resolved_instead_of_rejected(monkeypatch):
     Jedes andere Tool nimmt Namen; hier musste das Modell SMILES aus dem
     Gedächtnis tippen — genau die Stelle, an der Stereochemie still kippt.
     """
-    from chemdraw_tool import server
+    from chempane import server
 
     seen = []
 

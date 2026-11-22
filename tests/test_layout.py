@@ -3,7 +3,7 @@ from lxml import etree
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.layout import reaction_to_cdxml
+from chempane.layout import reaction_to_cdxml
 
 
 def _make_mol(smiles: str) -> Chem.Mol:

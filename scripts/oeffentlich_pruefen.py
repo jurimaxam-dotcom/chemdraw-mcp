@@ -45,7 +45,7 @@ from pathlib import Path
 # oder die diese Sperre selbst testen.
 OHNE_TEXTPRUEFUNG = re.compile(
     r"(^|/)(uv\.lock|package-lock\.json|THIRD_PARTY_LICENSES|LICENSE|NOTICE)$"
-    r"|^chemdraw_tool/ui/dist/"
+    r"|^chempane/ui/dist/"
     r"|^tests/test_oeffentlich_pruefen\.py$|^scripts/oeffentlich_pruefen\.py$"
 )
 ERLAUBTE_ADRESSEN = re.compile(

@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from chemdraw_tool import desktop_config
+from chempane import desktop_config
 
 
 @pytest.mark.parametrize("content", ["[]", '"text"', "null", '{"mcpServers": null}', '{"mcpServers": []}'])

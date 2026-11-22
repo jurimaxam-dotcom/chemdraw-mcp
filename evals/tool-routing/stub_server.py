@@ -15,9 +15,9 @@ from mcp import types
 from mcp.server.lowlevel import Server
 from mcp.server.stdio import stdio_server
 
-from chemdraw_tool.payloads import DatabasePayload, DatabaseRow, DatabaseSource
-from chemdraw_tool.result_budget import _compact
-from chemdraw_tool.server import mcp as echt
+from chempane.payloads import DatabasePayload, DatabaseRow, DatabaseSource
+from chempane.result_budget import _compact
+from chempane.server import mcp as echt
 
 
 async def _tools(_ctx, _params) -> types.ListToolsResult:

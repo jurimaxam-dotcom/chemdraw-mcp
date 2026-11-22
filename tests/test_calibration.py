@@ -10,7 +10,7 @@ Fehler in der Formel sofort auffällt statt sich in Rundung zu verstecken.
 
 import pytest
 
-from chemdraw_tool.calibration import (
+from chempane.calibration import (
     detection_limits,
     interpolate,
     linear_regression,

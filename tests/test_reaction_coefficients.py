@@ -12,17 +12,17 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.image_export import render_reaction_svg
-from chemdraw_tool.layout import reaction_to_cdxml
-from chemdraw_tool.reaction_balance import check_balance
-from chemdraw_tool.server import generate_reaction
+from chempane.image_export import render_reaction_svg
+from chempane.layout import reaction_to_cdxml
+from chempane.reaction_balance import check_balance
+from chempane.server import generate_reaction
 
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
-    with patch("chemdraw_tool.server._enrich_properties", return_value={}):
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
+    with patch("chempane.server._enrich_properties", return_value={}):
         yield
 
 
@@ -78,7 +78,7 @@ def test_cdxml_writes_coefficients_as_text():
 # --- Tool -------------------------------------------------------------------
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_tool_applies_coefficients(_):
     result = generate_reaction(
         reactants=["[H][H]", "O=O"], products=["O"], coefficients=[2, 1, 2]
@@ -88,7 +88,7 @@ def test_tool_applies_coefficients(_):
     assert result.coefficients == [2, 1, 2]
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_payload_echoes_the_call_so_the_panel_can_repeat_it(_):
     result = generate_reaction(
         reactants=["[H][H]", "O=O"],
@@ -111,7 +111,7 @@ def test_payload_echoes_the_call_so_the_panel_can_repeat_it(_):
     assert result.coefficients == []
 
 
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_coefficients_get_their_own_file(_, tmp_path):
     plain = generate_reaction(reactants=["[H][H]", "O=O"], products=["O"])
     applied = generate_reaction(
@@ -121,7 +121,7 @@ def test_coefficients_get_their_own_file(_, tmp_path):
 
 
 @pytest.mark.parametrize("bad", [[2, 1], [2, 1, 2, 1], [0, 1, 2], [-2, 1, 2]])
-@patch("chemdraw_tool.server.resolve", side_effect=_resolve)
+@patch("chempane.server.resolve", side_effect=_resolve)
 def test_rejects_bad_coefficients(_, bad):
     with pytest.raises(ValueError, match="coefficients"):
         generate_reaction(reactants=["[H][H]", "O=O"], products=["O"], coefficients=bad)

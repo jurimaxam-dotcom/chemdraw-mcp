@@ -22,9 +22,9 @@ import pytest
 import requests
 from mcp.server.mcpserver.exceptions import ToolError
 
-from chemdraw_tool import protein_structure as ps
-from chemdraw_tool import resolver
-from chemdraw_tool import server as srv
+from chempane import protein_structure as ps
+from chempane import resolver
+from chempane import server as srv
 from tests.test_protein_tools import ROUTES
 
 GESAMT_MAX = 120_000
@@ -220,7 +220,7 @@ def test_unbekanntes_token_meldet_was_hilft(server, offline):
 def test_teile_ueberstehen_einen_server_neustart(server, offline, monkeypatch):
     """Desktop zeigt alte Ergebnisse beim Wiederöffnen eines Chats erneut an —
     dann muss das Panel auch nach einem Neustart des Servers nachladen können."""
-    from chemdraw_tool import result_budget
+    from chempane import result_budget
 
     tool, args = FAELLE["Vancomycin"]
     result, _, _ = _messen(server, tool, args)

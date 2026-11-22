@@ -64,7 +64,7 @@ sys.path.insert(0, str(REPO))
 from rdkit import Chem, RDLogger  # noqa: E402
 from rdkit.Chem import inchi  # noqa: E402
 
-from chemdraw_tool.resolver import NameResolutionError, resolve  # noqa: E402
+from chempane.resolver import NameResolutionError, resolve  # noqa: E402
 
 RDLogger.DisableLog("rdApp.*")
 

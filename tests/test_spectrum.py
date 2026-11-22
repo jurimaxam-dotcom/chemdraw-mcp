@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/spectrum.py — schematische Spektren aus Peaklisten.
+"""Tests für chempane/spectrum.py — schematische Spektren aus Peaklisten.
 
 Spec (2026-06-10): Ein Modul deckt alle Spektrentypen ab. Kern ist die pure
 Funktion build_curve(spectrum_type, peaks) → (x, y), die pro Typ die richtige
@@ -11,7 +11,7 @@ Intensitäten sind relativ: positive Typen werden auf max=1 normiert
 
 import pytest
 
-from chemdraw_tool.spectrum import (
+from chempane.spectrum import (
     SPECTRUM_TYPES,
     build_curve,
     render_spectrum_png,
@@ -194,7 +194,7 @@ def test_close_peak_labels_are_staggered_vertically():
     """x-nahe Peaks (750/700) mit Labels: die Annotations müssen vertikal
     gestaffelt sein, sonst schreiben sie ineinander (Methylphenidat-IR,
     2026-06-11: zweimal 'mono-subst. Aromat' übereinander)."""
-    from chemdraw_tool.spectrum import _build_figure
+    from chempane.spectrum import _build_figure
 
     fig = _build_figure(
         "ir",
@@ -214,7 +214,7 @@ def test_distant_peak_labels_keep_the_baseline_offset():
     """Weit auseinanderliegende Peaks brauchen KEINE Staffelung: kein Offset
     tiefer als die Basis. (Der Floor-Clamp darf Labels tiefer Apexe ANHEBEN —
     der 1700er mit intensity 90 sitzt bei ~5 % — aber nie absenken.)"""
-    from chemdraw_tool.spectrum import LABEL_BASE_BELOW, _build_figure
+    from chempane.spectrum import LABEL_BASE_BELOW, _build_figure
 
     fig = _build_figure(
         "ir",
@@ -235,7 +235,7 @@ def test_label_stagger_rotates_instead_of_escalating():
     """Eine Kette naher Peaks darf den Versatz nicht unbegrenzt aufstapeln —
     sonst rutscht das letzte Label aus dem Plot (12-Peak-IR: 'C=O Ester'
     landete unter der x-Achse). Maximal 3 Ebenen, dann von vorn."""
-    from chemdraw_tool.spectrum import (
+    from chempane.spectrum import (
         LABEL_BASE_BELOW,
         LABEL_STACK_STEP,
         _build_figure,
@@ -263,7 +263,7 @@ def test_no_label_below_the_plot_floor():
     das, sobald die Nachbarkette ihm eine tiefe Staffelungs-Stufe zuwies."""
     from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-    from chemdraw_tool.spectrum import _build_figure
+    from chempane.spectrum import _build_figure
 
     peaks = [
         {"position": 3320, "intensity": 30, "width": 60, "label": "N-H"},
@@ -344,7 +344,7 @@ def test_error_messages_are_english(spectrum_type, peaks):
 def _label_overlaps(spectrum_type, peaks):
     from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-    from chemdraw_tool import spectrum as sp
+    from chempane import spectrum as sp
 
     fig = sp._build_figure(spectrum_type, peaks, "", (10.0, 6.5))
     FigureCanvasAgg(fig)
@@ -395,7 +395,7 @@ def test_uncrowded_spectrum_is_byte_identical_without_avoidance(spectrum_type, p
 
     import matplotlib
 
-    from chemdraw_tool import spectrum as sp
+    from chempane import spectrum as sp
 
     monkeypatch.setitem(matplotlib.rcParams, "svg.hashsalt", "e17")  # feste Pfad-IDs
 
@@ -423,7 +423,7 @@ def _label_and_curve_boxes(spectrum_type, peaks):
     from matplotlib.backends.backend_agg import FigureCanvasAgg
     from matplotlib.text import Text
 
-    from chemdraw_tool import spectrum as sp
+    from chempane import spectrum as sp
 
     fig = sp._build_figure(spectrum_type, peaks, "", (10.0, 6.5))
     FigureCanvasAgg(fig)
@@ -456,7 +456,7 @@ def test_close_ir_band_labels_keep_a_gap_and_stay_off_the_curve():
 
 
 def _title_and_labels(spectrum_type, title, labels=()):
-    from chemdraw_tool.spectrum import _build_figure
+    from chempane.spectrum import _build_figure
 
     x = _typical_position(spectrum_type)
     peaks = [{"position": x, "intensity": 1, "label": lab} for lab in labels] or [
@@ -513,7 +513,7 @@ def test_non_formulas_stay_as_typed(raw):
     ],
 )
 def test_title_naming_the_method_is_not_prefixed_again(spectrum_type, title):
-    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+    from chempane.spectrum import SPECTRUM_TYPES
 
     shown, _ = _title_and_labels(spectrum_type, title)
     assert not shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
@@ -549,7 +549,7 @@ def test_proton_counts_are_not_isotopes(raw):
     ],
 )
 def test_german_title_naming_the_method_is_not_prefixed(spectrum_type, title):
-    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+    from chempane.spectrum import SPECTRUM_TYPES
 
     shown, _ = _title_and_labels(spectrum_type, title)
     assert not shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
@@ -565,7 +565,7 @@ def test_german_title_naming_the_method_is_not_prefixed(spectrum_type, title):
     ],
 )
 def test_substance_names_are_not_taken_for_the_method(spectrum_type, title):
-    from chemdraw_tool.spectrum import SPECTRUM_TYPES
+    from chempane.spectrum import SPECTRUM_TYPES
 
     shown, _ = _title_and_labels(spectrum_type, title)
     assert shown.startswith(SPECTRUM_TYPES[spectrum_type].title + ":"), shown
@@ -593,7 +593,7 @@ def test_charges_and_acronyms_stay_as_typed(raw):
     ],
 )
 def test_method_detection_edge_cases(spectrum_type, title, named):
-    from chemdraw_tool.spectrum import _title_names_method
+    from chempane.spectrum import _title_names_method
 
     assert _title_names_method(spectrum_type, title) is named
 

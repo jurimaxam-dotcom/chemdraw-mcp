@@ -19,8 +19,8 @@ from unittest.mock import patch
 
 import pytest
 
-from chemdraw_tool import resolver
-from chemdraw_tool.resolver import _opsin_lookup
+from chempane import resolver
+from chempane.resolver import _opsin_lookup
 
 KNOWN = {
     "methane": "C",
@@ -94,11 +94,11 @@ def fake_jvm():
 
     resolver._opsin_reset()
     with (
-        patch("chemdraw_tool.resolver._java_runtime_available", return_value=True),
-        patch("chemdraw_tool.resolver.shutil.which", return_value="/fake/java"),
-        patch("chemdraw_tool.resolver._opsin_jar", return_value="/fake/opsin.jar"),
-        patch("chemdraw_tool.resolver.subprocess.Popen", side_effect=popen),
-        patch("chemdraw_tool.resolver._opsin_oneshot", return_value=None) as oneshot,
+        patch("chempane.resolver._java_runtime_available", return_value=True),
+        patch("chempane.resolver.shutil.which", return_value="/fake/java"),
+        patch("chempane.resolver._opsin_jar", return_value="/fake/opsin.jar"),
+        patch("chempane.resolver.subprocess.Popen", side_effect=popen),
+        patch("chempane.resolver._opsin_oneshot", return_value=None) as oneshot,
     ):
         yield spawned, plan, oneshot
     resolver._opsin_reset()

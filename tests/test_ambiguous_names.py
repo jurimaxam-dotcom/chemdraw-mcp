@@ -18,10 +18,10 @@ from rdkit import Chem
 from rdkit.Chem.inchi import MolToInchiKey
 from rdkit.Chem.rdMolDescriptors import CalcNumRings
 
-from chemdraw_tool import resolver
-from chemdraw_tool import server as srv
-from chemdraw_tool.payloads import AmbiguousPayload, MoleculePayload
-from chemdraw_tool.resolver import NameResolutionError, resolve, resolve_name
+from chempane import resolver
+from chempane import server as srv
+from chempane.payloads import AmbiguousPayload, MoleculePayload
+from chempane.resolver import NameResolutionError, resolve, resolve_name
 
 # InChIKeys am 26.10.2026 bei PubChem nachgeschlagen (Name → CID → InChIKey),
 # nicht aus dem Gedächtnis. Der offenkettige Glucose-Schlüssel ist derselbe,

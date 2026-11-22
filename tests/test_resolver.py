@@ -4,8 +4,8 @@ import pytest
 import requests
 from rdkit import Chem
 
-from chemdraw_tool import resolver
-from chemdraw_tool.resolver import (
+from chempane import resolver
+from chempane.resolver import (
     NameResolutionError,
     _opsin_lookup,
     is_smiles,
@@ -63,7 +63,7 @@ def test_validate_smiles_invalid():
     assert mol is None
 
 
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver.requests.get")
 def test_resolve_name_returns_smiles(mock_get):
     mock_resp = Mock()
     mock_resp.json.return_value = {
@@ -77,7 +77,7 @@ def test_resolve_name_returns_smiles(mock_get):
     assert smiles == "CC(=O)OC1=CC=CC=C1C(=O)O"
 
 
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver.requests.get")
 def test_resolve_name_calls_pubchem(mock_get):
     # "Aspirin", nicht "Water": OPSIN kennt water und löst es offline,
     # bevor der PubChem-Pfad (den dieser Test prüft) erreicht wird.
@@ -99,7 +99,7 @@ def test_resolve_smiles_input():
     assert mol is not None
 
 
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver.requests.get")
 def test_resolve_name_input(mock_get):
     mock_resp = Mock()
     mock_resp.json.return_value = {
@@ -138,7 +138,7 @@ def test_is_smiles_still_accepts_valid_smiles_with_parens():
     assert is_smiles("[C@@H](O)(F)Cl") is True
 
 
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver.requests.get")
 def test_resolve_falls_back_to_name_on_invalid_smiles_parse(mock_get):
     """If is_smiles says True but RDKit can't parse it, try name resolution."""
     mock_resp = Mock()
@@ -160,7 +160,7 @@ def test_resolve_falls_back_to_name_on_invalid_smiles_parse(mock_get):
 # "SMILES strings are always safe" → resolve() muss parse-first arbeiten.
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chempane.resolver._pubchem_lookup")
 def test_resolve_water_smiles_offline(mock_pubchem):
     """'O' ist valides SMILES (Wasser) und darf NIE ins Netz gehen."""
     smiles, mol = resolve("O")
@@ -170,7 +170,7 @@ def test_resolve_water_smiles_offline(mock_pubchem):
     assert mol.GetAtomWithIdx(0).GetSymbol() == "O"
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chempane.resolver._pubchem_lookup")
 def test_resolve_methanol_smiles_offline(mock_pubchem):
     """'CO' ist valides SMILES (Methanol), nicht der Name von Cobalt."""
     smiles, mol = resolve("CO")
@@ -180,7 +180,7 @@ def test_resolve_methanol_smiles_offline(mock_pubchem):
     assert symbols == ["C", "O"]
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chempane.resolver._pubchem_lookup")
 def test_resolve_name_path_still_works_for_real_names(mock_pubchem):
     """'Aspirin' parsed nicht als SMILES → Namens-Pfad bleibt intakt."""
     mock_pubchem.return_value = "CC(=O)Oc1ccccc1C(=O)O"
@@ -206,14 +206,14 @@ def test_opsin_lookup_trivial_name_returns_none():
     assert _opsin_lookup("Tylenol") is None
 
 
-@patch("chemdraw_tool.resolver._java_runtime_available", return_value=False)
+@patch("chempane.resolver._java_runtime_available", return_value=False)
 def test_opsin_lookup_without_java_returns_none(mock_java):
     """Ohne JRE degradiert OPSIN still — kein Crash, Netz-Kaskade übernimmt."""
     assert _opsin_lookup("propan-2-ol") is None
 
 
-@patch("chemdraw_tool.resolver._nci_cir_lookup")
-@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chempane.resolver._nci_cir_lookup")
+@patch("chempane.resolver._pubchem_lookup")
 def test_resolve_systematic_iupac_name_offline(mock_pubchem, mock_nci):
     """Systematische Namen dürfen NIE ins Netz gehen — OPSIN löst offline."""
     smiles, mol = resolve("2-methylbutan-2-ol")
@@ -223,8 +223,8 @@ def test_resolve_systematic_iupac_name_offline(mock_pubchem, mock_nci):
     assert symbols == ["C", "C", "C", "C", "C", "O"]
 
 
-@patch("chemdraw_tool.resolver._nci_cir_lookup")
-@patch("chemdraw_tool.resolver._pubchem_lookup")
+@patch("chempane.resolver._nci_cir_lookup")
+@patch("chempane.resolver._pubchem_lookup")
 def test_resolve_systematic_stereo_name_offline(mock_pubchem, mock_nci):
     """(2S)-Stereodeskriptor übersteht OPSIN→RDKit: L-Tryptophan per InChIKey."""
     smiles, mol = resolve("(2S)-2-amino-3-(1H-indol-3-yl)propanoic acid")
@@ -241,13 +241,13 @@ _OPSIN_TROPICAMIDE = "C(C(CO)C1=CC=CC=C1)(=O)N"  # was OPSIN baut
 _PUBCHEM_TROPICAMIDE = "CCN(CC1=CC=NC=C1)C(=O)C(CO)C2=CC=CC=C2"
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup", return_value=_PUBCHEM_TROPICAMIDE)
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
+@patch("chempane.resolver._pubchem_lookup", return_value=_PUBCHEM_TROPICAMIDE)
+@patch("chempane.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
 def test_trivial_name_opsin_misparse_loses_to_pubchem(_opsin, _pubchem):
     assert resolve_name("tropicamide") == _PUBCHEM_TROPICAMIDE
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
+@patch("chempane.resolver._opsin_lookup", return_value=_OPSIN_TROPICAMIDE)
 def test_trivial_name_offline_keeps_opsin_answer(_opsin):
     """Ohne Netz bleibt OPSINs Antwort — "ethanol" muss offline gehen."""
 
@@ -256,12 +256,12 @@ def test_trivial_name_offline_keeps_opsin_answer(_opsin):
             requests.exceptions.ConnectionError("down")))
         return None
 
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=offline):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=offline):
         assert resolve_name("tropicamide") == _OPSIN_TROPICAMIDE
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup", return_value="N[C@@H](CC)C(=O)O")
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value="NC(CC)C(=O)O")
+@patch("chempane.resolver._pubchem_lookup", return_value="N[C@@H](CC)C(=O)O")
+@patch("chempane.resolver._opsin_lookup", return_value="NC(CC)C(=O)O")
 def test_trivial_name_same_skeleton_keeps_opsin(_opsin, _pubchem):
     """Nur das Gerüst entscheidet — ein Stereo-Unterschied ist keine Uneinigkeit."""
     assert resolve_name("butyrine") == "NC(CC)C(=O)O"
@@ -270,14 +270,14 @@ def test_trivial_name_same_skeleton_keeps_opsin(_opsin, _pubchem):
 def test_german_name_wrong_pubchem_synonym_keeps_opsin():
     """PubChem führt 'Glycin' beim Fotoentwickler; 'Glycine' bestätigt OPSIN."""
     answers = {"Glycin": "OC(=O)CNc1ccc(O)cc1", "Glycine": "C(C(=O)O)N"}
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value="NCC(=O)O"), \
-         patch("chemdraw_tool.resolver._pubchem_lookup",
+    with patch("chempane.resolver._opsin_lookup", return_value="NCC(=O)O"), \
+         patch("chempane.resolver._pubchem_lookup",
                side_effect=lambda n, report=None: answers.get(n)):
         assert resolve_name("Glycin") == "NCC(=O)O"
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup")
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value="CC(C)O")
+@patch("chempane.resolver._pubchem_lookup")
+@patch("chempane.resolver._opsin_lookup", return_value="CC(C)O")
 def test_name_with_locants_never_cross_checked(_opsin, mock_pubchem):
     for name in ("propan-2-ol", "(R)-butan-2-ol", "N,N-dimethylformamide"):
         resolve_name.cache_clear()
@@ -309,8 +309,8 @@ _DREHSINN = {
 def test_rotation_sign_takes_pubchems_defined_stereo(name):
     opsin, pubchem, key = _DREHSINN[name]
     resolve_name.cache_clear()
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         smiles = resolve_name(name)
     assert Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)) == key
 
@@ -320,8 +320,8 @@ def test_racemate_and_bare_name_stay_flat():
     flat = "C1(CC(C(CC1)C(C)C)O)C"
     for name in ("(±)-menthol", "menthol"):
         resolve_name.cache_clear()
-        with patch("chemdraw_tool.resolver._opsin_lookup", return_value=flat), \
-             patch("chemdraw_tool.resolver._pubchem_lookup",
+        with patch("chempane.resolver._opsin_lookup", return_value=flat), \
+             patch("chempane.resolver._pubchem_lookup",
                    return_value="C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C"):
             assert resolve_name(name) == flat
 
@@ -330,8 +330,8 @@ def test_rotation_sign_never_changes_the_skeleton():
     """Liefert PubChem ein anderes Gerüst, bleibt OPSINs Lesart (die Klammer
     ist dann ein systematischer Name wie bisher)."""
     resolve_name.cache_clear()
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value="CC(O)CC"), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value="C[C@H](O)c1ccccc1"):
+    with patch("chempane.resolver._opsin_lookup", return_value="CC(O)CC"), \
+         patch("chempane.resolver._pubchem_lookup", return_value="C[C@H](O)c1ccccc1"):
         assert resolve_name("(-)-butan-2-ol") == "CC(O)CC"
 
 
@@ -369,16 +369,16 @@ _SALZE = {
 @pytest.mark.parametrize("name", sorted(_SALZE))
 def test_salt_cross_check_keeps_opsin_for_inorganic_names(name):
     opsin, pubchem, wer = _SALZE[name]
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         assert resolve_name(name) == (opsin if wer == "OPSIN" else pubchem)
 
 
 def test_sodium_phosphate_stays_neutral_trisodium_salt():
     """Abnahme 1: Na3PO4, Ladung 0, Gerüst RYFMWSXOAZQYPI."""
     opsin, pubchem, _ = _SALZE["sodium phosphate"]
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         mol = Chem.MolFromSmiles(resolve_name("sodium phosphate"))
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
     assert CalcMolFormula(mol) == "Na3O4P"
@@ -386,8 +386,8 @@ def test_sodium_phosphate_stays_neutral_trisodium_salt():
     assert Chem.MolToInchiKey(mol).startswith("RYFMWSXOAZQYPI")
 
 
-@patch("chemdraw_tool.resolver._pubchem_lookup", return_value="N[C@@H](Cc1cc(I)c(O)c(I)c1)C(=O)[O-]")
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value="IN([C@@H](CC1=CC=C(C=C1)O)C(=O)O)I")
+@patch("chempane.resolver._pubchem_lookup", return_value="N[C@@H](Cc1cc(I)c(O)c(I)c1)C(=O)[O-]")
+@patch("chempane.resolver._opsin_lookup", return_value="IN([C@@H](CC1=CC=C(C=C1)O)C(=O)O)I")
 def test_charged_pubchem_answer_with_right_skeleton_still_wins(_opsin, _pubchem):
     """Holdout 06.11.: PubChem führt Diiodtyrosin als Anion; OPSIN baut N,N-Diiod.
     Eine Ladungsregel würde hier den falschen Stoff wählen — darum gibt es keine."""
@@ -424,15 +424,15 @@ _FORMEN = {
 @pytest.mark.parametrize("name", sorted(_FORMEN))
 def test_water_alone_is_a_form_conflict_not_a_correction(name):
     opsin, pubchem, wer = _FORMEN[name]
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         assert resolve_name(name) == (opsin if wer == "OPSIN" else pubchem)
 
 
 def test_potassium_citrate_stays_anhydrous():
     opsin, pubchem, _ = _FORMEN["potassium citrate"]
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         mol = Chem.MolFromSmiles(resolve_name("potassium citrate"))
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
     assert CalcMolFormula(mol) == "C6H5K3O7"
@@ -509,8 +509,8 @@ _SALZE_ORGANISCH = {
 @pytest.mark.parametrize("name", sorted(_SALZE_ORGANISCH))
 def test_organic_salt_same_composition_keeps_opsin(name):
     opsin, pubchem = _SALZE_ORGANISCH[name]
-    with patch("chemdraw_tool.resolver._opsin_lookup", return_value=opsin), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=pubchem):
+    with patch("chempane.resolver._opsin_lookup", return_value=opsin), \
+         patch("chempane.resolver._pubchem_lookup", return_value=pubchem):
         assert resolve_name(name) == opsin
 
 
@@ -545,8 +545,8 @@ def test_resolution_error_is_valueerror_for_callers():
     assert issubclass(NameResolutionError, ValueError)
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_all_sources_answer_unknown_name_says_not_found(mock_get, _opsin):
     mock_get.return_value = _http_resp(404)
     with pytest.raises(NameResolutionError) as exc:
@@ -558,9 +558,9 @@ def test_all_sources_answer_unknown_name_says_not_found(mock_get, _opsin):
     assert "SMILES" in msg
 
 
-@patch("chemdraw_tool.resolver._java_runtime_available", return_value=True)
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._java_runtime_available", return_value=True)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_connection_error_reports_network_not_bad_name(mock_get, _opsin, _java):
     mock_get.side_effect = requests.exceptions.ConnectionError("no route to host")
     with pytest.raises(NameResolutionError) as exc:
@@ -575,9 +575,9 @@ def test_connection_error_reports_network_not_bad_name(mock_get, _opsin, _java):
     assert "OPSIN" in msg
 
 
-@patch("chemdraw_tool.resolver._java_runtime_available", return_value=False)
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._java_runtime_available", return_value=False)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_offline_without_java_points_to_smiles_and_jre(mock_get, _opsin, _java):
     mock_get.side_effect = requests.exceptions.ConnectionError("down")
     with pytest.raises(NameResolutionError) as exc:
@@ -588,8 +588,8 @@ def test_offline_without_java_points_to_smiles_and_jre(mock_get, _opsin, _java):
     assert "Java" in msg
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_timeout_counts_as_network_problem(mock_get, _opsin):
     mock_get.side_effect = requests.exceptions.ReadTimeout("too slow")
     with pytest.raises(NameResolutionError) as exc:
@@ -598,8 +598,8 @@ def test_timeout_counts_as_network_problem(mock_get, _opsin):
     assert "timed out" in str(exc.value)
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_http_503_is_reported_as_source_outage(mock_get, _opsin):
     mock_get.return_value = _http_resp(503)
     with pytest.raises(NameResolutionError) as exc:
@@ -610,8 +610,8 @@ def test_http_503_is_reported_as_source_outage(mock_get, _opsin):
     assert "Use an English/IUPAC name" not in msg
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_mixed_outcome_is_reported_as_partial(mock_get, _opsin):
     """PubChem antwortet (kennt den Namen nicht), NCI ist nicht erreichbar."""
     mock_get.side_effect = [
@@ -626,8 +626,8 @@ def test_mixed_outcome_is_reported_as_partial(mock_get, _opsin):
     assert "retry" in msg.lower()
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_error_message_names_the_sources_and_their_outcome(mock_get, _opsin):
     mock_get.return_value = _http_resp(404)
     with pytest.raises(NameResolutionError) as exc:
@@ -640,16 +640,16 @@ def test_error_message_names_the_sources_and_their_outcome(mock_get, _opsin):
 # --- Latenz: getrennte connect/read-Timeouts + kein Retry auf toten Host ----
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_lookups_use_split_connect_read_timeout(mock_get, _opsin):
     mock_get.return_value = _ok_pubchem_resp()
     resolve_name("Aspirin")
     assert mock_get.call_args.kwargs["timeout"] == (3, 10)
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_unreachable_host_is_not_dialed_twice(mock_get, _opsin):
     """Umlaut-Name = 4 Calls (2× PubChem, 2× NCI). Ist ein Host tot, darf er
     nicht ein zweites Mal ins Connect-Timeout laufen."""
@@ -662,8 +662,8 @@ def test_unreachable_host_is_not_dialed_twice(mock_get, _opsin):
 # --- Cache: Erfolge ja, Fehlschläge nie ------------------------------------
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_successful_resolution_is_cached(mock_get, _opsin):
     mock_get.return_value = _ok_pubchem_resp()
     first = resolve_name("Aspirin")
@@ -674,8 +674,8 @@ def test_successful_resolution_is_cached(mock_get, _opsin):
     assert mock_get.call_count == nach_erstem
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_failed_resolution_is_not_cached(mock_get, _opsin):
     """Wer offline war und wieder online geht, darf nicht auf dem Fehler sitzen
     bleiben — Fehlschläge gehören NICHT in den Cache."""
@@ -689,8 +689,8 @@ def test_failed_resolution_is_not_cached(mock_get, _opsin):
     assert resolve_name("Aspirin") == "CC(=O)Oc1ccccc1C(=O)O"
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_cache_is_clearable(mock_get, _opsin):
     mock_get.return_value = _ok_pubchem_resp()
     resolve_name("Aspirin")
@@ -801,8 +801,8 @@ def _nci_resp(status: int, text: str):
     return resp
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_nci_page_not_found_500_is_not_found(mock_get, _opsin):
     """PubChem 404 + NCI 500 'Page not found' → jede Quelle hat geantwortet: not_found."""
     mock_get.side_effect = [
@@ -819,8 +819,8 @@ def test_nci_page_not_found_500_is_not_found(mock_get, _opsin):
     assert "English" in msg
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver.requests.get")
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver.requests.get")
 def test_nci_real_500_stays_source_error(mock_get, _opsin):
     """Ein 500 ohne 'Page not found' bleibt ein Quellenfehler → partial."""
     mock_get.side_effect = [
@@ -853,43 +853,43 @@ def _only_for(hit_name: str, smiles: str = "CC(=O)O"):
     return lookup, calls
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_german_name_falls_back_to_english_variant_last(mock_nci, mock_opsin):
     lookup, calls = _only_for("Dexamethasone")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Dexamethason") == "CC(=O)O"
     assert calls == ["Dexamethason", "Dexamethasone"]
     # NCI wurde mit dem Original gefragt, bevor die Variante drankam
     assert [c.args[0] for c in mock_nci.call_args_list] == ["Dexamethason"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_umlaut_name_variant_is_built_from_the_original(mock_nci, mock_opsin):
     """'Maleinsaeure' hat kein -säure mehr — die Regel braucht das Original."""
     lookup, calls = _only_for("Maleinic acid")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Maleinsäure") == "CC(=O)O"
     assert calls == ["Maleinsäure", "Maleinsaeure", "Maleinic acid"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_direct_hit_keeps_its_answer_when_the_variant_is_unknown(mock_nci, mock_opsin):
     """Seit Befund 3 fragt ein Direkttreffer die Variante einmal gegen (siehe
     unten); kennt PubChem die Variante nicht, bleibt der Direkttreffer."""
     lookup, calls = _only_for("Dexamethason")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Dexamethason") == "CC(=O)O"
     assert calls == ["Dexamethason", "Dexamethasone"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_variant_miss_keeps_not_found(mock_nci, mock_opsin):
     lookup, calls = _only_for("nothing")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         with pytest.raises(NameResolutionError) as exc:
             resolve_name("Dexamethason")
     assert exc.value.kind == "not_found"
@@ -934,11 +934,11 @@ def _pubchem_table(table: dict):
 
 
 @pytest.mark.parametrize("name", sorted(_SYNONYMFEHLER))
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_variant_overrules_a_stray_pubchem_synonym(_opsin, name):
     variante, direkt, richtig = _SYNONYMFEHLER[name]
     lookup, calls = _pubchem_table({name: direkt, variante: richtig})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name(name) == richtig
     assert calls == [name, variante]
 
@@ -951,25 +951,25 @@ def test_stereo_prefix_is_dropped_for_the_variant():
     assert resolver._spelling_variant("risperidone") is None
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_agreeing_variant_keeps_the_direct_answer(_opsin):
     """Gleiches Gerüst, andere Form (Stereo, Schreibweise) → Direkttreffer bleibt."""
     lookup, calls = _pubchem_table({"Procain": "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N",
                                     "Procaine": "NC1=CC=C(C=C1)C(=O)OCCN(CC)CC"})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Procain") == "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N"
     assert calls == ["Procain", "Procaine"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_name_without_variant_costs_no_second_call(_opsin):
     lookup, calls = _pubchem_table({"risperidone": "C"})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("risperidone") == "C"
     assert calls == ["risperidone"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_unreachable_variant_keeps_the_direct_answer(_opsin):
     """Netz weg zwischen den beiden Fragen → kein Fehler, Direkttreffer bleibt."""
     def lookup(name, report=None):
@@ -977,17 +977,17 @@ def test_unreachable_variant_keeps_the_direct_answer(_opsin):
             return _SYNONYMFEHLER["Risperidon"][1]
         resolver._record(report, resolver._PUBCHEM, resolver._UNREACHABLE, "timeout")
         return None
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Risperidon") == _SYNONYMFEHLER["Risperidon"][1]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_salt_form_of_the_variant_is_no_correction(_opsin):
     """Centrophenoxin: direkt freie Base (richtig), Variante HCl-Salz → Formkonflikt."""
     base = "CN(C)CCOC(=O)COC1=CC=C(C=C1)Cl"
     lookup, calls = _pubchem_table({"Centrophenoxin": base,
                                     "Centrophenoxine": base + ".Cl"})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Centrophenoxin") == base
     assert calls == ["Centrophenoxin", "Centrophenoxine"]
 
@@ -1014,12 +1014,12 @@ _SALZFORM = {
 
 
 @pytest.mark.parametrize("name", sorted(_SALZFORM))
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_name_without_salt_word_gets_the_free_form(_opsin, name):
     """INN ohne Salzwort, PubChem direkt = Salz, Variante = freie Base → freie Base."""
     variante, direkt, frei = _SALZFORM[name]
     lookup, calls = _pubchem_table({name: direkt, variante: frei})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name(name) == frei
     assert calls == [name, variante]
 
@@ -1052,22 +1052,22 @@ _LINCOMYCIN = (  # 9 → 0 Elemente: die Variante ist der flache Record
 
 
 @pytest.mark.parametrize("name", sorted(_STEREO_FORM))
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_spelling_variant_with_more_defined_stereo_wins(_opsin, name):
     """Gleiches Gerüst, Variante mit ≥ definierten Stereoelementen → Variante."""
     variante, direkt, definiert = _STEREO_FORM[name]
     lookup, calls = _pubchem_table({name: direkt, variante: definiert})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name(name) == definiert
     assert calls == [name, variante]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_spelling_variant_never_drops_defined_stereo(_opsin):
     """Lincomycin: direkt 9 Elemente, Variante flach → der definierte Direkttreffer bleibt."""
     variante, definiert, flach = _LINCOMYCIN
     lookup, _ = _pubchem_table({"Lincomycin": definiert, variante: flach})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name("Lincomycin") == definiert
 
 
@@ -1075,8 +1075,8 @@ def test_spelling_variant_never_drops_defined_stereo(_opsin):
 def test_stereo_form_rule_skips_d_l_prefixed_names(name):
     """Ein D-/L-Präfix legt die Form im Namen fest — dort tauscht die Regel nicht."""
     _, direkt, definiert = _STEREO_FORM["Naloxon"]
-    with patch("chemdraw_tool.resolver._spelling_variant", return_value="Naloxone"), \
-         patch("chemdraw_tool.resolver._pubchem_lookup", return_value=definiert):
+    with patch("chempane.resolver._spelling_variant", return_value="Naloxone"), \
+         patch("chempane.resolver._pubchem_lookup", return_value=definiert):
         assert resolver._pubchem_checked(name, direkt, []) == (direkt, name)
 
 
@@ -1093,7 +1093,7 @@ def test_salt_word_needs_a_whole_word_for_iron_zinc_salt(name):
     "Natriumcitrat", "sodium citrate", "Kaliumcitrat", "Docusat-Natrium",
     "Eisengluconat", "iron sucrose", "zinc oxide",
 ])
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_name_with_salt_word_keeps_the_salt(_opsin, name):
     """Nennt der Name das Gegenion, ist das Salz gemeint — auch wenn die
     Variante (zufällig) die freie Form trifft."""
@@ -1104,7 +1104,7 @@ def test_name_with_salt_word_keeps_the_salt(_opsin, name):
     if variante:
         table[variante] = frei
     lookup, _ = _pubchem_table(table)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolve_name(name) == salz
 
 
@@ -1118,11 +1118,11 @@ _BENDAMUSTIN_HCL = "CN1C2=C(C=C(C=C2)N(CCCl)CCCl)N=C1CCCC(=O)O.Cl"
 
 @pytest.mark.parametrize("name", ["Bendamustinhydrochlorid", "Bendamustin Hydrochlorid",
                                   "Bendamustin-Hydrochlorid"])
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_german_salt_name_resolves_to_the_salt(_nci, _opsin, name):
     lookup, calls = _only_for("Bendamustine hydrochloride", _BENDAMUSTIN_HCL)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route(name) == (_BENDAMUSTIN_HCL, "Bendamustine hydrochloride")
     assert calls == [name, "Bendamustine hydrochloride"]
 
@@ -1133,20 +1133,20 @@ def test_german_salt_name_resolves_to_the_salt(_nci, _opsin, name):
 _CEFALOTIN_NA = "CC(=O)OCC1=C(N2[C@@H]([C@@H](C2=O)NC(=O)CC3=CC=CS3)SC1)C(=O)[O-].[Na+]"
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_salt_variant_comes_after_the_english_variant(_nci, _opsin):
     lookup, calls = _only_for("Cefalotin sodium", _CEFALOTIN_NA)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route("Cefalotin-Natrium") == (_CEFALOTIN_NA, "Cefalotin sodium")
     assert calls == ["Cefalotin-Natrium", "Cefalotine sodium", "Cefalotin sodium"]
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_name_without_counterion_asks_no_salt_variant(_nci, _opsin):
     lookup, calls = _only_for("nothing")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         with pytest.raises(NameResolutionError):
             resolve_name("Dexamethason")
     assert calls == ["Dexamethason", "Dexamethasone"]
@@ -1158,68 +1158,68 @@ def test_name_without_counterion_asks_no_salt_variant(_nci, _opsin):
 # falscher Treffer erkennen. Wörtliche Treffer bleiben ohne Hinweis.
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_found_as_names_the_english_variant(_nci, _opsin):
     lookup, _ = _only_for("Dexamethasone")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         route = resolver.resolve_name_route("Dexamethason")
     assert route == ("CC(=O)O", "Dexamethasone")
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_found_as_names_the_transliteration(_nci, _opsin):
     lookup, _ = _only_for("Maleinsaeure")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route("Maleinsäure").found_as == "Maleinsaeure"
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_found_as_names_the_transliteration_via_nci(_opsin):
     lookup, _ = _only_for("nothing")
 
     def nci(name, report=None):
         return "CC(=O)O" if name == "Maleinsaeure" else None
 
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup), \
-         patch("chemdraw_tool.resolver._nci_cir_lookup", side_effect=nci):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup), \
+         patch("chempane.resolver._nci_cir_lookup", side_effect=nci):
         assert resolver.resolve_name_route("Maleinsäure").found_as == "Maleinsaeure"
 
 
 @pytest.mark.parametrize("name", sorted(_SALZFORM))
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_found_as_names_the_variant_of_the_salt_rule(_opsin, name):
     variante, direkt, frei = _SALZFORM[name]
     lookup, _ = _pubchem_table({name: direkt, variante: frei})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route(name) == (frei, variante)
 
 
 @pytest.mark.parametrize("name", sorted(_SYNONYMFEHLER))
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_found_as_names_the_variant_that_overruled_a_synonym(_opsin, name):
     variante, direkt, richtig = _SYNONYMFEHLER[name]
     lookup, _ = _pubchem_table({name: direkt, variante: richtig})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route(name).found_as == variante
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
 def test_literal_hit_has_no_found_as(_opsin):
     """Direkttreffer, Variante bestätigt nur → kein Hinweis (Procain bleibt Procain)."""
     lookup, _ = _pubchem_table({"Procain": "CCN(CC)CCOC(=O)C1=CC=C(C=C1)N",
                                 "Procaine": "NC1=CC=C(C=C1)C(=O)OCCN(CC)CC"})
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route("Procain").found_as == ""
         assert resolver.resolve_name_route("risperidone").found_as == ""
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_found_as_ignores_a_pure_case_difference(_nci, _opsin):
     lookup, _ = _only_for("Dexamethasone")
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver._found_as("dexamethasone", "Dexamethasone") == ""
 
 
@@ -1251,11 +1251,11 @@ _RIFABUTIN_PC_E = (
 )
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_tautomer_of_the_variant_is_not_another_compound(_nci, _opsin):
     answers = {"rifabutin": _RIFABUTIN_PC, "rifabutine": _RIFABUTIN_PC_E}
-    with patch("chemdraw_tool.resolver._pubchem_lookup",
+    with patch("chempane.resolver._pubchem_lookup",
                side_effect=lambda n, report=None: answers.get(n)):
         assert resolver.resolve_name_route("rifabutin") == (_RIFABUTIN_PC, "")
 
@@ -1273,33 +1273,33 @@ _S_TIMOLOL = "CC(C)(C)NC[C@@H](COC1=NSN=C1N2CCOCC2)O"
 
 
 @pytest.mark.parametrize("name", ["(S)-(−)-timolol", "(S)-(-)-timolol"])
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_rotation_sign_beside_a_descriptor_is_dropped_last(_nci, _opsin, name):
     lookup, calls = _only_for("(S)-timolol", _S_TIMOLOL)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         assert resolver.resolve_name_route(name) == (_S_TIMOLOL, "(S)-timolol")
     assert calls[-1] == "(S)-timolol"
 
 
 @pytest.mark.parametrize("name", ["(−)-timolol", "(+)-Ephedrin"])
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_rotation_sign_alone_is_never_dropped(_nci, _opsin, name):
     """Ohne R/S trägt der Drehsinn die einzige Stereoangabe."""
     lookup, calls = _only_for("timolol", _S_TIMOLOL)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         with pytest.raises(NameResolutionError):
             resolve_name(name)
     assert "timolol" not in calls
 
 
-@patch("chemdraw_tool.resolver._opsin_lookup", return_value=None)
-@patch("chemdraw_tool.resolver._nci_cir_lookup", return_value=None)
+@patch("chempane.resolver._opsin_lookup", return_value=None)
+@patch("chempane.resolver._nci_cir_lookup", return_value=None)
 def test_r_descriptor_never_lands_on_the_s_record(_nci, _opsin):
     """'(R)-(+)-x' fragt '(R)-x', nie das nackte 'x' (dort läge das S-Enantiomer)."""
     lookup, calls = _only_for("timolol", _S_TIMOLOL)
-    with patch("chemdraw_tool.resolver._pubchem_lookup", side_effect=lookup):
+    with patch("chempane.resolver._pubchem_lookup", side_effect=lookup):
         with pytest.raises(NameResolutionError):
             resolve_name("(R)-(+)-timolol")
     assert calls[-1] == "(R)-timolol"

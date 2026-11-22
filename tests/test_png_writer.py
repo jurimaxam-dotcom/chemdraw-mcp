@@ -2,7 +2,7 @@ import base64
 
 import pytest
 
-from chemdraw_tool.png_writer import (
+from chempane.png_writer import (
     PNG_MAGIC,
     decode_png,
     save_png_bytes,
@@ -36,7 +36,7 @@ def test_decode_rejects_broken_base64():
 
 
 def test_decode_rejects_oversized(monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.png_writer.MAX_PNG_BYTES", 4)
+    monkeypatch.setattr("chempane.png_writer.MAX_PNG_BYTES", 4)
     big = base64.b64encode(PNG_MAGIC + b"xxxxx").decode()  # 13 bytes > 4
     with pytest.raises(ValueError, match="too large"):
         decode_png(big)
@@ -74,7 +74,7 @@ def test_decode_tolerates_whitespace():
 
 
 def test_decode_rejects_oversized_before_decode(monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.png_writer.MAX_PNG_BYTES", 9)
+    monkeypatch.setattr("chempane.png_writer.MAX_PNG_BYTES", 9)
     # Encoded string longer than the recomputed encoded cap → rejected pre-decode.
     huge = "A" * 1000
     with pytest.raises(ValueError, match="too large"):

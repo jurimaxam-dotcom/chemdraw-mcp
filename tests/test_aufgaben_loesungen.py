@@ -8,8 +8,8 @@ geprüft, jede Molmasse gegen die Summenformel (molmass).
 import pytest
 from molmass import Formula
 
-from chemdraw_tool import solution
-from chemdraw_tool.aufgaben import loesungen as lo
+from chempane import solution
+from chempane.aufgaben import loesungen as lo
 
 SCHRITT = {"label", "formula", "substitution", "result", "explanation"}
 

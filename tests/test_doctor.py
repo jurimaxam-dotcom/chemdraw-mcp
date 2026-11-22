@@ -18,7 +18,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from chemdraw_tool.doctor import (
+from chempane.doctor import (
     DEFAULT_CHECKS,
     ERROR,
     LIMITED,
@@ -59,7 +59,7 @@ def _write_config(path: Path, data: dict | str) -> Path:
 
 def test_paths_in_prose_are_shortened_to_tilde():
     """Kürzer heißt: passt in eine Zeile und wird nicht mitten im Pfad umbrochen."""
-    from chemdraw_tool.doctor import _short
+    from chempane.doctor import _short
 
     assert _short("/Users/x/Library/Claude/config.json", home="/Users/x") == (
         "~/Library/Claude/config.json"
@@ -67,7 +67,7 @@ def test_paths_in_prose_are_shortened_to_tilde():
 
 
 def test_paths_outside_home_stay_absolute():
-    from chemdraw_tool.doctor import _short
+    from chempane.doctor import _short
 
     assert _short("/etc/claude.json", home="/Users/x") == "/etc/claude.json"
 
@@ -96,8 +96,8 @@ def test_java_fix_command_is_platform_specific():
 
 def test_java_check_uses_the_resolver_probe_by_default():
     """Keine zweite Java-Suche im Projekt: der Default ist die Resolver-Logik."""
-    from chemdraw_tool import resolver
-    from chemdraw_tool.doctor import _default_java_probe
+    from chempane import resolver
+    from chempane.doctor import _default_java_probe
 
     assert _default_java_probe is resolver._java_runtime_available
 
@@ -121,8 +121,8 @@ def test_uv_unresolvable_is_a_limitation_with_install_command():
 
 def test_uv_check_defaults_to_the_installer_resolver():
     """Kein zweiter uv-Suchpfad: der Default kommt aus desktop_config."""
-    from chemdraw_tool.desktop_config import resolve_uv_command
-    from chemdraw_tool.doctor import _installer_helpers
+    from chempane.desktop_config import resolve_uv_command
+    from chempane.doctor import _installer_helpers
 
     helpers = _installer_helpers()
     assert helpers is not None
@@ -270,7 +270,7 @@ class _Probe:
 
 def test_network_uses_the_same_tolerance_as_the_resolver():
     """Strenger prüfen als der Server arbeitet ⇒ Fehlalarm. NCI braucht real >10 s."""
-    from chemdraw_tool import doctor, resolver
+    from chempane import doctor, resolver
 
     assert doctor._NET_TIMEOUT == resolver._TIMEOUT
 
@@ -509,7 +509,7 @@ def test_default_checks_cover_every_documented_failure_mode():
 def test_extension_install_without_config_entry_is_a_note_not_a_limitation(tmp_path):
     """Die .mcpb-Extension trägt nichts in claude_desktop_config.json ein. Der Rat
     „./install.sh“ hätte jedes Werkzeug doppelt registriert (README: pick one route)."""
-    from chemdraw_tool.doctor import NOTE
+    from chempane.doctor import NOTE
 
     bundle = tmp_path / "chemdraw-mcp-bundle"
     (bundle / "env-0.9.0").mkdir(parents=True)
@@ -534,7 +534,7 @@ def test_entry_pointing_at_a_moved_clone_is_an_error(tmp_path):
 
 
 def test_fix_names_the_installer_the_user_actually_has(tmp_path, monkeypatch):
-    from chemdraw_tool import desktop_config
+    from chempane import desktop_config
 
     path = _write_config(tmp_path / "config.json", {"mcpServers": {"other": {}}})
     monkeypatch.setattr(desktop_config, "running_from_repo", lambda: False)
@@ -544,7 +544,7 @@ def test_fix_names_the_installer_the_user_actually_has(tmp_path, monkeypatch):
 
 
 def test_uv_fix_does_not_pipe_curl_into_a_shell():
-    from chemdraw_tool.doctor import check_uv
+    from chempane.doctor import check_uv
 
     result = check_uv(resolve=lambda: "uv")
     assert "| sh" not in result.fix
@@ -554,6 +554,6 @@ def test_uv_fix_does_not_pipe_curl_into_a_shell():
 @pytest.fixture(autouse=True)
 def _kein_echtes_bundle(tmp_path, monkeypatch):
     """Die Prüfungen dürfen nicht davon abhängen, ob auf dieser Maschine die Extension liegt."""
-    from chemdraw_tool import doctor
+    from chempane import doctor
 
     monkeypatch.setattr(doctor, "_bundle_dir", lambda: tmp_path / "kein-bundle-hier")

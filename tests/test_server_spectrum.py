@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.image_export import PNG_MAGIC
-from chemdraw_tool.server import generate_spectrum
+from chempane.image_export import PNG_MAGIC
+from chempane.server import generate_spectrum
 
 IR_PEAKS = [
     {"position": 1750, "intensity": 1, "label": "C=O"},
@@ -20,7 +20,7 @@ IR_PEAKS = [
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.SPECTRUM_DIR", tmp_path / "spektren")
+    monkeypatch.setattr("chempane.server.SPECTRUM_DIR", tmp_path / "spektren")
     yield tmp_path
 
 

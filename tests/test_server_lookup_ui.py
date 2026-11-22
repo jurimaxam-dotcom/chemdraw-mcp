@@ -8,9 +8,9 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool import databases
-from chemdraw_tool.payloads import DatabasePayload
-from chemdraw_tool.server import lookup_molecule_data
+from chempane import databases
+from chempane.payloads import DatabasePayload
+from chempane.server import lookup_molecule_data
 
 FIXTURES = Path(__file__).parent / "__fixtures__"
 _NO_GHS = {"status": "empty", "record_title": "", "sources": []}
@@ -26,7 +26,7 @@ def _kein_smiles_rueckweg(monkeypatch):
     """Das Datenblatt holt den Datensatz per InChIKey (die Tests mocken das).
     Liefert der Mock nichts, faellt _pubchem_record auf den SMILES-Weg zurueck —
     der darf hier nicht ans echte Netz."""
-    from chemdraw_tool import server
+    from chempane import server
 
     monkeypatch.setattr(server, "pubchem_properties_by_smiles", lambda smiles: None)
     monkeypatch.setattr(server, "pubchem_synonyms_by_smiles", lambda smiles: (None, []))
@@ -38,10 +38,10 @@ def _make_mol(smiles: str) -> Chem.Mol:
     return mol
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_lookup_molecule_data_returns_database_payload(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):
@@ -70,10 +70,10 @@ def test_lookup_molecule_data_returns_database_payload(
     assert len(result.sources) == 2
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_pubchem_source_rows(mock_resolve, mock_props, mock_synonyms, mock_safety):
     """PubChem source rows must include all mapped properties and CAS."""
     mol = _make_mol("c1ccccc1")
@@ -128,10 +128,10 @@ def _sheet(mock_resolve, mock_props, mock_synonyms, mock_safety, ghs, title, smi
     return lookup_molecule_data(title)
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_ghs_source_groups_caffeine(mock_resolve, mock_props, mock_synonyms, mock_safety):
     """Eine GHS-Quelle (ein Reiter), darin eine Gruppe je PubChem-Referenz."""
     result = _sheet(
@@ -160,10 +160,10 @@ def test_ghs_source_groups_caffeine(mock_resolve, mock_props, mock_synonyms, moc
     assert [g.lead for g in ghs_src.groups[1:]] == [False, False, False]
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_ghs_source_groups_nacl_negative(mock_resolve, mock_props, mock_synonyms, mock_safety):
     """Der falsch verknüpfte EU-Eintrag (Azofarbstoff) darf nie vorn stehen."""
     result = _sheet(
@@ -184,10 +184,10 @@ def test_ghs_source_groups_nacl_negative(mock_resolve, mock_props, mock_synonyms
     "status, needle",
     [("empty", "no GHS classification"), ("error", "could not be retrieved")],
 )
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_ghs_empty_and_error_are_told_apart(
     mock_resolve, mock_props, mock_synonyms, mock_safety, status, needle
 ):
@@ -202,10 +202,10 @@ def test_ghs_empty_and_error_are_told_apart(
     assert needle in ghs_src.note
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_no_ghs_when_no_cid_in_props(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):
@@ -230,10 +230,10 @@ def test_no_ghs_when_no_cid_in_props(
 # kein zusaetzlicher Netzabruf, keine zweite Aufloesung des Namens.
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_payload_carries_atoms_for_the_hover(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):
@@ -252,10 +252,10 @@ def test_payload_carries_atoms_for_the_hover(
     assert any(a.hCount > 0 for a in result.atoms)
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_payload_carries_functional_groups(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):
@@ -272,10 +272,10 @@ def test_payload_carries_functional_groups(
     assert "Ester" in names and "Aromat" in names, f"Gruppen fehlen: {names}"
 
 
-@patch("chemdraw_tool.server.pubchem_ghs")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_inchikey")
-@patch("chemdraw_tool.server.pubchem_properties_by_inchikey")
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.pubchem_ghs")
+@patch("chempane.server.pubchem_synonyms_by_inchikey")
+@patch("chempane.server.pubchem_properties_by_inchikey")
+@patch("chempane.server.resolve")
 def test_payload_names_its_compound(
     mock_resolve, mock_props, mock_synonyms, mock_safety
 ):

@@ -1,7 +1,7 @@
 """Das Wheel muss das gebaute Panel enthalten — sonst zeichnet der Server, aber
 das Panel meldet „kann nicht erreicht werden".
 
-0.4.0 shippte ohne chemdraw_tool/ui/dist/index.html: ein `dist/` in .gitignore
+0.4.0 shippte ohne chempane/ui/dist/index.html: ein `dist/` in .gitignore
 (gemeint war das Release-dist/ im Repo-Root) traf auch ui/dist, und hatchling
 haelt sich an .gitignore. Der Test baut das Wheel wirklich, statt Muster zu raten.
 """
@@ -21,10 +21,10 @@ def test_wheel_ships_the_ui_bundle(tmp_path):
     wheels = list(tmp_path.glob("*.whl"))
     assert len(wheels) == 1, wheels
     names = zipfile.ZipFile(wheels[0]).namelist()
-    assert "chemdraw_tool/ui/dist/index.html" in names, (
+    assert "chempane/ui/dist/index.html" in names, (
         "UI-Bundle fehlt im Wheel — .gitignore-Muster pruefen (hatchling filtert danach)"
     )
-    assert not any(n.startswith("chemdraw_tool/ui/src/") for n in names)
+    assert not any(n.startswith("chempane/ui/src/") for n in names)
     assert not any("node_modules" in n for n in names)
 
 
@@ -44,11 +44,11 @@ def test_sdist_ships_only_the_allowlist(tmp_path):
         ui_members = [
             m.name.split("/", 1)[1]
             for m in tar.getmembers()
-            if m.isfile() and "/chemdraw_tool/ui/" in m.name
+            if m.isfile() and "/chempane/ui/" in m.name
         ]
-        assert ui_members == ["chemdraw_tool/ui/dist/index.html"]
+        assert ui_members == ["chempane/ui/dist/index.html"]
         # erster Pfadteil ist chemdraw_mcp-<version>/
         tops = {n.split("/", 2)[1] for n in tar.getnames() if n.count("/") >= 1}
-    erlaubt = {"chemdraw_tool", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}
+    erlaubt = {"chempane", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md", "pyproject.toml", "PKG-INFO", ".gitignore"}
     assert tops <= erlaubt, f"unerwartet im sdist: {sorted(tops - erlaubt)}"
-    assert "chemdraw_tool" in tops
+    assert "chempane" in tops

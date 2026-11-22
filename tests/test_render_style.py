@@ -12,7 +12,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.Draw import rdMolDraw2D
 
-from chemdraw_tool.render_style import (
+from chempane.render_style import (
     STYLES,
     apply_style,
     condense_groups,
@@ -56,7 +56,7 @@ def _fill_colors(svg: str) -> set[str]:
 
 def _render(mol, style: str = "") -> str:
     """Zeichnet wie die Produktion: erst die geteilte Basis, dann das Preset."""
-    from chemdraw_tool.svg_renderer import BOND_LINE_WIDTH
+    from chempane.svg_renderer import BOND_LINE_WIDTH
 
     drawer = rdMolDraw2D.MolDraw2DSVG(500, 400)
     drawer.drawOptions().bondLineWidth = BOND_LINE_WIDTH
@@ -127,8 +127,8 @@ def test_export_and_ui_preview_share_the_stroke_width(style):
     """Die geteilte Konstante BOND_LINE_WIDTH bleibt die Basis; ein Preset
     überschreibt sie nur pro Zeichenvorgang — und zwar in BEIDEN Pfaden.
     Deshalb gilt die Parität nicht nur im Default, sondern je Stil."""
-    from chemdraw_tool.image_export import render_molecule_svg
-    from chemdraw_tool.svg_renderer import render_svg
+    from chempane.image_export import render_molecule_svg
+    from chempane.svg_renderer import render_svg
 
     mol = _mol(ASPIRIN)
     export = _stroke_widths(render_molecule_svg(mol, style=style))
@@ -140,7 +140,7 @@ def test_presets_also_scale_the_conditions_text_above_the_arrow():
     """Der Bedingungstext läuft NICHT über MolDrawOptions — die Backends
     overlayen ihn selbst. Ohne eigenen Faktor bliebe er im Präsentationsstil
     als einziges Element klein und der Stil hielte sein Versprechen nicht."""
-    from chemdraw_tool.image_export import render_reaction_svg
+    from chempane.image_export import render_reaction_svg
 
     def font_px(style: str) -> float:
         svg = render_reaction_svg(
@@ -156,7 +156,7 @@ def test_conditions_text_and_arrow_gap_stay_in_proportion():
     die Strukturen (gesehen bei 'presentation'). Beide Maße müssen deshalb mit
     demselben Faktor wachsen — dann bleibt das Kollisionsverhalten das des
     Standardstils."""
-    from chemdraw_tool.image_export import ARROW_LENGTH, _reaction_metrics
+    from chempane.image_export import ARROW_LENGTH, _reaction_metrics
 
     base_arrow, base_font = _reaction_metrics("")
     assert base_arrow == ARROW_LENGTH
@@ -167,7 +167,7 @@ def test_conditions_text_and_arrow_gap_stay_in_proportion():
 
 def test_bond_line_width_constant_is_untouched_by_presets():
     """Presets dürfen die Single Source of Truth nicht umdefinieren."""
-    from chemdraw_tool.svg_renderer import BOND_LINE_WIDTH
+    from chempane.svg_renderer import BOND_LINE_WIDTH
 
     _render(_mol(ASPIRIN), "presentation")
     assert BOND_LINE_WIDTH == 1.5

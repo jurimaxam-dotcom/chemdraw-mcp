@@ -15,11 +15,11 @@ from pathlib import Path
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.render_style import condense_groups
-from chemdraw_tool.svg_renderer import render_svg
+from chempane.generator import generate_2d
+from chempane.render_style import condense_groups
+from chempane.svg_renderer import render_svg
 
-CSS = (Path(__file__).parent.parent / "chemdraw_tool" / "ui" / "src" / "styles.css").read_text()
+CSS = (Path(__file__).parent.parent / "chempane" / "ui" / "src" / "styles.css").read_text()
 
 # Zwei Dunkel-Varianten: Systemschema (Media-Query) und Host-Schalter data-theme.
 # Seit Etappe 1 (16.11.2026) ist nur noch Scope ausgenommen: der Strukturvergleich
@@ -88,9 +88,9 @@ _DARK_BG = "#202724"  # --bg (dunkel, ohne Host-Variable)
 
 
 def _mechanism_svgs(reaction_type: str, smiles: list[str]) -> list[str]:
-    from chemdraw_tool import mechanism_coords
-    from chemdraw_tool.mechanism_renderer import render_step_svg
-    from chemdraw_tool.mechanism_substrate import build_steps
+    from chempane import mechanism_coords
+    from chempane.mechanism_renderer import render_step_svg
+    from chempane.mechanism_substrate import build_steps
 
     steps = build_steps(reaction_type, smiles)
     return [render_step_svg(s, m) for s, m in zip(steps, mechanism_coords.layout_anchored(steps))]

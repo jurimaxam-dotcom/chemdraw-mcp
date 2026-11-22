@@ -7,7 +7,7 @@ Umgeschaltet wird nur, wenn CoordGen messbar weiter Abstand hält — Tropane (K
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.generator import closest_atom_to_foreign_bond, generate_2d
+from chempane.generator import closest_atom_to_foreign_bond, generate_2d
 
 SWITCHED = {
     "quinine": "COC1=CC2=C(C=CN=C2C=C1)[C@H]([C@@H]3C[C@@H]4CCN3C[C@@H]4C=C)O",

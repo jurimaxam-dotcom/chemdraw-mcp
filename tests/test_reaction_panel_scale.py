@@ -13,8 +13,8 @@ import re
 
 from rdkit import Chem
 
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.svg_renderer import (
+from chempane.generator import generate_2d
+from chempane.svg_renderer import (
     REACTION_ENTRY_HEIGHT,
     REACTION_ENTRY_WIDTH,
     render_reaction_entry,

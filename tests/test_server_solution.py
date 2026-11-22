@@ -7,7 +7,7 @@ Geprüft wird, was im Chat ankommt — die Mathematik selbst liegt in
 
 import pytest
 
-from chemdraw_tool.server import calculate_solution
+from chempane.server import calculate_solution
 
 
 def test_weigh_in_answers_the_question_and_shows_the_way():

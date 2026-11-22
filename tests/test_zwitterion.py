@@ -13,8 +13,8 @@ COO-“. Die Netzquellen sind hier Attrappen mit genau diesen Antworten.
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool import resolver
-from chemdraw_tool.resolver import NameResolutionError, resolve
+from chempane import resolver
+from chempane.resolver import NameResolutionError, resolve
 
 L_ALA = "C[C@H](N)C(=O)O"
 L_ALA_ZWITTERION = Chem.CanonSmiles("C[C@H]([NH3+])C(=O)[O-]")

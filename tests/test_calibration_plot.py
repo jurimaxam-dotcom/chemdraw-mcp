@@ -9,8 +9,8 @@ noch einen Standard-Punkt schneiden.
 import pytest
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-from chemdraw_tool import calibration_plot
-from chemdraw_tool.calibration import interpolate, linear_regression
+from chempane import calibration_plot
+from chempane.calibration import interpolate, linear_regression
 
 CHININ_X = [0.05, 0.10, 0.20, 0.30, 0.40]
 CHININ_Y = [27.1, 53.0, 101.4, 152.2, 200.6]

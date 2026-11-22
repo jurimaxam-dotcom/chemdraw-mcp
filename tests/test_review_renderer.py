@@ -4,12 +4,12 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool import image_export
-from chemdraw_tool.cdxml_writer import mol_to_cdxml
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.mechanism_substrate import UnsupportedSubstrates, build_steps
-from chemdraw_tool.structure3d import embed_3d
-from chemdraw_tool.validator import validate_roundtrip
+from chempane import image_export
+from chempane.cdxml_writer import mol_to_cdxml
+from chempane.generator import generate_2d
+from chempane.mechanism_substrate import UnsupportedSubstrates, build_steps
+from chempane.structure3d import embed_3d
+from chempane.validator import validate_roundtrip
 
 
 @pytest.mark.parametrize(

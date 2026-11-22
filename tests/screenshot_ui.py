@@ -20,14 +20,14 @@ import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-UI_DIR = Path(__file__).resolve().parent.parent / "chemdraw_tool" / "ui"
+UI_DIR = Path(__file__).resolve().parent.parent / "chempane" / "ui"
 # Eigener Ordner statt /tmp: fester Name dort ließe sich per Symlink umlenken (Sicherheitsscan F4)
 SCREENSHOT_DIR = Path(tempfile.mkdtemp(prefix="chem-ui-"))
 
 
 def _generate_payload(payload_type: str, args: list[str]) -> dict:
     if payload_type == "mechanism":
-        from chemdraw_tool.server import generate_mechanism
+        from chempane.server import generate_mechanism
 
         reaction_type = args[0] if args else "sn2"
         substrates = args[1:] if len(args) > 1 else _default_substrates(reaction_type)
@@ -35,14 +35,14 @@ def _generate_payload(payload_type: str, args: list[str]) -> dict:
         return result.model_dump()
 
     if payload_type == "molecule":
-        from chemdraw_tool.server import generate_molecule
+        from chempane.server import generate_molecule
 
         name = args[0] if args else "aspirin"
         result = generate_molecule(name_or_smiles=name)
         return result.model_dump()
 
     if payload_type == "reaction":
-        from chemdraw_tool.server import generate_reaction
+        from chempane.server import generate_reaction
 
         result = generate_reaction(
             reactants=["ethanol", "acetic acid"],

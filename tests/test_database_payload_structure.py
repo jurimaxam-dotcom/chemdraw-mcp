@@ -13,7 +13,7 @@ Millisekunden gerechnet.
 
 import pytest
 
-from chemdraw_tool.payloads import DatabasePayload
+from chempane.payloads import DatabasePayload
 
 
 def test_database_payload_carries_atoms():
@@ -40,7 +40,7 @@ def test_database_payload_knows_its_compound():
 @pytest.mark.parametrize("field", ["atoms", "functionalGroups"])
 def test_new_fields_are_typed_like_the_molecule_payload(field):
     """Gleiche Typen, damit UI-Komponenten fuer beide Panels dieselben sind."""
-    from chemdraw_tool.payloads import MoleculePayload
+    from chempane.payloads import MoleculePayload
 
     db_type = DatabasePayload.model_fields[field].annotation
     mol_type = MoleculePayload.model_fields[field].annotation

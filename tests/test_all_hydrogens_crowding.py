@@ -15,8 +15,8 @@ import math
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool import server as srv
-from chemdraw_tool.generator import generate_2d
+from chempane import server as srv
+from chempane.generator import generate_2d
 
 MIN_CLEARANCE = 0.4
 
@@ -36,7 +36,7 @@ FLAT = {
 
 def _all_h_mol(smiles: str, monkeypatch) -> tuple[Chem.Mol, Chem.Mol]:
     """Skelett wie generate_molecule und das Molekül, das die All-H-Ansicht zeichnet."""
-    from chemdraw_tool import svg_renderer
+    from chempane import svg_renderer
 
     mol = generate_2d(Chem.MolFromSmiles(smiles))
     captured = {}

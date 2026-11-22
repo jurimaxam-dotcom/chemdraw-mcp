@@ -18,7 +18,7 @@ from unittest.mock import Mock
 import pytest
 import requests
 
-from chemdraw_tool import protein_structure as ps
+from chempane import protein_structure as ps
 
 FIX = Path(__file__).parent / "__fixtures__" / "pdb"
 

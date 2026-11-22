@@ -1,6 +1,6 @@
 """Lizenzhinweise: Was im Panel steckt, steht auch in THIRD_PARTY_LICENSES.
 
-Das Panel (`chemdraw_tool/ui/dist/index.html`) enthält fremden Code. MIT und
+Das Panel (`chempane/ui/dist/index.html`) enthält fremden Code. MIT und
 Apache-2.0 verlangen, dass Urheberhinweis und Lizenztext mitgehen — die Datei
 wandert dafür ins sdist, ins Wheel und als Kopfkommentar in das Panel selbst.
 Ohne diesen Test veraltet sie beim nächsten Paket-Update still.
@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-UI = ROOT / "chemdraw_tool" / "ui"
+UI = ROOT / "chempane" / "ui"
 HINWEISE = (ROOT / "THIRD_PARTY_LICENSES").read_text(encoding="utf-8")
 
 # Gemessen am 17.11.2026 aus dem Rollup-Modulgraphen (Panel) und der

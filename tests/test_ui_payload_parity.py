@@ -9,8 +9,8 @@ Payloads in `App.jsx` keinen `case` hat. Beide Richtungen sind eine Lücke:
 * View ohne Payload  → toter Code, meist ein Tippfehler beim Umbenennen
 
 Der Test liest die Wahrheit an beiden Enden aus dem Quellcode: die
-`type`-Defaults aus `chemdraw_tool/payloads.py` (per Introspektion, nicht per
-Textsuche) und die `case`-Literale aus `chemdraw_tool/ui/src/App.jsx`.
+`type`-Defaults aus `chempane/payloads.py` (per Introspektion, nicht per
+Textsuche) und die `case`-Literale aus `chempane/ui/src/App.jsx`.
 """
 
 import re
@@ -19,9 +19,9 @@ from typing import get_type_hints
 
 from pydantic import BaseModel
 
-from chemdraw_tool import payloads
+from chempane import payloads
 
-APP_JSX = Path(__file__).parent.parent / "chemdraw_tool" / "ui" / "src" / "App.jsx"
+APP_JSX = Path(__file__).parent.parent / "chempane" / "ui" / "src" / "App.jsx"
 
 # case "molecule":  /  case 'molecule' :  — Anführungszeichen und Abstände frei,
 # aber das Literal muss am Zeilenanfang stehen (so schreibt es Prettier).
@@ -91,7 +91,7 @@ def test_every_view_case_has_a_payload_type():
 def test_every_panel_tool_returns_a_renderable_type():
     """Die Kette bis ans Ende: jedes Tool mit UI-Meta liefert einen Payload,
     dessen `type` in App.jsx einen case hat."""
-    from chemdraw_tool.server import _RESOURCE_URI
+    from chempane.server import _RESOURCE_URI
     from tests.server_catalog import mcp
 
     cases = _view_case_types()

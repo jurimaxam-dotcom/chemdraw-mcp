@@ -7,7 +7,7 @@ Mathtext → ValueError mitten im Rendern (Review 09.11.2026). Gültiger Mathtex
 
 import pytest
 
-from chemdraw_tool import (
+from chempane import (
     calibration,
     calibration_plot,
     ph_plots,
@@ -15,7 +15,7 @@ from chemdraw_tool import (
     spectrum,
     tlc,
 )
-from chemdraw_tool.ph_plots import safe_text
+from chempane.ph_plots import safe_text
 
 BAD = "A $#$ B"
 

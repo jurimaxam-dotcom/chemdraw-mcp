@@ -7,7 +7,7 @@ Generator-Tabelle nicht unbemerkt durchrutscht.
 
 import pytest
 
-from chemdraw_tool.aufgaben import mechanismus as m
+from chempane.aufgaben import mechanismus as m
 
 ERWARTET = {
     ("methyl", "nuc"): "SN2",
@@ -47,7 +47,7 @@ def test_aufgabe_hat_auswahl_und_begruendung():
 
 
 def test_pruefe_auswahl_ohne_ruecksicht_auf_schreibweise():
-    from chemdraw_tool.aufgaben.basis import pruefe
+    from chempane.aufgaben.basis import pruefe
 
     a = m.weg_aufgabe(5)
     assert pruefe(a, a["loesung"])

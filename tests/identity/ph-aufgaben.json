@@ -1,5 +1,5 @@
 {
- "zweck": "pH-Aufgaben mit Referenzlösung außerhalb von chemdraw_tool. Gefahren von scripts/masse_eval.py ph (offline).",
+ "zweck": "pH-Aufgaben mit Referenzlösung außerhalb von chempane. Gefahren von scripts/masse_eval.py ph (offline).",
  "aufgenommen": "2026-11-04",
  "herkunft": "Referenzwert = sympy, Ladungsbilanz als Polynom in [H⁺], einzige positive reelle Wurzel (40 Stellen), pKw = 14, ideale Lösung (Aktivität = Konzentration). Unabhängig von ph_core in Formulierung, Methode und Code, nicht in der Physik. 'lehrbuch' = gängiger Lehrbuch-Ankerwert ohne Seitenangabe; die Referenz muss ihn auf ±0,02 treffen. Neu rechnen: uv run --with sympy python scripts/masse_eval.py ph-referenz",
  "aufgaben": [

@@ -4,16 +4,16 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.payloads import BatchPayload, ReactionPayload
-from chemdraw_tool.server import batch_generate, generate_reaction
+from chempane.payloads import BatchPayload, ReactionPayload
+from chempane.server import batch_generate, generate_reaction
 
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
     """Kein Schreiben ins echte ~/ChemDraw-Output, kein Live-PubChem."""
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
-    with patch("chemdraw_tool.server._enrich_properties", return_value={}):
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
+    with patch("chempane.server._enrich_properties", return_value={}):
         yield
 
 
@@ -23,7 +23,7 @@ def _make_mol(smiles: str) -> Chem.Mol:
     return mol
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_generate_reaction_returns_payload(mock_resolve):
     mol_cc = _make_mol("CC")
     mol_c2 = _make_mol("C=C")
@@ -46,7 +46,7 @@ def test_generate_reaction_returns_payload(mock_resolve):
     assert result.cdxml_path == ""
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_batch_generate_returns_payload(mock_resolve):
     mol1 = _make_mol("c1ccccc1")
     mol2 = _make_mol("CC")
@@ -76,7 +76,7 @@ def _fischer_mols():
     ]
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_reaction_payload_carries_arrow_and_below_text(mock_resolve):
     mock_resolve.side_effect = _fischer_mols()
     result = generate_reaction(
@@ -98,7 +98,7 @@ def test_reaction_payload_carries_arrow_and_below_text(mock_resolve):
     assert 'face="32"' in cdxml
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_reaction_payload_defaults(mock_resolve):
     mock_resolve.side_effect = [("CC", _make_mol("CC")), ("C=C", _make_mol("C=C"))]
     result = generate_reaction(reactants=["Ethan"], products=["Ethen"])
@@ -109,18 +109,18 @@ def test_reaction_payload_defaults(mock_resolve):
 def test_generate_reaction_rejects_unknown_arrow():
     """Das Literal steht im Schema; der Aufruf über den MCP-Weg prüft es.
     Direktaufruf: spätestens der Renderer lehnt ab, bevor Dateien entstehen."""
-    with patch("chemdraw_tool.server.resolve") as mock_resolve:
+    with patch("chempane.server.resolve") as mock_resolve:
         mock_resolve.side_effect = [("CC", _make_mol("CC")), ("C=C", _make_mol("C=C"))]
         with pytest.raises(ValueError, match="arrow"):
             generate_reaction(reactants=["Ethan"], products=["Ethen"], arrow="resonance")
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_default_filename_unchanged_and_new_options_get_their_own(mock_resolve, tmp_path):
     """Ohne Titel: Standardwerte behalten den bisherigen Dateinamen (der
     Fingerabdruck läuft nur über die alten Eingaben), ein anderer Pfeil oder
     Untertext ergibt eine eigene Datei statt die vorige zu überschreiben."""
-    from chemdraw_tool.server import _default_slug
+    from chempane.server import _default_slug
 
     def run(**kw):
         mock_resolve.side_effect = [("CC", _make_mol("CC")), ("C=C", _make_mol("C=C"))]
@@ -138,7 +138,7 @@ def test_default_filename_unchanged_and_new_options_get_their_own(mock_resolve, 
 # --- Etappe 6: Stoffbilanz --------------------------------------------------
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_reaction_payload_carries_balance(mock_resolve):
     mock_resolve.side_effect = _fischer_mols()
     result = generate_reaction(
@@ -152,7 +152,7 @@ def test_reaction_payload_carries_balance(mock_resolve):
     assert "both sides" in result.model_dump_json()
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_balance_ignores_conditions_and_does_not_change_drawing(mock_resolve):
     """Reagenzien im Pfeiltext zählen nicht; der Vorschlag ändert die
     Zeichnung nicht (gleiche SVG-Bytes wie ohne Bilanz-Fall)."""
@@ -170,7 +170,7 @@ def test_balance_ignores_conditions_and_does_not_change_drawing(mock_resolve):
     assert "2 H" not in svg and "suggested" not in svg
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_balance_uses_full_molecules_with_abbreviated_groups(mock_resolve):
     def run(**kw):
         mock_resolve.side_effect = [
@@ -188,7 +188,7 @@ def test_balance_uses_full_molecules_with_abbreviated_groups(mock_resolve):
     assert short.balance == plain.balance
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_placeholder_reaction_still_draws_without_balance(mock_resolve):
     mock_resolve.side_effect = [("*CO", _make_mol("*CO")), ("*C=O", _make_mol("*C=O"))]
     result = generate_reaction(reactants=["*CO"], products=["*C=O"])

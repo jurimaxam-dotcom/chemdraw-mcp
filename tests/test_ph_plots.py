@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/ph_plots.py — Titrationskurven + Speziesverteilung.
+"""Tests für chempane/ph_plots.py — Titrationskurven + Speziesverteilung.
 
 Spec (2026-06-11): Gemeinsame Mathematik (α-Fraktionen über pH, exakte
 Ladungsbilanz statt Näherungsformeln) für zwei Plots im Spektren-Stil:
@@ -14,7 +14,7 @@ Toleranz 0.1 — die Ladungsbilanz ist genauer als die Formeln).
 
 import pytest
 
-from chemdraw_tool.ph_plots import (
+from chempane.ph_plots import (
     alpha_fractions,
     build_species_figure,
     render_species_png,
@@ -144,7 +144,7 @@ def test_species_custom_labels_appear_in_legend():
 def test_speziesverteilung_legende_liegt_ausserhalb_der_kurven():
     """Gesehen in der Panel-Galerie (02.10.2026): die Legende lag in der Achse und
     verdeckte das Ende der A³⁻-Kurve."""
-    from chemdraw_tool.ph_plots import build_species_figure
+    from chempane.ph_plots import build_species_figure
 
     fig = build_species_figure([2.15, 7.2, 12.35], None, "Phosphorsäure")
     fig.canvas.draw()
@@ -159,7 +159,7 @@ def test_pufferpunkte_liegen_auf_der_kurve(pka_values):
     """Desktop-Befund 30.10.2026: bei
     Phosphorsäure saß der dritte Pufferpunkt auf pKa 12.35, die Kurve aber bei
     pH 11.86 — Wasser puffert dort mit. Der Marker muss den exakten pH tragen."""
-    from chemdraw_tool.ph_plots import build_titration_figure, exact_ph
+    from chempane.ph_plots import build_titration_figure, exact_ph
 
     fig = build_titration_figure(pka_values, 0.1, 25.0, 0.1)
     marker = [
@@ -175,7 +175,7 @@ def test_pufferpunkte_liegen_auf_der_kurve(pka_values):
 
 
 def test_pufferpunkt_beschriftung_nennt_abweichung_von_pka():
-    from chemdraw_tool.ph_plots import build_titration_figure
+    from chempane.ph_plots import build_titration_figure
 
     fig = build_titration_figure([2.15, 7.2, 12.35], 0.1, 25.0, 0.1)
     texte = [t.get_text() for t in fig.axes[0].texts]

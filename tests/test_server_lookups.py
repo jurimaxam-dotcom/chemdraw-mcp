@@ -20,7 +20,7 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from chemdraw_tool.server import lookup
+from chempane.server import lookup
 
 
 # Seit dem Bündeln (15.08.2026) gibt es nach außen nur noch `lookup(name, topic)`.
@@ -89,8 +89,8 @@ class _Router:
 def http(routes: dict):
     router = _Router(routes)
     with (
-        patch("chemdraw_tool.databases.requests.get", router),
-        patch("chemdraw_tool.databases.requests.post", router),
+        patch("chempane.databases.requests.get", router),
+        patch("chempane.databases.requests.post", router),
     ):
         yield router
     assert not router.unmatched, f"Unerwartete HTTP-Aufrufe: {router.unmatched}"
@@ -104,8 +104,8 @@ def _no_network():
         raise AssertionError(f"Ungemockter Netz-Aufruf: {url}")
 
     with (
-        patch("chemdraw_tool.databases.requests.get", _blocked),
-        patch("chemdraw_tool.databases.requests.post", _blocked),
+        patch("chempane.databases.requests.get", _blocked),
+        patch("chempane.databases.requests.post", _blocked),
     ):
         yield
 

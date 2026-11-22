@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.image_export import PNG_MAGIC
-from chemdraw_tool.server import generate_tlc
+from chempane.image_export import PNG_MAGIC
+from chempane.server import generate_tlc
 
 ESTER_LANES = [
     {"name": "Edukt", "spots": [{"rf": 0.30, "label": "Säure"}]},
@@ -23,7 +23,7 @@ ESTER_LANES = [
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.TLC_DIR", tmp_path / "dc")
+    monkeypatch.setattr("chempane.server.TLC_DIR", tmp_path / "dc")
     yield tmp_path
 
 

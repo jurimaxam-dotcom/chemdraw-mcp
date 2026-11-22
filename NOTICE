@@ -3,7 +3,7 @@ Copyright 2026 jurimaxam-dotcom
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
-The interactive panel (chemdraw_tool/ui/dist/index.html) bundles third-party
+The interactive panel (chempane/ui/dist/index.html) bundles third-party
 software. Their copyright notices and licence texts are in
 THIRD_PARTY_LICENSES.
 

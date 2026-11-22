@@ -1,10 +1,10 @@
-"""Tests für das IgG1-Schema (chemdraw_tool/igg_scheme.py)."""
+"""Tests für das IgG1-Schema (chempane/igg_scheme.py)."""
 
 from __future__ import annotations
 
 import pytest
 
-from chemdraw_tool.igg_scheme import (
+from chempane.igg_scheme import (
     build_igg_figure,
     render_igg_png,
     render_igg_svg,

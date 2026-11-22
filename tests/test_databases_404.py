@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from chemdraw_tool import databases
+from chempane import databases
 
 
 def _http_error(status: int) -> Mock:
@@ -44,10 +44,10 @@ CALLS = [
 
 @pytest.mark.parametrize("call,verb", CALLS)
 def test_404_is_one_quiet_line_without_traceback(call, verb, caplog):
-    caplog.set_level(logging.DEBUG, logger="chemdraw_tool.databases")
-    with patch(f"chemdraw_tool.databases.requests.{verb}", return_value=_http_error(404)):
+    caplog.set_level(logging.DEBUG, logger="chempane.databases")
+    with patch(f"chempane.databases.requests.{verb}", return_value=_http_error(404)):
         call()
-    records = [r for r in caplog.records if r.name == "chemdraw_tool.databases"]
+    records = [r for r in caplog.records if r.name == "chempane.databases"]
     assert records, "der 404 soll eine Zeile hinterlassen"
     assert all(r.levelno <= logging.INFO for r in records), [r.getMessage() for r in records]
     assert all(r.exc_info is None for r in records)
@@ -59,7 +59,7 @@ def test_server_errors_and_timeouts_stay_visible(call, verb, caplog):
     for failure in (_http_error(503), requests.Timeout("read timed out")):
         caplog.clear()
         kwargs = {"return_value": failure} if isinstance(failure, Mock) else {"side_effect": failure}
-        with patch(f"chemdraw_tool.databases.requests.{verb}", **kwargs):
+        with patch(f"chempane.databases.requests.{verb}", **kwargs):
             call()
         warnings = [r for r in caplog.records if r.levelno >= logging.WARNING]
         assert warnings and warnings[0].exc_info is not None

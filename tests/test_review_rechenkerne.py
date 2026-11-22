@@ -2,9 +2,9 @@
 
 import pytest
 
-from chemdraw_tool import ph_calc, pk, spectro
-from chemdraw_tool import server as s
-from chemdraw_tool.calculator import stats, titration
+from chempane import ph_calc, pk, spectro
+from chempane import server as s
+from chempane.calculator import stats, titration
 
 
 def test_unsorted_pka_list_is_refused_for_the_ph_number_too():

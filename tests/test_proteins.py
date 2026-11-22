@@ -16,7 +16,7 @@ from unittest.mock import Mock
 import pytest
 import requests
 
-from chemdraw_tool import databases
+from chempane import databases
 
 FIXTURES = Path(__file__).parent / "__fixtures__" / "uniprot"
 
@@ -200,8 +200,8 @@ def test_is_antibody_name(name, expected):
 
 # --- Resolver: Protein statt not_found --------------------------------------
 
-from chemdraw_tool import resolver  # noqa: E402
-from chemdraw_tool.resolver import NameResolutionError  # noqa: E402
+from chempane import resolver  # noqa: E402
+from chempane.resolver import NameResolutionError  # noqa: E402
 
 
 def _record(name: str, fixture: str, monkeypatch) -> dict:
@@ -248,7 +248,7 @@ def no_table(monkeypatch):
     Quelle — mit dem Laboreintrag (Huhn, Rind, Hefe) statt des menschlichen.
     Die Tests hier prüfen den UniProt-Weg, der für alle übrigen Namen gilt.
     """
-    from chemdraw_tool import protein_catalog
+    from chempane import protein_catalog
 
     monkeypatch.setattr(protein_catalog, "curated_choice", lambda name: None)
 
@@ -411,7 +411,7 @@ def test_smiles_and_sequences_never_ask_uniprot(cascade, monkeypatch):
 # RDKits Mindestgröße und Ketten überlagern sich; Insulin (404) ist ein
 # Knäuel. Die Grenze liegt in der Lücke: über 200 Schweratome kein Bild.
 
-from chemdraw_tool import server  # noqa: E402
+from chempane import server  # noqa: E402
 
 BIG = json.loads((Path(__file__).parent / "__fixtures__" / "proteins" / "smiles.json").read_text())
 

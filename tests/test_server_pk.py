@@ -5,7 +5,7 @@ Referenz (D=500 mg, F=0,8, Vd=70 L, ke=0,15/h, ka=1,2/h) siehe tests/test_pk.py.
 
 import pytest
 
-from chemdraw_tool.server import calculate_pharmacokinetics as pk_tool
+from chempane.server import calculate_pharmacokinetics as pk_tool
 
 
 def test_half_life_aus_ke_nennt_halbwertszeit_und_clearance():

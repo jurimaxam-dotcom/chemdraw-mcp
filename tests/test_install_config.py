@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.desktop_config import (
+from chempane.desktop_config import (
     build_server_entry,
     install,
     merge_server_config,
@@ -223,14 +223,14 @@ def test_install_refuses_corrupt_config_without_touching_it(tmp_path):
 
 
 def test_exactly_two_connectors_with_fixed_profiles():
-    from chemdraw_tool.desktop_config import CONNECTORS
+    from chempane.desktop_config import CONNECTORS
 
     assert CONNECTORS == {"chemdraw": "mvp", "chemdraw-pharma": "pharma"}
 
 
 def test_connector_profiles_are_profiles_the_server_knows():
-    from chemdraw_tool.desktop_config import CONNECTORS, PROFILES
-    from chemdraw_tool.server import PROFILES as SERVER_PROFILES
+    from chempane.desktop_config import CONNECTORS, PROFILES
+    from chempane.server import PROFILES as SERVER_PROFILES
 
     assert set(CONNECTORS.values()) <= PROFILES == SERVER_PROFILES
 
@@ -275,7 +275,7 @@ def test_build_server_entry_rejects_unknown_profile(tmp_path):
 
 
 def test_build_installed_entry_pins_the_profile(tmp_path):
-    from chemdraw_tool.desktop_config import build_installed_entry
+    from chempane.desktop_config import build_installed_entry
 
     launcher = _fake_uv(tmp_path / "bin")
     entry = build_installed_entry(launcher=str(launcher), profile="full")

@@ -11,7 +11,7 @@ Masse in g, Volumen in mL, Konzentration in mol/L.
 
 import pytest
 
-from chemdraw_tool.solution import (
+from chempane.solution import (
     concentration_from_mass,
     dilution,
     mass_for_solution,

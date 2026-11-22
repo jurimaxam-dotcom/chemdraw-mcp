@@ -9,7 +9,7 @@ unterscheidet Ibuprofen von Naproxen?").
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.image_export import (
+from chempane.image_export import (
     PNG_MAGIC,
     _mcs_diff_highlights,
     render_comparison_png,

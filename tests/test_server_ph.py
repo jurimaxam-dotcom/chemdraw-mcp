@@ -2,7 +2,7 @@
 
 import pytest
 
-from chemdraw_tool.server import calculate_ph
+from chempane.server import calculate_ph
 
 
 def test_weak_acid_gives_the_ph_and_both_routes():

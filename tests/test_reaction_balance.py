@@ -7,7 +7,7 @@ Koeffizienten vorschlagen. Die Zeichnung selbst ändert sich nie.
 
 from rdkit import Chem
 
-from chemdraw_tool.reaction_balance import (
+from chempane.reaction_balance import (
     check_balance,
     element_counts,
     suggest_coefficients,

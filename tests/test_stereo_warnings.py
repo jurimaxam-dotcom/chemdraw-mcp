@@ -15,9 +15,9 @@ import pytest
 from mcp import Client
 from rdkit import Chem
 
-from chemdraw_tool import server as srv
-from chemdraw_tool.generator import find_unspecified_stereo, generate_2d, stereo_note
-from chemdraw_tool.payloads import DatabasePayload, MoleculePayload
+from chempane import server as srv
+from chempane.generator import find_unspecified_stereo, generate_2d, stereo_note
+from chempane.payloads import DatabasePayload, MoleculePayload
 
 IBUPROFEN = "CC(C)Cc1ccc(cc1)C(C)C(=O)O"
 ASPIRIN = "CC(=O)Oc1ccccc1C(=O)O"
@@ -135,7 +135,7 @@ def test_batch_generate_carries_warnings_per_molecule():
     assert by_name[ASPIRIN].stereoWarnings == []
 
 
-@patch("chemdraw_tool.server.pubchem_ghs", return_value={"status": "empty", "record_title": "", "sources": []})
+@patch("chempane.server.pubchem_ghs", return_value={"status": "empty", "record_title": "", "sources": []})
 def test_lookup_molecule_data_carries_the_same_warnings(_safety):
     payload = srv.lookup_molecule_data(IBUPROFEN)
     assert isinstance(payload, DatabasePayload)
@@ -214,7 +214,7 @@ def test_real_open_double_bonds_are_still_reported(smiles):
 
 
 def test_stereo_variants_skip_the_guanidine():
-    from chemdraw_tool.generator import stereo_variants
+    from chempane.generator import stereo_variants
 
     variants = stereo_variants(Chem.MolFromSmiles("CC(F)CCNC(=N)N"))
     assert len(variants) == 2

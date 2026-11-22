@@ -6,8 +6,8 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.mechanism import CurvedArrow, MechanismStep
-from chemdraw_tool.mechanism_renderer import render_step_svg
+from chempane.mechanism import CurvedArrow, MechanismStep
+from chempane.mechanism_renderer import render_step_svg
 
 
 def _make_mol(smiles: str) -> Chem.Mol:
@@ -100,7 +100,7 @@ def test_bindungslaenge_in_pixeln_ist_in_allen_schritten_gleich():
     """Galerie 02.10.2026: RDKit passte jeden Schritt in dieselbe Leinwand ein — das
     dreiteilige Produkt-Bild (HO–CH3 + Br⁻ weit daneben) bekam winzige Atome, der
     Einzelschritt riesige. Gleiche Bindungslänge macht die Overview-Kacheln vergleichbar."""
-    from chemdraw_tool.mechanism_renderer import _render_mols_svg
+    from chempane.mechanism_renderer import _render_mols_svg
 
     def px(smiles_list, a, b):
         mols = [_make_mol(s) for s in smiles_list]
@@ -116,9 +116,9 @@ def test_bindungslaenge_in_pixeln_ist_in_allen_schritten_gleich():
 def test_teilbindung_endet_vor_den_atombeschriftungen():
     """Galerie 02.10.2026: die gestrichelte Teilbindung lief mitten durch „O⁻“, „CH₃“ und „Br⁻“.
     Läuft über die echte Pipeline (SN2-Vorlage → stabilize_sequence), nicht über ein Handmolekül."""
-    from chemdraw_tool.mechanism_coords import stabilize_sequence
-    from chemdraw_tool.mechanism_renderer import _render_mols_svg
-    from chemdraw_tool.templates import get_template
+    from chempane.mechanism_coords import stabilize_sequence
+    from chempane.mechanism_renderer import _render_mols_svg
+    from chempane.templates import get_template
 
     template = get_template("sn2")
     stabil = stabilize_sequence([s.molecules for s in template.steps], gaps=[s.mol_gap for s in template.steps])
@@ -136,7 +136,7 @@ def test_teilbindung_endet_vor_den_atombeschriftungen():
 def test_unify_frames_gibt_allen_schritten_dieselbe_viewbox():
     """Fischer-Schritt 3 wirkte kleiner als Schritt 2: gleiche Bindungslänge in viewBox-Einheiten,
     aber breitere viewBox — wer jedes Bild auf dieselbe Breite zieht, verkleinert ihn."""
-    from chemdraw_tool.mechanism_renderer import unify_frames
+    from chempane.mechanism_renderer import unify_frames
 
     schmal = render_step_svg(MechanismStep(label="a", molecules=[], arrows=[]), [_make_mol("[CH3:1][Br:2]")])
     breit = render_step_svg(
@@ -149,7 +149,7 @@ def test_unify_frames_gibt_allen_schritten_dieselbe_viewbox():
 
 def test_beschriftungsboxen_kommen_aus_den_glyphenpfaden():
     """Pfeilenden richten sich nach der echten Beschriftung: „HO“ ist breiter als „O“."""
-    from chemdraw_tool.mechanism_renderer import geometry_of
+    from chempane.mechanism_renderer import geometry_of
 
     svg = render_step_svg(MechanismStep(label="a", molecules=[], arrows=[]), [_make_mol("[CH3:1][OH:2]")])
     geo = geometry_of(svg)
@@ -162,8 +162,8 @@ def test_pfeil_kann_auf_eine_bindung_zeigen():
     Spitze gehört an die Mitte der entstehenden Bindung, nicht an ein Atom (Design (g)3)."""
     import math
 
-    from chemdraw_tool.mechanism import CurvedArrow
-    from chemdraw_tool.mechanism_renderer import geometry_of
+    from chempane.mechanism import CurvedArrow
+    from chempane.mechanism_renderer import geometry_of
 
     step = MechanismStep(label="a", molecules=[], arrows=[
         CurvedArrow(source=(2, "lone_pair"), target=(1, "bond_to", 2), style="full"),
@@ -186,7 +186,7 @@ def _viewbox_width(svg: str) -> float:
 def test_lange_kette_wird_als_summenformel_abgekuerzt():
     """Stearinsäure: die C₁₇-Kette bestimmte den Rahmen, das Reaktionszentrum wurde bei 420 px winzig.
     Gekürzt nur im Bild — die Schritt-SMILES behalten alle Atome (Buchführung, Lehrbuchtests)."""
-    from chemdraw_tool.mechanism_renderer import abbreviate_chains
+    from chempane.mechanism_renderer import abbreviate_chains
 
     mol = Chem.RWMol(Chem.MolFromSmiles("CCCCCCCCCCCCCCCCCC(=O)O"))
     AllChem.Compute2DCoords(mol)
@@ -204,7 +204,7 @@ def test_lange_kette_wird_als_summenformel_abgekuerzt():
     ("CCCCCCCCCCCC", 12),  # dito lang: vorher kürzten beide Enden einander weg, null Atome blieben
 ])
 def test_kurze_verzweigte_und_ringketten_bleiben(smiles, atome):
-    from chemdraw_tool.mechanism_renderer import abbreviate_chains
+    from chempane.mechanism_renderer import abbreviate_chains
 
     mol = Chem.RWMol(Chem.MolFromSmiles(smiles))
     AllChem.Compute2DCoords(mol)
@@ -213,7 +213,7 @@ def test_kurze_verzweigte_und_ringketten_bleiben(smiles, atome):
 
 
 def test_stearinsaeure_bekommt_den_rahmen_einer_kurzen_saeure():
-    from chemdraw_tool.server import generate_mechanism
+    from chempane.server import generate_mechanism
 
     kurz = generate_mechanism("fischer_ester", ["CC(=O)O", "CO"]).steps[0].svg
     lang = generate_mechanism("fischer_ester", ["CCCCCCCCCCCCCCCCCC(=O)O", "CO"]).steps[0].svg
@@ -223,7 +223,7 @@ def test_stearinsaeure_bekommt_den_rahmen_einer_kurzen_saeure():
 def test_abkuerzung_behaelt_den_cip_deskriptor():
     """(R)-2-Bromoctan → (S)-Octan-2-ol [OS-11.2]: nach dem Kürzen sieht die Hexylkette aus wie ein
     Methyl — der Deskriptor muss am vollen Molekül bestimmt sein, nicht am gekürzten."""
-    from chemdraw_tool.server import generate_mechanism
+    from chempane.server import generate_mechanism
 
     p = generate_mechanism("sn2", ["CCCCCC[C@@H](C)Br", "[OH-]"])
     assert "CIP_Code" in p.steps[0].svg and "CIP_Code" in p.steps[-1].svg
@@ -233,8 +233,8 @@ def test_abkuerzung_behaelt_den_cip_deskriptor():
 def test_primaeres_zentrum_im_uebergangszustand_ist_beschriftet():
     """Gutachter E2: beim primären Substrat endeten beide Teilbindungen vor einem unbeschrifteten
     Strichende — das Zentrum muss als CH₂ dastehen wie das sekundäre als CH."""
-    from chemdraw_tool.mechanism_renderer import geometry_of
-    from chemdraw_tool.server import generate_mechanism
+    from chempane.mechanism_renderer import geometry_of
+    from chempane.server import generate_mechanism
 
     ts = generate_mechanism("sn2", ["CCBr", "[I-]"]).steps[1]
     assert "1" in geometry_of(ts.svg)["boxes"], "Zentrum C (Map 1) ohne Beschriftung"
@@ -245,9 +245,9 @@ def test_kaefig_stereozentren_zeichnen_ohne_range_error():
     Ringverknüpfungs-Stereozentren, deren Indizes hinter dem letzten Atom liegen. Der Renderer
     griff damit ins Leere (Range Error), der Server fiel aufs Lehrbuchbeispiel zurück (12.11.2026).
     """
-    from chemdraw_tool import mechanism_coords
-    from chemdraw_tool.mechanism_renderer import render_step_svg
-    from chemdraw_tool.mechanism_substrate import build_steps
+    from chempane import mechanism_coords
+    from chempane.mechanism_renderer import render_step_svg
+    from chempane.mechanism_substrate import build_steps
 
     morphin = "C1=CC(O)=C2C=3[C@@]45[C@@H](O2)[C@@H](O)C=C[C@H]4[C@@H](CC13)N(C)CC5"
     steps = build_steps("fischer_ester", ["CC(=O)O", morphin])

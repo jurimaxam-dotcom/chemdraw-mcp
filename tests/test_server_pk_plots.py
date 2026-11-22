@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool import pk, pk_plots
-from chemdraw_tool.server import generate_dose_response, generate_pk_curve
+from chempane import pk, pk_plots
+from chempane.server import generate_dose_response, generate_pk_curve
 
 
 def test_pk_curve_schreibt_dateien_und_payload(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     p = generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, ka_per_h=1.2, bioavailability=0.8, drug="Ibuprofen")
     assert p.type == "plot"
     assert p.name == "Ibuprofen"
@@ -19,14 +19,14 @@ def test_pk_curve_schreibt_dateien_und_payload(tmp_path, monkeypatch):
 
 
 def test_pk_curve_mehrfachgabe_nennt_steady_state_in_den_notizen(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     p = generate_pk_curve(dose_mg=500, vd_l=70, half_life_h=4.62, tau_h=8)
     joined = " ".join(p.notes)
     assert "Css,av" in joined and "R = 1.43" in joined
 
 
 def test_pk_curve_widerspruch_wird_benannt(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     with pytest.raises(ValueError, match="contradict"):
         generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, clearance_l_per_h=20)
 
@@ -46,7 +46,7 @@ def test_pk_figure_legende_ausserhalb_der_achse():
 
 
 def test_dose_response_schreibt_dateien_und_payload(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     p = generate_dose_response(ec50=10, unit="nM", antagonist_concentration=20, antagonist_kb=10, drug="Agonist A")
     assert p.type == "plot"
     assert "<svg" in p.svg
@@ -56,7 +56,7 @@ def test_dose_response_schreibt_dateien_und_payload(tmp_path, monkeypatch):
 
 
 def test_dose_response_antagonist_braucht_beide_angaben(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     with pytest.raises(ValueError, match="antagonist_kb"):
         generate_dose_response(ec50=10, antagonist_concentration=20)
 
@@ -71,7 +71,7 @@ def test_dose_response_figure_kurve_geht_bei_ec50_durch_die_haelfte():
 def test_ohne_namen_ueberschreiben_sich_verschiedene_kurven_nicht(tmp_path, monkeypatch):
     """Desktop-Chat 03.10.2026: ohne `drug` hieß jede Datei pk-pharmacokinetics.png — die nächste
     Kurve überschrieb die vorige."""
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     a = generate_pk_curve(dose_mg=500, vd_l=70, ke_per_h=0.15, ka_per_h=1.2, tau_h=8)
     b = generate_pk_curve(dose_mg=250, vd_l=70, ke_per_h=0.15)
     assert a.files["png"] != b.files["png"]
@@ -81,7 +81,7 @@ def test_ohne_namen_ueberschreiben_sich_verschiedene_kurven_nicht(tmp_path, monk
 
 
 def test_dose_response_ohne_namen_ueberschreibt_nicht(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     a = generate_dose_response(ec50=10)
     b = generate_dose_response(ec50=10, antagonist_concentration=20, antagonist_kb=10)
     c = generate_dose_response(ec50=50)

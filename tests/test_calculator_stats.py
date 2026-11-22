@@ -2,7 +2,7 @@
 
 import pytest
 
-from chemdraw_tool.calculator.stats import (
+from chempane.calculator.stats import (
     descriptive_stats,
     f_test,
     one_sample_t_test,

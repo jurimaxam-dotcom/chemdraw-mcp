@@ -2,14 +2,14 @@
 
 import pytest
 
-from chemdraw_tool.mechanism import (
+from chempane.mechanism import (
     CurvedArrow,
     MechanismStep,
     MechanismTemplate,
     validate_substrates,
 )
-from chemdraw_tool.payloads import MechanismPayload, MechanismStepPayload
-from chemdraw_tool.templates import get_template, list_templates
+from chempane.payloads import MechanismPayload, MechanismStepPayload
+from chempane.templates import get_template, list_templates
 
 
 def test_mechanism_step_payload_defaults():
@@ -162,7 +162,7 @@ def test_validate_substrates_invalid_nucleophile_pattern_raises():
 def test_template_labels_are_english():
     """Sichtbare UI-Strings (Step-Labels, Template-Namen) sind englisch —
     internationales Tool; exakt geprüft am SN2, Marker-Check für den Rest."""
-    from chemdraw_tool.templates import get_template, list_templates
+    from chempane.templates import get_template, list_templates
 
     sn2 = get_template("sn2")
     assert sn2.name == "Nucleophilic Substitution (SN2)"

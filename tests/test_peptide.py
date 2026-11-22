@@ -1,7 +1,7 @@
 """Frei zusammengesetzte Peptide (E4, 09.11.2026).
 
 PubChem kennt "Ala-Trp-Lys-Ser-Gly" nicht — vorher not_found. Jetzt baut
-`chemdraw_tool.peptide` die Kette offline über RDKits HELM-Leser. Alles hier
+`chempane.peptide` die Kette offline über RDKits HELM-Leser. Alles hier
 läuft ohne Netz: die Kaskaden-Quellen werfen, wenn sie gefragt werden.
 
 Referenz-InChIKeys stammen NICHT aus dem Code unter Test: entweder aus
@@ -12,9 +12,9 @@ oder aus `Chem.MolFromSequence`/handgeschriebenem SMILES.
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool import peptide, resolver
-from chemdraw_tool.generator import generate_2d, is_linear_peptide
-from chemdraw_tool.resolver import NameResolutionError, resolve
+from chempane import peptide, resolver
+from chempane.generator import generate_2d, is_linear_peptide
+from chempane.resolver import NameResolutionError, resolve
 
 
 def _key(smiles_or_mol) -> str:
@@ -414,7 +414,7 @@ def test_display_name_of_a_one_letter_peptide(query, shown):
 
 
 def test_legend_and_file_name_without_the_prefix(tmp_path, monkeypatch):
-    from chemdraw_tool import server
+    from chempane import server
 
     for const in [k for k in dir(server) if k.endswith("_DIR")]:
         monkeypatch.setattr(server, const, tmp_path / const)

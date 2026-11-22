@@ -56,10 +56,10 @@ uv run python scripts/install_claude_config.py \
 # --- 4. Smoke-Test -----------------------------------------------------------
 echo ""
 echo "→ Smoke test (server import) …"
-if uv run python -c "import chemdraw_tool.server" 2>/dev/null; then
+if uv run python -c "import chempane.server" 2>/dev/null; then
   echo "✓ Server imports cleanly."
 else
-  echo "✗ Server import failed — check with 'uv run python -c \"import chemdraw_tool.server\"'."
+  echo "✗ Server import failed — check with 'uv run python -c \"import chempane.server\"'."
   exit 1
 fi
 

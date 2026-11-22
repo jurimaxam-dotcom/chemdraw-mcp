@@ -23,8 +23,8 @@ import pytest
 import requests
 from rdkit import Chem
 
-from chemdraw_tool import resolver
-from chemdraw_tool import server as srv
+from chempane import resolver
+from chempane import server as srv
 
 # Beim Import festgehalten, bevor die autouse-Attrappen aus conftest greifen:
 # genau diese Wege (UniProt-Nachfrage, NCI-Session) soll der Abfang sehen.
@@ -341,18 +341,18 @@ def test_server_log_vermerkt_den_zustand_beim_start(monkeypatch, caplog):
     monkeypatch.setattr(srv, "_configure_logging", lambda log_dir: None)
     monkeypatch.setattr(srv.mcp, "run", lambda **kw: None)
     monkeypatch.delenv(_ENV, raising=False)
-    with caplog.at_level(logging.INFO, logger="chemdraw_tool.server"):
+    with caplog.at_level(logging.INFO, logger="chempane.server"):
         srv.main()
     assert "SMILES lookup: off" in caplog.text
     caplog.clear()
     monkeypatch.setenv(_ENV, "true")
-    with caplog.at_level(logging.INFO, logger="chemdraw_tool.server"):
+    with caplog.at_level(logging.INFO, logger="chempane.server"):
         srv.main()
     assert "SMILES lookup: on" in caplog.text
 
 
 def test_doctor_zeigt_den_zustand(monkeypatch):
-    from chemdraw_tool import doctor
+    from chempane import doctor
 
     assert doctor.check_smiles_lookup in doctor.DEFAULT_CHECKS
     monkeypatch.delenv(_ENV, raising=False)
@@ -375,7 +375,7 @@ _ROOT = Path(__file__).resolve().parents[1]
 
 @pytest.mark.parametrize("datei", ["docs/tools.md", "README.md"])
 def test_doku_nennt_schalter_und_datenweg(datei):
-    from chemdraw_tool.privacy import SETTING_TITLE
+    from chempane.privacy import SETTING_TITLE
 
     text = (_ROOT / datei).read_text(encoding="utf-8")
     assert "What leaves your machine" in text
@@ -389,7 +389,7 @@ def test_doku_nennt_schalter_und_datenweg(datei):
 def test_alter_schalter_ist_ueberall_weg():
     treffer = [
         str(p.relative_to(_ROOT))
-        for p in [*(_ROOT / "chemdraw_tool").rglob("*.py"), _ROOT / "docs" / "tools.md",
+        for p in [*(_ROOT / "chempane").rglob("*.py"), _ROOT / "docs" / "tools.md",
                   _ROOT / "README.md", _ROOT / "mcpb" / "manifest.json"]
         if "CHEMDRAW_NO_SMILES_UPLOAD" in p.read_text(encoding="utf-8")
     ]

@@ -59,7 +59,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.patches import FancyBboxPatch  # noqa: E402
 
-import chemdraw_tool.server as s  # noqa: E402
+import chempane.server as s  # noqa: E402
 
 ASSETS = ROOT / "assets"
 DPI = 100
@@ -371,7 +371,7 @@ def _datasheet():
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
-    from chemdraw_tool import databases
+    from chempane import databases
 
     mol = Chem.MolFromSmiles(CAFFEINE)
     AllChem.Compute2DCoords(mol)

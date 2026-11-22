@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from chemdraw_tool import resolver
-from chemdraw_tool.resolver import NameResolutionError, resolve, resolve_name
+from chempane import resolver
+from chempane.resolver import NameResolutionError, resolve, resolve_name
 
 METHYLDOPA = "C[C@](CC1=CC(=C(C=C1)O)O)(C(=O)O)N"
 OPSIN_FEHLGRIFF = "CN[C@H](C(=O)O)CC1=CC=C(O)C(O)=C1"  # N-Methyl-DOPA
@@ -33,17 +33,17 @@ def test_answer_from_an_outage_is_not_kept_once_the_network_is_back():
     Desktop-Prozess lebt tagelang und zeichnete den falschen Stoff weiter.
     """
     with patch.object(resolver, "_opsin_lookup", return_value=OPSIN_FEHLGRIFF):
-        with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.get",
                    side_effect=requests.exceptions.ConnectionError("down")):
             assert resolve_name("methyldopa") == OPSIN_FEHLGRIFF
-        with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.get",
                    return_value=_pubchem_answer(METHYLDOPA)):
             assert resolve_name("methyldopa") == METHYLDOPA
 
 
 def test_confirmed_answer_is_still_cached():
     with patch.object(resolver, "_opsin_lookup", return_value=None):
-        with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.get",
                    return_value=_pubchem_answer(METHYLDOPA)) as get:
             resolve_name("methyldopa")
             calls = get.call_count
@@ -67,7 +67,7 @@ def test_empty_input_is_not_a_molecule(text):
 
 def test_trailing_newline_does_not_change_the_lookup():
     with patch.object(resolver, "_opsin_lookup", return_value=None):
-        with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.get",
                    return_value=_pubchem_answer("CC(=O)OC1=CC=CC=C1C(=O)O")) as get:
             resolve("aspirin\n")
     assert "aspirin%0A" not in get.call_args_list[0].args[0]
@@ -80,7 +80,7 @@ def test_rejected_input_is_not_reported_as_an_outage(code):
     resp = Mock(status_code=code, text="")
     resp.raise_for_status.side_effect = requests.exceptions.HTTPError(response=resp)
     with patch.object(resolver, "_opsin_lookup", return_value=None):
-        with patch("chemdraw_tool.resolver.requests.get", return_value=resp):
+        with patch("chempane.resolver.requests.get", return_value=resp):
             with pytest.raises(NameResolutionError) as err:
                 resolve_name("Xyzzolin-..")
     assert err.value.kind == "not_found"
@@ -105,7 +105,7 @@ def test_nci_is_asked_over_ipv4_first():
 def test_nci_falls_back_to_the_default_route_without_ipv4():
     with patch.object(requests.Session, "get",
                       side_effect=requests.exceptions.ConnectionError("no ipv4")):
-        with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.get",
                    return_value=Mock(status_code=200, text="CCO")) as get:
             assert resolver._nci_get("https://cactus.nci.nih.gov/x").text == "CCO"
     assert get.call_count == 1
@@ -115,8 +115,8 @@ def test_name_with_a_slash_is_sent_as_post_body():
     """`(+/-)-ibuprofen`: als `%2F` im GET-Pfad antwortet PubChem 404, per POST trifft es."""
     answer = _pubchem_answer("CC(C)CC1=CC=C(C=C1)C(C)C(=O)O")
     with patch.object(resolver, "_opsin_lookup", return_value=None):
-        with patch("chemdraw_tool.resolver.requests.post", return_value=answer) as post:
-            with patch("chemdraw_tool.resolver.requests.get",
+        with patch("chempane.resolver.requests.post", return_value=answer) as post:
+            with patch("chempane.resolver.requests.get",
                        side_effect=AssertionError("GET darf hier nicht laufen")):
                 assert resolver._pubchem_lookup("(+/-)-ibuprofen") == "CC(C)CC1=CC=C(C=C1)C(C)C(=O)O"
     assert post.call_args.kwargs["data"] == {"name": "(+/-)-ibuprofen"}
@@ -124,7 +124,7 @@ def test_name_with_a_slash_is_sent_as_post_body():
 
 
 def test_one_empty_pubchem_value_does_not_drop_the_other_properties():
-    from chemdraw_tool.databases import _walk_sections
+    from chempane.databases import _walk_sections
 
     section = {"Information": [
         {"Name": "Melting Point", "Value": {"StringWithMarkup": [{"String": "135 °C"}]}},
@@ -138,7 +138,7 @@ def test_one_empty_pubchem_value_does_not_drop_the_other_properties():
 
 
 def test_vault_survives_a_non_utf8_note_and_an_empty_name(tmp_path, monkeypatch):
-    from chemdraw_tool import vault
+    from chempane import vault
 
     (tmp_path / "Coffein.md").write_text("Coffein ist ok", encoding="utf-8")
     (tmp_path / "Alt.md").write_bytes("Säure ok".encode("latin-1"))
@@ -154,7 +154,7 @@ def test_nci_timeout_is_not_paid_twice():
     noch einmal dasselbe Timeout abwarten (und davor das der toten IPv6-Adresse)."""
     with patch.object(requests.Session, "get",
                       side_effect=requests.exceptions.ConnectTimeout("langsam")):
-        with patch("chemdraw_tool.resolver.requests.get") as get:
+        with patch("chempane.resolver.requests.get") as get:
             with pytest.raises(requests.exceptions.Timeout):
                 resolver._nci_get("https://cactus.nci.nih.gov/x")
     assert get.call_count == 0

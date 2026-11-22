@@ -16,9 +16,9 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
-from chemdraw_tool import resolver
-from chemdraw_tool.generator import coordination_drawing, generate_2d
-from chemdraw_tool.resolver import resolve
+from chempane import resolver
+from chempane.generator import coordination_drawing, generate_2d
+from chempane.resolver import resolve
 
 
 @pytest.fixture(autouse=True)

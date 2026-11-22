@@ -12,9 +12,9 @@ import re
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.render_style import condense_groups
-from chemdraw_tool.svg_renderer import render_reaction_entry, render_svg
+from chempane.generator import generate_2d
+from chempane.render_style import condense_groups
+from chempane.svg_renderer import render_reaction_entry, render_svg
 
 
 def _outside(svg: str) -> list[tuple[float, float]]:

@@ -4,10 +4,10 @@ import math
 
 import pytest
 
-from chemdraw_tool import ph_calc
-from chemdraw_tool.ph_core import exact_ph
-from chemdraw_tool.ph_plots import titration_curve
-from chemdraw_tool.server import calculate_ph
+from chempane import ph_calc
+from chempane.ph_core import exact_ph
+from chempane.ph_plots import titration_curve
+from chempane.server import calculate_ph
 
 
 @pytest.mark.parametrize("concentration,pka", [(5.0, 0.5), (10.0, -1.0)])

@@ -16,10 +16,10 @@ uv run chemdraw-tool-server  # run the MCP server (stdio) manually
 uv run chemdraw-doctor       # diagnose the installation (env, paths, network)
 ```
 
-`install.sh` registers the server via `chemdraw_tool/desktop_config.py`
+`install.sh` registers the server via `chempane/desktop_config.py`
 (idempotent merge, writes a `.bak` backup, never touches other configured MCP
 servers). The config logic lives in the package, not in `scripts/`, because the
-wheel ships only `chemdraw_tool` — PyPI users get `chemdraw-install` and a fully
+wheel ships only `chempane` — PyPI users get `chemdraw-install` and a fully
 working `chemdraw-doctor` from it. Claude Desktop launches MCP servers with a
 minimal GUI PATH, so `command` must be an absolute path; the installer resolves
 it and prints what it wrote.
@@ -33,15 +33,15 @@ app "Claude"' && sleep 2 && open -a Claude`); an MCP stdio handshake
 
 ## Verification workflow
 
-1. **While editing:** `npm --prefix chemdraw_tool/ui run test:ui:watch`, and for the panel
-   `npm --prefix chemdraw_tool/ui run build:watch` — `chem_app_ui()` reads `dist/` on every `resources/read`,
+1. **While editing:** `npm --prefix chempane/ui run test:ui:watch`, and for the panel
+   `npm --prefix chempane/ui run build:watch` — `chem_app_ui()` reads `dist/` on every `resources/read`,
    so a host that re-reads the resource gets the new panel without a server restart (whether Desktop re-reads
    or caches is unmeasured). A watch rebuild is **not** byte-identical
    to a clean build (measured: 3,000.67 vs 2,996.67 kB for the same source): stop the watch and run
-   `npm --prefix chemdraw_tool/ui run build` before committing, or the gate goes red on the bundle.
+   `npm --prefix chempane/ui run build` before committing, or the gate goes red on the bundle.
 2. **Before every commit:** `./test.sh`.
 3. **After a panel or tool change:** `test:host`, `./scripts/handshake.sh`, and
-   `npm --prefix chemdraw_tool/ui run test:inspector` — every panel tool rendered by a host we did not write
+   `npm --prefix chempane/ui run test:inspector` — every panel tool rendered by a host we did not write
    (MCP Inspector 2.15.0 web, deep link, real server over HTTP via `scripts/dev_http.py`).
 4. **Before a release, scripted:** `uv run python evals/tool-routing/run_claude.py --echt` (Claude Code calls
    the real server once per panel tool: tool call, error-free result, no denied call) and the stub run of the
@@ -67,13 +67,13 @@ server writes files and has a destructive tool, so HTTP without auth is not a pr
 
 ```bash
 ./test.sh                                     # lint + backend + bundle + frontend
-npm --prefix chemdraw_tool/ui run test:watch  # JS unit tests in watch mode
+npm --prefix chempane/ui run test:watch  # JS unit tests in watch mode
 ./scripts/handshake.sh                        # real stdio handshake (needs network)
-npm --prefix chemdraw_tool/ui run test:host   # panel in a sandboxed iframe behind a real AppBridge host + real server (needs network)
+npm --prefix chempane/ui run test:host   # panel in a sandboxed iframe behind a real AppBridge host + real server (needs network)
 uv run python scripts/identitaet.py           # name → right molecule (needs network)
 ```
 
-One-time frontend setup: `cd chemdraw_tool/ui && npm install && npx playwright install chromium`
+One-time frontend setup: `cd chempane/ui && npm install && npx playwright install chromium`
 
 `handshake.sh` sits **outside** the gate because its first run downloads the MCP
 Inspector. It is the only check that starts the server the way Claude Desktop
@@ -89,7 +89,7 @@ failure:
   instead of checking that the cache folder exists (an existing folder with the
   wrong build killed the gate with the very stacktrace the guard exists to
   prevent). Playwright is pinned to one exact version on both sides.
-- **false green** — the server serves `chemdraw_tool/ui/dist/`, not `src/`, so
+- **false green** — the server serves `chempane/ui/dist/`, not `src/`, so
   the gate rebuilds the bundle and compares bytes. `package-lock.json` is
   versioned to keep that comparison deterministic across machines.
 
@@ -108,7 +108,7 @@ regenerated to make a diff disappear**:
   get — look at before/after, then bless deliberately with `UPDATE_LAYOUT=1`
   in the commit that moves the version.
   Playwright's double pin is test-enforced too (`tests/test_dependency_pins.py`).
-- `chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
+- `chempane/ui/src/utils/__fixtures__/aspirin.expected.png` — the JS
   rasterization, machine-specific, `npm run test:e2e:update` once per machine.
 
 `identitaet.py` is the same idea one step earlier, and it is the only check
@@ -200,7 +200,7 @@ run needs an API key — see `evals/README.md`.
 ## Architecture
 
 ```
-chemdraw_tool/
+chempane/
 ├── resolver.py            — parse-first (SMILES wins if it parses: "O" is water,
 │                            not O₂), then a 5-step name cascade: OPSIN (offline,
 │                            needs Java; degrades gracefully) → PubChem →
@@ -334,7 +334,7 @@ also after a server restart; if the block is gone the panel names the written fi
 Tests redirect `result_budget.STORE_DIR` (autouse fixture in `tests/conftest.py`). `tests/test_result_size.py` holds every panel tool plus large cases under 120,000 and
 proves the reassembled payload equals the original; `test:host` runs a 20-molecule batch without
 `structuredContent` and Vancomycin through the real server. A view that calls a panel tool must use
-`loadToolData`, never `extractToolData` alone. `chemdraw_tool/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile
+`loadToolData`, never `extractToolData` alone. `chempane/prompts.py` holds four study prompts; they may name only tools of the `mvp` profile
 (`tests/test_prompts.py`).
 
 A component test for an async panel path is worthless outside `act()`: the
@@ -343,7 +343,7 @@ follow-up render never flushes and the test passes while the bug is live.
 wrapped too.
 
 Test output paths are redirected with `monkeypatch.setattr` against
-`chemdraw_tool.server.<DIR>`. `tests/conftest.py` compares the real
+`chempane.server.<DIR>`. `tests/conftest.py` compares the real
 `~/ChemDraw-Output` before and after the suite, so a redirect that points
 nowhere fails loudly instead of quietly writing into the user's folder.
 

@@ -10,7 +10,7 @@ import copy
 
 import pytest
 
-from chemdraw_tool import server as s
+from chempane import server as s
 from tests.test_server_calibration import SIGNALS, STANDARDS
 from tests.test_server_scope import ENTRIES
 from tests.test_server_spectrum import IR_PEAKS
@@ -60,8 +60,8 @@ def _datei(payload) -> str:
 @pytest.mark.parametrize("fall", sorted(FAELLE))
 def test_verschiedene_eingaben_ohne_titel_ueberschreiben_sich_nicht(fall, tmp_path, monkeypatch):
     verzeichnis, a, b = FAELLE[fall]
-    monkeypatch.setattr(f"chemdraw_tool.server.{verzeichnis}", tmp_path / "out")
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr(f"chempane.server.{verzeichnis}", tmp_path / "out")
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
     erste, zweite = _datei(a()), _datei(b())
     assert erste != zweite, f"{fall}: zwei verschiedene Eingaben schreiben dieselbe Datei {erste}"
 
@@ -69,8 +69,8 @@ def test_verschiedene_eingaben_ohne_titel_ueberschreiben_sich_nicht(fall, tmp_pa
 @pytest.mark.parametrize("fall", sorted(FAELLE))
 def test_gleiche_eingaben_ohne_titel_geben_dieselbe_datei(fall, tmp_path, monkeypatch):
     verzeichnis, a, _ = FAELLE[fall]
-    monkeypatch.setattr(f"chemdraw_tool.server.{verzeichnis}", tmp_path / "out")
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr(f"chempane.server.{verzeichnis}", tmp_path / "out")
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
     assert _datei(a()) == _datei(a())
 
 
@@ -83,6 +83,6 @@ def test_mit_titel_bleibt_der_name_lesbar_und_unveraendert(fall, tmp_path, monke
         "spectrum": lambda: s.generate_spectrum("ir", IR_PEAKS, title="Aspirin"),
     }[fall]
     verzeichnis = FAELLE[fall][0]
-    monkeypatch.setattr(f"chemdraw_tool.server.{verzeichnis}", tmp_path / "out")
+    monkeypatch.setattr(f"chempane.server.{verzeichnis}", tmp_path / "out")
     name = _datei(kwargs()).rsplit("/", 1)[1]
     assert name.split(".")[0] in {"veresterung", "suzuki-scope", "aspirin"}

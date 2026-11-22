@@ -7,14 +7,14 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.server import (
+from chempane.server import (
     generate_species_distribution,
     generate_titration_curve,
 )
 
 
 def test_titration_tool_writes_files_and_payload(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     payload = generate_titration_curve(
         substance="Acetic acid with NaOH",
         pka_values=[4.76],
@@ -32,7 +32,7 @@ def test_titration_tool_writes_files_and_payload(tmp_path, monkeypatch):
 
 
 def test_species_tool_writes_files_and_payload(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     payload = generate_species_distribution(
         substance="Phosphoric acid",
         pka_values=[2.15, 7.2, 12.35],
@@ -44,7 +44,7 @@ def test_species_tool_writes_files_and_payload(tmp_path, monkeypatch):
 
 
 def test_titration_requires_positive_inputs(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     import pytest
 
     with pytest.raises(ValueError):
@@ -58,8 +58,8 @@ def test_titration_requires_positive_inputs(tmp_path, monkeypatch):
 
 
 def test_compare_molecules_returns_plot_payload(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
-    from chemdraw_tool.server import compare_molecules
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
+    from chempane.server import compare_molecules
 
     payload = compare_molecules(
         structures=["Cc1ccccc1", "Clc1ccccc1"],
@@ -73,10 +73,10 @@ def test_compare_molecules_returns_plot_payload(tmp_path, monkeypatch):
 
 
 def test_compare_molecules_needs_two_to_four(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     import pytest
 
-    from chemdraw_tool.server import compare_molecules
+    from chempane.server import compare_molecules
 
     with pytest.raises(ValueError):
         compare_molecules(structures=["CCO"])
@@ -98,7 +98,7 @@ _TITRATION = dict(c_acid=0.1, v_acid_ml=20, c_titrant=0.1)
 ])
 def test_plot_errors_are_english(call, tmp_path, monkeypatch):
     """Nutzertexte sind englisch (Projektkonvention); alle vier kamen deutsch an."""
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     with pytest.raises(ValueError) as error:
         call()
     assert not [w for w in _GERMAN if w in str(error.value)], str(error.value)
@@ -113,7 +113,7 @@ def test_descending_pka_values_are_rejected(call, tmp_path, monkeypatch):
     """Befund 30.10.2026: [7.2, 2.1] wurde still gezeichnet — Pufferpunkte
     schwebten neben der Kurve, die Zwischenspezies HA⁻ verschwand. pKa₁ < pKa₂
     gilt immer; vertauschte Werte sind ein Eingabefehler, kein Diagramm."""
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path)
     with pytest.raises(ValueError, match="ascending"):
         call()
     assert not list(tmp_path.iterdir())

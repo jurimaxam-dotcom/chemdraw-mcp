@@ -11,7 +11,7 @@ die kämen nur aus einem ML-Modell und wären geraten.
 
 import pytest
 
-from chemdraw_tool.spectro import (
+from chempane.spectro import (
     assign_wavenumber,
     expected_ir_bands,
     proton_signals,

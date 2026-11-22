@@ -10,7 +10,7 @@ Kurzformel ist nur der Sonderfall.
 
 import pytest
 
-from chemdraw_tool.calculator.fat_values import (
+from chempane.calculator.fat_values import (
     acid_value,
     ester_value,
     iodine_value,

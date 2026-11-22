@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/scope.py — Substrate-Scope-Figuren (Raster).
+"""Tests für chempane/scope.py — Substrate-Scope-Figuren (Raster).
 
 Die häufigste Abbildung der Methodenliteratur: EINE Reaktion, viele
 Substrate, das Ergebnis ist ein Raster aus Produktstrukturen mit
@@ -28,7 +28,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.scope import (
+from chempane.scope import (
     MAX_CAPTION_LINES,
     MAX_COLUMNS,
     ReactionHeader,

@@ -5,13 +5,13 @@ in der er dort steht: Einzelgehalt pro Messung → Ausreißer identifizieren →
 mitteln → streuen → gegen den Sollwert prüfen. Ein Tool, das nur den
 Mittelwert liefert, wäre für den Zweck wertlos.
 
-Die Mathematik selbst liegt in `chemdraw_tool/calculator/` und ist dort
+Die Mathematik selbst liegt in `chempane/calculator/` und ist dort
 getestet; hier wird geprüft, was im Chat ankommt.
 """
 
 import pytest
 
-from chemdraw_tool.server import calculate_content
+from chempane.server import calculate_content
 
 # Ascorbinsäure-Titration, wie sie im Praktikum anfällt:
 # Faktor 8,806 mg/mL, drei Einwaagen um 250 mg.

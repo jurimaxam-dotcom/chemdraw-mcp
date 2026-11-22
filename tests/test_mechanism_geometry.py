@@ -24,8 +24,8 @@ import statistics
 
 import pytest
 
-from chemdraw_tool.mechanism_renderer import geometry_of
-from chemdraw_tool.server import generate_mechanism
+from chempane.mechanism_renderer import geometry_of
+from chempane.server import generate_mechanism
 from tests.mechanism_matrix import MATRIX
 
 # Kein Netz: SMILES-Eingaben lösen einen PubChem-Titel-Nachschlag aus (tests/conftest.py)
@@ -240,7 +240,7 @@ def test_sn2_uebergangszustand_traegt_delta_minus_statt_voller_ladungen(ergebnis
     """Sichtung 05.11.2026 (R2): „N≡C⁻ ··· C ··· Br⁻“ hat die Gesamtladung −2 statt −1. Im
     Übergangszustand ist die Ladung auf Nucleophil und Abgangsgruppe verteilt: beide δ⁻ (Clayden
     Kap. 15), Klammern und ‡ bleiben. Kein „⁻“-Glyph (ein flacher Strich) an NU und X."""
-    from chemdraw_tool.mechanism_substrate import NU, X
+    from chempane.mechanism_substrate import NU, X
 
     payload = _payload(ergebnisse, rt, subs)
     ts = [s for s in payload.steps if s.is_transition_state]
@@ -282,8 +282,8 @@ def test_beschriftetes_zentrum_zeigt_sein_h(ergebnisse, cid, rt, subs):
     steht es in der Beschriftung (CH⁺, CH): mehr Glyphen als Symbol + Ladung."""
     from rdkit import Chem
 
-    from chemdraw_tool.mechanism_substrate import build_steps
-    from chemdraw_tool.templates import get_template
+    from chempane.mechanism_substrate import build_steps
+    from chempane.templates import get_template
 
     steps = build_steps(rt, subs) if subs else get_template(rt).steps
     payload = _payload(ergebnisse, rt, subs)

@@ -8,8 +8,8 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import rdCIPLabeler
 
-from chemdraw_tool.mechanism import CurvedArrow
-from chemdraw_tool.mechanism_substrate import NU, C, UnsupportedSubstrates, build_steps
+from chempane.mechanism import CurvedArrow
+from chempane.mechanism_substrate import NU, C, UnsupportedSubstrates, build_steps
 from tests.mechanism_matrix import MATRIX
 
 
@@ -119,7 +119,7 @@ def test_sn1_tert_butylchlorid_wasser():
     """Neutrales Nucleophil: Angriff gibt das Oxonium-Ion, erst die Deprotonierung das Produkt
     (Clayden Kap. 15; OpenStax 11.4) — sechs Stationen, Sichtung 05.11.2026 (R4).
     Das Proton nimmt ein zweites Wassermolekül auf, kein freies H⁺ (Gutachter GELB, Etappe E2)."""
-    from chemdraw_tool.mechanism_substrate import BASE, H_LEAVING
+    from chempane.mechanism_substrate import BASE, H_LEAVING
 
     steps = build_steps("sn1", ["CC(C)(C)Cl", "O"])
     assert [s.label for s in steps] == [
@@ -232,7 +232,7 @@ def test_fischer_folgt_clayden_mit_protonentransfer():
     Reihenfolge: Protonierung → Angriff → Deprotonierung → Protonierung des OH → Wasserabspaltung
     → Deprotonierung. Der Protonentransfer läuft in zwei Schritten über ein Alkoholmolekül
     (Lösungsmittel), nicht intramolekular (Gutachter GELB, Etappe E2)."""
-    from chemdraw_tool.mechanism_substrate import (
+    from chempane.mechanism_substrate import (
         BASE,
         C_ACID,
         H_MOVING,
@@ -275,7 +275,7 @@ def test_fischer_folgt_clayden_mit_protonentransfer():
 
 def test_vorlage_und_substratweg_sagen_dasselbe():
     """Die festen Lehrbuchbeispiele SIND der Substratweg mit den Beispiel-Substraten."""
-    from chemdraw_tool.templates import get_template
+    from chempane.templates import get_template
 
     beispiele = {"sn2": ["CBr", "[OH-]"], "sn1": ["CC(C)(C)Br", "O"], "fischer_ester": ["CC(=O)O", "CO"]}
     for rt, smiles in beispiele.items():
@@ -376,7 +376,7 @@ def test_ringe_bleiben_regelmaessig_in_jedem_schritt(cid, rt, subs):
     hat die normale Bindungslänge (± 15 %), jeder Ringwinkel ist ein Polygonwinkel (± 20°)."""
     import math
 
-    from chemdraw_tool.mechanism_coords import BOND, layout_anchored
+    from chempane.mechanism_coords import BOND, layout_anchored
 
     steps = build_steps(rt, subs)
     fehler = []
@@ -404,7 +404,7 @@ def test_sn1_anion_bindung_laeuft_nicht_durch_die_ladung():
     """Kontaktbogen 05.11.2026: im SN1-Angriff lag die C≡N-Bindung waagrecht rechts vom C⁻ — RDKit
     setzt das „⁻“ oben rechts, die Bindung lief hindurch. Der Nachbar des angreifenden Atoms liegt
     deshalb schräg unterhalb."""
-    from chemdraw_tool.mechanism_substrate import NU
+    from chempane.mechanism_substrate import NU
 
     steps = build_steps("sn1", ["CC(C)(C)Br", "[Na+].[C-]#N"])
     angriff = steps[3]
@@ -429,7 +429,7 @@ def _winkel_am_kation(step) -> list[float]:
     """Winkel (°) zwischen den Schweratom-Nachbarn des Kation-C im fertigen Layout, sortiert."""
     import math
 
-    from chemdraw_tool.mechanism_coords import layout_anchored
+    from chempane.mechanism_coords import layout_anchored
 
     mol = layout_anchored([step])[0][0]
     conf = mol.GetConformer()
@@ -465,7 +465,7 @@ def test_sn1_carbokation_ist_trigonal_planar(halogenid):
 def test_eliminierung_als_konkurrenz_wird_genannt(rt, smiles, erwartet):
     """OpenStax 11.12 (Zusammenfassung SN1/SN2/E1/E2): sekundäre Halogenide mit starker Base
     eliminieren nach E2; tertiäre Kationen verlieren nach E1 ein β-H. Clayden Kap. 17."""
-    from chemdraw_tool.mechanism_substrate import competition_notes
+    from chempane.mechanism_substrate import competition_notes
 
     notes = competition_notes(rt, smiles)
     assert len(notes) == 1 and erwartet in notes[0], notes
@@ -480,7 +480,7 @@ def test_eliminierung_als_konkurrenz_wird_genannt(rt, smiles, erwartet):
     ("fischer_ester", ["CC(=O)O", "CCO"]),
 ])
 def test_ohne_konkurrenz_kein_hinweis(rt, smiles):
-    from chemdraw_tool.mechanism_substrate import competition_notes
+    from chempane.mechanism_substrate import competition_notes
 
     assert competition_notes(rt, smiles) == []
 
@@ -498,6 +498,6 @@ def test_fischer_produkt_nennt_das_katalysator_proton():
 
 
 def test_e2_hinweis_nennt_e2_als_hauptweg():
-    from chemdraw_tool.mechanism_substrate import competition_notes
+    from chempane.mechanism_substrate import competition_notes
 
     assert "often the main pathway" in competition_notes("sn2", ["CC(C)I", "[OH-]"])[0]

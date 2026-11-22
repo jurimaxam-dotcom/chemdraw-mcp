@@ -13,21 +13,21 @@ import sys
 import pytest
 
 RECHENKERN = [
-    "chemdraw_tool.ph_calc",
-    "chemdraw_tool.solution",
-    "chemdraw_tool.calibration",
-    "chemdraw_tool.calculator",
-    "chemdraw_tool.calculator.titration",
-    "chemdraw_tool.calculator.photometry",
-    "chemdraw_tool.calculator.stats",
-    "chemdraw_tool.calculator.fat_values",
-    "chemdraw_tool.aufgaben.titration",
-    "chemdraw_tool.aufgaben.ph",
-    "chemdraw_tool.aufgaben.mechanismus",
-    "chemdraw_tool.aufgaben.loeslichkeit",
-    "chemdraw_tool.pk",
-    "chemdraw_tool.aufgaben.loesungen",
-    "chemdraw_tool.aufgaben.pharmakokinetik",
+    "chempane.ph_calc",
+    "chempane.solution",
+    "chempane.calibration",
+    "chempane.calculator",
+    "chempane.calculator.titration",
+    "chempane.calculator.photometry",
+    "chempane.calculator.stats",
+    "chempane.calculator.fat_values",
+    "chempane.aufgaben.titration",
+    "chempane.aufgaben.ph",
+    "chempane.aufgaben.mechanismus",
+    "chempane.aufgaben.loeslichkeit",
+    "chempane.pk",
+    "chempane.aufgaben.loesungen",
+    "chempane.aufgaben.pharmakokinetik",
 ]
 VERBOTEN = ["matplotlib", "rdkit", "mcp", "requests"]
 

@@ -11,9 +11,9 @@ Alle Eingaben sind SMILES → resolve() geht nicht ins Netz; PubChem ist gemockt
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool import server as srv
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.svg_renderer import render_svg
+from chempane import server as srv
+from chempane.generator import generate_2d
+from chempane.svg_renderer import render_svg
 
 ETHANOL = "CCO"
 IBUPROFEN_S = "CC(C)Cc1ccc(cc1)[C@H](C)C(=O)O"

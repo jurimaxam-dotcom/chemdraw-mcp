@@ -25,8 +25,8 @@ import tomllib
 from functools import lru_cache
 from pathlib import Path
 
-from chemdraw_tool.render_style import STYLES
-from chemdraw_tool.server import create_server
+from chempane.render_style import STYLES
+from chempane.server import create_server
 
 ROOT = Path(__file__).resolve().parents[1]
 USER_DOCS = [
@@ -145,7 +145,7 @@ def test_panelzahlen_je_profil_stimmen():
 
 
 def test_umgebungsvariablen_der_doku_gibt_es_im_code():
-    code = "\n".join(p.read_text(encoding="utf-8") for p in (ROOT / "chemdraw_tool").rglob("*.py"))
+    code = "\n".join(p.read_text(encoding="utf-8") for p in (ROOT / "chempane").rglob("*.py"))
     code += _read("mcpb/server/run.sh")
     genannt = {v for text in _docs().values() for v in re.findall(r"\bCHEMDRAW_[A-Z_]+\b", text)}
     assert genannt, "keine CHEMDRAW_-Variable in der Doku — Regex kaputt?"
@@ -156,7 +156,7 @@ def test_umgebungsvariablen_der_doku_gibt_es_im_code():
 def test_konsolenbefehle_der_doku_gibt_es():
     # Konnektornamen (`chemdraw`, `chemdraw-pharma`, das alte `chemdraw-tool`) sehen
     # aus wie Befehle, sind aber Einträge in claude_desktop_config.json (Welle 3).
-    from chemdraw_tool.desktop_config import CONNECTORS, LEGACY_SERVER_NAMES
+    from chempane.desktop_config import CONNECTORS, LEGACY_SERVER_NAMES
 
     scripts = set(tomllib.loads(_read("pyproject.toml"))["project"]["scripts"])
     konnektoren = set(CONNECTORS) | set(LEGACY_SERVER_NAMES)

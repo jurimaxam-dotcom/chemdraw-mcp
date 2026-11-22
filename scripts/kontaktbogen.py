@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from chemdraw_tool.server import generate_mechanism  # noqa: E402
+from chempane.server import generate_mechanism  # noqa: E402
 from tests.mechanism_matrix import MATRIX  # noqa: E402
 
 FONT_CANDIDATES = (

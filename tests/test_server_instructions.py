@@ -108,7 +108,7 @@ def test_instructions_name_the_panel_as_the_point():
 # dann 6/6 ohne Suche aus dem Kopf (evals: desktop-ph-*, ENABLE_TOOL_SEARCH=true).
 # Die Regel muss im Standardprofil stehen und vorn, weil Claude Code hinten kappt.
 def test_mvp_instructions_claim_ph_numbers_early():
-    from chemdraw_tool.server import _MVP_INSTRUCTIONS as text
+    from chempane.server import _MVP_INSTRUCTIONS as text
 
     assert len(text.encode()) <= MAX_BYTES
     line = next((z for z in text.splitlines() if "calculate_ph" in z and "yourself" in z), None)
@@ -117,7 +117,7 @@ def test_mvp_instructions_claim_ph_numbers_early():
 
 
 def test_mvp_instructions_drop_the_seven_tool_wording():
-    from chemdraw_tool.server import _MVP_INSTRUCTIONS as text
+    from chempane.server import _MVP_INSTRUCTIONS as text
 
     assert "temporarily disabled" not in text and "MVP profile" not in text
 
@@ -128,7 +128,7 @@ def test_mvp_instructions_drop_the_seven_tool_wording():
 # hier nichts von Proteinen, hält es einen Antikörper für nicht zeichenbar.
 @pytest.mark.parametrize("name", ["_MVP_INSTRUCTIONS", "_FULL_INSTRUCTIONS"])
 def test_instructions_claim_proteins_and_antibodies_early(name):
-    from chemdraw_tool import server
+    from chempane import server
 
     text = getattr(server, name)
     assert len(text.encode()) <= MAX_BYTES

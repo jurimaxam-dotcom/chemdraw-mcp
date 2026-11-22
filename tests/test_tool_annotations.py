@@ -17,7 +17,7 @@ import asyncio
 
 import pytest
 
-from chemdraw_tool.server import _RESOURCE_URI, create_server
+from chempane.server import _RESOURCE_URI, create_server
 from tests.server_catalog import mcp
 from tests.test_server_profiles import _data
 

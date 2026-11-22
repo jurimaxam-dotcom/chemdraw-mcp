@@ -12,7 +12,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.image_export import (
+from chempane.image_export import (
     PNG_MAGIC,
     _compose_reaction,
     render_molecule_png,
@@ -67,7 +67,7 @@ def test_export_svg_matches_ui_line_width():
     (feiner, ACS-naher Stil)."""
     import re
 
-    from chemdraw_tool.svg_renderer import render_svg
+    from chempane.svg_renderer import render_svg
 
     def widths(svg):
         return sorted(set(re.findall(r"stroke-width:([\d.]+)", svg)))
@@ -358,7 +358,7 @@ def _ethanol():
 
 @pytest.mark.parametrize("char", _NON_ASCII)
 def test_png_legend_draws_non_ascii_letters(char):
-    from chemdraw_tool.image_export import MOL_PNG_SIZE, render_molecule_png
+    from chempane.image_export import MOL_PNG_SIZE, render_molecule_png
 
     height = MOL_PNG_SIZE[1]
     png = render_molecule_png(_ethanol(), legend=char)
@@ -367,7 +367,7 @@ def test_png_legend_draws_non_ascii_letters(char):
 
 @pytest.mark.parametrize("char", _NON_ASCII)
 def test_svg_legend_carries_non_ascii_letters(char):
-    from chemdraw_tool.image_export import render_molecule_svg
+    from chempane.image_export import render_molecule_svg
 
     svg = render_molecule_svg(_ethanol(), legend=f"Siroh{char}m")
     assert f"Siroh{char}m" in html.unescape(svg)
@@ -380,7 +380,7 @@ def test_non_ascii_legend_keeps_the_molecule_where_it_was():
     import numpy as np
     from PIL import Image
 
-    from chemdraw_tool.image_export import MOL_PNG_SIZE, render_molecule_png
+    from chempane.image_export import MOL_PNG_SIZE, render_molecule_png
 
     def pixels(legend):
         png = render_molecule_png(_ethanol(), legend=legend)
@@ -391,7 +391,7 @@ def test_non_ascii_legend_keeps_the_molecule_where_it_was():
 
 
 def test_comparison_png_labels_draw_non_ascii_letters():
-    from chemdraw_tool.image_export import CMP_PANEL, render_comparison_png
+    from chempane.image_export import CMP_PANEL, render_comparison_png
 
     png = render_comparison_png([_ethanol(), _ethanol()], labels=["ä", "ß"])
     width, height = CMP_PANEL
@@ -400,7 +400,7 @@ def test_comparison_png_labels_draw_non_ascii_letters():
 
 
 def test_comparison_svg_labels_carry_non_ascii_letters():
-    from chemdraw_tool.image_export import render_comparison_svg
+    from chempane.image_export import render_comparison_svg
 
     svg = render_comparison_svg([_ethanol(), _ethanol()], labels=["Sirohäm", "Coprohäm"])
     assert "Sirohäm" in html.unescape(svg) and "Coprohäm" in html.unescape(svg)

@@ -17,7 +17,7 @@ import re
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.projection import chair_problem, chair_ring, chair_svg
+from chempane.projection import chair_problem, chair_ring, chair_svg
 
 BETA_GLCP = "OC[C@H]1O[C@@H](O)[C@H](O)[C@@H](O)[C@@H]1O"
 ALPHA_GLCP = "OC[C@H]1O[C@H](O)[C@H](O)[C@@H](O)[C@@H]1O"
@@ -233,7 +233,7 @@ def test_chair_svg_draws_axial_bonds_vertical():
 
 
 def test_chair_svg_labels_do_not_overlap():
-    from chemdraw_tool.projection import _chair_label_boxes
+    from chempane.projection import _chair_label_boxes
 
     for smiles in (BETA_GLCP, ALPHA_GLCP, MENTHOL, CIS_12, TRANS_13, CIS_14):
         boxes = _chair_label_boxes(mol(smiles))
@@ -266,13 +266,13 @@ def test_no_label_touches_a_bond_or_another_label(smiles):
     C5–O durch das „OH" von CH2OH. Kein Beschriftungsrechteck (mit
     Helvetica-Breiten, nicht der knappen Schätzung) schneidet eine fremde
     Strecke oder eine andere Beschriftung."""
-    from chemdraw_tool.projection import chair_collisions
+    from chempane.projection import chair_collisions
 
     assert chair_collisions(mol(smiles)) == 0
 
 
 def test_label_width_is_not_underestimated():
-    from chemdraw_tool.projection import _chair_text_width
+    from chempane.projection import _chair_text_width
 
     # Helvetica 16 px: C 11,6 · H 11,6 · O 12,4; Ziffer tiefgestellt 11 px · 0,556
     assert _chair_text_width("CH2OH") >= 52
@@ -283,7 +283,7 @@ def test_label_width_is_not_underestimated():
 
 @pytest.fixture
 def server(tmp_path, monkeypatch):
-    from chemdraw_tool import server as srv
+    from chempane import server as srv
 
     for const in ("OUTPUT_DIR", "REACTION_DIR", "PLOT_DIR", "ANKI_DIR"):
         monkeypatch.setattr(srv, const, tmp_path / const.lower())

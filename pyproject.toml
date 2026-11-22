@@ -33,15 +33,15 @@ Repository = "https://github.com/jurimaxam-dotcom/chemdraw-mcp"
 Issues = "https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues"
 
 [project.scripts]
-chemdraw-mcp = "chemdraw_tool.server:main"
+chemdraw-mcp = "chempane.server:main"
 # Alias: existing Claude Desktop configs from install.sh point at this name.
-chemdraw-tool-server = "chemdraw_tool.server:main"
+chemdraw-tool-server = "chempane.server:main"
 # Installations-Diagnose: macht die stillen Ausfälle sichtbar, bevor sie im
 # Chat als "der Server tut nichts" ankommen.
-chemdraw-doctor = "chemdraw_tool.doctor:main"
+chemdraw-doctor = "chempane.doctor:main"
 # Eintragen in Claude Desktop ohne Repo-Clone — der Weg, den PyPI-/Registry-
 # Nutzer gehen (install.sh gibt es dort nicht).
-chemdraw-install = "chemdraw_tool.desktop_config:main"
+chemdraw-install = "chempane.desktop_config:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -49,15 +49,15 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 # Das Python-Paket benötigt nur das gebaute Panel.
-exclude = ["chemdraw_tool/ui/*", "!chemdraw_tool/ui/dist"]
+exclude = ["chempane/ui/*", "!chempane/ui/dist"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["chemdraw_tool"]
+packages = ["chempane"]
 
 [tool.hatch.build.targets.sdist]
 # Erlaubnisliste statt Sperrliste: das sdist ist öffentlich, und hatchling packt sonst
 # alles ein, was nicht gitignored ist — auch ungetrackte interne Dateien (Audit 20.10.2026).
-only-include = ["chemdraw_tool", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md"]
+only-include = ["chempane", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_LICENSES", "CHANGELOG.md"]
 
 [tool.pytest.ini_options]
 # "scripts" mit drin, damit dortige test_*.py automatisch vom Gate erfasst werden;
@@ -69,7 +69,7 @@ markers = [
 
 [dependency-groups]
 dev = [
-    # EXAKT dieselbe Version wie chemdraw_tool/ui/package.json — nicht lockern.
+    # EXAKT dieselbe Version wie chempane/ui/package.json — nicht lockern.
     # Beide Playwright-Pakete (Python + JS) benutzen denselben Browser-Cache
     # (~/Library/Caches/ms-playwright) und laden je Version eine ANDERE
     # Build-Revision (z.B. chromium_headless_shell-1223 vs. -1228). Driftete das

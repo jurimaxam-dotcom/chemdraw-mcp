@@ -2,7 +2,7 @@ from lxml import etree
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.cdxml_writer import (
+from chempane.cdxml_writer import (
     ACS_SETTINGS,
     ELEMENT_COLORS,
     _create_fragment,

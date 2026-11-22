@@ -1,6 +1,6 @@
 """Pharmakokinetik-Aufgaben (Pharmakologie, Praktikumsrechner 03.10.2026).
 
-Jede Lösung wird gegen `chemdraw_tool.pk` geprüft — dieselben Formeln wie in
+Jede Lösung wird gegen `chempane.pk` geprüft — dieselben Formeln wie in
 `calculate_pharmacokinetics` und in den Kurven. Wirkstoff X ist fiktiv: die Werte sind
 Übungszahlen, keine Wirkstoffdaten.
 """
@@ -8,9 +8,9 @@ Jede Lösung wird gegen `chemdraw_tool.pk` geprüft — dieselben Formeln wie in
 
 import pytest
 
-from chemdraw_tool import ph_calc, pk
-from chemdraw_tool.aufgaben import pharmakokinetik as pa
-from chemdraw_tool.aufgaben.basis import de, pruefe
+from chempane import ph_calc, pk
+from chempane.aufgaben import pharmakokinetik as pa
+from chempane.aufgaben.basis import de, pruefe
 
 SCHRITT = {"label", "formula", "substitution", "result", "explanation"}
 TR = "taschenrechner"  # Hilfsmittel TI-84 Plus CE-T: optionaler Tastenweg je Schritt

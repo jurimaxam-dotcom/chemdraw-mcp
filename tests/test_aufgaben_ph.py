@@ -8,8 +8,8 @@ Rechnung).
 
 import pytest
 
-from chemdraw_tool import ph_calc
-from chemdraw_tool.aufgaben import ph
+from chempane import ph_calc
+from chempane.aufgaben import ph
 
 SCHRITT_KEYS = {"label", "formula", "substitution", "result", "explanation"}
 N = range(150)

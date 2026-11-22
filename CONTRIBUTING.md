@@ -11,7 +11,7 @@ concrete bugs and tasks in Issues.
 git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
 cd chemdraw-mcp
 uv sync                                    # Python deps (Python 3.11+, uv)
-cd chemdraw_tool/ui && npm install && npx playwright install chromium && cd -
+cd chempane/ui && npm install && npx playwright install chromium && cd -
 ./test.sh                                  # the gate: lint + backend + bundle + frontend
 ```
 
@@ -33,7 +33,7 @@ Claude Desktop after changing server code — it keeps the old process alive.
 - **Frozen renderings are not regenerated to make a diff disappear.**
   `tests/__fixtures__/*.golden.svg` changes only for an intended rendering
   change, and you look at the result.
-- **Panel changes need a rebuilt bundle** (`chemdraw_tool/ui/dist/`); the gate
+- **Panel changes need a rebuilt bundle** (`chempane/ui/dist/`); the gate
   checks that it matches `src/`.
 - **Rendering defaults stay as they are.** New options are opt-in.
 

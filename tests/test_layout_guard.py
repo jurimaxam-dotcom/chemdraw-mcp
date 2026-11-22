@@ -26,7 +26,7 @@ from pathlib import Path
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.generator import generate_2d
+from chempane.generator import generate_2d
 
 REFERENCE = Path(__file__).parent / "__fixtures__" / "layout.reference.json"
 TOLERANCE = 0.02  # Å-Einheiten von Compute2DCoords; Rundung zwischen Plattformen

@@ -2,7 +2,7 @@
 # Echter MCP-Handshake gegen den REGISTRIERTEN Startbefehl.
 #
 # Warum ausserhalb des Auto-Gates: Die 60 Testdateien laufen alle in-process
-# (`from chemdraw_tool.server import mcp`). Sie koennen zwei Fehlerarten
+# (`from chempane.server import mcp`). Sie koennen zwei Fehlerarten
 # prinzipiell nicht sehen — und ausgerechnet die haben in diesem Projekt Zeit
 # gekostet:
 #
@@ -67,7 +67,7 @@ uv run python - >"$TMP/cmd.txt" <<'PY'
 import json
 import sys
 
-from chemdraw_tool.desktop_config import (
+from chempane.desktop_config import (
     CONNECTORS,
     LEGACY_SERVER_NAMES,
     claude_config_path,
@@ -147,7 +147,7 @@ while IFS=$'\t' read -r name profile rest; do
 import asyncio
 import sys
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 
 tools = asyncio.run(create_server(sys.argv[1]).list_tools())
 panels = sum(1 for t in tools if ((t.meta or {}).get("ui") or {}).get("resourceUri"))

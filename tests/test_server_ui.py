@@ -9,8 +9,8 @@ from pydantic import BaseModel
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.payloads import BatchPayload, MoleculePayload, ReactionPayload
-from chemdraw_tool.server import (
+from chempane.payloads import BatchPayload, MoleculePayload, ReactionPayload
+from chempane.server import (
     _RESOURCE_URI,
     _UI_DIST,
     batch_generate,
@@ -22,13 +22,13 @@ from chemdraw_tool.server import (
 @pytest.fixture(autouse=True)
 def _isolate_output_dirs(tmp_path, monkeypatch):
     """Redirect all CDXML output to a temp directory."""
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
 
 
 def test_ui_dist_exists():
     """The built UI HTML file must exist."""
-    dist = Path(__file__).parent.parent / "chemdraw_tool" / "ui" / "dist" / "index.html"
+    dist = Path(__file__).parent.parent / "chempane" / "ui" / "dist" / "index.html"
     assert dist.exists(), f"UI dist not found at {dist}"
     content = dist.read_text()
     assert "<!doctype" in content.lower() or "<html" in content.lower()
@@ -51,9 +51,9 @@ def _make_mol(smiles: str) -> Chem.Mol:
     return mol
 
 
-@patch("chemdraw_tool.server.resolve")
-@patch("chemdraw_tool.server.pubchem_properties_by_smiles")
-@patch("chemdraw_tool.server.pubchem_synonyms_by_smiles")
+@patch("chempane.server.resolve")
+@patch("chempane.server.pubchem_properties_by_smiles")
+@patch("chempane.server.pubchem_synonyms_by_smiles")
 def test_generate_molecule_returns_payload(mock_synonyms, mock_props, mock_resolve):
     """generate_molecule must return a MoleculePayload."""
     mol = _make_mol("c1ccccc1")
@@ -75,7 +75,7 @@ def test_generate_molecule_returns_payload(mock_synonyms, mock_props, mock_resol
     assert len(result.atoms) == 6  # benzene ring
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_generate_reaction_returns_payload(mock_resolve):
     """generate_reaction must return a ReactionPayload."""
     mol_r = _make_mol("CC")
@@ -99,7 +99,7 @@ def test_generate_reaction_returns_payload(mock_resolve):
     assert result.cdxml_path == ""
 
 
-@patch("chemdraw_tool.server.resolve")
+@patch("chempane.server.resolve")
 def test_batch_generate_returns_payload(mock_resolve):
     """batch_generate must return a BatchPayload."""
     mol1 = _make_mol("c1ccccc1")
@@ -211,7 +211,7 @@ def test_panel_meta_check_notices_a_newly_registered_tool():
 
 def test_generate_molecule_with_stereo_annotation(tmp_path, monkeypatch):
     """annotate_stereo annotiert Datei-Export UND Chat-Vorschau (Parität)."""
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path)
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path)
     payload = generate_molecule("C[C@H](N)C(=O)O", annotate_stereo=True)
     assert "CIP_Code" in payload.svg
     svg_file = Path(payload.files["svg"]).read_text()

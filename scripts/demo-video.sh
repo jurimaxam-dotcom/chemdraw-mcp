@@ -20,7 +20,7 @@ if [[ "${2:-}" == "--gif-only" ]]; then
 fi
 
 if ! $GIF_ONLY; then
-  (cd chemdraw_tool/ui && node src/host/demo.record.mjs "$OUT" --hires "${SZENEN[@]}")
+  (cd chempane/ui && node src/host/demo.record.mjs "$OUT" --hires "${SZENEN[@]}")
 fi
 
 for s in "${SZENEN[@]}"; do

@@ -13,7 +13,7 @@ from pathlib import Path
 
 from mcp import types
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 
 STUB = Path(__file__).resolve().parents[1] / "evals" / "tool-routing" / "stub_server.py"
 

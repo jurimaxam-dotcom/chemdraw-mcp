@@ -11,9 +11,9 @@ from unittest.mock import patch
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool import server as srv
-from chemdraw_tool.payloads import DatabasePayload, MoleculePayload
-from chemdraw_tool.resolver import Resolved
+from chempane import server as srv
+from chempane.payloads import DatabasePayload, MoleculePayload
+from chempane.resolver import Resolved
 
 DEXA = "CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C"
 
@@ -41,7 +41,7 @@ def test_literal_hit_leaves_found_as_empty(monkeypatch):
     assert srv.generate_molecule("Dexamethasone").foundAs == ""
 
 
-@patch("chemdraw_tool.server.pubchem_ghs",
+@patch("chempane.server.pubchem_ghs",
        return_value={"status": "empty", "record_title": "", "sources": []})
 def test_lookup_molecule_data_says_it_too(_ghs, monkeypatch):
     monkeypatch.setattr(srv, "resolve", _route("Dexamethasone"))

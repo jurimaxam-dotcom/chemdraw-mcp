@@ -33,9 +33,9 @@ import pytest
 from rdkit import Chem
 from rdkit.Geometry import Point3D
 
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.image_export import render_molecule_svg
-from chemdraw_tool.svg_renderer import render_svg
+from chempane.generator import generate_2d
+from chempane.image_export import render_molecule_svg
+from chempane.svg_renderer import render_svg
 
 FIXTURES = Path(__file__).parent / "__fixtures__"
 

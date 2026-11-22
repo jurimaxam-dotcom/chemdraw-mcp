@@ -13,8 +13,8 @@ import asyncio
 import pytest
 from mcp import Client
 
-from chemdraw_tool import server as srv
-from chemdraw_tool.resolver import NameResolutionError
+from chempane import server as srv
+from chempane.resolver import NameResolutionError
 
 
 def _call(profile: str, tool: str, arguments: dict):

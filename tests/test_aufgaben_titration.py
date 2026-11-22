@@ -11,8 +11,8 @@ die Tests nicht nur das Format, sondern gegen zwei unabhängige Quellen:
 import pytest
 from molmass import Formula
 
-from chemdraw_tool.aufgaben import titration as t
-from chemdraw_tool.calculator.titration import calculate_gehalt_titration
+from chempane.aufgaben import titration as t
+from chempane.calculator.titration import calculate_gehalt_titration
 
 SCHRITT_KEYS = {"label", "formula", "substitution", "result", "explanation"}
 
@@ -100,7 +100,7 @@ def test_zahl_und_einheit_brechen_nicht_auseinander():
 
 
 # --- Faktorbestimmung gegen Urtitersubstanz (Quanti, 2. Semester) ------------
-from chemdraw_tool.calculator.titration import calculate_titer  # noqa: E402
+from chempane.calculator.titration import calculate_titer  # noqa: E402
 
 
 @pytest.mark.parametrize("u", t.URTITER, ids=lambda u: u.name)

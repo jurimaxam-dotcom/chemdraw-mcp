@@ -6,9 +6,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from chemdraw_tool import protein_cartoon as pc
-from chemdraw_tool import protein_structure as ps
-from chemdraw_tool import protein_view as pv
+from chempane import protein_cartoon as pc
+from chempane import protein_structure as ps
+from chempane import protein_view as pv
 
 FIX = Path(__file__).parent / "__fixtures__" / "pdb"
 
@@ -150,7 +150,7 @@ def test_ca_only_entry_still_gets_a_band():
 
 
 def test_single_residue_segments_are_skipped_not_drawn_across():
-    from chemdraw_tool import protein_render as pr
+    from chempane import protein_render as pr
 
     view = pv.make_view(_bb("3I40", ["A", "B"]))
     lone = view.chains[0]["segments"][0]

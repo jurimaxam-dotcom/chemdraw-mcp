@@ -29,8 +29,8 @@ import copy
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.mechanism import CurvedArrow
-from chemdraw_tool.mechanism_substrate import NU, build_steps
+from chempane.mechanism import CurvedArrow
+from chempane.mechanism_substrate import NU, build_steps
 from tests.mechanism_matrix import MATRIX
 
 Delta = dict[object, float]  # frozenset{a, b} → Ordnungsänderung · ("H", a) → H-Zahl am Atom a

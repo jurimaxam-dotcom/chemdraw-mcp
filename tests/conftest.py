@@ -78,8 +78,8 @@ def kein_netz(monkeypatch):
 @pytest.fixture
 def titel_offline(monkeypatch):
     """PubChem-Titel ohne Netz: unbekannt (None), Cache leer."""
-    import chemdraw_tool.databases as databases
-    import chemdraw_tool.server as server
+    import chempane.databases as databases
+    import chempane.server as server
 
     monkeypatch.setattr(databases, "pubchem_title_by_inchikey", lambda key: None)
     monkeypatch.setattr(server, "_TITLE_CACHE", {})
@@ -96,7 +96,7 @@ def _nci_ueber_requests_get(monkeypatch, request):
     """
     if request.node.get_closest_marker("echtes_nci_get"):
         return
-    from chemdraw_tool import resolver
+    from chempane import resolver
 
     monkeypatch.setattr(
         resolver, "_nci_get", lambda url: resolver.requests.get(url, timeout=resolver._TIMEOUT)
@@ -112,7 +112,7 @@ def _protein_lookup_offline(monkeypatch):
     not_found-Test einmal mehr ins Netz (unter `kein_netz` rot).
     `tests/test_proteins.py` setzt die Nachfrage je Test selbst.
     """
-    from chemdraw_tool import resolver
+    from chempane import resolver
 
     monkeypatch.setattr(resolver, "_protein_lookup", lambda name: None)
 
@@ -125,7 +125,7 @@ def _gene_lookup_offline(monkeypatch):
     bakterielles Genkürzel aussieht ("RecA"). Tests, die das prüfen, setzen
     `resolver._gene_lookup` selbst.
     """
-    from chemdraw_tool import resolver
+    from chempane import resolver
 
     monkeypatch.setattr(resolver, "_gene_lookup", lambda name: None)
 
@@ -134,7 +134,7 @@ def _gene_lookup_offline(monkeypatch):
 def _panel_teile_in_tmp(monkeypatch, tmp_path):
     """Zurückgehaltene Panel-Teile (result_budget.py, M2) landen im Test in tmp_path,
     nie im Cache-Ordner des Nutzers."""
-    from chemdraw_tool import result_budget
+    from chempane import result_budget
 
     monkeypatch.setattr(result_budget, "STORE_DIR", tmp_path / "panel-parts")
     monkeypatch.setattr(result_budget, "_STORE", type(result_budget._STORE)())

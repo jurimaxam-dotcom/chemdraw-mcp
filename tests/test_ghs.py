@@ -22,7 +22,7 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from chemdraw_tool import databases
+from chempane import databases
 
 FIXTURES = Path(__file__).parent / "__fixtures__"
 
@@ -210,32 +210,32 @@ class _Resp:
 
 
 def test_fetch_ok(caffeine):
-    with patch("chemdraw_tool.databases.requests.get", return_value=_Resp(json_data=caffeine)):
+    with patch("chempane.databases.requests.get", return_value=_Resp(json_data=caffeine)):
         res = databases.pubchem_ghs(2519)
     assert res["status"] == "ok"
     assert len(res["sources"]) == 4
 
 
 def test_fetch_404_means_no_ghs_data_not_failure():
-    with patch("chemdraw_tool.databases.requests.get", return_value=_Resp(status=404)):
+    with patch("chempane.databases.requests.get", return_value=_Resp(status=404)):
         res = databases.pubchem_ghs(962)
     assert res == {"status": "empty", "record_title": "", "sources": []}
 
 
 def test_fetch_empty_section_means_no_ghs_data():
     empty = {"Record": {"RecordTitle": "Water", "Section": [{"TOCHeading": "Safety and Hazards"}]}}
-    with patch("chemdraw_tool.databases.requests.get", return_value=_Resp(json_data=empty)):
+    with patch("chempane.databases.requests.get", return_value=_Resp(json_data=empty)):
         res = databases.pubchem_ghs(962)
     assert res["status"] == "empty"
 
 
 @pytest.mark.parametrize("effect", [Exception("boom"), requests.ConnectionError("down")])
 def test_fetch_error_is_reported_not_swallowed(effect):
-    with patch("chemdraw_tool.databases.requests.get", side_effect=effect):
+    with patch("chempane.databases.requests.get", side_effect=effect):
         res = databases.pubchem_ghs(2519)
     assert res["status"] == "error"
 
 
 def test_fetch_503_is_error():
-    with patch("chemdraw_tool.databases.requests.get", return_value=_Resp(status=503)):
+    with patch("chempane.databases.requests.get", return_value=_Resp(status=503)):
         assert databases.pubchem_ghs(2519)["status"] == "error"

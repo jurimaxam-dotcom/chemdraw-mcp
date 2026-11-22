@@ -32,7 +32,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")

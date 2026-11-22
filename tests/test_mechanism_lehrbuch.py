@@ -16,7 +16,7 @@ Quellen (frei zugänglich):
 
 from rdkit import Chem
 
-from chemdraw_tool.mechanism_substrate import build_steps, cip_labels
+from chempane.mechanism_substrate import build_steps, cip_labels
 
 
 def _plain(smiles: str) -> str:

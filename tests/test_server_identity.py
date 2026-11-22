@@ -9,7 +9,7 @@ kostet keine zusaetzliche Anfrage.
 
 import pytest
 
-from chemdraw_tool import databases, server
+from chempane import databases, server
 
 _SMILES = "COC(=O)C(C1CCCCN1)C2=CC=CC=C2"
 

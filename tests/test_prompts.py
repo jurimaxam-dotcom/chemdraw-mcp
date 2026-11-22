@@ -11,7 +11,7 @@ import re
 
 import pytest
 
-from chemdraw_tool.server import create_server
+from chempane.server import create_server
 from tests.test_server_profiles import FULL, MVP
 from tests.test_server_taxonomy import SUPERLATIVES
 
@@ -84,7 +84,7 @@ def test_exam_flashcards_point_at_the_anki_export():
 def test_locant_commas_stay_inside_a_name():
     """Codex-Review 12.11.: „2-bromo-2,3-dimethylbutane“ ist EIN Stoff. Getrennt wird
     an Semikolons, sonst nur an Komma mit Leerzeichen — nie am Lokanten-Komma."""
-    from chemdraw_tool.prompts import _items
+    from chempane.prompts import _items
 
     assert _items("2-bromo-2,3-dimethylbutane; water") == ["2-bromo-2,3-dimethylbutane", "water"]
     assert _items("2-bromo-2,3-dimethylbutane, water") == ["2-bromo-2,3-dimethylbutane", "water"]

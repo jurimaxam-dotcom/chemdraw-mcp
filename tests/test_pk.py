@@ -9,7 +9,7 @@ import math
 
 import pytest
 
-from chemdraw_tool import pk
+from chempane import pk
 
 D, F, VD, KE, KA = 500.0, 0.8, 70.0, 0.15, 1.2
 

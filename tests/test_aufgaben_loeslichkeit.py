@@ -7,7 +7,7 @@ unabhängige numerische Lösung (Bisektion von KL = (x·L + c_x)^x · (y·L + c_
 
 import pytest
 
-from chemdraw_tool.aufgaben import loeslichkeit as l
+from chempane.aufgaben import loeslichkeit as l
 
 
 def _numerisch(kl, x, y, c_kat=0.0, c_an=0.0):
@@ -52,7 +52,7 @@ def test_aufgabe_hat_text_rechenweg_und_relative_toleranz(bauer):
 
 
 def test_pruefe_nimmt_wissenschaftliche_schreibweise():
-    from chemdraw_tool.aufgaben.basis import pruefe
+    from chempane.aufgaben.basis import pruefe
 
     a = l.loeslichkeit_aufgabe(1)
     assert pruefe(a, f"{a['loesung']:.3e}")
@@ -71,7 +71,7 @@ def test_angezeigte_loeslichkeit_ist_die_gerechnete(seed):
     L = a["werte"]["L"]
     gezeigt = l.sci(L, 3)
     assert gezeigt in a["text"]
-    from chemdraw_tool.aufgaben.basis import zahl
+    from chempane.aufgaben.basis import zahl
 
     assert zahl(gezeigt.replace("⁻", "-").translate(str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")).replace(" · 10", "e")) == pytest.approx(L)
 

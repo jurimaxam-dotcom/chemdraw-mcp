@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool import protein_structure as ps
-from chemdraw_tool.protein_ss import assign_segments
+from chempane import protein_structure as ps
+from chempane.protein_ss import assign_segments
 
 FIX = Path(__file__).parent / "__fixtures__" / "pdb"
 

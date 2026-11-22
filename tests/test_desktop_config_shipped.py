@@ -1,6 +1,6 @@
 """Die Desktop-Config-Logik muss im installierten Paket liegen, nicht in scripts/.
 
-Das Wheel enthält nur `chemdraw_tool` (pyproject: packages = ["chemdraw_tool"]).
+Das Wheel enthält nur `chempane` (pyproject: packages = ["chempane"]).
 Lag die Logik in `scripts/`, konnte `chemdraw-doctor` bei einer PyPI-Installation
 genau die Checks nicht ausführen, für die er gebaut wurde — uv-Auflösung und
 Desktop-Eintrag —, und ein per `uvx` installierter Nutzer hatte überhaupt keinen
@@ -24,7 +24,7 @@ def test_desktop_config_lives_in_the_installed_package():
         [
             sys.executable,
             "-c",
-            "from chemdraw_tool.desktop_config import "
+            "from chempane.desktop_config import "
             "claude_config_path, resolve_uv_command, build_server_entry, install; "
             "print('ok')",
         ],
@@ -41,12 +41,12 @@ def test_pypi_users_get_an_install_command():
     data = tomllib.loads((REPO / "pyproject.toml").read_text(encoding="utf-8"))
     scripts = data["project"]["scripts"]
     assert "chemdraw-install" in scripts
-    assert scripts["chemdraw-install"].startswith("chemdraw_tool.")
+    assert scripts["chemdraw-install"].startswith("chempane.")
 
 
 def test_doctor_does_not_depend_on_the_scripts_directory():
     """Der Doctor darf seine Helfer nicht aus scripts/ ziehen."""
-    source = (REPO / "chemdraw_tool" / "doctor.py").read_text(encoding="utf-8")
+    source = (REPO / "chempane" / "doctor.py").read_text(encoding="utf-8")
     assert "from scripts" not in source
     assert "install_claude_config" not in source
 
@@ -58,7 +58,7 @@ def test_installed_package_entry_does_not_point_at_site_packages(tmp_path):
     Ein aus dem Paket heraus geschriebener Eintrag muss deshalb das installierte
     Console-Script direkt starten.
     """
-    from chemdraw_tool.desktop_config import build_installed_entry
+    from chempane.desktop_config import build_installed_entry
 
     launcher = tmp_path / "chemdraw-mcp"
     launcher.write_text("#!/bin/sh\n")

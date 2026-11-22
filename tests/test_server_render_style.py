@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from chemdraw_tool.server import batch_generate, generate_molecule, generate_reaction
+from chempane.server import batch_generate, generate_molecule, generate_reaction
 
 ASPIRIN = "CC(=O)OC1=CC=CC=C1C(=O)O"
 TRIPHENYLPHOSPHINE = "c1ccccc1P(c1ccccc1)c1ccccc1"
@@ -20,9 +20,9 @@ TRIPHENYLPHOSPHINE = "c1ccccc1P(c1ccccc1)c1ccccc1"
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
-    with patch("chemdraw_tool.server._enrich_properties", return_value={}):
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
+    with patch("chempane.server._enrich_properties", return_value={}):
         yield tmp_path
 
 
@@ -37,9 +37,9 @@ def test_default_call_renders_exactly_like_the_untouched_pipeline():
     """Referenz ist der alte Codepfad, direkt nachgebaut: resolve → 2D →
     render_svg ohne jede neue Option. Weicht das Tool davon ab, hat eine der
     neuen Optionen sich in den Default geschlichen."""
-    from chemdraw_tool.generator import generate_2d
-    from chemdraw_tool.resolver import resolve
-    from chemdraw_tool.svg_renderer import render_svg
+    from chempane.generator import generate_2d
+    from chempane.resolver import resolve
+    from chempane.svg_renderer import render_svg
 
     _, mol = resolve(ASPIRIN)
     expected = render_svg(generate_2d(mol), fill_container=True)

@@ -25,7 +25,7 @@ resource.
 
 ## Tool registration
 
-Register each public tool in `chemdraw_tool/server.py` and in its matching
+Register each public tool in `chempane/server.py` and in its matching
 area in `tests/test_server_taxonomy.py`: drawing, lab graphics, lookup,
 calculation or Anki. The tool description should distinguish its inputs
 and output from nearby tools. Update its routing cases and schema snapshot
@@ -35,7 +35,7 @@ when changing how clients select or call it.
 
 ```bash
 uv sync                      # backend dependencies
-cd chemdraw_tool/ui && npm install && npx playwright install chromium  # frontend, once
+cd chempane/ui && npm install && npx playwright install chromium  # frontend, once
 ./test.sh                    # the gate: lint, pytest, bundle freshness, JS unit and browser tests
 ```
 
@@ -47,24 +47,24 @@ guard which tool the model picks.
 The README images in `assets/` come from `scripts/readme_bilder.py`, not from
 hand edits; `tests/test_readme.py` pins their hashes.
 The panel GIFs are recorded in the panel test host (600 px wide, `hero-capsaicin` 800 px):
-`npm --prefix chemdraw_tool/ui run readme:gifs` records `demo-views`, `demo-3d` and
+`npm --prefix chempane/ui run readme:gifs` records `demo-views`, `demo-3d` and
 `demo-molecule` in a light and a dark version (`assets/demo-<scene>-light.gif`, `-dark.gif`;
 the README picks one via `<picture>`/`prefers-color-scheme`) plus `hero-capsaicin`,
 `hero-caffeine-3d` in light only, and `lysozyme-cartoon` in both. The gallery scenes are
 recorded on request, each in light and dark (`assets/<scene>-light.gif`, `-dark.gif`):
-`npm --prefix chemdraw_tool/ui run readme:gifs -- sugar-views mechanism-steps reaction-balance antibody-scheme`.
+`npm --prefix chempane/ui run readme:gifs -- sugar-views mechanism-steps reaction-balance antibody-scheme`.
 The README shows `demo-views`, `demo-3d`, `lysozyme-cartoon` and the four gallery scenes,
 each through a `<picture>` element that follows the reader's colour scheme.
 `-- views 3d --theme dark` limits scenes and theme, `--molecule NAME` swaps the molecule.
 The panel screenshots in `docs/images/` (`panel-*.png`, `protein-panel-lysozyme.png`) come from
-`SHOTS_ONLY='doku-*' node src/host/panel-shots.mjs <folder>` in `chemdraw_tool/ui`; copy each
+`SHOTS_ONLY='doku-*' node src/host/panel-shots.mjs <folder>` in `chempane/ui`; copy each
 `doku-*-light.png` by hand to its name under `docs/images/` (the mapping is noted in the script).
 The two hero scenes share one fixed 600×936 crop. The script needs network and turns red
 on width, duration, size, frame rate, a cut-off panel part or unequal hero sizes. The old
 names `demo-views.gif`, `demo-3d.gif` and `demo-molecule.gif` stay as copies of the light
 versions because PyPI and older release notes link them.
 
-`npm --prefix chemdraw_tool/ui run panel:clips` (`readme:gifs --video`) records the same scenes
+`npm --prefix chempane/ui run panel:clips` (`readme:gifs --video`) records the same scenes
 and click sequences as raw footage for YouTube Shorts: one H.264/yuv420p MP4 per scene and theme,
 30 fps, 1080 px wide (captured at device scale factor 2, i.e. 1200 px, then scaled), panel height
 without border (views 1080×1602, 3d 1080×1584, molecule 1080×1494), longer holds than the GIFs

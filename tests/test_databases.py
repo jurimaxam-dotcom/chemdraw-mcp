@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from chemdraw_tool import databases
+from chempane import databases
 
 
 def _resp(json_data=None, text=None):
@@ -31,7 +31,7 @@ def _resp(json_data=None, text=None):
 
 def test_get_cid_returns_first_cid():
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         return_value=_resp({"IdentifierList": {"CID": [2244, 999]}}),
     ):
         assert databases._get_cid("aspirin") == 2244
@@ -39,14 +39,14 @@ def test_get_cid_returns_first_cid():
 
 def test_get_cid_returns_none_on_network_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("network down")
+        "chempane.databases.requests.get", side_effect=Exception("network down")
     ):
         assert databases._get_cid("aspirin") is None
 
 
 def test_get_cid_returns_none_on_malformed_json():
     with patch(
-        "chemdraw_tool.databases.requests.get", return_value=_resp({"unexpected": {}})
+        "chempane.databases.requests.get", return_value=_resp({"unexpected": {}})
     ):
         assert databases._get_cid("aspirin") is None
 
@@ -56,13 +56,13 @@ def test_get_cid_returns_none_on_malformed_json():
 
 def test_pubchem_properties_returns_first_property_dict():
     payload = {"PropertyTable": {"Properties": [{"MolecularFormula": "C9H8O4"}]}}
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(payload)):
+    with patch("chempane.databases.requests.get", return_value=_resp(payload)):
         assert databases.pubchem_properties("aspirin") == {"MolecularFormula": "C9H8O4"}
 
 
 def test_pubchem_properties_returns_none_when_empty():
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         return_value=_resp({"PropertyTable": {"Properties": []}}),
     ):
         assert databases.pubchem_properties("nope") is None
@@ -70,7 +70,7 @@ def test_pubchem_properties_returns_none_when_empty():
 
 def test_pubchem_properties_returns_none_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("timeout")
+        "chempane.databases.requests.get", side_effect=Exception("timeout")
     ):
         assert databases.pubchem_properties("aspirin") is None
 
@@ -78,7 +78,7 @@ def test_pubchem_properties_returns_none_on_error():
 def test_pubchem_properties_by_smiles_uses_post():
     payload = {"PropertyTable": {"Properties": [{"InChIKey": "ABC"}]}}
     with patch(
-        "chemdraw_tool.databases.requests.post", return_value=_resp(payload)
+        "chempane.databases.requests.post", return_value=_resp(payload)
     ) as mock_post:
         result = databases.pubchem_properties_by_smiles("CC(=O)O")
     assert result == {"InChIKey": "ABC"}
@@ -94,7 +94,7 @@ def test_pubchem_synonyms_extracts_cas_number():
             "Information": [{"Synonym": ["aspirin", "50-78-2", "acetylsalicylic acid"]}]
         }
     }
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(payload)):
+    with patch("chempane.databases.requests.get", return_value=_resp(payload)):
         cas, others = databases.pubchem_synonyms("aspirin")
     assert cas == "50-78-2"
     assert "50-78-2" not in others
@@ -102,7 +102,7 @@ def test_pubchem_synonyms_extracts_cas_number():
 
 def test_pubchem_synonyms_cas_none_when_no_match():
     payload = {"InformationList": {"Information": [{"Synonym": ["aspirin", "ASA"]}]}}
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(payload)):
+    with patch("chempane.databases.requests.get", return_value=_resp(payload)):
         cas, others = databases.pubchem_synonyms("aspirin")
     assert cas is None
     assert "aspirin" in others
@@ -110,7 +110,7 @@ def test_pubchem_synonyms_cas_none_when_no_match():
 
 def test_pubchem_synonyms_returns_empty_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("boom")
+        "chempane.databases.requests.get", side_effect=Exception("boom")
     ):
         assert databases.pubchem_synonyms("aspirin") == (None, [])
 
@@ -170,7 +170,7 @@ def test_walk_sections_skips_information_without_value():
 
 def test_pubchem_physical_properties_returns_empty_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("503")
+        "chempane.databases.requests.get", side_effect=Exception("503")
     ):
         assert databases.pubchem_physical_properties(2244) == []
 
@@ -191,7 +191,7 @@ def test_chebi_lookup_maps_first_doc():
             ]
         }
     }
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(payload)):
+    with patch("chempane.databases.requests.get", return_value=_resp(payload)):
         result = databases.chebi_lookup("water")
     assert result["id"] == "CHEBI_15377"
     assert result["label"] == "water"
@@ -200,7 +200,7 @@ def test_chebi_lookup_maps_first_doc():
 
 def test_chebi_lookup_returns_none_when_no_docs():
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         return_value=_resp({"response": {"docs": []}}),
     ):
         assert databases.chebi_lookup("xyzzy") is None
@@ -208,7 +208,7 @@ def test_chebi_lookup_returns_none_when_no_docs():
 
 def test_chebi_lookup_returns_none_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("down")
+        "chempane.databases.requests.get", side_effect=Exception("down")
     ):
         assert databases.chebi_lookup("water") is None
 
@@ -218,19 +218,19 @@ def test_chebi_lookup_returns_none_on_error():
 
 def test_kegg_find_returns_the_entry_with_the_exact_name():
     text = "cpd:C00029\tUDP-glucose; UDPglucose\ncpd:C00031\tD-Glucose; Grape sugar; Glucose\n"
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(text=text)):
+    with patch("chempane.databases.requests.get", return_value=_resp(text=text)):
         assert databases.kegg_find("glucose") == "cpd:C00031"
 
 
 def test_kegg_find_returns_none_without_an_exact_name():
     text = "cpd:C00031\tD-Glucose; Grape sugar\ncpd:C00267\talpha-D-Glucose\n"
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(text=text)):
+    with patch("chempane.databases.requests.get", return_value=_resp(text=text)):
         assert databases.kegg_find("glucose") is None
 
 
 def test_kegg_find_returns_none_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("down")
+        "chempane.databases.requests.get", side_effect=Exception("down")
     ):
         assert databases.kegg_find("glucose") is None
 
@@ -244,7 +244,7 @@ def test_kegg_compound_parses_names_formula_and_pathways():
     )
     pathway_text = "cpd:C00031\tpath:map00010\ncpd:C00031\tpath:map00500\n"
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(text=get_text), _resp(text=pathway_text)],
     ):
         result = databases.kegg_compound("cpd:C00031")
@@ -260,7 +260,7 @@ def test_kegg_compound_formula_does_not_leak_into_names():
     indented '180.06 g/mol' line would be appended to names."""
     get_text = "NAME        Foo;\nFORMULA     C6H12O6\n            180.06 g/mol\n"
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(text=get_text), _resp(text="")],
     ):
         result = databases.kegg_compound("cpd:C00031")
@@ -287,7 +287,7 @@ def test_uniprot_search_maps_entries():
             }
         ]
     }
-    with patch("chemdraw_tool.databases.requests.get", return_value=_resp(payload)):
+    with patch("chempane.databases.requests.get", return_value=_resp(payload)):
         results = databases.uniprot_search("EGFR")
     assert len(results) == 1
     entry = results[0]
@@ -299,7 +299,7 @@ def test_uniprot_search_maps_entries():
 
 def test_uniprot_search_returns_empty_on_error():
     with patch(
-        "chemdraw_tool.databases.requests.get", side_effect=Exception("down")
+        "chempane.databases.requests.get", side_effect=Exception("down")
     ):
         assert databases.uniprot_search("EGFR") == []
 
@@ -317,7 +317,7 @@ def test_timeout_is_connect_read_tuple():
 
 def test_get_cid_passes_split_timeout():
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         return_value=_resp({"IdentifierList": {"CID": [2244]}}),
     ) as mock_get:
         databases._get_cid("aspirin")
@@ -327,7 +327,7 @@ def test_get_cid_passes_split_timeout():
 def test_pubchem_properties_passes_split_timeout():
     payload = {"PropertyTable": {"Properties": [{"MolecularFormula": "C9H8O4"}]}}
     with patch(
-        "chemdraw_tool.databases.requests.get", return_value=_resp(payload)
+        "chempane.databases.requests.get", return_value=_resp(payload)
     ) as mock_get:
         databases.pubchem_properties("aspirin")
     assert mock_get.call_args.kwargs["timeout"] == (3, 10)
@@ -336,7 +336,7 @@ def test_pubchem_properties_passes_split_timeout():
 def test_pubchem_properties_by_smiles_passes_split_timeout():
     payload = {"PropertyTable": {"Properties": [{"InChIKey": "ABC"}]}}
     with patch(
-        "chemdraw_tool.databases.requests.post", return_value=_resp(payload)
+        "chempane.databases.requests.post", return_value=_resp(payload)
     ) as mock_post:
         databases.pubchem_properties_by_smiles("CC(=O)O")
     assert mock_post.call_args.kwargs["timeout"] == (3, 10)
@@ -344,13 +344,13 @@ def test_pubchem_properties_by_smiles_passes_split_timeout():
 
 def test_kegg_and_uniprot_pass_split_timeout():
     with patch(
-        "chemdraw_tool.databases.requests.get", return_value=_resp(text="")
+        "chempane.databases.requests.get", return_value=_resp(text="")
     ) as mock_get:
         databases.kegg_find("glucose")
     assert mock_get.call_args.kwargs["timeout"] == (3, 10)
 
     with patch(
-        "chemdraw_tool.databases.requests.get", return_value=_resp({"results": []})
+        "chempane.databases.requests.get", return_value=_resp({"results": []})
     ) as mock_get:
         databases.uniprot_search("EGFR")
     assert mock_get.call_args.kwargs["timeout"] == (3, 10)
@@ -368,8 +368,8 @@ def test_ibuprofen_cas_uses_sourced_identifier_not_first_synonym(route):
         return _resp(cas_section if "pug_view" in url else synonyms)
 
     with (
-        patch("chemdraw_tool.databases.requests.get", side_effect=get),
-        patch("chemdraw_tool.databases.requests.post", return_value=_resp(synonyms)),
+        patch("chempane.databases.requests.get", side_effect=get),
+        patch("chempane.databases.requests.post", return_value=_resp(synonyms)),
     ):
         if route == "name":
             cas, others = databases.pubchem_synonyms("ibuprofen")
@@ -444,7 +444,7 @@ def test_cas_source_preference_requires_unique_valid_identifier(
         }
     }
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(synonyms), _resp(_cas_view(values, preferred))],
     ):
         assert databases.pubchem_synonyms("ibuprofen")[0] == expected
@@ -461,7 +461,7 @@ def test_cas_source_preference_requires_unique_valid_identifier(
 def test_cas_network_fallback_never_guesses_among_synonyms(synonyms, expected):
     payload = {"InformationList": {"Information": [{"CID": 3672, "Synonym": synonyms}]}}
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(payload), requests.exceptions.Timeout("offline")],
     ):
         cas, others = databases.pubchem_synonyms("probe")
@@ -476,7 +476,7 @@ def test_cas_section_for_different_cid_is_not_used():
         }
     }
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(payload), _resp(_cas_view(["50-78-2"], cid=2244))],
     ):
         assert databases.pubchem_synonyms("ibuprofen")[0] is None
@@ -500,7 +500,7 @@ def test_cas_ties_use_distinct_sources_not_repeated_entries(preferred):
     ]
     payload = {"InformationList": {"Information": [{"CID": 3672, "Synonym": []}]}}
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(payload), _resp(data)],
     ):
         assert databases.pubchem_synonyms("ibuprofen")[0] == "15687-27-1"
@@ -521,7 +521,7 @@ def test_cas_identity_corpus_replay(case):
     old = [s for s in synonyms[:30] if databases._CAS_PATTERN.fullmatch(s)]
     assert (old[0] if old else None) == case["before"]
     with patch(
-        "chemdraw_tool.databases.requests.get",
+        "chempane.databases.requests.get",
         side_effect=[_resp(case["synonyms"]), _resp(case["cas_view"])],
     ):
         assert databases.pubchem_synonyms_by_inchikey(case["key"])[0] == case["after"]

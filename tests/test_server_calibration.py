@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool.image_export import PNG_MAGIC
-from chemdraw_tool.payloads import PlotPayload
-from chemdraw_tool.server import generate_calibration_curve
+from chempane.image_export import PNG_MAGIC
+from chempane.payloads import PlotPayload
+from chempane.server import generate_calibration_curve
 
 STANDARDS = [0.1, 0.2, 0.4, 0.6, 0.8]
 SIGNALS = [0.105, 0.203, 0.402, 0.601, 0.798]
@@ -14,7 +14,7 @@ SIGNALS = [0.105, 0.203, 0.402, 0.601, 0.798]
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.PLOT_DIR", tmp_path / "diagramme")
+    monkeypatch.setattr("chempane.server.PLOT_DIR", tmp_path / "diagramme")
     return tmp_path
 
 

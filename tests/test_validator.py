@@ -1,10 +1,10 @@
-"""Tests for chemdraw_tool.validator — input + round-trip validation."""
+"""Tests for chempane.validator — input + round-trip validation."""
 
 from rdkit import Chem
 
-from chemdraw_tool.cdxml_writer import mol_to_cdxml
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.validator import (
+from chempane.cdxml_writer import mol_to_cdxml
+from chempane.generator import generate_2d
+from chempane.validator import (
     Severity,
     ValidationReport,
     validate_input,

@@ -20,14 +20,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from PIL import Image  # noqa: E402
 
-from chemdraw_tool import server as s  # noqa: E402
+from chempane import server as s  # noqa: E402
 from tests.test_server_anki import _cards  # noqa: E402
 from tests.test_server_calibration import SIGNALS, STANDARDS  # noqa: E402
 from tests.test_server_scope import ENTRIES  # noqa: E402
 from tests.test_server_spectrum import IR_PEAKS  # noqa: E402
 from tests.test_server_tlc import ESTER_LANES  # noqa: E402
 
-DIST = Path(__file__).resolve().parent.parent / "chemdraw_tool" / "ui" / "dist" / "index.html"
+DIST = Path(__file__).resolve().parent.parent / "chempane" / "ui" / "dist" / "index.html"
 
 
 def payloads() -> dict[str, object]:

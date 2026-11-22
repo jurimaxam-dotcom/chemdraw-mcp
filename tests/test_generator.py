@@ -1,6 +1,6 @@
 from rdkit import Chem
 
-from chemdraw_tool.generator import generate_2d, get_atom_positions
+from chempane.generator import generate_2d, get_atom_positions
 
 
 def test_generate_2d_adds_conformer():

@@ -125,7 +125,7 @@ def meldepflichtig(ergebnis: dict, versionen: list[dict]) -> bool:
 
 def lese_pins(root: Path) -> dict:
     pins = {}
-    paket = json.loads((root / "chemdraw_tool" / "ui" / "package.json").read_text())
+    paket = json.loads((root / "chempane" / "ui" / "package.json").read_text())
     pins["ext-apps"] = paket["dependencies"]["@modelcontextprotocol/ext-apps"]
     m = re.search(r"@anthropic-ai/mcpb@(\d+\.\d+\.\d+)", (root / "scripts" / "build-mcpb.sh").read_text())
     pins["mcpb"] = m.group(1) if m else "?"

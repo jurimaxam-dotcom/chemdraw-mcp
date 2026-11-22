@@ -458,7 +458,7 @@ def test_manifest_beschreibung_nennt_die_aktuelle_toolzahl():
     Die Zahl kommt aus dem Standardprofil, nicht aus Handarbeit."""
     import json
 
-    from chemdraw_tool.server import create_server
+    from chempane.server import create_server
 
     manifest = json.loads(
         (Path(__file__).resolve().parents[1] / "mcpb" / "manifest.json").read_text()
@@ -515,7 +515,7 @@ def test_mvp_variante_ist_das_basis_manifest():
 def test_pharma_variante_hat_eigene_id_und_festes_pharma_profil():
     import json
 
-    from chemdraw_tool.server import create_server
+    from chempane.server import create_server
 
     base = json.loads(MANIFEST.read_text())
     pharma = _variant("pharma")
@@ -572,12 +572,12 @@ def test_run_sh_reicht_das_profil_an_den_server_durch(tmp_path):
 # Standard aus: ein eingegebenes SMILES geht an keine Datenbank. Claude Desktop
 # baut aus `user_config` die Einstellungsseite und setzt boolesche Werte als Text
 # "true"/"false" in `mcp_config.env` ein (@anthropic-ai/mcpb 2.1.2,
-# dist/shared/config.js); chemdraw_tool.privacy liest genau diese Variable.
+# dist/shared/config.js); chempane.privacy liest genau diese Variable.
 
 
 @pytest.mark.parametrize("profile", ["mvp", "pharma"])
 def test_beide_bundles_haben_das_haekchen_standard_aus(profile):
-    from chemdraw_tool.privacy import ENV_VAR, SETTING_TITLE
+    from chempane.privacy import ENV_VAR, SETTING_TITLE
 
     manifest = _variant(profile)
     option = manifest["user_config"]["smiles_lookup"]

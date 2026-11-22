@@ -5,9 +5,9 @@ from pathlib import Path
 
 import numpy as np
 
-from chemdraw_tool import protein_render as pr
-from chemdraw_tool import protein_structure as ps
-from chemdraw_tool import protein_view as pv
+from chempane import protein_render as pr
+from chempane import protein_structure as ps
+from chempane import protein_view as pv
 
 FIX = Path(__file__).parent / "__fixtures__" / "pdb"
 
@@ -171,7 +171,7 @@ def test_termini_labels_sit_beside_the_structure():
     """N-/C-Marken verdecken keinen Teil des Cartoons und einander nicht."""
     from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-    from chemdraw_tool import protein_cartoon as pc
+    from chempane import protein_cartoon as pc
 
     for name, chains in (("2HHB", None), ("1HZH", ["H", "K", "L", "M"])):
         view = pr.make_view(_bb(name, chains))

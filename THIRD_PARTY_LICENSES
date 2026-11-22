@@ -1,9 +1,9 @@
 Third-party software bundled with chemdraw-mcp
 ==============================================
 
-The panel (chemdraw_tool/ui/dist/index.html) is a single file that contains
+The panel (chempane/ui/dist/index.html) is a single file that contains
 the packages below. Exact versions are pinned in
-chemdraw_tool/ui/package-lock.json. Python dependencies are not bundled; pip
+chempane/ui/package-lock.json. Python dependencies are not bundled; pip
 or uv installs them under their own licences.
 
 Panel:

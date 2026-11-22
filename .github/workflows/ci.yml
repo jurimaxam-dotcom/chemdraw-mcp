@@ -33,14 +33,14 @@ jobs:
         run: uv sync --locked
 
       - name: Install frontend dependencies
-        run: npm --prefix chemdraw_tool/ui ci
+        run: npm --prefix chempane/ui ci
 
       - name: Install Playwright Chromium
-        working-directory: chemdraw_tool/ui
+        working-directory: chempane/ui
         run: npx playwright install --with-deps chromium
 
       - name: Require the reviewed Linux reference image
-        run: test -s chemdraw_tool/ui/src/utils/__fixtures__/aspirin.expected.linux.png
+        run: test -s chempane/ui/src/utils/__fixtures__/aspirin.expected.linux.png
 
       - name: Run the gate (backend + frontend)
         run: ./test.sh

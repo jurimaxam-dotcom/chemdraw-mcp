@@ -10,7 +10,7 @@ sichtbarer Fehler, den niemand bestellt hat.
 
 import pytest
 
-from chemdraw_tool.condition_text import formula_runs, subscript_formulas
+from chempane.condition_text import formula_runs, subscript_formulas
 
 
 @pytest.mark.parametrize(

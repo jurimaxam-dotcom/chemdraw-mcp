@@ -20,7 +20,7 @@ import sys
 
 
 async def _collect() -> list[dict]:
-    from chemdraw_tool.server import mcp
+    from chempane.server import mcp
 
     tools = await mcp.list_tools()
     return [

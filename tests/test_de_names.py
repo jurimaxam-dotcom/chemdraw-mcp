@@ -8,7 +8,7 @@ die in der Messung gegen PubChem getroffen haben (scratchpad-Messung 05.11.:
 
 import pytest
 
-from chemdraw_tool.de_names import english_variant, salt_variant
+from chempane.de_names import english_variant, salt_variant
 
 
 @pytest.mark.parametrize(
@@ -132,8 +132,8 @@ def test_all_salt_word_anion_spellings_have_a_translation():
     from itertools import product
     from re import _parser
 
-    from chemdraw_tool.de_names import _ANIONS
-    from chemdraw_tool.resolver import _SALT_WORD
+    from chempane.de_names import _ANIONS
+    from chempane.resolver import _SALT_WORD
 
     def expand(tokens):
         words = [""]

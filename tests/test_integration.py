@@ -1,10 +1,10 @@
 
 from lxml import etree
 
-from chemdraw_tool.cdxml_writer import write_cdxml
-from chemdraw_tool.generator import generate_2d
-from chemdraw_tool.layout import reaction_to_cdxml, write_reaction_cdxml
-from chemdraw_tool.resolver import resolve
+from chempane.cdxml_writer import write_cdxml
+from chempane.generator import generate_2d
+from chempane.layout import reaction_to_cdxml, write_reaction_cdxml
+from chempane.resolver import resolve
 
 
 def test_end_to_end_smiles_to_cdxml(tmp_path):

@@ -4,7 +4,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chemdraw_tool.svg_renderer import (
+from chempane.svg_renderer import (
     database_payload,
     extract_atom_data,
     extract_functional_groups,
@@ -193,7 +193,7 @@ def test_ui_preview_supports_stereo_annotation():
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
-    from chemdraw_tool.svg_renderer import render_svg
+    from chempane.svg_renderer import render_svg
 
     mol = Chem.MolFromSmiles("C[C@H](N)C(=O)O")
     AllChem.Compute2DCoords(mol)

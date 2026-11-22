@@ -49,7 +49,7 @@ def _start(profile=None, vault=False):
     return subprocess.run(
         [sys.executable, "-c", """
 import asyncio, json
-from chemdraw_tool.server import mcp
+from chempane.server import mcp
 async def inspect():
     tools = await mcp.list_tools()
     resources = await mcp.list_resources()
@@ -260,7 +260,7 @@ def test_pharma_rejects_mvp_tools_instead_of_only_hiding_them():
 
     from mcp.server.mcpserver.exceptions import ToolError
 
-    from chemdraw_tool.server import create_server
+    from chempane.server import create_server
 
     with pytest.raises(ToolError, match="Unknown tool"):
         asyncio.run(create_server("pharma").call_tool("generate_molecule", {"name_or_smiles": "O"}))
@@ -289,7 +289,7 @@ def test_pharma_instructions_name_its_tools_and_point_to_chemdraw():
 def test_pharma_lists_no_study_prompts():
     import asyncio
 
-    from chemdraw_tool.server import create_server
+    from chempane.server import create_server
 
     assert asyncio.run(create_server("pharma").list_prompts()) == []
 

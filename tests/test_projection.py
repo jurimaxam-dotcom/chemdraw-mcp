@@ -10,7 +10,7 @@ import re
 import pytest
 from rdkit import Chem
 
-from chemdraw_tool.projection import (
+from chempane.projection import (
     fischer_rows,
     fischer_svg,
     haworth_ring,
@@ -221,7 +221,7 @@ def test_ring_sugar_gets_a_note_about_the_open_chain_form():
 
 @pytest.fixture
 def server(tmp_path, monkeypatch):
-    from chemdraw_tool import server as srv
+    from chempane import server as srv
 
     for const in ("OUTPUT_DIR", "REACTION_DIR", "PLOT_DIR", "ANKI_DIR"):
         monkeypatch.setattr(srv, const, tmp_path / const.lower())
@@ -289,7 +289,7 @@ def test_a_broken_projection_never_breaks_the_drawing(server, monkeypatch):
     def boom(_mol):
         raise RuntimeError("kaputt")
 
-    monkeypatch.setattr("chemdraw_tool.projection.fischer_rows", boom)
+    monkeypatch.setattr("chempane.projection.fischer_rows", boom)
     payload = server.generate_molecule(D_GLUCOSE)
     assert payload.svg.startswith("<")
     assert "fischer" not in payload.views
@@ -327,7 +327,7 @@ def key(smiles_or_mol):
     ],
 )
 def test_ring_sugar_opens_to_its_open_chain_form(ring, open_chain):
-    from chemdraw_tool.projection import open_chain_form
+    from chempane.projection import open_chain_form
 
     opened = open_chain_form(mol(ring))
     assert opened is not None and key(opened) == key(open_chain)
@@ -336,13 +336,13 @@ def test_ring_sugar_opens_to_its_open_chain_form(ring, open_chain):
 
 @pytest.mark.parametrize("name", ["methyl glucoside", "sucrose", "glucose ohne Stereo", "ethanol"])
 def test_glycosides_and_others_have_no_open_chain_form(name):
-    from chemdraw_tool.projection import open_chain_form
+    from chempane.projection import open_chain_form
 
     assert open_chain_form(mol(NOT_PROJECTABLE[name])) is None
 
 
 def test_ring_sugar_offers_fischer_of_the_open_chain(server):
-    from chemdraw_tool.projection import open_chain_form
+    from chempane.projection import open_chain_form
 
     payload = server.generate_molecule(BETA_GLCP)
     assert payload.views == ["all_h", "fischer", "haworth", "chair"]

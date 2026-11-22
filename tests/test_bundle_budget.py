@@ -13,7 +13,7 @@ wird nur bewusst, mit dem Grund im selben Commit.
 import re
 from pathlib import Path
 
-DIST = Path(__file__).resolve().parents[1] / "chemdraw_tool" / "ui" / "dist" / "index.html"
+DIST = Path(__file__).resolve().parents[1] / "chempane" / "ui" / "dist" / "index.html"
 ENGINE = re.compile(rb'<script type="text/plain" id="chem-cartoon-engine">(.*?)</script>', re.S)
 
 START_BUDGET = 650_000      # jedes Panel parst das beim Start

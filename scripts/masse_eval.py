@@ -596,7 +596,7 @@ def _ir_stoffe() -> list[dict]:
 def ir_abdeckung(_: argparse.Namespace) -> int:
     from rdkit import Chem, RDLogger
 
-    from chemdraw_tool.spectro import _IR_TABLE, expected_ir_bands
+    from chempane.spectro import _IR_TABLE, expected_ir_bands
 
     RDLogger.DisableLog("rdApp.*")
     tabellengruppen = {e["group"] for e in _IR_TABLE}
@@ -644,7 +644,7 @@ def ir_abdeckung(_: argparse.Namespace) -> int:
         "",
         "**Lücke** = Gruppe mit diagnostischer Bande ist im Molekül, aber keine passende Regel der "
         "Tabelle feuert. Gruppen ohne diagnostische Bande (tertiäres Amin, Thioether, Azo, "
-        "quartäres Ammonium) zählen nie als Lücke. Quellen für die kuratierten Ergänzungen stehen in chemdraw_tool/spectro.py.",
+        "quartäres Ammonium) zählen nie als Lücke. Quellen für die kuratierten Ergänzungen stehen in chempane/spectro.py.",
         "",
         "## Lücken der Tabelle (nach Zahl betroffener Moleküle)",
         "",
@@ -782,7 +782,7 @@ PH_SPEZ: list[tuple[str, str, dict, float | None, str]] = [
 
 
 def _ph_referenz(topic: str, p: dict) -> tuple[str, float, str]:
-    """(Feld, Wert, Herleitung) — exakt mit sympy, ohne chemdraw_tool."""
+    """(Feld, Wert, Herleitung) — exakt mit sympy, ohne chempane."""
     import sympy as sp
 
     h = sp.symbols("h", positive=True)
@@ -856,7 +856,7 @@ def ph_referenz(_: argparse.Namespace) -> int:
             assert abs(wert - lehrbuch) <= 0.02, (aid, wert, lehrbuch)
         aufgaben.append(eintrag)
     daten = {
-        "zweck": "pH-Aufgaben mit Referenzlösung außerhalb von chemdraw_tool. Gefahren von scripts/masse_eval.py ph (offline).",
+        "zweck": "pH-Aufgaben mit Referenzlösung außerhalb von chempane. Gefahren von scripts/masse_eval.py ph (offline).",
         "aufgenommen": dt.date.today().isoformat(),
         "herkunft": (
             "Referenzwert = sympy, Ladungsbilanz als Polynom in [H⁺], einzige positive reelle "
@@ -873,7 +873,7 @@ def ph_referenz(_: argparse.Namespace) -> int:
 
 
 def _ph_rechne(topic: str, p: dict) -> dict:
-    from chemdraw_tool import ph_calc
+    from chempane import ph_calc
 
     if topic == "strong_acid":
         return ph_calc.strong_acid_ph(p["concentration"])
@@ -912,7 +912,7 @@ PH_DEUTUNG = {
 def ph_pruefen(_: argparse.Namespace) -> int:
     import re
 
-    from chemdraw_tool.server import calculate_ph
+    from chempane.server import calculate_ph
 
     daten = json.loads(PH_AUFGABEN.read_text(encoding="utf-8"))["aufgaben"]
     zeilen_ab, zeilen_alle = [], []

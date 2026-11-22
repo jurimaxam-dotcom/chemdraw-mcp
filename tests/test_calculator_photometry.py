@@ -2,7 +2,7 @@
 
 import pytest
 
-from chemdraw_tool.calculator.photometry import (
+from chempane.calculator.photometry import (
     SUBSTANCE_CONSTANTS,
     calculate_gehalt_uv,
 )

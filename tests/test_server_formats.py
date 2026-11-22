@@ -10,17 +10,17 @@ from unittest.mock import patch
 
 import pytest
 
-from chemdraw_tool.image_export import PNG_MAGIC
-from chemdraw_tool.server import batch_generate, generate_molecule, generate_reaction
+from chempane.image_export import PNG_MAGIC
+from chempane.server import batch_generate, generate_molecule, generate_reaction
 
 ASPIRIN = "CC(=O)OC1=CC=CC=C1C(=O)O"
 
 
 @pytest.fixture(autouse=True)
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr("chemdraw_tool.server.OUTPUT_DIR", tmp_path / "mol")
-    monkeypatch.setattr("chemdraw_tool.server.REACTION_DIR", tmp_path / "rxn")
-    with patch("chemdraw_tool.server._enrich_properties", return_value={}):
+    monkeypatch.setattr("chempane.server.OUTPUT_DIR", tmp_path / "mol")
+    monkeypatch.setattr("chempane.server.REACTION_DIR", tmp_path / "rxn")
+    with patch("chempane.server._enrich_properties", return_value={}):
         yield tmp_path
 
 

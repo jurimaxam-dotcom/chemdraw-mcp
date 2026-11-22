@@ -29,7 +29,7 @@ import inspect
 
 import pytest
 
-from chemdraw_tool import server
+from chempane import server
 from tests.server_catalog import mcp
 
 # --- Die Bereiche ------------------------------------------------------

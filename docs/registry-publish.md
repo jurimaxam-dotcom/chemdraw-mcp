@@ -115,7 +115,7 @@ bestehenden Eintrag bereits erfüllt.
    frischer Opus-Agent liest `README.md`, `docs/tools.md`,
    `docs/installation.md`, `docs/development.md` und den neuen
    CHANGELOG-Abschnitt gegen
-   `git diff $(git describe --tags --abbrev=0)..HEAD -- chemdraw_tool/`
+   `git diff $(git describe --tags --abbrev=0)..HEAD -- chempane/`
    und meldet je Satz, der nicht mehr stimmt: Datei:Zeile, Aussage, Beleg im
    Diff. Fragen an ihn: Beschreibt jeder Absatz noch, was das Tool tut? Fehlt
    eine neue Funktion, ein neuer Parameter oder eine neue Grenze? Stehen

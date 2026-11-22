@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from chemdraw_tool import desktop_config
+from chempane import desktop_config
 
 ROOT = Path(__file__).resolve().parent.parent
 

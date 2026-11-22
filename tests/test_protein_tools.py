@@ -14,10 +14,10 @@ import pytest
 import requests
 from mcp.client import Client
 
-from chemdraw_tool import protein_structure as ps
-from chemdraw_tool import resolver
-from chemdraw_tool import server as srv
-from chemdraw_tool.resolver import NameResolutionError
+from chempane import protein_structure as ps
+from chempane import resolver
+from chempane import server as srv
+from chempane.resolver import NameResolutionError
 
 FIX = Path(__file__).parent / "__fixtures__" / "pdb"
 

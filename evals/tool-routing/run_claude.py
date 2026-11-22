@@ -146,7 +146,7 @@ def _neu_seit(pfad: Path, beginn: float) -> list[str]:
 
 
 def main_echt(auswahl: list[str]) -> int:
-    from chemdraw_tool.server import mcp
+    from chempane.server import mcp
 
     beispiele = json.loads((REPO / "evals" / "panel-beispiele.json").read_text(encoding="utf-8"))
     offen = {n: b for n, b in beispiele.items() if "auslassen" not in b}
@@ -217,7 +217,7 @@ def select_cases(cases: list[dict], offered: set[str], selection: set[str]) -> l
 def main() -> int:
     if "--echt" in sys.argv[1:]:
         return main_echt([a for a in sys.argv[1:] if a != "--echt"])
-    from chemdraw_tool.server import mcp
+    from chempane.server import mcp
 
     fälle = yaml.safe_load((HIER / "cases.yaml").read_text())["cases"]
     offered = {tool.name for tool in asyncio.run(mcp.list_tools())}

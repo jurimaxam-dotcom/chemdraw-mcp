@@ -1,6 +1,6 @@
 import pytest
 
-from chemdraw_tool.vault import VAULT_PATH, list_entries, read_entry, search
+from chempane.vault import VAULT_PATH, list_entries, read_entry, search
 
 
 @pytest.fixture(autouse=True)

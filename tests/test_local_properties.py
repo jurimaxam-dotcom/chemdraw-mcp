@@ -4,7 +4,7 @@ Desktop-Handtest 10.11.2026: `Ala-Trp-Lys-Ser-Gly` wird seit dem lokalen
 Peptid-Parser gezeichnet, PubChem führt das Peptid aber nicht — das Panel
 blieb ohne Formel und Masse.
 """
-import chemdraw_tool.server as srv
+import chempane.server as srv
 
 PENTA = "C[C@H](N)C(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)N[C@@H](CCCCN)C(=O)N[C@@H](CO)C(=O)NCC(=O)O"
 

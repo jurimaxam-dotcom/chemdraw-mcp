@@ -1,4 +1,4 @@
-"""Tests für chemdraw_tool/anki_export.py — Anki-Decks (.apkg) aus Kartenlisten.
+"""Tests für chempane/anki_export.py — Anki-Decks (.apkg) aus Kartenlisten.
 
 Spec (2026-06-11): Das Modell liefert die Fachinhalte (wie bei Spektren),
 das Tool rendert verlässliche Bilder. Eine Karte hat zwei Seiten; jede Seite
@@ -15,14 +15,14 @@ Offline: Strukturen in Tests sind SMILES (parse-first, kein Netz).
 
 import zipfile
 
-from chemdraw_tool.anki_export import (
+from chempane.anki_export import (
     CLOZE_MODEL_ID,
     MODEL_ID,
     build_package,
     deck_id_for,
     write_deck,
 )
-from chemdraw_tool.payloads import AnkiCard, CardSide, ReactionSpec
+from chempane.payloads import AnkiCard, CardSide, ReactionSpec
 
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
@@ -214,7 +214,7 @@ def test_guids_stay_stable_for_all_card_types(tmp_path):
 def test_ankiconnect_import_calls_the_local_api(tmp_path, monkeypatch):
     from unittest.mock import MagicMock
 
-    from chemdraw_tool import anki_export
+    from chempane import anki_export
 
     fake = MagicMock()
     fake.return_value.json.return_value = {"result": True, "error": None}
@@ -229,7 +229,7 @@ def test_ankiconnect_import_calls_the_local_api(tmp_path, monkeypatch):
 
 
 def test_ankiconnect_unreachable_degrades_gracefully(tmp_path, monkeypatch):
-    from chemdraw_tool import anki_export
+    from chempane import anki_export
 
     def boom(*a, **k):
         raise anki_export.requests.ConnectionError("no anki")
@@ -251,7 +251,7 @@ def _front_html(card: AnkiCard, tmp_path) -> str:
 
 
 def test_css_has_a_night_mode_rule_that_inverts_the_picture():
-    from chemdraw_tool.anki_export import _CSS
+    from chempane.anki_export import _CSS
 
     assert ".nightMode" in _CSS and ".night_mode" in _CSS
     assert "#1C1C1E" in _CSS and "#F2F2F2" in _CSS
@@ -261,7 +261,7 @@ def test_css_has_a_night_mode_rule_that_inverts_the_picture():
 def test_css_puts_no_white_box_around_the_picture():
     import re
 
-    from chemdraw_tool.anki_export import _CSS
+    from chempane.anki_export import _CSS
 
     img_rules = re.findall(r"img\s*\{([^}]*)\}", _CSS)
     assert img_rules, "keine img-Regel"
@@ -274,7 +274,7 @@ def test_css_puts_no_white_box_around_the_picture():
 
 
 def test_answer_side_shrinks_the_picture_and_hides_the_prompt():
-    from chemdraw_tool.anki_export import _CSS
+    from chempane.anki_export import _CSS
 
     # Die Antwortseite wiederholt {{FrontSide}}; nur sie trägt hr#answer.
     assert ":has(#answer) img" in _CSS and "max-height: 180px" in _CSS
@@ -300,7 +300,7 @@ def test_reversed_card_gets_no_prompt(tmp_path):
 
 
 def test_templates_stay_unchanged_so_anki_keeps_one_note_type():
-    from chemdraw_tool import anki_export
+    from chempane import anki_export
 
     assert anki_export.MODEL_ID == 1716400001
     assert anki_export._MODEL.templates[0]["afmt"] == "{{FrontSide}}<hr id=answer>{{Back}}"
@@ -356,8 +356,8 @@ def test_file_export_keeps_its_white_background():
     from PIL import Image
     from rdkit import Chem
 
-    from chemdraw_tool.generator import generate_2d
-    from chemdraw_tool.image_export import render_molecule_png, render_reaction_png
+    from chempane.generator import generate_2d
+    from chempane.image_export import render_molecule_png, render_reaction_png
 
     mol = generate_2d(Chem.MolFromSmiles("CCO"))
     for png in (

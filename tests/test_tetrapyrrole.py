@@ -20,7 +20,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors, rdMolDescriptors
 
-from chemdraw_tool.generator import (
+from chempane.generator import (
     central_metal,
     coordination_drawing,
     find_unspecified_stereo,
@@ -311,8 +311,8 @@ def test_drawing_copes_with_explicit_hydrogens():
 def test_panel_and_file_draw_the_same_metal_bonds():
     """UI-Vorschau und Datei-Export gehen beide durch coordination_drawing —
     RDKits SVG markiert jede Bindung mit den Atomen, die sie verbindet."""
-    from chemdraw_tool.image_export import render_molecule_svg
-    from chemdraw_tool.svg_renderer import render_svg
+    from chempane.image_export import render_molecule_svg
+    from chempane.svg_renderer import render_svg
 
     mol = generate_2d(_mol("siroheme"))
     metal, ns = _metal_and_nitrogens(mol)
@@ -325,7 +325,7 @@ def test_panel_and_file_draw_the_same_metal_bonds():
 def test_atom_overlay_matches_the_drawing():
     """Tooltips sitzen über den gezeichneten Atomen: Atomliste und Zeichnung
     kommen aus demselben Zeichen-Mol, das Eisen liegt mitten zwischen den N."""
-    from chemdraw_tool.svg_renderer import extract_atom_data
+    from chempane.svg_renderer import extract_atom_data
 
     mol = generate_2d(_mol("heme"))
     metal, ns = _metal_and_nitrogens(mol)
@@ -340,11 +340,11 @@ def test_atom_overlay_matches_the_drawing():
 
 def test_other_views_do_not_crash(tmp_path):
     """All-H, abgekürzte Gruppen, Stereo-Annotation, CDXML, 3D, Gruppen."""
-    from chemdraw_tool.cdxml_writer import write_cdxml
-    from chemdraw_tool.render_style import condense_groups
-    from chemdraw_tool.structure3d import atoms_and_bonds, embed_3d
-    from chemdraw_tool.svg_renderer import extract_functional_groups, render_svg
-    from chemdraw_tool.validator import validate_roundtrip
+    from chempane.cdxml_writer import write_cdxml
+    from chempane.render_style import condense_groups
+    from chempane.structure3d import atoms_and_bonds, embed_3d
+    from chempane.svg_renderer import extract_functional_groups, render_svg
+    from chempane.validator import validate_roundtrip
 
     for name in ("heme", "siroheme"):
         src = _mol(name)
@@ -363,8 +363,8 @@ def test_reaction_comparison_and_scope_draw_the_metal_bonds_too():
     """Auch in Reaktion und Vergleich sitzt das Metall verbunden in der
     Ringmitte. Geprüft über die
     Gleichheit mit einem Bild, dessen Bindungen schon vorher gesetzt sind."""
-    from chemdraw_tool.image_export import render_comparison_svg, render_reaction_svg
-    from chemdraw_tool.scope import ScopeItem, render_scope_svg
+    from chempane.image_export import render_comparison_svg, render_reaction_svg
+    from chempane.scope import ScopeItem, render_scope_svg
 
     sh = generate_2d(_mol("siroheme"))
     dd = generate_2d(_mol("heme d1"))
@@ -384,7 +384,7 @@ def test_reaction_comparison_and_scope_draw_the_metal_bonds_too():
 def test_a_failing_drawing_helper_falls_back_to_the_old_picture(monkeypatch):
     """Nur neun Strukturen sind gemessen. Wirft die Lewis-Umformung bei einer
     unbekannten, bleibt es beim alten Bild statt beim Absturz."""
-    from chemdraw_tool import generator
+    from chempane import generator
 
     def broken(*_args, **_kwargs):
         raise ValueError("Sanitize kaputt")
@@ -401,7 +401,7 @@ def test_a_failing_drawing_helper_falls_back_to_the_old_picture(monkeypatch):
 def test_abbreviated_groups_keep_the_metal_bonds(name):
     """Abgekürzte Gruppen sind Dummy-Atome (Ordnungszahl 0) — die zählen
     nicht als zweites Metall."""
-    from chemdraw_tool.render_style import condense_groups
+    from chempane.render_style import condense_groups
 
     mol = generate_2d(_mol(name))
     condensed = condense_groups(mol)
@@ -425,7 +425,7 @@ def test_heme_d1_keeps_its_inchikey():
 def test_comparison_counts_the_shared_metal_as_common():
     """Vergleich von vier Fe-Tetrapyrrolen: das Eisen haben alle vier — es darf nicht als
     Unterschied rot markiert werden (vorher: eigenes Fragment, nie im MCS)."""
-    from chemdraw_tool import image_export
+    from chempane import image_export
 
     names = ("siroheme", "heme d1", "hemin", "heme")
     mols = [generate_2d(_mol(n)) for n in names]
@@ -469,7 +469,7 @@ def test_metal_free_porphyrin_is_axis_aligned(smiles):
     assert _n_tilt(drawn) < 1.0
     # Identität: dieselbe wie ohne Drehung (eine InChI aus 2D-Koordinaten liest
     # Ring-Doppelbindungen als E/Z — das war vorher schon so) und dasselbe SMILES.
-    from chemdraw_tool import generator
+    from chempane import generator
 
     unrotated = generator._macrocycle_layout(mol, align=False)
     assert Chem.MolToInchiKey(drawn) == Chem.MolToInchiKey(unrotated)
@@ -478,7 +478,7 @@ def test_metal_free_porphyrin_is_axis_aligned(smiles):
 
 @pytest.mark.parametrize("name", ["heme", "copper phthalocyanine"])
 def test_already_aligned_macrocycles_keep_their_coordinates(name):
-    from chemdraw_tool import generator
+    from chempane import generator
 
     mol = _mol(name)
     drawn = generate_2d(mol)
