@@ -3,7 +3,7 @@
   "name": "io.github.jurimaxam-dotcom/chemdraw-mcp",
   "title": "ChemDraw MCP (unofficial)",
   "description": "Interactive chemistry panels for structures, 3D models, proteins, mechanisms, spectra and lab plots.",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "repository": {
     "url": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
     "source": "github"
@@ -12,7 +12,7 @@
     {
       "registryType": "pypi",
       "identifier": "chemdraw-mcp",
-      "version": "0.11.2",
+      "version": "0.11.3",
       "transport": {
         "type": "stdio"
       }
