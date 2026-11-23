@@ -153,9 +153,9 @@ function filmuhr() {
 }
 
 async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf, theme, molecule,
-  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos, argsDunkel }) {
+  breite: BREITE = BREITE_DESKTOP, panel = ".molecule-panel", vorlauf, datei, farben = 128, sekunden, feedHoehe, clip, inhalt, festeArgs, nahtlos, argsDunkel, feedDauer }) {
   if (FEED && theme === "dark" && argsDunkel) args = argsDunkel; // dunkler Chat vom 20.11. hatte andere Argumente
-  if (FEED) return feedSzene(browser, { theme, nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt });
+  if (FEED) return feedSzene(browser, { theme, nahtlos, name, tool, args, hoehe: feedHoehe ?? videoHoehe ?? hoehe, ablauf, molecule: festeArgs ? undefined : molecule, breite: BREITE, panel, vorlauf, clip, inhalt, dauer: feedDauer });
   if (optionen.video) { hoehe = videoHoehe ?? hoehe; fps = MODUS.fps; }
   if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES[theme];
@@ -279,7 +279,7 @@ const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g
 const mitName = (tool, args, name) => (tool === "generate_protein_or_antibody" ? { ...args, name } : { ...args, name_or_smiles: name });
 // `clip`: fester Dateiname (Szenen ohne `name_or_smiles`); `inhalt`: Höhe des Panel-iframes, wenn das Panel
 // niedriger ist als der 4:5-Ausschnitt — es steht dann senkrecht mittig statt oben mit leerer Fläche darunter.
-async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos, theme = "light" }) {
+async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, breite: BREITE, panel, vorlauf, clip, inhalt, nahtlos, dauer, theme = "light" }) {
   if (molecule) args = mitName(tool, args, molecule);
   // Chat-Stil: dunkel immer, hell mit --chat. Hell ohne --chat bleibt wie bisher (600 px, ohne Host-Kontext).
   const chat = theme === "dark" || optionen.chat ? FEED_CHAT[theme] : null;
@@ -464,7 +464,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   } finally {
     await context.close();
   }
-  return { szene: name, theme, ...feedVideo(clipName, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos) };
+  return { szene: name, theme, ...feedVideo(clipName, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos, dauer) };
 }
 
 // Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“)
@@ -490,7 +490,7 @@ function nahtMessen(dir, bilder, bewegungen) {
   return { naht: r(naht), schrittMedian: r(bewegt[bewegt.length >> 1]), schrittMax: r(bewegt.at(-1)), einheit: "YAVG des Differenzbilds, 0–255, Quellbilder" };
 }
 
-function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}, nahtlos = false) {
+function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {}, nahtlos = false, dauer = MODUS.sekunden) {
   const ziel = join(MODUS.ausgabe, `${name}.mp4`);
   const naht = nahtMessen(dir, bilder, bewegungen);
   // 2×-Master in nativer Screenshot-Größe für Ausschnitte in der Montage (Montage 18.11.: aus 1080 gezoomt wird es weich)
@@ -500,7 +500,7 @@ function feedVideo(name, dir, bilder, beats, bewegungen, quelle, rechtecke = {},
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-framerate", String(MODUS.fps), "-i", join(dir, "f%05d.jpg"),
     "-vf", `scale=${MODUS.breite}:${MODUS.hoehe}:flags=lanczos:out_range=tv,format=yuv420p`,
     "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", String(MODUS.fps), "-movflags", "+faststart", ziel]);
-  const werte = prüfenVideo(ziel, MODUS.hoehe);
+  const werte = prüfenVideo(ziel, MODUS.hoehe, dauer);
   const [mb, mh] = execFileSync(FFPROBE, ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0",
     ziel.replace(/\.mp4$/, ".master.mp4")]).toString().trim().split(",").map(Number);
   const master = { breite: mb, hoehe: mh };
@@ -602,7 +602,7 @@ function videoBauen(name, bilder, endeMs, dir, hoehe, beats, quelle, breite) {
   return { ...werte, beats: flach };
 }
 
-function prüfenVideo(ziel, sollHoehe) {
+function prüfenVideo(ziel, sollHoehe, grenzen = MODUS.sekunden) {
   const probe = JSON.parse(execFileSync(FFPROBE, ["-v", "error", "-select_streams", "v:0",
     "-show_entries", "stream=codec_name,pix_fmt,width,height,r_frame_rate,avg_frame_rate:format=duration", "-of", "json", ziel]).toString());
   const st = probe.streams[0];
@@ -615,7 +615,7 @@ function prüfenVideo(ziel, sollHoehe) {
   if (st.width !== MODUS.breite) fehler.push(`Breite ${st.width} statt ${MODUS.breite}`);
   if (st.height !== sollHoehe) fehler.push(`Höhe ${st.height} statt ${sollHoehe}`);
   if (st.height > 1920) fehler.push(`Höhe ${st.height} > 1920 (passt nicht in 9:16)`);
-  const [lo, hi] = MODUS.sekunden;
+  const [lo, hi] = grenzen;
   if (!(werte.sekunden >= lo && werte.sekunden <= hi)) fehler.push(`Dauer ${werte.sekunden} s außerhalb ${lo}–${hi}`);
   if (fehler.length) throw new Error(`ROT ${ziel}: ${fehler.join("; ")}`);
   console.log(`✔ ${ziel}: ${(werte.bytes / 1048576).toFixed(2)} MB, ${werte.breite}×${werte.hoehe}, ${werte.sekunden} s, ${werte.fps}`);
@@ -1546,6 +1546,57 @@ const SZENEN = {
       await raus(werkzeug);
       await frame.evaluate(() => document.activeElement?.blur());
       await halten(300);
+    },
+  },
+  // Stereo-Clip (23.11.2026), Limonen: Argumente wie „Draw limonene“ im Chat (Stereozentrum
+  // offen, CID 22311) → Hinweis „1 unspecified stereocenter“ → Show variants → (S) mit Keilen → 3D, eine volle
+  // Drehung in 4 s ohne Zeiger. Kein Loop (Erzählung), Ende = 3D-Ruhe nach der Drehung.
+  "kern-stereo": {
+    ...KERN, nahtlos: false, clip: "limonen-stereo", feedHoehe: 780, feedDauer: [12, 20], // Master für den Schnitt, kein Feed-Post
+    tool: "generate_molecule", args: { name_or_smiles: "limonene" },
+    async ablauf(werkzeug) {
+      nurFeed(werkzeug, "kern-stereo");
+      const { frame, page, halten, klick, imBild, rechteck, mitte, marke, drehen } = werkzeug;
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      const hinweis = frame.locator('[data-testid="stereo-note"]');
+      const text = (await hinweis.innerText()).replace(/\s+/g, " ");
+      if (!/1 unspecified stereocenter/.test(text)) throw new Error(`ROT kern-stereo: Hinweis „${text}“`);
+      await imBild(hinweis, "Stereo-Hinweis");
+      await imBild(frame.locator(".key-facts"), "Kennwerte");
+      await rechteck("panel", frame.locator(".molecule-panel"));
+      await rechteck("buehne", frame.locator(".structure-canvas"));
+      await rechteck("hinweis", hinweis);
+      await halten(1500);
+      await klick(frame.getByRole("button", { name: "Show variants" }), () => frame.locator("button.candidate").first().waitFor({ timeout: 30000 }), "Show variants");
+      const labels = await frame.locator(".candidate-label").allInnerTexts();
+      if (labels.length !== 2 || !(await frame.getByText("2 stereoisomers", { exact: false }).count()))
+        throw new Error("ROT kern-stereo: Varianten " + labels.join(" · "));
+      await rechteck("varianten", frame.locator(".candidate").first().locator(".."));
+      await halten(2000);
+      const s = frame.locator("button.candidate").filter({ has: frame.locator(".candidate-label", { hasText: /^\(S\)/ }) });
+      if (await s.count() !== 1) throw new Error("ROT kern-stereo: kein eindeutiger (S)-Kandidat: " + labels.join(" · "));
+      await klick(s, () => frame.getByRole("button", { name: "All candidates" }).waitFor({ timeout: 30000 }), "(S)-Limonene");
+      await frame.locator(".structure-canvas svg").first().waitFor();
+      await imBild(frame.locator(".structure-canvas"), "Struktur (S)");
+      await rechteck("buehne_s", frame.locator(".structure-canvas"));
+      await halten(2000);
+      const achse = frame.locator("[data-view-axis]");
+      await klick(achse.getByRole("button", { name: "3D", exact: true }), () => frame.locator("[data-view-3d] svg circle").first().waitFor({ timeout: 30000 }), "3D");
+      const fläche = frame.locator("[data-view-3d]");
+      await imBild(fläche, "3D-Fläche");
+      await rechteck("buehne_3d", fläche);
+      await halten(1300); // Einblend-Drehung (1,2 s) läuft zu Ende
+      await raus(werkzeug);
+      // Volle Drehung um die Hochachse: 2π bei 0,01 rad je Pixel, Maus per Pointer-Capture gefangen, Zeiger unsichtbar
+      const [cx, cy] = await mitte(fläche);
+      const WEG = (2 * Math.PI) / 0.01, x0 = cx - 250;
+      await page.mouse.move(x0, cy);
+      await page.mouse.down();
+      marke("drehung", "360°");
+      await drehen(4000, (anteil) => page.mouse.move(x0 + WEG * anteil, cy));
+      await page.mouse.move(x0 + WEG, cy);
+      await page.mouse.up();
+      await halten(1000);
     },
   },
   // generate_molecule dunkel, Lidocain: „Add to Anki“ → Rückmeldung (Testhost: deliver apkg → „Saved“, Desktop zeigt
