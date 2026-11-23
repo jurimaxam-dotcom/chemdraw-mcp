@@ -1553,7 +1553,7 @@ const SZENEN = {
   // Drehung in 4 s ohne Zeiger. Kein Loop (Erzählung), Ende = 3D-Ruhe nach der Drehung.
   "kern-stereo": {
     ...KERN, nahtlos: false, clip: "limonen-stereo", feedHoehe: 780, feedDauer: [12, 20], // Master für den Schnitt, kein Feed-Post
-    tool: "generate_molecule", args: { name_or_smiles: "limonene" },
+    tool: "generate_molecule", args: { name_or_smiles: "limonene", label: "Limonene" }, // label wie im Chat („Quiz me on Limonene“)
     async ablauf(werkzeug) {
       nurFeed(werkzeug, "kern-stereo");
       const { frame, page, halten, klick, imBild, rechteck, mitte, marke, drehen } = werkzeug;
