@@ -21,6 +21,20 @@ C60_SMILES = (
     "c12c3c4c5c1c1c6c7c2c2c8c3c3c9c4c4c%10c5c5c1c1c6c6c%11c7c2c2c7c8c3c3c8c9c4c4"
     "c9c%10c5c5c1c1c6c6c%11c2c2c7c3c3c8c4c4c9c5c1c1c6c2c3c41"
 )
+C70_SMILES = (
+    "C12=C3C4=C5C6=C7C8=C9C%10=C%11C%12=C%13C%10=C%10C8=C5C1=C%10C1=C%13C5=C8C1=C2"
+    "C1=C3C2=C3C%10=C%13C%14=C3C1=C8C1=C3C5=C%12C5=C8C%11=C%11C9=C7C7=C9C6=C4C2=C2"
+    "C%10=C4C(=C29)C2=C6C(=C8C8=C9C6=C4C%13=C9C(=C%141)C3=C85)C%11=C27"
+)
+PACLITAXEL_SMILES = (
+    "CC1=C2[C@@]([C@]([C@H]([C@@H]3[C@]4([C@H](OC4)C[C@@H]([C@]3(C(=O)[C@@H]2OC(=O)C)C)O)OC(=O)C)"
+    "OC(=O)C5=CC=CC=C5)(C[C@@H]1OC(=O)[C@@H]([C@H](C6=CC=CC=C6)NC(=O)C7=CC=CC=C7)O)O)(C)C"
+)
+ERYTHROMYCIN_SMILES = (
+    "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)"
+    "O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O"
+)
+CORONENE_SMILES = "c1cc2ccc3ccc4ccc5ccc6ccc1c7c2c3c4c5c67"
 
 
 def test_methane_becomes_tetrahedral_with_hydrogens():
@@ -106,3 +120,47 @@ def test_failed_embedding_raises_honest_error(monkeypatch):
     monkeypatch.setattr(AllChem, "EmbedMolecule", lambda *a, **kw: -1)
     with pytest.raises(ValueError, match="3D embedding failed"):
         embed_3d(Chem.MolFromSmiles("C"))
+
+
+def test_c70_fullerene_geometry_and_direct_route(monkeypatch):
+    """C70 gelingt direkt im Distanzgeometrie+UFF-Weg ohne ETKDG-Vorversuch."""
+    calls: list[tuple[bool, bool]] = []
+    orig = AllChem.EmbedMolecule
+
+    def spy(mol, params):
+        calls.append((params.useRandomCoords, params.useBasicKnowledge))
+        return orig(mol, params)
+
+    monkeypatch.setattr(AllChem, "EmbedMolecule", spy)
+    mol3d = embed_3d(Chem.MolFromSmiles(C70_SMILES))
+    assert calls == [(True, False)], f"Fulleren darf keinen ETKDG-Primärversuch machen: {calls}"
+    assert mol3d.GetNumAtoms() == 70
+    assert mol3d.GetNumBonds() == 105
+    conf = mol3d.GetConformer()
+    dists = [
+        conf.GetAtomPosition(b.GetBeginAtomIdx()).Distance(conf.GetAtomPosition(b.GetEndAtomIdx()))
+        for b in mol3d.GetBonds()
+    ]
+    assert all(1.36 <= d <= 1.48 for d in dists), f"C70 C-C außerhalb 1.36–1.48 Å: {min(dists):.3f}..{max(dists):.3f}"
+
+
+@pytest.mark.parametrize(
+    "name, smiles",
+    [
+        ("paclitaxel", PACLITAXEL_SMILES),
+        ("erythromycin", ERYTHROMYCIN_SMILES),
+        ("coronene", CORONENE_SMILES),
+    ],
+)
+def test_large_drugs_and_coronene_stay_on_primary_etkdg_path(monkeypatch, name, smiles):
+    """Große Arzneistoffe und flache PAKs (Coronen hat Rand-H) dürfen nicht in den Fallback kippen."""
+    calls: list[tuple[bool, bool]] = []
+    orig = AllChem.EmbedMolecule
+
+    def spy(mol, params):
+        calls.append((params.useRandomCoords, params.useBasicKnowledge))
+        return orig(mol, params)
+
+    monkeypatch.setattr(AllChem, "EmbedMolecule", spy)
+    embed_3d(Chem.MolFromSmiles(smiles))
+    assert calls == [(False, True)], f"{name} fiel aus dem Primärweg: {calls}"

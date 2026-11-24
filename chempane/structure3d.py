@@ -13,47 +13,75 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 
 _EMBED_SEED = 0xC0FFEE
-_EMBED_MAX_ITERATIONS = 50
-_EMBED_TIMEOUT_S = 3
+_PRIMARY_TIMEOUT_S = 30
+_FALLBACK_TIMEOUT_S = 10
+
+
+def _ist_fulleren(mol: Chem.Mol) -> bool:
+    """Geschlossener, rein aromatischer Kohlenstoffkäfig (C20/C60/C70 …) ohne Rand-H."""
+    return (
+        mol.GetNumAtoms() >= 20
+        and len(Chem.GetMolFrags(mol)) == 1
+        and all(
+            a.GetAtomicNum() == 6 and a.GetIsAromatic() and a.GetDegree() == 3 and a.GetTotalNumHs() == 0
+            for a in mol.GetAtoms()
+        )
+    )
+
+
+def _embed_dg(mol3d: Chem.Mol) -> int:
+    """Distanzgeometrie mit Zufallskoordinaten ohne Flachheits-/Torsionszwang (z. B. Fullerene)."""
+    fb = AllChem.ETKDGv3()
+    fb.randomSeed = _EMBED_SEED
+    fb.useRandomCoords = True
+    fb.useExpTorsionAnglePrefs = False
+    fb.useBasicKnowledge = False
+    fb.timeout = _FALLBACK_TIMEOUT_S
+    return AllChem.EmbedMolecule(mol3d, fb)
 
 
 def embed_3d(mol: Chem.Mol) -> Chem.Mol:
-    """ETKDGv3-Embedding mit expliziten H, Zeitdeckel und Kraftfeld-Optimierung.
+    """ETKDGv3-Embedding mit expliziten H, Sicherheits-Timeout und Kraftfeld-Optimierung.
 
-    Gekrümmte aromatische Käfige wie C60 scheitern an ETKDGv3s Flachheitsregeln
-    (`useBasicKnowledge`) und liefen ohne Deckel minutenlang. Nach kurzem
-    ETKDGv3-Versuch fällt die Funktion auf reine Distanzgeometrie mit
-    Zufallskoordinaten + UFF zurück (MMFF94 zwingt aromatische Ringe flach).
+    Geschlossene aromatische Kohlenstoffkäfige (Fullerene wie C60/C70) scheitern an
+    ETKDGv3s Flachheitsregeln (`useBasicKnowledge`) und gehen direkt in reine
+    Distanzgeometrie + UFF (MMFF94 zwingt aromatische Ringe flach). Alle anderen
+    Moleküle laufen unverändert über den ETKDGv3-Primärweg ohne `maxIterations`-Deckel.
     """
     mol3d = Chem.AddHs(Chem.Mol(mol))
-    params = AllChem.ETKDGv3()
-    params.randomSeed = _EMBED_SEED  # deterministisch — gleiche Eingabe, gleiches Bild
-    params.maxIterations = _EMBED_MAX_ITERATIONS
-    params.timeout = _EMBED_TIMEOUT_S
 
-    fallback = False
-    if AllChem.EmbedMolecule(mol3d, params) != 0:
+    if _ist_fulleren(mol):
         fallback = True
-        fb = AllChem.ETKDGv3()
-        fb.randomSeed = _EMBED_SEED
-        fb.useRandomCoords = True
-        fb.useExpTorsionAnglePrefs = False
-        fb.useBasicKnowledge = False
-        fb.maxIterations = _EMBED_MAX_ITERATIONS
-        fb.timeout = _EMBED_TIMEOUT_S
-        if AllChem.EmbedMolecule(mol3d, fb) != 0:
-            raise ValueError("3D embedding failed — the structure may be too unusual for a conformer.")
+        rc = _embed_dg(mol3d)
+    else:
+        fallback = False
+        params = AllChem.ETKDGv3()
+        params.randomSeed = _EMBED_SEED  # deterministisch — gleiche Eingabe, gleiches Bild
+        params.timeout = _PRIMARY_TIMEOUT_S
+        rc = AllChem.EmbedMolecule(mol3d, params)
+        if rc != 0:
+            fallback = True
+            rc = _embed_dg(mol3d)
+
+    if rc != 0:
+        raise ValueError("3D embedding failed — the structure may be too unusual for a conformer.")
 
     # MMFF meldet fehlende Parameter (Bor, Metalle) per Rückgabewert −1, nicht
-    # per Exception — der frühere try/except erreichte UFF nie. Im Käfig-Fallback
-    # direkt UFF nutzen, weil MMFF94 gekrümmte aromatische Käfige (C60) verzerrt.
-    if not fallback and AllChem.MMFFHasAllMoleculeParams(mol3d):
-        AllChem.MMFFOptimizeMolecule(mol3d)
-    else:
+    # per Exception — der frühere try/except erreichte UFF nie. Im Käfig-/Fallback-Weg
+    # direkt UFF mit 1000 Schritten nutzen, weil MMFF94 gekrümmte aromatische Käfige
+    # (C60/C70) verzerrt; im Primärweg unverändert UFF-Default.
+    if fallback:
         try:
             AllChem.UFFOptimizeMolecule(mol3d, maxIters=1000)
         except (RuntimeError, ValueError):
             pass  # auch UFF kennt das Element nicht: rohe DG-Geometrie zeigen
+    elif AllChem.MMFFHasAllMoleculeParams(mol3d):
+        AllChem.MMFFOptimizeMolecule(mol3d)
+    else:
+        try:
+            AllChem.UFFOptimizeMolecule(mol3d)
+        except (RuntimeError, ValueError):
+            pass  # auch UFF kennt das Element nicht: rohe ETKDG-Geometrie zeigen
     return mol3d
 
 
