@@ -18,6 +18,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 PLUGIN = ROOT / "plugins" / "chemdraw-mcp"
+CHEMPANE_PLUGIN = ROOT / "plugins" / "chempane"
 START = {"command": "uvx", "args": ["chempane"]}
 
 
@@ -25,15 +26,29 @@ def _json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_marketplace_listet_das_plugin_aus_dem_unterordner():
+def test_marketplace_listet_die_plugins_aus_den_unterordnern():
     market = _json(ROOT / ".claude-plugin" / "marketplace.json")
     assert market["name"] == "chemdraw-mcp"
     assert market["owner"] == {"name": "jurimaxam-dotcom"}
-    [eintrag] = market["plugins"]
-    # Unterordner statt "./": sonst landet das ganze Repo im Plugin-Cache.
-    assert eintrag["source"] == "./plugins/chemdraw-mcp"
-    # Eintragsname = Manifestname, sonst findet `install <name>@…` das Plugin nicht.
-    assert eintrag["name"] == _json(PLUGIN / ".claude-plugin" / "plugin.json")["name"] == "chemdraw-mcp"
+    by_name = {e["name"]: e for e in market["plugins"]}
+    assert set(by_name) == {"chempane", "chemdraw-mcp"}
+    for name, pfad in (("chempane", CHEMPANE_PLUGIN), ("chemdraw-mcp", PLUGIN)):
+        # Unterordner statt "./": sonst landet das ganze Repo im Plugin-Cache.
+        assert by_name[name]["source"] == f"./plugins/{name}"
+        # Eintragsname = Manifestname, sonst findet `install <name>@…` das Plugin nicht.
+        assert _json(pfad / ".claude-plugin" / "plugin.json")["name"] == name
+
+
+def test_chempane_plugin_erfuellt_directory_anforderungen():
+    manifest = _json(CHEMPANE_PLUGIN / ".claude-plugin" / "plugin.json")
+    version = manifest["version"]
+    server = _json(CHEMPANE_PLUGIN / ".mcp.json")["mcpServers"]["chempane"]
+    assert server["command"] == "uvx"
+    assert server["args"] == [f"chempane=={version}"]
+    assert server["env"] == {"CHEMPANE_PROFILE": "mvp"}
+    readme = (CHEMPANE_PLUGIN / "README.md").read_text(encoding="utf-8")
+    assert len(readme.split()) >= 40
+    assert (CHEMPANE_PLUGIN / "LICENSE").is_file()
 
 
 def test_plugin_startet_den_server_per_uvx():

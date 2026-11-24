@@ -6,6 +6,11 @@
   },
   "plugins": [
     {
+      "name": "chempane",
+      "source": "./plugins/chempane",
+      "description": "Draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit."
+    },
+    {
       "name": "chemdraw-mcp",
       "source": "./plugins/chemdraw-mcp",
       "description": "Claude draws the chemistry it talks about: structures, reactions, mechanisms and lab graphics, right in the chat."
