@@ -115,3 +115,23 @@ def test_detection_limits_are_undefined_for_perfect_data():
     limits = detection_limits(linear_regression(X, Y))
     assert limits["lod"] == 0.0
     assert any("scatter" in n.lower() or "residual" in n.lower() for n in limits["notes"])
+
+
+# Befund 24.11.2026: ein negativer Achsenabschnitt stand als „+ -0.6“ in
+# Figur und Antwort. Vorzeichen wie im übrigen Figurentext: echtes Minus (U+2212).
+NEG_X = [1.0, 2.0, 3.0, 4.0, 5.0]
+NEG_Y = [0.2, 1.0, 1.8, 2.6, 3.4]  # y = 0,8x − 0,6, exakt
+
+
+def test_negative_intercept_is_written_with_a_minus_sign():
+    r = linear_regression(NEG_X, NEG_Y)
+    assert r["equation"] == "y = 0.8 · x − 0.6"
+
+
+def test_positive_intercept_keeps_the_plus_sign():
+    assert linear_regression(X, Y)["equation"] == "y = 2 · x + 1"
+
+
+def test_read_back_with_negative_intercept_has_no_double_sign():
+    u = interpolate(1.0, linear_regression(NEG_X, NEG_Y))
+    assert u["substitution"] == "x = (1 + 0.6) / 0.8"

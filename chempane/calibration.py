@@ -19,6 +19,18 @@ LOD_FACTOR = 3.3
 LOQ_FACTOR = 10.0
 
 
+def _signed(value: float, op: str = "+") -> str:
+    """„+ 0.6“ / „− 0.6“: Rechenzeichen und Betrag, echtes Minus (U+2212).
+
+    `op` ist das Zeichen, das vor einem positiven Wert steht; ein negativer
+    Wert kehrt es um, statt „+ -0.6“ oder „− -0.6“ zu schreiben.
+    """
+    text = f"{abs(value):.6g}"
+    if value < 0 and text != "0":
+        op = "−" if op == "+" else "+"
+    return f"{op} {text}"
+
+
 def linear_regression(
     x: list[float], y: list[float], through_origin: bool = False
 ) -> dict:
@@ -92,7 +104,7 @@ def linear_regression(
         "x_max": max(x),
         "through_origin": through_origin,
         "equation": (
-            f"y = {slope:.6g} · x" + ("" if through_origin else f" + {intercept:.6g}")
+            f"y = {slope:.6g} · x" + ("" if through_origin else f" {_signed(intercept)}")
         ),
     }
 
@@ -133,7 +145,7 @@ def interpolate(signal: float, regression: dict) -> dict:
         "uncertainty": uncertainty,
         "formula": "x = (y − b) / a",
         "substitution": (
-            f"x = ({signal:.6g} − {regression['intercept']:.6g}) "
+            f"x = ({signal:.6g} {_signed(regression['intercept'], '−')}) "
             f"/ {slope:.6g}"
         ),
         "notes": notes,
