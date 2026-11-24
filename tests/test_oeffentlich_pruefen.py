@@ -405,3 +405,13 @@ def test_bot_trailer_in_commit_nachricht_erlaubt_aber_echte_mail_bleibt_rot(repo
         nachricht.write_text(boese)
         r = _lauf(repo, "--nachricht", str(nachricht))
         assert r.returncode == 1 and "E-Mail" in r.stdout, boese
+
+
+def test_bot_trailer_prueft_den_namen_weiter_gegen_die_begriffsliste(repo, tmp_path):
+    """Die Bot-Ausnahme nimmt nur die Adresse aus — ein privater Begriff im Bot-Namen bleibt rot."""
+    liste = tmp_path / "begriffe.txt"
+    liste.write_text("geheimprojekt\n")
+    nachricht = tmp_path / "MSG"
+    nachricht.write_text("Bump\n\nSigned-off-by: geheimprojekt[bot] <support@github.com>\n")
+    r = _lauf(repo, "--nachricht", str(nachricht), env={"OEFFENTLICH_BEGRIFFE": str(liste)})
+    assert r.returncode == 1 and "geheimprojekt" not in r.stdout.lower()

@@ -168,7 +168,8 @@ def pruefe_nachricht(
         if kommentare_ueberspringen and z.startswith("#"):
             continue
         if BOT_TRAILER.match(z):
-            continue
+            # nur die Bot-Adresse ausnehmen; Name und Rest laufen weiter durch die Begriffsliste
+            z = re.sub(r"<[^>]*>", "", z)
         befunde += [f"{ort}, Zeile {nr} der Commit-Nachricht: {f}" for f in textbefunde(z, "", begriffe, ich)]
     return befunde
 
