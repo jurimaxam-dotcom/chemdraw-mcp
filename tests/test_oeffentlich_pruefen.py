@@ -307,3 +307,74 @@ def test_bereich_prueft_auch_raute_zeilen_in_gespeicherten_nachrichten(repo):
     r = _lauf(repo, "--bereich", basis, spitze)
     assert r.returncode == 1
     assert spitze[:7] in r.stdout and "E-Mail" in r.stdout
+
+
+def test_bereich_merge_commit_meldet_nur_eigene_funde(repo):
+    """Ein Fund aus einem bereits bekannten Zweig darf beim Merge nicht erneut gemeldet werden;
+    ein im Merge neu eingeführter Fund dagegen schon."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    subprocess.run(["git", "checkout", "-qb", "neben"], cwd=repo, check=True)
+    neben = _commit(repo, {"docs/zweig.md": "Pfad /Users/alex/x\n"})
+    subprocess.run(["git", "checkout", "-q", "-"], cwd=repo, check=True)
+    _commit(repo, {"b.py": "y = 1\n"})
+    subprocess.run(["git", "merge", "--no-ff", "-qm", "merge neben", "--no-verify", "neben"], cwd=repo, check=True)
+    merge_sauber = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+
+    # Neben-Zweig ist schon bekannt (alt = neben): Merge selbst ist sauber.
+    r_bekannt = _lauf(repo, "--bereich", neben, merge_sauber)
+    assert r_bekannt.returncode == 0, r_bekannt.stdout
+
+    # Neben-Zweig ist im Push-Bereich (alt = basis): Fund einmal am Zweig-Commit, nicht am Merge.
+    r_beide = _lauf(repo, "--bereich", basis, merge_sauber)
+    assert r_beide.returncode == 1
+    assert neben[:7] in r_beide.stdout and "docs/zweig.md:1" in r_beide.stdout
+    assert merge_sauber[:7] not in r_beide.stdout
+
+    # Evil-Merge: Konfliktlösung/Merge führt selbst einen neuen Befund ein.
+    subprocess.run(["git", "checkout", "-qb", "neben2", basis], cwd=repo, check=True)
+    neben2 = _commit(repo, {"c.py": "z = 1\n"})
+    subprocess.run(["git", "checkout", "-q", "-"], cwd=repo, check=True)
+    subprocess.run(["git", "merge", "--no-ff", "--no-commit", "neben2"], cwd=repo, check=True)
+    (repo / "docs").mkdir(exist_ok=True)
+    (repo / "docs/evil.md").write_text("Kontakt: erika.muster@example.org\n")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "evil merge", "--no-verify"], cwd=repo, check=True)
+    merge_evil = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+    r_evil = _lauf(repo, "--bereich", neben2, merge_evil)
+    assert r_evil.returncode == 1
+    assert merge_evil[:7] in r_evil.stdout and "docs/evil.md:1" in r_evil.stdout
+
+
+def test_bereich_prueft_root_commit_ueber_leeren_baum(repo):
+    """Ein Root-Commit ohne Eltern (z. B. per Orphan-Branch gemergt) wird gegen LEERER_BAUM geprüft."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    haupt = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+    subprocess.run(["git", "checkout", "--orphan", "wurzel"], cwd=repo, check=True)
+    subprocess.run(["git", "rm", "-rfq", "."], cwd=repo, check=True)
+    wurzel = _commit(repo, {"docs/wurzel.md": "Pfad /Users/alex/x\n"})
+    subprocess.run(["git", "checkout", "-q", haupt], cwd=repo, check=True)
+    subprocess.run(
+        ["git", "merge", "--allow-unrelated-histories", "--no-ff", "-qm", "merge wurzel", "--no-verify", "wurzel"],
+        cwd=repo, check=True,
+    )
+    spitze = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+    r = _lauf(repo, "--bereich", basis, spitze)
+    assert r.returncode == 1
+    assert wurzel[:7] in r.stdout and "docs/wurzel.md:1" in r.stdout
+    assert spitze[:7] not in r.stdout
+
+
+def test_bereich_sperrt_ungeprueftes_bild_in_frueherem_commit_trotz_spaeterer_freigabe(repo):
+    """Bild in Commit A (ungeprüft), neue Fassung in Commit B mit OEFFENTLICH_GESEHEN freigegeben:
+    Push basis..B muss sperren, weil Commit A ein ungeprüftes Bild veröffentlicht."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    commit_a = _commit(repo, {"assets/p.png": _png(600, 400)})
+    # Commit B ersetzt das Bild durch eine andere Fassung und gibt diese frei.
+    assert _pruefe(repo, {"assets/p.png": _png(640, 400)}, {"OEFFENTLICH_GESEHEN": "assets/p.png"}).returncode == 0
+    subprocess.run(["git", "commit", "-qm", "neues bild", "--no-verify"], cwd=repo, check=True)
+    commit_b = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+
+    r = _lauf(repo, "--bereich", basis, commit_b)
+    assert r.returncode == 1
+    assert commit_a[:7] in r.stdout and "assets/p.png" in r.stdout
+    assert commit_b[:7] not in r.stdout
