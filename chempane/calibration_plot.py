@@ -11,6 +11,7 @@ from collections.abc import Sequence
 
 from matplotlib.figure import Figure
 
+from chempane.calibration import format_number
 from chempane.ph_plots import DPI, FIGSIZE, _fig_png, _fig_svg, safe_text  # noqa: F401
 
 POINT_COLOR = "#1f77b4"
@@ -134,7 +135,9 @@ def _place_sample_labels(fig, ax, regression, x, y, line_x, labels) -> None:
         )
 
     for u, conc, sig in labels:
-        text = f"{conc:.4g}" + (" (extrapolated)" if u.get("extrapolated") else "")
+        text = format_number(conc, ".4g") + (
+            " (extrapolated)" if u.get("extrapolated") else ""
+        )
         candidates = _corners(conc, line_x, regression["slope"] >= 0)
         for dx, dy in candidates:
             ann = put(text, conc, sig, dx, dy)

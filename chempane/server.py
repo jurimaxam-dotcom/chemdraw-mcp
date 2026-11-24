@@ -1953,7 +1953,8 @@ def generate_calibration_curve(
     notes: list[str] = []
     for u in unknowns:
         line = (
-            f"Signal {u['signal']:.6g} → **{u['concentration']:.6g}** "
+            f"Signal {calibration.format_number(u['signal'])} → "
+            f"**{calibration.format_number(u['concentration'])}** "
             f"({u['formula']}: {u['substitution']})"
         )
         if u["extrapolated"]:

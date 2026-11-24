@@ -19,13 +19,19 @@ LOD_FACTOR = 3.3
 LOQ_FACTOR = 10.0
 
 
+def format_number(value: float, fmt: str = ".6g") -> str:
+    """Zahl mit echtem Minus (U+2212) statt ASCII-Bindestrich."""
+    text = f"{abs(value):{fmt}}".replace("-", "−")
+    return f"−{text}" if value < 0 and text != "0" else text
+
+
 def _signed(value: float, op: str = "+") -> str:
     """„+ 0.6“ / „− 0.6“: Rechenzeichen und Betrag, echtes Minus (U+2212).
 
     `op` ist das Zeichen, das vor einem positiven Wert steht; ein negativer
     Wert kehrt es um, statt „+ -0.6“ oder „− -0.6“ zu schreiben.
     """
-    text = f"{abs(value):.6g}"
+    text = f"{abs(value):.6g}".replace("-", "−")
     if value < 0 and text != "0":
         op = "−" if op == "+" else "+"
     return f"{op} {text}"
@@ -104,7 +110,8 @@ def linear_regression(
         "x_max": max(x),
         "through_origin": through_origin,
         "equation": (
-            f"y = {slope:.6g} · x" + ("" if through_origin else f" {_signed(intercept)}")
+            f"y = {format_number(slope)} · x"
+            + ("" if through_origin else f" {_signed(intercept)}")
         ),
     }
 
@@ -126,8 +133,8 @@ def interpolate(signal: float, regression: dict) -> dict:
     )
     if extrapolated:
         notes.append(
-            f"{concentration:.4g} lies outside the calibrated range "
-            f"{regression['x_min']:.4g} … {regression['x_max']:.4g}. The line was "
+            f"{format_number(concentration, '.4g')} lies outside the calibrated range "
+            f"{format_number(regression['x_min'], '.4g')} … {format_number(regression['x_max'], '.4g')}. The line was "
             "never verified there — dilute the sample into the range or extend "
             "the calibration instead of trusting this number."
         )
@@ -138,6 +145,8 @@ def interpolate(signal: float, regression: dict) -> dict:
     if regression["s_y"] > 0 and slope != 0:
         uncertainty = regression["s_y"] / abs(slope)
 
+    divisor = f"({format_number(slope)})" if slope < 0 else format_number(slope)
+
     return {
         "signal": signal,
         "concentration": concentration,
@@ -145,8 +154,8 @@ def interpolate(signal: float, regression: dict) -> dict:
         "uncertainty": uncertainty,
         "formula": "x = (y − b) / a",
         "substitution": (
-            f"x = ({signal:.6g} {_signed(regression['intercept'], '−')}) "
-            f"/ {slope:.6g}"
+            f"x = ({format_number(signal)} {_signed(regression['intercept'], '−')}) "
+            f"/ {divisor}"
         ),
         "notes": notes,
     }
@@ -171,8 +180,8 @@ def detection_limits(regression: dict) -> dict:
 
     if lod > regression["x_min"]:
         notes.append(
-            f"The limit of detection ({lod:.4g}) is above the lowest standard "
-            f"({regression['x_min']:.4g}) — that standard is below what the "
+            f"The limit of detection ({format_number(lod, '.4g')}) is above the lowest standard "
+            f"({format_number(regression['x_min'], '.4g')}) — that standard is below what the "
             "method can detect and should not anchor the line."
         )
 
@@ -181,6 +190,6 @@ def detection_limits(regression: dict) -> dict:
         "loq": loq,
         "s_y": s_y,
         "formula": "LOD = 3.3 · s(y) / a,  LOQ = 10 · s(y) / a",
-        "substitution": f"s(y) = {s_y:.6g}, a = {slope:.6g}",
+        "substitution": f"s(y) = {format_number(s_y)}, a = {format_number(slope)}",
         "notes": notes,
     }
