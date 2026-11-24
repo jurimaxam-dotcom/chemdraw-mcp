@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/).
 
+## 0.12.1 (unreleased)
+
+Output fixes. No tool, schema or panel change.
+
+### Fixed
+
+- Calibration curve: a negative intercept is written as "y = 0.8 · x − 0.6" instead of "y = 0.8 · x + -0.6", in the figure and in the answer; the read-back line no longer shows "− -0.6" either.
+- Cubane, adamantane and other cages with only one possible stereoisomer no longer report unspecified stereocentres (cubane showed 8, adamantane 4). Carvone, menthol and other molecules with real open centres are reported as before.
+
 ## [Unreleased]
 
 ## [0.12.0] — 2026-11-24
