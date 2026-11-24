@@ -311,9 +311,10 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
     hiddenByVariants ? "" : moleculeContext(data, { view, drawing: shown, is3d: show3d && Boolean(conformer), pinned, revealed, sources: sheet?.sources }),
     hiddenByVariants ? "" : moleculeSummary(data),
   );
+  const remote = Boolean(data.remote);
   const followUps = view === "study"
     ? studyFollowUps({ name: data.name, smiles, nameRevealed: nameOpen })
-    : moleculeFollowUps({ name: data.name, smiles, groups, atoms: data.atoms, pinned });
+    : moleculeFollowUps({ name: data.name, smiles, groups, atoms: data.atoms, pinned, remote });
 
   if (showVariants && variants) {
     return (
@@ -335,14 +336,14 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
     { key: "mass", label: "Molar mass", value: molarMass(props.mw) },
     { key: "cas", label: "CAS", value: props.cas, copy: props.cas || undefined },
   ];
-  const axis = (views.length > 0 || query) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
+  const axis = (views.length > 0 || (!remote && query)) && <div className="seg view-axis" data-view-axis="" role="group" aria-label="Drawing">
     <AxisButton pressed={!show3d && shown === "skeletal"} onClick={showSkeletal}
       title="Skeletal formula">2D</AxisButton>
     {DRAWING_TOGGLES.filter((t) => views.includes(t.key)).map((t) =>
       <AxisButton key={t.key} pressed={!show3d && shown === t.key} busy={drawingBusy === t.key}
         onClick={() => toggleDrawing(t.key)}
         title={!show3d && shown === t.key ? "Back to the skeletal formula" : t.title}>{t.label}</AxisButton>)}
-    {query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
+    {!remote && query && <AxisButton pressed={show3d} busy={conformerBusy} onClick={toggle3d}
       title={show3d ? "Back to the 2D drawing" : "Rotatable 3D model (ETKDG + force field)"}>3D</AxisButton>}
   </div>;
 
@@ -360,7 +361,7 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
         subtitle={record}
         subtitleTitle={record || undefined}
         foundAs={data.foundAs}
-        tabs={query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study />}
+        tabs={query && <ViewToggle view={view} onChange={handleView} loading={loading} idPrefix={uid} study showData={!remote} />}
         // expandable=false: Einbettungen, in denen ein anderer Teil das Panel vergrößert.
         expand={expandable && canRequestFullscreen(hostContext) && app?.requestDisplayMode && <ExpandButton app={app} hostContext={hostContext} />}
       />
@@ -425,13 +426,14 @@ export default function MoleculeView({ data, expandable = true, initialSheet = n
           Konformers und Export der aktuellen Drehlage — die Kuhle ist reines SVG. */}
       {/* Im Lernmodus ohne Files und ohne Export: beide tragen den Namen (Dateiname). hideFiles
           lässt Schalter und Liste ganz weg, nicht nur zugeklappt. */}
-      <PanelFoot files={footer3d ? fileEntries(conformer.files) : fileEntries(data.files)} hideFiles={study}>
+      <PanelFoot files={remote ? [] : (footer3d ? fileEntries(conformer.files) : fileEntries(data.files))} hideFiles={study || remote}>
         {study ? null : footer3d
           ? <ExportPngButton filename={`${data.name || "molecule"}-3d`}
+              allowServerSave={!remote}
               getSvg={() => serializeLiveSvg(viewer3d.current?.querySelector("svg"))}
               background={() => panelBackground(viewer3d.current)} />
-          : svg && <ExportPngButton svg={svg} filename={data.name || "molecule"} />}
-        {smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
+          : svg && <ExportPngButton svg={svg} filename={data.name || "molecule"} allowServerSave={!remote} />}
+        {!remote && smiles && <AddToAnkiButton smiles={smiles} name={data.name} formula={formula} cas={props.cas} />}
       </PanelFoot>
     </Panel>
   );

@@ -122,19 +122,21 @@ function mechanismAction(mech, who) {
  * Knöpfe unter einer Strukturformel. `pinned` = festgehaltene Auswahl (U4):
  * eine Gruppe bringt zwei Knöpfe vorn, die sich auf sie beziehen.
  */
-export function moleculeFollowUps({ name, smiles, groups, atoms, pinned }) {
+export function moleculeFollowUps({ name, smiles, groups, atoms, pinned, remote = false }) {
   const who = ref({ name, smiles });
   const short = (name || "").trim();
   const quizLabel = short && short.length <= MAX_LABEL_NAME && short !== smiles
     ? `Quiz me on ${short}` : "Quiz me on this compound";
-  const mech = mechanismFor(groups, atoms);
-  const general = [
-    ...(mech ? [mechanismAction(mech, who)] : []),
-    { id: "ir", label: "Predict the IR bands", text: `Predict the IR bands of ${who}.` },
-    { id: "compare", label: "Compare with a related compound",
-      text: `Compare ${who} with a closely related compound and draw both structures side by side.` },
-    { id: "quiz", label: quizLabel, text: `Quiz me on ${who}: ask one question at a time and wait for my answer.` },
-  ];
+  const mech = remote ? null : mechanismFor(groups, atoms);
+  const general = remote
+    ? [{ id: "quiz", label: quizLabel, text: `Quiz me on ${who}: ask one question at a time and wait for my answer.` }]
+    : [
+        ...(mech ? [mechanismAction(mech, who)] : []),
+        { id: "ir", label: "Predict the IR bands", text: `Predict the IR bands of ${who}.` },
+        { id: "compare", label: "Compare with a related compound",
+          text: `Compare ${who} with a closely related compound and draw both structures side by side.` },
+        { id: "quiz", label: quizLabel, text: `Quiz me on ${who}: ask one question at a time and wait for my answer.` },
+      ];
   const group = pinned?.kind === "group" ? (groups || []).find((g) => g.name === pinned.name) : null;
   if (group) {
     const label = groupInfo(group.name).label.toLowerCase();

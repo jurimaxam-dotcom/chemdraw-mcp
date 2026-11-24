@@ -19,7 +19,7 @@ const ERROR_MS = 8000;
 //
 // svg: fertiger SVG-String · getSvg: liefert ihn erst beim Klick (3D: die
 // aktuelle Drehlage) · background: Farbe oder Funktion, die sie beim Klick liefert.
-export default function ExportPngButton({ svg, getSvg, filename, size, background = "#fff" }) {
+export default function ExportPngButton({ svg, getSvg, filename, size, background = "#fff", allowServerSave = true }) {
   const app = useAppBridge();
   const report = useContext(FooterStatus);
   const [status, setStatus] = useState("idle");
@@ -90,7 +90,25 @@ export default function ExportPngButton({ svg, getSvg, filename, size, backgroun
       } catch {
         // fall through to backend file save
       }
-      // 2. Fallback: backend writes the file.
+      // 2. Fallback: browser download in remote mode, or backend file save locally.
+      if (!allowServerSave) {
+        try {
+          if (typeof URL?.createObjectURL === "function") {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${(filename || "molecule").replace(/\.png$/i, "")}.png`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL?.(url), 1000);
+            flash("copied");
+            return;
+          }
+        } catch {
+          // fall through to clear error
+        }
+        fail("clipboard access is blocked in this host");
+        return;
+      }
       if (!app?.callServerTool) {
         fail("the clipboard is blocked here and there is no connection to the server");
         return;
