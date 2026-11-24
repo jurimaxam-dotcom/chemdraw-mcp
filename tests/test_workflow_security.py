@@ -55,3 +55,36 @@ def test_publish_workflow_laesst_handstart_nur_fuer_v_tags_zu():
         assert "startsWith(github.ref, 'refs/tags/v')" in bedingung, (
             f"publish.yml Job {job_name!r} braucht if: startsWith(github.ref, 'refs/tags/v')"
         )
+
+
+def test_doku_waechter_sichert_body_vor_modell_und_trennt_artefakte():
+    """body.md muss vor dem claude-code-action-Schritt als eigenes Artefakt hochgeladen werden,
+    damit das Modell den ungefilterten Issue-Body nicht per Write überschreiben kann."""
+    wf = _lade("doku-waechter.yml")
+    steps = wf["jobs"]["pruefen"]["steps"]
+    claude_idx = next(i for i, s in enumerate(steps) if "claude-code-action" in str(s.get("uses", "")))
+    uploads = [
+        (i, s.get("with") or {})
+        for i, s in enumerate(steps)
+        if "actions/upload-artifact" in str(s.get("uses", ""))
+    ]
+    body_uploads = [(i, w) for i, w in uploads if "body.md" in str(w.get("path", ""))]
+    einordnung_uploads = [(i, w) for i, w in uploads if "einordnung.md" in str(w.get("path", ""))]
+
+    assert body_uploads, "Kein Upload-Schritt für body.md gefunden"
+    assert all(i < claude_idx for i, _ in body_uploads), "Upload von body.md muss vor claude-code-action liegen"
+    assert einordnung_uploads, "Kein eigener Upload-Schritt für einordnung.md gefunden"
+    assert all(i > claude_idx for i, _ in einordnung_uploads), "Upload von einordnung.md muss nach claude-code-action liegen"
+    for _, w in einordnung_uploads:
+        assert "body.md" not in str(w.get("path", "")), "Einordnungs-Artefakt darf body.md nicht enthalten"
+        assert w.get("name") != body_uploads[0][1].get("name"), "Body und Einordnung müssen getrennte Artefakte sein"
+
+
+def test_workflows_setzen_explizite_permissions_fuer_jeden_job():
+    """CodeQL #17/#3: jeder Job in ci.yml, publish.yml und doku-waechter.yml hat effektive permissions."""
+    for datei in ("ci.yml", "publish.yml", "doku-waechter.yml"):
+        wf = _lade(datei)
+        assert "permissions" in wf, f"{datei}: Top-Level-permissions fehlt"
+        for job_name, job in wf["jobs"].items():
+            eff = job["permissions"] if "permissions" in job else wf["permissions"]
+            assert isinstance(eff, dict) and eff, f"{datei} Job {job_name!r}: keine effektiven permissions"

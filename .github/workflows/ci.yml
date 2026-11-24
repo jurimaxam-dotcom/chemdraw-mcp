@@ -5,9 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+permissions: {}
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     # Untergrenze und Entwicklerversion. Python 3.13 dedentiert Docstrings beim
     # Kompilieren, 3.11/3.12 nicht — das Gate war einen Monat lokal gruen und
     # auf dem 3.12-System-Python des Runners rot (Tool-Beschreibungen ueber 2 KB).

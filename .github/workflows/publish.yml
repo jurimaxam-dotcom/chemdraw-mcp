@@ -16,6 +16,8 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   # Vorab-Pruefung (06.11.2026): Doku und CHANGELOG passen zum Code, bevor
   # etwas auf PyPI landet. Rot hier = kein Build, kein Upload. Was sich nicht
@@ -50,6 +52,8 @@ jobs:
   build:
     needs: check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
