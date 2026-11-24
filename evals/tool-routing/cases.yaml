@@ -236,6 +236,15 @@ cases:
       Konformation auf Englisch ohne Sessel — der dritte, andersartige
       Ausloeser fuer generate_3d, den der Cyclohexan-Fall bis 13.11. trug.
 
+  - id: desktop-draw-c60-3d
+    prompt: "Draw buckminsterfullerene in 3D"
+    expect: generate_3d
+    forbidden: [generate_molecule, generate_protein_or_antibody, lookup]
+    why: >
+      Desktop-Befund 11.11.2026 (Faden 20261111-115916): „Draw
+      buckminsterfullerene in 3D“ landete beim eingebauten Visualize-Widget
+      statt bei generate_3d.
+
   # --- Nachschlagen: der benannte Einzelwert --------------------------------
   - id: lookup-named-value
     prompt: "Was ist die CAS-Nummer von Paracetamol?"
@@ -332,6 +341,15 @@ cases:
     why: >
       Deutscher Zeichenauftrag mit INN: dasselbe wie „Draw trastuzumab“ —
       Fab-Fragment, ehrlich beschriftet, nicht das ganze IgG.
+
+  - id: desktop-draw-hemoglobin
+    prompt: "Draw hemoglobin"
+    expect: generate_protein_or_antibody
+    forbidden: [generate_molecule, generate_3d, lookup, lookup_molecule_data]
+    why: >
+      Desktop-Befund 11.11.2026 (Faden 20261111-115916): „Draw hemoglobin“
+      landete beim eingebauten Visualize-Widget statt bei
+      generate_protein_or_antibody.
 
   - id: lookup-protein-function
     prompt: "Welche Funktion hat Lysozym und welche EC-Nummer?"
