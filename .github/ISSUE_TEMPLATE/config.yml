@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Question or "look what I made"
-    url: https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions
+    url: https://github.com/chempane/chempane/discussions
     about: Questions, ideas that are not a bug, and what you used it for — in Discussions.
   - name: Installation help
-    url: https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/getting-started.md#troubleshooting
-    about: Diagnose installation and connection problems with chemdraw-doctor.
+    url: https://github.com/chempane/chempane/blob/main/docs/getting-started.md#troubleshooting
+    about: Diagnose installation and connection problems with chempane-doctor.

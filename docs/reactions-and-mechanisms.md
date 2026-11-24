@@ -19,7 +19,7 @@ catalyst, under reflux, as an equilibrium"*:
   (`conditions_below`). Formula digits are subscripted: H2SO4 becomes H₂SO₄.
 - **Arrows**: forward (→), equilibrium (⇌) or retrosynthetic (⇒, target on the
   left).
-- **Files**: PNG and SVG in one folder per scheme under `~/ChemDraw-Output/`;
+- **Files**: PNG and SVG in one folder per scheme under `~/chempane-output/`;
   add CDXML on request.
 
 ## Balance check and Apply coefficients

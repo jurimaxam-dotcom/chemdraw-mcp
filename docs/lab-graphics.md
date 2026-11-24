@@ -2,7 +2,7 @@
 
 Schematic spectra, TLC plates, titration curves, species distributions and pH
 calculations from the default profile, and what the connector
-`chemdraw-pharma` (profile `pharma`, also part of `full`) adds.
+`chempane-pharma` (profile `pharma`, also part of `full`) adds.
 These tools draw the numbers they are given. For a named compound Claude
 supplies typical literature values from memory: check them before they go
 into a report.
@@ -77,15 +77,15 @@ approximation beside it. Measured answers:
 | 100 mL 0.1 M buffer pH 7.4, pKa 7.2 | base : acid 1.58 : 1, 0.003869 mol acid and 0.006131 mol base; with the molar masses it gives grams |
 
 Claude Desktop often answers a pH question from memory without calling the
-tool. Add "use ChemDraw" to the prompt to get the worked answer.
+tool. Add "use chempane" to the prompt to get the worked answer.
 
 ## Only in the full profile
 
-The connector `chemdraw-pharma` (profile `pharma`) adds seven tools; the
+The connector `chempane-pharma` (profile `pharma`) adds seven tools; the
 `full` profile contains them too. To use them, install the second bundle or
-run `chemdraw-install`, and turn `chemdraw-pharma` on in the connector menu
-next to `chemdraw` — both can stay on. With your own config set
-`CHEMDRAW_PROFILE=pharma` for a second entry or `full` for a single one
+run `chempane-install`, and turn `chempane-pharma` on in the connector menu
+next to `chempane` — both can stay on. With your own config set
+`CHEMPANE_PROFILE=pharma` for a second entry or `full` for a single one
 ([Configuration](configuration.md)).
 
 - `generate_calibration_curve`: least-squares line, unknowns read back,

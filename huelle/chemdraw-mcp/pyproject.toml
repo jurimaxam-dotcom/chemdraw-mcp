@@ -4,14 +4,14 @@
 # der Abhängigkeit laufen mit der Version im Wurzel-pyproject (Test).
 [project]
 name = "chemdraw-mcp"
-version = "0.11.3"
+version = "0.12.0"
 description = "Renamed to chempane. This package installs chempane and keeps the old commands working."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "jurimaxam-dotcom" }]
 requires-python = ">=3.11"
-dependencies = ["chempane>=0.11.3"]
+dependencies = ["chempane>=0.12.0"]
 classifiers = [
     "Development Status :: 7 - Inactive",
     "Programming Language :: Python :: 3",
@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/jurimaxam-dotcom/chemdraw-mcp"
+Repository = "https://github.com/chempane/chempane"
 
 [project.scripts]
 chemdraw-mcp = "chemdraw_tool.server:main"

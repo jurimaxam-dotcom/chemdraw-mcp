@@ -46,7 +46,7 @@ disagree evenly, the field stays empty.
 
 Claude Desktop often answers such questions from memory without calling the
 tool (measured 0 of 3 chats each for solubility, IR bands and pH questions).
-Add "use ChemDraw" to the prompt when you want the database answer.
+Add "use chempane" to the prompt when you want the database answer.
 
 ## Expected spectra
 

@@ -1,6 +1,6 @@
 # Development
 
-How chemdraw-mcp is built and tested. Python 3.11+, package manager `uv`.
+How chempane is built and tested. Python 3.11+, package manager `uv`.
 
 ## How it works
 

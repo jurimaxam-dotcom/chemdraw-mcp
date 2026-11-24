@@ -24,9 +24,7 @@ user's own env values. Rule for everything the user sees: **write new, read old,
 `chempane/settings.py` is the only place that reads `CHEMPANE_*` (falls back to `CHEMDRAW_*`) and picks the output
 folder (`~/chempane-output`, an existing `~/ChemDraw-Output` stays in use). `huelle/chemdraw-mcp` is the old PyPI
 package as a shell: only the shim `chemdraw_tool` (three `main` re-exports) and the four old commands, depending on
-`chempane>=<version>` (`tests/test_huelle.py`; measured upgrade paths in the plan). **User docs (README, `docs/` except
-the developer pages) keep the old names until release 0.12.0** — `main` is live while PyPI still has 0.11.3, which
-reads only `CHEMDRAW_*`; the switch is a release step in the plan.
+`chempane>=<version>` (`tests/test_huelle.py`; measured upgrade paths in the plan). User docs use the new names as of release 0.12.0; old commands and environment variables remain compatible until 1.0.
 
 `install.sh` registers the server via `chempane/desktop_config.py`
 (idempotent merge, writes a `.bak` backup, never touches other configured MCP

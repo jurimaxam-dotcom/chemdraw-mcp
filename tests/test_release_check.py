@@ -77,3 +77,26 @@ def test_release_checkliste_steht_im_release_ablauf():
     teil = ablauf[ablauf.index("## Release-Reihenfolge im Ganzen") :]
     assert "git diff" in teil and "docs/tools.md" in teil and "README.md" in teil
     assert "release_check.py" in teil
+
+
+def test_registry_skript_erkennt_bereits_veroeffentlichten_org_eintrag(tmp_path):
+    """Nach Actions-Publish braucht die Org keinen persönlichen Device-Login."""
+    import json
+    import os
+    import subprocess
+
+    server = json.loads((ROOT / "server.json").read_text())
+    response = {"server": server, "_meta": {"io.modelcontextprotocol.registry/official": {"isLatest": True}}}
+    curl = tmp_path / "curl"
+    curl.write_text("#!/bin/sh\nprintf '%s\\n' '" + json.dumps(response) + "'\n")
+    curl.chmod(0o755)
+    publisher = tmp_path / "mcp-publisher"
+    publisher.write_text("#!/bin/sh\necho 'Unerwarteter Device-Login' >&2\nexit 99\n")
+    publisher.chmod(0o755)
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts/publish-registry.sh")],
+        env={**os.environ, "PATH": f"{tmp_path}:{os.environ['PATH']}"},
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert server["version"] in result.stdout

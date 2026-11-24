@@ -50,9 +50,9 @@ why.
 When PubChem does not know the InChIKey, you can let the server send the SMILES
 itself:
 
-- **Claude Desktop extension:** Settings → Extensions → ChemDraw MCP → turn on
+- **Claude Desktop extension:** Settings → Extensions → chempane → turn on
   **Look up typed structures by SMILES** (both bundles have it).
-- **Everywhere else:** set `CHEMDRAW_SMILES_LOOKUP=1` in the server's
+- **Everywhere else:** set `CHEMPANE_SMILES_LOOKUP=1` in the server's
   environment (`true`, `yes` and `on` work too) and restart the server.
 
 With it on, a structure whose InChIKey PubChem does not know is posted to
@@ -61,18 +61,18 @@ ChEBI, UniProt or KEGG. Leave it off for unpublished structures.
 
 ## Logs
 
-The server keeps `~/ChemDraw-Output/server.log` on your computer, rotated at
+The server keeps `~/chempane-output/server.log` on your computer, rotated at
 1 MB with two older files. At the default level it records start-up, requests
 and errors, and a name when its lookup needed a second attempt or failed. With
-`CHEMDRAW_LOG_LEVEL=DEBUG` it records every lookup URL and therefore every name
+`CHEMPANE_LOG_LEVEL=DEBUG` it records every lookup URL and therefore every name
 you asked for. Nothing in the log is sent anywhere.
 
 ## How to check
 
-1. Run `chemdraw-doctor`. Its "SMILES lookup" line says "SMILES lookup: off — a
+1. Run `chempane-doctor`. Its "SMILES lookup" line says "SMILES lookup: off — a
    structure you type (SMILES, InChI) is not sent to any database by this
    server; only its InChIKey is." The doctor sees only its own environment.
-2. For the server Claude Desktop runs, open `~/ChemDraw-Output/server.log`: at
+2. For the server Claude Desktop runs, open `~/chempane-output/server.log`: at
    start-up it writes "SMILES lookup: off" or "on".
 
 ## Limits
@@ -81,6 +81,6 @@ you asked for. Nothing in the log is sent anywhere.
   locants (Java needed), peptide sequences and a few fixed names such as
   heme b, hemin and the elements ("oxygen" is O₂).
 - Your prompt itself goes to Anthropic as part of the chat; this page covers
-  only what the chemdraw-mcp server sends.
+  only what the chempane server sends.
 - The data services have their own logs and terms; the server sends no
   account or key.

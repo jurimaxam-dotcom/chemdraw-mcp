@@ -678,7 +678,7 @@ def run_checks(
                     name=getattr(check, "__name__", "check"),
                     status=ERROR,
                     detail=f"The check itself crashed: {type(exc).__name__}: {exc}",
-                    fix="Please report this output at https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues",
+                    fix="Please report this output at https://github.com/chempane/chempane/issues",
                 )
             )
     return results

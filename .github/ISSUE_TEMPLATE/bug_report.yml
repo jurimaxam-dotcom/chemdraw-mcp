@@ -23,8 +23,8 @@ body:
   - type: textarea
     id: doctor
     attributes:
-      label: Output of `chemdraw-doctor`
-      description: Run `chemdraw-doctor` in a terminal (or `uv run chemdraw-doctor` in a clone) and paste the result.
+      label: Output of `chempane-doctor`
+      description: Run `chempane-doctor` in a terminal (or `uv run chempane-doctor` in a clone) and paste the result.
       render: text
     validations:
       required: false
@@ -34,7 +34,7 @@ body:
       label: How did you install it?
       options:
         - Desktop extension (.mcpb)
-        - uv tool install / chemdraw-install
+        - uv tool install / chempane-install
         - Cloned the repository
         - Edited the config by hand
     validations:

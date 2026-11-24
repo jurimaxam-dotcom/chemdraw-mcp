@@ -1,15 +1,15 @@
-# Contributing to chemdraw-mcp
+# Contributing to chempane
 
 Thanks for looking. Bug reports, wrong structures, missing names and small
 fixes are all welcome. Questions and ideas belong in
-[Discussions](https://github.com/jurimaxam-dotcom/chemdraw-mcp/discussions);
+[Discussions](https://github.com/chempane/chempane/discussions);
 concrete bugs and tasks in Issues.
 
 ## Setup
 
 ```bash
-git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
-cd chemdraw-mcp
+git clone https://github.com/chempane/chempane.git
+cd chempane
 uv sync                                    # Python deps (Python 3.11+, uv)
 cd chempane/ui && npm install && npx playwright install chromium && cd -
 ./test.sh                                  # the gate: lint + backend + bundle + frontend

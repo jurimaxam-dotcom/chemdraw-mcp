@@ -69,7 +69,7 @@ and `generate_3d` give the same answer for a protein name. A protein
 cartoon has no CDXML: `formats` takes `png` and `svg` here. Title, subtitle and image always name
 protein, organism and source.
 
-The file in `~/ChemDraw-Output/proteine/` carries title, legend and the source
+The file in `~/chempane-output/proteine/` carries title, legend and the source
 line:
 
 <img src="images/protein-lysozyme.png" alt="Cartoon of hen lysozyme, PDB 1LYZ chain A, 129 residues: helices as red ribbons, strands as yellow arrows, loops as grey tubes, N and C terminus marked, source line PDB 1LYZ (wwPDB, CC0) and UniProt P00698 (CC BY 4.0)" width="420">

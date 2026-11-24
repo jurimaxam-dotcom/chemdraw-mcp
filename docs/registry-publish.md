@@ -1,106 +1,25 @@
 # Publishing to the MCP Registry
 
-Der Eintrag in der offiziellen MCP-Registry ist ein **Snapshot**. Ein Edit an
-`server.json` plus Commit ändert ihn nicht — nur ein expliziter Publish-Lauf tut
-das. Genau deshalb lieferte die Registry von Juni bis August 2026 weiter die
-Version 0.2.0 mit dem Panel-Bug aus, obwohl PyPI längst 0.2.1 hatte und
-`server.json` im Repo ebenfalls.
+The registry is a published snapshot: editing `server.json` does not change the live entry.
 
-## Von Hand (Stand heute)
+## Automatic publication
 
-```bash
-./scripts/publish-registry.sh   # Login + Publish + Verifikation in einem Lauf
-```
+`.github/workflows/publish.yml` builds and publishes both `chempane` and the `chemdraw-mcp`
+compatibility package. Its `registry` job runs after PyPI publication and uses
+`mcp-publisher login github-oidc` to publish `io.github.chempane/chempane` from
+`chempane/chempane`. A personal GitHub device login cannot publish this organization namespace.
+Both PyPI projects need the same Trusted Publisher (repository, workflow and environment).
+PyPI supports [one publisher for multiple projects](https://docs.pypi.org/trusted-publishers/internals/#why-is-the-pypi-project-to-publisher-relationship-many-many).
 
-Das Skript prüft vorher, ob die Version überhaupt auf PyPI liegt (sonst lehnt
-die Registry ab), und meldet am Ende, ob der Eintrag wirklich steht — die
-Erfolgsmeldung von `publish` allein ist kein Beweis.
-
-Einzelschritte, falls etwas hakt:
+After the workflow completes, verify the exact name, version and `isLatest` flag:
 
 ```bash
-mcp-publisher login github      # Device-Flow, interaktiv; der Code läuft nach
-                                # wenigen Minuten ab — erst starten, wenn man
-                                # den Browser wirklich gleich bedient
-mcp-publisher publish           # liest server.json aus dem CWD
+./scripts/publish-registry.sh
 ```
 
-Danach verifizieren — nicht auf die Erfolgsmeldung verlassen:
-
-```bash
-curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=jurimaxam" \
-  | python3 -c "import json,sys; [print(s['server']['version'], s['_meta']['io.modelcontextprotocol.registry/official']['isLatest']) for s in json.load(sys.stdin)['servers']]"
-```
-
-`isLatest: True` muss an der neuen Version stehen.
-
-**Reihenfolge ist Pflicht:** erst PyPI, dann Registry. Die Registry prüft beim
-Publish, ob das referenzierte PyPI-Paket in der angegebenen Version existiert —
-läuft der Publish vorher, scheitert die Validierung.
-
-## Automatisch (empfohlen)
-
-In GitHub Actions braucht es keinen interaktiven Login: `mcp-publisher login
-github-oidc` authentifiziert über das OIDC-Token des Workflows. Damit hängt der
-Registry-Eintrag am Release statt an jemandes Erinnerung.
-
-Der folgende Job gehört ans Ende von `.github/workflows/publish.yml`, hinter den
-bestehenden `publish`-Job. Er ist hier abgelegt statt eingebaut, weil der
-OAuth-Token dieser Arbeitsumgebung keine Workflow-Dateien schreiben darf
-(`gh auth refresh -s workflow` hebt das auf).
-
-```yaml
-  registry:
-    needs: publish
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-
-      # Die Registry validiert die PyPI-Referenz — erst warten, bis die
-      # Version wirklich abrufbar ist, sonst schlägt der Publish fehl.
-      - name: Wait for PyPI
-        run: |
-          VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
-          for i in $(seq 1 30); do
-            if curl -sf -o /dev/null "https://pypi.org/pypi/chemdraw-mcp/$VERSION/json"; then
-              echo "chemdraw-mcp $VERSION ist auf PyPI"; exit 0
-            fi
-            sleep 10
-          done
-          echo "::error::chemdraw-mcp $VERSION nach 5 min nicht auf PyPI"; exit 1
-
-      # Feste Version + Pruefsumme (Werte siehe publish.yml)
-      - name: Install mcp-publisher
-        env:
-          MCP_PUBLISHER_VERSION: v1.8.6
-          MCP_PUBLISHER_SHA256: 1fbe93fc…
-        run: |
-          curl -sSfL -o mcp-publisher.tar.gz \
-            "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
-          echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
-          tar xzf mcp-publisher.tar.gz mcp-publisher
-          sudo mv mcp-publisher /usr/local/bin/
-
-      - name: Publish to MCP registry
-        run: |
-          mcp-publisher login github-oidc
-          mcp-publisher publish
-
-      - name: Verify the entry is live
-        run: |
-          VERSION=$(python3 -c "import json;print(json.load(open('server.json'))['version'])")
-          LATEST=$(curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=jurimaxam" \
-            | python3 -c "import json,sys;print(next((s['server']['version'] for s in json.load(sys.stdin)['servers'] if s['_meta']['io.modelcontextprotocol.registry/official']['isLatest']), 'keine'))")
-          [ "$LATEST" = "$VERSION" ] || { echo "::error::Registry meldet $LATEST statt $VERSION"; exit 1; }
-          echo "Registry liefert $LATEST aus"
-```
-
-Einmalige Voraussetzung auf Registry-Seite: Der GitHub-Namensraum
-`io.github.jurimaxam-dotcom/*` muss dem Repository gehören — das ist durch den
-bestehenden Eintrag bereits erfüllt.
+The script first checks PyPI, then the registry. If the organization entry is missing,
+it fails and points to the release workflow instead of attempting an unsupported personal login.
+For a failed `registry` job, rerun that job after fixing its cause; do not republish PyPI distributions.
 
 ## Release-Reihenfolge im Ganzen
 
@@ -125,5 +44,5 @@ bestehenden Eintrag bereits erfüllt.
 2. CI abwarten (`gh run watch`).
 3. `gh release create vX.Y.Z` — löst `publish.yml` und damit PyPI aus.
 4. PyPI-Landung abwarten.
-5. Registry publizieren (automatisch per Job oben, sonst von Hand).
+5. Registry-Publish im `registry`-Job prüfen; `./scripts/publish-registry.sh` verifiziert den Eintrag.
 6. `isLatest` verifizieren.

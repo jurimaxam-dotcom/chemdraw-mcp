@@ -94,11 +94,11 @@ then sets `view` to `all_h`, `fischer`, `haworth` or `chair`.
   anomeric centre is drawn as a wavy bond.
 - **3D** computes one conformer (RDKit ETKDGv3, then MMFF or UFF) and shows it
   as a ball-and-stick model with explicit hydrogens. Drag to rotate. The SDF
-  file goes to `~/ChemDraw-Output/3d/`. `generate_3d` opens the 3D model
+  file goes to `~/chempane-output/3d/`. `generate_3d` opens the 3D model
   directly (*"Show methane as a rotatable 3D model"*).
 
 The views are drawn in the panel only and write no files; **Export PNG** saves
-the view you are looking at to `~/ChemDraw-Output/png/`.
+the view you are looking at to `~/chempane-output/png/`.
 
 ## Styles and abbreviations
 

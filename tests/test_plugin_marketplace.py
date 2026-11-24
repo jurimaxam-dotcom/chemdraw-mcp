@@ -1,6 +1,6 @@
 """Claude-Code-Plugin-Marketplace und Install-Links im README (Distribution 07.11.2026).
 
-Drei Stellen beschreiben denselben Start (`uvx chemdraw-mcp`): die `.mcp.json`
+Drei Stellen beschreiben denselben Start (`uvx chempane`): die `.mcp.json`
 des Plugins, der VS-Code-Link und der Cursor-Deeplink. Die Links sind kodiert,
 ein Tippfehler darin fällt beim Lesen nicht auf, sondern erst beim Nutzer, dem
 VS Code oder Cursor einen kaputten Server anbietet. Darum hier dekodiert.
@@ -18,7 +18,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 PLUGIN = ROOT / "plugins" / "chemdraw-mcp"
-START = {"command": "uvx", "args": ["chemdraw-mcp"]}
+START = {"command": "uvx", "args": ["chempane"]}
 
 
 def _json(path: Path) -> dict:
@@ -37,9 +37,9 @@ def test_marketplace_listet_das_plugin_aus_dem_unterordner():
 
 
 def test_plugin_startet_den_server_per_uvx():
-    server = _json(PLUGIN / ".mcp.json")["mcpServers"]["chemdraw"]
+    server = _json(PLUGIN / ".mcp.json")["mcpServers"]["chempane"]
     assert {k: server[k] for k in START} == START
-    assert server["env"] == {"CHEMDRAW_PROFILE": "mvp"}
+    assert server["env"] == {"CHEMPANE_PROFILE": "mvp"}
 
 
 def _link(muster: str) -> str:
@@ -53,22 +53,22 @@ def test_vscode_link_dekodiert_zur_startkonfiguration():
     innen = unquote(parse_qs(urlparse(link).query)["url"][0])
     assert innen.startswith("vscode:mcp/install?"), innen
     config = json.loads(unquote(innen.removeprefix("vscode:mcp/install?")))
-    assert config == {"name": "chemdraw-mcp", **START}
+    assert config == {"name": "chempane", **START}
 
 
 def test_cursor_deeplink_traegt_dieselbe_konfiguration():
     link = _link(r"cursor://anysphere\.cursor-deeplink/mcp/install\?[^`\s]+")
     query = parse_qs(urlparse(link).query)
-    assert query["name"] == ["chemdraw-mcp"]
+    assert query["name"] == ["chempane"]
     assert json.loads(base64.b64decode(query["config"][0])) == START
     # Auf GitHub ist cursor:// nicht klickbar, deshalb steht die Config auch im Klartext da.
-    assert '{"command":"uvx","args":["chemdraw-mcp"]}' in README
+    assert '{"command":"uvx","args":["chempane"]}' in README
 
 
 def test_readme_nennt_claude_code_und_codex_befehle():
     for befehl in (
-        "claude plugin marketplace add jurimaxam-dotcom/chemdraw-mcp",
+        "claude plugin marketplace add chempane/chempane",
         "claude plugin install chemdraw-mcp@chemdraw-mcp",
-        "codex mcp add chemdraw -- uvx chemdraw-mcp",
+        "codex mcp add chempane -- uvx chempane",
     ):
         assert befehl in README, befehl

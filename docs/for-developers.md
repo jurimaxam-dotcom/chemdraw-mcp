@@ -7,7 +7,7 @@ points the way; the details are in [development.md](development.md) and
 ## Set up and run the gate
 
 ```bash
-git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git && cd chemdraw-mcp
+git clone https://github.com/chempane/chempane.git && cd chempane
 uv sync
 cd chempane/ui && npm install && npx playwright install chromium && cd -
 ./test.sh

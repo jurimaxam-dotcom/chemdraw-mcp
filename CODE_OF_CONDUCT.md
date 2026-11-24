@@ -5,6 +5,6 @@ Its standards and enforcement guidelines apply to project spaces and to contribu
 
 ## Reporting an incident
 
-Send the maintainers a [private report on GitHub](https://github.com/jurimaxam-dotcom/chemdraw-mcp/security/advisories/new).
+Send the maintainers a [private report on GitHub](https://github.com/chempane/chempane/security/advisories/new).
 Use “Code of conduct” in the title and describe what happened. Include relevant links if available.
 Maintainers handle reports confidentially and apply the enforcement guidelines linked above.

@@ -3,16 +3,16 @@
   "name": "io.github.chempane/chempane",
   "title": "chempane",
   "description": "Interactive chemistry panels for structures, 3D models, proteins, mechanisms, spectra and lab plots.",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "repository": {
-    "url": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
+    "url": "https://github.com/chempane/chempane",
     "source": "github"
   },
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "chempane",
-      "version": "0.11.3",
+      "version": "0.12.0",
       "transport": {
         "type": "stdio"
       }

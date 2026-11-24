@@ -10,7 +10,7 @@ offers a deck, writes the cards and the tool renders the images.
 
 <img src="../assets/anki-card.png" alt="An Anki card: the front shows the aspirin structure and asks for the name, the back repeats the structure and answers Aspirin (acetylsalicylic acid)" width="640">
 
-The result is an `.apkg` file in `~/ChemDraw-Output/anki/`, named after the
+The result is an `.apkg` file in `~/chempane-output/anki/`, named after the
 deck. Double-click it to import it into Anki. A test deck with two
 structure-to-name cards for ibuprofen and naproxen came back as `nsaids.apkg`
 with 2 cards and 2 rendered images.

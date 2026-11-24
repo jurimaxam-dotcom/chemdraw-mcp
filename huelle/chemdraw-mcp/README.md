@@ -11,6 +11,6 @@ For new installations use the new name:
 uv tool install chempane && chempane-install
 ```
 
-Documentation: https://github.com/jurimaxam-dotcom/chemdraw-mcp
+Documentation: https://github.com/chempane/chempane
 
 Unofficial, not affiliated with Revvity or ChemDraw.

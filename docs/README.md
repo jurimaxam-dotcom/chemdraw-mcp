@@ -1,6 +1,6 @@
 # Documentation
 
-User and developer documentation for chemdraw-mcp.
+User and developer documentation for chempane.
 
 ## User documentation
 

@@ -379,9 +379,8 @@ def test_doku_nennt_schalter_und_datenweg(datei):
 
     text = (_ROOT / datei).read_text(encoding="utf-8")
     assert "What leaves your machine" in text
-    # Die Nutzerdoku stellt erst mit dem Release 0.12.0 auf CHEMPANE_ um (PyPI hat bis dahin
-    # 0.11.3, das nur CHEMDRAW_ liest); der Server liest beide Namen.
-    assert f"{_ENV}=1" in text or "CHEMDRAW_SMILES_LOOKUP=1" in text
+    # Seit Release 0.12.0 nennt die Nutzerdoku den neuen Variablennamen.
+    assert f"{_ENV}=1" in text
     assert SETTING_TITLE in text
     assert "InChIKey" in text
     assert "CHEMDRAW_NO_SMILES_UPLOAD" not in text

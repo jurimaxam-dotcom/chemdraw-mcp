@@ -219,7 +219,7 @@ wheels = [
 
 [[package]]
 name = "chempane"
-version = "0.11.3"
+version = "0.12.0"
 source = { editable = "." }
 dependencies = [
     { name = "genanki" },

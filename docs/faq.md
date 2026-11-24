@@ -6,12 +6,12 @@ with the answer and what to do.
 ## Installation and Claude Desktop
 
 **The model sees every tool twice.**
-Two registrations are active: either the extension and `chemdraw-install`
-were both installed, or `chemdraw-pharma` still starts with the `full` profile
-it had up to 0.10.0 while `chemdraw` is on as well. Keep one installation
+Two registrations are active: either the extension and `chempane-install`
+were both installed, or an old `chemdraw-pharma` connector still starts with the `full` profile
+it had up to 0.10.0 while the default connector is on as well. Keep one installation
 route; re-run the installer (or update the extension), which gives
-`chemdraw-pharma` the `pharma` profile — then both connectors can stay on and
-every tool appears once. `chemdraw-doctor` shows which profile each connector
+`chempane-pharma` the `pharma` profile — then both connectors can stay on and
+every tool appears once. `chempane-doctor` shows which profile each connector
 starts with.
 
 **I installed or updated it and nothing changed, or the panel is missing.**
@@ -19,15 +19,15 @@ Claude Desktop keeps the old server process. Quit Claude Desktop completely
 (Cmd-Q on macOS) and start it again.
 
 **Claude never calls a tool, or says it has no such tool.**
-Open Settings → Connectors → `chemdraw` and look at the tool permissions. A
+Open Settings → Connectors → `chempane` and look at the tool permissions. A
 tool set to blocked is not offered to the model at all; newly added tools can
 start out blocked. A tool that needs approval shows a dialog in the chat
-("Claude wants to use … from chemdraw") and waits for your click.
+("Claude wants to use … from chempane") and waits for your click.
 
 **Claude answers from memory instead of using the tool.**
 Claude Desktop often does that for knowledge questions (solubility, expected
 IR bands, a pH value): 0 of 3 chats each called a tool in a measurement on
-3 November 2026. Drawing requests are not affected. Adding "use ChemDraw" to
+3 November 2026. Drawing requests are not affected. Adding "use ChemDraw" (the old name) to
 the prompt made Desktop call the tool in 2 of 2 chats each.
 
 **The extension fails on its very first start right after a new release.**
@@ -35,7 +35,7 @@ In one test the first start about a minute after the upload failed with "no
 version of chemdraw-mcp==…", and a start a minute later worked. Restart Claude
 Desktop.
 
-**`chemdraw-doctor` reports `[NOTE]` for the Claude Desktop config.**
+**`chempane-doctor` reports `[NOTE]` for the Claude Desktop config.**
 That is expected with the extension: extensions are managed by Claude Desktop
 and do not appear in its config file.
 
@@ -76,9 +76,9 @@ from the start and there is nothing to apply.
 
 **Where is the file of my mechanism or my chair drawing?**
 Mechanisms and the extra views (All H, Fischer, Haworth, Chair) exist only in
-the panel. **Export PNG** saves what you see to `~/ChemDraw-Output/png/`.
+the panel. **Export PNG** saves what you see to `~/chempane-output/png/`.
 
 ## Limits
 
 If something here does not match what you see, check the installed version:
-`chemdraw-doctor` prints it in its first line.
+`chempane-doctor` prints it in its first line.

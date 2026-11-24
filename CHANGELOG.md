@@ -6,7 +6,9 @@ this project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-The project is renamed from chemdraw-mcp to **chempane**. No tool, schema or drawing change.
+## [0.12.0] — 2026-11-24
+
+The project is renamed from chemdraw-mcp to **chempane**. No tool or schema change.
 
 ### Changed
 
@@ -15,7 +17,11 @@ The project is renamed from chemdraw-mcp to **chempane**. No tool, schema or dra
 - Claude Desktop connectors are called `chempane` and `chempane-pharma`. Running `chempane-install` again replaces the old `chemdraw` and `chemdraw-pharma` entries, keeps your own environment values and saves the previous file as `claude_desktop_config.json.vor-chempane.bak`. Claude Desktop treats renamed connectors as new, so check their tool permissions once.
 - Environment variables are `CHEMPANE_PROFILE`, `CHEMPANE_SMILES_LOOKUP`, `CHEMPANE_VAULT_PATH` and `CHEMPANE_LOG_LEVEL`; the `CHEMDRAW_` names are still read until 1.0 (the new one wins), and `chempane-doctor` lists old ones it finds.
 - New installations write to `~/chempane-output`; an existing `~/ChemDraw-Output` stays in use and nothing is moved.
-- The `.mcpb` extensions keep their identity (they update in place) and are shown as "chempane".
+- The `.mcpb` extensions keep their internal identity and are shown as "chempane". The Desktop update and permission checks remain pending.
+
+### Fixed
+
+- Buckminsterfullerene (C60) and related fullerene cages now use distance geometry with UFF directly for their 3D conformer. Other molecules keep ETKDGv3 as the primary path, with a 30-second limit, and fall back to distance geometry with UFF if it fails or times out.
 
 ## [0.11.3] — 2026-11-22
 

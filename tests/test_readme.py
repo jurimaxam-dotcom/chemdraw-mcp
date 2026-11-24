@@ -158,7 +158,7 @@ def test_readme_verlinkt_nur_absolut():
 
 def test_readme_verweist_auf_die_ausgelagerten_docs():
     for name in ("tools.md", "installation.md", "development.md"):
-        url = f"https://github.com/jurimaxam-dotcom/chemdraw-mcp/blob/main/docs/{name}"
+        url = f"https://github.com/chempane/chempane/blob/main/docs/{name}"
         assert url in README, f"README verlinkt docs/{name} nicht"
 
 
@@ -174,13 +174,13 @@ def test_readme_erklaert_beide_konnektoren():
     16.11.2026 ergänzen sie sich (Profil `pharma`) — die alte Regel „einer je
     Chat, sonst alles doppelt“ darf nicht stehen bleiben."""
     profile = _section("### Profiles", "\n## ", README)
-    for name in ("`chemdraw`", "`chemdraw-pharma`", "`mvp`", "`pharma`", "`full`"):
+    for name in ("`chempane`", "`chempane-pharma`", "`mvp`", "`pharma`", "`full`"):
         assert name in profile, name
     assert "chemdraw-mcp-pharma-<version>.mcpb" in profile
     assert "no restart" in profile
-    assert "CHEMDRAW_PROFILE=full" in profile, "Weg für bisherige Nur-pharma-Nutzer"
+    assert "CHEMPANE_PROFILE=full" in profile, "Weg für bisherige Nur-pharma-Nutzer"
     for doc in (README, TOOLS_DOC):
-        assert "chemdraw-pharma" in doc
+        assert "chempane-pharma" in doc
     for text in DOCS:
         for veraltet in ("enable one connector", "Enable one connector", "Enable one per chat"):
             assert veraltet not in text, veraltet

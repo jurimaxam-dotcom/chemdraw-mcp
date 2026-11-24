@@ -1,17 +1,17 @@
 # Getting started
 
-How to install chemdraw-mcp for Claude Desktop, what your first prompt shows,
+How to install chempane for Claude Desktop, what your first prompt shows,
 where the files go and what to do when nothing happens.
 
 ## Install
 
-Pick **one** route. The extension and `chemdraw-install` register the same two
+Pick **one** route. The extension and `chempane-install` register the same two
 connectors; installing both registers them twice.
 
 ### Route 1: Claude Desktop extension (macOS, Linux)
 
 1. Download `chemdraw-mcp-<version>.mcpb` from the
-   [latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest).
+   [latest release](https://github.com/chempane/chempane/releases/latest).
 2. Double-click the file and confirm the installation in Claude Desktop.
 3. Restart Claude Desktop once.
 
@@ -33,10 +33,10 @@ limited to a list. Use route 2 then.
 Needs uv:
 
 ```bash
-uv tool install chemdraw-mcp && chemdraw-install
+uv tool install chempane && chempane-install
 ```
 
-`chemdraw-install` writes both connectors (`chemdraw` and `chemdraw-pharma`)
+`chempane-install` writes both connectors (`chempane` and `chempane-pharma`)
 into `claude_desktop_config.json` with the absolute path of the installed
 launcher, backs up the file first (`.bak`), leaves other MCP servers alone and
 prints what it wrote. Restart Claude Desktop afterwards.
@@ -44,12 +44,12 @@ prints what it wrote. Restart Claude Desktop afterwards.
 ### Route 3: from the repository
 
 ```bash
-git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git && cd chemdraw-mcp && ./install.sh
+git clone https://github.com/chempane/chempane.git && cd chempane && ./install.sh
 ```
 
 `install.sh` installs uv if it is missing (fixed version, SHA-256 checked),
 runs `uv sync --locked`, registers both connectors the same way
-`chemdraw-install` does and checks that the server imports. Restart Claude
+`chempane-install` does and checks that the server imports. Restart Claude
 Desktop afterwards.
 
 Editing the config by hand and the optional extras (Java for offline IUPAC
@@ -57,9 +57,9 @@ names, the AnkiConnect add-on) are in [installation.md](installation.md).
 
 ## Your first prompt
 
-Open a **new chat**, make sure the `chemdraw` connector is switched on in the
+Open a **new chat**, make sure the `chempane` connector is switched on in the
 connector menu of that chat (installed as an extension it is listed as
-"ChemDraw MCP (unofficial)"), and type:
+"chempane (unofficial)"), and type:
 
 > Draw thalidomide
 
@@ -92,21 +92,21 @@ Six more prompts with their results are in the
 
 ## Where the files go
 
-Everything lands under `~/ChemDraw-Output/`. The folder is created on the first
-drawing; there is no setting to move it. Some subfolder names are German.
+Everything lands under `~/chempane-output/`. The folder is created on the first
+drawing; there is no setting to move it. If `~/ChemDraw-Output` already exists and the new folder does not, it stays in use. No files are moved. Some subfolder names are German.
 
 | What | Folder |
 |---|---|
-| Single structures (`generate_molecule`, `batch_generate`) | `~/ChemDraw-Output/einzelmolekuele/` |
-| Reaction schemes (`generate_reaction`) | one folder per scheme, e.g. `~/ChemDraw-Output/reaktion-09aafa/` |
-| Proteins and antibodies, IgG scheme | `~/ChemDraw-Output/proteine/` |
-| 3D conformers (SDF) | `~/ChemDraw-Output/3d/` |
-| Spectra | `~/ChemDraw-Output/spektren/` |
-| TLC plates | `~/ChemDraw-Output/dc-platten/` |
-| Titration curves, species distributions, comparisons | `~/ChemDraw-Output/diagramme/` |
-| Anki decks (`.apkg`) | `~/ChemDraw-Output/anki/` |
-| The panel's **Export PNG** button | `~/ChemDraw-Output/png/` |
-| Server log | `~/ChemDraw-Output/server.log` |
+| Single structures (`generate_molecule`, `batch_generate`) | `~/chempane-output/einzelmolekuele/` |
+| Reaction schemes (`generate_reaction`) | one folder per scheme, e.g. `~/chempane-output/reaktion-09aafa/` |
+| Proteins and antibodies, IgG scheme | `~/chempane-output/proteine/` |
+| 3D conformers (SDF) | `~/chempane-output/3d/` |
+| Spectra | `~/chempane-output/spektren/` |
+| TLC plates | `~/chempane-output/dc-platten/` |
+| Titration curves, species distributions, comparisons | `~/chempane-output/diagramme/` |
+| Anki decks (`.apkg`) | `~/chempane-output/anki/` |
+| The panel's **Export PNG** button | `~/chempane-output/png/` |
+| Server log | `~/chempane-output/server.log` |
 
 Not every result is a file. Mechanisms, the extra drawings (All H, Fischer,
 Haworth, Chair) and a rotated 3D view exist only in the panel; **Export PNG**
@@ -118,9 +118,9 @@ Run the doctor first. It prints one line per check and the command that fixes
 each problem:
 
 ```bash
-chemdraw-doctor                            # after route 2
-uv run chemdraw-doctor                     # in a clone (route 3)
-uvx --from chemdraw-mcp chemdraw-doctor    # without installing anything
+chempane-doctor                            # after route 2
+uv run chempane-doctor                     # in a clone (route 3)
+uvx --from chempane chempane-doctor    # without installing anything
 ```
 
 It checks seven things: RDKit rendering, the Java runtime for OPSIN, the `uv`
@@ -142,8 +142,8 @@ usual sign.
 ### Stumbling block 2: tool permissions in Claude Desktop
 
 Claude Desktop keeps a permission per tool under Settings → Connectors →
-`chemdraw`. A tool that needs approval shows a dialog in the chat ("Claude wants
-to use … from chemdraw") and waits until you click. A tool set to **blocked**
+`chempane`. A tool that needs approval shows a dialog in the chat ("Claude wants
+to use … from chempane") and waits until you click. A tool set to **blocked**
 is not offered to the model at all: Claude then answers from memory or says it
 has no such tool, and nothing in the chat says why. Newly added tools can start
 out blocked. If a tool never runs, open that list first.
@@ -156,4 +156,4 @@ More questions from real use: [FAQ](faq.md).
 - Name resolution, data sheets and proteins need the internet. Drawing a
   SMILES or a peptide sequence works offline.
 - The first start of the extension needs the internet (about 40 MB from PyPI).
-- The output folder is fixed at `~/ChemDraw-Output/`.
+- The output folder is `~/chempane-output/`, or an existing `~/ChemDraw-Output/` for upgrades.

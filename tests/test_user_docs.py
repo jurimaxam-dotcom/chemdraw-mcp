@@ -19,7 +19,7 @@ from chempane.server import create_server
 from tests.test_docs_consistency import USER_DOCS, VAULT_TOOLS
 
 ROOT = Path(__file__).resolve().parents[1]
-REPO = "jurimaxam-dotcom/chemdraw-mcp"
+REPO = "chempane/chempane"
 EIGENE_URL = re.compile(
     rf"https://(?:github\.com/{REPO}/(?:blob|tree)/main|raw\.githubusercontent\.com/{REPO}/main)/([^)\s\"'#?]+)(#[^)\s\"']*)?"
 )

@@ -1,10 +1,10 @@
 {
   "mcpServers": {
-    "chemdraw": {
+    "chempane": {
       "command": "uvx",
-      "args": ["chemdraw-mcp"],
+      "args": ["chempane"],
       "env": {
-        "CHEMDRAW_PROFILE": "mvp"
+        "CHEMPANE_PROFILE": "mvp"
       }
     }
   }

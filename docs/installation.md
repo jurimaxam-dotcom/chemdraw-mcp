@@ -1,22 +1,22 @@
 # Installation
 
-Pick **one** route — the extension and `chemdraw-install` register the same
+Pick **one** route — the extension and `chempane-install` register the same
 connectors, and installing both registers them twice.
 Afterwards restart Claude Desktop and ask *"draw caffeine"*. The short version
 is in the [README](../README.md#installation).
 
-Every route registers two connectors from one installation: `chemdraw`
-(profile `mvp`, the default) and `chemdraw-pharma` (profile `pharma`, the
+Every route registers two connectors from one installation: `chempane`
+(profile `mvp`, the default) and `chempane-pharma` (profile `pharma`, the
 seven pharmacy tools on top). They complement each other and can both be on at
 once; turning one on or off needs no restart. Up to 0.10.0 `chemdraw-pharma`
 carried the `full` profile — if you used only that connector, enable
-`chemdraw` as well or set `CHEMDRAW_PROFILE=full` by hand, and re-run the
+`chempane` as well or set `CHEMPANE_PROFILE=full` by hand, and re-run the
 installer to update the entry. See [tools.md#profiles](tools.md#profiles).
 
 ## 1. Claude Desktop extension (macOS, Linux)
 
 Download `chemdraw-mcp-<version>.mcpb` from the
-[latest release](https://github.com/jurimaxam-dotcom/chemdraw-mcp/releases/latest),
+[latest release](https://github.com/chempane/chempane/releases/latest),
 double-click it and confirm in Claude Desktop, then restart Claude Desktop once.
 `chemdraw-mcp-pharma-<version>.mcpb` from the same release is the second
 connector (the pharmacy tools); install it the same way — both bundles share one
@@ -34,24 +34,24 @@ only listed ones — then use route 2.
 Needs [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv tool install chemdraw-mcp
-chemdraw-install
+uv tool install chempane
+chempane-install
 ```
 
-`chemdraw-install` adds both Claude Desktop entries (`chemdraw` and
-`chemdraw-pharma`) with the absolute path of the installed launcher, backs up
+`chempane-install` adds both Claude Desktop entries (`chempane` and
+`chempane-pharma`) with the absolute path of the installed launcher, backs up
 the config first, replaces the single `chemdraw-tool` entry of versions before
 0.9.0, leaves other MCP servers untouched and prints what it registered.
 
 ## 3. From a clone (to read or change the code)
 
 ```bash
-git clone https://github.com/jurimaxam-dotcom/chemdraw-mcp.git
-cd chemdraw-mcp && ./install.sh
+git clone https://github.com/chempane/chempane.git
+cd chempane && ./install.sh
 ```
 
 `install.sh` installs uv if missing, syncs the dependencies and registers the
-server the same way `chemdraw-install` does. For tests and the build see
+server the same way `chempane-install` does. For tests and the build see
 [development.md](development.md).
 
 ## 4. Editing the config by hand
@@ -60,19 +60,19 @@ Add this to `claude_desktop_config.json` under `mcpServers` (macOS:
 `~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
-"chemdraw": {
+"chempane": {
   "command": "/opt/homebrew/bin/uvx",
-  "args": ["chemdraw-mcp"],
-  "env": {"CHEMDRAW_PROFILE": "mvp"}
+  "args": ["chempane"],
+  "env": {"CHEMPANE_PROFILE": "mvp"}
 },
-"chemdraw-pharma": {
+"chempane-pharma": {
   "command": "/opt/homebrew/bin/uvx",
-  "args": ["chemdraw-mcp"],
-  "env": {"CHEMDRAW_PROFILE": "pharma"}
+  "args": ["chempane"],
+  "env": {"CHEMPANE_PROFILE": "pharma"}
 }
 ```
 
-One entry is enough if you only want the default tools; `CHEMDRAW_PROFILE`
+One entry is enough if you only want the default tools; `CHEMPANE_PROFILE`
 defaults to `mvp`. For a single entry with every tool, use `"full"` instead of
 the two.
 
@@ -95,9 +95,9 @@ Put the absolute path that `which uvx` prints on your machine into `command`.
 ## Something not working? Run the doctor
 
 ```bash
-chemdraw-doctor                            # after "uv tool install chemdraw-mcp"
-uv run chemdraw-doctor                     # in a clone
-uvx --from chemdraw-mcp chemdraw-doctor    # without installing anything
+chempane-doctor                            # after "uv tool install chempane"
+uv run chempane-doctor                     # in a clone
+uvx --from chempane chempane-doctor    # without installing anything
 ```
 
 It checks the seven things that make the server look dead in the chat or

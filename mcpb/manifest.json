@@ -10,9 +10,9 @@
     "name": "jurimaxam-dotcom",
     "url": "https://github.com/jurimaxam-dotcom"
   },
-  "homepage": "https://github.com/jurimaxam-dotcom/chemdraw-mcp",
-  "documentation": "https://github.com/jurimaxam-dotcom/chemdraw-mcp#readme",
-  "support": "https://github.com/jurimaxam-dotcom/chemdraw-mcp/issues",
+  "homepage": "https://github.com/chempane/chempane",
+  "documentation": "https://github.com/chempane/chempane#readme",
+  "support": "https://github.com/chempane/chempane/issues",
   "license": "Apache-2.0",
   "keywords": ["chemistry", "rdkit", "smiles", "molecule", "pharmacy", "chemdraw"],
   "server": {
