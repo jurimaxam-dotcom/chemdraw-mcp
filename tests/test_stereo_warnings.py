@@ -279,10 +279,11 @@ def test_cage_probe_is_skipped_above_its_limit(monkeypatch):
     assert generator._single_stereoisomer(Chem.MolFromSmiles(CUBANE), 13) is False
 
 
-# Bewusste Verhaltensänderung (24.11.2026): Metformin trägt zwei C=NH-Imine;
-# EnumerateStereoisomers(unique=True) liefert genau ein Isomer, also meldet
-# find_unspecified_stereo keinen Stereo-Hinweis mehr.
-METFORMIN = "CN(C)C(=N)NC(=N)N"
+# Bewusste Verhaltensänderung (24.11.2026): PubChems Metformin-Tautomer trägt
+# N=C(NH2)2 — zwei gleiche Substituenten, also kein E/Z. Vor dem Käfig-Fix
+# meldete RDKit die Bindung als offen; EnumerateStereoisomers(unique=True)
+# liefert genau ein Isomer, also kein Stereo-Hinweis mehr.
+METFORMIN = "CN(C)C(=N)N=C(N)N"
 
 
 def test_metformin_imine_does_not_report_unspecified_stereo():

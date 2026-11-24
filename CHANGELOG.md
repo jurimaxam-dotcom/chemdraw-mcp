@@ -12,6 +12,7 @@ Output fixes. No tool, schema or panel change.
 
 - Calibration curve: negative slopes and intercepts use a proper minus sign ("y = −0.8 · x + 3.8", "y = 0.8 · x − 0.6") instead of ASCII "-" or "+ -0.6", in the figure, the answer, the read-back line (negative divisor in parentheses) and the LOD/LOQ values.
 - Cubane, adamantane and other cages with only one possible stereoisomer no longer report unspecified stereocentres (cubane showed 8, adamantane 4). Carvone, menthol and other molecules with real open centres are reported as before.
+- Metformin as PubChem writes it (`CN(C)C(=N)N=C(N)N`) no longer reports an open E/Z double bond: the carbon carries two identical NH₂ groups.
 
 ## [Unreleased]
 
