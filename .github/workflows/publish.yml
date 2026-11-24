@@ -21,6 +21,7 @@ jobs:
   # etwas auf PyPI landet. Rot hier = kein Build, kein Upload. Was sich nicht
   # mechanisch pruefen laesst, steht als Checkliste in docs/registry-publish.md.
   check:
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -62,6 +63,7 @@ jobs:
 
   publish:
     needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -117,7 +119,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           name=$(python3 -c "import json;print(json.load(open('server.json'))['name'])")
-          if [ "${name#io.github.$OWNER/}" != "$name" ]; then
+          if [ "${name#"io.github.$OWNER/"}" != "$name" ]; then
             echo "publish=true" >> "$GITHUB_OUTPUT"
           else
             echo "::warning::$name gehört nicht zum Namensraum von $OWNER — Registry-Publish übersprungen (erst nach dem Repo-Umzug)."
