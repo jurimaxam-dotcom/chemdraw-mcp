@@ -7,7 +7,8 @@ name: Doku-Wächter
 # Im Issue stehen nur Links und Paketversionen, keine Seitentexte.
 #
 # Zwei Jobs wie in zustandsbericht.yml: `pruefen` hat den Claude-Zugang und nur Leserechte,
-# `melden` hat Schreibrecht auf Issues und kein Modell.
+# `melden` hat Schreibrecht auf Issues und kein Modell. `body.md` wird VOR dem Modell-Schritt
+# als eigenes Artefakt (`doku-body`) gesichert, damit `Write` den Issue-Body nicht ändern kann.
 
 on:
   schedule:
@@ -34,6 +35,7 @@ jobs:
     outputs:
       rc: ${{ steps.check.outputs.rc }}
       marke: ${{ steps.check.outputs.marke }}
+      einordnen: ${{ steps.check.outputs.einordnen }}
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -54,7 +56,6 @@ jobs:
           if [ "$rc" != 0 ] && [ "$rc" != 3 ]; then exit "$rc"; fi
           set -e
           if [ "$rc" = 3 ]; then
-            mkdir -p ausgabe
             # Fingerabdruck des Berichts im Issue: gleicher Stand = kein neuer Kommentar
             marke="stand-$(sha256sum bericht.txt | cut -c1-16)"
             echo "marke=$marke" >> "$GITHUB_OUTPUT"
@@ -70,7 +71,7 @@ jobs:
               ' bericht.txt
               echo
               echo "Review the pages with \`uv run python scripts/anthropic_sync.py --diff URL\`. After review, run \`--update\` and commit the updated fingerprints. This issue closes after the next clean check."
-            } > ausgabe/body.md
+            } > body.md
             nr=$(gh issue list --label "$LABEL" --state open --json number --jq '.[0].number // empty')
             if [ -z "$nr" ] || ! gh issue view "$nr" --json body --jq .body | grep -q "$marke"; then
               echo "einordnen=ja" >> "$GITHUB_OUTPUT"
@@ -81,8 +82,18 @@ jobs:
             echo "einordnen=nein" >> "$GITHUB_OUTPUT"
           fi
 
+      # Issue-Body VOR dem Modell-Schritt sichern: Claude hat Write, darf aber den Body nicht verändern.
+      - name: Issue-Body als Artefakt sichern
+        if: steps.check.outputs.rc == '3'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: doku-body
+          path: body.md
+          if-no-files-found: error
+          retention-days: 7
+
       # Erste Einordnung ohne Schreibrechte: Claude schreibt nur einordnung.md, der zweite Job postet.
-      # Scheitert der Schritt, bleibt die Meldung (body.md) trotzdem stehen.
+      # Scheitert der Schritt, bleibt die Meldung (doku-body) trotzdem stehen.
       - name: Claude ordnet die Änderung ein
         if: steps.check.outputs.einordnen == 'ja'
         continue-on-error: true
@@ -103,17 +114,13 @@ jobs:
             --permission-mode default
             --allowedTools "Read,Grep,Glob,Write,WebFetch"
 
-      - name: Einordnung für das Artefakt bereitstellen
-        if: steps.check.outputs.rc == '3'
-        run: |
-          if [ -s einordnung.md ]; then cp einordnung.md ausgabe/einordnung.md; fi
-
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: steps.check.outputs.rc == '3'
+      - name: Einordnung als getrenntes Artefakt hochladen
+        if: steps.check.outputs.einordnen == 'ja'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: doku-bericht
-          path: ausgabe/
-          if-no-files-found: error
+          name: doku-einordnung
+          path: einordnung.md
+          if-no-files-found: ignore
           retention-days: 7
 
   melden:
@@ -131,8 +138,15 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: needs.pruefen.outputs.rc == '3'
         with:
-          name: doku-bericht
-          path: eingang
+          name: doku-body
+          path: eingang-body
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: needs.pruefen.outputs.einordnen == 'ja'
+        continue-on-error: true
+        with:
+          name: doku-einordnung
+          path: eingang-einordnung
 
       - name: Issue anlegen, nachführen oder schließen
         run: |
@@ -141,17 +155,17 @@ jobs:
           if [ "$RC" = 3 ]; then
             neu=0
             if [ -z "$nr" ]; then
-              url=$(gh issue create --title "$TITEL" --label "$LABEL" --body-file eingang/body.md)
+              url=$(gh issue create --title "$TITEL" --label "$LABEL" --body-file eingang-body/body.md)
               nr="${url##*/}"
               neu=1
             elif ! gh issue view "$nr" --json body --jq .body | grep -q "$MARKE"; then
-              gh issue edit "$nr" --title "$TITEL" --body-file eingang/body.md
+              gh issue edit "$nr" --title "$TITEL" --body-file eingang-body/body.md
               gh issue comment "$nr" --body "The issue description now reflects the latest changes."
               neu=1
             fi
-            if [ "$neu" = 1 ] && [ -s eingang/einordnung.md ]; then
+            if [ "$neu" = 1 ] && [ -s eingang-einordnung/einordnung.md ]; then
               # Längengrenze; jedes @ entschärfen, damit eingeschleuster Text niemanden anpingt.
-              head -c 8000 eingang/einordnung.md | sed 's/@/@\xe2\x80\x8b/g' > kommentar.md
+              head -c 8000 eingang-einordnung/einordnung.md | sed 's/@/@\xe2\x80\x8b/g' > kommentar.md
               gh issue comment "$nr" --body-file kommentar.md
             fi
           elif [ -n "$nr" ]; then
