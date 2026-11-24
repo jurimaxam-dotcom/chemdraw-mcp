@@ -52,6 +52,11 @@ ERLAUBTE_ADRESSEN = re.compile(
     r"@users\.noreply\.github\.com$|^noreply@(anthropic|github)\.com$|^git@github\.com$|^mcp-apps@anthropic\.com$",
     re.I,
 )
+BOT_TRAILER = re.compile(
+    r"^(?:Signed-off-by|Co-authored-by):\s+[A-Za-z0-9._-]+\[bot\]\s+"
+    r"<(?:support@github\.com|\d+\+[A-Za-z0-9._-]+\[bot\]@users\.noreply\.github\.com)>\s*$",
+    re.I,
+)
 ADRESSE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 HEIMAT = re.compile(r"/(?:Users|home)/([A-Za-z0-9._-]+)")
 HEIMAT_OK = {"runner", "name", "user", "username", "you", "Shared", "USER", "work", "linuxbrew"}
@@ -161,6 +166,8 @@ def pruefe_nachricht(
     befunde = []
     for nr, z in enumerate(zeilen, 1):
         if kommentare_ueberspringen and z.startswith("#"):
+            continue
+        if BOT_TRAILER.match(z):
             continue
         befunde += [f"{ort}, Zeile {nr} der Commit-Nachricht: {f}" for f in textbefunde(z, "", begriffe, ich)]
     return befunde

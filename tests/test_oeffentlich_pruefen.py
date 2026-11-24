@@ -378,3 +378,30 @@ def test_bereich_sperrt_ungeprueftes_bild_in_frueherem_commit_trotz_spaeterer_fr
     assert r.returncode == 1
     assert commit_a[:7] in r.stdout and "assets/p.png" in r.stdout
     assert commit_b[:7] not in r.stdout
+
+
+def test_bot_trailer_in_commit_nachricht_erlaubt_aber_echte_mail_bleibt_rot(repo, tmp_path):
+    """Dependabot-/GitHub-Bot-Trailer sind in Commit-Nachrichten erlaubt; beliebige Mails
+    oder Nicht-Trailer bleiben rot."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    gut = _commit(
+        repo,
+        {"b.py": "y = 1\n"},
+        betreff=(
+            "Bump dep\n\n"
+            "Signed-off-by: dependabot[bot] <support@github.com>\n"
+            "Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\n"
+        ),
+    )
+    assert _lauf(repo, "--bereich", basis, gut).returncode == 0
+
+    for boese in (
+        "Bump\n\nSigned-off-by: dependabot[bot] <erika.muster@example.org>\n",
+        "Bump\n\nCo-authored-by: dependabot[bot] <erika.muster@example.org>\n",
+        "Bump\n\nSigned-off-by: Erika Muster <support@github.com>\n",
+        "Bump\n\nKontakt: support@github.com\n",
+    ):
+        nachricht = tmp_path / "MSG"
+        nachricht.write_text(boese)
+        r = _lauf(repo, "--nachricht", str(nachricht))
+        assert r.returncode == 1 and "E-Mail" in r.stdout, boese
