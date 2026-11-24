@@ -277,3 +277,13 @@ def test_cage_probe_is_skipped_above_its_limit(monkeypatch):
     monkeypatch.setattr(enum, "EnumerateStereoisomers", boom)
     # 13 offene Elemente = 8192 Kombinationen: schon das wird nicht aufgezählt.
     assert generator._single_stereoisomer(Chem.MolFromSmiles(CUBANE), 13) is False
+
+
+# Bewusste Verhaltensänderung (24.11.2026): Metformin trägt zwei C=NH-Imine;
+# EnumerateStereoisomers(unique=True) liefert genau ein Isomer, also meldet
+# find_unspecified_stereo keinen Stereo-Hinweis mehr.
+METFORMIN = "CN(C)C(=N)NC(=N)N"
+
+
+def test_metformin_imine_does_not_report_unspecified_stereo():
+    assert find_unspecified_stereo(Chem.MolFromSmiles(METFORMIN)) == []
