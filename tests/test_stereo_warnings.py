@@ -241,3 +241,39 @@ def test_bridgehead_nitrogen_stays_open_when_the_partner_is_open_too():
     assert len(bridgehead_n) == 1
     reported = {w["atoms"][0] for w in find_unspecified_stereo(flat) if w["kind"] == "atom"}
     assert bridgehead_n[0] in reported
+
+
+# Befund 24.11.2026: Cuban meldete 8, Adamantan 4 offene Stereozentren.
+# FindPotentialStereo zählt Käfig-Brückenköpfe, deren Konfiguration der Käfig
+# festlegt; es gibt von beiden genau ein Stereoisomer.
+CUBANE = "C12C3C4C1C5C2C3C45"
+ADAMANTANE = "C1C2CC3CC1CC(C2)C3"
+CARVONE = "CC1=CCC(CC1=O)C(=C)C"
+MENTHOL = "CC(C)C1CCC(C)CC1O"
+
+
+@pytest.mark.parametrize("smiles", [CUBANE, ADAMANTANE])
+def test_cage_with_a_single_stereoisomer_reports_nothing(smiles):
+    assert find_unspecified_stereo(Chem.MolFromSmiles(smiles)) == []
+
+
+@pytest.mark.parametrize(("smiles", "centers"), [(CARVONE, 1), (MENTHOL, 3)])
+def test_real_open_stereocenters_are_still_reported(smiles, centers):
+    found = find_unspecified_stereo(Chem.MolFromSmiles(smiles))
+    assert sum(w["kind"] == "atom" for w in found) == centers
+
+
+def test_cage_probe_is_skipped_above_its_limit(monkeypatch):
+    """Die Aufzählung ist gedeckelt: ein großer Käfig (Dodecahedran, 20 Zentren,
+    2**20 Kombinationen) würde sonst Minuten kosten. Über der Grenze wird wie
+    vor dem Fix gemeldet, ohne aufzuzählen."""
+    import rdkit.Chem.EnumerateStereoisomers as enum
+
+    from chempane import generator
+
+    def boom(*args, **kwargs):
+        raise AssertionError("enumerated above the limit")
+
+    monkeypatch.setattr(enum, "EnumerateStereoisomers", boom)
+    # 13 offene Elemente = 8192 Kombinationen: schon das wird nicht aufgezählt.
+    assert generator._single_stereoisomer(Chem.MolFromSmiles(CUBANE), 13) is False

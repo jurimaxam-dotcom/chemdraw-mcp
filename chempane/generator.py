@@ -536,7 +536,41 @@ def find_unspecified_stereo(mol: Chem.Mol) -> list[dict]:
             # Atropisomere, quadratisch-planare Zentren usw. sind (noch) kein Thema.
             continue
         warnings.append({"kind": kind, "atoms": atoms, "label": _STEREO_LABELS[kind]})
+    if warnings and _single_stereoisomer(probe, len(warnings)):
+        return []
     return warnings
+
+
+# Obergrenze der Käfigprobe: 2**12 = 4096 Kombinationen (gemessen: Cuban mit
+# 8 Zentren, 256 Kombinationen, ~10 ms). Darüber wird wie bisher gemeldet.
+_MAX_CAGE_PROBE_ELEMENTS = 12
+
+
+def _single_stereoisomer(mol: Chem.Mol, open_count: int) -> bool:
+    """True, wenn alle offenen Elemente zusammen nur EIN Stereoisomer ergeben.
+
+    Befund 24.11.2026: FindPotentialStereo zählt die Brückenköpfe von Cuban (8)
+    und Adamantan (4), obwohl der Käfig ihre Konfiguration festlegt; die
+    Aufzählung liefert je genau ein eindeutiges Isomer. Sie bricht beim zweiten
+    eindeutigen Isomer ab, kostet bei gewöhnlichen Molekülen also zwei Schritte.
+    Grenze: ein Käfig NEBEN einem echten Zentrum (1-Adamantylethanol) wird
+    weiter mit den Brückenköpfen gezählt, weil die Aufzählung ohne 3D-Einbettung
+    unmögliche Käfigkonfigurationen nicht verwirft (Einbettung: Sekunden).
+    """
+    if open_count > _MAX_CAGE_PROBE_ELEMENTS:
+        return False
+    from rdkit.Chem.EnumerateStereoisomers import (
+        EnumerateStereoisomers,
+        StereoEnumerationOptions,
+    )
+
+    options = StereoEnumerationOptions(onlyUnassigned=True, unique=True)
+    seen = set()
+    for isomer in EnumerateStereoisomers(Chem.Mol(mol), options=options):
+        seen.add(Chem.MolToSmiles(isomer))
+        if len(seen) > 1:
+            return False
+    return len(seen) == 1
 
 
 def stereo_note(warnings: list) -> str:
