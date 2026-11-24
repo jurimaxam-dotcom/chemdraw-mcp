@@ -53,10 +53,27 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
-import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync, readFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { mkdtempSync, mkdirSync, existsSync, statSync, writeFileSync, copyFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { execFileSync, spawnSync } from "node:child_process";
+
+const IST_HAUPT = Boolean(process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url));
+
+// Nie Anki starten (wie host.e2e.mjs): auch bei direktem Tool-Aufruf über --args bleibt deliver auf "apkg"
+export function sichereToolArgs(tool, args) {
+  if (tool === "export_anki_deck") return { ...args, deliver: "apkg" };
+  return args;
+}
+
+export async function mitTempOrdner(prefix, fn) {
+  const dir = mkdtempSync(join(tmpdir(), prefix));
+  try {
+    return await fn(dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, "..", "..", "..", "..");
@@ -94,16 +111,18 @@ const GRENZEN = { breite: 800, sekunden: 10, bytes: 3 * 1024 * 1024 };
 
 // Argumente: Szenennamen, --theme light|dark, --molecule NAME (auch --x=wert), --video
 const gewählt = [], optionen = {};
-for (let i = 2; i < process.argv.length; i++) {
-  const a = process.argv[i];
-  const m = a.match(/^--(theme|molecule|args)(?:=(.*))?$/);
-  if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
-  else if (a === "--video") optionen.video = true;
-  else if (a === "--feed") optionen.feed = true;
-  else if (a === "--bild0") optionen.bild0 = true;
-  else if (a === "--chat") optionen.chat = true;
-  else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0, --chat, --args)`);
-  else gewählt.push(a);
+if (IST_HAUPT) {
+  for (let i = 2; i < process.argv.length; i++) {
+    const a = process.argv[i];
+    const m = a.match(/^--(theme|molecule|args)(?:=(.*))?$/);
+    if (m) optionen[m[1]] = m[2] ?? process.argv[++i];
+    else if (a === "--video") optionen.video = true;
+    else if (a === "--feed") optionen.feed = true;
+    else if (a === "--bild0") optionen.bild0 = true;
+    else if (a === "--chat") optionen.chat = true;
+    else if (a.startsWith("--")) throw new Error(`unbekannte Option: ${a} (--theme, --molecule, --video, --feed, --bild0, --chat, --args)`);
+    else gewählt.push(a);
+  }
 }
 
 // Aufnahmemodus: GIF fürs README oder mp4-Rohmaterial für die Shorts. `takt` sind die Haltezeiten
@@ -125,19 +144,22 @@ if (FEED && optionen.video) throw new Error("--feed und --video schließen sich 
 const MODUS = FEED ? MODI.feed : optionen.video ? MODI.video : MODI.gif;
 const TAKT = MODUS.takt;
 
-const hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
-await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: "iife", outfile: hostJs, logLevel: "error" });
-
-const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
-if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
-const wegwerfHome = mkdtempSync(join(tmpdir(), "readme-home-"));
-const client = new Client({ name: "readme-gifs", version: "0.0.0" });
-// Matplotlib baut im Wegwerf-HOME seinen Schriftcache neu (35 s, 20.11.2026: erster Toolaufruf lief ins 60-s-Limit);
-// der vorhandene Cache des Rechners wird nur gelesen
-const mplCache = process.env.MPLCONFIGDIR || (existsSync(join(homedir(), ".matplotlib")) ? join(homedir(), ".matplotlib") : undefined);
-// kern-plot braucht Werkzeuge außerhalb des mvp-Profils (Kalibrierung, PK, Dosis-Wirkung); die übrigen Szenen bleiben auf mvp
+let hostJs, wegwerfHome, client;
 const PROFIL = gewählt.includes("kern-plot") ? "full" : "mvp";
-await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: PROFIL, ...(mplCache ? { MPLCONFIGDIR: mplCache } : {}) }, cwd: repo }));
+if (IST_HAUPT) {
+  hostJs = join(mkdtempSync(join(tmpdir(), "readme-host-")), "host.js");
+  await build({ entryPoints: [join(here, "host-entry.js")], bundle: true, format: "iife", outfile: hostJs, logLevel: "error" });
+
+  const serverBin = join(repo, ".venv", "bin", "chemdraw-tool-server");
+  if (!existsSync(serverBin)) throw new Error("venv fehlt — erst `uv sync`");
+  wegwerfHome = mkdtempSync(join(tmpdir(), "readme-home-"));
+  client = new Client({ name: "readme-gifs", version: "0.0.0" });
+  // Matplotlib baut im Wegwerf-HOME seinen Schriftcache neu (35 s, 20.11.2026: erster Toolaufruf lief ins 60-s-Limit);
+  // der vorhandene Cache des Rechners wird nur gelesen
+  const mplCache = process.env.MPLCONFIGDIR || (existsSync(join(homedir(), ".matplotlib")) ? join(homedir(), ".matplotlib") : undefined);
+  // kern-plot braucht Werkzeuge außerhalb des mvp-Profils (Kalibrierung, PK, Dosis-Wirkung); die übrigen Szenen bleiben auf mvp
+  await client.connect(new StdioClientTransport({ command: serverBin, env: { ...process.env, HOME: wegwerfHome, CHEMDRAW_PROFILE: PROFIL, ...(mplCache ? { MPLCONFIGDIR: mplCache } : {}) }, cwd: repo }));
+}
 // Im Bild soll kein Wegwerf-Pfad stehen
 const neutral = (r) => JSON.parse(JSON.stringify(r).replaceAll(wegwerfHome, "/Users/demo"));
 
@@ -160,7 +182,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   if (molecule) args = mitName(tool, args, molecule);
   const farbe = THEMES[theme];
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
-  const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
+  const toolResult = neutral(await client.callTool({ name: tool, arguments: sichereToolArgs(tool, args) }));
   if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
   const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
 
@@ -169,8 +191,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   // Nie Anki starten (wie host.e2e.mjs): der Knopf schickt deliver "open", der Server bekommt "apkg"
   // und schreibt das Deck nur in den Wegwerf-HOME
   await page.exposeFunction("__callTool", async (p) => {
-    if (p.name === "export_anki_deck") p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
-    return neutral(await client.callTool(p));
+    return neutral(await client.callTool({ ...p, arguments: sichereToolArgs(p.name, p.arguments) }));
   });
   await page.setContent(`<body style="margin:0;background:${farbe.hintergrund}"></body>`);
   await page.addScriptTag({ path: hostJs });
@@ -291,7 +312,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   const clipName = clip ?? `${slug(molecule ?? args.name_or_smiles ?? args.name ?? tool)}-${name}`;
   const H = Math.ceil(Math.max(hoehe, 750) / 5) * 5, W = (H * 4) / 5, rand = (W - BREITE) / 2;
   const toolDef = (await client.listTools()).tools.find((t) => t.name === tool);
-  const toolResult = neutral(await client.callTool({ name: tool, arguments: args }));
+  const toolResult = neutral(await client.callTool({ name: tool, arguments: sichereToolArgs(tool, args) }));
   if (toolResult.isError) throw new Error(`${tool}: ` + JSON.stringify(toolResult.content).slice(0, 300));
   const html = (await client.readResource({ uri: toolDef._meta.ui.resourceUri })).contents[0].text;
 
@@ -308,8 +329,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
   });
   const page = await context.newPage();
   await page.exposeFunction("__callTool", async (p) => {
-    if (p.name === "export_anki_deck") p = { ...p, arguments: { ...p.arguments, deliver: "apkg" } };
-    return neutral(await client.callTool(p));
+    return neutral(await client.callTool({ ...p, arguments: sichereToolArgs(p.name, p.arguments) }));
   });
   // Uhr tickt (16 ms je Runde), bis `fertig` erfüllt ist — Timer im Panel laufen weiter, aufgenommen wird nichts
   const mitTick = async (versprechen, ms = 60000) => {
@@ -352,7 +372,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     await page.evaluate(auslaufen);
   }
 
-  const dir = mkdtempSync(join(tmpdir(), `feed-${name}-`));
+  return await mitTempOrdner(`feed-${name}-`, async (dir) => {
   let nr = 0, sollMs = 0;
   // CSS-Übergänge und -Animationen: neu entdeckte anhalten, dann alle um dt vorrücken
   const schritt = (dt) => {
@@ -465,6 +485,7 @@ async function feedSzene(browser, { name, tool, args, hoehe, ablauf, molecule, b
     await context.close();
   }
   return { szene: name, theme, ...feedVideo(clipName, dir, nr, beats, bewegungen, { tool, args }, rechtecke, nahtlos, dauer) };
+  });
 }
 
 // Verschiedene Bilder je voller Sekunde (mpdecimate „keep pts“)
@@ -1739,6 +1760,7 @@ const SZENEN = {
   },
 };
 
+if (IST_HAUPT) {
 if (optionen.theme && !THEMES[optionen.theme]) throw new Error(`--theme light|dark, nicht ${optionen.theme}`);
 if (optionen.bild0 && !FEED) throw new Error("--bild0 gibt es nur mit --feed");
 if (optionen.chat && !FEED) throw new Error("--chat gibt es nur mit --feed");
@@ -1839,4 +1861,5 @@ const falsch = ergebnisse.filter((e) => !optionen.video && SZENEN[e.szene].hero 
 if (falsch.length) {
   console.error(`ROT: Hero-GIFs nicht ${HERO.breite}×${HERO.hoehe}: ` + falsch.map((e) => `${e.szene}-${e.theme} ${e.breite}×${e.hoehe}`).join(", "));
   process.exit(1);
+}
 }
