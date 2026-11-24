@@ -7,6 +7,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/chempane/chempane/blob/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/chempane)](https://pypi.org/project/chempane/)
 [![GitHub stars](https://img.shields.io/github/stars/chempane/chempane?style=flat&label=stars)](https://github.com/chempane/chempane/stargazers)
+[![chempane/chempane MCP server](https://glama.ai/mcp/servers/chempane/chempane/badges/score.svg)](https://glama.ai/mcp/servers/chempane/chempane)
 
 <p align="center"><b>Ask Claude for a molecule. Get a drawing you can turn, click and export.</b></p>
 
