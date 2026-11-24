@@ -69,6 +69,7 @@ VIDEO = {".mp4", ".mov", ".webm", ".mkv", ".m4v", ".avi"}
 VOLLBILD_BREITE = 1800          # breitestes Bild im Repo am 17.11.2026: 1760 px
 BILDSCHIRM = 3456 / 2234        # MacBook-Anzeige; auch verkleinerte Aufnahmen behalten das Verhältnis
 BILDSCHIRM_TOLERANZ = 0.004     # 1500×975-Diagramme liegen 0,0085 daneben und bleiben frei
+LEERER_BAUM = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 
 def git(*args: str, binaer: bool = False):
@@ -100,7 +101,7 @@ def bildgroesse(daten: bytes) -> tuple[int, int] | None:
 
 def neue_zeilen(quelle: list[str]) -> list[tuple[str, int, str]]:
     """(Datei, Zeilennummer, Text) für jede Zeile, die hinzukommt. Binärdateien liefern keine."""
-    diff = git("diff", *quelle, "-U0", "--no-color", "--diff-filter=AMR")
+    diff = git("-c", "core.quotepath=false", "diff", *quelle, "-U0", "--no-color", "--diff-filter=AMRT")
     zeilen, datei, nr = [], None, 0
     for z in diff.split("\n"):
         if z.startswith("+++ "):
@@ -154,10 +155,12 @@ def textbefunde(text: str, datei: str, begriffe: list[re.Pattern], ich: str) -> 
     return funde
 
 
-def pruefe_nachricht(zeilen: list[str], ort: str, begriffe: list[re.Pattern], ich: str) -> list[str]:
+def pruefe_nachricht(
+    zeilen: list[str], ort: str, begriffe: list[re.Pattern], ich: str, *, kommentare_ueberspringen: bool = False
+) -> list[str]:
     befunde = []
     for nr, z in enumerate(zeilen, 1):
-        if z.startswith("#"):
+        if kommentare_ueberspringen and z.startswith("#"):
             continue
         befunde += [f"{ort}, Zeile {nr} der Commit-Nachricht: {f}" for f in textbefunde(z, "", begriffe, ich)]
     return befunde
@@ -176,12 +179,12 @@ def pruefe_inhalt(quelle: list[str], blob_von: str, begriffe: list[re.Pattern], 
         befunde += [f"{datei}:{nr}: {f}" for f in textbefunde(text, datei, begriffe, ich)]
 
     binaer = set()
-    for z in git("diff", *quelle, "--numstat", "--diff-filter=AMR", "-z", "--no-renames").split("\0"):
+    for z in git("diff", *quelle, "--numstat", "--diff-filter=AMRT", "-z", "--no-renames").split("\0"):
         teile = z.split("\t")
         if len(teile) == 3 and teile[0] == "-":
             binaer.add(teile[2])
     neu_freigegeben = []
-    for datei in git("diff", *quelle, "--name-only", "--diff-filter=AMR", "-z", "--no-renames").split("\0"):
+    for datei in git("diff", *quelle, "--name-only", "--diff-filter=AMRT", "-z", "--no-renames").split("\0"):
         if not datei:
             continue
         if any(b.search(datei) for b in begriffe):
@@ -221,6 +224,21 @@ def pruefe_inhalt(quelle: list[str], blob_von: str, begriffe: list[re.Pattern], 
     return befunde
 
 
+def pruefe_commit_inhalt(voll: str, eltern: list[str], begriffe: list[re.Pattern], ich: str) -> list[str]:
+    """Prüft den Inhalt eines einzelnen Commits gegen seine Eltern (Merge: nur eigene Neuerungen)."""
+    if not eltern:
+        return pruefe_inhalt([LEERER_BAUM, voll], voll, begriffe, ich)
+    if len(eltern) == 1:
+        return pruefe_inhalt([eltern[0], voll], voll, begriffe, ich)
+    erster = pruefe_inhalt([eltern[0], voll], voll, begriffe, ich)
+    if not erster:
+        return []
+    gemeinsam = set(erster)
+    for p in eltern[1:]:
+        gemeinsam &= set(pruefe_inhalt([p, voll], voll, begriffe, ich))
+    return [b for b in erster if b in gemeinsam]
+
+
 def main() -> int:
     args = sys.argv[1:]
     begriffe, ich = private_begriffe(), getpass.getuser()
@@ -231,19 +249,19 @@ def main() -> int:
     if "--nachricht" in args:
         was = "Commit"
         text = Path(args[args.index("--nachricht") + 1]).read_text(encoding="utf-8", errors="replace")
-        befunde = pruefe_nachricht(text.splitlines(), "Nachricht", begriffe, ich)
+        befunde = pruefe_nachricht(text.splitlines(), "Nachricht", begriffe, ich, kommentare_ueberspringen=True)
     elif "--bereich" in args:
         was = "Push"
         alt, neu = args[args.index("--bereich") + 1 : args.index("--bereich") + 3]
-        for eintrag in git("log", "--format=%h%x1f%ae%x1f%ce%x1f%B%x1e", f"{alt}..{neu}").split("\x1e"):
+        for eintrag in git("log", "--format=%H%x1f%h%x1f%P%x1f%ae%x1f%ce%x1f%B%x1e", f"{alt}..{neu}").split("\x1e"):
             if not eintrag.strip():
                 continue
-            kurz, autor, committer, nachricht = eintrag.strip("\n").split("\x1f", 3)
+            voll, kurz, eltern_str, autor, committer, nachricht = eintrag.strip("\n").split("\x1f", 5)
             for rolle, adresse in (("Autor", autor), ("Committer", committer)):
                 if not ERLAUBTE_ADRESSEN.search(adresse):
                     befunde.append(f"{kurz}: {rolle}-Adresse ist keine noreply-Adresse")
-            befunde += pruefe_nachricht(nachricht.splitlines(), kurz, begriffe, ich)
-        befunde += pruefe_inhalt([alt, neu], neu, begriffe, ich)
+            befunde += pruefe_nachricht(nachricht.splitlines(), kurz, begriffe, ich, kommentare_ueberspringen=False)
+            befunde += [f"{kurz}: {b}" for b in pruefe_commit_inhalt(voll, eltern_str.split(), begriffe, ich)]
         if mit_gitleaks:
             lauf = subprocess.run([*gitleaks, f"--log-opts={alt}..{neu}"], capture_output=True, text=True)
             if lauf.returncode != 0:

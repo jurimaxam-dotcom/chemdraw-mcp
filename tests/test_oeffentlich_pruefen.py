@@ -260,3 +260,50 @@ def test_session_zeile_in_der_commit_nachricht_wird_gesperrt(repo, tmp_path):
     assert r.returncode == 1 and "Session" in r.stdout
     nachricht.write_text("Fix\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n")
     assert _lauf(repo, "--nachricht", str(nachricht)).returncode == 0
+
+
+def test_bereich_prueft_auch_zwischenzeitlich_geloeschte_dateien(repo):
+    """Ein Commit, der eine Datei anlegt, veröffentlicht sie beim Push auch dann,
+    wenn ein späterer Commit im selben Push sie wieder löscht."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    mitte = _commit(repo, {"docs/temp.md": "Pfad /Users/alex/x\n", "assets/temp.png": _png(600, 400)})
+    (repo / "docs/temp.md").unlink()
+    (repo / "assets/temp.png").unlink()
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "wieder weg", "--no-verify"], cwd=repo, check=True)
+    spitze = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+    r = _lauf(repo, "--bereich", basis, spitze)
+    assert r.returncode == 1
+    assert mitte[:7] in r.stdout
+    assert "docs/temp.md:1" in r.stdout and "assets/temp.png" in r.stdout
+
+
+def test_pfad_mit_umlaut_wird_geprueft(repo):
+    """Ohne core.quotepath=false liefert git diff `+++ "b/..."` und die Datei wird übersprungen."""
+    r = _pruefe(repo, {"docs/prüfung.md": "Kontakt: erika.muster@example.org\n"})
+    assert r.returncode == 1
+    assert "E-Mail" in r.stdout and "docs/prüfung.md" in r.stdout
+
+
+def test_typwechsel_symlink_zu_datei_wird_geprueft(repo):
+    """Symlink → Datei ist in git diff Status T und darf nicht durch den AMR-Filter fallen."""
+    (repo / "docs").mkdir()
+    (repo / "assets").mkdir()
+    (repo / "docs/link.md").symlink_to("ziel.md")
+    (repo / "assets/link.png").symlink_to("ziel.png")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "symlinks", "--no-verify"], cwd=repo, check=True)
+    (repo / "docs/link.md").unlink()
+    (repo / "assets/link.png").unlink()
+    r = _pruefe(repo, {"docs/link.md": "Pfad /Users/alex/x\n", "assets/link.png": _png(600, 400)})
+    assert r.returncode == 1
+    assert "docs/link.md:1" in r.stdout and "assets/link.png" in r.stdout
+
+
+def test_bereich_prueft_auch_raute_zeilen_in_gespeicherten_nachrichten(repo):
+    """In gespeicherten Commit-Nachrichten (Push) sind #-Zeilen Teil der Nachricht, keine Editor-Kommentare."""
+    basis = _commit(repo, {"a.py": "x = 1\n"})
+    spitze = _commit(repo, {"b.py": "y = 1\n"}, betreff="Fix\n\n# Kontakt: erika.muster@example.org\n")
+    r = _lauf(repo, "--bereich", basis, spitze)
+    assert r.returncode == 1
+    assert spitze[:7] in r.stdout and "E-Mail" in r.stdout
