@@ -12,23 +12,48 @@ from __future__ import annotations
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+_EMBED_SEED = 0xC0FFEE
+_EMBED_MAX_ITERATIONS = 50
+_EMBED_TIMEOUT_S = 3
+
 
 def embed_3d(mol: Chem.Mol) -> Chem.Mol:
-    """ETKDGv3-Embedding mit expliziten H und Kraftfeld-Optimierung."""
+    """ETKDGv3-Embedding mit expliziten H, Zeitdeckel und Kraftfeld-Optimierung.
+
+    Gekrümmte aromatische Käfige wie C60 scheitern an ETKDGv3s Flachheitsregeln
+    (`useBasicKnowledge`) und liefen ohne Deckel minutenlang. Nach kurzem
+    ETKDGv3-Versuch fällt die Funktion auf reine Distanzgeometrie mit
+    Zufallskoordinaten + UFF zurück (MMFF94 zwingt aromatische Ringe flach).
+    """
     mol3d = Chem.AddHs(Chem.Mol(mol))
     params = AllChem.ETKDGv3()
-    params.randomSeed = 0xC0FFEE  # deterministisch — gleiche Eingabe, gleiches Bild
+    params.randomSeed = _EMBED_SEED  # deterministisch — gleiche Eingabe, gleiches Bild
+    params.maxIterations = _EMBED_MAX_ITERATIONS
+    params.timeout = _EMBED_TIMEOUT_S
+
+    fallback = False
     if AllChem.EmbedMolecule(mol3d, params) != 0:
-        raise ValueError("3D embedding failed — the structure may be too unusual for a conformer.")
+        fallback = True
+        fb = AllChem.ETKDGv3()
+        fb.randomSeed = _EMBED_SEED
+        fb.useRandomCoords = True
+        fb.useExpTorsionAnglePrefs = False
+        fb.useBasicKnowledge = False
+        fb.maxIterations = _EMBED_MAX_ITERATIONS
+        fb.timeout = _EMBED_TIMEOUT_S
+        if AllChem.EmbedMolecule(mol3d, fb) != 0:
+            raise ValueError("3D embedding failed — the structure may be too unusual for a conformer.")
+
     # MMFF meldet fehlende Parameter (Bor, Metalle) per Rückgabewert −1, nicht
-    # per Exception — der frühere try/except erreichte UFF nie.
-    if AllChem.MMFFHasAllMoleculeParams(mol3d):
+    # per Exception — der frühere try/except erreichte UFF nie. Im Käfig-Fallback
+    # direkt UFF nutzen, weil MMFF94 gekrümmte aromatische Käfige (C60) verzerrt.
+    if not fallback and AllChem.MMFFHasAllMoleculeParams(mol3d):
         AllChem.MMFFOptimizeMolecule(mol3d)
     else:
         try:
-            AllChem.UFFOptimizeMolecule(mol3d)
+            AllChem.UFFOptimizeMolecule(mol3d, maxIters=1000)
         except (RuntimeError, ValueError):
-            pass  # auch UFF kennt das Element nicht: rohe ETKDG-Geometrie zeigen
+            pass  # auch UFF kennt das Element nicht: rohe DG-Geometrie zeigen
     return mol3d
 
 
