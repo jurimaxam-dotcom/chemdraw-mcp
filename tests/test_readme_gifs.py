@@ -82,3 +82,10 @@ def test_feed_temp_ordner_wird_immer_aufgeraeumt():
     assert r.returncode == 0, r.stdout + r.stderr
     quelltext = SKRIPT.read_text(encoding="utf-8")
     assert "mkdtempSync(join(tmpdir(), `feed-" not in quelltext
+
+
+def test_szene_temp_ordner_nutzt_mit_temp_ordner():
+    """Auch szene() (GIF-/Video-Modus) räumt seinen Temp-Ordner readme-<name>-<theme>- per mitTempOrdner auf."""
+    quelltext = SKRIPT.read_text(encoding="utf-8")
+    assert "mkdtempSync(join(tmpdir(), `readme-" not in quelltext
+    assert "mitTempOrdner(`readme-${name}-${theme}-`" in quelltext

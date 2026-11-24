@@ -213,7 +213,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   // Vorlauf ohne Aufnahme: z. B. bis die Protein-Engine steht und ihre Einblend-Drehung ausgelaufen ist
   if (vorlauf) await vorlauf({ frame, page });
 
-  const dir = mkdtempSync(join(tmpdir(), `readme-${name}-${theme}-`));
+  return await mitTempOrdner(`readme-${name}-${theme}-`, async (dir) => {
   const uhr = filmuhr();
   const bilder = [];
   let aufnahme = true;
@@ -274,12 +274,16 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
     if (!b || b.y < 0 || b.y + b.height > hoehe) throw new Error(`ROT ${name}-${theme}: ${was} angeschnitten (y ${b?.y.toFixed(0)}…${(b?.y + b?.height).toFixed(0)}, Ausschnitt 0…${hoehe})`);
   };
   const fahreZu = async (x, y) => { await zeiger(x, y); await page.mouse.move(x, y, { steps: 4 }); };
-  await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu });
-  const ende = uhr.jetzt();
-  marke("ende");
-  aufnahme = false;
-  await schleife;
-  await context.close();
+  let ende;
+  try {
+    await ablauf({ frame, page, halten, zeigeAuf, klick, zeiger, mitte, imBild, marke, fahreZu });
+    ende = uhr.jetzt();
+    marke("ende");
+  } finally {
+    aufnahme = false;
+    await context.close();
+    await schleife;
+  }
   const quellFps = Number((bilder.length / (ende / 1000)).toFixed(1));
   if (optionen.video) return { szene: name, theme, quellFps, ...videoBauen(`${name}-${theme}`, bilder, ende, dir, hoehe, beats, { tool, args }, BREITE) };
   // Szene mit eigenem Dateinamen in beiden Themen: <datei>-<theme>.gif, die helle zusätzlich als <datei>.gif
@@ -290,6 +294,7 @@ async function szene(browser, { name, tool, args, hoehe, videoHoehe, fps, ablauf
   // Release-Notes verlinken sie absolut (nur mit dem Standardmolekül der Szene)
   if (theme === "light" && !molecule && !datei) copyFileSync(werte.datei, join(MODUS.ausgabe, `demo-${name}.gif`));
   return { szene: name, theme, ...werte };
+  });
 }
 
 // Feed-Clip mit gesteuerter Uhr: ein Bild = Uhr 1/60 s weiter, CSS-Übergänge 1/60 s weiter, Screenshot.
