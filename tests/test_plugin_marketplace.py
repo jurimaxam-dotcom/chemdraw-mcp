@@ -48,6 +48,7 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     assert {"chemistry", "molecule", "chemical-structure", "rdkit", "smiles"} <= set(manifest["keywords"])
     # Ohne Verified-Status blockt das Portal zusätzliche Felder wie `network`.
     assert "network" not in manifest
+    assert manifest["privacyPolicyUrl"] == "https://mcp.chempane.com/privacy"
     market = _json(ROOT / ".claude-plugin" / "marketplace.json")["plugins"][0]
     assert market["description"] == manifest["description"]
     icon_rel = manifest["icon"]
@@ -60,10 +61,15 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     assert width == height
     assert 512 <= width <= 2048
     assert len(raw) < 2 * 1024 * 1024
-    # Portal-Scanner prüfte auch Binärdaten auf Shell-Muster — neu komprimiertes PNG bleibt frei davon.
-    raw_latin1 = raw.decode("latin1")
-    assert not re.search(r"\|.{0,20}(?:ba)?sh", raw_latin1, re.I)
-    assert not re.search(r"(?:curl|wget|bash)", raw_latin1, re.I)
+    # Portal-Scanner extrahiert druckbare Zeichen aus dem Bild und prüft sie auf Shell-Muster.
+    printable_concat = bytes(c for c in raw if 32 <= c < 127).decode("ascii")
+    printable_spaced = re.sub(rb"[^ -~]+", b" ", raw).decode("ascii")
+    shell_pat = re.compile(
+        r"(?:curl|wget|fetch|iwr|irm|iex|bash|zsh|dash|ksh|pwsh|powershell|ncat|eval|exec|base64|chmod|http|ftp|\bnc\b|\$\(|sh)",
+        re.I,
+    )
+    assert not shell_pat.search(printable_concat), shell_pat.findall(printable_concat)
+    assert not shell_pat.search(printable_spaced), shell_pat.findall(printable_spaced)
 
     # Remote-MCP-Server statt lokalem uvx (lokale MCP-Server sind nur für Verified-Orgs erlaubt).
     server = _json(CHEMPANE_PLUGIN / ".mcp.json")["mcpServers"]["chempane"]

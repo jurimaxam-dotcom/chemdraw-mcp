@@ -10,6 +10,7 @@
   },
   "homepage": "https://github.com/chempane/chempane",
   "repository": "https://github.com/chempane/chempane",
+  "privacyPolicyUrl": "https://mcp.chempane.com/privacy",
   "license": "Apache-2.0",
   "keywords": [
     "chemistry",
