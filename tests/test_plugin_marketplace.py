@@ -90,6 +90,10 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     ):
         assert eintrag in readme, eintrag
     assert "uvx chempane==" not in readme
+    # Das Plugin-README beschreibt nur das Remote-Plugin (keine Aufforderung zum lokalen Server-Install
+    # und keine Werkzeuge, die das gehostete Plugin nicht enthält — sonst Portal-Blocker).
+    for verboten in ("Local server", "install the local server", "3D conformers", "Anki decks"):
+        assert verboten not in readme, verboten
     assert (CHEMPANE_PLUGIN / "LICENSE").is_file()
 
 

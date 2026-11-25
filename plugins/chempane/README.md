@@ -35,10 +35,6 @@ No local Python setup, no sign-in and no API key required.
 - **Compound names:** If a compound name cannot be resolved offline, the name is sent to `pubchem.ncbi.nlm.nih.gov` (PubChem, U.S. NIH) and `cactus.nci.nih.gov` (NCI Chemical Identifier Resolver) to look up its structure.
 - **No storage, no tracking:** The server keeps no database, no user accounts, no cookies and no drawing history. Full details: [privacy policy](https://mcp.chempane.com/privacy).
 
-## Local server (more tools)
-
-For offline local rendering and additional tools (3D conformers, reaction schemes, curved-arrow mechanisms, lab spectra, TLC plates, titration curves, protein cartoons and Anki decks), install the local server from the [chempane repository](https://github.com/chempane/chempane).
-
 ## License
 
 Apache-2.0. Unofficial open-source project, not affiliated with Revvity (ChemDraw) or Anthropic.
