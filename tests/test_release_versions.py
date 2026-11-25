@@ -25,7 +25,7 @@ def test_server_json_carries_the_package_version():
 
 def test_claude_plugin_carries_the_package_version():
     """Das Plugin pinnt seine Version: ohne Bump sehen Nutzer kein Update."""
-    data = json.loads((ROOT / "plugins" / "chemdraw-mcp" / ".claude-plugin" / "plugin.json").read_text())
+    data = json.loads((ROOT / "plugins" / "chempane" / ".claude-plugin" / "plugin.json").read_text())
     assert data["version"] == _pyproject_version()
 
 

@@ -18,7 +18,6 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
-PLUGIN = ROOT / "plugins" / "chemdraw-mcp"
 CHEMPANE_PLUGIN = ROOT / "plugins" / "chempane"
 START = {"command": "uvx", "args": ["chempane"]}
 
@@ -29,15 +28,15 @@ def _json(path: Path) -> dict:
 
 def test_marketplace_listet_die_plugins_aus_den_unterordnern():
     market = _json(ROOT / ".claude-plugin" / "marketplace.json")
-    assert market["name"] == "chemdraw-mcp"
-    assert market["owner"] == {"name": "jurimaxam-dotcom"}
+    assert market["name"] == "chempane"
+    assert market["owner"] == {"name": "chempane"}
     by_name = {e["name"]: e for e in market["plugins"]}
-    assert set(by_name) == {"chempane", "chemdraw-mcp"}
-    for name, pfad in (("chempane", CHEMPANE_PLUGIN), ("chemdraw-mcp", PLUGIN)):
-        # Unterordner statt "./": sonst landet das ganze Repo im Plugin-Cache.
-        assert by_name[name]["source"] == f"./plugins/{name}"
-        # Eintragsname = Manifestname, sonst findet `install <name>@…` das Plugin nicht.
-        assert _json(pfad / ".claude-plugin" / "plugin.json")["name"] == name
+    assert set(by_name) == {"chempane"}
+    # Unterordner statt "./": sonst landet das ganze Repo im Plugin-Cache.
+    assert by_name["chempane"]["source"] == "./plugins/chempane"
+    # Eintragsname = Manifestname, sonst findet `install <name>@…` das Plugin nicht.
+    assert _json(CHEMPANE_PLUGIN / ".claude-plugin" / "plugin.json")["name"] == "chempane"
+    assert not (ROOT / "plugins" / "chemdraw-mcp").exists()
 
 
 def test_chempane_plugin_erfuellt_directory_anforderungen():
@@ -78,13 +77,9 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     assert len(ohne_code.split()) >= 40
     for host in erwartete_hosts:
         assert host in readme, host
+    assert "claude plugin marketplace add chempane/chempane" in readme
+    assert "claude plugin install chempane@chempane" in readme
     assert (CHEMPANE_PLUGIN / "LICENSE").is_file()
-
-
-def test_plugin_startet_den_server_per_uvx():
-    server = _json(PLUGIN / ".mcp.json")["mcpServers"]["chempane"]
-    assert {k: server[k] for k in START} == START
-    assert server["env"] == {"CHEMPANE_PROFILE": "mvp"}
 
 
 def _link(muster: str) -> str:
@@ -113,7 +108,7 @@ def test_cursor_deeplink_traegt_dieselbe_konfiguration():
 def test_readme_nennt_claude_code_und_codex_befehle():
     for befehl in (
         "claude plugin marketplace add chempane/chempane",
-        "claude plugin install chemdraw-mcp@chemdraw-mcp",
+        "claude plugin install chempane@chempane",
         "codex mcp add chempane -- uvx chempane",
     ):
         assert befehl in README, befehl

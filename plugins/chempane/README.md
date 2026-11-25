@@ -4,20 +4,22 @@ chempane (formerly chemdraw-mcp) is a local chemistry MCP server backed by RDKit
 
 ## Installation
 
-```text
-/plugin install chempane --marketplace chempane/chempane
+```bash
+claude plugin marketplace add chempane/chempane
+claude plugin install chempane@chempane
 ```
 
-Or via the Claude Code CLI:
+Or inside a Claude Code session:
 
-```bash
-claude plugin install chempane --marketplace chempane/chempane
+```text
+/plugin marketplace add chempane/chempane
+/plugin install chempane@chempane
 ```
 
 ## Requirements & what gets downloaded
 
-- [uv](https://docs.astral.sh/uv/) must be installed on your machine (`uvx` available in `PATH`).
-- On first run, `uvx chempane==0.12.0` downloads the pinned `chempane==0.12.0` package and its Python dependencies (such as RDKit, Matplotlib, NumPy and the MCP Python SDK) from PyPI (`pypi.org`, `files.pythonhosted.org`).
+- [uv](https://docs.astral.sh/uv/) must be installed on your machine (`uvx` available in `PATH`; GUI hosts such as Cowork or Claude Desktop require `uvx` in a GUI-visible location such as `/opt/homebrew/bin` or `~/.local/bin`).
+- On first run, `uvx chempane==0.12.0` downloads the pinned `chempane==0.12.0` package and its Python dependencies (such as RDKit, Matplotlib, NumPy and the MCP Python SDK) from PyPI (`pypi.org`, `files.pythonhosted.org`) once into uv's cache; later starts reuse the cached environment.
 - No API key and no commercial ChemDraw licence required.
 
 ## Example prompts
