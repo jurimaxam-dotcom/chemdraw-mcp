@@ -370,6 +370,19 @@ Fly.io keeps platform logs for a limited time under its own
 <h2>No sign-in, no tracking</h2>
 <p>The connector needs no account, sets no cookies and contains no analytics. A rate limit counts
 requests per network address in memory for one minute and is discarded afterwards.</p>
+<h2>Legal basis</h2>
+<p>Handling a tool call to return the requested structure is based on Art. 6(1)(b) GDPR (providing the
+service you requested). Technical request logs and in-memory rate limiting are based on Art. 6(1)(f) GDPR
+(legitimate interest in keeping the server reliable and preventing abuse).</p>
+<h2>Your rights</h2>
+<p>Under the GDPR you have the right to access (Art. 15), rectify (Art. 16) or erase (Art. 17) your
+personal data, to restrict its processing (Art. 18), to receive it in a portable format (Art. 20) and
+to object to processing based on legitimate interests (Art. 21). Because this server stores no user
+accounts or drawing history, it normally holds no personal data linked to you; to exercise any of these
+rights, contact {contact}.</p>
+<p>You also have the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR),
+for example in the EU/EEA member state of your habitual residence, your place of work or the place of the
+alleged infringement.</p>
 <h2>Changes and contact</h2>
 <p>This page changes when the data flow changes. Questions and requests: {contact}.</p>
 <p>Version {version}.</p>

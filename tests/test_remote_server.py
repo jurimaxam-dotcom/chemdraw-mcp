@@ -230,6 +230,29 @@ def test_remote_datenschutzseite_nur_mit_betreiberangabe():
             assert text in seite.text, text
 
 
+def test_remote_datenschutzseite_nennt_dsgvo_pflichtangaben():
+    # Art. 13 DSGVO verlangt Rechtsgrundlage, Betroffenenrechte und Beschwerderecht.
+    cfg = RemoteConfig(operator="Erika Mustermann", contact="kontakt-platzhalter")
+    with TestClient(create_remote_app(cfg)) as client:
+        seite = client.get("/privacy")
+        assert seite.status_code == 200
+        body = seite.text
+        # 1. Rechtsgrundlage (Art. 13 Abs. 1 lit. c DSGVO)
+        assert "Legal basis" in body
+        assert "Art. 6(1)(b) GDPR" in body
+        assert "Art. 6(1)(f) GDPR" in body
+        # 2. Betroffenenrechte (Art. 13 Abs. 2 lit. b DSGVO)
+        lower = body.lower()
+        for recht in ("access", "rectify", "erase", "restrict", "portable", "object"):
+            assert recht in lower, f"Betroffenenrecht fehlt: {recht}"
+        for artikel in ("Art. 15", "Art. 16", "Art. 17", "Art. 18", "Art. 20", "Art. 21"):
+            assert artikel in body, f"Artikel-Verweis fehlt: {artikel}"
+        # 3. Beschwerderecht bei einer Aufsichtsbehörde (Art. 13 Abs. 2 lit. d, Art. 77 DSGVO)
+        assert "complaint" in lower
+        assert "supervisory authority" in lower
+        assert "Art. 77 GDPR" in body
+
+
 def test_remote_config_liest_betreiber_aus_der_umgebung(monkeypatch):
     monkeypatch.setenv("CHEMPANE_REMOTE_OPERATOR", "Erika Mustermann")
     monkeypatch.setenv("CHEMPANE_REMOTE_CONTACT", "kontakt-platzhalter")
