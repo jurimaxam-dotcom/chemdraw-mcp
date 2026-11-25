@@ -1,6 +1,6 @@
 {
   "name": "chempane",
-  "description": "chempane: chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons rendered locally with RDKit.",
+  "description": "chempane: interactive 2D chemical structures with functional groups in Claude.",
   "owner": {
     "name": "chempane"
   },
@@ -8,7 +8,7 @@
     {
       "name": "chempane",
       "source": "./plugins/chempane",
-      "description": "Chemistry in Claude: draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit."
+      "description": "Chemistry in Claude: draw interactive 2D chemical structures with functional groups from compound names or SMILES via the hosted chempane connector."
     }
   ]
 }

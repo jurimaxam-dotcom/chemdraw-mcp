@@ -41,12 +41,13 @@ def test_marketplace_listet_die_plugins_aus_den_unterordnern():
 
 def test_chempane_plugin_erfuellt_directory_anforderungen():
     manifest = _json(CHEMPANE_PLUGIN / ".claude-plugin" / "plugin.json")
-    version = manifest["version"]
     # Der Anzeigename trägt das Suchwort; `name` bleibt die dauerhafte Kennung.
     assert manifest["displayName"] == "chempane: Chemistry Drawing"
     # Die Suche im Directory ist nicht dokumentiert: das Suchwort steht deshalb in jedem Feld, das sie lesen könnte.
     assert manifest["description"].startswith("Chemistry in Claude: ")
     assert {"chemistry", "molecule", "chemical-structure", "rdkit", "smiles"} <= set(manifest["keywords"])
+    # Ohne Verified-Status blockt das Portal zusätzliche Felder wie `network`.
+    assert "network" not in manifest
     market = _json(ROOT / ".claude-plugin" / "marketplace.json")["plugins"][0]
     assert market["description"] == manifest["description"]
     icon_rel = manifest["icon"]
@@ -59,32 +60,30 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     assert width == height
     assert 512 <= width <= 2048
     assert len(raw) < 2 * 1024 * 1024
+    # Portal-Scanner prüfte auch Binärdaten auf Shell-Muster — neu komprimiertes PNG bleibt frei davon.
+    raw_latin1 = raw.decode("latin1")
+    assert not re.search(r"\|.{0,20}(?:ba)?sh", raw_latin1, re.I)
+    assert not re.search(r"(?:curl|wget|bash)", raw_latin1, re.I)
 
-    hosts = set(manifest["network"]["hosts"])
-    erwartete_hosts = {
-        "pubchem.ncbi.nlm.nih.gov",
-        "cactus.nci.nih.gov",
-        "www.ebi.ac.uk",
-        "rest.kegg.jp",
-        "rest.uniprot.org",
-        "models.rcsb.org",
-        "alphafold.ebi.ac.uk",
-        "pypi.org",
-        "files.pythonhosted.org",
-    }
-    assert erwartete_hosts <= hosts
-
+    # Remote-MCP-Server statt lokalem uvx (lokale MCP-Server sind nur für Verified-Orgs erlaubt).
     server = _json(CHEMPANE_PLUGIN / ".mcp.json")["mcpServers"]["chempane"]
-    assert server["command"] == "uvx"
-    assert server["args"] == [f"chempane=={version}"]
-    assert server["env"] == {"CHEMPANE_PROFILE": "mvp"}
+    assert server == {
+        "type": "http",
+        "url": "https://mcp.chempane.com/mcp",
+    }
     readme = (CHEMPANE_PLUGIN / "README.md").read_text(encoding="utf-8")
     ohne_code = re.sub(r"```.*?```", "", readme, flags=re.S)
     assert len(ohne_code.split()) >= 40
-    for host in erwartete_hosts:
-        assert host in readme, host
-    assert "claude plugin marketplace add chempane/chempane" in readme
-    assert "claude plugin install chempane@chempane" in readme
+    for eintrag in (
+        "https://mcp.chempane.com/mcp",
+        "https://mcp.chempane.com/privacy",
+        "pubchem.ncbi.nlm.nih.gov",
+        "cactus.nci.nih.gov",
+        "claude plugin marketplace add chempane/chempane",
+        "claude plugin install chempane@chempane",
+    ):
+        assert eintrag in readme, eintrag
+    assert "uvx chempane==" not in readme
     assert (CHEMPANE_PLUGIN / "LICENSE").is_file()
 
 

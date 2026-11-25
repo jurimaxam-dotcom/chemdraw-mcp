@@ -1,11 +1,8 @@
 {
   "mcpServers": {
     "chempane": {
-      "command": "uvx",
-      "args": ["chempane==0.12.0"],
-      "env": {
-        "CHEMPANE_PROFILE": "mvp"
-      }
+      "type": "http",
+      "url": "https://mcp.chempane.com/mcp"
     }
   }
 }
