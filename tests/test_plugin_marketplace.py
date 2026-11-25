@@ -42,7 +42,8 @@ def test_marketplace_listet_die_plugins_aus_den_unterordnern():
 def test_chempane_plugin_erfuellt_directory_anforderungen():
     manifest = _json(CHEMPANE_PLUGIN / ".claude-plugin" / "plugin.json")
     version = manifest["version"]
-    assert manifest["displayName"] == "chempane"
+    # Der Anzeigename trägt das Suchwort; `name` bleibt die dauerhafte Kennung.
+    assert manifest["displayName"] == "chempane: Chemistry Drawing"
     icon_rel = manifest["icon"]
     assert not icon_rel.startswith("..")
     icon_path = (CHEMPANE_PLUGIN / icon_rel).resolve()
