@@ -38,3 +38,7 @@ No local Python setup, no sign-in and no API key required.
 ## License
 
 Apache-2.0. Unofficial open-source project, not affiliated with Revvity (ChemDraw) or Anthropic.
+
+## Support and service terms
+
+See the [connector guide](https://github.com/chempane/chempane/blob/main/docs/remote-connector.md) for setup and examples. Report issues through [project support](https://github.com/chempane/chempane/issues). The [terms of use](https://github.com/chempane/chempane/blob/main/docs/remote-terms.md) apply to the hosted service.

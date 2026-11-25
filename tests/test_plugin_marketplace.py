@@ -48,6 +48,9 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     assert {"chemistry", "molecule", "chemical-structure", "rdkit", "smiles"} <= set(manifest["keywords"])
     # Ohne Verified-Status blockt das Portal zusätzliche Felder wie `network`.
     assert "network" not in manifest
+    assert manifest["documentationUrl"] == "https://github.com/chempane/chempane/blob/main/docs/remote-connector.md"
+    assert manifest["termsOfServiceUrl"] == "https://github.com/chempane/chempane/blob/main/docs/remote-terms.md"
+    assert manifest["supportUrl"] == "https://github.com/chempane/chempane/issues"
     assert manifest["privacyPolicyUrl"] == "https://mcp.chempane.com/privacy"
     market = _json(ROOT / ".claude-plugin" / "marketplace.json")["plugins"][0]
     assert market["description"] == manifest["description"]

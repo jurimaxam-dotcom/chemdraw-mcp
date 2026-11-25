@@ -52,3 +52,7 @@ draw is stored.
 
 chempane is an open-source project (Apache-2.0). It is not affiliated with Revvity, the maker of
 ChemDraw, or with Anthropic.
+
+## Support and service terms
+
+Report issues through [project support](https://github.com/chempane/chempane/issues). The [terms of use](https://github.com/chempane/chempane/blob/main/docs/remote-terms.md) apply to the hosted service.

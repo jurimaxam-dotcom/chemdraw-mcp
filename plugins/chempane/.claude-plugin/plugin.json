@@ -10,6 +10,9 @@
   },
   "homepage": "https://github.com/chempane/chempane",
   "repository": "https://github.com/chempane/chempane",
+  "documentationUrl": "https://github.com/chempane/chempane/blob/main/docs/remote-connector.md",
+  "supportUrl": "https://github.com/chempane/chempane/issues",
+  "termsOfServiceUrl": "https://github.com/chempane/chempane/blob/main/docs/remote-terms.md",
   "privacyPolicyUrl": "https://mcp.chempane.com/privacy",
   "license": "Apache-2.0",
   "keywords": [
