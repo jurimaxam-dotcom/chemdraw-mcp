@@ -14,6 +14,7 @@ Start lokal:
 from __future__ import annotations
 
 import asyncio
+import ipaddress
 import logging
 import os
 import time
@@ -62,6 +63,11 @@ MAX_INPUT_LENGTH = 500
 MAX_LABEL_LENGTH = 120
 MAX_HEAVY_ATOMS = 200
 _MAX_TRACKED_CLIENTS = 10_000
+# Claude leitet MCP-Tool-Aufrufe über das eigene Backend; laut Anthropic-Doku (Connector-Authentifizierung,
+# „outbound traffic … originates from") kommen sie aus diesem Bereich. Ein Limit je IP wäre dort ein
+# gemeinsamer Deckel für alle Nutzer, deshalb zählt der Bereich als ein Schlüssel mit eigenem Limit.
+_ANTHROPIC_EGRESS = ("160.79.104.0/21",)
+_SHARED_KEY = "shared-egress"
 
 _REMOTE_INSTRUCTIONS = """\
 chempane remote chemistry connector (2D structure drawing pilot).
@@ -84,6 +90,8 @@ class RemoteConfig:
     allowed_origins: tuple[str, ...] = ()
     rate_limit_requests: int = 30
     rate_limit_window_seconds: float = 60.0
+    shared_ranges: tuple[str, ...] = _ANTHROPIC_EGRESS
+    shared_rate_limit_requests: int = 600
     max_concurrent: int = 4
     max_request_body_bytes: int = 65_536
     trust_proxy: bool = False
@@ -100,6 +108,10 @@ class RemoteConfig:
             allowed_hosts = ("127.0.0.1:*", "localhost:*", "[::1]:*")
         raw_origins = env("REMOTE_ALLOWED_ORIGINS").strip()
         allowed_origins = tuple(o.strip() for o in raw_origins.split(",") if o.strip())
+        raw_shared = env("REMOTE_SHARED_RANGES").strip()
+        shared_ranges = (
+            tuple(r.strip() for r in raw_shared.split(",") if r.strip()) if raw_shared else _ANTHROPIC_EGRESS
+        )
         return cls(
             host=host,
             port=port,
@@ -107,6 +119,8 @@ class RemoteConfig:
             allowed_origins=allowed_origins,
             rate_limit_requests=max(1, int(env("REMOTE_RATE_LIMIT", "30"))),
             rate_limit_window_seconds=max(1.0, float(env("REMOTE_RATE_WINDOW", "60"))),
+            shared_ranges=shared_ranges,
+            shared_rate_limit_requests=max(1, int(env("REMOTE_SHARED_RATE_LIMIT", "600"))),
             max_concurrent=max(1, int(env("REMOTE_MAX_CONCURRENT", "4"))),
             max_request_body_bytes=max(4096, int(env("REMOTE_MAX_BODY_BYTES", "65536"))),
             trust_proxy=env("REMOTE_TRUST_PROXY").strip().lower() in {"1", "true", "yes"},
@@ -313,6 +327,14 @@ def _client_ip(request: Request, trust_proxy: bool) -> str:
     return request.client.host if request.client else "unknown"
 
 
+def _in_ranges(ip: str, networks: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...]) -> bool:
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    return any(addr.version == net.version and addr in net for net in networks)
+
+
 def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
     """Create the ASGI app serving stateless Streamable HTTP on `/mcp` plus `/healthz`."""
     cfg = config or RemoteConfig.from_env()
@@ -343,12 +365,18 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
     app.routes.insert(0, Route("/healthz", endpoint=healthz, methods=["GET"]))
 
     limiter = _SlidingWindowLimiter(cfg.rate_limit_requests, cfg.rate_limit_window_seconds)
+    shared_limiter = _SlidingWindowLimiter(cfg.shared_rate_limit_requests, cfg.rate_limit_window_seconds)
+    shared_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.shared_ranges)
     semaphore = asyncio.Semaphore(cfg.max_concurrent)
 
     async def pilot_guards(request: Request, call_next):
         if request.url.path == "/healthz":
             return await call_next(request)
-        allowed, retry_after = limiter.allow(_client_ip(request, cfg.trust_proxy))
+        ip = _client_ip(request, cfg.trust_proxy)
+        if _in_ranges(ip, shared_networks):
+            allowed, retry_after = shared_limiter.allow(_SHARED_KEY)
+        else:
+            allowed, retry_after = limiter.allow(ip)
         if not allowed:
             return JSONResponse(
                 {"error": "rate_limit_exceeded", "retry_after_seconds": retry_after},

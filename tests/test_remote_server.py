@@ -143,3 +143,49 @@ def test_remote_http_healthz_streamable_draw_and_rate_limit():
         # 4. Request im 60s-Fenster muss mit 429 geblockt werden
         r4 = client.post("/mcp", json=call_req, headers=headers)
         assert r4.status_code == 429
+
+
+def _init_req() -> dict:
+    return {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2025-03-26",
+            "capabilities": {},
+            "clientInfo": {"name": "pytest-remote", "version": "0.1"},
+        },
+    }
+
+
+def test_remote_rate_limit_gemeinsamer_ausgang_bekommt_eigenes_limit():
+    # Claude leitet Tool-Aufrufe über das eigene Backend: alle Nutzer kommen aus 160.79.104.0/21.
+    # Das Limit je IP wäre dort ein gemeinsamer Deckel für alle, also gilt für diesen Bereich ein eigenes.
+    cfg = RemoteConfig(
+        rate_limit_requests=2,
+        shared_rate_limit_requests=5,
+        rate_limit_window_seconds=60.0,
+        trust_proxy=True,
+    )
+    assert cfg.shared_ranges == ("160.79.104.0/21",)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        claude = {**headers, "X-Forwarded-For": "160.79.104.17"}
+        for _ in range(5):
+            assert client.post("/mcp", json=_init_req(), headers=claude).status_code == 200
+        # Auch der gemeinsame Bereich ist gedeckelt, und eine zweite Adresse daraus teilt den Zähler.
+        andere = {**headers, "X-Forwarded-For": "160.79.111.200"}
+        assert client.post("/mcp", json=_init_req(), headers=andere).status_code == 429
+
+        fremd = {**headers, "X-Forwarded-For": "203.0.113.9"}
+        for _ in range(2):
+            assert client.post("/mcp", json=_init_req(), headers=fremd).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=fremd).status_code == 429
+
+
+def test_remote_config_liest_gemeinsamen_bereich_aus_der_umgebung(monkeypatch):
+    monkeypatch.setenv("CHEMPANE_REMOTE_SHARED_RANGES", "198.51.100.0/24, 2001:db8::/32")
+    monkeypatch.setenv("CHEMPANE_REMOTE_SHARED_RATE_LIMIT", "900")
+    cfg = RemoteConfig.from_env()
+    assert cfg.shared_ranges == ("198.51.100.0/24", "2001:db8::/32")
+    assert cfg.shared_rate_limit_requests == 900
