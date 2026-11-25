@@ -1,0 +1,12 @@
+# Nur was das Dockerfile kopiert, geht in den Build-Kontext (vorher 21 GB, davon 20 GB scripts/).
+*
+!pyproject.toml
+!uv.lock
+!README.md
+!LICENSE
+!NOTICE
+!THIRD_PARTY_LICENSES
+!CHANGELOG.md
+!chempane
+chempane/ui/node_modules
+**/__pycache__
