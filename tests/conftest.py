@@ -139,3 +139,16 @@ def _panel_teile_in_tmp(monkeypatch, tmp_path):
 
     monkeypatch.setattr(result_budget, "STORE_DIR", tmp_path / "panel-parts")
     monkeypatch.setattr(result_budget, "_STORE", type(result_budget._STORE)())
+
+
+@pytest.fixture(autouse=True)
+def _pubchem_drossel_ohne_warten(monkeypatch):
+    """Die PubChem-Drossel (outbound.py) zählt im Test mit, wartet aber nicht.
+
+    Mit dem Betriebsabstand von 0,2 s schliefe die Suite bei jedem gemockten
+    PubChem-Aufruf. `tests/test_outbound.py` prüft die Mechanik mit eigener Uhr
+    und den Weg des Remote-Werkzeugs mit einem eigenen Zähler.
+    """
+    from chempane import outbound
+
+    monkeypatch.setattr(outbound, "PUBCHEM", outbound.StartSpacer(0.0, 0.0))

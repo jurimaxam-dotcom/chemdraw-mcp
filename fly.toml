@@ -12,6 +12,8 @@ primary_region = "fra"
   # Vorsichtiger Wert: jeder nicht offline lesbare Name geht an PubChem, das Vielnutzer drosselt
   # (Antwortkopf x-throttling-control; genaue Grenzwerte am 25.11.2026 nicht nachgeprüft).
   CHEMPANE_REMOTE_SHARED_RATE_LIMIT = "300"
+  # Die PubChem-Drossel (chempane/outbound.py, höchstens 5 Starts je Sekunde) zählt je Prozess:
+  # eine zweite Maschine verdoppelt die Rate gegenüber PubChem. Bei `--ha=false` bleiben.
 
 [http_service]
   internal_port = 8080

@@ -18,7 +18,7 @@ import requests
 import requests.adapters
 from rdkit import Chem, RDLogger
 
-from chempane import peptide, protein_catalog
+from chempane import outbound, peptide, protein_catalog
 from chempane.de_names import english_variant, form_variant, salt_variant
 
 logger = logging.getLogger(__name__)
@@ -128,6 +128,10 @@ class _Attempt:
 
 def _classify_error(exc: Exception) -> tuple[str, str]:
     """Netzwerk-Ausnahme → (Status, Klartext für die Fehlermeldung)."""
+    if isinstance(exc, outbound.OutboundBusy):
+        # Eigene Drossel hat abgesagt: die Quelle lebt. Kein `unreachable`, sonst
+        # bekäme der Nutzer den Netzausfall-Rat und PubChem gälte für den Lauf als tot.
+        return _SOURCE_ERROR, "busy, request limit reached — retry in a moment"
     # Reihenfolge zählt: ConnectTimeout erbt von Timeout UND ConnectionError.
     if isinstance(exc, requests.exceptions.Timeout):
         return _UNREACHABLE, "timed out"
@@ -172,6 +176,7 @@ def _pubchem_lookup(name: str, report: list | None = None) -> str | None:
     if _is_unreachable(report, _PUBCHEM):
         return None
     try:
+        outbound.pubchem_slot()
         if "/" in name:
             # "(+/-)-ibuprofen": als %2F im Pfad antwortet PubChem 404, im
             # POST-Body trifft derselbe Name (gemessen 09.11.2026).
