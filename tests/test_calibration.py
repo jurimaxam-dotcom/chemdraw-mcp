@@ -115,3 +115,49 @@ def test_detection_limits_are_undefined_for_perfect_data():
     limits = detection_limits(linear_regression(X, Y))
     assert limits["lod"] == 0.0
     assert any("scatter" in n.lower() or "residual" in n.lower() for n in limits["notes"])
+
+
+# Befund 24.11.2026: ein negativer Achsenabschnitt stand als „+ -0.6“ in
+# Figur und Antwort. Vorzeichen wie im übrigen Figurentext: echtes Minus (U+2212).
+NEG_X = [1.0, 2.0, 3.0, 4.0, 5.0]
+NEG_Y = [0.2, 1.0, 1.8, 2.6, 3.4]  # y = 0,8x − 0,6, exakt
+
+
+def test_negative_intercept_is_written_with_a_minus_sign():
+    r = linear_regression(NEG_X, NEG_Y)
+    assert r["equation"] == "y = 0.8 · x − 0.6"
+
+
+def test_positive_intercept_keeps_the_plus_sign():
+    assert linear_regression(X, Y)["equation"] == "y = 2 · x + 1"
+
+
+def test_read_back_with_negative_intercept_has_no_double_sign():
+    u = interpolate(1.0, linear_regression(NEG_X, NEG_Y))
+    assert u["substitution"] == "x = (1 + 0.6) / 0.8"
+
+
+# Nachtrag B2 (24.11.2026): auch eine negative Steigung trägt U+2212 statt
+# ASCII-Minus — in Gleichung, Rückrechnung (Divisor in Klammern) und LOD/LOQ.
+FALL_X = [1.0, 2.0, 3.0, 4.0, 5.0]
+FALL_Y = [3.0, 2.2, 1.4, 0.6, -0.2]  # y = −0,8x + 3,8, exakt
+FALL_NEG_Y = [-1.4, -2.2, -3.0, -3.8, -4.6]  # y = −0,8x − 0,6, exakt
+
+
+def test_negative_slope_uses_unicode_minus_in_equation():
+    assert linear_regression(FALL_X, FALL_Y)["equation"] == "y = −0.8 · x + 3.8"
+    assert linear_regression(FALL_X, FALL_NEG_Y)["equation"] == "y = −0.8 · x − 0.6"
+
+
+def test_read_back_with_negative_slope_wraps_divisor_with_unicode_minus():
+    u = interpolate(2.2, linear_regression(FALL_X, FALL_Y))
+    assert u["substitution"] == "x = (2.2 − 3.8) / (−0.8)"
+    u_neg = interpolate(-2.2, linear_regression(FALL_X, FALL_NEG_Y))
+    assert u_neg["substitution"] == "x = (−2.2 + 0.6) / (−0.8)"
+
+
+def test_detection_limits_with_negative_slope_use_unicode_minus():
+    r = linear_regression(FALL_X, [3.1, 2.1, 1.5, 0.5, -0.2])
+    limits = detection_limits(r)
+    assert "a = −" in limits["substitution"]
+    assert "-" not in limits["substitution"]
