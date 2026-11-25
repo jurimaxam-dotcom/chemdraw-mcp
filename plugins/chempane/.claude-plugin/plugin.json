@@ -1,11 +1,27 @@
 {
   "name": "chempane",
+  "displayName": "chempane",
   "description": "Draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit.",
   "version": "0.12.0",
+  "icon": "./assets/icon.png",
   "author": {
-    "name": "chempane"
+    "name": "chempane",
+    "url": "https://github.com/chempane"
   },
   "homepage": "https://github.com/chempane/chempane",
   "repository": "https://github.com/chempane/chempane",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "network": {
+    "hosts": [
+      "pubchem.ncbi.nlm.nih.gov",
+      "cactus.nci.nih.gov",
+      "www.ebi.ac.uk",
+      "rest.kegg.jp",
+      "rest.uniprot.org",
+      "models.rcsb.org",
+      "alphafold.ebi.ac.uk",
+      "pypi.org",
+      "files.pythonhosted.org"
+    ]
+  }
 }

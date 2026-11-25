@@ -8,9 +8,16 @@ chempane (formerly chemdraw-mcp) is a local chemistry MCP server backed by RDKit
 /plugin install chempane --marketplace chempane/chempane
 ```
 
-## Requirements
+Or via the Claude Code CLI:
 
-- [uv](https://docs.astral.sh/uv/) (`uvx` downloads the pinned `chempane==0.12.0` package and its Python dependencies such as RDKit and Matplotlib from PyPI on first run).
+```bash
+claude plugin install chempane --marketplace chempane/chempane
+```
+
+## Requirements & what gets downloaded
+
+- [uv](https://docs.astral.sh/uv/) must be installed on your machine (`uvx` available in `PATH`).
+- On first run, `uvx chempane==0.12.0` downloads the pinned `chempane==0.12.0` package and its Python dependencies (such as RDKit, Matplotlib, NumPy and the MCP Python SDK) from PyPI (`pypi.org`, `files.pythonhosted.org`).
 - No API key and no commercial ChemDraw licence required.
 
 ## Example prompts
@@ -20,9 +27,16 @@ chempane (formerly chemdraw-mcp) is a local chemistry MCP server backed by RDKit
 3. *"Draw a titration curve for 25 mL of 0.1 M acetic acid with 0.1 M NaOH and calculate the pH at the equivalence point."*
 4. *"Compare aspirin and ibuprofen side by side and highlight the differences."*
 
-## Privacy & network access
+## Local files, privacy & network access
 
-RDKit renders all structures locally. For database lookups, the server contacts public chemistry APIs (PubChem, ChEBI, KEGG, UniProt, NCI CIR, RCSB PDB / PDBe, AlphaFold DB). By default, a typed SMILES string is not sent to those databases — only its InChIKey hash is queried (your chat client still receives what you type in the conversation). See the full [privacy policy](https://github.com/chempane/chempane/blob/main/docs/privacy.md).
+- **Local rendering & output:** RDKit and Matplotlib compute and render all 2D/3D structures, spectra, TLC plates, titration curves and pH calculations locally. Exported files (PNG, SVG, optional CDXML, `.apkg`) are written to `~/chempane-output/` (or an existing `~/ChemDraw-Output/`).
+- **Declared external hosts:**
+  - `pypi.org`, `files.pythonhosted.org` — initial package download via `uvx chempane==0.12.0`.
+  - `pubchem.ncbi.nlm.nih.gov`, `cactus.nci.nih.gov` — resolving compound names to structures and fetching properties/GHS safety data.
+  - `www.ebi.ac.uk` (ChEBI OLS4, PDBe), `rest.kegg.jp`, `rest.uniprot.org` — biochemical/protein lookups and best-structure mappings.
+  - `models.rcsb.org`, `alphafold.ebi.ac.uk` — fetching protein backbone mmCIF files for cartoon rendering.
+- **Optional local loopback:** Anki deck push connects to local AnkiConnect (`http://127.0.0.1:8765`) only when you explicitly request Anki delivery.
+- **SMILES privacy (server requests):** By default, a typed SMILES or InChI string is **not** sent to those chemistry databases by the server — only its locally computed 27-character InChIKey hash is queried (`CHEMPANE_SMILES_LOOKUP` is off by default). Compound names and lookup queries are sent as typed. Note that your Claude chat client still receives whatever you type in the conversation. See the full [privacy policy](https://github.com/chempane/chempane/blob/main/docs/privacy.md).
 
 ## License
 

@@ -12,6 +12,7 @@ Claude-Code-CLI, deshalb nicht im Gate).
 import base64
 import json
 import re
+import struct
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 
@@ -42,12 +43,41 @@ def test_marketplace_listet_die_plugins_aus_den_unterordnern():
 def test_chempane_plugin_erfuellt_directory_anforderungen():
     manifest = _json(CHEMPANE_PLUGIN / ".claude-plugin" / "plugin.json")
     version = manifest["version"]
+    assert manifest["displayName"] == "chempane"
+    icon_rel = manifest["icon"]
+    assert not icon_rel.startswith("..")
+    icon_path = (CHEMPANE_PLUGIN / icon_rel).resolve()
+    assert icon_path.is_relative_to(CHEMPANE_PLUGIN.resolve())
+    raw = icon_path.read_bytes()
+    assert raw[:8] == b"\x89PNG\r\n\x1a\n"
+    width, height = struct.unpack(">II", raw[16:24])
+    assert width == height
+    assert 512 <= width <= 2048
+    assert len(raw) < 2 * 1024 * 1024
+
+    hosts = set(manifest["network"]["hosts"])
+    erwartete_hosts = {
+        "pubchem.ncbi.nlm.nih.gov",
+        "cactus.nci.nih.gov",
+        "www.ebi.ac.uk",
+        "rest.kegg.jp",
+        "rest.uniprot.org",
+        "models.rcsb.org",
+        "alphafold.ebi.ac.uk",
+        "pypi.org",
+        "files.pythonhosted.org",
+    }
+    assert erwartete_hosts <= hosts
+
     server = _json(CHEMPANE_PLUGIN / ".mcp.json")["mcpServers"]["chempane"]
     assert server["command"] == "uvx"
     assert server["args"] == [f"chempane=={version}"]
     assert server["env"] == {"CHEMPANE_PROFILE": "mvp"}
     readme = (CHEMPANE_PLUGIN / "README.md").read_text(encoding="utf-8")
-    assert len(readme.split()) >= 40
+    ohne_code = re.sub(r"```.*?```", "", readme, flags=re.S)
+    assert len(ohne_code.split()) >= 40
+    for host in erwartete_hosts:
+        assert host in readme, host
     assert (CHEMPANE_PLUGIN / "LICENSE").is_file()
 
 
