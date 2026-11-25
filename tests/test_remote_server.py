@@ -278,3 +278,14 @@ def test_remote_tagesbudget_aus_der_umgebung(monkeypatch):
     assert RemoteConfig().daily_limit_requests == 50_000
     monkeypatch.setenv("CHEMPANE_REMOTE_DAILY_LIMIT", "1234")
     assert RemoteConfig.from_env().daily_limit_requests == 1234
+
+
+def test_remote_dockerfile_stellt_java_fuer_opsin_mit_speicherdeckel_bereit():
+    # Ohne JRE im Image geht jeder systematische IUPAC-Name an PubChem statt offline über OPSIN.
+    # Der Container läuft mit 512 MB RAM (fly.toml) → Heap hart deckeln.
+    from pathlib import Path
+
+    dockerfile = (Path(__file__).resolve().parents[1] / "Dockerfile").read_text(encoding="utf-8")
+    assert "default-jre-headless" in dockerfile
+    assert "JAVA_TOOL_OPTIONS=" in dockerfile
+    assert "-Xmx" in dockerfile

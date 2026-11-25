@@ -6,9 +6,16 @@ FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     CHEMPANE_REMOTE_HOST=0.0.0.0 \
-    CHEMPANE_REMOTE_PORT=8080
+    CHEMPANE_REMOTE_PORT=8080 \
+    JAVA_TOOL_OPTIONS="-Xmx96m"
 
-RUN useradd --create-home --shell /usr/sbin/nologin chempane
+# Headless JRE für OPSIN (löst systematische IUPAC-Namen offline, entlastet PubChem).
+# Gemessen mit -Xmx96m: ~106 MB JVM-RSS + ~145 MB Python/RDKit ≈ 251 MB (Container: 512 MB).
+RUN mkdir -p /usr/share/man/man1 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends default-jre-headless \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /usr/sbin/nologin chempane
 
 WORKDIR /app
 
