@@ -189,3 +189,24 @@ def test_remote_config_liest_gemeinsamen_bereich_aus_der_umgebung(monkeypatch):
     cfg = RemoteConfig.from_env()
     assert cfg.shared_ranges == ("198.51.100.0/24", "2001:db8::/32")
     assert cfg.shared_rate_limit_requests == 900
+
+
+def test_remote_getippte_struktur_loest_keine_netzanfrage_aus(monkeypatch):
+    # Zusage der Remote-Datenschutzerklärung: ein SMILES wird im Container gezeichnet und geht nirgendwohin.
+    import requests
+
+    anfragen: list[str] = []
+
+    def _sperre(self, method, url, *args, **kwargs):
+        anfragen.append(url)
+        raise requests.ConnectionError("Netz im Test gesperrt")
+
+    monkeypatch.setattr(requests.sessions.Session, "request", _sperre)
+    srv = create_remote_server()
+    asyncio.run(srv.call_tool("generate_molecule", {"name_or_smiles": ASPIRIN_SMILES, "label": "Aspirin"}))
+    assert anfragen == []
+
+    # Gegenprobe: die Sperre greift wirklich, ein Name ohne OPSIN-Treffer muss sie auslösen.
+    with pytest.raises(ToolError):
+        asyncio.run(srv.call_tool("generate_molecule", {"name_or_smiles": "Koffein"}))
+    assert anfragen, "Die Sperre hat keine Anfrage gesehen: der Test prüft nichts."
