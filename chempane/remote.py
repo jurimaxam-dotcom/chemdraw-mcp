@@ -14,6 +14,7 @@ Start lokal:
 from __future__ import annotations
 
 import asyncio
+import html
 import ipaddress
 import logging
 import os
@@ -28,7 +29,7 @@ from mcp.types import ToolAnnotations
 from starlette.applications import Starlette
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import JSONResponse, Response
+from starlette.responses import HTMLResponse, JSONResponse, Response
 from starlette.routing import Route
 
 from chempane.generator import generate_2d
@@ -96,6 +97,9 @@ class RemoteConfig:
     max_request_body_bytes: int = 65_536
     trust_proxy: bool = False
     path: str = "/mcp"
+    # Betreiber und Kontakt der Datenschutzseite: nur aus der Umgebung des Hosts, nie im Repo.
+    operator: str = ""
+    contact: str = ""
 
     @classmethod
     def from_env(cls) -> RemoteConfig:
@@ -124,6 +128,8 @@ class RemoteConfig:
             max_concurrent=max(1, int(env("REMOTE_MAX_CONCURRENT", "4"))),
             max_request_body_bytes=max(4096, int(env("REMOTE_MAX_BODY_BYTES", "65536"))),
             trust_proxy=env("REMOTE_TRUST_PROXY").strip().lower() in {"1", "true", "yes"},
+            operator=env("REMOTE_OPERATOR").strip(),
+            contact=env("REMOTE_CONTACT").strip(),
         )
 
 
@@ -327,6 +333,46 @@ def _client_ip(request: Request, trust_proxy: bool) -> str:
     return request.client.host if request.client else "unknown"
 
 
+_PRIVACY_PAGE = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy: hosted chempane connector</title>
+<style>body{{font:16px/1.55 system-ui,sans-serif;max-width:44rem;margin:3rem auto;padding:0 1.2rem;color:#1c1c1c}}
+h1{{font-size:1.5rem}}h2{{font-size:1.1rem;margin-top:1.8rem}}code{{background:#f1f1f1;padding:.1em .3em;border-radius:3px}}</style>
+</head><body>
+<h1>Privacy policy for the hosted chempane connector</h1>
+<p>Applies to the hosted MCP server at <code>https://{host}/mcp</code>, the connector you add in Claude.
+The local chempane server that runs on your own computer is covered by its own
+<a href="https://github.com/chempane/chempane/blob/main/docs/privacy.md">privacy page</a>.</p>
+<h2>Who runs it</h2>
+<p>The hosted connector is run by {operator}, contact {contact}. chempane is an unofficial open-source
+project (Apache-2.0) and is not affiliated with Revvity (ChemDraw) or Anthropic.</p>
+<h2>What the server receives</h2>
+<p>Only the arguments of a tool call: the compound name or structure string you asked Claude to draw, an
+optional label and display options. It does not receive your conversation, your files or your account
+details. Claude sends tool calls through Anthropic's infrastructure, so the server sees Anthropic's
+network address, not yours.</p>
+<h2>What leaves the server</h2>
+<p>A structure you type (SMILES, InChI) is parsed, laid out and drawn in memory on the server. It is
+sent to no other service.</p>
+<p>A compound name is resolved to a structure. If the name cannot be read offline, the name itself is
+sent to PubChem (U.S. National Institutes of Health) and the NCI Chemical Identifier Resolver.</p>
+<h2>What is stored</h2>
+<p>Nothing about what you draw. The server has no database, no user accounts and no result cache that
+outlives a request. Its log records start-up, errors and one line per request (time, path, status code);
+it does not record compound names or structures. The server runs on Fly.io in Frankfurt, Germany;
+Fly.io keeps platform logs for a limited time under its own
+<a href="https://fly.io/legal/privacy-policy/">privacy policy</a>.</p>
+<h2>No sign-in, no tracking</h2>
+<p>The connector needs no account, sets no cookies and contains no analytics. A rate limit counts
+requests per network address in memory for one minute and is discarded afterwards.</p>
+<h2>Changes and contact</h2>
+<p>This page changes when the data flow changes. Questions and requests: {contact}.</p>
+<p>Version {version}.</p>
+</body></html>
+"""
+
+
 def _in_ranges(ip: str, networks: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...]) -> bool:
     try:
         addr = ipaddress.ip_address(ip)
@@ -364,13 +410,28 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
 
     app.routes.insert(0, Route("/healthz", endpoint=healthz, methods=["GET"]))
 
+    async def privacy(request: Request) -> Response:
+        # Ohne Betreiberangabe keine Seite: eine Erklärung ohne Verantwortlichen wäre falsch.
+        if not (cfg.operator and cfg.contact):
+            return JSONResponse({"error": "not_configured"}, status_code=404)
+        return HTMLResponse(
+            _PRIVACY_PAGE.format(
+                host=html.escape(request.url.hostname or ""),
+                operator=html.escape(cfg.operator),
+                contact=html.escape(cfg.contact),
+                version=html.escape(_pkg_version(PACKAGE)),
+            )
+        )
+
+    app.routes.insert(0, Route("/privacy", endpoint=privacy, methods=["GET"]))
+
     limiter = _SlidingWindowLimiter(cfg.rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_limiter = _SlidingWindowLimiter(cfg.shared_rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.shared_ranges)
     semaphore = asyncio.Semaphore(cfg.max_concurrent)
 
     async def pilot_guards(request: Request, call_next):
-        if request.url.path == "/healthz":
+        if request.url.path in {"/healthz", "/privacy"}:
             return await call_next(request)
         ip = _client_ip(request, cfg.trust_proxy)
         if _in_ranges(ip, shared_networks):

@@ -48,6 +48,7 @@ docker run --rm -p 8080:8080 \
 | `CHEMPANE_REMOTE_MAX_CONCURRENT` | `4` | Max concurrent render requests (`503` when full) |
 | `CHEMPANE_REMOTE_MAX_BODY_BYTES` | `65536` | Max HTTP request body size (64 KB) |
 | `CHEMPANE_REMOTE_TRUST_PROXY` | `0` | Set to `1` only behind a trusted reverse proxy (`X-Forwarded-For`) |
+| `CHEMPANE_REMOTE_OPERATOR` / `CHEMPANE_REMOTE_CONTACT` | *(empty)* | Operator name and contact shown on `/privacy`. Set them on the host (for example as secrets), not in the repository; without both the page returns 404 |
 
 Hard input limits: max 500 characters for `name_or_smiles`, max 120 characters for `label`,
 and max 200 heavy atoms per structure.

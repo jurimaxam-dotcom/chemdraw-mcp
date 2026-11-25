@@ -210,3 +210,23 @@ def test_remote_getippte_struktur_loest_keine_netzanfrage_aus(monkeypatch):
     with pytest.raises(ToolError):
         asyncio.run(srv.call_tool("generate_molecule", {"name_or_smiles": "Koffein"}))
     assert anfragen, "Die Sperre hat keine Anfrage gesehen: der Test prüft nichts."
+
+
+def test_remote_datenschutzseite_nur_mit_betreiberangabe():
+    # Betreibername und Kontakt stehen nicht im Repo, sondern kommen aus der Umgebung des Hosts.
+    with TestClient(create_remote_app(RemoteConfig())) as client:
+        assert client.get("/privacy").status_code == 404
+    cfg = RemoteConfig(operator="Erika Mustermann", contact="kontakt-platzhalter")
+    with TestClient(create_remote_app(cfg)) as client:
+        seite = client.get("/privacy")
+        assert seite.status_code == 200
+        assert seite.headers["content-type"].startswith("text/html")
+        for text in ("Erika Mustermann", "kontakt-platzhalter", "PubChem", "Fly.io", "sent to no other service"):
+            assert text in seite.text, text
+
+
+def test_remote_config_liest_betreiber_aus_der_umgebung(monkeypatch):
+    monkeypatch.setenv("CHEMPANE_REMOTE_OPERATOR", "Erika Mustermann")
+    monkeypatch.setenv("CHEMPANE_REMOTE_CONTACT", "kontakt-platzhalter")
+    cfg = RemoteConfig.from_env()
+    assert (cfg.operator, cfg.contact) == ("Erika Mustermann", "kontakt-platzhalter")
