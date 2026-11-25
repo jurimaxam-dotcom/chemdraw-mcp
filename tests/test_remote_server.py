@@ -39,6 +39,8 @@ def test_remote_server_exposes_only_readonly_generate_molecule_and_panel_resourc
     assert tool.annotations is not None
     assert tool.annotations.read_only_hint is True
     assert tool.annotations.destructive_hint is False
+    # Das Portal liest den Namen fürs Listing aus annotations.title, nicht aus dem Tool-Titel.
+    assert tool.annotations.title == "Draw a structure"
     assert (tool.meta or {}).get("ui", {}).get("resourceUri") == "ui://chem-app/index.html"
     assert "formats" not in (tool.input_schema.get("properties") or {})
     assert [str(r.uri) for r in resources] == ["ui://chem-app/index.html"]

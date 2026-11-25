@@ -283,6 +283,7 @@ def create_remote_server() -> MCPServer:
         structured_output=True,
         meta=_UI_META,
         annotations=ToolAnnotations(
+            title="Draw a structure",
             readOnlyHint=True,
             destructiveHint=False,
             idempotentHint=True,
