@@ -9,6 +9,9 @@ primary_region = "fra"
 [env]
   CHEMPANE_REMOTE_ALLOWED_HOSTS = "mcp.chempane.com,chempane.fly.dev"
   CHEMPANE_REMOTE_TRUST_PROXY = "1"
+  # Vorsichtiger Wert: jeder nicht offline lesbare Name geht an PubChem, das Vielnutzer drosselt
+  # (Antwortkopf x-throttling-control; genaue Grenzwerte am 25.11.2026 nicht nachgeprüft).
+  CHEMPANE_REMOTE_SHARED_RATE_LIMIT = "300"
 
 [http_service]
   internal_port = 8080

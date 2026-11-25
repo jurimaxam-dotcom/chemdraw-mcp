@@ -171,12 +171,12 @@ def remote_generate_molecule(
 ) -> RemoteMoleculePayload:
     """Draw one compound as an interactive 2D chemical structure with functional groups.
 
-    Renders a 2D skeletal formula (or requested projection) locally with RDKit and
-    returns an interactive panel showing the drawing, formula, molar mass and
-    highlighted functional groups. Read-only: writes no local files.
+    Renders a 2D skeletal formula (or requested projection) on the server with RDKit
+    and returns an interactive panel showing the drawing, formula, molar mass and
+    highlighted functional groups. Read-only: writes no files.
 
-    IMPORTANT: Pass English or IUPAC compound names or SMILES; put localized names
-    in `label`.
+    Input is an English or IUPAC compound name or a SMILES string; a name in another
+    language belongs in `label`.
 
     Args:
         name_or_smiles: English/IUPAC compound name or SMILES string (max 500 chars).
