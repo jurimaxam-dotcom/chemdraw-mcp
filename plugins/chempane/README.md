@@ -18,8 +18,8 @@ Or inside a Claude Code session:
 
 ## Requirements & what gets downloaded
 
-- [uv](https://docs.astral.sh/uv/) must be installed on your machine (`uvx` available in `PATH`; GUI hosts such as Cowork or Claude Desktop require `uvx` in a GUI-visible location such as `/opt/homebrew/bin` or `~/.local/bin`).
-- On first run, `uvx chempane==0.12.0` downloads the pinned `chempane==0.12.0` package and its Python dependencies (such as RDKit, Matplotlib, NumPy and the MCP Python SDK) from PyPI (`pypi.org`, `files.pythonhosted.org`) once into uv's cache; later starts reuse the cached environment.
+- [uv](https://docs.astral.sh/uv/) must be installed on your machine (`uvx` available in `PATH`). Apps started from the Dock (Cowork, the desktop app's Code tab) see a shorter `PATH` than a terminal; if the chempane tools do not appear there, check that the app can find `uvx`.
+- On first run, `uvx chempane==0.12.0` downloads the pinned `chempane==0.12.0` package and its Python dependencies (such as RDKit, Matplotlib, NumPy and the MCP Python SDK) from PyPI (`pypi.org`, `files.pythonhosted.org`) once into uv's cache (about 480 MB). That first start took 24 s on a fast connection and can take longer on a slow one; if Claude Code marks the server as failed meanwhile, run `/mcp` and choose **Reconnect**. Later starts reuse the cached environment (about 2 s).
 - No API key and no commercial ChemDraw licence required.
 
 ## Example prompts
