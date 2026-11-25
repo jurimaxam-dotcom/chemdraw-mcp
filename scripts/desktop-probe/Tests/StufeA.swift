@@ -84,9 +84,13 @@ final class StufeA: ProbeFall {
           let once = immer.exists ? immer : anfrage.buttons.matching(NSPredicate(format: "title ==[c] 'Allow once'")).firstMatch
           // Der Dialog baut sich beim Erscheinen einmal neu auf (Klick im ersten Moment: „No matches found“,
           // 14.11.2026): erst klicken, wenn er eine Runde später noch steht und treffbar ist.
+          let allowUnofficial = ProcessInfo.processInfo.environment["PROBE_ALLOW_UNOFFICIAL"] == "1"
+          let eigenerKonnektor = dialog.hasSuffix(" from chempane")
+            || dialog.hasSuffix(" from chempane-pharma")
+            || (allowUnofficial && dialog.hasSuffix(" from chempane (unofficial)"))
           if dialogSeit == nil { dialogSeit = Date() }
           else if Date().timeIntervalSince(dialogSeit!) > 1.5, once.exists, once.isHittable,
-                  dialog.hasSuffix(" from chempane") || dialog.hasSuffix(" from chempane-pharma") {
+                  eigenerKonnektor {
             once.click(); dialogSeit = nil; fertigSeit = nil
           }
           Thread.sleep(forTimeInterval: 1.0); continue

@@ -60,7 +60,7 @@ if [ ${#TOOLS[@]} -eq 0 ]; then NUR=(-only-testing:"DesktopProbeUITests/Stufe$ST
 else for t in "${TOOLS[@]}"; do NUR+=(-only-testing:"DesktopProbeUITests/Stufe$STUFE/test_$t"); done; fi
 open -a Claude; sleep 2
 T0=$(date +%s)
-TEST_RUNNER_PROBE_MODELL="$MODELL" xcodebuild test -project DesktopProbe.xcodeproj -scheme DesktopProbe -destination 'platform=macOS' \
+TEST_RUNNER_PROBE_MODELL="$MODELL" TEST_RUNNER_PROBE_ALLOW_UNOFFICIAL="${PROBE_ALLOW_UNOFFICIAL:-0}" xcodebuild test -project DesktopProbe.xcodeproj -scheme DesktopProbe -destination 'platform=macOS' \
   "${NUR[@]}" -resultBundlePath "$OUT/ergebnis.xcresult" > "$OUT/xcodebuild.log" 2>&1
 RC=$?
 T1=$(date +%s)
