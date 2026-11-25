@@ -8,7 +8,7 @@
     {
       "name": "chempane",
       "source": "./plugins/chempane",
-      "description": "Draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit."
+      "description": "Chemistry in Claude: draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit."
     }
   ]
 }

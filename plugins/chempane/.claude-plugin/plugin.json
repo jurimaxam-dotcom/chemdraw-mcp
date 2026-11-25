@@ -1,7 +1,7 @@
 {
   "name": "chempane",
   "displayName": "chempane: Chemistry Drawing",
-  "description": "Draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit.",
+  "description": "Chemistry in Claude: draw chemical structures, 3D conformers, reaction mechanisms, lab spectra and protein cartoons locally with RDKit.",
   "version": "0.12.0",
   "icon": "./assets/icon.png",
   "author": {
@@ -11,6 +11,18 @@
   "homepage": "https://github.com/chempane/chempane",
   "repository": "https://github.com/chempane/chempane",
   "license": "Apache-2.0",
+  "keywords": [
+    "chemistry",
+    "molecule",
+    "chemical-structure",
+    "organic-chemistry",
+    "reaction-mechanism",
+    "rdkit",
+    "smiles",
+    "protein",
+    "pharmacy",
+    "education"
+  ],
   "network": {
     "hosts": [
       "pubchem.ncbi.nlm.nih.gov",

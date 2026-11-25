@@ -44,6 +44,11 @@ def test_chempane_plugin_erfuellt_directory_anforderungen():
     version = manifest["version"]
     # Der Anzeigename trägt das Suchwort; `name` bleibt die dauerhafte Kennung.
     assert manifest["displayName"] == "chempane: Chemistry Drawing"
+    # Die Suche im Directory ist nicht dokumentiert: das Suchwort steht deshalb in jedem Feld, das sie lesen könnte.
+    assert manifest["description"].startswith("Chemistry in Claude: ")
+    assert {"chemistry", "molecule", "chemical-structure", "rdkit", "smiles"} <= set(manifest["keywords"])
+    market = _json(ROOT / ".claude-plugin" / "marketplace.json")["plugins"][0]
+    assert market["description"] == manifest["description"]
     icon_rel = manifest["icon"]
     assert not icon_rel.startswith("..")
     icon_path = (CHEMPANE_PLUGIN / icon_rel).resolve()
