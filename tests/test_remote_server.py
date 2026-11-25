@@ -251,6 +251,37 @@ def test_remote_datenschutzseite_nennt_dsgvo_pflichtangaben():
         assert "complaint" in lower
         assert "supervisory authority" in lower
         assert "Art. 77 GDPR" in body
+        # 4. Direkte Verbindung (Claude Code) vs. claude.ai-Connector und Drittlandhinweis (USA)
+        assert "Claude Code" in body
+        assert "United States" in body
+
+
+def test_remote_rate_limit_ignoriert_gefaelschten_ersten_xff_eintrag():
+    # Ein Client kann X-Forwarded-For vorschalten (z. B. eine Anthropic-IP), der Proxy hängt die
+    # echte Client-IP hinten an oder setzt Fly-Client-IP. Beides darf das Per-IP-Limit nicht umgehen.
+    cfg = RemoteConfig(
+        rate_limit_requests=2,
+        shared_rate_limit_requests=10,
+        rate_limit_window_seconds=60.0,
+        trust_proxy=True,
+    )
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        # 1) Gefälschter erster XFF-Eintrag (Anthropic-Bereich) vor echter Client-IP 203.0.113.42
+        spoof_xff = {**headers, "X-Forwarded-For": "160.79.104.17, 203.0.113.42"}
+        assert client.post("/mcp", json=_init_req(), headers=spoof_xff).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=spoof_xff).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=spoof_xff).status_code == 429
+
+        # 2) Fly-Client-IP hat Vorrang vor einem gefälschten X-Forwarded-For
+        spoof_with_fly = {
+            **headers,
+            "X-Forwarded-For": "160.79.104.99",
+            "Fly-Client-IP": "198.51.100.7",
+        }
+        assert client.post("/mcp", json=_init_req(), headers=spoof_with_fly).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=spoof_with_fly).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=spoof_with_fly).status_code == 429
 
 
 def test_remote_config_liest_betreiber_aus_der_umgebung(monkeypatch):

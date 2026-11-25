@@ -331,9 +331,17 @@ class _SlidingWindowLimiter:
 
 def _client_ip(request: Request, trust_proxy: bool) -> str:
     if trust_proxy:
+        # Fly.io setzt Fly-Client-IP aus der echten TCP-Verbindung (nicht vom Client fälschbar).
+        fly_ip = request.headers.get("fly-client-ip", "").strip()
+        if fly_ip:
+            return fly_ip
         forwarded = request.headers.get("x-forwarded-for", "")
         if forwarded:
-            return forwarded.split(",")[0].strip() or "unknown"
+            # Der vorgelagerte Reverse-Proxy hängt die Client-IP hinten an; der erste Eintrag
+            # kann vom Client vorgeschaltet sein und darf nicht das Ratenlimit steuern.
+            parts = [p.strip() for p in forwarded.split(",") if p.strip()]
+            if parts:
+                return parts[-1]
     return request.client.host if request.client else "unknown"
 
 
@@ -354,18 +362,21 @@ project (Apache-2.0) and is not affiliated with Revvity (ChemDraw) or Anthropic.
 <h2>What the server receives</h2>
 <p>Only the arguments of a tool call: the compound name or structure string you asked Claude to draw, an
 optional label and display options. It does not receive your conversation, your files or your account
-details. Claude sends tool calls through Anthropic's infrastructure, so the server sees Anthropic's
-network address, not yours.</p>
+details. When used as a connector in claude.ai, tool calls travel through Anthropic's infrastructure, so
+the server sees Anthropic's network address, not yours. When connected directly from your machine (for
+example via Claude Code), the server sees your network address for the request and the in-memory rate
+limit.</p>
 <h2>What leaves the server</h2>
 <p>A structure you type (SMILES, InChI) is parsed, laid out and drawn in memory on the server. It is
 sent to no other service.</p>
 <p>A compound name is resolved to a structure. If the name cannot be read offline, the name itself is
-sent to PubChem (U.S. National Institutes of Health) and the NCI Chemical Identifier Resolver.</p>
+sent to PubChem (U.S. National Institutes of Health) and the NCI Chemical Identifier Resolver in the
+United States; no user or account data is included.</p>
 <h2>What is stored</h2>
 <p>Nothing about what you draw. The server has no database, no user accounts and no result cache that
 outlives a request. Its log records start-up, errors and one line per request (time, path, status code);
-it does not record compound names or structures. The server runs on Fly.io in Frankfurt, Germany;
-Fly.io keeps platform logs for a limited time under its own
+it does not record compound names or structures. The server runs on Fly.io (a U.S.-based provider) in
+Frankfurt, Germany; Fly.io keeps standard platform logs under its own
 <a href="https://fly.io/legal/privacy-policy/">privacy policy</a>.</p>
 <h2>No sign-in, no tracking</h2>
 <p>The connector needs no account, sets no cookies and contains no analytics. A rate limit counts
