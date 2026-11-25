@@ -230,3 +230,23 @@ def test_remote_config_liest_betreiber_aus_der_umgebung(monkeypatch):
     monkeypatch.setenv("CHEMPANE_REMOTE_CONTACT", "kontakt-platzhalter")
     cfg = RemoteConfig.from_env()
     assert (cfg.operator, cfg.contact) == ("Erika Mustermann", "kontakt-platzhalter")
+
+
+def test_remote_tagesbudget_deckelt_die_kosten():
+    # Fly.io kennt kein Ausgabenlimit: das Tagesbudget ist die Obergrenze für ausgehende Daten.
+    cfg = RemoteConfig(rate_limit_requests=100, daily_limit_requests=3)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        for _ in range(3):
+            assert client.post("/mcp", json=_init_req(), headers=headers).status_code == 200
+        voll = client.post("/mcp", json=_init_req(), headers=headers)
+        assert voll.status_code == 429
+        assert voll.json()["error"] == "daily_limit_reached"
+        # Health-Prüfung und Datenschutzseite zählen nicht mit und bleiben erreichbar.
+        assert client.get("/healthz").status_code == 200
+
+
+def test_remote_tagesbudget_aus_der_umgebung(monkeypatch):
+    assert RemoteConfig().daily_limit_requests == 50_000
+    monkeypatch.setenv("CHEMPANE_REMOTE_DAILY_LIMIT", "1234")
+    assert RemoteConfig.from_env().daily_limit_requests == 1234

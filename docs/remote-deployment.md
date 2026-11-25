@@ -45,6 +45,7 @@ docker run --rm -p 8080:8080 \
 | `CHEMPANE_REMOTE_RATE_WINDOW` | `60` | Rate-limit window in seconds |
 | `CHEMPANE_REMOTE_SHARED_RANGES` | `160.79.104.0/21` | Networks that many users share (Claude proxies tool calls through Anthropic's published egress range); counted as one client |
 | `CHEMPANE_REMOTE_SHARED_RATE_LIMIT` | `600` | Max requests per window for the shared networks together |
+| `CHEMPANE_REMOTE_DAILY_LIMIT` | `50000` | Max requests of all clients together per 24 hours; a cost ceiling for hosts without a spending limit (`429 daily_limit_reached`) |
 | `CHEMPANE_REMOTE_MAX_CONCURRENT` | `4` | Max concurrent render requests (`503` when full) |
 | `CHEMPANE_REMOTE_MAX_BODY_BYTES` | `65536` | Max HTTP request body size (64 KB) |
 | `CHEMPANE_REMOTE_TRUST_PROXY` | `0` | Set to `1` only behind a trusted reverse proxy (`X-Forwarded-For`) |

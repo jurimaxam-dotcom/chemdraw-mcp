@@ -93,6 +93,8 @@ class RemoteConfig:
     rate_limit_window_seconds: float = 60.0
     shared_ranges: tuple[str, ...] = _ANTHROPIC_EGRESS
     shared_rate_limit_requests: int = 600
+    # Obergrenze für alle Anfragen eines Tages zusammen: der Host kennt kein Ausgabenlimit.
+    daily_limit_requests: int = 50_000
     max_concurrent: int = 4
     max_request_body_bytes: int = 65_536
     trust_proxy: bool = False
@@ -125,6 +127,7 @@ class RemoteConfig:
             rate_limit_window_seconds=max(1.0, float(env("REMOTE_RATE_WINDOW", "60"))),
             shared_ranges=shared_ranges,
             shared_rate_limit_requests=max(1, int(env("REMOTE_SHARED_RATE_LIMIT", "600"))),
+            daily_limit_requests=max(1, int(env("REMOTE_DAILY_LIMIT", "50000"))),
             max_concurrent=max(1, int(env("REMOTE_MAX_CONCURRENT", "4"))),
             max_request_body_bytes=max(4096, int(env("REMOTE_MAX_BODY_BYTES", "65536"))),
             trust_proxy=env("REMOTE_TRUST_PROXY").strip().lower() in {"1", "true", "yes"},
@@ -428,6 +431,7 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
     limiter = _SlidingWindowLimiter(cfg.rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_limiter = _SlidingWindowLimiter(cfg.shared_rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.shared_ranges)
+    daily_limiter = _SlidingWindowLimiter(cfg.daily_limit_requests, 86_400.0)
     semaphore = asyncio.Semaphore(cfg.max_concurrent)
 
     async def pilot_guards(request: Request, call_next):
@@ -441,6 +445,13 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
         if not allowed:
             return JSONResponse(
                 {"error": "rate_limit_exceeded", "retry_after_seconds": retry_after},
+                status_code=429,
+                headers={"Retry-After": str(retry_after)},
+            )
+        allowed, retry_after = daily_limiter.allow("all")
+        if not allowed:
+            return JSONResponse(
+                {"error": "daily_limit_reached", "retry_after_seconds": retry_after},
                 status_code=429,
                 headers={"Retry-After": str(retry_after)},
             )
