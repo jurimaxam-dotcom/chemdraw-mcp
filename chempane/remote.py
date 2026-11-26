@@ -99,6 +99,8 @@ _CLOUDFLARE_RANGES = (
 )
 # Logger, deren Meldungen Eingaben zitieren können (Fehlertexte der Tools, Namen im Resolver).
 _INPUT_BEARING_LOGGERS = ("mcp", "chempane")
+# Nur diese Namen dürfen im Klartext ins Log: bei einem unbekannten Tool steht dort, was der Client schickte.
+_REGISTERED_TOOLS = frozenset({"generate_molecule"})
 
 _REMOTE_INSTRUCTIONS = """\
 chempane remote chemistry connector (2D structure drawing pilot).
@@ -128,6 +130,8 @@ class RemoteConfig:
     max_concurrent: int = 4
     # Kurze Spitzen warten auf einen freien Platz; erst danach kommt 503.
     queue_wait_seconds: float = 10.0
+    # Wartende halten je eine Verbindung offen; darüber hinaus kommt sofort 503.
+    max_queued: int = 32
     proxy_ranges: tuple[str, ...] = _CLOUDFLARE_RANGES
     max_request_body_bytes: int = 65_536
     trust_proxy: bool = False
@@ -167,6 +171,7 @@ class RemoteConfig:
             daily_limit_requests=max(1, int(env("REMOTE_DAILY_LIMIT", "50000"))),
             max_concurrent=max(1, int(env("REMOTE_MAX_CONCURRENT", "4"))),
             queue_wait_seconds=max(0.0, float(env("REMOTE_QUEUE_WAIT", "10"))),
+            max_queued=max(0, int(env("REMOTE_MAX_QUEUED", "32"))),
             proxy_ranges=proxy_ranges,
             max_request_body_bytes=max(4096, int(env("REMOTE_MAX_BODY_BYTES", "65536"))),
             trust_proxy=env("REMOTE_TRUST_PROXY").strip().lower() in {"1", "true", "yes"},
@@ -413,8 +418,12 @@ class _WithholdInput(logging.Filter):
             return True
         args = record.args if isinstance(record.args, tuple) else ((record.args,) if record.args else ())
         if args:
-            # Bei den Tool-Meldungen der Bibliothek ist das erste Argument der registrierte Toolname.
-            keep_first = record.name.startswith("mcp") and str(record.msg).startswith("Tool %r")
+            # Bei den Tool-Meldungen der Bibliothek ist das erste Argument der Toolname aus der Anfrage.
+            keep_first = (
+                record.name.startswith("mcp")
+                and str(record.msg).startswith("Tool %r")
+                and args[0] in _REGISTERED_TOOLS
+            )
             record.args = tuple(
                 a if (keep_first and i == 0) or isinstance(a, (int, float)) else "[withheld]"
                 for i, a in enumerate(args)
@@ -555,6 +564,7 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
     proxy_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.proxy_ranges)
     daily_limiter = _SlidingWindowLimiter(cfg.daily_limit_requests, 86_400.0)
     semaphore = asyncio.Semaphore(cfg.max_concurrent)
+    waiting = [0]
 
     async def pilot_guards(request: Request, call_next):
         if request.url.path in {"/healthz", "/privacy"}:
@@ -577,14 +587,24 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
                 status_code=429,
                 headers={"Retry-After": str(retry_after)},
             )
-        try:
-            await asyncio.wait_for(semaphore.acquire(), timeout=cfg.queue_wait_seconds)
-        except TimeoutError:
-            return JSONResponse(
-                {"error": "server_busy", "message": "Too many concurrent requests; retry shortly."},
-                status_code=503,
-                headers={"Retry-After": "2"},
-            )
+        busy = JSONResponse(
+            {"error": "server_busy", "message": "Too many concurrent requests; retry shortly."},
+            status_code=503,
+            headers={"Retry-After": "2"},
+        )
+        if semaphore.locked():
+            # `wait_for(…, timeout=0)` ließe die Koroutine nie anlaufen: Null heißt „nicht warten“.
+            if cfg.queue_wait_seconds <= 0 or waiting[0] >= cfg.max_queued:
+                return busy
+            waiting[0] += 1
+            try:
+                await asyncio.wait_for(semaphore.acquire(), timeout=cfg.queue_wait_seconds)
+            except TimeoutError:
+                return busy
+            finally:
+                waiting[0] -= 1
+        else:
+            await semaphore.acquire()
         try:
             return await call_next(request)
         finally:

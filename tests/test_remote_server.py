@@ -473,3 +473,63 @@ def test_remote_weist_ab_wenn_die_wartezeit_ablaeuft(monkeypatch):
     codes = sorted(a.status_code for a in antworten)
     assert codes[0] == 200 and codes[-1] == 503
     assert all(a.headers.get("Retry-After") for a in antworten if a.status_code == 503)
+
+
+def test_remote_log_nennt_nur_registrierte_toolnamen(caplog):
+    # Bei einem unbekannten Tool reicht die Bibliothek den Namen aus der Anfrage ins Log durch —
+    # dort kann ebenso gut ein Stoffname stehen.
+    import logging
+
+    from chempane import remote
+
+    entfernen = remote.install_log_privacy()
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    try:
+        with caplog.at_level(logging.DEBUG), TestClient(create_remote_app(RemoteConfig())) as client:
+            req = {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "tools/call",
+                "params": {"name": "geheimstoff-4711", "arguments": {}},
+            }
+            client.post("/mcp", json=req, headers=headers)
+            logging.getLogger("mcp.server.mcpserver.server").info(
+                "Tool %r failed: %r", "geheimstoff-4711", "Unknown tool"
+            )
+    finally:
+        entfernen()
+    assert "geheim" not in caplog.text
+
+
+def test_remote_wartezeit_null_bedient_freie_plaetze():
+    cfg = RemoteConfig(queue_wait_seconds=0.0)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        assert client.post("/mcp", json=_init_req(), headers=headers).status_code == 200
+
+
+def test_remote_volle_warteschlange_weist_sofort_ab(monkeypatch):
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    from chempane import remote
+
+    echt = remote.resolve
+
+    def langsam(name):
+        time.sleep(0.5)
+        return echt(name)
+
+    monkeypatch.setattr(remote, "resolve", langsam)
+    # Ein Platz, ein Wartender: von vier gleichzeitigen Anfragen kommen zwei durch, zwei gehen sofort.
+    cfg = RemoteConfig(max_concurrent=1, queue_wait_seconds=10.0, max_queued=1)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    req = {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {"name": "generate_molecule", "arguments": {"name_or_smiles": ASPIRIN_SMILES}},
+    }
+    with TestClient(create_remote_app(cfg)) as client, ThreadPoolExecutor(4) as pool:
+        codes = sorted(pool.map(lambda _: client.post("/mcp", json=req, headers=headers).status_code, range(4)))
+    assert codes == [200, 200, 503, 503]

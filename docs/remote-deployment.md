@@ -48,6 +48,7 @@ docker run --rm -p 8080:8080 \
 | `CHEMPANE_REMOTE_DAILY_LIMIT` | `50000` | Max requests of all clients together per 24 hours; a cost ceiling for hosts without a spending limit (`429 daily_limit_reached`) |
 | `CHEMPANE_REMOTE_MAX_CONCURRENT` | `4` | Max concurrent requests; further ones wait for a free slot |
 | `CHEMPANE_REMOTE_QUEUE_WAIT` | `10` | Seconds a request waits for a free slot before it gets `503` |
+| `CHEMPANE_REMOTE_MAX_QUEUED` | `32` | Requests that may wait at once; beyond that `503` at once |
 | `CHEMPANE_REMOTE_PROXY_RANGES` | Cloudflare's published ranges | Networks of the proxy in front of Fly; only from these is `CF-Connecting-IP` read as the client address |
 | `CHEMPANE_REMOTE_MAX_BODY_BYTES` | `65536` | Max HTTP request body size (64 KB) |
 | `CHEMPANE_REMOTE_TRUST_PROXY` | `0` | Set to `1` only behind a trusted reverse proxy (`X-Forwarded-For`) |
