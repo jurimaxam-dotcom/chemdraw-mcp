@@ -29,7 +29,7 @@ No local Python setup, no sign-in and no API key required.
 
 ## Data flow & privacy
 
-- **Remote endpoint:** The plugin connects to `https://mcp.chempane.com/mcp` (hosted on Fly.io in Frankfurt, Germany). It is read-only and writes no files on your computer.
+- **Remote endpoint:** The plugin connects to `https://mcp.chempane.com/mcp` (hosted on Fly.io in Frankfurt, Germany, and reached through Cloudflare as a reverse proxy). It is read-only and writes no files on your computer.
 - **What is sent:** Only the tool call arguments (the compound name or SMILES string, an optional label and display options). It never receives your conversation, your files or your account details.
 - **Typed structures stay on the server:** A SMILES or InChI string you provide is parsed, laid out and rendered in memory on the server and sent to no external database.
 - **Compound names:** If a compound name cannot be resolved offline, the name is sent to `pubchem.ncbi.nlm.nih.gov` (PubChem, U.S. NIH) and `cactus.nci.nih.gov` (NCI Chemical Identifier Resolver) to look up its structure.

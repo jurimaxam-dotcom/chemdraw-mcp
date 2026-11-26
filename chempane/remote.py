@@ -482,7 +482,11 @@ United States; no user or account data is included.</p>
 outlives a request. Its log records start-up, errors and one line per request (time, path, status code);
 it does not record compound names or structures. The server runs on Fly.io (a U.S.-based provider) in
 Frankfurt, Germany; Fly.io keeps standard platform logs under its own
-<a href="https://fly.io/legal/privacy-policy/">privacy policy</a>.</p>
+<a href="https://fly.io/legal/privacy-policy/">privacy policy</a>. Requests to
+<code>{host}</code> reach the server through Cloudflare (a U.S.-based provider), which acts as a reverse
+proxy: it terminates the encrypted connection, so it processes the request including the tool arguments and
+the network address it comes from, and passes it on under its own
+<a href="https://www.cloudflare.com/privacypolicy/">privacy policy</a>.</p>
 <h2>No sign-in, no tracking</h2>
 <p>The connector needs no account, sets no cookies and contains no analytics. A rate limit counts
 requests per network address in memory for one minute and is discarded afterwards.</p>

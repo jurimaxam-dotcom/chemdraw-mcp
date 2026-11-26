@@ -533,3 +533,17 @@ def test_remote_volle_warteschlange_weist_sofort_ab(monkeypatch):
     with TestClient(create_remote_app(cfg)) as client, ThreadPoolExecutor(4) as pool:
         codes = sorted(pool.map(lambda _: client.post("/mcp", json=req, headers=headers).status_code, range(4)))
     assert codes == [200, 200, 503, 503]
+
+
+def test_remote_datenschutztexte_nennen_cloudflare_als_durchleitung():
+    # mcp.chempane.com ist bei Cloudflare als Proxy eingetragen: jede Anfrage wird dort entschlüsselt
+    # und weitergereicht. Ein Empfänger, der Eingaben und Adressen sieht, gehört in die Erklärung.
+    from pathlib import Path
+
+    cfg = RemoteConfig(operator="Erika Mustermann", contact="kontakt-platzhalter")
+    with TestClient(create_remote_app(cfg)) as client:
+        seite = client.get("/privacy").text
+    assert "Cloudflare" in seite
+    assert "https://www.cloudflare.com/privacypolicy/" in seite
+    readme = (Path(__file__).parent.parent / "plugins" / "chempane" / "README.md").read_text(encoding="utf-8")
+    assert "Cloudflare" in readme

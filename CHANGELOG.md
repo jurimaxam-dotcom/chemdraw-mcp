@@ -26,6 +26,8 @@ Output fixes. No tool, schema or panel change.
   apply as documented.
 - Hosted connector: a short burst of requests waits up to 10 seconds for a free slot instead of getting
   `503` at once.
+- Hosted connector: the privacy policy and the plugin README now name Cloudflare, the reverse proxy in
+  front of the server.
 
 ## [0.12.0] — 2026-11-24
 
