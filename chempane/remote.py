@@ -69,6 +69,36 @@ _MAX_TRACKED_CLIENTS = 10_000
 # gemeinsamer Deckel für alle Nutzer, deshalb zählt der Bereich als ein Schlüssel mit eigenem Limit.
 _ANTHROPIC_EGRESS = ("160.79.104.0/21",)
 _SHARED_KEY = "shared-egress"
+# mcp.chempane.com läuft über Cloudflare: Fly sieht dann eine Cloudflare-Adresse als Gegenstelle, die echte
+# steht in CF-Connecting-IP. Dem Kopf wird nur geglaubt, wenn die Gegenstelle aus diesen Bereichen kommt
+# (https://www.cloudflare.com/ips-v4 und /ips-v6, gelesen am 26.11.2026) — chempane.fly.dev ist auch direkt
+# erreichbar, und dort könnte ihn jeder selbst setzen.
+_CLOUDFLARE_RANGES = (
+    "173.245.48.0/20",
+    "103.21.244.0/22",
+    "103.22.200.0/22",
+    "103.31.4.0/22",
+    "141.101.64.0/18",
+    "108.162.192.0/18",
+    "190.93.240.0/20",
+    "188.114.96.0/20",
+    "197.234.240.0/22",
+    "198.41.128.0/17",
+    "162.158.0.0/15",
+    "104.16.0.0/13",
+    "104.24.0.0/14",
+    "172.64.0.0/13",
+    "131.0.72.0/22",
+    "2400:cb00::/32",
+    "2606:4700::/32",
+    "2803:f800::/32",
+    "2405:b500::/32",
+    "2405:8100::/32",
+    "2a06:98c0::/29",
+    "2c0f:f248::/32",
+)
+# Logger, deren Meldungen Eingaben zitieren können (Fehlertexte der Tools, Namen im Resolver).
+_INPUT_BEARING_LOGGERS = ("mcp", "chempane")
 
 _REMOTE_INSTRUCTIONS = """\
 chempane remote chemistry connector (2D structure drawing pilot).
@@ -96,6 +126,9 @@ class RemoteConfig:
     # Obergrenze für alle Anfragen eines Tages zusammen: der Host kennt kein Ausgabenlimit.
     daily_limit_requests: int = 50_000
     max_concurrent: int = 4
+    # Kurze Spitzen warten auf einen freien Platz; erst danach kommt 503.
+    queue_wait_seconds: float = 10.0
+    proxy_ranges: tuple[str, ...] = _CLOUDFLARE_RANGES
     max_request_body_bytes: int = 65_536
     trust_proxy: bool = False
     path: str = "/mcp"
@@ -118,6 +151,10 @@ class RemoteConfig:
         shared_ranges = (
             tuple(r.strip() for r in raw_shared.split(",") if r.strip()) if raw_shared else _ANTHROPIC_EGRESS
         )
+        raw_proxies = env("REMOTE_PROXY_RANGES").strip()
+        proxy_ranges = (
+            tuple(r.strip() for r in raw_proxies.split(",") if r.strip()) if raw_proxies else _CLOUDFLARE_RANGES
+        )
         return cls(
             host=host,
             port=port,
@@ -129,6 +166,8 @@ class RemoteConfig:
             shared_rate_limit_requests=max(1, int(env("REMOTE_SHARED_RATE_LIMIT", "600"))),
             daily_limit_requests=max(1, int(env("REMOTE_DAILY_LIMIT", "50000"))),
             max_concurrent=max(1, int(env("REMOTE_MAX_CONCURRENT", "4"))),
+            queue_wait_seconds=max(0.0, float(env("REMOTE_QUEUE_WAIT", "10"))),
+            proxy_ranges=proxy_ranges,
             max_request_body_bytes=max(4096, int(env("REMOTE_MAX_BODY_BYTES", "65536"))),
             trust_proxy=env("REMOTE_TRUST_PROXY").strip().lower() in {"1", "true", "yes"},
             operator=env("REMOTE_OPERATOR").strip(),
@@ -329,11 +368,18 @@ class _SlidingWindowLimiter:
             self._hits.clear()
 
 
-def _client_ip(request: Request, trust_proxy: bool) -> str:
+_Networks = tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...]
+
+
+def _client_ip(request: Request, trust_proxy: bool, proxy_networks: _Networks = ()) -> str:
     if trust_proxy:
         # Fly.io setzt Fly-Client-IP aus der echten TCP-Verbindung (nicht vom Client fälschbar).
         fly_ip = request.headers.get("fly-client-ip", "").strip()
         if fly_ip:
+            # Hinter Cloudflare ist das Cloudflares Adresse; die des Nutzers steht in CF-Connecting-IP.
+            behind = request.headers.get("cf-connecting-ip", "").strip()
+            if behind and _in_ranges(fly_ip, proxy_networks) and _is_ip(behind):
+                return behind
             return fly_ip
         forwarded = request.headers.get("x-forwarded-for", "")
         if forwarded:
@@ -343,6 +389,56 @@ def _client_ip(request: Request, trust_proxy: bool) -> str:
             if parts:
                 return parts[-1]
     return request.client.host if request.client else "unknown"
+
+
+def _is_ip(text: str) -> bool:
+    try:
+        ipaddress.ip_address(text)
+    except ValueError:
+        return False
+    return True
+
+
+class _WithholdInput(logging.Filter):
+    """Nimmt aus Log-Zeilen heraus, was eine Eingabe zitieren kann.
+
+    Die Datenschutzseite sagt zu, dass das Log keine Stoffnamen oder Strukturen aufzeichnet. Die
+    MCP-Bibliothek protokolliert aber den Fehlertext eines Tools ("Could not resolve '<Name>'"), der
+    Resolver nennt Namen, und ein Traceback zitiert die Meldung der Exception. Übrig bleiben die
+    Vorlage der Meldung, der Toolname und die Art des Fehlers.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if record.name == __name__ or not record.name.startswith(_INPUT_BEARING_LOGGERS):
+            return True
+        args = record.args if isinstance(record.args, tuple) else ((record.args,) if record.args else ())
+        if args:
+            # Bei den Tool-Meldungen der Bibliothek ist das erste Argument der registrierte Toolname.
+            keep_first = record.name.startswith("mcp") and str(record.msg).startswith("Tool %r")
+            record.args = tuple(
+                a if (keep_first and i == 0) or isinstance(a, (int, float)) else "[withheld]"
+                for i, a in enumerate(args)
+            )
+        if record.exc_info:
+            exc_type = record.exc_info[0]
+            record.msg = f"{record.msg} ({exc_type.__name__ if exc_type else 'error'}; details withheld)"
+            record.exc_info = None
+            record.exc_text = None
+        return True
+
+
+def install_log_privacy():
+    """Hängt den Filter an alle Handler des Root-Loggers; gibt eine Funktion zum Entfernen zurück."""
+    log_filter = _WithholdInput()
+    handlers = list(logging.getLogger().handlers)
+    for handler in handlers:
+        handler.addFilter(log_filter)
+
+    def remove() -> None:
+        for handler in handlers:
+            handler.removeFilter(log_filter)
+
+    return remove
 
 
 _PRIVACY_PAGE = """<!doctype html>
@@ -401,7 +497,7 @@ alleged infringement.</p>
 """
 
 
-def _in_ranges(ip: str, networks: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...]) -> bool:
+def _in_ranges(ip: str, networks: _Networks) -> bool:
     try:
         addr = ipaddress.ip_address(ip)
     except ValueError:
@@ -456,13 +552,14 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
     limiter = _SlidingWindowLimiter(cfg.rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_limiter = _SlidingWindowLimiter(cfg.shared_rate_limit_requests, cfg.rate_limit_window_seconds)
     shared_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.shared_ranges)
+    proxy_networks = tuple(ipaddress.ip_network(r, strict=False) for r in cfg.proxy_ranges)
     daily_limiter = _SlidingWindowLimiter(cfg.daily_limit_requests, 86_400.0)
     semaphore = asyncio.Semaphore(cfg.max_concurrent)
 
     async def pilot_guards(request: Request, call_next):
         if request.url.path in {"/healthz", "/privacy"}:
             return await call_next(request)
-        ip = _client_ip(request, cfg.trust_proxy)
+        ip = _client_ip(request, cfg.trust_proxy, proxy_networks)
         if _in_ranges(ip, shared_networks):
             allowed, retry_after = shared_limiter.allow(_SHARED_KEY)
         else:
@@ -480,14 +577,18 @@ def create_remote_app(config: RemoteConfig | None = None) -> Starlette:
                 status_code=429,
                 headers={"Retry-After": str(retry_after)},
             )
-        if semaphore.locked():
+        try:
+            await asyncio.wait_for(semaphore.acquire(), timeout=cfg.queue_wait_seconds)
+        except TimeoutError:
             return JSONResponse(
                 {"error": "server_busy", "message": "Too many concurrent requests; retry shortly."},
                 status_code=503,
                 headers={"Retry-After": "2"},
             )
-        async with semaphore:
+        try:
             return await call_next(request)
+        finally:
+            semaphore.release()
 
     app.add_middleware(BaseHTTPMiddleware, dispatch=pilot_guards)
     return app
@@ -500,6 +601,7 @@ def main() -> None:
         level=logging.INFO,
         format="%(asctime)s %(name)s %(levelname)s %(message)s",
     )
+    install_log_privacy()
     cfg = RemoteConfig.from_env()
     logging.getLogger(__name__).info(
         "Starting chempane remote MCP server on %s:%s%s (rate=%s/%ss, max_concurrent=%s)",

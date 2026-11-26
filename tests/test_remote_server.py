@@ -320,3 +320,156 @@ def test_remote_dockerfile_stellt_java_fuer_opsin_mit_speicherdeckel_bereit():
     assert "default-jre-headless" in dockerfile
     assert "JAVA_TOOL_OPTIONS=" in dockerfile
     assert "-Xmx" in dockerfile
+
+
+def test_remote_log_enthaelt_keine_eingaben(caplog, monkeypatch):
+    # Die Datenschutzseite sagt: das Log zeichnet keine Stoffnamen oder Strukturen auf. Die MCP-Bibliothek
+    # protokolliert aber den Fehlertext eines Tools, und der zitiert die Eingabe; der Resolver nennt Namen.
+    import logging
+
+    from chempane import remote
+    from chempane.resolver import NameResolutionError
+
+    def kein_treffer(name):
+        logging.getLogger("chempane.resolver").info("Retrying with transliterated name: %r", name)
+        raise NameResolutionError(
+            f"Could not resolve '{name}' to a structure.", name=name, kind="not_found", attempts=[]
+        )
+
+    monkeypatch.setattr(remote, "resolve", kein_treffer)
+    entfernen = remote.install_log_privacy()
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    try:
+        with caplog.at_level(logging.DEBUG), TestClient(create_remote_app(RemoteConfig())) as client:
+            for eingabe in ("geheimstoff-4711", "C1CC(geheim"):
+                req = {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "tools/call",
+                    "params": {"name": "generate_molecule", "arguments": {"name_or_smiles": eingabe}},
+                }
+                antwort = client.post("/mcp", json=req, headers=headers)
+                assert antwort.status_code == 200
+                # Der Nutzer bekommt den Hinweis weiterhin im Wortlaut.
+                assert eingabe in antwort.text
+    finally:
+        entfernen()
+    assert "geheim" not in caplog.text
+    # Dass ein Tool gescheitert ist, bleibt sichtbar.
+    assert "generate_molecule" in caplog.text
+
+
+def test_remote_log_filter_laesst_unerwartete_fehler_ohne_eingabe_durch(caplog):
+    import logging
+
+    from chempane import remote
+
+    entfernen = remote.install_log_privacy()
+    try:
+        with caplog.at_level(logging.DEBUG):
+            try:
+                raise RuntimeError("kaputt bei geheimstoff-4711")
+            except RuntimeError:
+                logging.getLogger("mcp.server.mcpserver.server").exception(
+                    "Tool %r raised an unexpected exception", "generate_molecule"
+                )
+    finally:
+        entfernen()
+    assert "geheim" not in caplog.text
+    assert "RuntimeError" in caplog.text
+
+
+def test_remote_rate_limit_liest_die_echte_adresse_hinter_cloudflare():
+    # mcp.chempane.com läuft über Cloudflare: Fly sieht als Gegenstelle eine Cloudflare-Adresse, die echte
+    # steht in CF-Connecting-IP. Ohne das greift weder das Limit je Nutzer noch Anthropics eigener Bereich.
+    cfg = RemoteConfig(
+        rate_limit_requests=2,
+        shared_rate_limit_requests=4,
+        rate_limit_window_seconds=60.0,
+        trust_proxy=True,
+    )
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        # Zwei Nutzer über dieselbe Cloudflare-Adresse haben je ein eigenes Limit.
+        for nutzer in ("203.0.113.5", "203.0.113.6"):
+            ueber_cf = {**headers, "Fly-Client-IP": "173.245.48.10", "CF-Connecting-IP": nutzer}
+            assert client.post("/mcp", json=_init_req(), headers=ueber_cf).status_code == 200
+            assert client.post("/mcp", json=_init_req(), headers=ueber_cf).status_code == 200
+            assert client.post("/mcp", json=_init_req(), headers=ueber_cf).status_code == 429
+        # Claude über Cloudflare (IPv6-Gegenstelle) zählt im gemeinsamen Bereich mit dem höheren Limit.
+        claude = {**headers, "Fly-Client-IP": "2606:4700::1234", "CF-Connecting-IP": "160.79.104.17"}
+        for _ in range(4):
+            assert client.post("/mcp", json=_init_req(), headers=claude).status_code == 200
+        assert client.post("/mcp", json=_init_req(), headers=claude).status_code == 429
+
+
+def test_remote_rate_limit_glaubt_cf_kopf_nur_von_cloudflare():
+    # chempane.fly.dev ist direkt erreichbar: wer dort CF-Connecting-IP selbst setzt, darf sich damit
+    # weder ein frisches Limit noch Anthropics Bereich erschleichen.
+    cfg = RemoteConfig(
+        rate_limit_requests=2,
+        shared_rate_limit_requests=10,
+        rate_limit_window_seconds=60.0,
+        trust_proxy=True,
+    )
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    with TestClient(create_remote_app(cfg)) as client:
+        for vorgetaeuscht in ("160.79.104.17", "203.0.113.77", "160.79.104.18"):
+            direkt = {**headers, "Fly-Client-IP": "198.51.100.7", "CF-Connecting-IP": vorgetaeuscht}
+            status = client.post("/mcp", json=_init_req(), headers=direkt).status_code
+            assert status == (429 if vorgetaeuscht == "160.79.104.18" else 200)
+
+
+def test_remote_wartet_auf_einen_freien_platz_statt_sofort_abzuweisen(monkeypatch):
+    # Gemessen am 26.11.2026: 40 gleichzeitige Pings ergaben 30-mal 503. Kurze Spitzen sollen warten.
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    from chempane import remote
+
+    echt = remote.resolve
+
+    def langsam(name):
+        time.sleep(0.3)
+        return echt(name)
+
+    monkeypatch.setattr(remote, "resolve", langsam)
+    cfg = RemoteConfig(max_concurrent=1, queue_wait_seconds=10.0)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    req = {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {"name": "generate_molecule", "arguments": {"name_or_smiles": ASPIRIN_SMILES}},
+    }
+    with TestClient(create_remote_app(cfg)) as client, ThreadPoolExecutor(4) as pool:
+        codes = list(pool.map(lambda _: client.post("/mcp", json=req, headers=headers).status_code, range(4)))
+    assert codes == [200, 200, 200, 200]
+
+
+def test_remote_weist_ab_wenn_die_wartezeit_ablaeuft(monkeypatch):
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    from chempane import remote
+
+    echt = remote.resolve
+
+    def langsam(name):
+        time.sleep(0.6)
+        return echt(name)
+
+    monkeypatch.setattr(remote, "resolve", langsam)
+    cfg = RemoteConfig(max_concurrent=1, queue_wait_seconds=0.05)
+    headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
+    req = {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {"name": "generate_molecule", "arguments": {"name_or_smiles": ASPIRIN_SMILES}},
+    }
+    with TestClient(create_remote_app(cfg)) as client, ThreadPoolExecutor(3) as pool:
+        antworten = list(pool.map(lambda _: client.post("/mcp", json=req, headers=headers), range(3)))
+    codes = sorted(a.status_code for a in antworten)
+    assert codes[0] == 200 and codes[-1] == 503
+    assert all(a.headers.get("Retry-After") for a in antworten if a.status_code == 503)

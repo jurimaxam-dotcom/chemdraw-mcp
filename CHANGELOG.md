@@ -16,6 +16,17 @@ Output fixes. No tool, schema or panel change.
 
 ## [Unreleased]
 
+### Fixed
+
+- Hosted connector: the server log no longer contains compound names or structures. Failed tool calls
+  and name lookups used to quote the input; the log now keeps the tool name and the kind of error only,
+  as the privacy policy states.
+- Hosted connector: the rate limit counts the real client behind Cloudflare (`CF-Connecting-IP`, accepted
+  only from Cloudflare's networks), so the per-client limit and the shared limit for Claude's traffic
+  apply as documented.
+- Hosted connector: a short burst of requests waits up to 10 seconds for a free slot instead of getting
+  `503` at once.
+
 ## [0.12.0] — 2026-11-24
 
 The project is renamed from chemdraw-mcp to **chempane**. No tool or schema change.
